@@ -1,0 +1,26 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Chemical Dye"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   Chemical dyes are consistent with the dyes in the original version, with a total of 16 colors, and are compatible with dyes of the same color in the original version and other mods.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Chemical dye consists of 72 L of homochromatic chemical dye in fluid state in\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Fluid curing machine</style>\n   medium cooperation\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Mold (ball)</style>\n   formed by solidification. Chemical dyes in a fluid state need to be\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Chemical reactor</style>\n   is made by dissolving salt in sulfuric acid and adding 1 dye of the same color (it can be the dye in the original version or other modules). A single reaction generates 288 L (4 pieces) of chemical dyes.\n   <br/>\n  </style>\n  <br/>"
+    }
+]

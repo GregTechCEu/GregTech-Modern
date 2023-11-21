@@ -1,0 +1,22 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Mining Hammer"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Author: <style color=\"0xa4e7ff\" hover-info=\"TacoMonkey's Github\" underlined=\"true\" url-link=\"https://github.com/tacomonkey11\">TacoMonkey</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"Used in the same way as a pickaxe, however it mines blocks in a 3x3 grid. The 3x3 mining is disabled while the player is crouched.\n  <br/>\n  <br/>\n  If the difference in hardness levels between the block mined and those in a 3x3 grid around it are too great, those blocks won't be mined (e.g. When mining stone, surrounding obsidian won't be mined).\n  <br/>"
+    },
+    {
+        "key":"text.2",
+        "original":"This is just one example of a recipe, mining hammers can be crafted using most GregTech materials."
+    }
+]

@@ -1,0 +1,22 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Shovel"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Author: <style color=\"0xa4e7ff\" hover-info=\"TacoMonkey's Github\" underlined=\"true\" url-link=\"https://github.com/tacomonkey11\">TacoMonkey</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"Behaves the exact same as a vanilla shovel. Different materials can be used to adjust stats such as attack damage, mining speed or durability.\n        <br/>"
+    },
+    {
+        "key":"text.2",
+        "original":"This is just one example of a recipe, shovels can be crafted using most GregTech materials."
+    }
+]

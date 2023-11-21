@@ -1,0 +1,50 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Locked Safe"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   Secret safes naturally generate in abandoned shelters added by this mod.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Secret safes that spawn naturally and are picked up and dropped from the Creative mode inventory are unlocked and cannot be destroyed in Survival mode. Aim at the unlocked safe and press\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">use</style>\n   List of materials that support Xiaodui powder (the format is Chinese name of material-material name):\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.3",
+        "original":"•\n  <style>\n   “\n   <style color=\"0xaaaaaa\" italic=\"true\">Fault!</style>\n   ”（\"\n   <style color=\"0xaaaaaa\" italic=\"true\">Malfunctioning!</style>\n   \")\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   “\n   <style color=\"0xaaaaaa\" italic=\"true\">The following items need to be replaced:</style>\n   ”（\"\n   <style color=\"0xaaaaaa\" italic=\"true\">Replacements Required:</style>\n   \") (This line of text is difficult to read due to the similar color to the background)\n   <br/>\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.4",
+        "original":"<br/>\n  <style>\n   and two input slots will appear. Two items are displayed below the input slot, one of which is\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">circuit board</style>\n   , the other one will be\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">LV transmitter</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">LV robotic arm</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n osmium - Osmium\n</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">LV electric pump</style>\n   and\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">LV sensor</style>\n   A random one among \n. Players need to put 1 designated item into the input slot to unlock it. Note:\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.5",
+        "original":"•\n  <style>\n   You can only hold down Shift and left-click the items in the backpack to put them into the unlock slot, and the items placed cannot be taken out again. If you try to insert an item other than the specified one nothing will happen;\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   Putting the specified items out of order can also be unlocked;\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   Any mineral dictionary containing \"\n can be used\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">circuitLv</style>\n   ” items instead of the basic circuit board to unlock, such as \n in this module\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">microprocessor</style>\n   and\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">integrated logic circuit</style>\n   ;\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.6",
+        "original":"•\n  <style>\n   Never try to put two non-identical LV level circuits into the unlock slot! The game will not prevent the player from doing this, but this behavior will directly cause both input slots to be occupied, making it impossible for the player to put in another unlocking item, making the player unable to open the safe!\n   <br/>\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.7",
+        "original":"•\n  <style>\n   Items placed after unlocking will be consumed.\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.8",
+        "original":"<br/>\n  <style>\n   After placing the items correctly, the yellow and black warning line at the top of the GUI will begin to extend downwards. Wait for a moment before the safe is successfully unlocked. From the appearance, the door of the safe will open in the unlocked state.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   and\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">box</style>\n   Similarly, the safe also has 27 item slots. When unlocked, items are generated according to the following loot pool and randomly placed in each item slot:\n  </style>\n  <br/>\n  <br/>\n  <style>\n   The items in the secret safe cannot be interacted with the outside world, and players can no longer put items back into the safe. An unlocked safe can be broken using a pickaxe, but will not drop anything other than the items stored inside.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">At first glance I thought it was some kind of high technology</style>\n  </style>\n  <br/>"
+    }
+]

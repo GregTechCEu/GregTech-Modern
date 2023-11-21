@@ -1,0 +1,30 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Rock Breaker"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/285765/\">TBS</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/482827/\">存档是希望</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">\n Polyphenylene Sulfide - Polyphenylene Sulfide\n</style>\n   But I don't know why, but this didn't achieve the desired effect.\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   The rock crusher does not mine blocks directly from the world, but quickly generates stone-like blocks. It requires that any two blocks on the left, right or rear have static or flowing \n at the same time.\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">EV transmitter</style>\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Extractors are capable of extracting fluid materials from solids. It can heat and melt various solid materials (except some powders, see below for details) to produce the corresponding molten fluid, and there is no material waste in the process. If the material is magnetic, it will be demagnetized at the same time. \n</style>\n   can operate normally, and water and lava are not consumed during the processing.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   The rock crusher has an item input slot. Putting items into it as a catalyst can specify the blocks it generates. The item will not be consumed during the processing process. The specific correspondence between the two is as follows:\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.3",
+        "original":"•\n  <style>\n   put in\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">redstone powder</style>\n   Ruthenium Iridium Alloy - Ruridit\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">obsidian</style>\n   Stainless Steel - StainlessSteel\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   put in\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">andesite</style>\n   cesium - Caesium\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">granite</style>\n   .\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Diorite</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Stone</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">round stone</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">marble</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">red granite</style>\n   ,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">black granite</style>\n   Mold\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Europium - Europium\n</style>\n   Allowed molds include:\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   In other cases, the catalyst is the same as the product.\n   <br/>\n   .\n  </style>\n  <br/>"
+    }
+]

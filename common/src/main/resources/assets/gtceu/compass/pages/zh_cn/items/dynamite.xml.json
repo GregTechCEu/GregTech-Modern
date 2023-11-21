@@ -1,0 +1,26 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Dynamite"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   Dynamite consists of 500 L nitroglycerine,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Paper</style>\n   and\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Wire</style>\n   at\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Indium Tin Barium Titanium Copper Alloy - IndiumTinBariumTitaniumCuprate\n</style>\n   Made in \n.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Dynamite can be pressed\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">use</style>\n   The \n key (default is the right mouse button) is thrown as an explosive, the warning time lasts for 5 seconds, and the explosion power is greater than\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">TNT</style>\n   Small.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   However, in\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Detonation compressor</style>\n   In \n, dynamite can be used as an explosive instead of TNT, and only consumes 1 dynamite per treatment, whereas using TNT as an explosive requires 2.\n  </style>\n  <br/>"
+    }
+]

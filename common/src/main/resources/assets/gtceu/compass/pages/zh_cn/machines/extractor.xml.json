@@ -1,0 +1,42 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Extractor"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">\n List of materials that support powder (the format is Chinese name of material-material name): \n</style>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Extractors are capable of extracting fluid materials from solids. It can heat and melt various solid materials (except some powders, see below for details) to produce the corresponding molten fluid, and there is no material waste in the process. If the material is magnetic, it will be demagnetized at the same time.\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.3",
+        "original":"•\n  <style>\n   If a cable is extracted, additional rubber strips will be produced at the same time, and the material corresponding to the cable will be produced in the form of molten fluid. A single 1x, 2x, 4x, 8x and 16x cable can yield 1, 1, 2, 3 and 5 rubber strips respectively.\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.4",
+        "original":"•\n  <style>\n   If the material of this type of cable does not exist in the form of molten fluid (a typical example is graphene powder), it will be produced in the form of powder, while the rubber will be produced in the form of fluid.\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.5",
+        "original":"•\n  <style>\n   Not all powder materials can be melted directly in the extraction machine. All must be in\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Chloroform - Chloroform\n</style>\n   Ingots can be obtained by smelting in \n, but not in\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Isopropylbenzene\n</style>\n   obsidian\n  </style>\n  <br/>\n  <br/>"
+    },
+    {
+        "key":"text.6",
+        "original":"<br/>\n  <style>\n   \"Cooling liquid to form solid\"/\"Not an ice maker\"/\"Fluid purifier\"\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">slime ball</style>\n   or\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">sticky resin</style>\n   Extract raw rubber pulp, etc. from \n.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   got \n for the first time\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">steam extractor</style>\n   can achieve the progress \"Extraction\" (Description: Make a steam extraction machine); and when the raw rubber slurry is further processed to obtain rubber strips, the goal \"Rubber\" (Description: Use sulfur and extracted from the rubber tree Raw rubber slurry is produced in alloy furnaces to produce rubber).\n  </style>\n  <br/>"
+    }
+]

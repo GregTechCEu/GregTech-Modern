@@ -1,0 +1,82 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Steam Age"
+    },
+    {
+        "key":"h2.0",
+        "original":"Exaust"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://github.com/iouter\">iouter</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://github.com/Yefancy\">KilaBash</style><br/></style>"
+    },
+    {
+        "key":"compass.0.frame.0.description.0",
+        "original":"Steam Machine"
+    },
+    {
+        "key":"compass.0.frame.1.description.0",
+        "original":"Exhaust"
+    },
+    {
+        "key":"compass.0.frame.0.scene.1.tooltip.0",
+        "original":"This is <style color=\"#ff9610\"><lang key=\"block.gtceu.lp_steam_alloy_smelter\"/></style>."
+    },
+    {
+        "key":"compass.0.frame.0.scene.2.tooltip.0",
+        "original":"Of course, it needs <style color=\"#ff9610\">Steam</style>."
+    },
+    {
+        "key":"compass.0.frame.0.scene.3.tooltip.0",
+        "original":"For example, a <style color=\"0xffafff00\" underlined=\"true\" link=\"gtceu:steam/steam_solid_fuel_boiler\" hover-info=\"click link\"><lang key=\"block.gtceu.lp_steam_solid_boiler\"/></style> can generate Steam."
+    },
+    {
+        "key":"compass.0.frame.0.scene.4.tooltip.0",
+        "original":"Boiler needs <style color=\"#ff9610\">Water</style> and <style color=\"#ff9610\">Fuel</style>."
+    },
+    {
+        "key":"compass.0.frame.0.scene.5.tooltip.0",
+        "original":"This Machine is ready to work!!!"
+    },
+    {
+        "key":"compass.0.frame.1.scene.1.tooltip.0",
+        "original":"This is the <style color=\"#ff9610\">Exhaust Vent</style> of Steam Machine."
+    },
+    {
+        "key":"compass.0.frame.1.scene.2.tooltip.0",
+        "original":"After each process, the Machine needs ..."
+    },
+    {
+        "key":"compass.0.frame.1.scene.4.tooltip.0",
+        "original":"<style color=\"#ff9610\">Exhaust!!!</style>"
+    },
+    {
+        "key":"compass.0.frame.1.scene.5.tooltip.0",
+        "original":"If the Exhaust Vent is <style color=\"#DC143C\">Blocked</style> ..."
+    },
+    {
+        "key":"compass.0.frame.1.scene.7.tooltip.0",
+        "original":"The Machine will stop working after a process."
+    },
+    {
+        "key":"compass.0.frame.1.scene.8.tooltip.0",
+        "original":"Use a <style color=\"0xffafff00\" underlined=\"true\" link=\"gtceu:tools/wrench\" hover-info=\"click link\">Wrench</style> to right-click on any side to adjust the <style color=\"#ff9610\">Exhaust Vent facing</style>."
+    },
+    {
+        "key":"compass.0.frame.1.scene.9.tooltip.0",
+        "original":"Now the machine can continue to work."
+    },
+    {
+        "key":"compass.0.frame.0.information.0",
+        "original":"Steam Machine"
+    },
+    {
+        "key":"compass.0.frame.1.information.0",
+        "original":"Exhaust"
+    }
+]

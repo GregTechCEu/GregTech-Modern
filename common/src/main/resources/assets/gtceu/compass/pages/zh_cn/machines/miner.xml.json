@@ -1,0 +1,26 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Miner"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   There are only four levels (including\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">steam mining machine</style>\n   (Cut the stick to get a short stick). The time consumption is 2 times the average mass of the material;\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Only the ore below the mining site will be excavated. Use a screwdriver to adjust the mining range.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Ore will be instantly filled into cobblestone blocks after being mined.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   A model with pipes extending downwards when mined, but without actual blocks or hitboxes.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Newly placed ore will not be mined after mining is completed.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   :\n  </style>\n  <br/>\n  <br/>\n  <style>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Rose Gold - RoseGold\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Consumption rate: 16mB/t\n  </style>\n  <br/>\n  <br/>\n  <style>\n   :\n  </style>\n  <br/>\n  <br/>\n  <style>\n   carpet\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Cut 1 log of any variety into 6 planks of the corresponding variety, and produce 2 wood pulp at the same time. If 3 wooden boards of this type can be combined into steps in a workbench, then 2 wooden boards of this type can also be further processed into 2 of this type of steps.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Consumption rate: 8EU/t\n  </style>\n  <br/>\n  <br/>\n  <style>\n   :\n  </style>\n  <br/>\n  <br/>\n  <style>\n   , wood pulp and\n  </style>\n  <br/>\n  <br/>\n  <style>\n   memorandum\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Consumption rate: 32EU/t\n  </style>\n  <br/>\n  <br/>\n  <style>\n   soil\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Excavation range: 49x49\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Mining speed: 40t/block\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Consumption rate: 128EU/t\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Multi-block machine upgraded version:\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Mining site</style>\n  </style>\n  <br/>"
+    }
+]

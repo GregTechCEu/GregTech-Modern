@@ -1,0 +1,38 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Autoclave"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">\"Crystallize your powder\"/\"Pressure cooker\"/\"Guaranteed unit\"</style>\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   An autoclave can use electricity to generate pressure and combine materials and water to crystallize powder. It can:\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.3",
+        "original":"•\n  <style>\n   utilize\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">water</style>\n   To turn gem powder into gems, a single process requires 250 L of water, takes 60 seconds, and the gem yield probability is 70%. Distilled water can be used instead of water to participate in the synthesis, which can reduce fluid consumption, shorten time-consuming and increase the probability of product output;\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.4",
+        "original":"•\n  <style>\n   Water or distilled water can also be used to process andesite, granite and diorite into the corresponding grinding form.\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   In the same way, 9 energy crystal powders can be pressed into 1\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">energy crystal</style>\n   , or crush 15 Lambton powder into 1\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Lambton Crystal</style>\n   . The water here can be replaced by distilled water, molten blue steel or red steel. Using molten red steel as raw material saves resources and energy the most;\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.5",
+        "original":"•\n  <style>\n   Use fluids to enhance solid materials. For example, polyethylene (PE), polytetrafluoroethylene (PTFE), epoxy resin or polybenzimidazole (PBI) are used to make toner\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Carbon fiber raw materials</style>\n   , and the use of 288 L molten neutrons to convert\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Tritanium - Tr\n</style>\n   instead.\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">gravity star</style>\n   etc.;\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   金 - Gold\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Some crystal chip raw materials</style>\n   Combined with other fluid materials to manufacture or add value\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Crystal chip raw materials</style>\n   ;\n  </style>\n  <br/>"
+    }
+]

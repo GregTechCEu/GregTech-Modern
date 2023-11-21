@@ -1,0 +1,30 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Compressor"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">\"Compress-O-Matic C77\"/\"Singularity Condenser\"/\"Matter Binder\"</style>\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   The programming circuit can be put into the input slot of the machine or the input bus of the multi-block machine to switch the synthesis formula, effectively solving the conflict problem of the same raw materials producing different products, and the programming circuit is always inconsistent during synthesis. will be consumed. Many machines require different configurations of programming circuits for assistance when processing some recipes, including but not limited to\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.3",
+        "original":"•\n  <style>\n   Convert 9 \n of the same material\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">grain</style>\n   is compressed into 1\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">ingot</style>\n   , or 9 (some materials are 4, such as\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Glowstone powder</style>\n   ) the same material compressed into 1 block;\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   Press the powder into\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">plate</style>\n   or block, such as pressing stone powder into stone slabs, crushing crushed ice into ice, etc.;\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   Can hold some fluid (or other liquid form).\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Carbon fiber raw materials</style>\n   made\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">carbon fiber mesh</style>\n   , and further press the carbon fiber mesh into\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">carbon fiber sheet</style>\n   ;\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   Compress 8 crops to get 1\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">plant ball</style>\n   .\n  </style>\n  <br/>"
+    }
+]

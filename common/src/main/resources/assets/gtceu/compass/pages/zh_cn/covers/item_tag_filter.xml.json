@@ -1,0 +1,26 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Ore Dictionary Filter"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/58396/\">Sofuras</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   is used as follows:\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Attach it to the container or machine and right-click it with a screwdriver to open it. You will see a box at the bottom for input. The exclamation mark above prompts usage, among which:\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Assembly machine\n   <style color=\"0xaaaaaa\" italic=\"true\">Translate into adult language</style>\n   means \"some\", which is the core of the mineral dictionary. For example, if you want all types of plates (regardless of size) to pass, then enter \"plate*\" in the box.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   2. \"\" means \"and\". For example, if you want to let only a small amount of powder pass, then enter \"dust* *Tiny*\" in the box,\n   <style color=\"0xaaaaaa\" italic=\"true\">\n Fluoroantimonic Acid - Fluoroantimonic Acid\n</style>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   3. \"|\" means \"or\", just like if you want both powder and plate to pass, enter \"dust* | plate*\" in the box.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Rose Gold - RoseGold - CuAu4\n   <style color=\"0xaaaaaa\" italic=\"true\">For example, if you want plates other than double plates to pass, enter \"plate* ^ *Double*\".</style>\n   <style color=\"0xaaaaaa\" italic=\"true\">But I don't know why, but this didn't achieve the desired effect.</style>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   5. \"!\" means \"not\", which is very simple. For example, if you want everything to pass except ingots, then enter \"!ingot*\".\n  </style>\n  <br/>\n  <br/>\n  <style>\n   6. \"()\" means \"priority operation\". Just like in mathematics, this will cause the program to prioritize the operation (or comparison) of the contents in the brackets, but GTCEu does not have square brackets or curly brackets.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Call it a day. So to test you, how should you write the expression \"let the double board and all fans except a small handful of fans pass\"?\n  </style>\n  <br/>\n  <br/>\n  <style>\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Answer:\n   <style color=\"0xaaaaaa\" italic=\"true\">(plate* *Double*) | (dust* !*Tiny*)</style>\n  </style>\n  <br/>"
+    }
+]

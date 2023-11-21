@@ -1,0 +1,26 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Combustion Generator"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/179043/\">花海</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/508290/\">morningglory</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">\n Mercury Cadmium Telluride - Mercury Cadmium Telluride\n</style>\n   <br/>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Gas turbines generate electricity by burning liquid fuel. They are divided into LV ~ HV level machines. Different levels of machines have different fluid reserves,\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Basic combustion generator</style>\n   stores up to 4,000 L of fluid, while\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">Advanced combustion generator</style>\n   Processor components\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">turbine combustion generator</style>\n   Capable of storing 8,000 L and 16,000 L respectively. Multi-block machines can be used for EV and above single-block gas turbines\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">large diesel engine</style>\n   or\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n Cupric Oxide - CupricOxide\n</style>\n   instead.\n  </style>\n  <br/>\n  <br/>\n  <style>\n   The fuel that can be used for power generation, the power generation amount and time consumption are shown in the table below.\n  </style>\n  <br/>"
+    }
+]

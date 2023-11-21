@@ -1,0 +1,30 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Thermal Centrifuge"
+    },
+    {
+        "key":"h2.0",
+        "original":"WARNING!!!"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/666666/\">六氯环己烷</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/119280/\">Oganesson897</style>, <style color=\"0xa4e7ff\" hover-info=\"url\" underlined=\"true\" url-link=\"https://center.mcmod.cn/2/\">重生是希望</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"<style color=\"0xff0000\">The warning means this is not a reliable page.</style>\n  <br/>\n  <style bold=\"true\" color=\"0xffaa00\">Please do not report any mistakes on the page, either discord or github.</style>\n  <br/>\n  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page."
+    },
+    {
+        "key":"text.2",
+        "original":"<br/>\n  <style>\n   <style color=\"0xaaaaaa\" italic=\"true\">\"More accurate separation of ores\"/\"Fire Sweatshop T-6350\"/\"Fire Sweatshop T-6351\"/\"Fire Sweatshop T-6352\"/\"Flame Cyclone\"</style>\n  </style>\n  <br/>\n  <br/>\n  <style>\n   Thermal centrifuge is mainly used to centrifuge ore by-products. The formulas that the thermal centrifuge can handle are as follows:\n  </style>\n  <br/>"
+    },
+    {
+        "key":"text.3",
+        "original":"•\n  <style>\n   [48 EU/t, 25 s] will\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n</style>\n   Processed into stone powder;\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   [30 EU/t, 20 s] High temperature separation\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">\n and \n</style>\n   will produce centrifugal ore of the corresponding material and an additional 3 \n of by-product materials of the corresponding material.\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">pinch of powder</style>\n   -like form, and 1 stone dust.\n  </style>\n  <br/>\n  <br/>\n  •\n  <style>\n   [30 EU/t, 20 s] High temperature separation of pure crushed ore will only produce centrifuged ore of the corresponding material, and \n of 3 by-product materials of the corresponding material\n   <style color=\"0xafff00\" hover-info=\"click link\" link=\"gtceu:links\" underlined=\"true\">pinch of powder</style>\n  </style>\n  <br/>"
+    }
+]

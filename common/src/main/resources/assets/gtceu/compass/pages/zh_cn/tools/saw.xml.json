@@ -1,0 +1,22 @@
+[
+    {
+        "key":"h1.0",
+        "original":"Saw"
+    },
+    {
+        "key":"h3.0",
+        "original":"Source"
+    },
+    {
+        "key":"text.0",
+        "original":"<style color=\"0xaaaaaa\" italic=\"true\">Author: <style color=\"0xa4e7ff\" hover-info=\"TacoMonkey's Github\" underlined=\"true\" url-link=\"https://github.com/tacomonkey11\">TacoMonkey</style><br/></style>"
+    },
+    {
+        "key":"text.1",
+        "original":"The saw is one of many crafting tools used in GregTech.\n\n        The saw can be used to get better yield from wood related recipes. It is also used for a wide variety of other recipes. Use a recipe viewer to see all crafting recipes using the saw."
+    },
+    {
+        "key":"text.2",
+        "original":"This is just one example of a recipe, saws can be crafted using most GregTech materials."
+    }
+]
