@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.pattern.util;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Supplier;
 
 /**
@@ -60,4 +61,7 @@ public class PatternMatchContext {
         return data.containsKey(key);
     }
 
+    public Set<Map.Entry<String, Object>> entrySet() {
+        return data.entrySet();
+    }
 }

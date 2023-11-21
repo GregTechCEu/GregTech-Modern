@@ -18,12 +18,15 @@ import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -32,10 +35,12 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
+    @Persisted
     private ExportOnlyAEFluidList aeFluidTanks;
 
     public MEInputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
@@ -49,20 +54,17 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     }
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        ModularUI modularUI = new ModularUI(176, 18 + 18 * 4 + 94, this, entityPlayer)
-                .background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(10, 5, getDefinition().getName()));
+    public Widget createUIWidget() {
+        WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
-        modularUI.widget(new LabelWidget(10, 15, () -> this.isOnline ?
+        group.addWidget(new LabelWidget(3, 0, () -> this.isOnline ?
                 "gtceu.gui.me_network.online" :
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        modularUI.widget(new AEFluidConfigWidget(16, 25, this.aeFluidTanks.tanks));
+        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks.tanks));
 
-        modularUI.widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT, 7, 18 + 18 * 4 + 12, true));
-        return modularUI;
+        return group;
     }
 
     @Override
@@ -108,13 +110,14 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEFluidList.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
 
         @Persisted
-        private ExportOnlyAEFluid[] tanks;
+        private final ExportOnlyAEFluid[] tanks;
 
         public ExportOnlyAEFluidList(MetaMachine machine, int slots, long capacity, IO io) {
             super(machine, slots, capacity, io);
             this.tanks = new ExportOnlyAEFluid[slots];
             for (int i = 0; i < slots; i ++) {
-                this.tanks[i] = new ExportOnlyAEFluid(machine, null, null);
+                this.tanks[i] = new ExportOnlyAEFluid(null, null);
+                this.tanks[i].setOnContentsChanged(this::onContentsChanged);
             }
         }
 
@@ -125,13 +128,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new FluidStorage(tank.getCapacity()) {
-                @NotNull
-                @Override
-                public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
-                    return tank.drain(maxDrain, simulate, notifyChanges);
-                }
-            }).toArray(FluidStorage[]::new));
+            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new));
         }
 
         public FluidStack drainInternal(long maxDrain, boolean simulate) {
@@ -173,15 +170,56 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 }
             }
         }
+
+        @Override
+        public ManagedFieldHolder getFieldHolder() {
+            return MANAGED_FIELD_HOLDER;
+        }
+
+        private static class WrappingFluidStorage extends FluidStorage {
+            private final ExportOnlyAEFluid fluid;
+
+            public WrappingFluidStorage(long capacity, ExportOnlyAEFluid fluid) {
+                super(capacity);
+                this.fluid = fluid;
+            }
+
+            public WrappingFluidStorage(long capacity, Predicate<FluidStack> validator, ExportOnlyAEFluid fluid) {
+                super(capacity, validator);
+                this.fluid = fluid;
+            }
+
+            @Override
+            @Nonnull
+            public FluidStack getFluid() {
+                return this.fluid.getFluid();
+            }
+
+            @NotNull
+            @Override
+            public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
+                return fluid.drain(maxDrain, simulate, notifyChanges);
+            }
+
+            @Override
+            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChange) {
+                return fluid.fill(tank, resource, simulate, notifyChange);
+            }
+
+            @Override
+            public FluidStorage copy() {
+                var storage = new WrappingFluidStorage(capacity, validator, this.fluid);
+                storage.setFluid(super.fluid.copy());
+                return storage;
+            }
+        }
     }
 
     public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidStorage, IFluidTransfer {
-        private MetaMachine holder;
 
-        public ExportOnlyAEFluid(MetaMachine holder, GenericStack config, GenericStack stock) {
+        public ExportOnlyAEFluid(GenericStack config, GenericStack stock) {
             super(config, stock);
-            this.holder = holder;
-            this.setOnContentsChanged(holder::onChanged);
+            //this.setOnContentsChanged(holder::onChanged);
         }
 
         public ExportOnlyAEFluid() {
@@ -201,7 +239,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @Override
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
-                return FluidStack.create(fluidKey.getFluid(), this.stock.amount(), fluidKey.getTag());
+                return FluidStack.create(fluidKey.getFluid(), this.stock == null ? 0 : this.stock.amount(), fluidKey.getTag());
             }
             return FluidStack.empty();
         }
@@ -302,7 +340,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @Override
         public ExportOnlyAEFluid copy() {
             return new ExportOnlyAEFluid(
-                    this.holder,
                     this.config == null ? null : ExportOnlyAESlot.copy(this.config),
                     this.stock == null ? null : ExportOnlyAESlot.copy(this.stock)
             );

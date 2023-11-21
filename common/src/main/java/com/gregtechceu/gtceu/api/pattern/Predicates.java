@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
 import com.gregtechceu.gtceu.api.pattern.predicates.PredicateBlocks;
@@ -16,8 +17,10 @@ import com.gregtechceu.gtceu.api.pattern.predicates.PredicateStates;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.tterrag.registrate.util.entry.RegistryEntry;
@@ -31,6 +34,8 @@ import org.apache.commons.lang3.ArrayUtils;
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine.PMC_BATTERY_HEADER;
 
 public class Predicates {
 
@@ -200,6 +205,32 @@ public class Predicates {
                 .map(blockSupplier -> BlockInfo.fromBlockState(blockSupplier.get().defaultBlockState()))
                 .toArray(BlockInfo[]::new))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.filters"));
+    }
+
+    public static TraceabilityPredicate powerSubstationBatteries() {
+        return new TraceabilityPredicate(blockWorldState -> {
+            BlockState state = blockWorldState.getBlockState();
+            for (Map.Entry<IBatteryData, Supplier<BatteryBlock>> entry : GTBlocks.PSS_BATTERIES.entrySet()) {
+                if (state.is(entry.getValue().get())) {
+                    IBatteryData battery = entry.getKey();
+                    // Allow unfilled batteries in the structure, but do not add them to match context.
+                    // This lets you use empty batteries as "filler slots" for convenience if desired.
+                    if (battery.getTier() != -1 && battery.getCapacity() > 0) {
+                        String key = PMC_BATTERY_HEADER + battery.getBatteryName();
+                        PowerSubstationMachine.BatteryMatchWrapper wrapper = blockWorldState.getMatchContext().get(key);
+                        if (wrapper == null) wrapper = new PowerSubstationMachine.BatteryMatchWrapper(battery);
+                        blockWorldState.getMatchContext().set(key, wrapper.increment());
+                    }
+                    return true;
+                }
+            }
+            return false;
+        }, () -> GTBlocks.PSS_BATTERIES.entrySet().stream()
+                .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
+                .toArray(BlockInfo[]::new))
+                .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
+
     }
 
     /**
