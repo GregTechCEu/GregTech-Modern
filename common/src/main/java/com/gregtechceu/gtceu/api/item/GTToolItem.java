@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.Platform;
+import com.mojang.datafixers.util.Pair;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
@@ -37,6 +38,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
  * @author KilaBash
@@ -117,6 +120,8 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
             return useShovelOn(context);
         } else if (this.toolType == GTToolType.AXE) {
             return useAxeOn(context);
+        } else if (this.toolType == GTToolType.HOE) {
+            return useHoeOn(context);
         }
         return InteractionResult.PASS;
     }
@@ -202,6 +207,33 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
             return InteractionResult.sidedSuccess(level.isClientSide);
         } else {
             return InteractionResult.PASS;
+        }
+    }
+
+
+    public InteractionResult useHoeOn(UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos blockPos = context.getClickedPos();
+        Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> pair = HoeItem.TILLABLES.get(level.getBlockState(blockPos).getBlock());
+        if (pair == null) {
+            return InteractionResult.PASS;
+        } else {
+            Predicate<UseOnContext> predicate = pair.getFirst();
+            Consumer<UseOnContext> consumer = pair.getSecond();
+            if (predicate.test(context)) {
+                Player player = context.getPlayer();
+                level.playSound(player, blockPos, SoundEvents.HOE_TILL, SoundSource.BLOCKS, 1.0F, 1.0F);
+                if (!level.isClientSide) {
+                    consumer.accept(context);
+                    if (player != null) {
+                        context.getItemInHand().hurtAndBreak(1, player, p -> p.broadcastBreakEvent(context.getHand()));
+                    }
+                }
+
+                return InteractionResult.sidedSuccess(level.isClientSide);
+            } else {
+                return InteractionResult.PASS;
+            }
         }
     }
 
