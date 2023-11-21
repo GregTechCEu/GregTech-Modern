@@ -64,9 +64,9 @@ public interface ICoverableRenderer extends IRenderer {
                             normal.getY() == 0 ? 0.999 : normal.getY() > 0 ? 0.999 : min,
                             normal.getZ() == 0 ? 0.999 : normal.getZ() > 0 ? 0.999 : min);
                     if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(), ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
+                        quads.add(FaceQuad.builder(face.getOpposite(), ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side"))).cube(cube).cubeUV().tintIndex(-1).bake());
                     } else if (side != face.getOpposite()){ // render sides
-                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
+                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side"))).cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
                 cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);
