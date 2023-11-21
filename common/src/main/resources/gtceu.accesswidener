@@ -9,3 +9,5 @@ accessible method net/minecraft/data/loot/BlockLoot applyExplosionDecay (Lnet/mi
 accessible method net/minecraft/data/loot/BlockLoot createSilkTouchDispatchTable (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Builder;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
 
 accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
+
+accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
