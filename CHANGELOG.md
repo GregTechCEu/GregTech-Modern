@@ -11,3 +11,4 @@ Version: 1.0.16
 * fix GT tools not doing the tooltype-specific things like making paths
 * fix small distillery recipes
 * fix High Power Casing recipe
+* always enable VBO cache for multis previews + add config option to disable it
