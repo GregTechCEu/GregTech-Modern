@@ -1,14 +1,20 @@
 <page>
- <h1>Stainless Turbine Casing</h1>
- <h3>Source</h3>
- <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/></style></text>
- <h2 font-color="0xff0000">WARNING!!!</h2>
+ <h1>
+  不锈钢涡轮机械方块
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/></style></text>
+ <h2 font-color="0xff0000">
+  警告！！！
+ </h2>
  <text isCenter="true">
-  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
+  <style color="0xff0000" pwt="true">这个警告表示这不是一个可靠的页面。</style>
   <br/>
-  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
+  <style bold="true" color="0xffaa00" pwt="true">请不要在discord或github上报告任何和本页面相关的错误。</style>
   <br/>
-  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
+  本页面翻译自中文维基，尚未经过审核和润色。可能存在错误和不准确之处。我们希望您能帮助我们改进本页面。
  </text>
  <text>
   <br/>

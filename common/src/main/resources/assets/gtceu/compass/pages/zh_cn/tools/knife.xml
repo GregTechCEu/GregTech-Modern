@@ -1,27 +1,19 @@
 <page>
- <h1>Knife</h1>
- <h3>Source</h3>
- <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style></text>
- <h2 font-color="0xff0000">WARNING!!!</h2>
- <text isCenter="true">
-  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
-  <br/>
-  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
-  <br/>
-  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
- </text>
+ <h1>
+  刀
+ </h1>
+ <h3>
+  来源
+ </h3>
+ <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style><br/></style>，<style color="0xa4e7ff" hover-info="TacoMonkey's Github" underlined="true" url-link="https://github.com/tacomonkey11">TacoMonkey</style><br/></style></text>
  <text>
   <br/>
-  <style lang="zh-cn">
-   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">用于合成的工具，参与大部分的合成，屠刀和                       格雷科技食物优选                      的切割刀都可以通用</style>
-   <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">。</style>
-   <br/>
-  </style>
+   刀是格雷科技中使用的众多的合成工具之一，用于制作<style color="0xafff00" hover-info="click link" link="gtceu:materials/ring" underlined="true">环</style>和<style color="0xafff00" hover-info="click link" link="gtceu:misc/brick_wooden_form" underlined="true">木制砖模具</style>。
   <br/>
-  <br/>
-  <style lang="zh-cn">
-   这里只上传了一个模板，作为添加合成时使用，具体每个材料的属性请在游戏内查看。
-  </style>
   <br/>
  </text>
+
+ <recipe id="gtceu:shaped/knife_iron"/>
+ <br/>
+ <text isCenter="true">这只是小刀配方的一个例子，大多数格雷科技材料都可以制作刀。</text>
 </page>
