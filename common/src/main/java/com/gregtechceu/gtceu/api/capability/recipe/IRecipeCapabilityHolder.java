@@ -17,6 +17,7 @@ public interface IRecipeCapabilityHolder {
 
     /**
      * get Tier for chance boost.
+     * if -1, all chanced outputs are voided.
      */
     default int getChanceTier() {
         return 0;

@@ -86,6 +86,19 @@ public class GTRecipeBuilder {
         this.recipeType = recipeType;
     }
 
+    public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
+        this.id = toCopy.id;
+        this.recipeType = recipeType;
+        toCopy.inputs.forEach((k, v) -> this.input.put(k, new ArrayList<>(v)));
+        toCopy.outputs.forEach((k, v) -> this.output.put(k, new ArrayList<>(v)));
+        toCopy.tickInputs.forEach((k, v) -> this.tickInput.put(k, new ArrayList<>(v)));
+        toCopy.tickOutputs.forEach((k, v) -> this.tickOutput.put(k, new ArrayList<>(v)));
+        this.conditions.addAll(toCopy.conditions);
+        this.data = toCopy.data.copy();
+        this.duration = toCopy.duration;
+        this.isFuel = toCopy.isFuel;
+    }
+
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {
         return new GTRecipeBuilder(id, recipeType);
     }
