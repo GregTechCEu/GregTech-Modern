@@ -483,7 +483,7 @@ public class FirstDegreeMaterials {
         Ruridit = new Material.Builder("ruridit")
                 .ingot(3)
                 .color(0xFFFFFF).secondaryColor(0xc5c5c5).iconSet(BRIGHT)
-                .flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_LONG_ROD)
+                .flags(GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_LONG_ROD, GENERATE_FRAME, GENERATE_BOLT_SCREW)
                 .components(Ruthenium, 2, Iridium, 1)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.EV], 1600)
                 .buildAndRegister();
@@ -642,7 +642,7 @@ public class FirstDegreeMaterials {
                 .ingot(4)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1980))
                 .color(0x9f9fb1).secondaryColor(0x385086).iconSet(SHINY)
-                .appendFlags(EXT2_METAL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_GEAR, GENERATE_FRAME)
                 .components(Cobalt, 5, Chromium, 2, Nickel, 1, Molybdenum, 1)
                 .toolStats(ToolProperty.Builder.of(10.0F, 7.0F, 2048, 4)
                         .attackSpeed(0.1F).enchantability(21).build())
