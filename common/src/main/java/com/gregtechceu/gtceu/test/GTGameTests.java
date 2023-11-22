@@ -1,27 +1,17 @@
 package com.gregtechceu.gtceu.test;
 
-import appeng.server.testworld.PlotTestHelper;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.test.api.machine.trait.ParallelLogicTest;
 import com.gregtechceu.gtceu.test.api.machine.trait.RecipeLogicTest;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.mojang.datafixers.util.Pair;
-import com.simibubi.create.infrastructure.gametest.CreateTestFunction;
-import com.simibubi.create.infrastructure.gametest.tests.*;
-import io.github.fabricators_of_create.porting_lib.gametest.infrastructure.ExtendedTestFunction;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
-import net.minecraft.gametest.framework.GameTestRegistry;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-import java.util.Objects;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class GTGameTests {

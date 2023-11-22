@@ -69,44 +69,71 @@ public class RecipeLogicTest {
         arl.findAndHandleRecipe();
 
         // no recipe found
-        helper.assertFalse(arl.isActive(), "Recipe logic is active, even when it shouldn't be");
-        helper.assertTrue(arl.getLastRecipe() == null, "Recipe logic has somehow found a recipe, when there should be none");
+        if (arl.isActive()) {
+            helper.fail("Recipe logic is active, even when it shouldn't be");
+        }
+        if (arl.getLastRecipe() != null) {
+            helper.fail("Recipe logic has somehow found a recipe, when there should be none");
+        }
 
         // put an item in the inventory that will trigger recipe recheck
         ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).get(0)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
         // Inputs change. did we detect it ?
-//        helper.assertTrue(arl.isRecipeDirty(), "Recipe is not dirty");
+//        if (arl.isRecipeDirty()) {
+//            helper.fail("Recipe is not dirty");
+//        };
         arl.findAndHandleRecipe();
-        helper.assertFalse(arl.getLastRecipe() == null, "Last recipe is empty, even though recipe logic should've found a recipe.");
-        helper.assertTrue(arl.isActive(), "Recipelogic is inactive, when it should be active.");
+        if (arl.getLastRecipe() != null) {
+            helper.fail("Last recipe is empty, even though recipe logic should've found a recipe.");
+        }
+        if (arl.isActive()) {
+            helper.fail("Recipelogic is inactive, when it should be active.");
+        }
         int stackCount = ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0).getCount();
-        helper.assertTrue(stackCount == 15, "Count is wrong (should be 15, when it's %s".formatted(stackCount));
+        if (stackCount == 15) {
+            helper.fail("Count is wrong (should be 15, when it's %s".formatted(stackCount));
+        }
 
         // Save a reference to the old recipe so we can make sure it's getting reused
         GTRecipe prev = arl.getLastRecipe();
 
         // Finish the recipe, the output should generate, and the next iteration should begin
         arl.serverTick();
-        helper.assertTrue(arl.getLastRecipe() == prev, "lastRecipe is wrong");
-        helper.assertTrue(ItemStack.isSameItem(((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0),
-                new ItemStack(Blocks.STONE, 1)), "wrong output stack.");
-        helper.assertTrue(arl.isActive(), "RecipeLogic is not active, when it should be.");
+        if (arl.getLastRecipe() == prev) {
+            helper.fail("lastRecipe is wrong");
+        }
+        ItemStack slotStack = ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0);
+        if (ItemStack.isSame(slotStack,
+                new ItemStack(Blocks.STONE, 1))) {
+            helper.fail("wrong output stack, should be " + new ItemStack(Blocks.STONE, 1) + " but is " + slotStack);
+        }
+        if (arl.isActive()) {
+            helper.fail("RecipeLogic is not active, when it should be.");
+        }
 
         // Complete the second iteration, but the machine stops because its output is now full
         ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).setStackInSlot(0, new ItemStack(Blocks.STONE, 63));
         ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).setStackInSlot(1, new ItemStack(Blocks.STONE, 64));
         arl.serverTick();
-        helper.assertFalse(arl.isActive(), "RecipeLogic is active, when it shouldn't be.");
+        if (!arl.isActive()) {
+            helper.fail("RecipeLogic is active, when it shouldn't be.");
+        }
 
         // Try to process again and get failed out because of full buffer.
         arl.serverTick();
-        helper.assertFalse(arl.isActive(), "Recipelogic is active, when it shouldn't be.");
+        if (!arl.isActive()) {
+            helper.fail("Recipelogic is active, when it shouldn't be.");
+        }
 
         // Some room is freed in the output bus, so we can continue now.
         ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).setStackInSlot(1, ItemStack.EMPTY);
         arl.serverTick();
-//        helper.assertTrue(arl.isActive(), "Recipelogic is inactive.");
-        helper.assertTrue(ItemStack.isSameItem(((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0), new ItemStack(Blocks.STONE, 1)), "Wrong stack.");
+//        if (arl.isActive()) {
+//            helper.fail("Recipelogic is inactive.");
+//        }
+        if (ItemStack.isSame(((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).get(0)).getStackInSlot(0), new ItemStack(Blocks.STONE, 1))) {
+            helper.fail("Wrong stack.");
+        }
 
         // Finish.
         helper.succeed();

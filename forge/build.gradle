@@ -63,7 +63,7 @@ loom {
 
             mods {
                 create(mod_id) {
-                    sourceSet("main")
+                    sourceSet(this.sourceSets.getByName("main"))
                 }
             }
         }
