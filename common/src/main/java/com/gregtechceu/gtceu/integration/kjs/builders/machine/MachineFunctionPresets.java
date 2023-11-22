@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -20,6 +21,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -169,6 +171,23 @@ public class MachineFunctionPresets {
 
             @Override
             public MachineBuilder<D> tier(int tier) {
+                return this;
+            }
+
+            public MachineBuilder<D> recipeOutputLimits(Object2IntMap<RecipeCapability<?>> map) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.recipeOutputLimits(map);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> addOutputLimit(RecipeCapability<?> capability, int limit) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.addOutputLimit(capability, limit);
+                }
                 return this;
             }
 
@@ -423,7 +442,7 @@ public class MachineFunctionPresets {
             public MachineBuilder<D> isSource(boolean isSource) {
                 if (KineticMachineBuilder.class.isAssignableFrom(builderClass)) {
                     for (var builder : builders) {
-                    if (builder == null) continue;
+                        if (builder == null) continue;
                         ((KineticMachineBuilder) builder).isSource(isSource);
                     }
                 }
