@@ -37,7 +37,7 @@ import java.util.function.BiFunction;
 public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine {
 
     public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
-        super(holder, tier, tankScalingFunction, false, args);
+        super(holder, tier, tankScalingFunction, args);
     }
 
     //////////////////////////////////////
@@ -90,6 +90,11 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         return false;
     }
 
+    @Override
+    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
+        return capability != EURecipeCapability.CAP;
+    }
+
     //////////////////////////////////////
     //***********     GUI    ***********//
     //////////////////////////////////////
@@ -120,14 +125,4 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
             createEnergyBar().setupUI(template, generatorMachine);
         }
     }));
-
-    @Override
-    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return capability != EURecipeCapability.CAP && !handlesRecipeOutputs;
-    }
-
-    @Override
-    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
-        return Map.of(ItemRecipeCapability.CAP, 0, FluidRecipeCapability.CAP, 0);
-    }
 }

@@ -219,20 +219,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public boolean handleTickRecipeIO(IO io, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        GTRecipe trimmed = this;
-        if (holder instanceof IVoidable voidable) {
-            trimmed = this.trimRecipeOutputs(this.recipeType, voidable.getOutputLimits());
-        }
-        return handleRecipe(io, holder, io == IO.IN ? trimmed.tickInputs : trimmed.tickOutputs);
+        return handleRecipe(io, holder, io == IO.IN ? tickInputs : tickOutputs);
     }
 
     public boolean handleRecipeIO(IO io, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || io == IO.BOTH) return false;
-        GTRecipe trimmed = this;
-        if (holder instanceof IVoidable voidable) {
-            trimmed = this.trimRecipeOutputs(this.recipeType, voidable.getOutputLimits());
-        }
-        return handleRecipe(io, holder, io == IO.IN ? trimmed.inputs : trimmed.outputs);
+        return handleRecipe(io, holder, io == IO.IN ? inputs : outputs);
     }
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
@@ -405,7 +397,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     /**
      * Trims the recipe outputs, chanced outputs, and fluid outputs based on the performing Machine's trim limit.
      */
-    public GTRecipe trimRecipeOutputs(GTRecipeType recipeType, Map<RecipeCapability<?>, Integer> trimLimits) {
+    public GTRecipe trimRecipeOutputs(Map<RecipeCapability<?>, Integer> trimLimits) {
         // Fast return early if no trimming desired
         if (trimLimits.isEmpty() || trimLimits.values().stream().allMatch(integer -> integer == -1)) {
             return this;
@@ -413,7 +405,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
         GTRecipe current = this.copy();
 
-        GTRecipeBuilder builder = new GTRecipeBuilder(this, recipeType);
+        GTRecipeBuilder builder = new GTRecipeBuilder(current, this.recipeType);
 
         builder.output.clear();
         builder.tickOutput.clear();
@@ -421,12 +413,8 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         Map<RecipeCapability<?>, List<Content>> recipeOutputs = doTrim(current.outputs, trimLimits);
         Map<RecipeCapability<?>, List<Content>> recipeTickOutputs = doTrim(current.tickOutputs, trimLimits);
 
-        recipeOutputs.forEach((cap, list) -> {
-            builder.output.computeIfAbsent(cap, $ -> new ArrayList<>()).addAll(list);
-        });
-        recipeTickOutputs.forEach((cap, list) -> {
-            builder.tickOutput.computeIfAbsent(cap, $ -> new ArrayList<>()).addAll(list);
-        });
+        builder.output.putAll(recipeOutputs);
+        builder.tickOutput.putAll(recipeTickOutputs);
 
         return builder.buildRawRecipe();
     }
@@ -444,32 +432,33 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
         Set<RecipeCapability<?>> trimmed = new HashSet<>();
         for (Map.Entry<RecipeCapability<?>, Integer> entry : trimLimits.entrySet()) {
+            RecipeCapability<?> key = entry.getKey();
+
+            if (!current.containsKey(key)) continue;
             List<Content> nonChanced = new ArrayList<>();
             List<Content> chanced = new ArrayList<>();
-            List<Content> outputContents = current.get(entry.getKey());
-            for (Content content : outputContents) {
+            for (Content content : current.getOrDefault(key, List.of())) {
                 if (content.chance <= 0 || content.chance >= 1) nonChanced.add(content);
                 else chanced.add(content);
             }
 
             int outputLimit = entry.getValue();
             if (outputLimit == -1) {
-                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(outputContents);
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(nonChanced);
             }
             // If just the regular outputs would satisfy the outputLimit
             else if (nonChanced.size() >= outputLimit) {
-                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>())
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
                         .addAll(nonChanced.stream()
-                                .map(cont -> cont.copy(entry.getKey(), null))
+                                .map(cont -> cont.copy(key, null))
                                 .toList()
-                                .subList(0, Math.min(outputLimit, nonChanced.size())));
+                                .subList(0, outputLimit));
 
                 chanced.clear();
             }
-
             // If the regular outputs and chanced outputs are required to satisfy the outputLimit
             else if (!nonChanced.isEmpty() && (nonChanced.size() + chanced.size()) >= outputLimit) {
-                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(entry.getKey(), null)).toList());
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
 
                 // Calculate the number of chanced outputs after adding all the regular outputs
                 int numChanced = outputLimit - nonChanced.size();
@@ -482,14 +471,14 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             }
             // The number of outputs + chanced outputs is lower than the trim number, so just add everything
             else {
-                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(entry.getKey(), null)).toList());
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
                 // Chanced outputs are taken care of in the original copy
             }
 
             if (!chanced.isEmpty())
-                outputs.computeIfAbsent(entry.getKey(), key -> new ArrayList<>()).addAll(chanced.stream().map(cont -> cont.copy(entry.getKey(), null)).toList());
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(chanced.stream().map(cont -> cont.copy(key, null)).toList());
 
-            trimmed.add(entry.getKey());
+            trimmed.add(key);
         }
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : current.entrySet()) {
             if (trimmed.contains(entry.getKey())) continue;

@@ -87,7 +87,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
     public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
-        super(holder, tier, tankScalingFunction, true, args);
+        super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
         this.chargerInventory = createChargerItemHandler(args);

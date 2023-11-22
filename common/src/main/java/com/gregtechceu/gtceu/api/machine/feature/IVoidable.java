@@ -8,14 +8,14 @@ import java.util.Map;
 
 public interface IVoidable extends IMachineFeature {
 
-    boolean canVoidRecipeOutputs(RecipeCapability<?> capability);
-
-    // -1 is taken into account as a skip case.
-    default int getOutputLimit(RecipeCapability<?> capability) {
-        return -1;
+    default boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
+        return self().getDefinition().getRecipeOutputLimits().containsKey(capability);
     }
 
-    Map<RecipeCapability<?>, Integer> getOutputLimits();
+    // -1 or empty is taken into account as a skip case.
+    default Map<RecipeCapability<?>, Integer> getOutputLimits() {
+        return self().getDefinition().getRecipeOutputLimits();
+    }
 
     enum VoidingMode implements StringRepresentable {
         VOID_NONE("gtceu.gui.multiblock_no_voiding"),

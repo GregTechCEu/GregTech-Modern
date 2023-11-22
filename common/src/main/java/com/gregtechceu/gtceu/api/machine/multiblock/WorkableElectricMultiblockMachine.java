@@ -218,14 +218,4 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     public long getMaxVoltage() {
         return GTValues.V[GTUtil.getFloorTierByVoltage(getMaxHatchVoltage())];
     }
-
-    @Override
-    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return false;
-    }
-
-    @Override
-    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
-        return Map.of();
-    }
 }

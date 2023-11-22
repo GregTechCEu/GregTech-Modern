@@ -188,7 +188,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = machine.modifyRecipe(match);
+        var modified = match.trimRecipeOutputs(machine.getOutputLimits());
+        modified = machine.modifyRecipe(modified);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
@@ -423,7 +424,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             lastRecipe.handleRecipeIO(IO.OUT, this.machine);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = machine.modifyRecipe(lastOriginRecipe);
+                    var modified = lastOriginRecipe.trimRecipeOutputs(machine.getOutputLimits());
+                    modified = machine.modifyRecipe(modified);
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {

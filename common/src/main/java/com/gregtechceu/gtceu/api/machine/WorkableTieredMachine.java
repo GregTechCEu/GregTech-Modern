@@ -43,8 +43,6 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public int activeRecipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
-    @Getter
-    public final boolean handlesRecipeOutputs;
     @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
@@ -64,13 +62,12 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, boolean handlesRecipeOutputs, Object... args) {
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
-        this.handlesRecipeOutputs = handlesRecipeOutputs;
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
         this.traitSubscriptions = new ArrayList<>();
         this.recipeLogic = createRecipeLogic(args);
@@ -214,15 +211,5 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Nonnull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
-    }
-
-    @Override
-    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return false;
-    }
-
-    @Override
-    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
-        return Map.of();
     }
 }

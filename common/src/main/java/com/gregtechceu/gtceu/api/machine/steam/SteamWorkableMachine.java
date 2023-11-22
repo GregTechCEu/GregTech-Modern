@@ -147,16 +147,6 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
         }
     }
 
-    @Override
-    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return false;
-    }
-
-    @Override
-    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
-        return Map.of();
-    }
-
     //////////////////////////////////////
     //*******     Rendering     ********//
     //////////////////////////////////////

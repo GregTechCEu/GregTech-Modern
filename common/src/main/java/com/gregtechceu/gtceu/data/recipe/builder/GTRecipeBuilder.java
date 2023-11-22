@@ -48,7 +48,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-@SuppressWarnings({"unchecked", "ConfusingArgumentToVarargsMethod"})
+@SuppressWarnings({"ConfusingArgumentToVarargsMethod"})
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
@@ -89,18 +89,13 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
         this.id = toCopy.id;
         this.recipeType = recipeType;
-        toCopy.inputs.forEach((cap, contents) -> this.input(cap, contents.toArray()));
-        toCopy.tickInputs.forEach((cap, contents) -> {
-            this.perTick = true;
-            this.input(cap, contents.toArray());
-            this.perTick = false;
-        });
-        toCopy.outputs.forEach((cap, contents) -> this.output(cap, contents.toArray()));
-        toCopy.tickOutputs.forEach((cap, contents) -> {
-            this.perTick = true;
-            this.output(cap, contents.toArray());
-            this.perTick = false;
-        });
+        this.input.putAll(toCopy.inputs);
+        this.tickInput.putAll(toCopy.tickInputs);
+        this.output.putAll(toCopy.outputs);
+        this.tickOutput.putAll(toCopy.tickOutputs);
+        this.data = toCopy.data.copy();
+        this.conditions.addAll(toCopy.conditions);
+        this.isFuel = toCopy.isFuel;
     }
 
     public static GTRecipeBuilder of(ResourceLocation id, GTRecipeType recipeType) {

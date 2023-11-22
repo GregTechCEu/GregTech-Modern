@@ -251,14 +251,4 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
     }
-
-    @Override
-    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
-        return false;
-    }
-
-    @Override
-    public Map<RecipeCapability<?>, Integer> getOutputLimits() {
-        return Map.of();
-    }
 }
