@@ -564,6 +564,8 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_clean").EUt(16).inputItems(plate, StainlessSteel, 6).inputItems(frameGt, StainlessSteel).circuitMeta(6).outputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(2)).duration(50).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_titanium_stable").EUt(16).inputItems(plate, Titanium, 6).inputItems(frameGt, Titanium).circuitMeta(6).outputItems(GTBlocks.CASING_TITANIUM_STABLE.asStack(2)).duration(50).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("casing_hsse_sturdy").EUt(16).inputItems(plate, HSSE, 6).inputItems(frameGt, Europium).circuitMeta(6).outputItems(GTBlocks.CASING_HSSE_STURDY.asStack(2)).duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_palladium_substation").EUt(16).inputItems(plate, Palladium, 6).inputItems(frameGt, Iridium).circuitMeta(6).outputItems(GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(2)).duration(50).save(provider);
+
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack()).inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6).outputItems(GTBlocks.CASING_PTFE_INERT.asStack()).duration(50).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("superconducting_coil_luv").EUt(VA[LuV]).inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 32).inputItems(foil, NiobiumTitanium, 32).inputFluids(Trinium.getFluid(GTValues.L * 24)).outputItems(GTBlocks.SUPERCONDUCTING_COIL.asStack()).duration(100).save(provider);

@@ -18,8 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ActiveBlock extends AppearanceBlock implements IBlockRendererProvider{
-
+public class ActiveBlock extends AppearanceBlock implements IBlockRendererProvider {
     public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 
     private final IRenderer renderer;

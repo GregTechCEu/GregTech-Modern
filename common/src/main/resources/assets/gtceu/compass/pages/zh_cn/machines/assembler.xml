@@ -1,17 +1,7 @@
 <page>
- <h1>Assembling Machine</h1>
- <h3>Source</h3>
- <text pwt="true"><style color="0xaaaaaa" italic="true" pwt="true">Note: this page is ported from MCMOD's GTCEu wiki.<br/>Author: <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style>, <style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/2/">重生是希望</style><br/></style></text>
- <h2 font-color="0xff0000">WARNING!!!</h2>
- <text isCenter="true">
-  <style color="0xff0000" pwt="true">The warning means this is not a reliable page.</style>
-  <br/>
-  <style bold="true" color="0xffaa00" pwt="true">Please do not report any mistakes on the page, either discord or github.</style>
-  <br/>
-  This page is translated from the Chinese wiki which hasn't been reviewed and polished yet. It may contain errors and inaccuracies. We are looking forward to your help by improving this page.
- </text>
- <text>
-  <br/>
+    <h1>组装机</h1>
+    <text>
+        <br/>
   <style lang="zh-cn">
    <style color="0xaaaaaa" italic="true" lang="zh-cn" pwt="true">“复仇者集合！”/“不是工作台”/“装配式构造器”</style>
    <br/>
@@ -22,8 +12,6 @@
    组装机可以被理解为是一种用电的工作台，但是它所能够制造的物品更加多样，自带 9 个物品输入槽和 1 个流体输入槽，LV、MV 和 HV 及以上电压等级的组装机流体储量分别为 8,000 L，12,000 L 和 16,000 L。它主要能够执行下列合成：
   </style>
   <br/>
- </text>
- <text left-margin="10">
   •
   <style lang="zh-cn">
    许多在原版
@@ -31,8 +19,6 @@
    中可以被合成的物品。合成所需原料量基本相同，原来的部分材料会被替换成对应的流体形式参与组装。典型的例子例如：
   </style>
   <br/>
- </text>
- <text left-margin="20">
   •
   <style lang="zh-cn">
    <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">末影水晶</style>
@@ -52,8 +38,6 @@
    制造而成；而在组装机中无需消耗多余的小型铁齿轮，也不再需要其它工具来辅助参与合成。
   </style>
   <br/>
- </text>
- <text left-margin="10">
   •
   <style lang="zh-cn">
    各类机械元件，包括但不限于 LV ~ IV 级的
@@ -82,8 +66,6 @@
    <br/>
   </style>
   <br/>
- </text>
- <text>
   <br/>
   <style lang="zh-cn">
    注意：组装机不能够用来装配电路。LV ~ IV 级的电路需要在
@@ -93,5 +75,5 @@
    中组装才能够制得。装配线可以被理解为更高级的组装机，但是它与单方块组装机可处理的配方并不兼容。
   </style>
   <br/>
- </text>
+    </text>
 </page>

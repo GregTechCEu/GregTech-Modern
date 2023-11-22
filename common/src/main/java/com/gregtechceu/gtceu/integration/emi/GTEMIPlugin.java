@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluid;
+import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.orevein.GTOreVeinEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -25,6 +28,8 @@ public class GTEMIPlugin implements EmiPlugin {
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
         registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
+        registry.addCategory(GTOreVeinEmiCategory.CATEGORY);
+        registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
@@ -34,10 +39,14 @@ public class GTEMIPlugin implements EmiPlugin {
         MultiblockInfoEmiCategory.registerDisplays(registry);
         GTRecipeTypeEmiCategory.registerDisplays(registry);
         GTOreProcessingEmiCategory.registerDisplays(registry);
+        GTOreVeinEmiCategory.registerDisplays(registry);
+        GTBedrockFluidEmiCategory.registerDisplays(registry);
         // workstations
         MultiblockInfoEmiCategory.registerWorkStations(registry);
         GTRecipeTypeEmiCategory.registerWorkStations(registry);
         GTOreProcessingEmiCategory.registerWorkStations(registry);
+        GTOreVeinEmiCategory.registerWorkStations(registry);
+        GTBedrockFluidEmiCategory.registerWorkStations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
             if (definition != null) {
                 registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(definition.asStack()));

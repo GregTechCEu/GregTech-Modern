@@ -292,6 +292,10 @@ public class ConfigHolder {
         @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
         @Configurable.Gui.ColorValue
         public String defaultPaintingColor = "#FFFFFF";
+        @Configurable
+        @Configurable.Comment({"Use VBO cache for multiblock preview.", "Disable it if you have issues with rendering multiblocks.", "Default: true"})
+        @Configurable.Gui.ColorValue
+        public boolean useVBO = true;
     }
 
     public static class DeveloperConfigs {

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.*;
@@ -73,7 +74,7 @@ public class PatternPreviewWidget extends WidgetGroup {
                 .setRenderFacing(false)
                 .setRenderFacing(false));
 
-        if (!GTCEu.isIrisLoaded() && !LDLib.isEmiLoaded()) {
+        if (ConfigHolder.INSTANCE.client.useVBO) {
             if (!RenderSystem.isOnRenderThread()) {
                 RenderSystem.recordRenderCall(sceneWidget::useCacheBuffer);
             } else {
