@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -148,7 +149,13 @@ public class GTMachines {
                     .register());
 
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_MACERATOR = registerSimpleSteamMachines("macerator", GTRecipeTypes.MACERATOR_RECIPES);
+    public final static Pair<MachineDefinition, MachineDefinition> STEAM_MACERATOR = registerSteamMachines("steam_macerator", SimpleSteamMachine::new, (pressure, builder) -> builder
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+            .recipeModifier(SimpleSteamMachine::recipeModifier)
+            .addOutputLimit(ItemRecipeCapability.CAP, 1)
+            .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/macerator")))
+            .register());
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_COMPRESSOR = registerSimpleSteamMachines("compressor", GTRecipeTypes.COMPRESSOR_RECIPES);
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_HAMMER = registerSimpleSteamMachines("forge_hammer", GTRecipeTypes.FORGE_HAMMER_RECIPES);
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_FURNACE = registerSimpleSteamMachines("furnace", GTRecipeTypes.FURNACE_RECIPES);
@@ -214,7 +221,22 @@ public class GTMachines {
     public final static MachineDefinition[] THERMAL_CENTRIFUGE = registerSimpleMachines("thermal_centrifuge", GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES);
     public final static MachineDefinition[] WIREMILL = registerSimpleMachines("wiremill", GTRecipeTypes.WIREMILL_RECIPES);
     public final static MachineDefinition[] CIRCUIT_ASSEMBLER = registerSimpleMachines("circuit_assembler", GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] MACERATOR = registerSimpleMachines("macerator", GTRecipeTypes.MACERATOR_RECIPES);
+    public final static MachineDefinition[] MACERATOR = registerTieredMachines("macerator", (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+            .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
+            .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"), GTRecipeTypes.MACERATOR_RECIPES))
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
+            .addOutputLimit(ItemRecipeCapability.CAP, switch (tier) {
+                case 1, 2 -> 1;
+                case 3 -> 3;
+                default -> 4;
+            })
+            .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .workableTieredHullRenderer(GTCEu.id("block/machines/macerator"))
+            .tooltips(explosion())
+            .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.apply(tier), true))
+            .compassNode("macerator")
+            .register(), ELECTRIC_TIERS);
     public final static MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector", GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction);
     public final static MachineDefinition[] ROCK_CRUSHER = registerSimpleMachines("rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
 
@@ -1137,6 +1159,7 @@ public class GTMachines {
             .appearanceBlock(CASING_BRONZE_BRICKS)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
+            .addOutputLimit(ItemRecipeCapability.CAP, 1)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "X#X", "XXX")
@@ -1159,6 +1182,7 @@ public class GTMachines {
             .appearanceBlock(CASING_BRONZE_BRICKS)
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
             .recipeModifier(SteamParallelMultiblockMachine::recipeModifier, true)
+            .addOutputLimit(ItemRecipeCapability.CAP, 1)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("FFF", "XXX", " X ")
                     .aisle("FFF", "X#X", " X ")
@@ -1636,6 +1660,8 @@ public class GTMachines {
                 .rotationState(RotationState.ALL)
                 .recipeType(recipeType)
                 .recipeModifier(SimpleGeneratorMachine::recipeModifier, true)
+                .addOutputLimit(ItemRecipeCapability.CAP, 0)
+                .addOutputLimit(FluidRecipeCapability.CAP, 0)
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
                 .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), false))

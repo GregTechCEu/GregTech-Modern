@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -108,6 +109,11 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     @Override
     public boolean dampingWhenWaiting() {
         return false;
+    }
+
+    @Override
+    public boolean canVoidRecipeOutputs(RecipeCapability<?> capability) {
+        return capability != EURecipeCapability.CAP;
     }
 
     //////////////////////////////////////
