@@ -52,7 +52,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Nullable @Getter @Persisted
     protected GTRecipe lastRecipe;
     /**
-     * safe, it is the origin recipe before {@link IRecipeLogicMachine#modifyRecipe(GTRecipe)} which can be found from {@link RecipeManager}.
+     * safe, it is the origin recipe before {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)}' which can be found from {@link RecipeManager}.
      */
     @Nullable @Getter @Persisted
     protected GTRecipe lastOriginRecipe;
@@ -188,8 +188,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected boolean checkMatchedRecipeAvailable(GTRecipe match) {
-        var modified = match.trimRecipeOutputs(machine.getOutputLimits());
-        modified = machine.modifyRecipe(modified);
+        var modified = machine.fullModifyRecipe(match);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
                     modified.matchRecipe(machine).isSuccess() &&
@@ -424,8 +423,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             lastRecipe.handleRecipeIO(IO.OUT, this.machine);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
-                    var modified = lastOriginRecipe.trimRecipeOutputs(machine.getOutputLimits());
-                    modified = machine.modifyRecipe(modified);
+                    var modified = machine.fullModifyRecipe(lastOriginRecipe);
                     if (modified == null) {
                         markLastRecipeDirty();
                     } else {

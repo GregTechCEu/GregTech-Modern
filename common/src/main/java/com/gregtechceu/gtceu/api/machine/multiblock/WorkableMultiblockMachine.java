@@ -173,7 +173,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
 
     @Nullable
     @Override
-    public final GTRecipe modifyRecipe(GTRecipe recipe) {
+    public final GTRecipe doModifyRecipe(GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
             recipe = part.modifyRecipe(recipe);
             if (recipe == null) return null;
