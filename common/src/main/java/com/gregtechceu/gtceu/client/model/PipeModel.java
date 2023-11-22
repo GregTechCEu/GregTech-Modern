@@ -4,6 +4,8 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -22,7 +24,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.Reference;
+import java.lang.ref.WeakReference;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -32,6 +37,8 @@ import java.util.function.Supplier;
  * @implNote PipeModel
  */
 public class PipeModel {
+    private final static List<WeakReference<PipeModel>> allModels = ObjectLists.synchronize(new ObjectArrayList<>());
+
     public final static int ITEM_CONNECTIONS = 0b1100;
     public final float thickness;
     public final AABB coreCube;
@@ -66,6 +73,8 @@ public class PipeModel {
                     normal.getY() == 0 ? max : normal.getY() > 0 ? 1 : min,
                     normal.getZ() == 0 ? max : normal.getZ() > 0 ? 1 : min));
         }
+
+        allModels.add(new WeakReference<>(this));
     }
 
     public VoxelShape getShapes(int connections) {
@@ -174,11 +183,17 @@ public class PipeModel {
         return sideSprite;
     }
 
+    private final Map<Optional<Direction>, List<BakedQuad>> itemModelCache = new ConcurrentHashMap<>();
+
     @Environment(EnvType.CLIENT)
     public void renderItem(ItemStack stack, ItemTransforms.TransformType transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         IItemRendererProvider.disabled.set(true);
         Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, ITEM_CONNECTIONS));
+                (ItemBakedModel) (state, direction, random) -> itemModelCache.computeIfAbsent(
+                        Optional.ofNullable(direction),
+                        direction1 -> bakeQuads(direction1.orElse(null), ITEM_CONNECTIONS)
+                )
+        );
         IItemRendererProvider.disabled.set(false);
     }
 
@@ -191,5 +206,16 @@ public class PipeModel {
         sideSprite = null;
         endSprite = null;
         endOverlaySprite = null;
+    }
+
+    private void invalidateItemModelCache() {
+        itemModelCache.clear();
+    }
+
+    public static void invalidateAllCachedModels() {
+        allModels.stream()
+                .map(Reference::get)
+                .filter(Objects::nonNull)
+                .forEach(PipeModel::invalidateItemModelCache);
     }
 }

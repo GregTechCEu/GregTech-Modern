@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.integration.jei.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
@@ -13,14 +13,11 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.DUST;
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.ORE;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.Aluminium;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 
 public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOreProcessingInfoWrapper> {
@@ -42,19 +39,13 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
     }
 
     public static void registerRecipeCatalysts(IRecipeCatalystRegistration registration) {
-        for (Material mat : GTRegistries.MATERIALS) {
-            if (mat.hasProperty(ORE)) {
-                registration.addRecipeCatalyst(ChemicalHelper.get(ore, mat), RECIPE_TYPE);
-                registration.addRecipeCatalyst(ChemicalHelper.get(rawOre, mat), RECIPE_TYPE);
-                registration.addRecipeCatalyst(ChemicalHelper.get(crushed, mat), RECIPE_TYPE);
-                registration.addRecipeCatalyst(ChemicalHelper.get(crushedPurified, mat), RECIPE_TYPE);
-                registration.addRecipeCatalyst(ChemicalHelper.get(crushedRefined, mat), RECIPE_TYPE);
-                registration.addRecipeCatalyst(ChemicalHelper.get(ore, mat), RECIPE_TYPE);
-                if (mat.hasProperty(DUST)) {
-                    registration.addRecipeCatalyst(ChemicalHelper.get(dust, mat), RECIPE_TYPE);
-                }
-            }
-        }
+        registration.addRecipeCatalyst(MACERATOR[GTValues.LV].asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(ORE_WASHER[GTValues.LV].asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(THERMAL_CENTRIFUGE[GTValues.LV].asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(CENTRIFUGE[GTValues.LV].asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(CHEMICAL_BATH[GTValues.LV].asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(ELECTROMAGNETIC_SEPARATOR[GTValues.LV].asStack(), RECIPE_TYPE);
+        registration.addRecipeCatalyst(SIFTER[GTValues.LV].asStack(), RECIPE_TYPE);
     }
 
 
@@ -67,7 +58,7 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
     @Nonnull
     @Override
     public Component getTitle() {
-        return Component.translatable("gtceu.jei.ore_processing_info");
+        return Component.translatable("gtceu.jei.ore_processing_diagram");
     }
 
     @Nonnull

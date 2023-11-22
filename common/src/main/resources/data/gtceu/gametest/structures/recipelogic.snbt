@@ -1,0 +1,13 @@
+{
+    DataVersion: 3465,
+    size: [1, 2, 1],
+    data: [
+        {pos: [0, 0, 0], state: "gtceu:infinite_energy{server_tick:true}", nbt: {ForgeCaps: {}, active: 1b, amps: 1, cover: {}, energyIOPerSec: 0L, id: "gtceu:infinite_energy", paintingColor: -1, setTier: 1, source: 1b, voltage: 32L}},
+        {pos: [0, 1, 0], state: "gtceu:lv_chemical_reactor{facing:north,server_tick:false}", nbt: {ForgeCaps: {}, activeRecipeType: 0, allowInputFromOutputSideFluids: 0b, allowInputFromOutputSideItems: 0b, autoOutputFluids: 0b, autoOutputItems: 0b, chargerInventory: {Items: [], Size: 1}, circuitInventory: {isDistinct: 0b, storage: {Items: [], Size: 1}}, cover: {}, energyContainer: {energyStored: 2048L, isDistinct: 0b}, exportFluids: {isDistinct: 0b, storages: [{p: {Amount: 0L, FluidName: "minecraft:empty"}, t: 11b}, {p: {Amount: 0L, FluidName: "minecraft:empty"}, t: 11b}]}, exportItems: {isDistinct: 0b, storage: {Items: [{Count: 32b, Slot: 0, id: "minecraft:stone"}], Size: 2}}, id: "gtceu:lv_chemical_reactor", importFluids: {isDistinct: 0b, storages: [{p: {Amount: 0L, FluidName: "minecraft:empty"}, t: 11b}, {p: {Amount: 0L, FluidName: "minecraft:empty"}, t: 11b}, {p: {Amount: 0L, FluidName: "minecraft:empty"}, t: 11b}]}, importItems: {isDistinct: 0b, storage: {Items: [], Size: 2}}, isMuffled: 0b, outputFacingFluids: "south", outputFacingItems: "south", overclockTier: 1, paintingColor: -1, recipeLogic: {duration: 0, fuelMaxTime: 0, fuelTime: 0, progress: 0, status: "IDLE", totalContinuousRunningTime: 0L}}}
+    ],
+    entities: [],
+    palette: [
+        "gtceu:infinite_energy{server_tick:true}",
+        "gtceu:lv_chemical_reactor{facing:north,server_tick:false}"
+    ]
+}

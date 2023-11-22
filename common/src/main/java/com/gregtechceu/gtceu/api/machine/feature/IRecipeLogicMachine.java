@@ -17,7 +17,7 @@ import javax.annotation.Nullable;
  * @implNote IRecipeMachine
  * A machine can handle recipes.
  */
-public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver {
+public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFeature, IWorkable, ICleanroomReceiver, IVoidable {
 
     @Override
     default int getChanceTier() {
@@ -47,6 +47,10 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @Nonnull
     RecipeLogic getRecipeLogic();
 
+    default GTRecipe fullModifyRecipe(GTRecipe recipe) {
+        return doModifyRecipe(recipe.trimRecipeOutputs(this.getOutputLimits()));
+    }
+
     /**
      * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc
      * @param recipe recipe from detected from GTRecipeType
@@ -54,7 +58,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      *         null -- this recipe is unavailable
      */
     @Nullable
-    default GTRecipe modifyRecipe(GTRecipe recipe) {
+    default GTRecipe doModifyRecipe(GTRecipe recipe) {
         return self().getDefinition().getRecipeModifier().apply(self(), recipe);
     }
 
@@ -110,8 +114,8 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
 
 
     /**
-     * Always try {@link IRecipeLogicMachine#modifyRecipe(GTRecipe)} before setup recipe.
-     * @return ture - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finish.
+     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
+     * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
      * false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
      */
     default boolean alwaysTryModifyRecipe() {

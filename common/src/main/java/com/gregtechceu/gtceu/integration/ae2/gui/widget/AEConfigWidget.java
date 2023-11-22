@@ -22,7 +22,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
     protected final static int UPDATE_ID = 1000;
 
     public AEConfigWidget(int x, int y, IConfigurableSlot[] config) {
-        super(new Position(x, y), new Size(config.length * 18, 18 * 2));
+        super(new Position(x, y), new Size(config.length / 2 * 18, 18 * 4 + 2));
         this.config = config;
         this.init();
         this.amountSetWidget = new AmountSetSlot(80, -40, this);

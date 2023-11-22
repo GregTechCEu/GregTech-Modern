@@ -141,6 +141,11 @@ public class FormattingUtil {
         return NUMBER_FORMAT.format(number);
     }
 
+    /** Allows for formatting Long, Integer, Short, Byte, Number, AtomicInteger, AtomicLong, and BigInteger. */
+    public static String formatNumbers(Object number) {
+        return NUMBER_FORMAT.format(number);
+    }
+
     @Nonnull
     public static String formatNumber2Places(float number) {
         return TWO_PLACES_FORMAT.format(number);
