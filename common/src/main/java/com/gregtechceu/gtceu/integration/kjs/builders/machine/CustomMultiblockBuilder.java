@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
@@ -29,6 +30,7 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -271,6 +273,23 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
             @Override
             public CustomMultiblockBuilder tier(int tier) {
+                return this;
+            }
+
+            public CustomMultiblockBuilder recipeOutputLimits(Object2IntMap<RecipeCapability<?>> map) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.recipeOutputLimits(map);
+                }
+                return this;
+            }
+
+            @Override
+            public CustomMultiblockBuilder addOutputLimit(RecipeCapability<?> capability, int limit) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.addOutputLimit(capability, limit);
+                }
                 return this;
             }
 

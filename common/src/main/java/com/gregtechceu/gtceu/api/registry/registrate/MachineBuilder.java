@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -28,6 +29,8 @@ import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -95,6 +98,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private GTRecipeType[] recipeTypes;
     @Getter @Setter // getter for KJS
     private int tier;
+    @Setter
+    private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
     @Setter
     private int paintingColor = Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue();
     @Setter
@@ -217,6 +222,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this;
     }
 
+    public MachineBuilder<DEFINITION> addOutputLimit(RecipeCapability<?> capability, int limit) {
+        this.recipeOutputLimits.put(capability, limit);
+        return this;
+    }
+
     public MachineBuilder<DEFINITION> compassSections(CompassSection... sections) {
         this.compassSections.addAll(Arrays.stream(sections).toList());
         return this;
@@ -315,6 +325,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setBlockSupplier(block);
         definition.setItemSupplier(item);
         definition.setTier(tier);
+        definition.setRecipeOutputLimits(recipeOutputLimits);
         definition.setBlockEntityTypeSupplier(blockEntity::get);
         definition.setMachineSupplier(metaMachine);
         definition.setTooltipBuilder((itemStack, components) -> {
@@ -327,7 +338,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }
         if (recipeTypes != null) {
-            for (GTRecipeType type : recipeTypes){
+            for (GTRecipeType type : recipeTypes) {
                 if (type != null && type.getIconSupplier() == null) {
                     type.setIconSupplier(definition::asStack);
                 }

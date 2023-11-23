@@ -1824,6 +1824,7 @@
   "config.gtceu.option.rubberTreeSpawnChance": "rubberTreeSpawnChance",
   "config.gtceu.option.sandOresFall": "sandOresFall",
   "config.gtceu.option.steelSteamMultiblocks": "steelSteamMultiblocks",
+  "config.gtceu.option.useVBO": "useVBO",
   "config.gtceu.option.worldgen": "worldgen",
   "config.jade.plugin_gtceu.controllable_provider": "[GTCEu] Controllable",
   "config.jade.plugin_gtceu.electric_container_provider": "[GTCEu] Electric Container",
