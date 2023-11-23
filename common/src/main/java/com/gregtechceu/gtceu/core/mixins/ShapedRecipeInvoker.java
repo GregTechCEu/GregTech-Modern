@@ -31,4 +31,9 @@ public interface ShapedRecipeInvoker {
     static NonNullList<Ingredient> callDissolvePattern(String[] pattern, Map<String, Ingredient> keys, int patternWidth, int patternHeight) {
         return null;
     }
+
+    @Invoker
+    static String[] callShrink(String... toShrink) {
+        return null;
+    }
 }

@@ -7,8 +7,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
@@ -27,6 +27,7 @@ import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -282,7 +283,7 @@ public class VanillaRecipeHelper {
                 if (tag != null) {
                     builder.requires(tag);
                 } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
-            } else if (content instanceof ItemEntry<?> entry) {
+            } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
                 builder.requires(TOOLS.get(c.charValue()));
@@ -290,6 +291,42 @@ public class VanillaRecipeHelper {
         }
         builder.save(provider);
     }
+
+    /**
+     * @param chargePredicate   the predicate for charging the output
+     * @param overrideCharge    whether to override the energy amount
+     * @param transferMaxCharge whether to transfer all the potential charge
+     * @see VanillaRecipeHelper#addShapedRecipe(Consumer, String, ItemStack, Object...)
+     */
+    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack result, Predicate<ItemStack> chargePredicate, boolean overrideCharge, boolean transferMaxCharge, Object... recipe) {
+        var builder = new ShapedEnergyTransferRecipeBuilder(GTCEu.id(regName.toLowerCase()))
+                .output(result.copy())
+                .overrideCharge(overrideCharge)
+                .transferMaxCharge(transferMaxCharge)
+                .chargePredicate(chargePredicate);
+        for (Object content : recipe) {
+            if (content instanceof Ingredient ingredient) {
+                builder.requires(ingredient);
+            } else if (content instanceof ItemStack itemStack) {
+                builder.requires(itemStack);
+            } else if (content instanceof TagKey<?> key) {
+                builder.requires((TagKey<Item>) key);
+            } else if (content instanceof ItemLike itemLike) {
+                builder.requires(itemLike);
+            } else if (content instanceof UnificationEntry entry) {
+                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
+                if (tag != null) {
+                    builder.requires(tag);
+                } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
+            } else if (content instanceof ItemProviderEntry<?> entry) {
+                builder.requires(entry.asStack());
+            } else if (content instanceof Character c) {
+                builder.requires(TOOLS.get(c.charValue()));
+            }
+        }
+        builder.save(provider);
+    }
+
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @Nonnull Object... recipe) {
         Char2IntOpenHashMap inputCountMap = new Char2IntOpenHashMap();

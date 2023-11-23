@@ -105,7 +105,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);
             }
-            buffer.writeItem(recipe.getResultItem(null));
+            buffer.writeItem(recipe.result);
         }
     }
 }
