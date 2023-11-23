@@ -94,7 +94,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         markDirty();
         scheduleNeighborShapeUpdate();
         // TODO achievement
-//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
+//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
         return true;
     }
 

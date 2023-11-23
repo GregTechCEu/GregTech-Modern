@@ -19,17 +19,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GTToolItemImpl extends GTToolItem implements FabricItem {
 
-    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Properties properties) {
-        super(toolType, tier, properties);
+    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, int electricTier, Properties properties) {
+        super(toolType, tier, electricTier, properties);
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Item.Properties properties) {
-        return new GTToolItemImpl(toolType, tier, properties);
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, int electricTier, Item.Properties properties) {
+        return new GTToolItemImpl(toolType, tier, electricTier, properties);
     }
 
     @Override
     public ItemStack getRecipeRemainder(ItemStack itemStack) {
-        if (itemStack.getMaxDamage() > itemStack.getDamageValue()) {
+        if (itemStack.getMaxDamage() >= itemStack.getDamageValue()) {
             itemStack = itemStack.copy();
             itemStack.setDamageValue(itemStack.getDamageValue() + 1);
             return itemStack;

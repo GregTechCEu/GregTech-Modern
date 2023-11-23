@@ -43,7 +43,9 @@ public enum GTToolType {
     KNIFE("knife", "knives", 1, 3.0F),
     BUTCHERY_KNIFE("butchery_knife", "butchery_knives", 1.5F, -1.3F),
 //    GRAFTER("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"), GTCEu.id("item/tools/hammer")),
-    PLUNGER("plunger", "plungers", 0, -2.4F, GTSoundEntries.PLUNGER_TOOL);
+    PLUNGER("plunger", "plungers", 0, -2.4F, GTSoundEntries.PLUNGER_TOOL),
+    SHEARS("shears", "shears", 1, 1),
+    ;
 
     public final String name;
     public final TagKey<Item> itemTag;

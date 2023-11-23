@@ -292,41 +292,6 @@ public class VanillaRecipeHelper {
         builder.save(provider);
     }
 
-    /**
-     * @param chargePredicate   the predicate for charging the output
-     * @param overrideCharge    whether to override the energy amount
-     * @param transferMaxCharge whether to transfer all the potential charge
-     * @see VanillaRecipeHelper#addShapedRecipe(Consumer, String, ItemStack, Object...)
-     */
-    public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack result, Predicate<ItemStack> chargePredicate, boolean overrideCharge, boolean transferMaxCharge, Object... recipe) {
-        var builder = new ShapedEnergyTransferRecipeBuilder(GTCEu.id(regName.toLowerCase()))
-                .output(result.copy())
-                .overrideCharge(overrideCharge)
-                .transferMaxCharge(transferMaxCharge)
-                .chargePredicate(chargePredicate);
-        for (Object content : recipe) {
-            if (content instanceof Ingredient ingredient) {
-                builder.requires(ingredient);
-            } else if (content instanceof ItemStack itemStack) {
-                builder.requires(itemStack);
-            } else if (content instanceof TagKey<?> key) {
-                builder.requires((TagKey<Item>) key);
-            } else if (content instanceof ItemLike itemLike) {
-                builder.requires(itemLike);
-            } else if (content instanceof UnificationEntry entry) {
-                TagKey<Item> tag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
-                if (tag != null) {
-                    builder.requires(tag);
-                } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
-            } else if (content instanceof ItemProviderEntry<?> entry) {
-                builder.requires(entry.asStack());
-            } else if (content instanceof Character c) {
-                builder.requires(TOOLS.get(c.charValue()));
-            }
-        }
-        builder.save(provider);
-    }
-
 
     public static ItemMaterialInfo getRecyclingIngredients(int outputCount, @Nonnull Object... recipe) {
         Char2IntOpenHashMap inputCountMap = new Char2IntOpenHashMap();

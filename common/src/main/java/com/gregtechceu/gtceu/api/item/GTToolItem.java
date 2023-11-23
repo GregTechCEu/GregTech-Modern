@@ -53,15 +53,18 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
 
     @Getter
     protected final GTToolType toolType;
+    @Getter
+    protected final int electricTier;
 
     @ExpectPlatform
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Properties properties) {
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, int electricTier, Properties properties) {
         throw new AssertionError();
     }
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Properties properties) {
+    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, int electricTier, Properties properties) {
         super(toolType.attackDamageModifier, toolType.attackSpeedModifier, tier, toolType.harvestTag, properties);
         this.toolType = toolType;
+        this.electricTier = electricTier;
         if (Platform.isClient()) {
             ToolItemRenderer.create(this, toolType);
         }
