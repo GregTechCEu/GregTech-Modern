@@ -77,6 +77,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected Object workingSound;
     @Nullable
     protected CompletableFuture<List<GTRecipe>> completableFuture = null;
+    // if storage is dirty while async searching recipe, it will be set to true.
+    protected boolean dirtySearching = false;
 
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());
@@ -124,11 +126,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
         } else {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
-            // TODO shall we need it? I suppose its fine to use dirty matches?
-//            if (completableFuture != null) {
-//                completableFuture.cancel(true);
-//                completableFuture = null;
-//            }
+            if (completableFuture != null) {
+                dirtySearching = true;
+            }
         }
     }
 
@@ -274,22 +274,32 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 // try to search recipe in threads.
                 if (ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
                     completableFuture = supplyAsyncSearchingTask();
+                    dirtySearching = false;
                 } else {
                     handleSearchingRecipes(searchRecipe());
                 }
             } else if (completableFuture.isDone()) {
-                if (!completableFuture.isCancelled()) {
+                var lastFuture = this.completableFuture;
+                completableFuture = null;
+                if (!lastFuture.isCancelled()) {
                     // if searching task is done, try to handle searched recipes.
-                    var matches = completableFuture.join();
+                    var matches = lastFuture.join();
                     if (matches == null) {
                         // if error occurred, try to search recipe again in main thread.
                         handleSearchingRecipes(searchRecipe());
                     } else {
                         // else handle searched recipes in main thread.
-                        handleSearchingRecipes(matches.stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList());
+                        matches = matches.stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList();
+                        if (!matches.isEmpty()) {
+                            handleSearchingRecipes(matches);
+                        } else if (dirtySearching && ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
+                            completableFuture = supplyAsyncSearchingTask();
+                        }
                     }
+                } else {
+                    handleSearchingRecipes(searchRecipe());
                 }
-                completableFuture = null;
+                dirtySearching = false;
             }
         }
         recipeDirty = false;
