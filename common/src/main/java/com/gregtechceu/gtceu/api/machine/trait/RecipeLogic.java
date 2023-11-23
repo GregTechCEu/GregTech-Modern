@@ -68,8 +68,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected int fuelTime;
     @Getter @Persisted
     protected int fuelMaxTime;
-    @Getter
-    protected long timeStamp;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
@@ -83,7 +81,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());
         this.machine = machine;
-        this.timeStamp = Long.MIN_VALUE;
     }
 
     @Environment(EnvType.CLIENT)
@@ -110,7 +107,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         fuelTime = 0;
         lastFailedMatches = null;
         status = Status.IDLE;
-        this.timeStamp = Long.MIN_VALUE;
         updateTickSubscription();
     }
 
@@ -128,6 +124,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
         } else {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
+            // TODO shall we need it? I suppose its fine to use dirty matches?
+//            if (completableFuture != null) {
+//                completableFuture.cancel(true);
+//                completableFuture = null;
+//            }
         }
     }
 
@@ -149,10 +150,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return Platform.getMinecraftServer().getRecipeManager();
     }
 
-    public long getLatestTimeStamp() {
-        return machine.self().getLevel().getGameTime();
-    }
-
     public void serverTick() {
         if (!isSuspend()) {
             if (!isIdle() && lastRecipe != null) {
@@ -165,7 +162,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             } else if (lastRecipe != null) {
                 findAndHandleRecipe();
             } else if (!machine.keepSubscribing() || getMachine().getOffsetTimer() % 5 == 0) {
-                executeDirty(this::findAndHandleRecipe);
+                findAndHandleRecipe();
                 if (lastFailedMatches != null) {
                     for (GTRecipe match : lastFailedMatches) {
                         if (checkMatchedRecipeAvailable(match)) break;
@@ -176,14 +173,23 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (fuelTime > 0) {
             fuelTime--;
         } else {
-            if (isSuspend() || (completableFuture == null && lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty && lastFailedMatches == null)) {
+            boolean unsubscribe = false;
+            if (isSuspend()) {
+                unsubscribe = true;
+                if (completableFuture != null) {
+                    completableFuture.cancel(true);
+                    completableFuture = null;
+                }
+            } else if (completableFuture == null && lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty && lastFailedMatches == null) {
                 // machine isn't working enabled
                 // or
                 // there is no available recipes, so it will wait for notification.
-                if (subscription != null) {
-                    subscription.unsubscribe();
-                    subscription = null;
-                }
+                unsubscribe = true;
+            }
+
+            if (unsubscribe && subscription != null) {
+                subscription.unsubscribe();
+                subscription = null;
             }
         }
     }
@@ -246,36 +252,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    protected void executeDirty(Runnable changed) {
-        long latestTS = getLatestTimeStamp();
-        if (latestTS < timeStamp) {
-            timeStamp = latestTS;
-            changed.run();
-        } else {
-            if (machine.hasProxies() && checkDirty(latestTS)) {
-                changed.run();
-            }
-        }
-    }
-
-    protected boolean checkDirty(long latestTS) {
-        boolean execute = false;
-        for (var handlers : machine.getCapabilitiesProxy().values()) {
-            if (handlers != null) {
-                for (var handler : handlers) {
-                    if (handler.getTimeStamp() < latestTS) {
-                        handler.setTimeStamp(latestTS);
-                    }
-                    if (handler.getTimeStamp() > timeStamp) {
-                        execute = true;
-                        timeStamp = handler.getTimeStamp();
-                    }
-                }
-            }
-        }
-        return execute;
-    }
-
     protected List<GTRecipe> searchRecipe() {
         return machine.getRecipeType().searchRecipe(getRecipeManager(), this.machine);
     }
@@ -297,41 +273,36 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             if (completableFuture == null) {
                 // try to search recipe in threads.
                 if (ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
-                    completableFuture = supplyAsyncSearchingTask(timeStamp, 3);
+                    completableFuture = supplyAsyncSearchingTask();
                 } else {
                     handleSearchingRecipes(searchRecipe());
                 }
+            } else if (completableFuture.isDone()) {
+                if (!completableFuture.isCancelled()) {
+                    // if searching task is done, try to handle searched recipes.
+                    var matches = completableFuture.join();
+                    if (matches == null) {
+                        // if error occurred, try to search recipe again in main thread.
+                        handleSearchingRecipes(searchRecipe());
+                    } else {
+                        // else handle searched recipes in main thread.
+                        handleSearchingRecipes(matches.stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList());
+                    }
+                }
+                completableFuture = null;
             }
         }
         recipeDirty = false;
     }
 
-    private CompletableFuture<List<GTRecipe>> supplyAsyncSearchingTask(float lastTimeStamp, int retryTimes) {
+    private CompletableFuture<List<GTRecipe>> supplyAsyncSearchingTask() {
         var future = CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("Searching recipes", this::searchRecipe), Util.backgroundExecutor());
         future.exceptionally(e -> {
-                    GTCEu.LOGGER.error("Error when async searching recipe, please report it to GTM developers", e);
-                    return null;
-                })
-                .thenAcceptAsync(matches -> {
-                    completableFuture = null;
-                    // make sure it is not working enabled
-                    if (!isSuspend()) {
-                        if (matches == null) {
-                            // if error occurred, try to search recipe again in main thread.
-                            handleSearchingRecipes(searchRecipe());
-                        } else if (lastTimeStamp != timeStamp) {
-                            if (retryTimes > 0) {
-                                completableFuture = supplyAsyncSearchingTask(timeStamp, retryTimes - 1);
-                            } else {
-                                // if timeStamp is changed and the left retry times is zero, try to search recipe again in main thread.
-                                handleSearchingRecipes(searchRecipe());
-                            }
-                        } else {
-                            // else handle searched recipes in main thread.
-                            handleSearchingRecipes(matches);
-                        }
-                    }
-                }, Platform.getMinecraftServer());
+            if (!(e instanceof InterruptedException)) {
+                GTCEu.LOGGER.error("Error when async searching recipe, please report it to GTM developers", e);
+            }
+            return null;
+        });
         return future;
     }
 

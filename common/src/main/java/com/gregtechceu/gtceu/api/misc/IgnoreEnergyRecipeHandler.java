@@ -16,16 +16,6 @@ public class IgnoreEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public long getTimeStamp() {
-        return 0;
-    }
-
-    @Override
-    public void setTimeStamp(long timeStamp) {
-
-    }
-
-    @Override
     public RecipeCapability<Long> getCapability() {
         return EURecipeCapability.CAP;
     }

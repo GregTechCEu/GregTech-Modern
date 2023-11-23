@@ -35,9 +35,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Getter
-    @Setter
-    private long timeStamp;
     @Persisted
     public final FluidStorage[] storages;
     @Setter
@@ -46,7 +43,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io, IO capabilityIO) {
         super(machine);
-        this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = io;
         this.storages = new FluidStorage[slots];
         this.capabilityIO = capabilityIO;
@@ -58,7 +54,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public NotifiableFluidTank(MetaMachine machine, List<FluidStorage> storages, IO io, IO capabilityIO) {
         super(machine);
-        this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = io;
         this.storages = storages.toArray(FluidStorage[]::new);
         this.capabilityIO = capabilityIO;
@@ -80,7 +75,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public void onContentsChanged() {
         isEmpty = null;
-        updateTimeStamp(machine.getLevel());
         notifyListeners();
     }
 

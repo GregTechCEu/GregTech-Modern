@@ -37,16 +37,6 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
-    public long getTimeStamp() {
-        return 0;
-    }
-
-    @Override
-    public void setTimeStamp(long timeStamp) {
-
-    }
-
-    @Override
     public RecipeCapability<Ingredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
