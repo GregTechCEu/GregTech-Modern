@@ -6,7 +6,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
 import me.shedaniel.rei.api.common.entry.EntryIngredient;
 import me.shedaniel.rei.api.common.util.EntryIngredients;
-import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +21,10 @@ public class GTOreVeinDisplay extends ModularDisplay<WidgetGroup> {
 
     @Override
     public List<EntryIngredient> getOutputEntries() {
-        return new ArrayList<>();
+        List<EntryIngredient> ingredients = new ArrayList<>();
+        for (ItemStack outPut:GTOreVeinWidget.getContainedOresAndBlocks(oreDefinition)) {
+            ingredients.add(EntryIngredients.of(outPut));
+        }
+        return ingredients;
     }
 }
