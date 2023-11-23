@@ -62,6 +62,7 @@ public class GTRecipeBuilder {
     public final Map<RecipeCapability<?>, List<Content>> tickInput = new HashMap<>();
     public final Map<RecipeCapability<?>, List<Content>> output = new HashMap<>();
     public final Map<RecipeCapability<?>, List<Content>> tickOutput = new HashMap<>();
+    @Nonnull
     public CompoundTag data = new CompoundTag();
     public final List<RecipeCondition> conditions = new ArrayList<>();
     @Setter
@@ -85,7 +86,7 @@ public class GTRecipeBuilder {
     @Setter
     public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
     @Getter
-    private final Collection<ResearchRecipeEntry> recipeEntries = new ArrayList<>();
+    private final Collection<ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
     private boolean generatingRecipes = true;
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
@@ -214,6 +215,8 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder totalCWU(int cwu) {
+        var lastPerTick = perTick;
+        perTick = false;
         if (cwu > 0) {
             input.remove(CWURecipeCapability.CAP);
             inputCWU(cwu);
@@ -221,6 +224,7 @@ public class GTRecipeBuilder {
             output.remove(CWURecipeCapability.CAP);
             outputCWU(cwu);
         }
+        perTick = lastPerTick;
         return this;
     }
 
@@ -591,6 +595,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder rpm(float rpm) {
         return rpm(rpm, false);
     }
+
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
         if (researchEntry == null) {
@@ -603,21 +608,17 @@ public class GTRecipeBuilder {
             return false;
         }
 
-        if (data != null && data.contains("research")) {
-            ResearchData property = ResearchData.fromNBT(data.getList("research", Tag.TAG_COMPOUND));
-            if (property == null) throw new IllegalStateException("Property storage has a null property");
-            property.add(researchEntry);
-            return true;
-        }
-
-        ResearchData property = new ResearchData();
         if (this.data.contains("research", Tag.TAG_LIST)) {
+            ResearchData property = ResearchData.fromNBT(data.getList("research", Tag.TAG_COMPOUND));
+            property.add(researchEntry);
+            this.data.put("research", property.toNBT());
+            return true;
+        } else {
+            ResearchData property = new ResearchData();
             property.add(researchEntry);
             this.data.put("research", property.toNBT());
             return true;
         }
-
-        return false;
     }
 
     /**
@@ -634,7 +635,7 @@ public class GTRecipeBuilder {
      * Does not generate a research recipe.
      *
      * @param researchId the researchId for the recipe
-     * @param dataStack     the stack to hold the data. Must have the {@link IDataItem} behavior.
+     * @param dataStack the stack to hold the data. Must have the {@link IDataItem} behavior.
      * @return this
      */
     public GTRecipeBuilder researchWithoutRecipe(@Nonnull String researchId, @Nonnull ItemStack dataStack) {
@@ -649,7 +650,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
         ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
-            this.recipeEntries.add(entry);
+            this.researchRecipeEntries.add(entry);
         }
         return this;
     }
@@ -661,7 +662,7 @@ public class GTRecipeBuilder {
      * @return this
      */
     public GTRecipeBuilder scannerResearch(@Nonnull ItemStack researchStack) {
-        return scannerResearch(b -> new ResearchRecipeBuilder.ScannerRecipeBuilder().researchStack(researchStack));
+        return scannerResearch(b -> b.researchStack(researchStack));
     }
 
     /**
@@ -670,7 +671,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
         ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
         if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
-            this.recipeEntries.add(entry);
+            this.researchRecipeEntries.add(entry);
         }
         return this;
     }
@@ -746,6 +747,12 @@ public class GTRecipeBuilder {
     public void save(Consumer<FinishedRecipe> consumer) {
         if (onSave != null) {
             onSave.accept(this, consumer);
+        }
+        if (this.data.contains("research", Tag.TAG_LIST)) {
+            ResearchData data = ResearchData.fromNBT(this.data.getList("research", Tag.TAG_COMPOUND));
+            for (ResearchData.ResearchEntry entry : data) {
+                this.recipeType.addDataStickEntry(entry.getResearchId(), buildRawRecipe());
+            }
         }
         consumer.accept(build());
     }

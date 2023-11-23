@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.utils.AssemblyLineManager;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -21,9 +23,7 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -36,6 +36,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -70,6 +71,42 @@ public class GTRecipeWidget extends WidgetGroup {
                 .map(Arrays::stream)
                 .map(Stream::toList)
                 .collect(Collectors.toList());
+
+        List<List<ItemStack>> scannerPossibilities = null;
+        if (recipe.recipeType.isScanner()) {
+            scannerPossibilities = new ArrayList<>();
+            // Scanner Output replacing, used for cycling research outputs
+            String researchId = null;
+            for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                researchId = AssemblyLineManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+                if (researchId != null) break;
+            }
+            if (researchId != null) {
+                Collection<GTRecipe> possibleRecipes = GTRecipeTypes.ASSEMBLY_LINE_RECIPES.getDataStickEntry(researchId);
+                if (possibleRecipes != null) {
+                    for (GTRecipe r : possibleRecipes) {
+                        ItemStack researchItem = ItemRecipeCapability.CAP.of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        researchItem = researchItem.copy();
+                        researchItem.setCount(1);
+                        boolean didMatch = false;
+                        for (List<ItemStack> stacks : scannerPossibilities) {
+                            for (ItemStack stack : stacks) {
+                                if (ItemStack.isSameItem(stack, researchItem)) {
+                                    didMatch = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!didMatch) scannerPossibilities.add(List.of(researchItem));
+                    }
+                }
+                scannerPossibilities.add(outputStacks.get(0));
+            }
+        }
+
+        if (scannerPossibilities != null && !scannerPossibilities.isEmpty()) {
+            outputStacks = scannerPossibilities;
+        }
         while (outputStacks.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) outputStacks.add(null);
 
         List<Content> inputFluidContents = new ArrayList<>();

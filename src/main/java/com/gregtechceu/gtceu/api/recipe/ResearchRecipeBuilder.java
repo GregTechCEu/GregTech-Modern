@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.AssemblyLineManager;
+import lombok.NoArgsConstructor;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nonnull;
@@ -74,14 +75,13 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
     public abstract GTRecipeBuilder.ResearchRecipeEntry build();
 
+    @NoArgsConstructor
     public static class ScannerRecipeBuilder extends ResearchRecipeBuilder<ScannerRecipeBuilder> {
 
         public static final int DEFAULT_SCANNER_DURATION = 1200; // 60 secs
         public static final int DEFAULT_SCANNER_EUT = GTValues.VA[GTValues.HV];
 
         private int duration;
-
-        public ScannerRecipeBuilder() {/**/}
 
         public ScannerRecipeBuilder duration(int duration) {
             this.duration = duration;
@@ -102,6 +102,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
     }
 
+    @NoArgsConstructor
     public static class StationRecipeBuilder extends ResearchRecipeBuilder<StationRecipeBuilder> {
 
         public static final int DEFAULT_STATION_EUT = GTValues.VA[GTValues.LuV];
@@ -111,8 +112,6 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
         private int cwut;
         private int totalCWU;
-
-        public StationRecipeBuilder() {/**/}
 
         public StationRecipeBuilder CWUt(int cwut) {
             this.cwut = cwut;

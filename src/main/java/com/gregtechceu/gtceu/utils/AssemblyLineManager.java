@@ -113,7 +113,7 @@ public final class AssemblyLineManager {
     public static void createDefaultResearchRecipe(@Nonnull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
-        for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.recipeEntries()) {
+        for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.researchRecipeEntries()) {
             createDefaultResearchRecipe(entry.researchId(), entry.researchStack(), entry.dataStack(), entry.duration(), entry.EUt(), entry.CWUt(), provider);
         }
     }
@@ -125,7 +125,7 @@ public final class AssemblyLineManager {
         writeResearchToNBT(compound, researchId);
 
         if (CWUt > 0) {
-            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder(researchId)
+            GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))
                     .inputItems(dataItem.getItem())
                     .inputItems(researchItem)
                     .outputItems(dataItem)
@@ -134,7 +134,7 @@ public final class AssemblyLineManager {
                     .totalCWU(duration)
                     .save(provider);
         } else {
-            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(researchId)
+            GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))
                     .inputItems(dataItem.getItem())
                     .inputItems(researchItem)
                     .outputItems(dataItem)

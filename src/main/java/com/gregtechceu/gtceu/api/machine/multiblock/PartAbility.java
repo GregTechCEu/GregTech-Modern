@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.gregtechceu.gtceu.api.capability.IObjectHolder;
+import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.google.common.base.Suppliers;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
@@ -23,14 +25,14 @@ public class PartAbility {
     public static final PartAbility IMPORT_ITEMS = new PartAbility("import_items");
     public static final PartAbility EXPORT_FLUIDS = new PartAbility("export_fluids");
     public static final PartAbility IMPORT_FLUIDS = new PartAbility("import_fluids");
-    
+
     public static final PartAbility EXPORT_FLUIDS_1X = new PartAbility("export_fluids_1x");
     public static final PartAbility IMPORT_FLUIDS_1X = new PartAbility("import_fluids_1x");
     public static final PartAbility EXPORT_FLUIDS_4X = new PartAbility("export_fluids_4x");
     public static final PartAbility IMPORT_FLUIDS_4X = new PartAbility("import_fluids_4x");
     public static final PartAbility EXPORT_FLUIDS_9X = new PartAbility("export_fluids_9x");
     public static final PartAbility IMPORT_FLUIDS_9X = new PartAbility("import_fluids_9x");
-    
+
     public static final PartAbility INPUT_ENERGY = new PartAbility("input_energy");
     public static final PartAbility OUTPUT_ENERGY = new PartAbility("output_energy");
     public static final PartAbility SUBSTATION_INPUT_ENERGY = new PartAbility("substation_input_energy");
@@ -49,6 +51,12 @@ public class PartAbility {
     public static final PartAbility PARALLEL_HATCH = new PartAbility("parallel_hatch");
     public static final PartAbility INPUT_LASER = new PartAbility("input_laser");
     public static final PartAbility OUTPUT_LASER = new PartAbility("output_laser");
+
+    public static final PartAbility COMPUTATION_DATA_RECEPTION = new PartAbility("computation_data_reception");
+    public static final PartAbility COMPUTATION_DATA_TRANSMISSION = new PartAbility("computation_data_transmission");
+
+    public static final PartAbility HPCA_COMPONENT = new PartAbility("hpca_component");
+    public static final PartAbility OBJECT_HOLDER = new PartAbility("object_holder");
 
     /**
      * tier -> available blocks

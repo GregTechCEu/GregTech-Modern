@@ -108,11 +108,11 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
  * @implNote GTMachines
  */
 public class GTMachines {
-    public final static int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? MAX : UHV);
-    public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? OpV : UV);
-    public final static int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
-    public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
-    public final static int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public static final int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public static final int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? OpV : UV);
+    public static final int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
+    public static final int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
+    public static final int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8: tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
@@ -129,7 +129,7 @@ public class GTMachines {
     //////////////////////////////////////
     //******     Steam Machine    ******//
     //////////////////////////////////////
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines("steam_solid_boiler",
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLID_BOILER = registerSteamMachines("steam_solid_boiler",
             SteamSolidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(STEAM_BOILER_RECIPES)
@@ -138,7 +138,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 300 : 120) * FluidHelper.getBucket() / 20000))
                     .register());
 
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_liquid_boiler",
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_LIQUID_BOILER = registerSteamMachines("steam_liquid_boiler",
             SteamLiquidBoilerMachine::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(STEAM_BOILER_RECIPES)
@@ -147,7 +147,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
                     .register());
 
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines("steam_solar_boiler",
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines("steam_solar_boiler",
             SteamSolarBoiler::new,
             (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
                     .recipeType(STEAM_BOILER_RECIPES)
@@ -156,20 +156,20 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 360 : 120) * FluidHelper.getBucket() / 20000))
                     .register());
 
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_MACERATOR = registerSteamMachines("steam_macerator", SimpleSteamMachine::new, (pressure, builder) -> builder
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_MACERATOR = registerSteamMachines("steam_macerator", SimpleSteamMachine::new, (pressure, builder) -> builder
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
             .recipeModifier(SimpleSteamMachine::recipeModifier)
             .addOutputLimit(ItemRecipeCapability.CAP, 1)
             .renderer(() -> new WorkableSteamMachineRenderer(pressure, GTCEu.id("block/machines/macerator")))
             .register());
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_COMPRESSOR = registerSimpleSteamMachines("compressor", GTRecipeTypes.COMPRESSOR_RECIPES);
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_HAMMER = registerSimpleSteamMachines("forge_hammer", GTRecipeTypes.FORGE_HAMMER_RECIPES);
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_FURNACE = registerSimpleSteamMachines("furnace", GTRecipeTypes.FURNACE_RECIPES);
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_ALLOY_SMELTER = registerSimpleSteamMachines("alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
-    public final static Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines("rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
-    public final static MachineDefinition STEAM_MINER = REGISTRATE.machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_COMPRESSOR = registerSimpleSteamMachines("compressor", GTRecipeTypes.COMPRESSOR_RECIPES);
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_HAMMER = registerSimpleSteamMachines("forge_hammer", GTRecipeTypes.FORGE_HAMMER_RECIPES);
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_FURNACE = registerSimpleSteamMachines("furnace", GTRecipeTypes.FURNACE_RECIPES);
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_ALLOY_SMELTER = registerSimpleSteamMachines("alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
+    public static final Pair<MachineDefinition, MachineDefinition> STEAM_ROCK_CRUSHER = registerSimpleSteamMachines("rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
+    public static final MachineDefinition STEAM_MINER = REGISTRATE.machine("steam_miner", holder -> new SteamMinerMachine(holder, 320, 4, 0))
             .rotationState(RotationState.NON_Y_AXIS)
             .langValue("Steam Miner")
             .recipeType(DUMMY_RECIPES)
@@ -187,7 +187,7 @@ public class GTMachines {
     //////////////////////////////////////
     //***     SimpleTieredMachine    ***//
     //////////////////////////////////////
-    public final static MachineDefinition[] HULL = registerTieredMachines("machine_hull", HullMachine::new, (tier, builder) -> builder
+    public static final MachineDefinition[] HULL = registerTieredMachines("machine_hull", HullMachine::new, (tier, builder) -> builder
             .rotationState(RotationState.ALL)
             .overlayTieredHullRenderer("hull")
             .abilities(PartAbility.PASSTHROUGH_HATCH)
@@ -196,40 +196,41 @@ public class GTMachines {
             .compassNode("machine_hull")
             .register(), ALL_TIERS);
 
-    public final static MachineDefinition[] ELECTRIC_FURNACE = registerSimpleMachines("electric_furnace", GTRecipeTypes.FURNACE_RECIPES);
-    public final static MachineDefinition[] ALLOY_SMELTER = registerSimpleMachines("alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
-    public final static MachineDefinition[] ARC_FURNACE = registerSimpleMachines("arc_furnace", GTRecipeTypes.ARC_FURNACE_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] ASSEMBLER = registerSimpleMachines("assembler", GTRecipeTypes.ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] AUTOCLAVE = registerSimpleMachines("autoclave", GTRecipeTypes.AUTOCLAVE_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] BENDER = registerSimpleMachines("bender", GTRecipeTypes.BENDER_RECIPES);
-    public final static MachineDefinition[] BREWERY = registerSimpleMachines("brewery", GTRecipeTypes.BREWING_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] CANNER = registerSimpleMachines("canner", GTRecipeTypes.CANNER_RECIPES);
-    public final static MachineDefinition[] CENTRIFUGE = registerSimpleMachines("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES, largeTankSizeFunction);
-    public final static MachineDefinition[] CHEMICAL_BATH = registerSimpleMachines("chemical_bath", GTRecipeTypes.CHEMICAL_BATH_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] CHEMICAL_REACTOR = registerSimpleMachines("chemical_reactor", GTRecipeTypes.CHEMICAL_RECIPES, tier -> 16 * FluidHelper.getBucket());
-    public final static MachineDefinition[] COMPRESSOR = registerSimpleMachines("compressor", GTRecipeTypes.COMPRESSOR_RECIPES);
-    public final static MachineDefinition[] CUTTER = registerSimpleMachines("cutter", GTRecipeTypes.CUTTER_RECIPES);
-    public final static MachineDefinition[] DISTILLERY = registerSimpleMachines("distillery", GTRecipeTypes.DISTILLERY_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] ELECTROLYZER = registerSimpleMachines("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES, largeTankSizeFunction);
-    public final static MachineDefinition[] ELECTROMAGNETIC_SEPARATOR = registerSimpleMachines("electromagnetic_separator", GTRecipeTypes.ELECTROMAGNETIC_SEPARATOR_RECIPES);
-    public final static MachineDefinition[] EXTRACTOR = registerSimpleMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
-    public final static MachineDefinition[] EXTRUDER = registerSimpleMachines("extruder", GTRecipeTypes.EXTRUDER_RECIPES);
-    public final static MachineDefinition[] FERMENTER = registerSimpleMachines("fermenter", GTRecipeTypes.FERMENTING_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] FLUID_HEATER = registerSimpleMachines("fluid_heater", GTRecipeTypes.FLUID_HEATER_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] FLUID_SOLIDIFIER = registerSimpleMachines("fluid_solidifier", GTRecipeTypes.FLUID_SOLIDFICATION_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] FORGE_HAMMER = registerSimpleMachines("forge_hammer", GTRecipeTypes.FORGE_HAMMER_RECIPES);
-    public final static MachineDefinition[] FORMING_PRESS = registerSimpleMachines("forming_press", GTRecipeTypes.FORMING_PRESS_RECIPES);
-    public final static MachineDefinition[] LATHE = registerSimpleMachines("lathe", GTRecipeTypes.LATHE_RECIPES);
-    public final static MachineDefinition[] MIXER = registerSimpleMachines("mixer", GTRecipeTypes.MIXER_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] ORE_WASHER = registerSimpleMachines("ore_washer", GTRecipeTypes.ORE_WASHER_RECIPES);
-    public final static MachineDefinition[] PACKER = registerSimpleMachines("packer", GTRecipeTypes.PACKER_RECIPES);
-    public final static MachineDefinition[] POLARIZER = registerSimpleMachines("polarizer", GTRecipeTypes.POLARIZER_RECIPES);
-    public final static MachineDefinition[] LASER_ENGRAVER = registerSimpleMachines("laser_engraver", GTRecipeTypes.LASER_ENGRAVER_RECIPES);
-    public final static MachineDefinition[] SIFTER = registerSimpleMachines("sifter", GTRecipeTypes.SIFTER_RECIPES);
-    public final static MachineDefinition[] THERMAL_CENTRIFUGE = registerSimpleMachines("thermal_centrifuge", GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES);
-    public final static MachineDefinition[] WIREMILL = registerSimpleMachines("wiremill", GTRecipeTypes.WIREMILL_RECIPES);
-    public final static MachineDefinition[] CIRCUIT_ASSEMBLER = registerSimpleMachines("circuit_assembler", GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
-    public final static MachineDefinition[] MACERATOR = registerTieredMachines("macerator", (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
+    public static final MachineDefinition[] ELECTRIC_FURNACE = registerSimpleMachines("electric_furnace", GTRecipeTypes.FURNACE_RECIPES);
+    public static final MachineDefinition[] ALLOY_SMELTER = registerSimpleMachines("alloy_smelter", GTRecipeTypes.ALLOY_SMELTER_RECIPES);
+    public static final MachineDefinition[] ARC_FURNACE = registerSimpleMachines("arc_furnace", GTRecipeTypes.ARC_FURNACE_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] ASSEMBLER = registerSimpleMachines("assembler", GTRecipeTypes.ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] AUTOCLAVE = registerSimpleMachines("autoclave", GTRecipeTypes.AUTOCLAVE_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] BENDER = registerSimpleMachines("bender", GTRecipeTypes.BENDER_RECIPES);
+    public static final MachineDefinition[] BREWERY = registerSimpleMachines("brewery", GTRecipeTypes.BREWING_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] CANNER = registerSimpleMachines("canner", GTRecipeTypes.CANNER_RECIPES);
+    public static final MachineDefinition[] CENTRIFUGE = registerSimpleMachines("centrifuge", GTRecipeTypes.CENTRIFUGE_RECIPES, largeTankSizeFunction);
+    public static final MachineDefinition[] CHEMICAL_BATH = registerSimpleMachines("chemical_bath", GTRecipeTypes.CHEMICAL_BATH_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] CHEMICAL_REACTOR = registerSimpleMachines("chemical_reactor", GTRecipeTypes.CHEMICAL_RECIPES, tier -> 16 * FluidHelper.getBucket());
+    public static final MachineDefinition[] COMPRESSOR = registerSimpleMachines("compressor", GTRecipeTypes.COMPRESSOR_RECIPES);
+    public static final MachineDefinition[] CUTTER = registerSimpleMachines("cutter", GTRecipeTypes.CUTTER_RECIPES);
+    public static final MachineDefinition[] DISTILLERY = registerSimpleMachines("distillery", GTRecipeTypes.DISTILLERY_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] ELECTROLYZER = registerSimpleMachines("electrolyzer", GTRecipeTypes.ELECTROLYZER_RECIPES, largeTankSizeFunction);
+    public static final MachineDefinition[] ELECTROMAGNETIC_SEPARATOR = registerSimpleMachines("electromagnetic_separator", GTRecipeTypes.ELECTROMAGNETIC_SEPARATOR_RECIPES);
+    public static final MachineDefinition[] EXTRACTOR = registerSimpleMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
+    public static final MachineDefinition[] EXTRUDER = registerSimpleMachines("extruder", GTRecipeTypes.EXTRUDER_RECIPES);
+    public static final MachineDefinition[] FERMENTER = registerSimpleMachines("fermenter", GTRecipeTypes.FERMENTING_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] FLUID_HEATER = registerSimpleMachines("fluid_heater", GTRecipeTypes.FLUID_HEATER_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] FLUID_SOLIDIFIER = registerSimpleMachines("fluid_solidifier", GTRecipeTypes.FLUID_SOLIDFICATION_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] FORGE_HAMMER = registerSimpleMachines("forge_hammer", GTRecipeTypes.FORGE_HAMMER_RECIPES);
+    public static final MachineDefinition[] FORMING_PRESS = registerSimpleMachines("forming_press", GTRecipeTypes.FORMING_PRESS_RECIPES);
+    public static final MachineDefinition[] LATHE = registerSimpleMachines("lathe", GTRecipeTypes.LATHE_RECIPES);
+    public static final MachineDefinition[] SCANNER = registerSimpleMachines("scanner", GTRecipeTypes.SCANNER_RECIPES);
+    public static final MachineDefinition[] MIXER = registerSimpleMachines("mixer", GTRecipeTypes.MIXER_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] ORE_WASHER = registerSimpleMachines("ore_washer", GTRecipeTypes.ORE_WASHER_RECIPES);
+    public static final MachineDefinition[] PACKER = registerSimpleMachines("packer", GTRecipeTypes.PACKER_RECIPES);
+    public static final MachineDefinition[] POLARIZER = registerSimpleMachines("polarizer", GTRecipeTypes.POLARIZER_RECIPES);
+    public static final MachineDefinition[] LASER_ENGRAVER = registerSimpleMachines("laser_engraver", GTRecipeTypes.LASER_ENGRAVER_RECIPES);
+    public static final MachineDefinition[] SIFTER = registerSimpleMachines("sifter", GTRecipeTypes.SIFTER_RECIPES);
+    public static final MachineDefinition[] THERMAL_CENTRIFUGE = registerSimpleMachines("thermal_centrifuge", GTRecipeTypes.THERMAL_CENTRIFUGE_RECIPES);
+    public static final MachineDefinition[] WIREMILL = registerSimpleMachines("wiremill", GTRecipeTypes.WIREMILL_RECIPES);
+    public static final MachineDefinition[] CIRCUIT_ASSEMBLER = registerSimpleMachines("circuit_assembler", GTRecipeTypes.CIRCUIT_ASSEMBLER_RECIPES, hvCappedTankSizeFunction);
+    public static final MachineDefinition[] MACERATOR = registerTieredMachines("macerator", (holder, tier) -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction), (tier, builder) -> builder
             .langValue("%s Macerator %s".formatted(VLVH[tier], VLVT[tier]))
             .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("macerator"), GTRecipeTypes.MACERATOR_RECIPES))
             .rotationState(RotationState.NON_Y_AXIS)
@@ -244,8 +245,8 @@ public class GTMachines {
             .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.apply(tier), true))
             .compassNode("macerator")
             .register(), ELECTRIC_TIERS);
-    public final static MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector", GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction);
-    public final static MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher", RockCrusherMachine::new, (tier, builder) -> builder
+    public static final MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector", GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction);
+    public static final MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher", RockCrusherMachine::new, (tier, builder) -> builder
         .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
         .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("rock_crusher"), GTRecipeTypes.ROCK_BREAKER_RECIPES))
         .rotationState(RotationState.NON_Y_AXIS)
@@ -260,18 +261,18 @@ public class GTMachines {
     //////////////////////////////////////
     //****     Simple Generator     ****//
     //////////////////////////////////////
-    public final static MachineDefinition[] COMBUSTION = registerSimpleGenerator("combustion", GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, genericGeneratorTankSizeFunction, GTValues.LV, GTValues.MV, GTValues.HV);
-    public final static MachineDefinition[] STEAM_TURBINE = registerSimpleGenerator("steam_turbine", GTRecipeTypes.STEAM_TURBINE_FUELS, steamGeneratorTankSizeFunction, GTValues.LV, GTValues.MV, GTValues.HV);
-    public final static MachineDefinition[] GAS_TURBINE = registerSimpleGenerator("gas_turbine", GTRecipeTypes.GAS_TURBINE_FUELS, genericGeneratorTankSizeFunction, GTValues.LV, GTValues.MV, GTValues.HV);
+    public static final MachineDefinition[] COMBUSTION = registerSimpleGenerator("combustion", GTRecipeTypes.COMBUSTION_GENERATOR_FUELS, genericGeneratorTankSizeFunction, GTValues.LV, GTValues.MV, GTValues.HV);
+    public static final MachineDefinition[] STEAM_TURBINE = registerSimpleGenerator("steam_turbine", GTRecipeTypes.STEAM_TURBINE_FUELS, steamGeneratorTankSizeFunction, GTValues.LV, GTValues.MV, GTValues.HV);
+    public static final MachineDefinition[] GAS_TURBINE = registerSimpleGenerator("gas_turbine", GTRecipeTypes.GAS_TURBINE_FUELS, genericGeneratorTankSizeFunction, GTValues.LV, GTValues.MV, GTValues.HV);
 
 
     //////////////////////////////////////
     //********     Electric     ********//
     //////////////////////////////////////
-    public final static MachineDefinition[] TRANSFORMER = registerTransformerMachines("", 1);
-    public final static MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("Hi-Amp (2x) ", 2);
-    public final static MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("Hi-Amp (4x) ", 4);
-    public final static MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("Power ", 16);
+    public static final MachineDefinition[] TRANSFORMER = registerTransformerMachines("", 1);
+    public static final MachineDefinition[] HI_AMP_TRANSFORMER_2A = registerTransformerMachines("Hi-Amp (2x) ", 2);
+    public static final MachineDefinition[] HI_AMP_TRANSFORMER_4A = registerTransformerMachines("Hi-Amp (4x) ", 4);
+    public static final MachineDefinition[] POWER_TRANSFORMER = registerTransformerMachines("Power ", 16);
 
     public static final MachineDefinition[] ENERGY_CONVERTER_1A = registerConverter(1);
     public static final MachineDefinition[] ENERGY_CONVERTER_4A = registerConverter(4);
@@ -308,15 +309,15 @@ public class GTMachines {
             .compassNode("ld_fluid_pipeline")
             .register();
 
-    public final static MachineDefinition[] BATTERY_BUFFER_4 = registerBatteryBuffer(4);
+    public static final MachineDefinition[] BATTERY_BUFFER_4 = registerBatteryBuffer(4);
 
-    public final static MachineDefinition[] BATTERY_BUFFER_8 = registerBatteryBuffer(8);
+    public static final MachineDefinition[] BATTERY_BUFFER_8 = registerBatteryBuffer(8);
 
-    public final static MachineDefinition[] BATTERY_BUFFER_16 = registerBatteryBuffer(16);
+    public static final MachineDefinition[] BATTERY_BUFFER_16 = registerBatteryBuffer(16);
 
-    public final static MachineDefinition[] CHARGER_4 = registerCharger(4);
+    public static final MachineDefinition[] CHARGER_4 = registerCharger(4);
 
-    public final static MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
+    public static final MachineDefinition[] PUMP = registerTieredMachines("pump", PumpMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .renderer(() -> new TieredHullMachineRenderer(tier, GTCEu.id("block/machine/pump_machine")))
@@ -330,7 +331,7 @@ public class GTMachines {
                     .register(),
             LV, MV, HV, EV);
 
-    public final static MachineDefinition[] FISHER = registerTieredMachines("fisher", FisherMachine::new,
+    public static final MachineDefinition[] FISHER = registerTieredMachines("fisher", FisherMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .editableUI(FisherMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("fisher"), (tier + 1) * (tier + 1)))
@@ -345,7 +346,7 @@ public class GTMachines {
                     .register(),
             LV, MV, HV, EV);
 
-    public final static MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker", BlockBreakerMachine::new,
+    public static final MachineDefinition[] BLOCK_BREAKER = registerTieredMachines("block_breaker", BlockBreakerMachine::new,
             (tier, builder) -> builder
                     .rotationState(RotationState.NON_Y_AXIS)
                     .editableUI(BlockBreakerMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("block_breaker"), (tier + 1) * (tier + 1)))
@@ -426,21 +427,21 @@ public class GTMachines {
     //////////////////////////////////////
     //*********     Storage    *********//
     //////////////////////////////////////
-    public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("creative_energy", CreativeEnergyContainerMachine::new)
+    public static final MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("creative_energy", CreativeEnergyContainerMachine::new)
         .rotationState(RotationState.NONE)
         .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
             Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
             Component.translatable("gtceu.creative_tooltip.3"))
         .compassNodeSelf()
         .register();
-    public final static MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
+    public static final MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
         .rotationState(RotationState.ALL)
         .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
             Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
             Component.translatable("gtceu.creative_tooltip.3"))
         .compassNodeSelf()
         .register();
-    public final static MachineDefinition CREATIVE_ITEM = REGISTRATE.machine("creative_chest", CreativeChestMachine::new)
+    public static final MachineDefinition CREATIVE_ITEM = REGISTRATE.machine("creative_chest", CreativeChestMachine::new)
         .rotationState(RotationState.ALL)
         .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
             Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
@@ -457,7 +458,7 @@ public class GTMachines {
         }
     };
 
-    public final static MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
+    public static final MachineDefinition[] SUPER_CHEST = registerTieredMachines("super_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier, 4000000 * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Super Chest " + LVT[tier + 1 - LOW_TIERS[0]])
@@ -471,7 +472,7 @@ public class GTMachines {
                     .register(),
             LOW_TIERS);
 
-    public final static MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
+    public static final MachineDefinition[] QUANTUM_CHEST = registerTieredMachines("quantum_chest",
             (holder, tier) -> new QuantumChestMachine(holder, tier, tier == GTValues.UHV ? Integer.MAX_VALUE : 4000000 * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Quantum Chest " + LVT[tier + 1 - LOW_TIERS[0]])
@@ -494,7 +495,7 @@ public class GTMachines {
         };
     }
 
-    public final static MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
+    public static final MachineDefinition[] SUPER_TANK = registerTieredMachines("super_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier, 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Super Tank " + LVT[tier + 1 - LOW_TIERS[0]])
@@ -508,7 +509,7 @@ public class GTMachines {
                     .register(),
             LOW_TIERS);
 
-    public final static MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
+    public static final MachineDefinition[] QUANTUM_TANK = registerTieredMachines("quantum_tank",
             (holder, tier) -> new QuantumTankMachine(holder, tier, tier == GTValues.UHV ? Integer.MAX_VALUE : 4000 * FluidHelper.getBucket() * (int) Math.pow(2, tier)),
             (tier, builder) -> builder
                     .langValue("Quantum Tank " + LVT[tier + 1 - LOW_TIERS[0]])
@@ -543,7 +544,7 @@ public class GTMachines {
     //////////////////////////////////////
     //**********     Part     **********//
     //////////////////////////////////////
-    public final static MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("input_bus",
+    public static final MachineDefinition[] ITEM_IMPORT_BUS = registerTieredMachines("input_bus",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.IN),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Bus")
@@ -556,7 +557,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("output_bus",
+    public static final MachineDefinition[] ITEM_EXPORT_BUS = registerTieredMachines("output_bus",
             (holder, tier) -> new ItemBusPartMachine(holder, tier, IO.OUT),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Bus")
@@ -569,6 +570,20 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
+    public static final MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("input_hatch",
+            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
+            (tier, builder) -> builder
+                    .langValue(VNF[tier] + " Input Hatch")
+                    .rotationState(RotationState.ALL)
+                    .abilities(PartAbility.IMPORT_FLUIDS)
+                    .overlayTieredHullRenderer("fluid_hatch.import")
+                    .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
+                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", (8 * FluidHelper.getBucket()) * (1L << Math.min(9, tier))))
+                    .compassNode("fluid_hatch")
+                    .register(),
+            ALL_TIERS);
+
+    public static final MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("output_hatch",
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
             "input_hatch", "Input Hatch", "fluid_hatch.import",
@@ -608,7 +623,7 @@ public class GTMachines {
             PartAbility.EXPORT_FLUIDS, PartAbility.EXPORT_FLUIDS_9X
     );
 
-    public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
+    public static final MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Energy Hatch")
@@ -620,7 +635,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_output_hatch",
+    public static final MachineDefinition[] ENERGY_OUTPUT_HATCH = registerTieredMachines("energy_output_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 2),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Dynamo Hatch")
@@ -632,7 +647,7 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_input_hatch_4a",
+    public static final MachineDefinition[] ENERGY_INPUT_HATCH_4A = registerTieredMachines("energy_input_hatch_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Energy Hatch")
@@ -644,7 +659,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_output_hatch_4a",
+    public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_output_hatch_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 4A Dynamo Hatch")
@@ -656,7 +671,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_input_hatch_16a",
+    public static final MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_input_hatch_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Energy Hatch")
@@ -668,7 +683,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_output_hatch_16a",
+    public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_output_hatch_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 16A Dynamo Hatch")
@@ -680,7 +695,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] SUBSTATION_ENERGY_INPUT_HATCH = registerTieredMachines("substation_input_hatch_64a",
+    public static final MachineDefinition[] SUBSTATION_ENERGY_INPUT_HATCH = registerTieredMachines("substation_input_hatch_64a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 64),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 64A Substation Energy Hatch")
@@ -692,7 +707,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] SUBSTATION_ENERGY_OUTPUT_HATCH = registerTieredMachines("substation_output_hatch_64a",
+    public static final MachineDefinition[] SUBSTATION_ENERGY_OUTPUT_HATCH = registerTieredMachines("substation_output_hatch_64a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 64),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " 64A Substation Dynamo Hatch")
@@ -704,7 +719,7 @@ public class GTMachines {
                     .register(),
             EV, IV, LuV, ZPM, UV, UHV);
 
-    public final static MachineDefinition[] MUFFLER_HATCH = registerTieredMachines("muffler_hatch",
+    public static final MachineDefinition[] MUFFLER_HATCH = registerTieredMachines("muffler_hatch",
             MufflerPartMachine::new,
             (tier, builder) -> builder
                     .langValue("Muffler Hatch " + VNF[tier])
@@ -719,7 +734,7 @@ public class GTMachines {
                     .register(),
             ELECTRIC_TIERS);
 
-    public final static MachineDefinition STEAM_IMPORT_BUS = REGISTRATE.machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IO.IN))
+    public static final MachineDefinition STEAM_IMPORT_BUS = REGISTRATE.machine("steam_input_bus", holder -> new SteamItemBusPartMachine(holder, IO.IN))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_IMPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.import")
@@ -728,7 +743,7 @@ public class GTMachines {
             .compassNode("item_bus")
             .register();
 
-    public final static MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
+    public static final MachineDefinition STEAM_EXPORT_BUS = REGISTRATE.machine("steam_output_bus", holder -> new SteamItemBusPartMachine(holder, IO.OUT))
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM_EXPORT_ITEMS)
             .overlaySteamHullRenderer("item_bus.export")
@@ -737,7 +752,7 @@ public class GTMachines {
             .compassNode("item_bus")
             .register();
 
-    public final static MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_input_hatch", SteamHatchPartMachine::new)
+    public static final MachineDefinition STEAM_HATCH = REGISTRATE.machine("steam_input_hatch", SteamHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.STEAM)
             .overlaySteamHullRenderer("steam_hatch")
@@ -747,14 +762,14 @@ public class GTMachines {
             .compassNode("steam_hatch")
             .register();
 
-    public final static MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
+    public static final MachineDefinition COKE_OVEN_HATCH = REGISTRATE.machine("coke_oven_hatch", CokeOvenHatch::new)
             .rotationState(RotationState.ALL)
             .modelRenderer(() -> GTCEu.id("block/machine/part/coke_oven_hatch"))
             .compassSections(GTCompassSections.STEAM)
             .compassNode("coke_oven_hatch")
             .register();
 
-    public final static MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
+    public static final MachineDefinition PUMP_HATCH = REGISTRATE.machine("pump_hatch", PumpHatchPartMachine::new)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.PUMP_FLUID_HATCH)
             .renderer(PumpHatchPartRenderer::new)
@@ -864,20 +879,43 @@ public class GTMachines {
     public static final MachineDefinition[] LASER_INPUT_HATCH_4096 = registerLaserHatch(IO.IN, 4096, PartAbility.INPUT_LASER);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_4096 = registerLaserHatch(IO.OUT, 4096, PartAbility.OUTPUT_LASER);
 
+    public static final MachineDefinition OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderMachine::new)
+            .langValue("Object Holder")
+            .tier(ZPM)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.OBJECT_HOLDER)
+            .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"), GTCEu.id("block/machine/part/object_holder_active")))
+            .register();
+
+    public static final MachineDefinition COMPUTATION_HATCH_TRANSMITTER = REGISTRATE.machine("computation_transmitter_hatch", (holder) -> new OpticalComputationHatchMachine(holder, true))
+            .langValue("Computation Transmitter Hatch")
+            .tier(ZPM)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION)
+            .overlayTieredHullRenderer("optical_data_access_hatch")
+            .register();
+
+    public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = REGISTRATE.machine("computation_receiver_hatch", (holder) -> new OpticalComputationHatchMachine(holder, false))
+            .langValue("Computation Receiver Hatch")
+            .tier(ZPM)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.COMPUTATION_DATA_RECEPTION)
+            .overlayTieredHullRenderer("optical_data_access_hatch")
+            .register();
 
     //////////////////////////////////////
     //*******     Multiblock     *******//
     //////////////////////////////////////
-    public final static MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
+    public static final MultiblockMachineDefinition LARGE_BOILER_BRONZE = registerLargeBoiler("bronze", CASING_BRONZE_BRICKS, CASING_BRONZE_PIPE, FIREBOX_BRONZE,
             GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"), BoilerFireboxType.BRONZE_FIREBOX, 800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
+    public static final MultiblockMachineDefinition LARGE_BOILER_STEEL = registerLargeBoiler("steel", CASING_STEEL_SOLID, CASING_STEEL_PIPE, FIREBOX_STEEL,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"), BoilerFireboxType.STEEL_FIREBOX, 1800, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
+    public static final MultiblockMachineDefinition LARGE_BOILER_TITANIUM = registerLargeBoiler("titanium", CASING_TITANIUM_STABLE, CASING_TITANIUM_PIPE, FIREBOX_TITANIUM,
             GTCEu.id("block/casings/solid/machine_casing_stable_titanium"), BoilerFireboxType.TITANIUM_FIREBOX, 3200, 1);
-    public final static MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
+    public static final MultiblockMachineDefinition LARGE_BOILER_TUNGSTENSTEEL = registerLargeBoiler("tungstensteel", CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_PIPE, FIREBOX_TUNGSTENSTEEL,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"), BoilerFireboxType.TUNGSTENSTEEL_FIREBOX, 6400, 2);
 
-    public final static MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
+    public static final MultiblockMachineDefinition COKE_OVEN = REGISTRATE.multiblock("coke_oven", CokeOvenMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.COKE_OVEN_RECIPES)
             .appearanceBlock(CASING_COKE_BRICKS)
@@ -895,7 +933,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE.multiblock("primitive_blast_furnace", PrimitiveBlastFurnaceMachine::new)
+    public static final MultiblockMachineDefinition PRIMITIVE_BLAST_FURNACE = REGISTRATE.multiblock("primitive_blast_furnace", PrimitiveBlastFurnaceMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.PRIMITIVE_BLAST_FURNACE_RECIPES)
             .appearanceBlock(CASING_PRIMITIVE_BRICKS)
@@ -913,7 +951,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE.multiblock("electric_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition ELECTRIC_BLAST_FURNACE = REGISTRATE.multiblock("electric_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.BLAST_RECIPES)
             .recipeModifier(GTRecipeModifiers::ebfOverclock)
@@ -967,7 +1005,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE.multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition LARGE_CHEMICAL_REACTOR = REGISTRATE.multiblock("large_chemical_reactor", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.LARGE_CHEMICAL_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.PERFECT_OVERCLOCK))
@@ -1039,7 +1077,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition IMPLOSION_COMPRESSOR = REGISTRATE.multiblock("implosion_compressor", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition IMPLOSION_COMPRESSOR = REGISTRATE.multiblock("implosion_compressor", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.IMPLOSION_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -1060,7 +1098,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE.multiblock("pyrolyse_oven", CoilWorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition PYROLYSE_OVEN = REGISTRATE.multiblock("pyrolyse_oven", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.PYROLYSE_RECIPES)
             .recipeModifier(GTRecipeModifiers::pyrolyseOvenOverclock)
@@ -1110,7 +1148,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
@@ -1159,7 +1197,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition CRACKER = REGISTRATE.multiblock("cracker", CoilWorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition CRACKER = REGISTRATE.multiblock("cracker", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.CRACKING_RECIPES)
             .recipeModifier(GTRecipeModifiers::crackerOverclock)
@@ -1207,7 +1245,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE.multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition DISTILLATION_TOWER = REGISTRATE.multiblock("distillation_tower", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.DISTILLATION_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -1232,7 +1270,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE.multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition VACUUM_FREEZER = REGISTRATE.multiblock("vacuum_freezer", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.VACUUM_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -1253,7 +1291,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE.multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
+    public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE.multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
@@ -1280,7 +1318,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE.multiblock("primitive_pump", PrimitivePumpMachine::new)
+    public static final MultiblockMachineDefinition PRIMITIVE_PUMP = REGISTRATE.multiblock("primitive_pump", PrimitivePumpMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(CASING_PUMP_DECK)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -1298,7 +1336,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE.multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
+    public static final MultiblockMachineDefinition STEAM_GRINDER = REGISTRATE.multiblock("steam_grinder", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(CASING_BRONZE_BRICKS)
             .recipeType(GTRecipeTypes.MACERATOR_RECIPES)
@@ -1321,7 +1359,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition STEAM_OVEN = REGISTRATE.multiblock("steam_oven", SteamParallelMultiblockMachine::new)
+    public static final MultiblockMachineDefinition STEAM_OVEN = REGISTRATE.multiblock("steam_oven", SteamParallelMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .appearanceBlock(CASING_BRONZE_BRICKS)
             .recipeType(GTRecipeTypes.FURNACE_RECIPES)
@@ -1577,36 +1615,36 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_COMBUSTION_ENGINE = registerLargeCombustionEngine("large_combustion_engine", EV,
+    public static final MultiblockMachineDefinition LARGE_COMBUSTION_ENGINE = registerLargeCombustionEngine("large_combustion_engine", EV,
             CASING_TITANIUM_STABLE, CASING_TITANIUM_GEARBOX, CASING_ENGINE_INTAKE,
             GTCEu.id("block/casings/solid/machine_casing_stable_titanium"),
             GTCEu.id("block/multiblock/generator/large_combustion_engine"));
 
-    public final static MultiblockMachineDefinition EXTREME_COMBUSTION_ENGINE = registerLargeCombustionEngine("extreme_combustion_engine", IV,
+    public static final MultiblockMachineDefinition EXTREME_COMBUSTION_ENGINE = registerLargeCombustionEngine("extreme_combustion_engine", IV,
             CASING_TUNGSTENSTEEL_ROBUST, CASING_TUNGSTENSTEEL_GEARBOX, CASING_EXTREME_ENGINE_INTAKE,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/extreme_combustion_engine"));
 
-    public final static MultiblockMachineDefinition LARGE_STEAM_TURBINE = registerLargeTurbine("steam_large_turbine", HV,
+    public static final MultiblockMachineDefinition LARGE_STEAM_TURBINE = registerLargeTurbine("steam_large_turbine", HV,
             GTRecipeTypes.STEAM_TURBINE_FUELS,
             CASING_STEEL_TURBINE, CASING_STEEL_GEARBOX,
             GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
             GTCEu.id("block/multiblock/generator/large_steam_turbine"));
 
-    public final static MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
+    public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
             GTRecipeTypes.GAS_TURBINE_FUELS,
             CASING_STAINLESS_CLEAN, CASING_STAINLESS_STEEL_GEARBOX,
             GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
             GTCEu.id("block/multiblock/generator/large_gas_turbine"));
 
-    public final static MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine("plasma_large_turbine", IV,
+    public static final MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine("plasma_large_turbine", IV,
             GTRecipeTypes.PLASMA_GENERATOR_FUELS,
             CASING_TUNGSTENSTEEL_TURBINE, CASING_TUNGSTENSTEEL_GEARBOX,
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
     @SuppressWarnings("removal")
-    public final static MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ? registerTieredMultis("processing_array", ProcessingArrayMachine::new,
+    public static final MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ? registerTieredMultis("processing_array", ProcessingArrayMachine::new,
             (tier, builder) ->  builder
                     .langValue(VNF[tier] + " Processing Array")
                     .rotationState(RotationState.NON_Y_AXIS)
@@ -1640,6 +1678,55 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.deprecated"))
                     .register(),
             IV, LuV) : null;
+
+    public static final MultiblockMachineDefinition RESEARCH_STATION = REGISTRATE.multiblock("research_station", ResearchStationMachine::new)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(GTRecipeTypes.RESEARCH_STATION_RECIPES)
+            .appearanceBlock(COMPUTER_CASING)
+            .tooltips(LangHandler.getMultiLang("gtceu.machine.research_station.tooltip").toArray(Component[]::new))
+            .pattern(defintion -> FactoryBlockPattern.start()
+                    .aisle("XXX", "VVV", "PPP", "PPP", "PPP", "VVV", "XXX")
+                    .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
+                    .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
+                    .aisle("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
+                    .aisle(" X ", "XAX", "---", "---", "---", "XAX", " X ")
+                    .aisle(" X ", "XAX", "-A-", "-H-", "-A-", "XAX", " X ")
+                    .aisle("   ", "XXX", "---", "---", "---", "XXX", "   ")
+                    .where('S', controller(blocks(defintion.getBlock())))
+                    .where('X', blocks(COMPUTER_CASING.get()))
+                    .where(' ', any())
+                    .where('-', air())
+                    .where('V', blocks(COMPUTER_HEAT_VENT.get()))
+                    .where('A', blocks(ADVANCED_COMPUTER_CASING.get()))
+                    .where('P', blocks(COMPUTER_CASING.get())
+                            .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1))
+                            .or(abilities(PartAbility.MAINTENANCE)
+                                    .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1))
+                            .or(abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setExactLimit(1)))
+                    .where('H', abilities(PartAbility.OBJECT_HOLDER))
+                    .build())
+            .shapeInfo(definition -> MultiblockShapeInfo.builder()
+                    .aisle("XXX", "VVV", "POP", "PEP", "PMP", "VVV", "XXX")
+                    .aisle("XXX", "VAV", "AAA", "AAA", "AAA", "VAV", "XXX")
+                    .aisle("XXX", "VAV", "XAX", "XSX", "XAX", "VAV", "XXX")
+                    .aisle("XXX", "XAX", "---", "---", "---", "XAX", "XXX")
+                    .aisle("-X-", "XAX", "---", "---", "---", "XAX", "-X-")
+                    .aisle("-X-", "XAX", "-A-", "-H-", "-A-", "XAX", "-X-")
+                    .aisle("---", "XXX", "---", "---", "---", "XXX", "---")
+                    .where('S', GTMachines.RESEARCH_STATION, Direction.SOUTH)
+                    .where('X', COMPUTER_CASING.get())
+                    .where('-', Blocks.AIR)
+                    .where('V', COMPUTER_HEAT_VENT.get())
+                    .where('A', ADVANCED_COMPUTER_CASING.get())
+                    .where('P', COMPUTER_CASING.get())
+                    .where('O', GTMachines.COMPUTATION_HATCH_RECEIVER, Direction.NORTH)
+                    .where('E', GTMachines.ENERGY_INPUT_HATCH[GTValues.LuV], Direction.NORTH)
+                    .where('M', ConfigHolder.INSTANCE.machines.enableMaintenance ? GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(GTMachines.MAINTENANCE_HATCH.get().getRotationState().property, Direction.NORTH) : COMPUTER_CASING.getDefaultState())
+                    .where('H', GTMachines.OBJECT_HOLDER, Direction.NORTH)
+                    .build())
+            .sidedWorkableCasingRenderer("block/casings/hpca/advanced_computer_casing",
+                    GTCEu.id("block/multiblock/research_station"), false)
+            .register();
 
     public static final MultiblockMachineDefinition ACTIVE_TRANSFORMER = REGISTRATE.multiblock("active_transformer", ActiveTransformerMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)

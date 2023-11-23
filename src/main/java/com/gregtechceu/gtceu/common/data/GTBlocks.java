@@ -599,6 +599,50 @@ public class GTBlocks {
 
 
     // HPCA, AT
+    public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE.block("computer_casing", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube"),
+                            Map.of("north", GTCEu.id("block/casings/hpca/computer_casing/front"),
+                                    "south", GTCEu.id("block/casings/hpca/computer_casing/back"),
+                                    "up", GTCEu.id("block/casings/hpca/computer_casing/top"),
+                                    "down", GTCEu.id("block/casings/hpca/computer_casing/bottom"),
+                                    "west", GTCEu.id("block/casings/hpca/computer_casing/side"),
+                                    "east", GTCEu.id("block/casings/hpca/computer_casing/side"))) : null))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+    public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE.block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube"),
+                            Map.of("north", GTCEu.id("block/casings/hpca/advanced_computer_casing/front"),
+                                    "south", GTCEu.id("block/casings/hpca/advanced_computer_casing/back"),
+                                    "up", GTCEu.id("block/casings/hpca/advanced_computer_casing/top"),
+                                    "down", GTCEu.id("block/casings/hpca/advanced_computer_casing/bottom"),
+                                    "west", GTCEu.id("block/casings/hpca/advanced_computer_casing/side"),
+                                    "east", GTCEu.id("block/casings/hpca/advanced_computer_casing/side"))) : null))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+    public static final BlockEntry<Block> COMPUTER_HEAT_VENT = REGISTRATE.block("computer_heat_vent", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_column"),
+                            Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
+                                    "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) : null))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();;
     public static final BlockEntry<Block> HIGH_POWER_CASING = createCasingBlock("high_power_casing", GTCEu.id("block/casings/hpca/high_power_casing"));
 
 

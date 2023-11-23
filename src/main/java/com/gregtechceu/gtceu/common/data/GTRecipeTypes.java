@@ -376,6 +376,8 @@ public class GTRecipeTypes {
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
+            .setScanner(true)
+            .setScanner(true)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
 
     public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0).setEUIO(IO.IN)
@@ -404,6 +406,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.DATA_ORB_OVERLAY)
             .setSlotOverlay(false, false, true, GuiTextures.SCANNER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setScanner(true)
             .setSound(GTSoundEntries.ELECTROLYZER);
 
     //////////////////////////////////////

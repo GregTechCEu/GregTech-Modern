@@ -225,7 +225,14 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
-
+        } else if (cap == GTCapability.CABABILITY_COMPUTATION_PROVIDER) {
+            if (machine instanceof IOpticalComputationProvider computationProvider) {
+                return GTCapability.CABABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+            }
+            var list = machine.getTraits().stream().filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IOpticalComputationProvider.class::cast).toList();
+            if (!list.isEmpty()) {
+                return GTCapability.CABABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
         }
         if (GTCEu.isAE2Loaded()) {
             if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {

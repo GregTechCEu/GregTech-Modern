@@ -1367,6 +1367,9 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_DIODE, 8)
                 .inputFluids(SolderingAlloy.getFluid(L * 10))
                 .outputItems(CRYSTAL_MAINFRAME_UV)
+                .stationResearch(b -> b
+                        .researchStack(CRYSTAL_COMPUTER_ZPM.asStack())
+                        .CWUt(16))
                 .save(provider);
 
         // T7: Wetware =================================================================================================
@@ -1449,6 +1452,10 @@ public class CircuitRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 20))
                 .inputFluids(Polybenzimidazole.getFluid(L * 8))
                 .outputItems(WETWARE_MAINFRAME_UHV)
+                .stationResearch(b -> b
+                        .researchStack(WETWARE_SUPER_COMPUTER_UV.asStack())
+                        .CWUt(96)
+                        .EUt(VA[UV]))
                 .EUt(300000).duration(2000).save(provider);
 
         // Misc ========================================================================================================
