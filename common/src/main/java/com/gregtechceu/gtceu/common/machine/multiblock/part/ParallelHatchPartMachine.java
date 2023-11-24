@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -35,6 +37,11 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
 
     public void setCurrentParallel(int parallelAmount) {
         this.currentParallel = Mth.clamp(parallelAmount, MIN_PARALLEL, this.maxParallel);
+        for (IMultiController controller : this.getControllers()) {
+            if (controller instanceof IRecipeLogicMachine rlm) {
+                rlm.getRecipeLogic().markLastRecipeDirty();
+            }
+        }
     }
 
     @Override
@@ -45,32 +52,6 @@ public class ParallelHatchPartMachine extends TieredPartMachine implements IFanc
                 .setMax(maxParallel));
 
         return parallelAmountGroup;
-    }
-
-
-    public String getParallelAmountToString() {
-        return Integer.toString(this.currentParallel);
-    }
-
-
-
-    public static @Nonnull Function<String, String> getTextFieldValidator(IntSupplier maxSupplier) {
-        return val -> {
-            if (val.isEmpty())
-                return String.valueOf(MIN_PARALLEL);
-            int max = maxSupplier.getAsInt();
-            int num;
-            try {
-                num = Integer.parseInt(val);
-            } catch (NumberFormatException ignored) {
-                return String.valueOf(max);
-            }
-            if (num < MIN_PARALLEL)
-                return String.valueOf(MIN_PARALLEL);
-            if (num > max)
-                return String.valueOf(max);
-            return val;
-        };
     }
 
     @Override
