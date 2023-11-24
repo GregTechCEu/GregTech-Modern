@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -274,27 +273,25 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 // try to search recipe in threads.
                 if (ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
                     completableFuture = supplyAsyncSearchingTask();
-                    dirtySearching = false;
                 } else {
                     handleSearchingRecipes(searchRecipe());
                 }
+                dirtySearching = false;
             } else if (completableFuture.isDone()) {
                 var lastFuture = this.completableFuture;
                 completableFuture = null;
                 if (!lastFuture.isCancelled()) {
                     // if searching task is done, try to handle searched recipes.
-                    var matches = lastFuture.join();
-                    if (matches == null) {
-                        // if error occurred, try to search recipe again in main thread.
-                        handleSearchingRecipes(searchRecipe());
-                    } else {
-                        // else handle searched recipes in main thread.
-                        matches = matches.stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList();
+                    try {
+                        var matches = lastFuture.join().stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList();
                         if (!matches.isEmpty()) {
                             handleSearchingRecipes(matches);
-                        } else if (dirtySearching && ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
+                        } else if (dirtySearching) {
                             completableFuture = supplyAsyncSearchingTask();
                         }
+                    } catch (Throwable throwable) {
+                        // if error occurred, schedule a new async task.
+                        completableFuture = supplyAsyncSearchingTask();
                     }
                 } else {
                     handleSearchingRecipes(searchRecipe());
@@ -306,14 +303,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     private CompletableFuture<List<GTRecipe>> supplyAsyncSearchingTask() {
-        var future = CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("Searching recipes", this::searchRecipe), Util.backgroundExecutor());
-        future.exceptionally(e -> {
-            if (!(e instanceof InterruptedException)) {
-                GTCEu.LOGGER.error("Error when async searching recipe, please report it to GTM developers", e);
-            }
-            return null;
-        });
-        return future;
+        return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("Searching recipes", this::searchRecipe), Util.backgroundExecutor());
     }
 
     private void handleSearchingRecipes(List<GTRecipe> matches) {
