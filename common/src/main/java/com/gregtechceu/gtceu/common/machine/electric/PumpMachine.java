@@ -224,7 +224,9 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     }
 
     public void update() {
-        cache.exportToNearby(getOutputFacingFluids());
+        if (getOutputFacingFluids() != null) {
+            cache.exportToNearby(getOutputFacingFluids());
+        }
 
         //do not do anything without enough energy supplied
         if (energyContainer.getEnergyStored() < GTValues.V[getTier()] * 2) {
