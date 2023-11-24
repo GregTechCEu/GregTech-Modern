@@ -249,10 +249,10 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
 
     protected void autoOutput() {
         if (getOffsetTimer() % 5 == 0) {
-            if (isAutoOutputFluids()) {
+            if (isAutoOutputFluids() && getOutputFacingFluids() != null) {
                 exportFluids.exportToNearby(getOutputFacingFluids());
             }
-            if (isAutoOutputItems()) {
+            if (isAutoOutputItems() && getOutputFacingItems() != null) {
                 exportItems.exportToNearby(getOutputFacingItems());
             }
         }

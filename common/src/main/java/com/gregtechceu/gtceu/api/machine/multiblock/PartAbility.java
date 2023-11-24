@@ -47,7 +47,7 @@ public class PartAbility {
     @Getter
     private final String name;
 
-    PartAbility(String name) {
+    public PartAbility(String name) {
         this.name = name;
     }
 
