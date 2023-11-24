@@ -181,7 +181,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return isEmpty;
     }
 
-    public void exportToNearby(Direction... facings) {
+    public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
@@ -190,7 +190,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public void importFromNearby(Direction... facings) {
+    public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
