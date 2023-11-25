@@ -102,14 +102,6 @@ public class MixinHelpers {
         // Clear old data
         GTDynamicResourcePack.clearClient();
 
-        // Register recipes & unification data again
-        long startTime = System.currentTimeMillis();
-        MaterialBlockRenderer.reinitModels();
-        TagPrefixItemRenderer.reinitModels();
-        ToolItemRenderer.reinitModels();
-        GTModels.registerMaterialFluidModels();
-        GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
-
         // Load the data
         packResources.add(new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
         return packResources;

@@ -66,7 +66,7 @@ public class MaterialBlockRenderer {
                             result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
                         }
                     }
-                    if (materialBlock.material.getMaterialSecondaryRGB() != -1) {
+                    if (materialBlock.material.getMaterialSecondaryARGB() != -1) {
                         int materialSecondaryRGBA = GradientUtil.argbToRgba(materialBlock.material.getMaterialSecondaryARGB());
                         Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getBlockTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX))).orElse(null);
                         if (file2 != null) {
