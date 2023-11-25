@@ -1845,5 +1845,7 @@
     "material.tetranitromethane": "Тетранитрометан",
     "material.kyanite": "Ционит",
     "material.gelatin": "Желатин",
-    "material.sodium_hydroxide": "Гидроксид натрия"
+    "material.sodium_hydroxide": "Гидроксид натрия",
+    "tagprefix.raw_ore_block": "Блок руды (%s)",
+    "tagprefix.block": "%s (Блок)"
 }
