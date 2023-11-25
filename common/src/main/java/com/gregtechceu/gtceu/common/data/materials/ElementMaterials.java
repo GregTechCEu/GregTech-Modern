@@ -597,14 +597,14 @@ public class ElementMaterials {
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(913))
                 .ore(true)
-                .color(0x222730).secondaryColor(0xba2727).iconSet(RADIOACTIVE)
+                .color(0xba2727).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .element(GTElements.Pu239)
                 .buildAndRegister();
 
         Plutonium241 = new Material.Builder("plutonium_241")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(913))
-                .color(0x222730).secondaryColor(0xfa7272).iconSet(RADIOACTIVE)
+                .color(0xfa7272).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.Pu241)
                 .buildAndRegister();
@@ -803,7 +803,7 @@ public class ElementMaterials {
 
         Titanium = new Material.Builder("titanium") // todo Ore? Look at EBF recipe here if we do Ti ores
                 .ingot(3).fluid()
-                .color(0xd8d5d9).secondaryColor(0x440050).iconSet(METALLIC)
+                .color(0xe8b1fa).secondaryColor(0xd8d5d9).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
@@ -835,7 +835,7 @@ public class ElementMaterials {
         Uranium238 = new Material.Builder("uranium")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1405))
-                .color(0x33342c).secondaryColor(0x1d891d).iconSet(RADIOACTIVE)
+                .color(0x1d891d).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.U238)
                 .buildAndRegister();
@@ -843,7 +843,7 @@ public class ElementMaterials {
         Uranium235 = new Material.Builder("uranium_235")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1405))
-                .color(0x33342c).secondaryColor(0x46FA46).iconSet(RADIOACTIVE)
+                .color(0x46FA46).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.U235)
                 .buildAndRegister();
@@ -920,7 +920,7 @@ public class ElementMaterials {
         Neutronium = new Material.Builder("neutronium")
                 .ingot(6)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(100_000))
-                .color(0x000000).secondaryColor(0xFFFFFF)
+                .color(0xFFFFFF).secondaryColor(0x000000)
                 .appendFlags(EXT_METAL, GENERATE_BOLT_SCREW, GENERATE_FRAME)
                 .element(GTElements.Nt)
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
