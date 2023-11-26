@@ -12,7 +12,7 @@
   <br/>
   <h3>Source</h3>
   <text>
-    Silicon wafers are produced by cutting <style color="0xafff00" underlined="true" link="gtceu:circuits/silicon_boule" hover-info="click link">Monocrystalline Silicon Boul</style> in a <style color="0xafff00" underlined="true" link="gtceu:machines/cutter" hover-info="click link">cutter</style> at the lowest MV-Tier voltage. 
+    Silicon wafers are produced by cutting <style color="0xafff00" underlined="true" link="gtceu:circuits/silicon_boule" hover-info="click link">Monocrystalline Silicon Boule</style> in an at lowest MV-Tier voltage <style color="0xafff00" underlined="true" link="gtceu:machines/cutter" hover-info="click link">cutter</style>.
   </text>
   <recipe id="gtceu:cutter/cut_silicon_boule_water"/>
   <br/>

@@ -12,7 +12,7 @@
   <br/>
   <h3>Source</h3>
   <text>
-    Phosphorus-doped Wafers are produced by cutting <style color="0xafff00" underlined="true" link="gtceu:circuits/silicon_boule" hover-info="click link">Phosphorus-doped Monocrystalline Silicon Boule</style> in a <style color="0xafff00" underlined="true" link="gtceu:machines/cutter" hover-info="click link">cutter</style> at the lowest HV-Tier voltage. 
+    Phosphorus-doped Wafers are produced by cutting <style color="0xafff00" underlined="true" link="gtceu:circuits/silicon_boule" hover-info="click link">Phosphorus-doped Monocrystalline Silicon Boule</style> in an at lowest HV-Tier voltage <style color="0xafff00" underlined="true" link="gtceu:machines/cutter" hover-info="click link">cutter</style>.
     <br/>
     (<style color="0xafff00" underlined="true" link="gtceu:multiblock/cleanroom" hover-info="click link">Cleanroom</style> is required)
   </text>
@@ -20,7 +20,7 @@
   <br/>
   <h3>Usage</h3>
   <text left-margin="10">
-    - 8 EU/t <style color="0xafff00" underlined="true" link="gtceu:covers/solar_panel_ulv" hover-info="click link">Solar Panel ULV</style>;
+    - 8 EU/t <style color="0xafff00" underlined="true" link="gtceu:covers/solar_panel_ulv" hover-info="click link">ULV Solar Panel</style>;
   </text>
   <recipe id="gtceu:shaped/solar_panel_basic"/>
   <br/>

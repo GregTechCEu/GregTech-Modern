@@ -12,7 +12,7 @@
         consume 1 glass material for every 1 glass tube produced. Glass tubes can be made with only LV voltage.
         <br/>
         <br/>
-        Glass tubes can only be used to craft <style color="0xafff00" underlined="true" link="gtceu:circuits/vacuum_tube" hover-info="click link">Vacuum Tube</style>, as a primary material for your first circuit.
+        Glass tubes can be used to craft <style color="0xafff00" underlined="true" link="gtceu:circuits/vacuum_tube" hover-info="click link">Vacuum Tubes</style>, a primary component of your first circuit.
     </text>
     <recipe id="gtceu:alloy_smelter/alloy_smelt_glass_tube"/>
     <recipe id="gtceu:fluid_solidifier/solidify_glass_tube"/>

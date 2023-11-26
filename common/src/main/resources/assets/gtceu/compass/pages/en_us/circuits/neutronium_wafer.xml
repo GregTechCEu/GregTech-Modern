@@ -12,7 +12,7 @@
   <br/>
   <h3>Source</h3>
   <text>
-    Neutronium-doped Wafers are produced by cutting <style color="0xafff00" underlined="true" link="gtceu:circuits/neutronium_boule" hover-info="click link">Neutronium-doped monocrystalline Silicon Boule</style> in a <style color="0xafff00" underlined="true" link="gtceu:machines/cutter" hover-info="click link">cutter</style> at the lowest IV-Tier voltage. 
+    Neutronium-doped Wafers are produced by cutting <style color="0xafff00" underlined="true" link="gtceu:circuits/neutronium_boule" hover-info="click link">Neutronium-doped monocrystalline Silicon Boule</style> in an at lowest IV-Tier voltage <style color="0xafff00" underlined="true" link="gtceu:machines/cutter" hover-info="click link">cutter</style>.
     <br/>
     (<style color="0xafff00" underlined="true" link="gtceu:multiblock/cleanroom" hover-info="click link">Cleanroom</style> is required)
   </text>
