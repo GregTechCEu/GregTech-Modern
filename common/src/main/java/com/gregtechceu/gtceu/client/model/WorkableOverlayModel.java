@@ -144,7 +144,7 @@ public class WorkableOverlayModel {
                         texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
                             if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, 0, 15, true, false);
+                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -101, 15, true, false);
                                 if (quad.getDirection() == side) {
                                     quads.add(quad);
                                 }
@@ -185,7 +185,9 @@ public class WorkableOverlayModel {
     @Environment(EnvType.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         sprites.clear();
-//        caches.clear();
+        synchronized (caches) {
+            caches.clear();
+        }
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
 

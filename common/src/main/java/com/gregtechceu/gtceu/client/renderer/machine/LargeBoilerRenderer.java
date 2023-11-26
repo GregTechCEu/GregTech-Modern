@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.fabricmc.api.EnvType;
@@ -46,7 +46,7 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
                 } else {
                     quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.side()), modelState));
                     if (machine instanceof IRecipeLogicMachine recipeLogicMachine && recipeLogicMachine.getRecipeLogic().isWorking()) {
-                        quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState, -1, 15, true, false));
+                        quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState, -101, 15, true, false));
                     }
                 }
             }
