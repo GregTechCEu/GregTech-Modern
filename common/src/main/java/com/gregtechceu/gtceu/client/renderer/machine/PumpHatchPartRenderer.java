@@ -42,7 +42,7 @@ public class PumpHatchPartRenderer extends CTMModelRenderer {
         if (state.getBlock() instanceof MetaMachineBlock machineBlock && side == machineBlock.getFrontFacing(state)) {
             var quads = new ArrayList<>(super.renderModel(level, pos, state, side, rand));
             quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(PIPE_OUT)));
-            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(FLUID_HATCH), BlockModelRotation.X0_Y0, -1, 15));
+            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(FLUID_HATCH), BlockModelRotation.X0_Y0, -101, 15));
             return quads;
         }
         return super.renderModel(level, pos, state, side, rand);
