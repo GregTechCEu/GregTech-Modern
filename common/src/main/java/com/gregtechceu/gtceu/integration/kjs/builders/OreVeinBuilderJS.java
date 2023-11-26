@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Pair;
@@ -24,7 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 
@@ -42,11 +45,14 @@ public class OreVeinBuilderJS {
     public transient HeightRangePlacement heightRange;
     @Setter
     public transient BiomeWeightModifier biomeWeightModifier;
+
     @Setter
     public VeinGenerator generator;
-    private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
+    private final transient List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();
 
+    private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
     private final transient JsonArray biomeFilter = new JsonArray();
+
     @Getter
     private boolean isBuilt = false;
 
@@ -64,9 +70,15 @@ public class OreVeinBuilderJS {
         return this;
     }
 
+    public OreVeinBuilderJS addIndicator(IndicatorGenerator indicatorGenerator) {
+        indicatorGenerators.add(indicatorGenerator);
+        return this;
+    }
+
     public VeinGenerator generatorBuilder(ResourceLocation id) {
         return build().generator(id);
     }
+
 
     @HideFromJS
     public GTOreDefinition build() {
@@ -74,7 +86,7 @@ public class OreVeinBuilderJS {
         Supplier<HolderSet<Biome>> biomes = biomeFilter.isEmpty() ? null : () -> RegistryCodecs.homogeneousList(Registries.BIOME)
                 .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         isBuilt = true;
-        return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator,  /* TODO */ null);
+        return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator,  indicatorGenerators);
     }
 
 }
