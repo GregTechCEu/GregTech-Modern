@@ -8,8 +8,8 @@
   ],
   "page": "gtceu:circuits/neutronium_wafer",
   "position": [
-    -100,
-    0
+    0,
+    250
   ],
   "section": "gtceu:circuits"
 }

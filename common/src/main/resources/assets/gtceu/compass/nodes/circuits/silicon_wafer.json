@@ -8,8 +8,11 @@
   ],
   "page": "gtceu:circuits/silicon_wafer",
   "position": [
-    -250,
-    0
+    -150,
+    250
   ],
-  "section": "gtceu:circuits"
+  "section": "gtceu:circuits",
+  "pre_nodes": [
+    "gtceu:circuits/silicon_boule"
+  ]
 }
