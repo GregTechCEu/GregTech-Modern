@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
+package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.indicators;
 
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinPosition;
 import com.mojang.serialization.Codec;
 import net.minecraft.MethodsReturnNonnullByDefault;

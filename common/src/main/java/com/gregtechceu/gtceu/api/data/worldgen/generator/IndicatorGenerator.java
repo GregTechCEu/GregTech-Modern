@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.data.worldgen.generator.indicators;
+package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinPosition;

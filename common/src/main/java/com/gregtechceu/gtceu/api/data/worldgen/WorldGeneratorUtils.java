@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
 import com.google.common.collect.HashBiMap;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.IndicatorGenerator;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;

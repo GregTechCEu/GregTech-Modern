@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
