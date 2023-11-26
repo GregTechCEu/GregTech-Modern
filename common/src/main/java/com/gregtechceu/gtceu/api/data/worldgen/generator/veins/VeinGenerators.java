@@ -1,9 +1,10 @@
-package com.gregtechceu.gtceu.api.data.worldgen;
+package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 
@@ -11,6 +12,7 @@ import java.util.function.Function;
 
 public class VeinGenerators {
     public static final Codec<NoopVeinGenerator> NO_OP = register(GTCEu.id("no_op"), NoopVeinGenerator.CODEC, entry -> NoopVeinGenerator.INSTANCE);
+
     public static final Codec<StandardVeinGenerator> STANDARD = register(GTCEu.id("standard"), StandardVeinGenerator.CODEC, StandardVeinGenerator::new);
     public static final Codec<LayeredVeinGenerator> LAYER = register(GTCEu.id("layer"), LayeredVeinGenerator.CODEC, LayeredVeinGenerator::new);
     public static final Codec<GeodeVeinGenerator> GEODE = register(GTCEu.id("geode"), GeodeVeinGenerator.CODEC, GeodeVeinGenerator::new);
