@@ -94,6 +94,8 @@ subprojects {
         addNestedDependencies = false
         archiveClassifier.set("slim")
     }
+
+    tasks.remapJar.dependsOn('remapSlimJar')
 }
 
 allprojects {

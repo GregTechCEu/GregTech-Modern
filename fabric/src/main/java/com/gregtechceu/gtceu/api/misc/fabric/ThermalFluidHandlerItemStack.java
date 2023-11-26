@@ -5,7 +5,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.fabricmc.fabric.api.transfer.v1.context.ContainerItemContext;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidVariant;
 import org.jetbrains.annotations.NotNull;
-
+@Deprecated
 public class ThermalFluidHandlerItemStack extends FluidHandlerItemStack implements IThermalFluidHandlerItemStack {
 
     private final int maxFluidTemperature;

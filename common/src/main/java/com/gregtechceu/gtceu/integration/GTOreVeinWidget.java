@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -17,7 +19,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.material.Fluid;
@@ -75,9 +76,8 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     private void setupBaseGui(GTOreDefinition oreDefinition){
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
-        List<BlockState> blocks = oreDefinition.getVeinGenerator().getAllBlocks();
         List<Integer> chances = oreDefinition.getVeinGenerator().getAllChances();
-        blocks.forEach(block -> containedOresAsItemStacks.add(block.getBlock().asItem().getDefaultInstance()));
+        containedOresAsItemStacks.addAll(getContainedOresAndBlocks(oreDefinition));
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
@@ -130,6 +130,11 @@ public class GTOreVeinWidget extends WidgetGroup {
                 .collect(Collectors.joining("\n"));
     }
 
+    public static List<ItemStack> getContainedOresAndBlocks(GTOreDefinition oreDefinition) {
+        return oreDefinition.getVeinGenerator().getAllEntries().stream()
+                .map(entry -> entry.getKey().map(state -> state.getBlock().asItem().getDefaultInstance(), material -> ChemicalHelper.get(TagPrefix.rawOre, material)))
+                .toList();
+    }
 
     public String getOreName(GTOreDefinition oreDefinition) {
         ResourceLocation id = GTRegistries.ORE_VEINS.getKey(oreDefinition);

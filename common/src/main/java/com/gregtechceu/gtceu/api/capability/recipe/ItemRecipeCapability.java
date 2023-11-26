@@ -28,8 +28,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public Ingredient copyWithModifier(Ingredient content, ContentModifier modifier) {
-        Ingredient copy = copyInner(content);
-        return copy instanceof SizedIngredient sizedIngredient ? SizedIngredient.create(copy, modifier.apply(sizedIngredient.getAmount()).intValue()) : SizedIngredient.create(copy, modifier.apply(1).intValue());
+        return content instanceof SizedIngredient sizedIngredient ? SizedIngredient.create(sizedIngredient.getInner(), modifier.apply(sizedIngredient.getAmount()).intValue()) : SizedIngredient.create(content, modifier.apply(1).intValue());
     }
 
 }
