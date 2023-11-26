@@ -4,8 +4,6 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.mojang.blaze3d.vertex.PoseStack;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -24,8 +22,6 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.Reference;
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -37,7 +33,6 @@ import java.util.function.Supplier;
  * @implNote PipeModel
  */
 public class PipeModel {
-    private final static List<WeakReference<PipeModel>> allModels = ObjectLists.synchronize(new ObjectArrayList<>());
 
     public final static int ITEM_CONNECTIONS = 0b1100;
     public final float thickness;
@@ -73,8 +68,6 @@ public class PipeModel {
                     normal.getY() == 0 ? max : normal.getY() > 0 ? 1 : min,
                     normal.getZ() == 0 ? max : normal.getZ() > 0 ? 1 : min));
         }
-
-        allModels.add(new WeakReference<>(this));
     }
 
     public VoxelShape getShapes(int connections) {
@@ -199,6 +192,7 @@ public class PipeModel {
 
     @Environment(EnvType.CLIENT)
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
+        itemModelCache.clear();
         register.accept(sideTexture.get());
         register.accept(endTexture.get());
         if (sideOverlayTexture != null) register.accept(sideOverlayTexture);
@@ -208,14 +202,5 @@ public class PipeModel {
         endOverlaySprite = null;
     }
 
-    private void invalidateItemModelCache() {
-        itemModelCache.clear();
-    }
 
-    public static void invalidateAllCachedModels() {
-        allModels.stream()
-                .map(Reference::get)
-                .filter(Objects::nonNull)
-                .forEach(PipeModel::invalidateItemModelCache);
-    }
 }
