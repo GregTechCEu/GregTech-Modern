@@ -3,7 +3,12 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.IndicatorGenerators;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinGenerators;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +52,7 @@ public class GTOres {
 
     static {
         VeinGenerators.registerAddonGenerators();
+        IndicatorGenerators.registerAddonGenerators();
     }
 
     //////////////////////////////////////

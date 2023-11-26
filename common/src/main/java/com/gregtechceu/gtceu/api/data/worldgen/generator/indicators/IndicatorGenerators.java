@@ -20,6 +20,6 @@ public class IndicatorGenerators {
     }
 
     public static void registerAddonGenerators() {
-        AddonFinder.getAddons().forEach(IGTAddon::registerVeinGenerators);
+        AddonFinder.getAddons().forEach(IGTAddon::registerIndicatorGenerators);
     }
 }
