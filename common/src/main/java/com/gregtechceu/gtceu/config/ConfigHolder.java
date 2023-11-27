@@ -206,12 +206,11 @@ public class ConfigHolder {
 
             @Configurable
             @Configurable.Comment({
-                    "Sets the maximum number of chunks for which ore vein metadata may be cached.",
-                    "This is mainly used for ore indicator placement and does not include any blocks of the cached veins.",
+                    "Sets the maximum number of chunks for which ore indicators may be cached.",
                     "If you register any custom veins with very large indicator ranges (or modify existing ones that way), you may need to increase this value.",
                     "Default: 2048 (requires restarting the server / re-opening the world)"
             })
-            public int veinMetadataChunkCacheSize = 2048;
+            public int oreIndicatorChunkCacheSize = 2048;
         }
     }
 

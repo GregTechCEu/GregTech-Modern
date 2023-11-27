@@ -3,14 +3,14 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -48,7 +48,7 @@ public abstract class IndicatorGenerator {
      * their respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
      */
     @HideFromJS
-    public abstract Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GeneratedVeinMetadata veinPosition);
+    public abstract Map<ChunkPos, OreIndicatorPlacer> generate(WorldGenLevel level, RandomSource random, GeneratedVeinMetadata metadata);
 
     @HideFromJS
     public GTOreDefinition parent() {
@@ -56,4 +56,6 @@ public abstract class IndicatorGenerator {
     }
 
     public abstract Codec<? extends IndicatorGenerator> codec();
+
+    public abstract int getSearchRadiusModifier(int veinRadius);
 }

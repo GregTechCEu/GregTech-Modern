@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.api.data.worldgen.generator.indicators;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -18,14 +19,16 @@ import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.FloatProvider;
 import net.minecraft.util.valueproviders.IntProvider;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.Heightmap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -90,51 +93,54 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GeneratedVeinMetadata veinPosition) {
+    public Map<ChunkPos, OreIndicatorPlacer> generate(WorldGenLevel level, RandomSource random, GeneratedVeinMetadata metadata) {
         int radius = this.radius.sample(random);
         float density = this.density.sample(random);
 
-        var centerAtY1 = veinPosition.center().atY(1);
-        var centerX = veinPosition.center().getX();
-        var centerZ = veinPosition.center().getZ();
+        var centerAtY1 = metadata.center().atY(1);
+        var centerX = metadata.center().getX();
+        var centerZ = metadata.center().getZ();
 
-        Stream<BlockPos> positions = BlockPos.betweenClosedStream(
+        Stream<BlockPos> positionStream = BlockPos.betweenClosedStream(
                 centerX - radius, 1, centerZ - radius,
                 centerX + radius, 1, centerZ + radius
         ).map(BlockPos::immutable);
 
-        return positions
-                .filter(pos -> pos.equals(veinPosition.center()) || random.nextFloat() <= density)
+        var positions = positionStream
+                .filter(pos -> pos.equals(metadata.center()) || random.nextFloat() <= density)
                 .filter(pos -> Math.sqrt(pos.distSqr(centerAtY1)) <= radius)
-                .collect(Collectors.toMap(
-                        Function.identity(),
-                        // Note that while the returned block pos for each placer here is at Y=1, the placer itself will
-                        // use the surface Y position on generation. This needs to be done because we can't reliably
-                        // retrieve the surface heightmap for ungenerated chunks at this point.
-                        pos -> createPlacer(level, pos, veinPosition)
-                ));
+                .toList();
+
+        return WorldGeneratorUtils.groupByChunks(positions).entrySet().stream()
+                .collect(Collectors.toMap(Map.Entry::getKey, entry -> createPlacer(level, entry.getValue())));
     }
 
-    private OreBlockPlacer createPlacer(WorldGenLevel level, BlockPos posAtY1, GeneratedVeinMetadata veinPosition) {
-        return (access, __) -> {
-            int surfaceY = level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, posAtY1.getX(), posAtY1.getZ());
-            var pos = posAtY1.atY(surfaceY);
+    private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY) {
+        return (access) -> {
+            var positions = positionsWithoutY.stream()
+                    .map(pos -> pos.atY(level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ())))
+                    .filter(pos -> !level.isOutsideBuildHeight(pos))
+                    .toList();
 
-            if (level.isOutsideBuildHeight(pos))
-                return;
+            for (BlockPos pos : positions) {
+                // This is necessary because the heightmap can't be determined at the time of creating the placers
+                var section = Objects.requireNonNull(access.getSection(pos));
 
-            // This is necessary because the heightmap can't be determined at the time of creating the placers
-            var section = access.getSection(pos);
+                int sectionX = SectionPos.sectionRelative(pos.getX());
+                int sectionY = SectionPos.sectionRelative(pos.getY());
+                int sectionZ = SectionPos.sectionRelative(pos.getZ());
 
-            int sectionX = SectionPos.sectionRelative(pos.getX());
-            int sectionY = SectionPos.sectionRelative(pos.getY());
-            int sectionZ = SectionPos.sectionRelative(pos.getZ());
+                if (!section.getBlockState(sectionX, sectionY, sectionZ).isAir())
+                    return;
 
-            if (!section.getBlockState(sectionX, sectionY, sectionZ).isAir())
-                return;
-
-            section.setBlockState(sectionX, sectionY, sectionZ, block.get().defaultBlockState(), false);
+                section.setBlockState(sectionX, sectionY, sectionZ, block.get().defaultBlockState(), false);
+            }
         };
+    }
+
+    @Override
+    public int getSearchRadiusModifier(int veinRadius) {
+        return Math.max(0, radius.getMaxValue() - veinRadius);
     }
 
     @Override

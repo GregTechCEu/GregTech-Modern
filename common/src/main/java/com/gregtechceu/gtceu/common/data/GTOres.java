@@ -48,6 +48,10 @@ public class GTOres {
      */
     @Getter
     private static int largestVeinSize = 0;
+
+    @Getter
+    private static int largestIndicatorOffset = 0;
+
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
 
     static {
@@ -735,6 +739,13 @@ public class GTOres {
     public static void updateLargestVeinSize() {
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
                 .map(GTOreDefinition::getClusterSize)
+                .max(Integer::compareTo)
+                .orElse(0);
+
+        GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
+                .flatMap(definition -> definition.getIndicatorGenerators().stream().map(indicatorGenerator ->
+                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.getClusterSize() / 2.0))
+                ))
                 .max(Integer::compareTo)
                 .orElse(0);
     }

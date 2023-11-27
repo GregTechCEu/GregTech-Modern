@@ -43,48 +43,66 @@ public class OreGenerator {
         }
     }
 
-    /**
-     * Generates the vein for the specified chunk position.<br>
-     * If the chunk is not located on one of the ore vein grid's intersections, no vein will be generated.
-     *
-     * <p>Note that depending on the configured random offset, the actual center of the generated vein may be located
-     * outside the specified origin chunk.
-     *
-     * @return The generated vein for the specified chunk position.<br>
-     * {@code Optional.empty()} if no vein exists at this chunk.
-     */
-    public List<GeneratedVein> generate(WorldGenLevel level, List<GeneratedVeinMetadata> veinPositions, ChunkPos chunkPos) {
-        return veinPositions.stream()
-                .map(data -> new VeinConfiguration(
-                        data, 
-                        new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong())
-                ))
-                .flatMap(config -> generate(config, level, chunkPos).stream())
-                .toList();
-    }
-
-    public List<GeneratedVeinMetadata> generatePositions(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
+    public List<GeneratedVeinMetadata> generateMetadata(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkPos chunkPos) {
         return createConfigs(level, chunkGenerator, chunkPos).stream()
                 .map(OreGenerator::logVeinGeneration)
                 .map(entry -> entry.data)
                 .toList();
     }
 
-    private Optional<GeneratedVein> generate(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
-        Map<BlockPos, OreBlockPlacer> generated = config.data.definition().getVeinGenerator()
-                .generate(level, config.newRandom(), config.data.definition(), config.data.center());
+    public List<GeneratedIndicators> generateIndicators(WorldGenLevel level, List<GeneratedVeinMetadata> metadata, ChunkPos chunkPos) {
+        return metadata.stream()
+                .map(data -> new VeinConfiguration(data, new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong())))
+                .map(config -> generateIndicators(config, level, chunkPos))
+                .toList();
+    }
 
-        Map<BlockPos, OreBlockPlacer> generatedIndicators = config.data.definition().getIndicatorGenerators().stream()
+    private GeneratedIndicators generateIndicators(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
+        GTOreDefinition definition = config.data.definition();
+
+        Map<ChunkPos, List<OreIndicatorPlacer>> generatedIndicators = definition.getIndicatorGenerators().stream()
                 .flatMap(gen -> gen.generate(level, config.newRandom(), config.data).entrySet().stream())
-                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a));
+                .collect(Collectors.toMap(
+                        Map.Entry::getKey, entry -> List.of(entry.getValue()),
+                        (a, b) -> Stream.of(a, b).flatMap(List::stream).toList()
+                ));
 
-        if (generated.isEmpty()) {
+        return new GeneratedIndicators(chunkPos, generatedIndicators);
+    }
+
+    /**
+     * Generates the vein for the specified chunk metadata.<br>
+     * If the chunk is not located on one of the ore vein grid's intersections, no vein will be generated.
+     *
+     * <p>Note that depending on the configured random offset, the actual center of the generated vein may be located
+     * outside the specified origin chunk.
+     *
+     * @return The generated vein for the specified chunk metadata.<br>
+     * {@code Optional.empty()} if no vein exists at this chunk.
+     */
+    public List<GeneratedVein> generateOres(WorldGenLevel level, List<GeneratedVeinMetadata> metadata, ChunkPos chunkPos) {
+        return metadata.stream()
+                .map(data -> new VeinConfiguration(
+                        data,
+                        new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong())
+                ))
+                .flatMap(config -> generateOres(config, level, chunkPos).stream())
+                .toList();
+    }
+
+    private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
+        GTOreDefinition definition = config.data.definition();
+        Map<BlockPos, OreBlockPlacer> generatedVeins = definition.getVeinGenerator()
+                .generate(level, config.newRandom(), definition, config.data.center());
+
+
+        if (generatedVeins.isEmpty()) {
             logEmptyVein(config);
             return Optional.empty();
         }
 
         generateBedrockOreVein(config, level);
-        return Optional.of(new GeneratedVein(chunkPos, config.data.definition().getLayer(), generated, generatedIndicators));
+        return Optional.of(new GeneratedVein(chunkPos, definition.getLayer(), generatedVeins));
     }
 
     private static void generateBedrockOreVein(VeinConfiguration config, WorldGenLevel level) {

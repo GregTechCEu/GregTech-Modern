@@ -83,12 +83,16 @@ public class WorldGeneratorUtils {
         return first.location().equals(second.location());
     }
 
-    public static <T> Object2ObjectOpenHashMap<ChunkPos, Map<BlockPos, T>> groupByChunks(Map<BlockPos, T> input) {
+    public static <T> Map<ChunkPos, Map<BlockPos, T>> groupByChunks(Map<BlockPos, T> input) {
         return input.entrySet().stream().collect(Collectors.groupingBy(
                 entry -> new ChunkPos(entry.getKey()),
                 Object2ObjectOpenHashMap::new,
                 Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)
         ));
+    }
+
+    public static <T> Map<ChunkPos, List<BlockPos>> groupByChunks(Collection<BlockPos> positions) {
+        return positions.stream().collect(Collectors.groupingBy(ChunkPos::new));
     }
 
     public static Collection<ChunkPos> getChunks(Collection<BlockPos> positions) {
