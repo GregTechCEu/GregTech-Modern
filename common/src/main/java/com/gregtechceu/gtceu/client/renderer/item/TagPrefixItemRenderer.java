@@ -59,7 +59,7 @@ public class TagPrefixItemRenderer {
                             result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
                         }
                     }
-                    if (prefixItem.material.getMaterialSecondaryRGB() != -1) {
+                    if (prefixItem.material.getMaterialSecondaryARGB() != -1) {
                         Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, model.type.getItemTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX))).orElse(null);
                         if (file2 != null) {
                             try(InputStream stream2 = file2.open()) {

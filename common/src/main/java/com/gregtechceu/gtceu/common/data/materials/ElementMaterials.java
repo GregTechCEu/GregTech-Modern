@@ -43,7 +43,7 @@ public class ElementMaterials {
         Americium = new Material.Builder("americium")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1449))
-                .color(0x287869).iconSet(METALLIC)
+                .color(0x287869).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_FINE_WIRE)
                 .element(GTElements.Am)
                 .itemPipeProperties(64, 64)
@@ -52,7 +52,7 @@ public class ElementMaterials {
         Antimony = new Material.Builder("antimony")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(904))
-                .color(0xDCDCF0).secondaryColor(0xa2a2bc).iconSet(SHINY)
+                .color(0xeaeaff).secondaryColor(0xa2a2bc).iconSet(SHINY)
                 .flags(MORTAR_GRINDABLE)
                 .element(GTElements.Sb)
                 .buildAndRegister();
@@ -84,7 +84,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Berkelium = new Material.Builder("berkelium")
-                .color(0x645A88).iconSet(METALLIC)
+                .color(0x645A88).iconSet(RADIOACTIVE)
                 .element(GTElements.Bk)
                 .buildAndRegister();
 
@@ -105,13 +105,13 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Bohrium = new Material.Builder("bohrium")
-                .color(0x4c3e50).secondaryColor(0xDC57FF).iconSet(SHINY)
+                .color(0x4c3e50).secondaryColor(0xDC57FF).iconSet(RADIOACTIVE)
                 .element(GTElements.Bh)
                 .buildAndRegister();
 
         Boron = new Material.Builder("boron")
                 .dust()
-                .color(0xDC57FF)
+                .color(0xd7f7d7).secondaryColor(0x5f6152)
                 .element(GTElements.B)
                 .buildAndRegister();
 
@@ -122,7 +122,7 @@ public class ElementMaterials {
 
         Caesium = new Material.Builder("caesium")
                 .dust()
-                .color(0xe9e5d2).secondaryColor(0xaa9864).iconSet(METALLIC)
+                .color(0xe9e5d2).secondaryColor(0xaa9864).iconSet(SHINY)
                 .element(GTElements.Cs)
                 .buildAndRegister();
 
@@ -133,14 +133,14 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Californium = new Material.Builder("californium")
-                .color(0xA85A12).iconSet(METALLIC)
+                .color(0xA85A12).iconSet(RADIOACTIVE)
                 .element(GTElements.Cf)
                 .buildAndRegister();
 
         Carbon = new Material.Builder("carbon")
                 .dust()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(4600))
-                .color(0x141414)
+                .color(0x333030).secondaryColor(0x221c1c)
                 .element(GTElements.C)
                 .buildAndRegister();
 
@@ -185,7 +185,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Copernicium = new Material.Builder("copernicium")
-                .color(0xFFFEFF)
+                .color(0x565c5d).secondaryColor(0xffd34b)
                 .element(GTElements.Cn)
                 .buildAndRegister();
 
@@ -193,7 +193,7 @@ public class ElementMaterials {
                 .ingot(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1358))
                 .ore()
-                .color(0xe77c56).secondaryColor(0xe4673e).iconSet(SHINY)
+                .color(0xe77c56).secondaryColor(0xe4673e).iconSet(BRIGHT)
                 .appendFlags(EXT_METAL, MORTAR_GRINDABLE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
                 .element(GTElements.Cu)
                 .cableProperties(GTValues.V[2], 1, 2)
@@ -201,7 +201,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Curium = new Material.Builder("curium")
-                .color(0x7B544E).iconSet(METALLIC)
+                .color(0x7B544E).iconSet(RADIOACTIVE)
                 .element(GTElements.Cm)
                 .buildAndRegister();
 
@@ -218,7 +218,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Dubnium = new Material.Builder("dubnium")
-                .color(0xc7ddde).secondaryColor(0x00f3ff).iconSet(SHINY)
+                .color(0xc7ddde).secondaryColor(0x00f3ff).iconSet(RADIOACTIVE)
                 .element(GTElements.Db)
                 .buildAndRegister();
 
@@ -229,7 +229,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Einsteinium = new Material.Builder("einsteinium")
-                .color(0xCE9F00).iconSet(METALLIC)
+                .color(0xCE9F00).iconSet(RADIOACTIVE)
                 .element(GTElements.Es)
                 .buildAndRegister();
 
@@ -257,7 +257,7 @@ public class ElementMaterials {
 
         Flerovium = new Material.Builder("flerovium")
                 .color(0x393d43).secondaryColor(0xd2ff00)
-                .iconSet(SHINY)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.Fl)
                 .buildAndRegister();
 
@@ -267,7 +267,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Francium = new Material.Builder("francium")
-                .color(0xAAAAAA).secondaryColor(0x0000ff).iconSet(SHINY)
+                .color(0xAAAAAA).secondaryColor(0x0000ff).iconSet(RADIOACTIVE)
                 .element(GTElements.Fr)
                 .buildAndRegister();
 
@@ -306,7 +306,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Hassium = new Material.Builder("hassium")
-                .color(0xDDDDDD)
+                .color(0x78766f).secondaryColor(0x09ebaf)
                 .element(GTElements.Hs)
                 .buildAndRegister();
 
@@ -395,7 +395,7 @@ public class ElementMaterials {
 
         Lawrencium = new Material.Builder("lawrencium")
                 .color(0x5D7575)
-                .iconSet(METALLIC)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.Lr)
                 .buildAndRegister();
 
@@ -403,7 +403,7 @@ public class ElementMaterials {
                 .ingot(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
                 .ore()
-                .color(0x8C648C)
+                .color(0x7e6f82).secondaryColor(0x290633)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
                 .element(GTElements.Pb)
                 .cableProperties(GTValues.V[0], 2, 2)
@@ -414,45 +414,45 @@ public class ElementMaterials {
                 .dust()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(454))
                 .ore()
-                .color(0xBDC7DB)
+                .color(0xd7e7ee).secondaryColor(0xBDC7DB)
                 .element(GTElements.Li)
                 .buildAndRegister();
 
         Livermorium = new Material.Builder("livermorium")
-                .color(0x939393).secondaryColor(0xff8b8b).iconSet(SHINY)
+                .color(0x939393).secondaryColor(0xff8b8b).iconSet(RADIOACTIVE)
                 .element(GTElements.Lv)
                 .buildAndRegister();
 
         Lutetium = new Material.Builder("lutetium")
                 .dust()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1925))
-                .color(0xff8b8b).secondaryColor(0x231809).iconSet(METALLIC)
+                .color(0xe6faea).secondaryColor(0x231809).iconSet(METALLIC)
                 .element(GTElements.Lu)
                 .buildAndRegister();
 
         Magnesium = new Material.Builder("magnesium")
                 .dust()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(923))
-                .color(0xffd6d6).secondaryColor(0x594d19).iconSet(METALLIC)
+                .color(0xffd6d6).secondaryColor(0x594d19).iconSet(FINE)
                 .element(GTElements.Mg)
                 .buildAndRegister();
 
         Mendelevium = new Material.Builder("mendelevium")
-                .color(0x1D4ACF).iconSet(METALLIC)
+                .color(0x1D4ACF).iconSet(RADIOACTIVE)
                 .element(GTElements.Md)
                 .buildAndRegister();
 
         Manganese = new Material.Builder("manganese")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1519))
-                .color(0xCDE1B9)
+                .color(0xEEEEEE).secondaryColor(0xCDE1B9)
                 .appendFlags(STD_METAL, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .element(GTElements.Mn)
                 .rotorStats(7.0f, 2.0f, 512)
                 .buildAndRegister();
 
         Meitnerium = new Material.Builder("meitnerium")
-                .color(0x454854).secondaryColor(0x6e90ff).iconSet(SHINY)
+                .color(0x454854).secondaryColor(0x6e90ff).iconSet(RADIOACTIVE)
                 .element(GTElements.Mt)
                 .buildAndRegister();
 
@@ -473,7 +473,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Moscovium = new Material.Builder("moscovium")
-                .color(0x2a1b40).secondaryColor(0xbd91ff).iconSet(SHINY)
+                .color(0x2a1b40).secondaryColor(0xbd91ff).iconSet(RADIOACTIVE)
                 .element(GTElements.Mc)
                 .buildAndRegister();
 
@@ -493,7 +493,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Neptunium = new Material.Builder("neptunium")
-                .color(0x284D7B).iconSet(METALLIC)
+                .color(0x284D7B).iconSet(RADIOACTIVE)
                 .element(GTElements.Np)
                 .buildAndRegister();
 
@@ -510,13 +510,13 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Nihonium = new Material.Builder("nihonium")
-                .color(0x323957).secondaryColor(0xa68bff).iconSet(SHINY)
+                .color(0x323957).secondaryColor(0xa68bff).iconSet(RADIOACTIVE)
                 .element(GTElements.Nh)
                 .buildAndRegister();
 
         Niobium = new Material.Builder("niobium")
                 .ingot().fluid()
-                .color(0xe9eacb).secondaryColor(0x2f4c35).iconSet(METALLIC)
+                .color(0xcbd6ea).secondaryColor(0x3f5b2a).iconSet(METALLIC)
                 .element(GTElements.Nb)
                 .blastTemp(2750, GasTier.MID, GTValues.VA[GTValues.HV], 900)
                 .buildAndRegister();
@@ -529,12 +529,12 @@ public class ElementMaterials {
 
         Nobelium = new Material.Builder("nobelium")
                 .color(0x3e4758).secondaryColor(0x43deff)
-                .iconSet(SHINY)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.No)
                 .buildAndRegister();
 
         Oganesson = new Material.Builder("oganesson")
-                .color(0x142D64).iconSet(METALLIC)
+                .color(0x443936).secondaryColor(0xff1dbd).iconSet(RADIOACTIVE)
                 .element(GTElements.Og)
                 .buildAndRegister();
 
@@ -573,12 +573,12 @@ public class ElementMaterials {
 
         Phosphorus = new Material.Builder("phosphorus")
                 .dust()
-                .color(0xFFFF00)
+                .color(0x77332c).secondaryColor(0x220202)
                 .element(GTElements.P)
                 .buildAndRegister();
 
         Polonium = new Material.Builder("polonium")
-                .color(0xC9D47E)
+                .color(0x163b27).secondaryColor(0x00ff78)
                 .element(GTElements.Po)
                 .buildAndRegister();
 
@@ -597,14 +597,14 @@ public class ElementMaterials {
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(913))
                 .ore(true)
-                .color(0x222730).secondaryColor(0xba2727).iconSet(METALLIC)
+                .color(0xba2727).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .element(GTElements.Pu239)
                 .buildAndRegister();
 
         Plutonium241 = new Material.Builder("plutonium_241")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(913))
-                .color(0x222730).secondaryColor(0xfa7272).iconSet(SHINY)
+                .color(0xfa7272).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.Pu241)
                 .buildAndRegister();
@@ -622,12 +622,13 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Promethium = new Material.Builder("promethium")
-                .iconSet(METALLIC)
+                .color(0x786160).secondaryColor(0xe7ffb8)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.Pm)
                 .buildAndRegister();
 
         Protactinium = new Material.Builder("protactinium")
-                .color(0xA78B6D).iconSet(METALLIC)
+                .color(0xA78B6D).iconSet(RADIOACTIVE)
                 .element(GTElements.Pa)
                 .buildAndRegister();
 
@@ -638,7 +639,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Radium = new Material.Builder("radium")
-                .color(0x838361).secondaryColor(0x90ff2d).iconSet(SHINY)
+                .color(0x838361).secondaryColor(0x90ff2d).iconSet(RADIOACTIVE)
                 .element(GTElements.Ra)
                 .buildAndRegister();
 
@@ -656,7 +657,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Roentgenium = new Material.Builder("roentgenium")
-                .color(0x3e4840).secondaryColor(0xE3FDEC).iconSet(SHINY)
+                .color(0x3e4840).secondaryColor(0xE3FDEC).iconSet(RADIOACTIVE)
                 .element(GTElements.Rg)
                 .buildAndRegister();
 
@@ -674,7 +675,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Rutherfordium = new Material.Builder("rutherfordium")
-                .color(0x6b6157).secondaryColor(0xFFF6A1).iconSet(SHINY)
+                .color(0x6b6157).secondaryColor(0xFFF6A1).iconSet(RADIOACTIVE)
                 .element(GTElements.Rf)
                 .buildAndRegister();
 
@@ -694,7 +695,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Seaborgium = new Material.Builder("seaborgium")
-                .color(0x807c76).secondaryColor(0x19C5FF).iconSet(SHINY)
+                .color(0x807c76).secondaryColor(0x19C5FF).iconSet(RADIOACTIVE)
                 .element(GTElements.Sg)
                 .buildAndRegister();
 
@@ -734,7 +735,7 @@ public class ElementMaterials {
 
         Sulfur = new Material.Builder("sulfur")
                 .dust().ore()
-                .color(0xC8C800)
+                .color(0xfdff31).secondaryColor(0xffb400)
                 .flags(FLAMMABLE)
                 .element(GTElements.S)
                 .buildAndRegister();
@@ -748,17 +749,18 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Technetium = new Material.Builder("technetium")
-                .color(0xb1d0d8).secondaryColor(0xd7fce2).iconSet(SHINY)
+                .color(0xb1d0d8).secondaryColor(0xd7fce2).iconSet(RADIOACTIVE)
                 .element(GTElements.Tc)
                 .buildAndRegister();
 
         Tellurium = new Material.Builder("tellurium")
-                .iconSet(METALLIC)
+                .color(0xd9e8d2).secondaryColor(0x0018ff)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.Te)
                 .buildAndRegister();
 
         Tennessine = new Material.Builder("tennessine")
-                .color(0x768189).secondaryColor(0xbca3ff).iconSet(SHINY)
+                .color(0x768189).secondaryColor(0xbca3ff).iconSet(RADIOACTIVE)
                 .element(GTElements.Ts)
                 .buildAndRegister();
 
@@ -792,7 +794,7 @@ public class ElementMaterials {
                 .ingot(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(505))
                 .ore()
-                .color(0xDCDCDC)
+                .color(0xfafeff).secondaryColor(0x4e676c)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
                 .element(GTElements.Sn)
                 .cableProperties(GTValues.V[1], 1, 1)
@@ -801,7 +803,7 @@ public class ElementMaterials {
 
         Titanium = new Material.Builder("titanium") // todo Ore? Look at EBF recipe here if we do Ti ores
                 .ingot(3).fluid()
-                .color(0xd8d5d9).secondaryColor(0x440050).iconSet(METALLIC)
+                .color(0xe8b1fa).secondaryColor(0xd8d5d9).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
@@ -833,7 +835,7 @@ public class ElementMaterials {
         Uranium238 = new Material.Builder("uranium")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1405))
-                .color(0x33342c).secondaryColor(0x1d891d).iconSet(METALLIC)
+                .color(0x1d891d).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.U238)
                 .buildAndRegister();
@@ -841,7 +843,7 @@ public class ElementMaterials {
         Uranium235 = new Material.Builder("uranium_235")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1405))
-                .color(0x33342c).secondaryColor(0x46FA46).iconSet(SHINY)
+                .color(0x46FA46).secondaryColor(0x33342c).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.U235)
                 .buildAndRegister();
@@ -909,7 +911,7 @@ public class ElementMaterials {
         Naquadria = new Material.Builder("naquadria")
                 .ingot(3)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
-                .color(0x1E1E1E, false).secondaryColor(0x59b3ff).iconSet(SHINY)
+                .color(0x1E1E1E, false).secondaryColor(0x59b3ff).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq2)
                 .blastTemp(9000, GasTier.HIGH, GTValues.VA[GTValues.ZPM], 1200)
@@ -918,7 +920,7 @@ public class ElementMaterials {
         Neutronium = new Material.Builder("neutronium")
                 .ingot(6)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(100_000))
-                .color(0xFAFAFA)
+                .color(0xFFFFFF).secondaryColor(0x000000)
                 .appendFlags(EXT_METAL, GENERATE_BOLT_SCREW, GENERATE_FRAME)
                 .element(GTElements.Nt)
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)

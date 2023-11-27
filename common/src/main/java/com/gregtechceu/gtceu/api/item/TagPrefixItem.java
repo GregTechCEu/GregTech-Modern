@@ -58,8 +58,10 @@ public class TagPrefixItem extends Item {
     @Environment(EnvType.CLIENT)
     public static ItemColor tintColor() {
         return (itemStack, index) -> {
-            if (index == 0) {
-                if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
+            if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
+                if (index == 1 && tagPrefixItem.material.getMaterialSecondaryARGB() != -1) {
+                    return tagPrefixItem.material.getMaterialSecondaryARGB();
+                } else {
                     return tagPrefixItem.material.getMaterialARGB();
                 }
             }
