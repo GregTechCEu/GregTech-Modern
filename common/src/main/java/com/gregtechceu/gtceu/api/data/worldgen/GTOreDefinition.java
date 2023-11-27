@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.worldgen;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -27,6 +28,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 /**
@@ -103,7 +106,7 @@ public class GTOreDefinition {
             GTRegistries.ORE_VEINS.register(id, this);
         }
 
-        // TODO indicator generators
+        this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
     }
 
     public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
@@ -184,6 +187,25 @@ public class GTOreDefinition {
             veinGenerator = new VeinedVeinGenerator(this);
         }
         return (VeinedVeinGenerator) veinGenerator;
+    }
+
+    public GTOreDefinition surfaceIndicatorGenerator(Consumer<SurfaceIndicatorGenerator> config) {
+        config.accept(getOrCreateIndicatorGenerator(SurfaceIndicatorGenerator.class, SurfaceIndicatorGenerator::new));
+        return this;
+    }
+
+    private <T extends IndicatorGenerator> T getOrCreateIndicatorGenerator(Class<T> indicatorClass, Function<GTOreDefinition, T> constructor) {
+        var existingGenerator = indicatorGenerators.stream()
+                .filter(indicatorClass::isInstance)
+                .map(indicatorClass::cast)
+                .findFirst().orElse(null);
+
+        if (existingGenerator != null)
+            return existingGenerator;
+
+        var generator = constructor.apply(this);
+        indicatorGenerators.add(generator);
+        return generator;
     }
 
     @Nullable

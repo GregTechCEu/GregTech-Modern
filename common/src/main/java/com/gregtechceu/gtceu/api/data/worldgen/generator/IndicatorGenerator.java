@@ -1,17 +1,20 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator;
 
+import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
-import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinPosition;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -29,11 +32,28 @@ public abstract class IndicatorGenerator {
 
     public static final Codec<IndicatorGenerator> DIRECT_CODEC = REGISTRY_CODEC.dispatchStable(IndicatorGenerator::codec, Function.identity());
 
+    protected GTOreDefinition entry;
+
+    public IndicatorGenerator() {
+    }
+
+    public IndicatorGenerator(GTOreDefinition entry) {
+        this.entry = entry;
+    }
+
     /**
-     * Generate vein indicators inside the current chunk.
+     * Generate a map of all ore placers (by block position), containing each indicator block for the ore vein.
+     *
+     * <p>Note that, if in any way possible, this is NOT supposed to directly place any of the indicator blocks, as
+     * their respective ore placers are invoked at a later time, when the chunk containing them is actually generated.
      */
     @HideFromJS
-    public abstract void generate(WorldGenLevel level, RandomSource random, GeneratedVeinPosition veinPosition, ChunkPos currentChunk);
+    public abstract Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GeneratedVeinMetadata veinPosition);
+
+    @HideFromJS
+    public GTOreDefinition parent() {
+        return entry;
+    }
 
     public abstract Codec<? extends IndicatorGenerator> codec();
 }

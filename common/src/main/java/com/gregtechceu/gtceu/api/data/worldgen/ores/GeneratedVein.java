@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.Map;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -27,23 +27,24 @@ public class GeneratedVein {
     private final IWorldGenLayer layer;
 
     private final Map<ChunkPos, Map<BlockPos, OreBlockPlacer>> generatedOres;
-    private final Set<ChunkPos> unconsumedChunks;
+    private final Map<ChunkPos, Map<BlockPos, OreBlockPlacer>> generatedIndicators;
 
     /**
-     * @param origin         The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
-     * @param oresByPosition The ore placers for each block position.<br>
-     *                       Doesn't need to be ordered, grouping by chunks is done internally.
+     * @param origin               The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
+     * @param oresByPosition       The ore placers for each ore block position.<br>
+     *                             Doesn't need to be ordered, grouping by chunks is done internally.
+     * @param indicatorsByPosition The ore placers for each indicator block position.<br>
+     *                             Doesn't need to be ordered, grouping by chunks is done internally.
      */
-    public GeneratedVein(ChunkPos origin, IWorldGenLayer layer, Map<BlockPos, OreBlockPlacer> oresByPosition) {
+    public GeneratedVein(
+            ChunkPos origin, IWorldGenLayer layer,
+            Map<BlockPos, OreBlockPlacer> oresByPosition, Map<BlockPos, OreBlockPlacer> indicatorsByPosition
+    ) {
         this.origin = origin;
         this.layer = layer;
-        this.generatedOres = oresByPosition.entrySet().stream().collect(Collectors.groupingBy(
-                entry -> new ChunkPos(entry.getKey()),
-                Object2ObjectOpenHashMap::new,
-                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)
-        ));
 
-        this.unconsumedChunks = new ObjectArraySet<>(this.generatedOres.keySet());
+        this.generatedOres = WorldGeneratorUtils.groupByChunks(oresByPosition);
+        this.generatedIndicators = WorldGeneratorUtils.groupByChunks(indicatorsByPosition);
     }
 
     /**
@@ -53,20 +54,12 @@ public class GeneratedVein {
      * as soon as all of its chunks have been consumed.
      */
     public Map<BlockPos, OreBlockPlacer> consumeChunk(ChunkPos chunk) {
-        var ores = this.generatedOres.get(chunk);
+        Map<BlockPos, OreBlockPlacer> output = new Object2ObjectOpenHashMap<>();
 
-        if (ores == null)
-            return Map.of();
+        output.putAll(this.generatedIndicators.getOrDefault(chunk, Collections.emptyMap()));
+        output.putAll(this.generatedOres.getOrDefault(chunk, Collections.emptyMap()));
 
-        unconsumedChunks.remove(chunk);
-        return ores;
-    }
-
-    /**
-     * @return Whether all of the vein's chunks (containing any generated blocks) have been consumed.
-     */
-    public boolean isFullyConsumed() {
-        return unconsumedChunks.isEmpty();
+        return output;
     }
 
     @Override

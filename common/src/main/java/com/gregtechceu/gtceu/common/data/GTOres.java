@@ -317,7 +317,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(TricalciumPhosphate).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pyrochlore).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Apatite)
+                    );
 
     public static final GTOreDefinition CASSITERITE_VEIN =
             create("cassiterite_vein", 40, 1.0f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(80)))
@@ -333,7 +336,10 @@ public class GTOres {
                     .edgeRoundoffBegin(12)
                     .minYLevel(10)
                     .maxYLevel(60)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Cassiterite)
+                    );
 
     public static final GTOreDefinition COAL_VEIN =
             create("coal_vein", 35, 0.25f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(140)))
@@ -343,7 +349,10 @@ public class GTOres {
                             .layer(l -> l.weight(3).mat(Coal).size(2, 4))
                             .layer(l -> l.weight(3).mat(Coal).size(2, 4))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Coal)
+                    );
 
     public static final GTOreDefinition COPPER_TIN_VEIN =
             create("copper_tin_vein", 40, 1.0f, 50, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(160)))
@@ -361,7 +370,10 @@ public class GTOres {
                     .edgeRoundoffBegin(12)
                     .minYLevel(-10)
                     .maxYLevel(160)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Chalcopyrite)
+                    );
 
     public static final GTOreDefinition GALENA_VEIN =
             create("galena_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-15), VerticalAnchor.absolute(45)))
@@ -373,7 +385,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Silver).size(1, 1))
                             .layer(l -> l.weight(1).mat(Lead).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Galena)
+                    );
 
     public static final GTOreDefinition GARNET_TIN_VEIN =
             create("garnet_tin_vein", 30, 0.2f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
@@ -386,7 +401,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Asbestos).size(1, 1))
                             .layer(l -> l.weight(1).mat(Diatomite).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(GarnetSand)
+                    );
 
     public static final GTOreDefinition GARNET_VEIN =
             create("garnet_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(50)))
@@ -398,7 +416,10 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Opal, 1, 18, 50))
                     .minYLevel(-10)
                     .minYLevel(50)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(GarnetRed)
+                    );
 
     public static final GTOreDefinition IRON_VEIN =
             create("iron_vein", 40, 1.0f, 120, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(60)))
@@ -415,7 +436,10 @@ public class GTOres {
                     .edgeRoundoffBegin(12)
                     .minYLevel(-10)
                     .maxYLevel(60)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Goethite)
+                    );
 
     public static final GTOreDefinition LUBRICANT_VEIN =
             create("lubricant_vein", 25, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(50)))
@@ -427,7 +451,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(GlauconiteSand).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pentlandite).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Talc)
+                    );
 
     public static final GTOreDefinition MAGNETITE_VEIN_OW =
             create("magnetite_vein_ow", 35, 0.15f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(60)))
@@ -438,7 +465,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(VanadiumMagnetite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Gold).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Magnetite)
+                    );
 
     public static final GTOreDefinition MINERAL_SAND_VEIN =
             create("mineral_sand_vein", 30, 0.2f, 80, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(15), VerticalAnchor.absolute(60)))
@@ -451,7 +481,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(FullersEarth).size(1, 1))
                             .layer(l -> l.weight(1).mat(Gypsum).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(BasalticMineralSand)
+                    );
 
     public static final GTOreDefinition NICKEL_VEIN =
             create("nickel_vein", 30, 0.25f, 40, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-10), VerticalAnchor.absolute(60)))
@@ -464,7 +497,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Cobaltite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pentlandite).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Nickel)
+                    );
 
     public static final GTOreDefinition SALTS_VEIN =
             create("salts_vein", 30, 0.2f, 50, WorldGenLayers.STONE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(70)))
@@ -477,7 +513,10 @@ public class GTOres {
                             .layer(l -> l.weight(1).mat(Lepidolite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Spodumene).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Salt)
+                    );
 
 
     public static final GTOreDefinition OILSANDS_VEIN =
@@ -490,7 +529,10 @@ public class GTOres {
                             .layer(l -> l.weight(1).mat(Oilsands).size(1, 1))
                             .layer(l -> l.weight(1).mat(Oilsands).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Oilsands)
+                    );
 
     //////////////////////////////////////
     //*****        Deepslate       *****//

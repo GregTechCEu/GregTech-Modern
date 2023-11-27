@@ -7,7 +7,7 @@ import net.minecraft.world.level.ChunkPos;
 import org.jetbrains.annotations.NotNull;
 
 
-public record GeneratedVeinPosition(
+public record GeneratedVeinMetadata(
         @NotNull ResourceLocation id,
         @NotNull ChunkPos originChunk,
         @NotNull BlockPos center,

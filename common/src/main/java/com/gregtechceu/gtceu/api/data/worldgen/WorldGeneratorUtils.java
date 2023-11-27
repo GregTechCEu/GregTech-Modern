@@ -7,13 +7,19 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.chunk.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
@@ -75,5 +81,38 @@ public class WorldGeneratorUtils {
 
     public static boolean isSameDimension(ResourceKey<Level> first, ResourceKey<Level> second) {
         return first.location().equals(second.location());
+    }
+
+    public static <T> Object2ObjectOpenHashMap<ChunkPos, Map<BlockPos, T>> groupByChunks(Map<BlockPos, T> input) {
+        return input.entrySet().stream().collect(Collectors.groupingBy(
+                entry -> new ChunkPos(entry.getKey()),
+                Object2ObjectOpenHashMap::new,
+                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)
+        ));
+    }
+
+    public static Collection<ChunkPos> getChunks(Collection<BlockPos> positions) {
+        return positions.stream()
+                .collect(Collectors.groupingBy(ChunkPos::new))
+                .keySet();
+    }
+
+    public static void generateChunks(WorldGenLevel level, ChunkStatus requiredStatus, Collection<ChunkPos> chunks) {
+        List<ChunkPos> previouslyUnloadedChunks = new ObjectArrayList<>();
+        var chunkSource = level.getChunkSource();
+
+        for (ChunkPos chunkPos : chunks) {
+            var chunk = chunkSource.getChunk(chunkPos.x, chunkPos.z, false);
+
+            if (chunk == null) {
+                previouslyUnloadedChunks.add(chunkPos);
+            }
+
+            chunkSource.getChunk(chunkPos.x, chunkPos.z, requiredStatus, true);
+        }
+
+        if (level instanceof ServerLevel serverLevel) {
+            previouslyUnloadedChunks.forEach(chunk -> serverLevel.unload(serverLevel.getChunk(chunk.x, chunk.z)));
+        }
     }
 }
