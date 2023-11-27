@@ -50,19 +50,15 @@ public class ChargerRenderer extends TieredHullMachineRenderer{
             switch (state) {
                 case IDLE -> bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_IDLE), modelState, -1, 0, false, true));
                 case RUNNING -> {
+                    bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
-                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE), modelState, 0, 15, true, false));
-                    } else {
-                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING), modelState, -1, 0, true, true));
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE), modelState, -101, 15, true, false));
                     }
                 }
                 case FINISHED -> {
+                    bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
-                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE), modelState, 0, 15, true, false));
-                    } else {
-                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED), modelState, -1, 0, true, true));
+                        bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE), modelState, -101, 15, true, false));
                     }
                 }
             }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
@@ -76,9 +77,24 @@ public class GTModels {
         for (var material : GTRegistries.MATERIALS) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
             if (fluidProperty == null) continue;
+            MaterialIconSet iconSet = material.getMaterialIconSet();
 
             for (FluidStorageKey key : FluidStorageKey.allKeys()) {
                 FluidStorage storage = fluidProperty.getStorage();
+                // fluid block models.
+                FluidStorage.FluidEntry fluidEntry = storage.getEntry(key);
+                if (fluidEntry != null) {
+                    if (fluidEntry.getStillTexture() == null) {
+                        ResourceLocation foundTexture = key.getIconType().getBlockTexturePath(iconSet, false);
+                        fluidEntry.setStillTexture(foundTexture);
+                    }
+                    if (fluidEntry.getFlowTexture() == null) {
+                        fluidEntry.setFlowTexture(fluidEntry.getStillTexture());
+                    }
+                    MixinHelpers.addFluidTexture(material, fluidEntry);
+                }
+
+                // bucket models.
                 Fluid fluid = storage.get(key);
                 if (fluid instanceof GTFluid gtFluid) {
                     FluidStack testFor = FluidStack.create(gtFluid, FluidHelper.getBucket());

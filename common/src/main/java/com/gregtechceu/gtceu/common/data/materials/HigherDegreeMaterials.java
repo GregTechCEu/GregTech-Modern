@@ -24,13 +24,13 @@ public class HigherDegreeMaterials {
 
         EnderEye = new Material.Builder("ender_eye")
                 .gem(1)
-                .color(0x66FF66)
+                .color(0xb5e45a).secondaryColor(0x001430)
                 .flags(NO_SMASHING, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
                 .buildAndRegister();
 
         Diatomite = new Material.Builder("diatomite")
                 .dust(1).ore()
-                .color(0xE1E1E1)
+                .color(0xfffafa)
                 .components(Flint, 8, Hematite, 1, Sapphire, 1)
                 .buildAndRegister();
 
@@ -63,7 +63,7 @@ public class HigherDegreeMaterials {
 
         GraniticMineralSand = new Material.Builder("granitic_mineral_sand")
                 .dust(1).ore()
-                .color(0x283C3C).iconSet(SAND)
+                .color(0xd69077).secondaryColor(0x71352c).iconSet(SAND)
                 .components(Magnetite, 1, Deepslate, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
                 .buildAndRegister();
@@ -77,7 +77,7 @@ public class HigherDegreeMaterials {
 
         GarnetSand = new Material.Builder("garnet_sand")
                 .dust(1).ore()
-                .color(0xC86400).iconSet(SAND)
+                .color(0xcc4c25).secondaryColor(0x510b04).iconSet(SAND)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Almandine, 1, Andradite, 1, Grossular, 1, Pyrope, 1, Spessartine, 1, Uvarovite, 1)
                 .buildAndRegister();
@@ -95,7 +95,7 @@ public class HigherDegreeMaterials {
         RedAlloy = new Material.Builder("red_alloy")
                 .ingot(0)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1400))
-                .color(0xc55252).secondaryColor(0xC80000)
+                .color(0xc55252).secondaryColor(0xC80000).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Copper, 1, Redstone, 4)
                 .cableProperties(GTValues.V[0], 1, 0)
@@ -103,7 +103,7 @@ public class HigherDegreeMaterials {
 
         BasalticMineralSand = new Material.Builder("basaltic_mineral_sand")
                 .dust(1).ore()
-                .color(0x283228).iconSet(SAND)
+                .color(0x5c5c5c).secondaryColor(0x283228).iconSet(SAND)
                 .components(Magnetite, 1, Basalt, 1)
                 .flags(BLAST_FURNACE_CALCITE_DOUBLE)
                 .buildAndRegister();
@@ -127,8 +127,6 @@ public class HigherDegreeMaterials {
                 .rotorStats(15.0f, 7.0f, 3000)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.EV], 1500)
                 .buildAndRegister();
-
-        // FREE ID: 2521
 
         IridiumMetalResidue = new Material.Builder("iridium_metal_residue")
                 .dust()
@@ -169,7 +167,7 @@ public class HigherDegreeMaterials {
         BlueAlloy = new Material.Builder("blue_alloy")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1400))
-                .color(0x64B4FF).iconSet(DULL)
+                .color(0x64B4FF).iconSet(METALLIC)
                 .flags(GENERATE_PLATE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Electrotine, 4, Silver, 1)
                 .cableProperties(GTValues.V[GTValues.HV], 2, 1)

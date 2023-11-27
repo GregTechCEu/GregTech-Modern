@@ -8,8 +8,11 @@
   ],
   "page": "gtceu:circuits/phosphorus_wafer",
   "position": [
-    -200,
-    0
+    -100,
+    250
   ],
-  "section": "gtceu:circuits"
+  "section": "gtceu:circuits",
+  "pre_nodes": [
+    "gtceu:circuits/phosphorus_boule"
+  ]
 }

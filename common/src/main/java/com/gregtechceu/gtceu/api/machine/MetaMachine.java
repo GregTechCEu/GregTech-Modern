@@ -489,7 +489,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     public int tintColor(int index) {
-        if (index == 1) {
+        // index < -100 => emission if shimmer is installed.
+        if (index == 1 || index == -111) {
             return getRealColor();
         }
         return -1;

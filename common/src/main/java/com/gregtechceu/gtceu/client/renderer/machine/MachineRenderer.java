@@ -120,7 +120,7 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         if (autoOutputItem.isAutoOutputItems()) {
-                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState, -1, 15));
+                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState, -101, 15));
                         }
                     }
                 }
@@ -129,7 +129,7 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         if (autoOutputFluid.isAutoOutputFluids()) {
-                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState, -1, 15));
+                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState, -101, 15));
                         }
                     }
                 }

@@ -29,7 +29,7 @@ public class LargeMinerRenderer extends WorkableCasingMachineRenderer {
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof IMultiController controller && controller.isFormed() && side == Direction.DOWN && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(BEHIND_BLOCK, modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState, -1, 15, true, true));
+            quads.add(FaceQuad.bakeFace(BEHIND_BLOCK, modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState, -101, 15, true, true));
         }
     }
 
