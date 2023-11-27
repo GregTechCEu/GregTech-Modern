@@ -47,7 +47,7 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
     public static ItemColor tintColor() {
         return (itemStack, index) -> {
             if (itemStack.getItem() instanceof MaterialBlockItem materialBlockItem) {
-                if (index == 1 && materialBlockItem.getBlock().material.getMaterialSecondaryRGB() != -1) {
+                if (index == 1 && materialBlockItem.getBlock().material.getMaterialSecondaryARGB() != -1) {
                     return materialBlockItem.getBlock().material.getMaterialSecondaryARGB();
                 } else {
                     return materialBlockItem.getBlock().material.getMaterialARGB();

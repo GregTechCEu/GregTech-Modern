@@ -7,7 +7,7 @@
   "client": [
     "BlockModelMixin",
     "LevelRendererMixin",
-    "ModelBakeryMixin",
+    "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
     "PackRepositoryMixin",
     "rei.FluidEntryRendererMixin"

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
@@ -8,11 +7,10 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.metadata.animation.AnimationFrame;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.core.Registry;
 import net.minecraft.data.models.BlockModelGenerators;
-import net.minecraft.data.models.model.*;
+import net.minecraft.data.models.model.DelegatedModel;
+import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.world.level.block.Block;
@@ -66,7 +64,7 @@ public class MaterialBlockRenderer {
                             result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
                         }
                     }
-                    if (materialBlock.material.getMaterialSecondaryRGB() != -1) {
+                    if (materialBlock.material.getMaterialSecondaryARGB() != -1) {
                         int materialSecondaryRGBA = GradientUtil.argbToRgba(materialBlock.material.getMaterialSecondaryARGB());
                         ResourceLocation path = model.type.getBlockTexturePath(model.iconSet, true);
                         Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, new ResourceLocation(path.getNamespace(), path.getPath() + LAYER_2_SUFFIX))).orElse(null);

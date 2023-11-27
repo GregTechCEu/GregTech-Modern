@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.google.common.collect.ImmutableMap;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
@@ -13,9 +13,6 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
@@ -40,9 +37,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MixinHelpers {
@@ -109,14 +107,6 @@ public class MixinHelpers {
         List<PackResources> packResources = new ArrayList<>(packs);
         // Clear old data
         GTDynamicResourcePack.clearClient();
-
-        // Register recipes & unification data again
-        long startTime = System.currentTimeMillis();
-        MaterialBlockRenderer.reinitModels();
-        TagPrefixItemRenderer.reinitModels();
-        ToolItemRenderer.reinitModels();
-        registerMaterialFluidModels();
-        GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
 
         // Load the data
         packResources.add(new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
