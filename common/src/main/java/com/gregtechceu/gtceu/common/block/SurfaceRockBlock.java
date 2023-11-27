@@ -73,7 +73,7 @@ public class SurfaceRockBlock extends Block implements IBlockRendererProvider {
     @Override
     @SuppressWarnings("deprecation")
     public boolean canSurvive(BlockState state, LevelReader level, BlockPos pos) {
-        return level.getBlockState(pos.below()).isFaceSturdy(level, pos, Direction.UP);
+        return level.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP);
     }
 
     @Environment(EnvType.CLIENT)

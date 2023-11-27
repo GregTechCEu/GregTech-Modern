@@ -10,11 +10,14 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import lombok.AllArgsConstructor;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.RandomSource;
+import net.minecraft.util.StringRepresentable;
 import net.minecraft.util.valueproviders.ConstantFloat;
 import net.minecraft.util.valueproviders.ConstantInt;
 import net.minecraft.util.valueproviders.FloatProvider;
@@ -23,7 +26,9 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
+import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -39,21 +44,54 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(ext -> ext.block.get()),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
-            FloatProvider.codec(0.0f, 1.0f).fieldOf("density").forGetter(ext -> ext.density)
+            FloatProvider.codec(0.0f, 1.0f).fieldOf("density").forGetter(ext -> ext.density),
+            StringRepresentable.fromEnum(IndicatorPlacement::values).fieldOf("placement").forGetter(ext -> ext.placement)
     ).apply(instance, SurfaceIndicatorGenerator::new));
 
     private NonNullSupplier<? extends Block> block = NonNullSupplier.of(() -> Blocks.AIR);
     private IntProvider radius = ConstantInt.of(5);
     private FloatProvider density = ConstantFloat.of(0.2f);
+    private IndicatorPlacement placement = IndicatorPlacement.SURFACE;
+
+    @AllArgsConstructor
+    public enum IndicatorPlacement implements StringRepresentable {
+        SURFACE((level, access, pos) ->
+                pos.atY(level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()))
+        ),
+
+        ABOVE((level, access, initialPos) -> WorldGeneratorUtils.findBlockPos(
+                initialPos,
+                pos -> access.getBlockState(pos).isAir() &&
+                         access.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP),
+                pos -> pos.move(Direction.UP, 1),
+                level.getMaxBuildHeight() - initialPos.getY()
+        ).orElse(initialPos)),
+
+        BELOW((level, access, initialPos) -> WorldGeneratorUtils.findBlockPos(
+                initialPos,
+                pos -> access.getBlockState(pos).isAir() &&
+                        access.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN),
+                pos -> pos.move(Direction.DOWN, 1),
+                initialPos.getY() - level.getMinBuildHeight()
+        ).orElse(initialPos));
+
+        public final TriFunction<WorldGenLevel, BulkSectionAccess, BlockPos, BlockPos> resolver;
+
+        @Override
+        public String getSerializedName() {
+            return name().toLowerCase();
+        }
+    }
 
     public SurfaceIndicatorGenerator(GTOreDefinition entry) {
         super(entry);
     }
 
-    public SurfaceIndicatorGenerator(Block block, IntProvider radius, FloatProvider density) {
+    public SurfaceIndicatorGenerator(Block block, IntProvider radius, FloatProvider density, IndicatorPlacement placement) {
         this.block = NonNullSupplier.of(() -> block);
         this.radius = radius;
         this.density = density;
+        this.placement = placement;
     }
 
     public SurfaceIndicatorGenerator surfaceRockBlock(Material material) {
@@ -87,8 +125,13 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         return density(ConstantFloat.of(density));
     }
 
-    private SurfaceIndicatorGenerator density(FloatProvider provider) {
+    public SurfaceIndicatorGenerator density(FloatProvider provider) {
         this.density = provider;
+        return this;
+    }
+
+    public SurfaceIndicatorGenerator placement(IndicatorPlacement placement) {
+        this.placement = placement;
         return this;
     }
 
@@ -97,18 +140,16 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         int radius = this.radius.sample(random);
         float density = this.density.sample(random);
 
-        var centerAtY1 = metadata.center().atY(1);
-        var centerX = metadata.center().getX();
-        var centerZ = metadata.center().getZ();
+        BlockPos center = metadata.center();
 
         Stream<BlockPos> positionStream = BlockPos.betweenClosedStream(
-                centerX - radius, 1, centerZ - radius,
-                centerX + radius, 1, centerZ + radius
+                center.getX() - radius, center.getY(), center.getZ() - radius,
+                center.getX() + radius, center.getY(), center.getZ() + radius
         ).map(BlockPos::immutable);
 
         var positions = positionStream
-                .filter(pos -> pos.equals(metadata.center()) || random.nextFloat() <= density)
-                .filter(pos -> Math.sqrt(pos.distSqr(centerAtY1)) <= radius)
+                .filter(pos -> pos.equals(center) || random.nextFloat() <= density)
+                .filter(pos -> Math.sqrt(pos.distSqr(center)) <= radius)
                 .toList();
 
         return WorldGeneratorUtils.groupByChunks(positions).entrySet().stream()
@@ -118,7 +159,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     private OreIndicatorPlacer createPlacer(WorldGenLevel level, List<BlockPos> positionsWithoutY) {
         return (access) -> {
             var positions = positionsWithoutY.stream()
-                    .map(pos -> pos.atY(level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ())))
+                    .map(pos -> placement.resolver.apply(level, access, pos))
                     .filter(pos -> !level.isOutsideBuildHeight(pos))
                     .toList();
 

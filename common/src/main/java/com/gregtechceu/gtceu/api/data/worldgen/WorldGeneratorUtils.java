@@ -25,7 +25,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import java.util.*;
 import java.util.Map.Entry;
+import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class WorldGeneratorUtils {
@@ -118,5 +120,19 @@ public class WorldGeneratorUtils {
         if (level instanceof ServerLevel serverLevel) {
             previouslyUnloadedChunks.forEach(chunk -> serverLevel.unload(serverLevel.getChunk(chunk.x, chunk.z)));
         }
+    }
+
+    public static Optional<BlockPos> findBlockPos(BlockPos initialPos, Predicate<BlockPos> predicate,
+                                                  Consumer<BlockPos.MutableBlockPos> step, int maxSteps) {
+        var currentPos = initialPos.mutable();
+
+        while (maxSteps-- >= 0) {
+            step.accept(currentPos);
+
+            if (predicate.test(currentPos))
+                return Optional.of(currentPos.immutable());
+        }
+
+        return Optional.empty();
     }
 }
