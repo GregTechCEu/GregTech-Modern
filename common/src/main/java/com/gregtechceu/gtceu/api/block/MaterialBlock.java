@@ -56,7 +56,7 @@ public class MaterialBlock extends AppearanceBlock {
     public static BlockColor tintedColor() {
         return (state, reader, pos, tintIndex) -> {
             if (state.getBlock() instanceof MaterialBlock block) {
-                if (tintIndex == 1 && block.material.getMaterialSecondaryARGB() != -1) {
+                if ((tintIndex == 1 || tintIndex == -111) && block.material.getMaterialSecondaryARGB() != -1) {
                     return block.material.getMaterialSecondaryARGB();
                 } else {
                     return block.material.getMaterialARGB();

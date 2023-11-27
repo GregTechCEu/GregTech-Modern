@@ -193,6 +193,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(true, false, true, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_SLICE, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.CUT)
+            .setMaxTooltips(4)
             .onRecipeBuild((recipeBuilder, provider) -> {
                 if (recipeBuilder.input.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty() && recipeBuilder.tickInput.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList()).isEmpty()) {
                     recipeBuilder
@@ -324,6 +325,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType LASER_ENGRAVER_RECIPES = register("laser_engraver", ELECTRIC).setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, true, GuiTextures.LENS_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setMaxTooltips(4)
             .setSound(GTSoundEntries.ELECTROLYZER);
 
 

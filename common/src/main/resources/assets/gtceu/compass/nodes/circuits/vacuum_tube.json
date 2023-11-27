@@ -11,5 +11,8 @@
     50,
     50
   ],
-  "section": "gtceu:circuits"
+  "section": "gtceu:circuits",
+  "pre_nodes": [
+    "gtceu:circuits/glass_tube"
+  ]
 }

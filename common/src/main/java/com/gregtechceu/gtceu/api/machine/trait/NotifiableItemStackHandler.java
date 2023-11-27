@@ -150,17 +150,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return isEmpty;
     }
 
-    public void exportToNearby(Direction... facings) {
+    public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            if (facing == null) continue; // TODO find actual fix
             ItemTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
         }
     }
 
-    public void importFromNearby(Direction... facings) {
+    public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
