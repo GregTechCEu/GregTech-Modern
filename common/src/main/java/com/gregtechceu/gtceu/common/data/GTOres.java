@@ -70,7 +70,10 @@ public class GTOres {
                             .layer(l -> l.weight(1).mat(Ilmenite).size(1, 2))
                             .layer(l -> l.weight(1).mat(Aluminium).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Bauxite)
+                    );
 
     public static final GTOreDefinition MAGNETITE_VEIN_END =
             create("magnetite_vein_end", 35, 0.15f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(80)))
@@ -82,7 +85,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Chromite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Gold).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Magnetite)
+                    );
 
     public static final GTOreDefinition NAQUADAH_VEIN =
             create("naquadah_vein", 40, 1.0f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(90)))
@@ -98,7 +104,10 @@ public class GTOres {
                     .edgeRoundoffBegin(10)
                     .minYLevel(10)
                     .maxYLevel(90)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Naquadah)
+                    );
 
     public static final GTOreDefinition PITCHBLENDE_VEIN =
             create("pitchblende_vein_end", 30, 1.0f, 30, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(30), VerticalAnchor.absolute(60)))
@@ -114,7 +123,10 @@ public class GTOres {
                     .edgeRoundoffBegin(12)
                     .minYLevel(30)
                     .maxYLevel(60)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Pitchblende)
+                    );
 
     public static final GTOreDefinition SCHEELITE_VEIN =
             create("scheelite_vein", 30, 0.2f, 20, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(20), VerticalAnchor.absolute(60)))
@@ -125,7 +137,10 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Lithium, 1, 20, 40))
                     .minYLevel(20)
                     .maxYLevel(60)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Scheelite)
+                    );
 
     public static final GTOreDefinition SHELDONITE_VEIN =
             create("sheldonite_vein", 25, 0.2f, 10, WorldGenLayers.ENDSTONE, end(), HeightRangePlacement.uniform(VerticalAnchor.absolute(5), VerticalAnchor.absolute(50)))
@@ -137,7 +152,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Platinum).size(1, 1))
                             .layer(l -> l.weight(1).mat(Palladium).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Platinum)
+                    );
 
     //////////////////////////////////////
     //******     Nether Vein     *******//
@@ -554,7 +572,10 @@ public class GTOres {
                     .edgeRoundoffBegin(12)
                     .minYLevel(-40)
                     .maxYLevel(-10)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Copper)
+                    );
 
     public static final GTOreDefinition DIAMOND_VEIN =
             create("diamond_vein", 30, 0.25f, 40, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(-30)))
@@ -565,7 +586,12 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Diamond).size(1, 1))
                             .layer(l -> l.weight(1).mat(Coal).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Diamond)
+                            .density(0.1f)
+                            .radius(2)
+                    );
 
     public static final GTOreDefinition LAPIS_VEIN =
             create("lapis_vein", 40, 0.25f, 40, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-60), VerticalAnchor.absolute(10)))
@@ -577,7 +603,12 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Calcite, 1, -40, 10))
                     .minYLevel(-60)
                     .maxYLevel(10)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Lapis)
+                            .density(0.15f)
+                            .radius(3)
+                    );
 
     public static final GTOreDefinition MANGANESE_VEIN_OW =
             create("manganese_vein_ow", 50, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-30), VerticalAnchor.absolute(0)))
@@ -589,7 +620,11 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Tantalite, 1, 24, 30))
                     .minYLevel(-50)
                     .maxYLevel(-5)
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Grossular)
+                            .radius(3)
+                    );
 
     public static final GTOreDefinition MICA_VEIN =
             create("mica_vein", 30, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(-10)))
@@ -602,7 +637,11 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Bauxite).size(1, 1))
                             .layer(l -> l.weight(1).mat(Pollucite).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Mica)
+                            .radius(3)
+                    );
 
     public static final GTOreDefinition OLIVINE_VEIN =
             create("olivine_vein", 30, 0.25f, 20, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-20), VerticalAnchor.absolute(10)))
@@ -615,7 +654,12 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Olivine).size(1, 1))
                             .layer(l -> l.weight(1).mat(GlauconiteSand).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Olivine)
+                            .density(0.15f)
+                            .radius(3)
+                    );
 
     public static final GTOreDefinition REDSTONE_VEIN_OW =
             create("redstone_vein_ow", 30, 0.2f, 60, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-65), VerticalAnchor.absolute(-10)))
@@ -626,7 +670,10 @@ public class GTOres {
                             .layer(l -> l.weight(2).mat(Ruby).size(1, 1))
                             .layer(l -> l.weight(1).mat(Cinnabar).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Redstone)
+                    );
 
     public static final GTOreDefinition SAPPHIRE_VEIN =
             create("sapphire_vein", 25, 0.25f, 60, WorldGenLayers.DEEPSLATE, overworld(), HeightRangePlacement.uniform(VerticalAnchor.absolute(-40), VerticalAnchor.absolute(0)))
@@ -639,7 +686,12 @@ public class GTOres {
                             .layer(l -> l.weight(1).mat(Sapphire).size(1, 1))
                             .layer(l -> l.weight(1).mat(GreenSapphire).size(1, 1))
                             .build())
-                    .parent();
+                    .parent()
+                    .surfaceIndicatorGenerator(indicator -> indicator
+                            .surfaceRockBlock(Sapphire)
+                            .density(0.15f)
+                            .radius(3)
+                    );
 
     private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range) {
         ResourceLocation id = GTCEu.id(name);
