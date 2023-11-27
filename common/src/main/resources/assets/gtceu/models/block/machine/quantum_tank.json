@@ -34,7 +34,7 @@
 			"to": [9, 12, 1],
 			"shade": false,
 			"faces": {
-				"north": {"uv": [4, 4, 12, 7], "texture": "#overlay_qchest", "cullface": "north", "emissivity":  15}
+				"north": {"uv": [4, 4, 12, 7], "texture": "#overlay_qchest", "cullface": "north", "tintindex": -101, "emissivity":  15}
 			}
 		},
 		{

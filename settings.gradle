@@ -59,6 +59,7 @@ dependencyResolutionManagement {
         def configurationVersion = "2.2.0"
         def ldLibVersion = "1.0.21.d"
         def mixinextrasVersion = "0.2.0"
+        def shimmerVersion = "0.2.2"
         
         fabric {
             def fabricLoader = version("fabricLoader", fabricLoaderVersion)
@@ -70,6 +71,10 @@ dependencyResolutionManagement {
             def ldLib = version("ldlib", ldLibVersion)
             library("ldlib-common", "com.lowdragmc.ldlib", "ldlib-common-${minecraftVersion}").versionRef(ldLib)
             library("ldlib-fabric", "com.lowdragmc.ldlib", "ldlib-fabric-${minecraftVersion}").versionRef(ldLib)
+
+            def shimmer = version("shimmer", "${minecraftVersion}-${shimmerVersion}")
+            library("shimmer-common", "com.lowdragmc.shimmer", "Shimmer-common").versionRef(shimmer)
+            library("shimmer-fabric", "com.lowdragmc.shimmer", "Shimmer-fabric").versionRef(shimmer)
 
             def registrate = version("registrate", registrateFabricVersion)
             library("registrate", "com.tterrag.registrate_fabric", "Registrate").versionRef(registrate)
@@ -141,6 +146,9 @@ dependencyResolutionManagement {
 
             def ldLib = version("ldlib", ldLibVersion)
             library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-forge-${minecraftVersion}").versionRef(ldLib)
+
+            def shimmer = version("shimmer", "${minecraftVersion}-${shimmerVersion}")
+            library("shimmer-forge", "com.lowdragmc.shimmer", "Shimmer-forge").versionRef(shimmer)
 
             def registrate = version("registrate", registrateForgeVersion)
             library("registrate", "com.tterrag.registrate", "Registrate").versionRef(registrate)

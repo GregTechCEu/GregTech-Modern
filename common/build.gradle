@@ -100,6 +100,9 @@ dependencies {
 
     // Configuration
     modCompileOnly fabric.configuration
+
+    // Shimmer
+    modCompileOnly fabric.shimmer.common
 }
 
 publishing {
