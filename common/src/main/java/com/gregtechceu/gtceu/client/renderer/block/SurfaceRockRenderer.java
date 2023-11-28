@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.block.SurfaceRockBlock;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.blockstates.MultiVariantGenerator;
-import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.DelegatedModel;
@@ -36,10 +34,7 @@ public class SurfaceRockRenderer {
             GTDynamicResourcePack.addBlockModel(modelId, new DelegatedModel(GTCEu.id("block/surface_rock")));
             GTDynamicResourcePack.addBlockState(blockId, MultiVariantGenerator
                     .multiVariant(model.block, Variant.variant().with(VariantProperties.MODEL, modelId))
-                    .with(PropertyDispatch.property(SurfaceRockBlock.FACING)
-                            .select(Direction.UP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
-                            .select(Direction.DOWN, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R0))
-                    ));
+                    .with(BlockModelGenerators.createFacingDispatch()));
         }
     }
 

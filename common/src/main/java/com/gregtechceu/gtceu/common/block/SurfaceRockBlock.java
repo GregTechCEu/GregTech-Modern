@@ -32,13 +32,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SurfaceRockBlock extends Block {
-    public static final DirectionProperty FACING = BlockStateProperties.VERTICAL_DIRECTION;
+    public static final DirectionProperty FACING = BlockStateProperties.FACING;
+
+    private static final VoxelShape AABB_NORTH = Block.box(2, 2, 0, 14, 14, 3);
+    private static final VoxelShape AABB_SOUTH = Block.box(2, 2,13, 14, 14 ,16);
+    private static final VoxelShape AABB_WEST = Block.box(0, 2, 2, 3, 14, 14);
+    private static final VoxelShape AABB_EAST = Block.box(13, 2, 2, 16, 14, 14);
+    private static final VoxelShape AABB_UP = Block.box(2, 13, 2, 14, 16, 14);
+    private static final VoxelShape AABB_DOWN = Block.box(2, 0, 2, 14, 3, 14);
 
     @Getter
     private final Material material;
-
-    private static final VoxelShape SHAPE_UP = Block.box(2, 13, 2, 15, 16, 14);
-    private static final VoxelShape SHAPE_DOWN = Block.box(2, 0, 2, 15, 3, 14);
 
     public SurfaceRockBlock(Properties properties, Material material) {
         super(properties);
@@ -63,7 +67,14 @@ public class SurfaceRockBlock extends Block {
     @Override
     @SuppressWarnings("deprecation")
     public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
-        return state.getValue(FACING) == Direction.UP ? SHAPE_UP : SHAPE_DOWN;
+        return switch (state.getValue(FACING)) {
+            case DOWN -> AABB_DOWN;
+            case UP -> AABB_UP;
+            case NORTH -> AABB_NORTH;
+            case SOUTH -> AABB_SOUTH;
+            case WEST -> AABB_WEST;
+            case EAST -> AABB_EAST;
+        };
     }
 
     @Override
@@ -90,7 +101,11 @@ public class SurfaceRockBlock extends Block {
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(FACING, context.getNearestLookingVerticalDirection());
+        return getStateForDirection(context.getNearestLookingVerticalDirection());
+    }
+
+    public BlockState getStateForDirection(Direction direction) {
+        return defaultBlockState().setValue(FACING, direction);
     }
 
     @Environment(EnvType.CLIENT)
