@@ -217,7 +217,6 @@ public class GTBlocks {
                         .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
                         .addLayer(() -> RenderType::cutoutMipped)
                         .color(() -> SurfaceRockBlock::tintedColor)
-                        .build()
                         .register();
                 builder.put(material, entry);
             }
