@@ -11,7 +11,6 @@ import net.minecraft.data.models.blockstates.PropertyDispatch;
 import net.minecraft.data.models.blockstates.Variant;
 import net.minecraft.data.models.blockstates.VariantProperties;
 import net.minecraft.data.models.model.DelegatedModel;
-import net.minecraft.data.models.model.ModelLocationUtils;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -41,11 +40,6 @@ public class SurfaceRockRenderer {
                             .select(Direction.UP, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R180))
                             .select(Direction.DOWN, Variant.variant().with(VariantProperties.X_ROT, VariantProperties.Rotation.R0))
                     ));
-
-            GTDynamicResourcePack.addItemModel(
-                    BuiltInRegistries.ITEM.getKey(model.block.asItem()),
-                    new DelegatedModel(ModelLocationUtils.getModelLocation(model.block))
-            );
         }
     }
 
