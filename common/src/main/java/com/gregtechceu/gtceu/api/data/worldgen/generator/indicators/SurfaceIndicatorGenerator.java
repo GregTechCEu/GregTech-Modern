@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
+import com.gregtechceu.gtceu.common.block.SurfaceRockBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.apache.commons.lang3.function.TriFunction;
@@ -34,6 +36,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -55,9 +58,9 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
 
     @AllArgsConstructor
     public enum IndicatorPlacement implements StringRepresentable {
-        SURFACE((level, access, pos) ->
-                pos.atY(level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()))
-        ),
+        SURFACE((level, access, pos) -> pos.atY(
+                level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ())
+        ),  state -> state.setValue(SurfaceRockBlock.FACING, Direction.DOWN)),
 
         ABOVE((level, access, initialPos) -> WorldGeneratorUtils.findBlockPos(
                 initialPos,
@@ -65,7 +68,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                          access.getBlockState(pos.below()).isFaceSturdy(level, pos.below(), Direction.UP),
                 pos -> pos.move(Direction.UP, 1),
                 level.getMaxBuildHeight() - initialPos.getY()
-        ).orElse(initialPos)),
+        ).orElse(initialPos),  state -> state.setValue(SurfaceRockBlock.FACING, Direction.DOWN)),
 
         BELOW((level, access, initialPos) -> WorldGeneratorUtils.findBlockPos(
                 initialPos,
@@ -73,9 +76,10 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                         access.getBlockState(pos.above()).isFaceSturdy(level, pos.above(), Direction.DOWN),
                 pos -> pos.move(Direction.DOWN, 1),
                 initialPos.getY() - level.getMinBuildHeight()
-        ).orElse(initialPos));
+        ).orElse(initialPos), state -> state.setValue(SurfaceRockBlock.FACING, Direction.UP));
 
         public final TriFunction<WorldGenLevel, BulkSectionAccess, BlockPos, BlockPos> resolver;
+        public final UnaryOperator<BlockState> stateTransformer;
 
         @Override
         public String getSerializedName() {
@@ -94,21 +98,13 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         this.placement = placement;
     }
 
-    public SurfaceIndicatorGenerator surfaceRockBlock(Material material) {
+    public SurfaceIndicatorGenerator surfaceRockType(Material material) {
         var surfaceRockBlock = GTBlocks.SURFACE_ROCK_BLOCKS.get(material);
 
         if (surfaceRockBlock == null)
             throw new IllegalArgumentException("No surface rock registered for material " + material.getName());
 
-        return block(surfaceRockBlock);
-    }
-
-    public SurfaceIndicatorGenerator block(Block block) {
-        return block(NonNullSupplier.of(() -> block));
-    }
-
-    public SurfaceIndicatorGenerator block(NonNullSupplier<? extends Block> supplier) {
-        this.block = supplier;
+        this.block = surfaceRockBlock;
         return this;
     }
 
