@@ -77,7 +77,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Bauxite)
+                            .surfaceRock(Bauxite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -93,7 +93,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Magnetite)
+                            .surfaceRock(Magnetite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -113,7 +113,7 @@ public class GTOres {
                     .maxYLevel(90)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Naquadah)
+                            .surfaceRock(Naquadah)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -133,7 +133,7 @@ public class GTOres {
                     .maxYLevel(60)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Pitchblende)
+                            .surfaceRock(Pitchblende)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -148,7 +148,7 @@ public class GTOres {
                     .maxYLevel(60)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Scheelite)
+                            .surfaceRock(Scheelite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -164,7 +164,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Platinum)
+                            .surfaceRock(Platinum)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -191,7 +191,7 @@ public class GTOres {
                     .maxYLevel(40)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Goethite)
+                            .surfaceRock(Goethite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -206,7 +206,7 @@ public class GTOres {
                     .maxYLevel(30)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Beryllium)
+                            .surfaceRock(Beryllium)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -221,7 +221,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(CertusQuartz)
+                            .surfaceRock(CertusQuartz)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)
                     );
 
@@ -236,7 +236,7 @@ public class GTOres {
                     .maxYLevel(30)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Grossular)
+                            .surfaceRock(Grossular)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -253,7 +253,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Molybdenum)
+                            .surfaceRock(Molybdenum)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -269,7 +269,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Bastnasite)
+                            .surfaceRock(Bastnasite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -284,7 +284,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(NetherQuartz)
+                            .surfaceRock(NetherQuartz)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -300,7 +300,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Redstone)
+                            .surfaceRock(Redstone)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -317,7 +317,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Saltpeter)
+                            .surfaceRock(Saltpeter)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -333,7 +333,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Sulfur)
+                            .surfaceRock(Sulfur)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -354,7 +354,7 @@ public class GTOres {
                     .maxYLevel(120)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Tetrahedrite)
+                            .surfaceRock(Tetrahedrite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)
                     );
 
@@ -371,7 +371,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Topaz)
+                            .surfaceRock(Topaz)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)
                     );
 
@@ -396,7 +396,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Apatite)
+                            .surfaceRock(Apatite)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -416,7 +416,7 @@ public class GTOres {
                     .maxYLevel(60)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Cassiterite)
+                            .surfaceRock(Cassiterite)
                     );
 
     public static final GTOreDefinition COAL_VEIN =
@@ -429,7 +429,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Coal)
+                            .surfaceRock(Coal)
                     );
 
     public static final GTOreDefinition COPPER_TIN_VEIN =
@@ -450,7 +450,7 @@ public class GTOres {
                     .maxYLevel(160)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Chalcopyrite)
+                            .surfaceRock(Chalcopyrite)
                     );
 
     public static final GTOreDefinition GALENA_VEIN =
@@ -465,7 +465,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Galena)
+                            .surfaceRock(Galena)
                     );
 
     public static final GTOreDefinition GARNET_TIN_VEIN =
@@ -481,7 +481,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(GarnetSand)
+                            .surfaceRock(GarnetSand)
                     );
 
     public static final GTOreDefinition GARNET_VEIN =
@@ -496,7 +496,7 @@ public class GTOres {
                     .minYLevel(50)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(GarnetRed)
+                            .surfaceRock(GarnetRed)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                     );
 
@@ -517,7 +517,7 @@ public class GTOres {
                     .maxYLevel(60)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Goethite)
+                            .surfaceRock(Goethite)
                     );
 
     public static final GTOreDefinition LUBRICANT_VEIN =
@@ -532,7 +532,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Talc)
+                            .surfaceRock(Talc)
                     );
 
     public static final GTOreDefinition MAGNETITE_VEIN_OW =
@@ -546,7 +546,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Magnetite)
+                            .surfaceRock(Magnetite)
                     );
 
     public static final GTOreDefinition MINERAL_SAND_VEIN =
@@ -562,7 +562,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(BasalticMineralSand)
+                            .surfaceRock(BasalticMineralSand)
                     );
 
     public static final GTOreDefinition NICKEL_VEIN =
@@ -578,7 +578,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Nickel)
+                            .surfaceRock(Nickel)
                     );
 
     public static final GTOreDefinition SALTS_VEIN =
@@ -594,7 +594,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Salt)
+                            .surfaceRock(Salt)
                     );
 
 
@@ -610,7 +610,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Oilsands)
+                            .surfaceRock(Oilsands)
                     );
 
     //////////////////////////////////////
@@ -635,7 +635,7 @@ public class GTOres {
                     .maxYLevel(-10)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Copper)
+                            .surfaceRock(Copper)
                     );
 
     public static final GTOreDefinition DIAMOND_VEIN =
@@ -649,7 +649,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Diamond)
+                            .surfaceRock(Diamond)
                             .density(0.1f)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                             .radius(2)
@@ -667,7 +667,7 @@ public class GTOres {
                     .maxYLevel(10)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Lapis)
+                            .surfaceRock(Lapis)
                             .density(0.15f)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                             .radius(3)
@@ -685,7 +685,7 @@ public class GTOres {
                     .maxYLevel(-5)
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Grossular)
+                            .surfaceRock(Grossular)
                             .radius(3)
                     );
 
@@ -702,7 +702,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Mica)
+                            .surfaceRock(Mica)
                             .radius(3)
                     );
 
@@ -719,7 +719,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Olivine)
+                            .surfaceRock(Olivine)
                             .density(0.15f)
                             .radius(3)
                     );
@@ -735,7 +735,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Redstone)
+                            .surfaceRock(Redstone)
                     );
 
     public static final GTOreDefinition SAPPHIRE_VEIN =
@@ -751,7 +751,7 @@ public class GTOres {
                             .build())
                     .parent()
                     .surfaceIndicatorGenerator(indicator -> indicator
-                            .surfaceRockType(Sapphire)
+                            .surfaceRock(Sapphire)
                             .density(0.15f)
                             .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)
                             .radius(3)
