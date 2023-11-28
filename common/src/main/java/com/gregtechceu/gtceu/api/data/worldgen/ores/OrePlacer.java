@@ -35,10 +35,12 @@ public class OrePlacer {
      */
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunk.getPos().toLong());
-        var generatedVeins = oreGenCache.consumeChunk(level, chunkGenerator, chunk);
+        var generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
+        var generatedIndicators = oreGenCache.consumeChunkIndicators(level, chunkGenerator, chunk);
 
         try (BulkSectionAccess access = new BulkSectionAccess(level)) {
             generatedVeins.forEach(generatedVein -> placeVein(chunk, random, access, generatedVein));
+            generatedIndicators.forEach(generatedIndicator -> placeIndicators(chunk, access, generatedIndicator));
         }
     }
 
@@ -65,10 +67,16 @@ public class OrePlacer {
     }
 
     private Map<SectionPos, Map<BlockPos, OreBlockPlacer>> resolvePlacerLists(ChunkAccess chunk, GeneratedVein vein) {
-        return vein.consumeChunk(chunk.getPos()).entrySet().stream()
+        return vein.consumeOres(chunk.getPos()).entrySet().stream()
                 .collect(Collectors.groupingBy(
                         entry -> SectionPos.of(entry.getKey()),
                         Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)
                 ));
+    }
+
+    private void placeIndicators(ChunkAccess chunk, BulkSectionAccess access, GeneratedIndicators generatedVein) {
+        generatedVein.consumeIndicators(chunk.getPos()).forEach(placer -> {
+            placer.placeIndicators(access);
+        });
     }
 }

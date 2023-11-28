@@ -94,6 +94,13 @@ public abstract class LootTablesMixin {
         GTBlocks.ITEM_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> {
             MixinHelpers.addMaterialBlockLootTables(lootTables, prefix, map);
         });
+        GTBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
+            ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
+            LootTable.Builder builder = BlockLoot.createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(), UniformGenerator.between(3, 5))
+                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE));
+            lootTables.put(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());
+            ((BlockBehaviourAccessor) blockEntry.get()).setDrops(lootTableId);
+        });
         GTRegistries.MACHINES.forEach(machine -> {
             Block block = machine.getBlock();
             ResourceLocation id = machine.getId();

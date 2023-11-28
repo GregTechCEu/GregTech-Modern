@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
+import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTModels;
@@ -31,6 +32,7 @@ public abstract class ModelManagerMixin {
         MaterialBlockRenderer.reinitModels();
         TagPrefixItemRenderer.reinitModels();
         ToolItemRenderer.reinitModels();
+        SurfaceRockRenderer.reinitModels();
         GTModels.registerMaterialFluidModels();
         GTCEu.LOGGER.info("GregTech Model loading took {}ms", System.currentTimeMillis() - startTime);
     }

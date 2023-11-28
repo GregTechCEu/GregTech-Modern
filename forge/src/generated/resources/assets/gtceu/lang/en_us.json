@@ -1808,6 +1808,7 @@
   "config.gtceu.option.nerfPaperCrafting": "nerfPaperCrafting",
   "config.gtceu.option.nerfWoodCrafting": "nerfWoodCrafting",
   "config.gtceu.option.oreGenerationChunkCacheSize": "oreGenerationChunkCacheSize",
+  "config.gtceu.option.oreIndicatorChunkCacheSize": "oreIndicatorChunkCacheSize",
   "config.gtceu.option.oreVeinGridSize": "oreVeinGridSize",
   "config.gtceu.option.oreVeinRandomOffset": "oreVeinRandomOffset",
   "config.gtceu.option.oreVeins": "oreVeins",

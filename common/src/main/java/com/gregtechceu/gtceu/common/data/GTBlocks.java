@@ -150,7 +150,7 @@ public class GTBlocks {
             if (material.hasProperty(PropertyKey.ORE)) {
                 if (!TagPrefix.rawOreBlock.isIgnored(material) && TagPrefix.rawOreBlock.generationCondition().test(material)) {
                     var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
-                            .initialProperties(() -> Blocks.IRON_BLOCK)
+                            .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
                             .transform(unificationBlock(TagPrefix.rawOreBlock, material))
                             .addLayer(() -> RenderType::translucent)
                             .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
@@ -210,6 +210,26 @@ public class GTBlocks {
             }
         }
         MATERIAL_BLOCKS = builder.build();
+    }
+
+    public static Map<Material, BlockEntry<SurfaceRockBlock>> SURFACE_ROCK_BLOCKS;
+    public static void generateSurfaceRocks() {
+        ImmutableMap.Builder<Material, BlockEntry<SurfaceRockBlock>> builder = ImmutableMap.builder();
+        for (Material material : GTRegistries.MATERIALS) {
+            if (material.hasProperty(PropertyKey.ORE)) {
+                var entry = REGISTRATE.block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
+                        .initialProperties(() -> Blocks.GRAVEL)
+                        .properties(p -> p.noLootTable().strength(0.25f))
+                        .blockstate(NonNullBiConsumer.noop())
+                        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                        .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                        .addLayer(() -> RenderType::cutoutMipped)
+                        .color(() -> SurfaceRockBlock::tintedColor)
+                        .register();
+                builder.put(material, entry);
+            }
+        }
+        SURFACE_ROCK_BLOCKS = builder.build();
     }
 
     //////////////////////////////////////
@@ -876,6 +896,7 @@ public class GTBlocks {
 
     public static void init() {
         generateMaterialBlocks();
+        generateSurfaceRocks();
         generateCableBlocks();
         generatePipeBlocks();
         generateLaserPipeBlocks();
