@@ -69,6 +69,13 @@ public interface IGTAddon {
 
     }
 
+    /**
+     * Call init on your custom IndicatorGenerator class(es) here
+     */
+    default void registerIndicatorGenerators() {
+
+    }
+
     default void addRecipes(Consumer<FinishedRecipe> provider) {
 
     }
