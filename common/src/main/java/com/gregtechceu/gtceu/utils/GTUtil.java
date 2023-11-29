@@ -351,7 +351,7 @@ public class GTUtil {
         }
 
 
-        if (world.getBiome(blockPos).is(BiomeTags.IS_END)) {
+        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
             return false;
         };
 
