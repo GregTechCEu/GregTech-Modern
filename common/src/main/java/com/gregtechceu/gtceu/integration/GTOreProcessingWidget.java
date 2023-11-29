@@ -402,7 +402,10 @@ public class GTOreProcessingWidget extends WidgetGroup {
 
     private void setupMainProducts(List<List<ItemStack>> mainproducts, Material material, OreProperty prop, List<Content> chanceContent) {
         //Ore
-        List<ItemStack> oreSlot = Collections.singletonList(ChemicalHelper.get(ore, material));
+        List<ItemStack> oreSlot = new ArrayList<>(ORES.size());
+        for (TagPrefix tagPrefix : ORES.keySet()) {
+            oreSlot.add(ChemicalHelper.get(tagPrefix, material));
+        }
         mainproducts.add(oreSlot);
         //Direct Smelt Result
         Material smeltingResult = prop.getDirectSmeltResult() != null ? prop.getDirectSmeltResult() : material;
