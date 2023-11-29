@@ -228,7 +228,7 @@ public class FirstDegreeMaterials {
 
         Galena = new Material.Builder("galena")
                 .dust(3).ore()
-                .color(0xf3e8fa).secondaryColor(0x331d42)
+                .color(0xf3e8fa).secondaryColor(0x331d42).iconSet(METALLIC)
                 .flags(NO_SMELTING)
                 .components(Lead, 1, Sulfur, 1)
                 .buildAndRegister();
@@ -317,7 +317,7 @@ public class FirstDegreeMaterials {
         Magnalium = new Material.Builder("magnalium")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(929))
-                .color(0xadc5e8).secondaryColor(0x522a77)
+                .color(0xadc5e8).secondaryColor(0x522a77).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Magnesium, 1, Aluminium, 2)
                 .rotorStats(6.0f, 2.0f, 256)
@@ -354,7 +354,7 @@ public class FirstDegreeMaterials {
 
         NiobiumNitride = new Material.Builder("niobium_nitride")
                 .ingot().fluid()
-                .color(0x949599).secondaryColor(0x262528)
+                .color(0x949599).secondaryColor(0x262528).iconSet(BRIGHT)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Niobium, 1, Nitrogen, 1)
                 .cableProperties(GTValues.V[6], 1, 1)
@@ -364,7 +364,7 @@ public class FirstDegreeMaterials {
         NiobiumTitanium = new Material.Builder("niobium_titanium")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(2345))
-                .color(0xd2d9f9).secondaryColor(0x262528)
+                .color(0xd2d9f9).secondaryColor(0x262528).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_FINE_WIRE)
                 .components(Niobium, 1, Titanium, 1)
                 .fluidPipeProperties(5900, 175, true)
@@ -511,7 +511,7 @@ public class FirstDegreeMaterials {
 
         Sapphire = new Material.Builder("sapphire")
                 .gem().ore()
-                .color(0x3235e3).secondaryColor(0x211455).iconSet(GEM_VERTICAL)
+                .color(0x3235e3).secondaryColor(0x211455).iconSet(EMERALD)
                 .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, GENERATE_LENS)
                 .components(Aluminium, 2, Oxygen, 3)
                 .buildAndRegister();
@@ -784,7 +784,7 @@ public class FirstDegreeMaterials {
 
         Chalcocite = new Material.Builder("chalcocite")
                 .dust().ore()
-                .color(0x657882).secondaryColor(0x33302e).iconSet(GEM_VERTICAL)
+                .color(0x657882).secondaryColor(0x33302e).iconSet(EMERALD)
                 .components(Copper, 2, Sulfur, 1)
                 .buildAndRegister();
 
@@ -799,7 +799,7 @@ public class FirstDegreeMaterials {
 
         Potash = new Material.Builder("potash")
                 .dust(1)
-                .color(0xffa772).secondaryColor(0x922f1b)
+                .color(0xffa772).secondaryColor(0x922f1b).iconSet(FINE)
                 .components(Potassium, 2, Oxygen, 1)
                 .buildAndRegister();
 
@@ -1030,7 +1030,7 @@ public class FirstDegreeMaterials {
 
         Soapstone = new Material.Builder("soapstone")
                 .dust(1).ore(3, 1)
-                .color(0x5a7261).secondaryColor(0x464c4b)
+                .color(0x5a7261).secondaryColor(0x464c4b).iconSet(ROUGH)
                 .components(Magnesium, 3, Silicon, 4, Hydrogen, 2, Oxygen, 12)
                 .buildAndRegister();
 
@@ -1078,7 +1078,7 @@ public class FirstDegreeMaterials {
 
         NitrogenDioxide = new Material.Builder("nitrogen_dioxide")
                 .gas()
-                .color(0x85FCFF).iconSet(FLUID)
+                .color(0x85FCFF)
                 .components(Nitrogen, 1, Oxygen, 2)
                 .buildAndRegister();
 
@@ -1186,7 +1186,7 @@ public class FirstDegreeMaterials {
 
         EnderPearl = new Material.Builder("ender_pearl")
                 .gem(1)
-                .color(0x8cf4e2).secondaryColor(0x032620)
+                .color(0x8cf4e2).secondaryColor(0x032620).iconSet(SHINY)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_PLATE)
                 .components(Beryllium, 1, Potassium, 4, Nitrogen, 5)
                 .buildAndRegister();
@@ -1311,7 +1311,7 @@ public class FirstDegreeMaterials {
         UraniumRhodiumDinaquadide = new Material.Builder("uranium_rhodium_dinaquadide")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(3410))
-                .color(0x232020).secondaryColor(0xff009c)
+                .color(0x232020).secondaryColor(0xff009c).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(Uranium238, 1, Rhodium, 1, Naquadah, 2)
                 .cableProperties(GTValues.V[GTValues.ZPM], 8, 0, true, 5)
@@ -1332,7 +1332,7 @@ public class FirstDegreeMaterials {
         RutheniumTriniumAmericiumNeutronate = new Material.Builder("ruthenium_trinium_americium_neutronate")
                 .ingot()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(23691))
-                .color(0x897b76).secondaryColor(0x00c0ff).iconSet(BRIGHT)
+                .color(0x897b76).secondaryColor(0x00c0ff).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Ruthenium, 1, Trinium, 2, Americium, 1, Neutronium, 2, Oxygen, 8)
                 .cableProperties(GTValues.V[GTValues.UHV], 24, 0, true, 3)

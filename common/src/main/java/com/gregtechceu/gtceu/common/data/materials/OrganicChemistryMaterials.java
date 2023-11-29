@@ -8,7 +8,8 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.FINE;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.ROUGH;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class OrganicChemistryMaterials {
@@ -64,7 +65,7 @@ public class OrganicChemistryMaterials {
         ReinforcedEpoxyResin = new Material.Builder("reinforced_epoxy_resin")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
-                .color(0x9ecaad).secondaryColor(0xb1b2a1)
+                .color(0x9ecaad).secondaryColor(0xb1b2a1).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 6, Hydrogen, 4, Oxygen, 1)
                 .buildAndRegister();
@@ -122,7 +123,7 @@ public class OrganicChemistryMaterials {
         Epoxy = new Material.Builder("epoxy")
                 .polymer(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
-                .color(0xf6fabd).secondaryColor(0xC88C14)
+                .color(0xf6fabd).secondaryColor(0xC88C14).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 21, Hydrogen, 25, Chlorine, 1, Oxygen, 5)
                 .buildAndRegister();
