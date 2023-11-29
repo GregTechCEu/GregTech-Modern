@@ -53,11 +53,17 @@ public class MaterialBlock extends AppearanceBlock {
     public static BlockColor tintedColor() {
         return (state, reader, pos, tintIndex) -> {
             if (state.getBlock() instanceof MaterialBlock block) {
-                if ((tintIndex == 1 || tintIndex == -111) && block.material.getMaterialSecondaryARGB() != -1) {
-                    return block.material.getMaterialSecondaryARGB();
-                } else {
-                    return block.material.getMaterialARGB();
-                }
+                return switch (tintIndex) {
+                    case 0 -> block.material.getMaterialARGB();
+                    case 1, -111 -> {
+                        if (block.material.getMaterialSecondaryARGB() != -1) {
+                            yield block.material.getMaterialSecondaryARGB();
+                        } else {
+                            yield block.material.getMaterialARGB();
+                        }
+                    }
+                    default -> -1;
+                };
             }
             return -1;
         };

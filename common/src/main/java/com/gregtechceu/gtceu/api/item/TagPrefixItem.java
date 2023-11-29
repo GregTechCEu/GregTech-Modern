@@ -59,11 +59,17 @@ public class TagPrefixItem extends Item {
     public static ItemColor tintColor() {
         return (itemStack, index) -> {
             if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
-                if (index == 1 && tagPrefixItem.material.getMaterialSecondaryARGB() != -1) {
-                    return tagPrefixItem.material.getMaterialSecondaryARGB();
-                } else {
-                    return tagPrefixItem.material.getMaterialARGB();
-                }
+                return switch (index) {
+                    case 0 -> tagPrefixItem.material.getMaterialARGB();
+                    case 1 -> {
+                        if (tagPrefixItem.material.getMaterialSecondaryARGB() != -1) {
+                            yield tagPrefixItem.material.getMaterialSecondaryARGB();
+                        } else {
+                            yield tagPrefixItem.material.getMaterialARGB();
+                        }
+                    }
+                    default -> -1;
+                };
             }
             return -1;
         };
