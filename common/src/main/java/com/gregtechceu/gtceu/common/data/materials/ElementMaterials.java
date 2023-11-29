@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
 
-import static com.gregtechceu.gtceu.api.GTValues.*;
+import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -185,7 +185,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Copernicium = new Material.Builder("copernicium")
-                .color(0x565c5d).secondaryColor(0xffd34b)
+                .color(0x565c5d).secondaryColor(0xffd34b).iconSet(RADIOACTIVE)
                 .element(GTElements.Cn)
                 .buildAndRegister();
 
@@ -207,7 +207,7 @@ public class ElementMaterials {
 
         Darmstadtium = new Material.Builder("darmstadtium")
                 .ingot().fluid()
-                .color(0x578062)
+                .color(0x578062).iconSet(RADIOACTIVE)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_DENSE, GENERATE_SMALL_GEAR)
                 .element(GTElements.Ds)
                 .buildAndRegister();
@@ -307,6 +307,7 @@ public class ElementMaterials {
 
         Hassium = new Material.Builder("hassium")
                 .color(0x78766f).secondaryColor(0x09ebaf)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.Hs)
                 .buildAndRegister();
 
@@ -516,7 +517,7 @@ public class ElementMaterials {
 
         Niobium = new Material.Builder("niobium")
                 .ingot().fluid()
-                .color(0xcbd6ea).secondaryColor(0x3f5b2a).iconSet(METALLIC)
+                .color(0xcbd6ea).secondaryColor(0x3f5b2a).iconSet(BRIGHT)
                 .element(GTElements.Nb)
                 .blastTemp(2750, GasTier.MID, GTValues.VA[GTValues.HV], 900)
                 .buildAndRegister();
@@ -579,6 +580,7 @@ public class ElementMaterials {
 
         Polonium = new Material.Builder("polonium")
                 .color(0x163b27).secondaryColor(0x00ff78)
+                .iconSet(RADIOACTIVE)
                 .element(GTElements.Po)
                 .buildAndRegister();
 

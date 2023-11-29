@@ -1,6 +1,0 @@
-{
-  "parent": "gtceu:item/material_sets/shiny/rod",
-  "textures": {
-    "layer1": "gtceu:item/material_sets/glass/rod_overlay"
-  }
-}
