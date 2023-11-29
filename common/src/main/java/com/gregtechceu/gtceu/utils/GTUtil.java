@@ -12,6 +12,7 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.InputConstants;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.Level;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -350,7 +351,7 @@ public class GTUtil {
         }
 
 
-        if (world.getBiome(blockPos.above()).is(Biomes.THE_END.registry())) {
+        if (world.getBiome(blockPos).is(BiomeTags.IS_END)) {
             return false;
         };
 
