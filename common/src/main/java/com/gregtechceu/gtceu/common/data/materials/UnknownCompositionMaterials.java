@@ -376,13 +376,13 @@ public class UnknownCompositionMaterials {
 
         Endstone = new Material.Builder("endstone")
                 .dust(1)
-                .color(0xf6fabd).secondaryColor(0xc5be8b)
+                .color(0xf6fabd).secondaryColor(0xc5be8b).iconSet(ROUGH)
                 .flags(NO_SMASHING)
                 .buildAndRegister();
 
         Netherrack = new Material.Builder("netherrack")
                 .dust(1)
-                .color(0x7c4249).secondaryColor(0x400b0b)
+                .color(0x7c4249).secondaryColor(0x400b0b).iconSet(ROUGH)
                 .flags(NO_SMASHING, FLAMMABLE)
                 .buildAndRegister();
 

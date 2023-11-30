@@ -24,7 +24,7 @@ public class HigherDegreeMaterials {
 
         EnderEye = new Material.Builder("ender_eye")
                 .gem(1)
-                .color(0xb5e45a).secondaryColor(0x001430)
+                .color(0xb5e45a).secondaryColor(0x001430).iconSet(SHINY)
                 .flags(NO_SMASHING, NO_SMELTING, DECOMPOSITION_BY_CENTRIFUGING)
                 .buildAndRegister();
 

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.cover;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.pipenet.ITickablePipeNet;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
