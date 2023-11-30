@@ -20,6 +20,7 @@ import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.render.EmiTexture;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.api.stack.serializer.EmiIngredientSerializer;
 import dev.emi.emi.api.widget.WidgetHolder;
 import lombok.Getter;
 import net.minecraft.network.chat.Component;
@@ -136,7 +137,7 @@ public class GTEmiOreProcessingV2 implements EmiRecipe {
         validTypes.add(CENTRIFUGE_RECIPES);
         validTypes.add(THERMAL_CENTRIFUGE_RECIPES);
         OreProperty oreProperty = material.getProperty(PropertyKey.ORE);
-        //ore, stoneDusts
+        //(raw) ore
         List<ItemStack> oreStacks = new ArrayList<>();
         for (TagPrefix tagPrefix : TagPrefix.ORES.keySet()) {
             ItemStack oreStack = ChemicalHelper.get(tagPrefix, material);
@@ -144,6 +145,7 @@ public class GTEmiOreProcessingV2 implements EmiRecipe {
         }
         ore = EmiIngredient.of(oreStacks.stream().map(EmiStack::of).toList());
         inputs.add(getOre());
+        inputs.add(EmiStack.of(ChemicalHelper.get(TagPrefix.rawOre, material)));
         //crushed
         crushed = EmiStack.of(ChemicalHelper.get(TagPrefix.crushed, material));
         inputs.add(getCrushed());
