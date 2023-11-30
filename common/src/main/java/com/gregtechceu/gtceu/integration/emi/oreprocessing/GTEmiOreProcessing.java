@@ -17,7 +17,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.dustPure;
-
+@Deprecated
 public class GTEmiOreProcessing extends ModularEmiRecipe<WidgetGroup> {
     final Material material;
 
