@@ -299,9 +299,9 @@ public class GTEmiOreProcessingV2 implements EmiRecipe {
         widgets.addSlot(getDust(), 47, 77 + 18 + 3).recipeContext(this);
         widgets.addSlot(getByProduct0dustTiny(), 47, 77 + 18 + 3 + 18).recipeContext(this);
         //crushedPurified --macerator-> dustPure
-        widgets.addSlot(getWorkstations(MACERATOR_RECIPES), 111, 45).drawBack(false);
-        widgets.addSlot(getDustPure(), 111 + 18 + 5, 45).recipeContext(this);
-        widgets.addSlot(getByProduct1(), 111 + 18 + 5 + 18, 45).recipeContext(this).appendTooltip(boost085);
+        widgets.addSlot(getWorkstations(MACERATOR_RECIPES), 111, 44).drawBack(false);
+        widgets.addSlot(getDustPure(), 111 + 18 + 5, 44).recipeContext(this);
+        widgets.addSlot(getByProduct1(), 111 + 18 + 5 + 18, 44).recipeContext(this).appendTooltip(boost085);
         //dustPure --centrifuge-> dust
         widgets.addSlot(getWorkstations(CENTRIFUGE_RECIPES), 131, 66).drawBack(false);
         widgets.addSlot(getDust(), 131, 66 + 18 + 4).recipeContext(this);
