@@ -19,7 +19,6 @@ import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.*;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
 import com.gregtechceu.gtceu.api.machine.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
@@ -57,7 +56,6 @@ import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -1489,7 +1487,7 @@ public class GTMachines {
                     .tooltips(Component.translatable("gtceu.universal.tooltip.parallel", ProcessingArrayMachine.getMachineLimit(tier)))
                     .renderer(() -> new ProcessingArrayMachineRenderer(tier == IV ?
                             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
-                            GTCEu.id("block/casings/solid/machine_casing_study_hsse"),
+                            GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
                             GTCEu.id("block/multiblock/processing_array")))
                     .compassSections(GTCompassSections.TIER[IV])
                     .compassNode("processing_array")

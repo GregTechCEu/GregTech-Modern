@@ -35,7 +35,7 @@ public class MinerRenderer extends WorkableTieredHullMachineRenderer {
         builder.put(GTMaterials.Titanium, GTCEu.id("block/casings/solid/machine_casing_stable_titanium"));
         builder.put(GTMaterials.TungstenSteel, GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"));
         builder.put(GTMaterials.Polytetrafluoroethylene, GTCEu.id("block/casings/solid/machine_casing_inert_ptfe"));
-        builder.put(GTMaterials.HSSE, GTCEu.id("block/casings/solid/machine_casing_study_hsse"));
+        builder.put(GTMaterials.HSSE, GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"));
 
         MATERIALS_TO_CASING_MODELS = builder.build();
     }
