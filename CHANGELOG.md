@@ -10,4 +10,5 @@ Version: 1.0.17
 * improve zh-cn Localization
 * fix steam boiler can accept steam
 * fix: changing parallel amount doesn't update recipe logic
+* fix preview data precision while sodium/rubidium/embeddium installed
 * bump the ldlib version up

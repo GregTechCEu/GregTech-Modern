@@ -98,6 +98,10 @@ public class GTValues {
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",
             MODID_IRIS = "iris",
+            MODID_OCULUS = "oculus",
+            MODID_SODIUM = "sodium",
+            MODID_RUBIDIUM = "rubidium",
+            MODID_EMBEDDIUM = "embeddium",
             MODID_CREATE = "create",
             MODID_REBORN_ENERGY = "team_reborn_energy",
             MODID_ALMOSTUNIFIED = "almostunified";
