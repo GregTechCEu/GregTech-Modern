@@ -154,7 +154,7 @@ dependencies {
     modImplementation(fabric.teamRebornEnergy)
 
     // Shimmer
-    modImplementation(fabric.shimmer.fabric) { transitive = false }
+    modImplementation(fabric.shimmer.fabric)
 
     // Runtime only testing mods
 //    modRuntimeOnly("me.shedaniel.cloth:cloth-config-fabric:8.2.88") {
