@@ -101,7 +101,7 @@ dependencies {
     // Registrate
     modImplementation(include("com.tterrag.registrate_fabric:Registrate:${fabric.versions.registrate.get()}"))
 
-    // Registrate
+    // Forge Config Api
     modImplementation fabric.forgeConfigApi
     // Night Config
     modImplementation fabric.nightConfigCore
