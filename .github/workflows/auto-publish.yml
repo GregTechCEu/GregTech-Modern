@@ -69,9 +69,9 @@ jobs:
         name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls fabric/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-fabric-|.jar' '{print $2}')
+          MESSAGE=$(ls fabric/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-fabric-|.jar' '{print $2}')
           echo fabric_version=$MESSAGE >> $GITHUB_OUTPUT
-          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | awk -F 'gtceu-forge-|.jar' '{print $2}')
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-forge-|.jar' '{print $2}')
           echo forge_version=$MESSAGE >> $GITHUB_OUTPUT
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
