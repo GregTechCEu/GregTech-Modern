@@ -4,7 +4,7 @@
     "res": "gtceu:almandine_flawless_gem"
   },
   "items": [
-    "#forge:gems/flawless"
+    "#forge:flawless_gems"
   ],
   "page": "gtceu:materials/flawless_gem",
   "position": [

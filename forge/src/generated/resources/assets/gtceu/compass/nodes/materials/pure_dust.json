@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_pure_dust"
   },
   "items": [
-    "#forge:dusts/pure"
+    "#forge:pure_dusts"
   ],
   "page": "gtceu:materials/pure_dust",
   "position": [

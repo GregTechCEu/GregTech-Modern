@@ -10,6 +10,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -122,5 +124,15 @@ public class SurfaceRockBlock extends Block {
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
         super.createBlockStateDefinition(builder);
         builder.add(FACING);
+    }
+
+    @Override
+    public String getDescriptionId() {
+        return super.getDescriptionId();
+    }
+
+    @Override
+    public MutableComponent getName() {
+        return Component.translatable("block.surface_rock", material.getLocalizedName());
     }
 }

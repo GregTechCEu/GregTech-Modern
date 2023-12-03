@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_double_plate"
   },
   "items": [
-    "#forge:plates/double"
+    "#forge:double_plates"
   ],
   "page": "gtceu:materials/double_plate",
   "position": [

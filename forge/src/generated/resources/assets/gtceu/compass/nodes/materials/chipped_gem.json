@@ -4,7 +4,7 @@
     "res": "gtceu:almandine_chipped_gem"
   },
   "items": [
-    "#forge:gems/chipped"
+    "#forge:chipped_gems"
   ],
   "page": "gtceu:materials/chipped_gem",
   "position": [

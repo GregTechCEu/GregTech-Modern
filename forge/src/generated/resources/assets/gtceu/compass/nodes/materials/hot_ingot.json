@@ -4,7 +4,7 @@
     "res": "gtceu:europium_hot_ingot"
   },
   "items": [
-    "#forge:ingots/hot"
+    "#forge:hot_ingots"
   ],
   "page": "gtceu:materials/hot_ingot",
   "position": [

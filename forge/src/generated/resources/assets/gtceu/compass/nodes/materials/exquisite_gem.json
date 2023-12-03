@@ -4,7 +4,7 @@
     "res": "gtceu:almandine_exquisite_gem"
   },
   "items": [
-    "#forge:gems/exquisite"
+    "#forge:exquisite_gems"
   ],
   "page": "gtceu:materials/exquisite_gem",
   "position": [
