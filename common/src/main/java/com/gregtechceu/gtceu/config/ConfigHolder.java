@@ -287,6 +287,9 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false"})
         public boolean highTierContent = false;
+        @Configurable
+        @Configurable.Comment({"Whether search for recipes asynchronously.", " Default: true"})
+        public boolean asyncRecipeSearching = true;
     }
 
     public static class ClientConfigs {

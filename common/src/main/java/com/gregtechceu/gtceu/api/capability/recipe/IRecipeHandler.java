@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import net.minecraft.world.level.Level;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -28,22 +27,6 @@ public interface IRecipeHandler<K> {
      * null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
     List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, @Nullable String slotName, boolean simulate);
-
-    /**
-     * The timestamp indicates the time in the world when the last change occurred
-     */
-    long getTimeStamp();
-
-    /**
-     * Update to the latest work time.
-     */
-    void setTimeStamp(long timeStamp);
-
-    default void updateTimeStamp(@Nullable Level level) {
-        if (level != null) {
-            setTimeStamp(level.getGameTime());
-        }
-    }
 
     /**
      * Slot name, it makes sense if recipe contents specify a slot name.
