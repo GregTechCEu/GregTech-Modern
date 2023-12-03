@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.AssemblyLineManager;
+import com.gregtechceu.gtceu.utils.GTStringUtils;
 import lombok.NoArgsConstructor;
 import net.minecraft.world.item.ItemStack;
 
@@ -48,7 +49,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         if (researchId == null) {
-            researchId = researchStack.toString();
+            researchId = GTStringUtils.itemStackToString(researchStack);
         }
 
         if (dataStack == null) {
