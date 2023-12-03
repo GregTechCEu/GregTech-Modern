@@ -342,7 +342,7 @@ public class UnknownCompositionMaterials {
 
         Oilsands = new Material.Builder("oilsands")
                 .dust(1).ore()
-                .color(0x0A0A0A).iconSet(SAND)
+                .color(0xe3c78a).secondaryColor(0x161e22).iconSet(SAND)
                 .flags(FLAMMABLE)
                 .buildAndRegister();
 
@@ -369,19 +369,20 @@ public class UnknownCompositionMaterials {
 
         NetherStar = new Material.Builder("nether_star")
                 .gem(4)
+                .color(0xfeffc6).secondaryColor(0x7fd7e2)
                 .iconSet(NETHERSTAR)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_LENS)
                 .buildAndRegister();
 
         Endstone = new Material.Builder("endstone")
                 .dust(1)
-                .color(0xD9DE9E)
+                .color(0xf6fabd).secondaryColor(0xc5be8b).iconSet(ROUGH)
                 .flags(NO_SMASHING)
                 .buildAndRegister();
 
         Netherrack = new Material.Builder("netherrack")
                 .dust(1)
-                .color(0xC80000)
+                .color(0x7c4249).secondaryColor(0x400b0b).iconSet(ROUGH)
                 .flags(NO_SMASHING, FLAMMABLE)
                 .buildAndRegister();
 
@@ -425,12 +426,12 @@ public class UnknownCompositionMaterials {
 
         Meat = new Material.Builder("meat")
                 .dust(1)
-                .color(0xC14C4C).iconSet(SAND)
+                .color(0xe85048).secondaryColor(0x470a06).iconSet(SAND)
                 .buildAndRegister();
 
         Wood = new Material.Builder("wood")
                 .wood()
-                .color(0xfcfcf2).secondaryColor(0x643200).iconSet(WOOD)
+                .color(0xc29f6d).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR, GENERATE_FRAME)
@@ -535,7 +536,7 @@ public class UnknownCompositionMaterials {
 
         Lapotron = new Material.Builder("lapotron")
                 .gem()
-                .color(0x2C39B1).iconSet(DIAMOND)
+                .color(0x7497ea).secondaryColor(0x1c0b39).iconSet(DIAMOND)
                 .flags(NO_UNIFICATION)
                 .buildAndRegister();
 

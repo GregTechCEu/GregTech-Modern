@@ -2,5 +2,8 @@
     "ldlib": {
         "connection": "gtceu:block/casings/fusion/fusion_casing_bloom_ctm",
         "emissive": true
+    },
+    "shimmer": {
+        "bloom": true
     }
 }

@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_tiny_dust"
   },
   "items": [
-    "#forge:dusts/tiny"
+    "#forge:tiny_dusts"
   ],
   "page": "gtceu:materials/tiny_dust",
   "position": [

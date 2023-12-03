@@ -55,8 +55,12 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_CREATE);
     }
 
-    public static boolean isIrisLoaded() {
-        return LDLib.isModLoaded(GTValues.MODID_IRIS);
+    public static boolean isIrisOculusLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_IRIS) || LDLib.isModLoaded(GTValues.MODID_OCULUS);
+    }
+
+    public static boolean isSodiumRubidiumEmbeddiumLoaded() {
+        return LDLib.isModLoaded(GTValues.MODID_SODIUM) || LDLib.isModLoaded(GTValues.MODID_RUBIDIUM) ||LDLib.isModLoaded(GTValues.MODID_EMBEDDIUM);
     }
 
     public static boolean isRebornEnergyLoaded() {

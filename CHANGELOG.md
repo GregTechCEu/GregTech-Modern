@@ -1,17 +1,18 @@
 # ChangeLog
 
-Version: 1.0.16
+Version: 1.0.17
 
-* add power substation
-* add ore vein diagram
-* add fluid vein diagram
-* add man-made compass pages for all tools
-* add tests for better quality control in the future
-* fix ore processing diagram
-* fix GT tools not doing the tooltype-specific things like making paths
-* fix small distillery recipes
-* fix High Power Casing recipe
-* fix performance issue for wire/pipe item rendering
-* fix missing back texture on covers
-* fix empty/equal drums not being stackable (requires placing and breaking affected items the first time)
-* always enable VBO cache for multis previews + add config option to disable it
+* add solar panels
+* add shimmer integration for bloom effects
+* add most of the secondary colors to material items
+* add man-made compass pages
+* add ore indicators
+* bump the ldlib version up
+* reduce nesting of generated tags
+* improve zh-cn Localization
+* fix missing items for Ruridit and Ultimet
+* fix steam boiler being ble to accept steam
+* fix changing parallel amount not updating the recipe
+* fix preview data precision while sodium/rubidium/embeddium installed
+* fix language issues
+* fix item filter mode button in filter covers

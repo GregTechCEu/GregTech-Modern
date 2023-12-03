@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import org.jetbrains.annotations.VisibleForTesting;
@@ -28,6 +29,7 @@ import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable, IFancyTooltip {
 
@@ -65,8 +67,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected int fuelTime;
     @Getter @Persisted
     protected int fuelMaxTime;
-    @Getter
-    protected long timeStamp;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
@@ -74,11 +74,14 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected long totalContinuousRunningTime;
     protected TickableSubscription subscription;
     protected Object workingSound;
+    @Nullable
+    protected CompletableFuture<List<GTRecipe>> completableFuture = null;
+    // if storage is dirty while async searching recipe, it will be set to true.
+    protected boolean dirtySearching = false;
 
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());
         this.machine = machine;
-        this.timeStamp = Long.MIN_VALUE;
     }
 
     @Environment(EnvType.CLIENT)
@@ -105,7 +108,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         fuelTime = 0;
         lastFailedMatches = null;
         status = Status.IDLE;
-        this.timeStamp = Long.MIN_VALUE;
         updateTickSubscription();
     }
 
@@ -123,6 +125,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
         } else {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
+            if (completableFuture != null) {
+                dirtySearching = true;
+            }
         }
     }
 
@@ -144,27 +149,19 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         return Platform.getMinecraftServer().getRecipeManager();
     }
 
-    public long getLatestTimeStamp() {
-        return machine.self().getLevel().getGameTime();
-    }
-
     public void serverTick() {
         if (!isSuspend()) {
             if (!isIdle() && lastRecipe != null) {
-                if (isWaiting() && getMachine().getOffsetTimer() % 5 == 0) {
-                    executeDirty(this::handleRecipeWorking);
-                } else {
-                    if (progress < duration) {
-                        handleRecipeWorking();
-                    }
-                    if (progress >= duration) {
-                        onRecipeFinish();
-                    }
+                if (progress < duration) {
+                    handleRecipeWorking();
+                }
+                if (progress >= duration) {
+                    onRecipeFinish();
                 }
             } else if (lastRecipe != null) {
                 findAndHandleRecipe();
             } else if (!machine.keepSubscribing() || getMachine().getOffsetTimer() % 5 == 0) {
-                executeDirty(this::findAndHandleRecipe);
+                findAndHandleRecipe();
                 if (lastFailedMatches != null) {
                     for (GTRecipe match : lastFailedMatches) {
                         if (checkMatchedRecipeAvailable(match)) break;
@@ -175,14 +172,23 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (fuelTime > 0) {
             fuelTime--;
         } else {
-            if (isSuspend() || (lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty && lastFailedMatches == null)) {
+            boolean unsubscribe = false;
+            if (isSuspend()) {
+                unsubscribe = true;
+                if (completableFuture != null) {
+                    completableFuture.cancel(true);
+                    completableFuture = null;
+                }
+            } else if (completableFuture == null && lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty && lastFailedMatches == null) {
                 // machine isn't working enabled
                 // or
                 // there is no available recipes, so it will wait for notification.
-                if (subscription != null) {
-                    subscription.unsubscribe();
-                    subscription = null;
-                }
+                unsubscribe = true;
+            }
+
+            if (unsubscribe && subscription != null) {
+                subscription.unsubscribe();
+                subscription = null;
             }
         }
     }
@@ -218,19 +224,15 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                     totalContinuousRunningTime++;
                 } else {
                     setWaiting(result.reason().get());
-                    if (progress > 0 && machine.dampingWhenWaiting()) {
-                        if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
-                            this.progress = 1;
-                        } else {
-                            this.progress = Math.max(1, progress - 2);
-                        }
-                    }
                 }
             } else {
                 setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
             }
         } else {
             setWaiting(result.reason().get());
+        }
+        if (isWaiting()) {
+            doDamping();
         }
         if (last == Status.WORKING && getStatus() != Status.WORKING) {
             lastRecipe.postWorking(machine);
@@ -239,34 +241,14 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    private void executeDirty(Runnable changed) {
-        long latestTS = getLatestTimeStamp();
-        if (latestTS < timeStamp) {
-            timeStamp = latestTS;
-            changed.run();
-        } else {
-            if (machine.hasProxies() && checkDirty(latestTS)) {
-                changed.run();
+    protected void doDamping() {
+        if (progress > 0 && machine.dampingWhenWaiting()) {
+            if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
+                this.progress = 1;
+            } else {
+                this.progress = Math.max(1, progress - 2);
             }
         }
-    }
-
-    public boolean checkDirty(long latestTS) {
-        boolean execute = false;
-        for (var handlers : machine.getCapabilitiesProxy().values()) {
-            if (handlers != null) {
-                for (var handler : handlers) {
-                    if (handler.getTimeStamp() < latestTS) {
-                        handler.setTimeStamp(latestTS);
-                    }
-                    if (handler.getTimeStamp() > timeStamp) {
-                        execute = true;
-                        timeStamp = handler.getTimeStamp();
-                    }
-                }
-            }
-        }
-        return execute;
     }
 
     protected List<GTRecipe> searchRecipe() {
@@ -285,21 +267,55 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             lastOriginRecipe = null;
             setupRecipe(recipe);
         } else { // try to find and handle a new recipe
-            List<GTRecipe> matches = searchRecipe();
-
             lastRecipe = null;
             lastOriginRecipe = null;
-            for (GTRecipe match : matches) {
-                // try to modify recipe by machine, such as overclock, tier checking.
-                if (checkMatchedRecipeAvailable(match)) break;
-                // cache matching recipes.
-                if (lastFailedMatches == null) {
-                    lastFailedMatches = new ArrayList<>();
+            if (completableFuture == null) {
+                // try to search recipe in threads.
+                if (ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
+                    completableFuture = supplyAsyncSearchingTask();
+                } else {
+                    handleSearchingRecipes(searchRecipe());
                 }
-                lastFailedMatches.add(match);
+                dirtySearching = false;
+            } else if (completableFuture.isDone()) {
+                var lastFuture = this.completableFuture;
+                completableFuture = null;
+                if (!lastFuture.isCancelled()) {
+                    // if searching task is done, try to handle searched recipes.
+                    try {
+                        var matches = lastFuture.join().stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList();
+                        if (!matches.isEmpty()) {
+                            handleSearchingRecipes(matches);
+                        } else if (dirtySearching) {
+                            completableFuture = supplyAsyncSearchingTask();
+                        }
+                    } catch (Throwable throwable) {
+                        // if error occurred, schedule a new async task.
+                        completableFuture = supplyAsyncSearchingTask();
+                    }
+                } else {
+                    handleSearchingRecipes(searchRecipe());
+                }
+                dirtySearching = false;
             }
         }
         recipeDirty = false;
+    }
+
+    private CompletableFuture<List<GTRecipe>> supplyAsyncSearchingTask() {
+        return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("Searching recipes", this::searchRecipe), Util.backgroundExecutor());
+    }
+
+    private void handleSearchingRecipes(List<GTRecipe> matches) {
+        for (GTRecipe match : matches) {
+            // try to modify recipe by machine, such as overclock, tier checking.
+            if (checkMatchedRecipeAvailable(match)) break;
+            // cache matching recipes.
+            if (lastFailedMatches == null) {
+                lastFailedMatches = new ArrayList<>();
+            }
+            lastFailedMatches.add(match);
+        }
     }
 
     public boolean handleFuelRecipe() {

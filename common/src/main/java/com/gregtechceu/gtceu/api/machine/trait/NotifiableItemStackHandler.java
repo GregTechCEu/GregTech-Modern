@@ -12,7 +12,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -35,15 +34,12 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Getter @Setter
-    private long timeStamp;
     @Persisted @DescSynced
     public final ItemStackTransfer storage;
     private Boolean isEmpty;
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Function<Integer, ItemStackTransfer> transferFactory) {
         super(machine);
-        this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
         this.capabilityIO = capabilityIO;
@@ -65,7 +61,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public void onContentsChanged() {
         isEmpty = null;
-        updateTimeStamp(machine.getLevel());
         notifyListeners();
     }
 
@@ -150,17 +145,16 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return isEmpty;
     }
 
-    public void exportToNearby(Direction... facings) {
+    public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            if (facing == null) continue; // TODO find actual fix
             ItemTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
         }
     }
 
-    public void importFromNearby(Direction... facings) {
+    public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {

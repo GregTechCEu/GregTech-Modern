@@ -20,9 +20,6 @@
     "gtceu:wetware_printed_circuit_board"
   ],
   "page": "gtceu:circuits/circuit_board",
-  "position": [
-    -150,
-    50
-  ],
+  "position": [-100, 50],
   "section": "gtceu:circuits"
 }

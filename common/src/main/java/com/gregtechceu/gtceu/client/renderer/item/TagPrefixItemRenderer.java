@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.client.renderer.item;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
@@ -61,7 +59,7 @@ public class TagPrefixItemRenderer {
                             result.setPixelRGBA(x, y, GradientUtil.multiplyBlendRGBA(color, materialRGBA));
                         }
                     }
-                    if (prefixItem.material.getMaterialSecondaryRGB() != -1) {
+                    if (prefixItem.material.getMaterialSecondaryARGB() != -1) {
                         ResourceLocation path = model.type.getItemTexturePath(model.iconSet, true);
                         Resource file2 = Minecraft.getInstance().getResourceManager().getResource(GTDynamicResourcePack.getTextureLocation(null, new ResourceLocation(path.getNamespace(), path.getPath() + LAYER_2_SUFFIX))).orElse(null);
                         if (file2 != null) {

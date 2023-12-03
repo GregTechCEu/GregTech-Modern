@@ -3,14 +3,11 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -25,7 +22,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -62,10 +58,8 @@ public class TagPrefixItem extends Item {
     @Environment(EnvType.CLIENT)
     public static ItemColor tintColor() {
         return (itemStack, index) -> {
-            if (index == 0) {
-                if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
-                    return tagPrefixItem.material.getMaterialARGB();
-                }
+            if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
+                return tagPrefixItem.material.getLayerARGB(index);
             }
             return -1;
         };

@@ -204,6 +204,13 @@ public class ConfigHolder {
             })
             public int oreGenerationChunkCacheSize = 512;
 
+            @Configurable
+            @Configurable.Comment({
+                    "Sets the maximum number of chunks for which ore indicators may be cached.",
+                    "If you register any custom veins with very large indicator ranges (or modify existing ones that way), you may need to increase this value.",
+                    "Default: 2048 (requires restarting the server / re-opening the world)"
+            })
+            public int oreIndicatorChunkCacheSize = 2048;
         }
     }
 
@@ -280,6 +287,9 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false"})
         public boolean highTierContent = false;
+        @Configurable
+        @Configurable.Comment({"Whether search for recipes asynchronously.", " Default: true"})
+        public boolean asyncRecipeSearching = true;
     }
 
     public static class ClientConfigs {

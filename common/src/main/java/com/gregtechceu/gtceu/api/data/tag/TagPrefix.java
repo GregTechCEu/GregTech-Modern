@@ -174,6 +174,8 @@ public class TagPrefix {
     public static final TagPrefix rawOre = new TagPrefix("raw", true)
             .defaultTagPath(FORGE, "raw_materials/%s")
             .defaultTagPath(FABRIC, "raw_%s_ores")
+            .unformattedTagPath(FORGE, "raw_materials")
+            .unformattedTagPath(FABRIC, "raw_ores")
             .langValue("Raw %s")
             .materialIconType(MaterialIconType.rawOre)
             .unificationEnabled(true)
@@ -225,9 +227,9 @@ public class TagPrefix {
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final TagPrefix ingotHot = new TagPrefix("hotIngot")
-            .defaultTagPath(FORGE, "ingots/hot/%s")
+            .defaultTagPath(FORGE, "hot_ingots/%s")
             .defaultTagPath(FABRIC, "%s_hot_ingots")
-            .unformattedTagPath(FORGE, "ingots/hot")
+            .unformattedTagPath(FORGE, "hot_ingots")
             .unformattedTagPath(FABRIC, "hot_ingots")
             .langValue("Hot %s Ingot")
             .materialAmount(GTValues.M)
@@ -263,9 +265,9 @@ public class TagPrefix {
 
     // A regular Gem worth one small Dust.
     public static final TagPrefix gemChipped = new TagPrefix("chippedGem")
-            .defaultTagPath(FORGE, "gems/chipped/%s")
+            .defaultTagPath(FORGE, "chipped_gems/%s")
             .defaultTagPath(FABRIC, "%s_chipped_gems")
-            .unformattedTagPath(FORGE, "gems/chipped")
+            .unformattedTagPath(FORGE, "chipped_gems")
             .unformattedTagPath(FABRIC, "chipped_gems")
             .langValue("Chipped %s")
             .materialAmount(GTValues.M / 4)
@@ -276,9 +278,9 @@ public class TagPrefix {
 
     // A regular Gem worth two small Dusts.
     public static final TagPrefix gemFlawed = new TagPrefix("flawedGem")
-            .defaultTagPath(FORGE, "gems/flawed/%s")
+            .defaultTagPath(FORGE, "flawed_gems/%s")
             .defaultTagPath(FABRIC, "%s_flawed_gems")
-            .unformattedTagPath(FORGE, "gems/flawed")
+            .unformattedTagPath(FORGE, "flawed_gems")
             .unformattedTagPath(FABRIC, "flawed_gems")
             .langValue("Flawed %s")
             .materialAmount(GTValues.M / 2)
@@ -289,9 +291,9 @@ public class TagPrefix {
 
     // A regular Gem worth two Dusts.
     public static final TagPrefix gemFlawless = new TagPrefix("flawlessGem")
-            .defaultTagPath(FORGE, "gems/flawless/%s")
+            .defaultTagPath(FORGE, "flawless_gems/%s")
             .defaultTagPath(FABRIC, "%s_flawless_gems")
-            .unformattedTagPath(FORGE, "gems/flawless")
+            .unformattedTagPath(FORGE, "flawless_gems")
             .unformattedTagPath(FABRIC, "flawless_gems")
             .langValue("Flawless %s")
             .materialAmount(GTValues.M * 2)
@@ -303,9 +305,9 @@ public class TagPrefix {
 
     // A regular Gem worth four Dusts.
     public static final TagPrefix gemExquisite = new TagPrefix("exquisiteGem")
-            .defaultTagPath(FORGE, "gems/exquisite/%s")
+            .defaultTagPath(FORGE, "exquisite_gems/%s")
             .defaultTagPath(FABRIC, "%s_exquisite_gems")
-            .unformattedTagPath(FORGE, "gems/exquisite")
+            .unformattedTagPath(FORGE, "exquisite_gems")
             .unformattedTagPath(FABRIC, "exquisite_gems")
             .langValue("Exquisite %s")
             .materialAmount(GTValues.M * 4)
@@ -317,9 +319,9 @@ public class TagPrefix {
 
     // 1/4th of a Dust.
     public static final TagPrefix dustSmall = new TagPrefix("smallDust")
-            .defaultTagPath(FORGE, "dusts/small/%s")
+            .defaultTagPath(FORGE, "small_dusts/%s")
             .defaultTagPath(FABRIC, "%s_small_dusts")
-            .unformattedTagPath(FORGE, "dusts/small")
+            .unformattedTagPath(FORGE, "small_dusts")
             .unformattedTagPath(FABRIC, "small_dusts")
             .langValue("Small Pile of %s Dust")
             .materialAmount(GTValues.M / 4)
@@ -330,9 +332,9 @@ public class TagPrefix {
 
     // 1/9th of a Dust.
     public static final TagPrefix dustTiny = new TagPrefix("tinyDust")
-            .defaultTagPath(FORGE, "dusts/tiny/%s")
+            .defaultTagPath(FORGE, "tiny_dusts/%s")
             .defaultTagPath(FABRIC, "%s_tiny_dusts")
-            .unformattedTagPath(FORGE, "dusts/tiny")
+            .unformattedTagPath(FORGE, "tiny_dusts")
             .unformattedTagPath(FABRIC, "tiny_dusts")
             .langValue("Tiny Pile of %s Dust")
             .materialAmount(GTValues.M / 9)
@@ -343,9 +345,9 @@ public class TagPrefix {
 
     // Dust with impurities. 1 Unit of Main Material and 1/9 - 1/4 Unit of secondary Material
     public static final TagPrefix dustImpure = new TagPrefix("impureDust")
-            .defaultTagPath(FORGE, "dusts/impure/%s")
+            .defaultTagPath(FORGE, "impure_dusts/%s")
             .defaultTagPath(FABRIC, "%s_impure_dusts")
-            .unformattedTagPath(FORGE, "dusts/impure")
+            .unformattedTagPath(FORGE, "impure_dusts")
             .unformattedTagPath(FABRIC, "impure_dusts")
             .langValue("Impure Pile of %s Dust")
             .materialAmount(GTValues.M)
@@ -357,9 +359,9 @@ public class TagPrefix {
 
     // Pure Dust worth of one Ingot or Gem.
     public static final TagPrefix dustPure = new TagPrefix("pureDust")
-            .defaultTagPath(FORGE, "dusts/pure/%s")
+            .defaultTagPath(FORGE, "pure_dusts/%s")
             .defaultTagPath(FABRIC, "%s_pure_dusts")
-            .unformattedTagPath(FORGE, "dusts/pure")
+            .unformattedTagPath(FORGE, "pure_dusts")
             .unformattedTagPath(FABRIC, "pure_dusts")
             .langValue("Purified Pile of %s Dust")
             .materialAmount(GTValues.M)
@@ -394,9 +396,9 @@ public class TagPrefix {
 
     // 9 Plates combined in one Item.
     public static final TagPrefix plateDense = new TagPrefix("densePlate")
-            .defaultTagPath(FORGE, "plates/dense/%s")
+            .defaultTagPath(FORGE, "dense_plates/%s")
             .defaultTagPath(FABRIC, "%s_dense_plates")
-            .unformattedTagPath(FORGE, "plates/dense")
+            .unformattedTagPath(FORGE, "dense_plates")
             .unformattedTagPath(FABRIC, "dense_plates")
             .langValue("Dense %s Plate")
             .materialAmount(GTValues.M * 9)
@@ -408,9 +410,9 @@ public class TagPrefix {
 
     // 2 Plates combined in one Item
     public static final TagPrefix plateDouble = new TagPrefix("doublePlate")
-            .defaultTagPath(FORGE, "plates/double/%s")
+            .defaultTagPath(FORGE, "double_plates/%s")
             .defaultTagPath(FABRIC, "%s_double_plates")
-            .unformattedTagPath(FORGE, "plates/double")
+            .unformattedTagPath(FORGE, "double_plates")
             .unformattedTagPath(FABRIC, "double_plates")
             .langValue("Double %s Plate")
             .materialAmount(GTValues.M * 2)
@@ -520,9 +522,9 @@ public class TagPrefix {
 
     // consisting out of 1 Fine Wire.
     public static final TagPrefix springSmall = new TagPrefix("smallSpring")
-            .defaultTagPath(FORGE, "springs/small/%s")
+            .defaultTagPath(FORGE, "small_springs/%s")
             .defaultTagPath(FABRIC, "%s_small_springs")
-            .unformattedTagPath(FORGE, "springs/small")
+            .unformattedTagPath(FORGE, "small_springs")
             .unformattedTagPath(FABRIC, "small_springs")
             .langValue("Small %s Spring")
             .materialAmount(GTValues.M / 4)
@@ -545,9 +547,9 @@ public class TagPrefix {
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
     public static final TagPrefix wireFine = new TagPrefix("fineWire")
-            .defaultTagPath(FORGE, "wires/fine/%s")
+            .defaultTagPath(FORGE, "fine_wires/%s")
             .defaultTagPath(FABRIC, "%s_fine_wires")
-            .unformattedTagPath(FORGE, "wires/fine")
+            .unformattedTagPath(FORGE, "fine_wires")
             .unformattedTagPath(FABRIC, "fine_wires")
             .langValue("Fine %s Wire")
             .materialAmount(GTValues.M / 8)
@@ -571,9 +573,9 @@ public class TagPrefix {
 
     // Consisting of 1 Plate.
     public static final TagPrefix gearSmall = new TagPrefix("smallGear")
-            .defaultTagPath(FORGE, "gears/small/%s")
+            .defaultTagPath(FORGE, "small_gears/%s")
             .defaultTagPath(FABRIC, "%s_small_gears")
-            .unformattedTagPath(FORGE, "gears/small")
+            .unformattedTagPath(FORGE, "small_gears")
             .unformattedTagPath(FABRIC, "small_gears")
             .langValue("Small %s Gear")
             .materialAmount(GTValues.M)

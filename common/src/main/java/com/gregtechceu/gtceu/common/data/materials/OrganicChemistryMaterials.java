@@ -8,7 +8,8 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.FINE;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.ROUGH;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class OrganicChemistryMaterials {
@@ -39,7 +40,7 @@ public class OrganicChemistryMaterials {
 
         RawStyreneButadieneRubber = new Material.Builder("raw_styrene_butadiene_rubber")
                 .dust()
-                .color(0x54403D).secondaryColor(0x241520).iconSet(SHINY)
+                .color(0x54403D).secondaryColor(0x241520)
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .components(Carbon, 20, Hydrogen, 26)
                 .buildAndRegister()
@@ -48,7 +49,7 @@ public class OrganicChemistryMaterials {
         StyreneButadieneRubber = new Material.Builder("styrene_butadiene_rubber")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1000))
-                .color(0x34312b).secondaryColor(0x110B09).iconSet(SHINY)
+                .color(0x34312b).secondaryColor(0x110B09)
                 .flags(GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 20, Hydrogen, 26)
                 .buildAndRegister()
@@ -64,7 +65,7 @@ public class OrganicChemistryMaterials {
         ReinforcedEpoxyResin = new Material.Builder("reinforced_epoxy_resin")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
-                .color(0xA07A10)
+                .color(0x9ecaad).secondaryColor(0xb1b2a1).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 6, Hydrogen, 4, Oxygen, 1)
                 .buildAndRegister();
@@ -72,7 +73,7 @@ public class OrganicChemistryMaterials {
         PolyvinylChloride = new Material.Builder("polyvinyl_chloride")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(373))
-                .color(0xFF9955)
+                .color(0xFF9955).secondaryColor(0x6ca5bf)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
                 .itemPipeProperties(512, 4)
@@ -81,7 +82,7 @@ public class OrganicChemistryMaterials {
         PolyphenyleneSulfide = new Material.Builder("polyphenylene_sulfide")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(500))
-                .color(0xAA8800)
+                .color(0x30302e).secondaryColor(0x071d26)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 4, Sulfur, 1)
                 .buildAndRegister();
@@ -95,7 +96,7 @@ public class OrganicChemistryMaterials {
         Polybenzimidazole = new Material.Builder("polybenzimidazole")
                 .polymer()
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1450))
-                .color(0x2D2D2D)
+                .color(0x464441).secondaryColor(0x382e1b)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_FOIL)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .components(Carbon, 20, Hydrogen, 12, Nitrogen, 4)
@@ -104,7 +105,7 @@ public class OrganicChemistryMaterials {
 
         Polydimethylsiloxane = new Material.Builder("polydimethylsiloxane")
                 .dust()
-                .color(0xF5F5F5)
+                .color(0xF5F5F5).secondaryColor(0x9d9fa1)
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
                 .buildAndRegister();
@@ -122,7 +123,7 @@ public class OrganicChemistryMaterials {
         Epoxy = new Material.Builder("epoxy")
                 .polymer(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
-                .color(0xC88C14)
+                .color(0xf6fabd).secondaryColor(0xC88C14).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 21, Hydrogen, 25, Chlorine, 1, Oxygen, 5)
                 .buildAndRegister();
@@ -130,7 +131,7 @@ public class OrganicChemistryMaterials {
         Polycaprolactam = new Material.Builder("polycaprolactam")
                 .polymer(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(493))
-                .color(0x323232)
+                .color(0xf3f2e9).secondaryColor(0xe0e0dc)
                 .appendFlags(STD_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
                 .buildAndRegister();
@@ -138,7 +139,7 @@ public class OrganicChemistryMaterials {
         Polytetrafluoroethylene = new Material.Builder("polytetrafluoroethylene")
                 .polymer(1)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
-                .color(0x646464)
+                .color(0xFFFFFF).secondaryColor(0x919187)
                 .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .components(Carbon, 2, Fluorine, 4)
@@ -155,7 +156,7 @@ public class OrganicChemistryMaterials {
         Methane = new Material.Builder("methane")
                 .fluid(FluidStorageKeys.GAS, new FluidBuilder()
                 .translation("gtceu.fluid.gas_generic"))
-                .color(0xFF0078).iconSet(FLUID)
+                .color(0xFF0078)
                 .components(Carbon, 1, Hydrogen, 4)
                 .buildAndRegister();
 
@@ -388,8 +389,6 @@ public class OrganicChemistryMaterials {
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
                 .buildAndRegister();
 
-        // FREE ID 1053
-
         Ethanol = new Material.Builder("ethanol")
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
@@ -485,7 +484,7 @@ public class OrganicChemistryMaterials {
         Rubber = new Material.Builder("rubber")
                 .polymer(0)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
-                .color(0x353529).secondaryColor(0x080808).iconSet(SHINY)
+                .color(0x353529).secondaryColor(0x080808)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .components(Carbon, 5, Hydrogen, 8)
@@ -493,7 +492,7 @@ public class OrganicChemistryMaterials {
 
         Cyclohexane = new Material.Builder("cyclohexane")
                 .fluid()
-                .color(0xF2F2F2E7)
+                .color(0xe8b113).secondaryColor(0x602a10)
                 .components(Carbon, 6, Hydrogen, 12)
                 .buildAndRegister();
 
@@ -515,7 +514,7 @@ public class OrganicChemistryMaterials {
         Caprolactam = new Material.Builder("caprolactam")
                 .dust()
                 .flags(DISABLE_DECOMPOSITION, FLAMMABLE)
-                .color(0x676768)
+                .color(0xfffef8).secondaryColor(0xbab7a2)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
                 .buildAndRegister()
                 .setFormula("(CH2)5C(O)NH", true);
@@ -529,7 +528,7 @@ public class OrganicChemistryMaterials {
 
         PolyvinylButyral = new Material.Builder("polyvinyl_butyral")
                 .ingot().fluid()
-                .color(0x347D41)
+                .color(0xc1d0d7).secondaryColor(0x929d73)
                 .flags(GENERATE_PLATE, DISABLE_DECOMPOSITION, NO_SMASHING)
                 .components(Butyraldehyde, 1, PolyvinylAcetate, 1)
                 .buildAndRegister();

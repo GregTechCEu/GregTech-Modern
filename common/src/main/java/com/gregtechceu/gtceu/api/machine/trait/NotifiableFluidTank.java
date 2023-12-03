@@ -35,9 +35,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Getter
-    @Setter
-    private long timeStamp;
     @Persisted
     public final FluidStorage[] storages;
     @Setter
@@ -46,7 +43,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io, IO capabilityIO) {
         super(machine);
-        this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = io;
         this.storages = new FluidStorage[slots];
         this.capabilityIO = capabilityIO;
@@ -58,7 +54,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public NotifiableFluidTank(MetaMachine machine, List<FluidStorage> storages, IO io, IO capabilityIO) {
         super(machine);
-        this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = io;
         this.storages = storages.toArray(FluidStorage[]::new);
         this.capabilityIO = capabilityIO;
@@ -80,7 +75,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public void onContentsChanged() {
         isEmpty = null;
-        updateTimeStamp(machine.getLevel());
         notifyListeners();
     }
 
@@ -181,7 +175,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return isEmpty;
     }
 
-    public void exportToNearby(Direction... facings) {
+    public void exportToNearby(@NotNull Direction... facings) {
         if (isEmpty()) return;
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
@@ -190,7 +184,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         }
     }
 
-    public void importFromNearby(Direction... facings) {
+    public void importFromNearby(@NotNull Direction... facings) {
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
@@ -224,7 +218,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-        if (resource.isEmpty()) return 0;
+        if (resource.isEmpty() || !canCapInput()) return 0;
         long filled = 0;
         FluidStorage existingStorage = null;
         if (!allowSameFluids) {
@@ -269,34 +263,32 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     public long fillInternal(FluidStack resource, boolean simulate) {
-        if (!resource.isEmpty()) {
-            var copied = resource.copy();
-            FluidStorage existingStorage = null;
-            if (!allowSameFluids) {
-                for (var storage : storages) {
-                    if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(resource)) {
-                        existingStorage = storage;
+        if (resource.isEmpty()) return 0;
+        var copied = resource.copy();
+        FluidStorage existingStorage = null;
+        if (!allowSameFluids) {
+            for (var storage : storages) {
+                if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(resource)) {
+                    existingStorage = storage;
+                    break;
+                }
+            }
+        }
+        if (existingStorage == null) {
+            for (var storage : storages) {
+                var filled = storage.fill(copied.copy(), simulate);
+                if (filled > 0) {
+                    copied.shrink(filled);
+                    if (!allowSameFluids) {
                         break;
                     }
                 }
+                if (copied.isEmpty()) break;
             }
-            if (existingStorage == null) {
-                for (var storage : storages) {
-                    var filled = storage.fill(copied.copy(), simulate);
-                    if (filled > 0) {
-                        copied.shrink(filled);
-                        if (!allowSameFluids) {
-                            break;
-                        }
-                    }
-                    if (copied.isEmpty()) break;
-                }
-            } else {
-                copied.shrink(existingStorage.fill(copied.copy(), simulate));
-            }
-            return resource.getAmount() - copied.getAmount();
+        } else {
+            copied.shrink(existingStorage.fill(copied.copy(), simulate));
         }
-        return 0;
+        return resource.getAmount() - copied.getAmount();
     }
 
     @NotNull

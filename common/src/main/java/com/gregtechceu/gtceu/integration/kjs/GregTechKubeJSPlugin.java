@@ -15,8 +15,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.DikeVeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
@@ -268,6 +269,13 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
             if (o instanceof VeinGenerator generator) return generator;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
                     .map(tag -> VeinGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
+                    .flatMap(DataResult::result)
+                    .orElse(null);
+        });
+        typeWrappers.register(IndicatorGenerator.class, (ctx, o) -> {
+            if (o instanceof IndicatorGenerator generator) return generator;
+            return Optional.ofNullable(NBTUtils.toTagCompound(o))
+                    .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });

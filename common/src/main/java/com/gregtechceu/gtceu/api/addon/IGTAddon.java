@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
-
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -67,6 +66,13 @@ public interface IGTAddon {
      * Call init on your custom VeinGenerator class(es) here
      */
     default void registerVeinGenerators() {
+
+    }
+
+    /**
+     * Call init on your custom IndicatorGenerator class(es) here
+     */
+    default void registerIndicatorGenerators() {
 
     }
 
