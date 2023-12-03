@@ -432,6 +432,7 @@ public class LangHandler {
         replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
 
         provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
+        provider.add("block.surface_rock", "%s Surface Rock");
 
         provider.add("item.gunpowder_tiny_dust", "Tiny Pile of Gunpowder");
         provider.add("item.gunpowder_small_dust", "Small Pile of Gunpowder");
