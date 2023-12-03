@@ -1307,6 +1307,7 @@
   "block.gtceu.zpm_transformer_2a": "ZPM Voltage Hi-Amp (2x) Transformer",
   "block.gtceu.zpm_transformer_4a": "ZPM Voltage Hi-Amp (4x) Transformer",
   "block.gtceu.zpm_wiremill": "§cElite Wiremill III§r",
+  "block.surface_rock": "%s Surface Rock",
   "compass.node.gtceu.batteries/energy_cluster": "Energy Cluster",
   "compass.node.gtceu.batteries/energy_crystal": "Energy Crystal",
   "compass.node.gtceu.batteries/energy_module": "Energy Module",

@@ -4,7 +4,7 @@
     "res": "gtceu:darmstadtium_dense_plate"
   },
   "items": [
-    "#forge:plates/dense"
+    "#forge:dense_plates"
   ],
   "page": "gtceu:materials/dense_plate",
   "position": [

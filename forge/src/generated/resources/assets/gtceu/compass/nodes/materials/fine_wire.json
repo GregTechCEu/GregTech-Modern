@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_fine_wire"
   },
   "items": [
-    "#forge:wires/fine"
+    "#forge:fine_wires"
   ],
   "page": "gtceu:materials/fine_wire",
   "position": [

@@ -4,7 +4,7 @@
     "res": "gtceu:almandine_flawed_gem"
   },
   "items": [
-    "#forge:gems/flawed"
+    "#forge:flawed_gems"
   ],
   "page": "gtceu:materials/flawed_gem",
   "position": [

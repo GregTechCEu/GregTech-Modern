@@ -3,6 +3,9 @@
     "type": "item",
     "res": "gtceu:raw_aluminium"
   },
+  "items": [
+    "#forge:raw_materials"
+  ],
   "page": "gtceu:materials/raw",
   "position": [
     -350,
