@@ -1166,14 +1166,14 @@ public class GTItems {
         }
     }
 
-    public static ItemEntry<Item> SILICON_BOULE= REGISTRATE.item("silicon_boule", Item::new).lang("Monocrystalline Silicon Boule").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> PHOSPHORUS_BOULE= REGISTRATE.item("phosphorus_boule", Item::new).lang("Phosphorus-doped Monocrystalline Silicon Boule").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> NAQUADAH_BOULE= REGISTRATE.item("naquadah_boule", Item::new).lang("Naquadah-doped Monocrystalline Silicon Boule").register();
-    public static ItemEntry<Item> NEUTRONIUM_BOULE= REGISTRATE.item("neutronium_boule", Item::new).lang("Neutronium-doped Monocrystalline Silicon Boule").register();
-    public static ItemEntry<Item> SILICON_WAFER= REGISTRATE.item("silicon_wafer", Item::new).lang("Silicon Wafer").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> PHOSPHORUS_WAFER= REGISTRATE.item("phosphorus_wafer", Item::new).lang("Phosphorus-doped Wafer").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> NAQUADAH_WAFER= REGISTRATE.item("naquadah_wafer", Item::new).lang("Naquadah-doped Wafer").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> NEUTRONIUM_WAFER= REGISTRATE.item("neutronium_wafer", Item::new).lang("Neutronium-doped Wafer").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
+    public static ItemEntry<Item> SILICON_BOULE= REGISTRATE.item("silicon_boule", Item::new).lang("Monocrystalline Silicon Boule").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "silicon_boule")).register();
+    public static ItemEntry<Item> PHOSPHORUS_BOULE= REGISTRATE.item("phosphorus_boule", Item::new).lang("Phosphorus-doped Monocrystalline Silicon Boule").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "silicon_boule")).register();
+    public static ItemEntry<Item> NAQUADAH_BOULE= REGISTRATE.item("naquadah_boule", Item::new).lang("Naquadah-doped Monocrystalline Silicon Boule").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "silicon_boule")).register();
+    public static ItemEntry<Item> NEUTRONIUM_BOULE= REGISTRATE.item("neutronium_boule", Item::new).lang("Neutronium-doped Monocrystalline Silicon Boule").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "silicon_boule")).register();
+    public static ItemEntry<Item> SILICON_WAFER= REGISTRATE.item("silicon_wafer", Item::new).lang("Silicon Wafer").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "wafer")).register();
+    public static ItemEntry<Item> PHOSPHORUS_WAFER= REGISTRATE.item("phosphorus_wafer", Item::new).lang("Phosphorus-doped Wafer").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "wafer")).register();
+    public static ItemEntry<Item> NAQUADAH_WAFER= REGISTRATE.item("naquadah_wafer", Item::new).lang("Naquadah-doped Wafer").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "wafer")).register();
+    public static ItemEntry<Item> NEUTRONIUM_WAFER= REGISTRATE.item("neutronium_wafer", Item::new).lang("Neutronium-doped Wafer").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "wafer")).register();
 
     public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT_WAFER= REGISTRATE.item("cpu_wafer", Item::new).lang("CPU Wafer").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "wafer")).register();
     public static ItemEntry<Item> RANDOM_ACCESS_MEMORY_WAFER= REGISTRATE.item("ram_wafer", Item::new).lang("RAM Wafer").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "wafer")).register();
@@ -1195,15 +1195,15 @@ public class GTItems {
     public static ItemEntry<Item> ENGRAVED_CRYSTAL_CHIP = REGISTRATE.item("engraved_crystal_chip", Item::new).lang("Engraved Crystal Chip").onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> ENGRAVED_LAPOTRON_CHIP = REGISTRATE.item("engraved_lapotron_crystal_chip", Item::new).lang("Engraved Lapotron Crystal Chip").onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "cpu_chip", Item::new).lang("CPU Chip").register();
+    public static ItemEntry<Item> CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "cpu_chip", Item::new).lang("CPU Chip").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "cpus")).register();
     public static ItemEntry<Item> RANDOM_ACCESS_MEMORY = REGISTRATE.item( "ram_chip", Item::new).lang("RAM Chip").register();
-    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item( "ilc_chip", Item::new).lang("IC Chip").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "nano_cpu_chip", Item::new).lang("Nano CPU Chip").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "qbit_cpu_chip", Item::new).lang("Qubit CPU Chip").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item( "simple_soc", Item::new).lang("Simple SoC").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> SYSTEM_ON_CHIP = REGISTRATE.item( "soc", Item::new).lang("SoC").register();
-    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP = REGISTRATE.item( "advanced_soc", Item::new).lang("ASoC").register();
-    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC = REGISTRATE.item( "highly_advanced_soc", Item::new).lang("HASoC").register();
+    public static ItemEntry<Item> INTEGRATED_LOGIC_CIRCUIT = REGISTRATE.item( "ilc_chip", Item::new).lang("IC Chip").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "cpus")).register();
+    public static ItemEntry<Item> NANO_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "nano_cpu_chip", Item::new).lang("Nano CPU Chip").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "cpus")).register();
+    public static ItemEntry<Item> QUBIT_CENTRAL_PROCESSING_UNIT = REGISTRATE.item( "qbit_cpu_chip", Item::new).lang("Qubit CPU Chip").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "cpus")).register();
+    public static ItemEntry<Item> SIMPLE_SYSTEM_ON_CHIP = REGISTRATE.item( "simple_soc", Item::new).lang("Simple SoC").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "socs")).register();
+    public static ItemEntry<Item> SYSTEM_ON_CHIP = REGISTRATE.item( "soc", Item::new).lang("SoC").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "socs")).register();
+    public static ItemEntry<Item> ADVANCED_SYSTEM_ON_CHIP = REGISTRATE.item( "advanced_soc", Item::new).lang("ASoC").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "socs")).register();
+    public static ItemEntry<Item> HIGHLY_ADVANCED_SOC = REGISTRATE.item( "highly_advanced_soc", Item::new).lang("HASoC").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "socs")).register();
     public static ItemEntry<Item> NAND_MEMORY_CHIP = REGISTRATE.item( "nand_memory_chip", Item::new).lang("NAND Memory Chip").register();
     public static ItemEntry<Item> NOR_MEMORY_CHIP = REGISTRATE.item( "nor_memory_chip", Item::new).lang("NOR Memory Chip").register();
     public static ItemEntry<Item> ULTRA_LOW_POWER_INTEGRATED_CIRCUIT = REGISTRATE.item( "ulpic_chip", Item::new).lang("ULPIC Chip").register();
@@ -1215,8 +1215,8 @@ public class GTItems {
 
     public static ItemEntry<Item> RAW_CRYSTAL_CHIP = REGISTRATE.item("raw_crystal_chip", Item::new).lang("Raw Crystal Chip").onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> RAW_CRYSTAL_CHIP_PART = REGISTRATE.item("raw_crystal_chip_parts", Item::new).lang("Raw Crystal Chip Parts").onRegister(compassNode(GTCompassSections.MISC)).register();
-    public static ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", Item::new).lang("Crystal CPU").onRegister(compassNode(GTCompassSections.MISC)).register();
-    public static ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new).lang("Crystal SoC").onRegister(compassNode(GTCompassSections.MISC)).register();
+    public static ItemEntry<Item> CRYSTAL_CENTRAL_PROCESSING_UNIT = REGISTRATE.item("crystal_cpu", Item::new).lang("Crystal CPU").onRegister(compassNode(GTCompassSections.MISC)).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "cpus")).register();
+    public static ItemEntry<Item> CRYSTAL_SYSTEM_ON_CHIP = REGISTRATE.item("crystal_soc", Item::new).lang("Crystal SoC").onRegister(compassNode(GTCompassSections.MISC)).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "socs")).register();
 
     public static ItemEntry<Item> COATED_BOARD = REGISTRATE.item("resin_circuit_board", Item::new).lang("Resin Circuit Board").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "circuit_board")).register();
     public static ItemEntry<Item> PHENOLIC_BOARD = REGISTRATE.item("phenolic_circuit_board", Item::new).lang("Phenolic Circuit Board").onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "circuit_board")).register();
@@ -1236,11 +1236,11 @@ public class GTItems {
 
     public static ItemEntry<Item> VACUUM_TUBE = REGISTRATE.item("vacuum_tube", Item::new).lang("Vacuum Tube").tag(CustomTags.ULV_CIRCUITS).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
     public static ItemEntry<Item> GLASS_TUBE = REGISTRATE.item("glass_tube", Item::new).lang("Glass Tube").onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("transistor", Item::new).lang("Transistor").tag(CustomTags.TRANSISTORS).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> RESISTOR = REGISTRATE.item("resistor", Item::new).lang("Resistor").tag(CustomTags.RESISTORS).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> CAPACITOR = REGISTRATE.item("capacitor", Item::new).lang("Capacitor").tag(CustomTags.CAPACITORS).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> DIODE = REGISTRATE.item("diode", Item::new).lang("Diode").tag(CustomTags.DIODES).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
-    public static ItemEntry<Item> INDUCTOR = REGISTRATE.item("inductor", Item::new).lang("Inductor").tag(CustomTags.INDUCTORS).onRegister(compassNode(GTCompassSections.CIRCUITS)).register();
+    public static ItemEntry<Item> TRANSISTOR = REGISTRATE.item("transistor", Item::new).lang("Transistor").tag(CustomTags.TRANSISTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "components")).register();
+    public static ItemEntry<Item> RESISTOR = REGISTRATE.item("resistor", Item::new).lang("Resistor").tag(CustomTags.RESISTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "components")).register();
+    public static ItemEntry<Item> CAPACITOR = REGISTRATE.item("capacitor", Item::new).lang("Capacitor").tag(CustomTags.CAPACITORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "components")).register();
+    public static ItemEntry<Item> DIODE = REGISTRATE.item("diode", Item::new).lang("Diode").tag(CustomTags.DIODES).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "components")).register();
+    public static ItemEntry<Item> INDUCTOR = REGISTRATE.item("inductor", Item::new).lang("Inductor").tag(CustomTags.INDUCTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "components")).register();
     public static ItemEntry<Item> SMD_TRANSISTOR = REGISTRATE.item("smd_transistor", Item::new).lang("SMD Transistor").tag(CustomTags.TRANSISTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> SMD_RESISTOR = REGISTRATE.item("smd_resistor", Item::new).lang("SMD Resistor").tag(CustomTags.RESISTORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();
     public static ItemEntry<Item> SMD_CAPACITOR = REGISTRATE.item("smd_capacitor", Item::new).lang("SMD Capacitor").tag(CustomTags.CAPACITORS).onRegister(compassNodeExist(GTCompassSections.CIRCUITS, "smd")).register();

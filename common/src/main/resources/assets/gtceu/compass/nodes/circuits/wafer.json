@@ -19,18 +19,19 @@
     "gtceu:lpic_wafer",
     "gtceu:mpic_wafer",
     "gtceu:hpic_wafer",
-    "gtceu:uhpic_wafer"
+    "gtceu:uhpic_wafer",
+    "gtceu:phosphorus_wafer",
+    "gtceu:silicon_wafer",
+    "gtceu:naquadah_wafer",
+    "gtceu:neutronium_wafer"
   ],
   "page": "gtceu:circuits/wafer",
   "position": [
-    -70,
-    300
+    -50,
+    0
   ],
   "section": "gtceu:circuits",
   "pre_nodes": [
-    "gtceu:circuits/phosphorus_wafer",
-    "gtceu:circuits/neutronium_wafer",
-    "gtceu:circuits/silicon_wafer",
-    "gtceu:circuits/naquadah_wafer"
+    "gtceu:circuits/silicon_boule"
   ]
 }
