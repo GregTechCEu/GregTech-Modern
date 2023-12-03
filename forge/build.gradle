@@ -147,10 +147,10 @@ dependencies {
     modCompileOnly forge.emi
 
     // TOP
-    modImplementation(forge.theoneprobe) { transitive = false }
+    modCompileOnly(forge.theoneprobe) { transitive = false }
 
     // Jade
-    modCompileOnly(forge.jade)
+    modImplementation(forge.jade)
 
     // AE2
     modImplementation(forge.ae2) { transitive = false }
