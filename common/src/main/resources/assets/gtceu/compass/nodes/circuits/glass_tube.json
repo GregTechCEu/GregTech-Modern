@@ -8,8 +8,8 @@
   ],
   "page": "gtceu:circuits/glass_tube",
   "position": [
-    50,
-    10
+    -50,
+    50
   ],
   "section": "gtceu:circuits"
 }
