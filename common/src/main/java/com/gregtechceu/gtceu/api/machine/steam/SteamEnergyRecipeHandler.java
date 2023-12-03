@@ -47,16 +47,6 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public long getTimeStamp() {
-        return steamTank.getTimeStamp();
-    }
-
-    @Override
-    public void setTimeStamp(long timeStamp) {
-        steamTank.setTimeStamp(timeStamp);
-    }
-
-    @Override
     public RecipeCapability<Long> getCapability() {
         return EURecipeCapability.CAP;
     }

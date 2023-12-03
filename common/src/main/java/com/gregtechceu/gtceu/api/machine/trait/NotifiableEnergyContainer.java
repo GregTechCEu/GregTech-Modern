@@ -31,9 +31,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Getter
     protected IO handlerIO;
     @Getter
-    @Setter
-    private long timeStamp;
-    @Getter
     @Persisted @DescSynced
     protected long energyStored;
     @Getter
@@ -46,7 +43,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
     public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
         super(machine);
-        this.timeStamp = Long.MIN_VALUE;
         this.lastTS = Long.MIN_VALUE;
         this.energyCapacity = maxCapacity;
         this.inputVoltage = maxInputVoltage;
@@ -103,7 +99,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     public void setEnergyStored(long energyStored) {
         if (this.energyStored == energyStored) return;
         this.energyStored = energyStored;
-        updateTimeStamp(machine.getLevel());
         checkOutputSubscription();
         notifyListeners();
     }
