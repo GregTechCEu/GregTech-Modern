@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
@@ -275,6 +274,20 @@ public class Material implements Comparable<Material> {
 
     public void setMaterialRGB(int materialRGB) {
         materialInfo.color = materialRGB;
+    }
+
+    public int getLayerARGB(int layerIndex) {
+        return switch (layerIndex) {
+            case 0, -101 -> this.getMaterialARGB();
+            case 1, -111 -> {
+                if (this.getMaterialSecondaryARGB() != -1) {
+                    yield this.getMaterialSecondaryARGB();
+                } else {
+                    yield this.getMaterialARGB();
+                }
+            }
+            default -> -1;
+        };
     }
 
     public int getMaterialARGB() {
