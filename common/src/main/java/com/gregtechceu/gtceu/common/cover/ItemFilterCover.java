@@ -58,12 +58,11 @@ public class ItemFilterCover extends CoverBehavior implements IUICover {
 
     @Override
     public Widget createUIWidget() {
-        final var group = new WidgetGroup(0, 0, 176, 80);
-        group.addWidget(new LabelWidget(5, 3, attachItem.getDescriptionId()));
-        group.addWidget(new EnumSelectorWidget<>(10, 20, 110, 20,
-                ItemFilterMode.VALUES, ItemFilterMode.FILTER_INSERT,
-                this::setFilterMode));
-        group.addWidget(getItemFilter().openConfigurator((176 - 80) / 2, (60 - 55) / 2 + 15));
+        final var group = new WidgetGroup(0, 0, 176, 85);
+        group.addWidget(new LabelWidget(7, 5, attachItem.getDescriptionId()));
+        group.addWidget(new EnumSelectorWidget<>(7, 61, 18, 18,
+                ItemFilterMode.VALUES, ItemFilterMode.FILTER_INSERT, this::setFilterMode));
+        group.addWidget(getItemFilter().openConfigurator(30, 25));
         return group;
     }
 
