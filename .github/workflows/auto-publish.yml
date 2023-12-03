@@ -89,8 +89,8 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
-            fabric/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
+            fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
+            fabric/build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
 
           name: GregTechCEu ${{ steps.var.outputs.fabric_version }}-fabric
           version: mc${{ steps.var.outputs.fabric_version }}-fabric
@@ -123,8 +123,8 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
-            forge/build/libs/*-@(dev|sources|javadoc|dev-shadow).jar
+            forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
+            forge/build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
 
           name: GregTechCEu ${{ steps.var.outputs.forge_version }}-forge
           version: mc${{ steps.var.outputs.forge_version }}-forge
