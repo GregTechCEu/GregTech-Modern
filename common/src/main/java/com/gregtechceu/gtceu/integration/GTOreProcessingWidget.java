@@ -419,7 +419,7 @@ public class GTOreProcessingWidget extends WidgetGroup {
         //Ore
         List<ItemStack> oreSlot = new ArrayList<>();
         for (TagKey<Item> tag : ore.getItemTags(material)) {
-            for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
+            for (Holder<Item> itemHolder : Registry.ITEM.getTagOrEmpty(tag)) {
                 oreSlot.add(new ItemStack(itemHolder.value()));
             }
         }
