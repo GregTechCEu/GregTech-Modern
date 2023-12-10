@@ -23,6 +23,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
 import java.util.ArrayList;
@@ -67,6 +68,16 @@ public class OreVeinBuilderJS {
 
     public OreVeinBuilderJS addSpawnBiome(String biome) {
         biomeFilter.add(biome);
+        return this;
+    }
+
+    public OreVeinBuilderJS heightRangeUniform(int min, int max) {
+        heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
+        return this;
+    }
+
+    public OreVeinBuilderJS heightRangeTriangle(int min, int max) {
+        heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
         return this;
     }
 
