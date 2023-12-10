@@ -19,7 +19,7 @@ GregTech based on Architectury for performing on Forge, Fabric, and Quilt, simul
 * [Dev Q&A](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
 
 ## Credited Works
-- Most textures are from the **[ZedTech GTCEu Resourcepack](https://github.com/brachy84/zedtech-ceu)**.
+- Most textures are originally from the **[ZedTech GTCEu Resourcepack](https://github.com/brachy84/zedtech-ceu)**, with some changes made by the community.
 - New material item textures by @TTFTCUTS and @Rosethorns.
 - Wooden Forms, World Accelerators, and the Extreme Combustion Engine are from the **[GregTech: New Horizons Modpack](https://www.curseforge.com/minecraft/modpacks/gt-new-horizons)**.
 - Primitive Water Pump is from the **[IMPACT: GREGTECH EDITION Modpack](https://gtimpact.space/)**.
