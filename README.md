@@ -9,7 +9,12 @@ GregTech based on Architectury for performing on Forge, Fabric, and Quilt, simul
 [`Curseforge`](https://www.curseforge.com/minecraft/mc-mods/gregtechceu-modern/files)
 [`Modrinth`](https://modrinth.com/mod/gregtechceu-modern)
 
+
+## Documentation / Wiki
+[`Wiki`](https://gregtechceu.github.io/gtceu-modern-docs/)
+
+
 ## Dev Q&A
 * [Todo List](https://github.com/GregTechCEu/GregTechCEu-1.19/issues/125) for potential contributors who are interested in this project
-* [Wiki](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
+* [Dev Q&A](https://github.com/GregTechCEu/GregTechCEu-1.19/wiki/Dev-Q&A) illustrates common questions and answers related to development.
 
