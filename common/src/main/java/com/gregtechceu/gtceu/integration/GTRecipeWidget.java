@@ -104,6 +104,7 @@ public class GTRecipeWidget extends WidgetGroup {
             var index = WidgetUtils.widgetIdIndex(slot);
             if (index >= 0 && index < inputStackContents.size()) {
                 var content = inputStackContents.get(index);
+                slot.setXEIChance(content.chance);
                 slot.setOverlay(content.createOverlay(index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()));
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
@@ -126,6 +127,7 @@ public class GTRecipeWidget extends WidgetGroup {
             var index = WidgetUtils.widgetIdIndex(slot);
             if (index >= 0 && index < outputStackContents.size()) {
                 var content = outputStackContents.get(index);
+                slot.setXEIChance(content.chance);
                 slot.setOverlay(content.createOverlay(index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()));
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
@@ -148,6 +150,7 @@ public class GTRecipeWidget extends WidgetGroup {
             var index = WidgetUtils.widgetIdIndex(tank);
             if (index >= 0 && index < inputFluidContents.size()) {
                 var content = inputFluidContents.get(index);
+                tank.setXEIChance(content.chance);
                 tank.setOverlay(content.createOverlay(index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()));
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
@@ -170,6 +173,7 @@ public class GTRecipeWidget extends WidgetGroup {
             var index = WidgetUtils.widgetIdIndex(tank);
             if (index >= 0 && index < outputFluidContents.size()) {
                 var content = outputFluidContents.get(index);
+                tank.setXEIChance(content.chance);
                 tank.setOverlay(content.createOverlay(index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()));
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     var chance = content.chance;
