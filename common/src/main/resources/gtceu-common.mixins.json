@@ -41,7 +41,6 @@
     "create.RotationPropagatorMixin",
     "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin",
-    "rhino.InterpreterMixin",
     "top.ConfigMixin"
   ],
   "injectors": {
