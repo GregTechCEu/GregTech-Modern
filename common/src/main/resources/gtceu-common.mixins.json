@@ -41,7 +41,6 @@
     "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
     "kjs.RecipeEventJSMixin",
-    "rhino.InterpreterMixin",
     "top.ConfigMixin"
   ],
   "injectors": {
