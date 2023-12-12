@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
@@ -18,12 +19,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GTToolItemImpl extends GTToolItem {
 
-    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, int electricTier, Properties properties) {
-        super(toolType, tier, electricTier, properties);
+    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Properties properties) {
+        super(toolType, tier, material, electricTier, properties);
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, int electricTier, Item.Properties properties) {
-        return new GTToolItemImpl(toolType, tier, electricTier, properties);
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Item.Properties properties) {
+        return new GTToolItemImpl(toolType, tier, material, electricTier, properties);
     }
 
     @Override

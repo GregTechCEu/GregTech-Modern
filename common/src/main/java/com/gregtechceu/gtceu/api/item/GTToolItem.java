@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.tool.*;
+import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.Platform;
+import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.mojang.datafixers.util.Pair;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
@@ -36,11 +37,14 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -49,21 +53,24 @@ import java.util.function.Predicate;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTToolItem extends DiggerItem implements IItemUseFirst {
+public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
 
     @Getter
     protected final GTToolType toolType;
     @Getter
     protected final int electricTier;
+    @Getter
+    protected final Material material;
 
     @ExpectPlatform
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, int electricTier, Properties properties) {
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Properties properties) {
         throw new AssertionError();
     }
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, int electricTier, Properties properties) {
-        super(toolType.attackDamageModifier, toolType.attackSpeedModifier, tier, toolType.harvestTag, properties);
+    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Properties properties) {
+        super(0, 0, tier, toolType.harvestTag, properties);
         this.toolType = toolType;
+        this.material = material;
         this.electricTier = electricTier;
         if (Platform.isClient()) {
             ToolItemRenderer.create(this, toolType);
@@ -110,7 +117,7 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
                 ToolHelper.playToolSound(toolType, serverPlayer);
 
                 if (!serverPlayer.isCreative()) {
-                    ToolHelper.damageItem(itemStack, context.getLevel().getRandom(), serverPlayer);
+                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
                 }
             }
             return result;
@@ -262,5 +269,47 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst {
             new TreeFellingHelper().fellTree(stack, level, state, pos, miningEntity);
         }
         return super.mineBlock(stack, level, state, pos, miningEntity);
+    }
+
+    @Override
+    public void setToolDefinition(IGTToolDefinition definition) {
+
+    }
+
+    @Override
+    public boolean isElectric() {
+        return false;
+    }
+
+    @Override
+    public IGTToolDefinition getToolStats() {
+        return null;
+    }
+
+    @Nullable
+    @Override
+    public SoundEntry getSound() {
+        return null;
+    }
+
+    @Override
+    public boolean playSoundOnBlockDestroy() {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public Supplier<ItemStack> getMarkerItem() {
+        return null;
+    }
+
+    @Override
+    public Set<GTToolType> getToolClasses(ItemStack stack) {
+        return null;
+    }
+
+    @Override
+    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+        return null;
     }
 }

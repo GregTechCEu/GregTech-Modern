@@ -30,7 +30,7 @@
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
-    "RecipeMixin",
+    "ResultSlotMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeInvoker",

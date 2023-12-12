@@ -297,6 +297,12 @@ public class ConfigHolder {
         @Configurable.Comment({"Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true"})
         public boolean machinesEmissiveTextures = true;
         @Configurable
+        @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.", "Default: true" })
+        public boolean toolUseSounds = true;
+        @Configurable
+        @Configurable.Comment({ "Whether or not sounds should be played when crafting with tools.", "Default: true" })
+        public boolean toolCraftingSounds = true;
+        @Configurable
         @Configurable.Comment({"The default color to overlay onto machines.", "#FFFFFF is no coloring (default).",
                 "#D2DCFF is the classic blue from GT5."})
         @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")

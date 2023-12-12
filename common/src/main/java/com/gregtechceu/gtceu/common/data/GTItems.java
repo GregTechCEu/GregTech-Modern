@@ -23,10 +23,12 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.item.tool.ToolDefinitionBuilder;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
@@ -68,6 +70,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
@@ -136,7 +139,7 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Tools    ******//
     //////////////////////////////////////
-    public final static Table<MaterialToolTier, GTToolType, ItemEntry<GTToolItem>> TOOL_ITEMS =
+    public final static Table<MaterialToolTier, GTToolType, ItemEntry<? extends IGTTool>> TOOL_ITEMS =
             ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
                     Arrays.stream(GTToolType.values()).toList());
 
@@ -166,13 +169,13 @@ public class GTItems {
 
                 for (GTToolType toolType : GTToolType.values()) {
                     if (property.hasType(toolType)) {
-                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, p))
+                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, material, 0, p))
                                 .properties(p -> p.craftRemainder(Items.AIR).durability(tier.getUses() * toolType.durabilityMultiplier))
+                                .transform(toolDefinition(toolType.toolDefinition))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> GTToolItem::tintColor)
                                 .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTag))
-                                //.tag(toolType.itemTag)
                                 .register());
                     }
                 }
@@ -1654,7 +1657,6 @@ public class GTItems {
         return item -> ChemicalHelper.registerMaterialInfo(item, materialInfo);
     }
 
-
     public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(item -> {
@@ -1662,6 +1664,13 @@ public class GTItems {
                 toUnify.put(entry, item);
                 ChemicalHelper.registerUnificationItems(entry, item);
             });
+            return builder;
+        };
+    }
+
+    public static <P, T extends Item & IGTTool, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> toolDefinition(UnaryOperator<ToolDefinitionBuilder> toolBuilder) {
+        return builder -> {
+            builder.onRegister(item -> item.setToolDefinition(toolBuilder.apply(new ToolDefinitionBuilder()).build()));
             return builder;
         };
     }
