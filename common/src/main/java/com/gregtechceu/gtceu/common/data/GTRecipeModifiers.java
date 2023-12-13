@@ -152,7 +152,7 @@ public class GTRecipeModifiers {
                     duration,
                     amountOC,
                     blastFurnaceTemperature,
-                    recipe.data.contains("ebf_temp") ? 0 : recipe.data.getInt("ebf_temp")
+                    recipe.data.contains("ebf_temp") ? recipe.data.getInt("ebf_temp") : 0
             )), recipe, coilMachine.getMaxVoltage());
         }
         return null;
