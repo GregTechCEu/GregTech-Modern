@@ -1,0 +1,12 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_buzz_saw_blade"
+  },
+  "page": "gtceu:materials/buzz_saw_blade",
+  "position": [
+    -350,
+    300
+  ],
+  "section": "gtceu:materials"
+}
