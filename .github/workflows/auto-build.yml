@@ -36,6 +36,7 @@ jobs:
         id: var
         run: |
           MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-forge-|.jar' '{print $2}')
+          echo version=$MESSAGE >> $GITHUB_OUTPUT
 
       - name: release
         uses: Kir-Antipov/mc-publish@v3.3
