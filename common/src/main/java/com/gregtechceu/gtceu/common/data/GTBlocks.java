@@ -185,7 +185,7 @@ public class GTBlocks {
                                 return properties.noLootTable();
                             })
                             .transform(unificationBlock(oreTag, material))
-                            .addLayer(() -> RenderType::cutoutMipped)
+                            .addLayer(() -> RenderType::translucent)
                             .blockstate(NonNullBiConsumer.noop())
                             .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                             .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
