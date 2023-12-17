@@ -122,10 +122,19 @@ public class OreVeinBuilderJS {
             return null;
 
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
-                .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter)
-                .map(Pair::getFirst)
-                .getOrThrow(false, GTCEu.LOGGER::error);
+
+        return () -> {
+            var biomes = biomeFilter.asList().stream()
+                    .map(loc -> RegistryCodecs.homogeneousList(Registries.BIOME)
+                            .decode(registryOps, loc)
+                            .map(Pair::getFirst)
+                            .getOrThrow(false, GTCEu.LOGGER::error)
+                    )
+                    .flatMap(HolderSet::stream)
+                    .toList();
+
+            return HolderSet.direct(biomes);
+        };
     }
 
 }
