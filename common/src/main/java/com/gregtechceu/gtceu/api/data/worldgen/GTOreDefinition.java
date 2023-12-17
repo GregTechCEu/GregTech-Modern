@@ -84,9 +84,6 @@ public class GTOreDefinition {
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
-    @Getter
-    private List<PlacementModifier> modifiers;
-
     @Getter @Setter
     private VeinGenerator veinGenerator;
 
