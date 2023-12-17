@@ -17,7 +17,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -94,44 +93,6 @@ public class OreVeinBuilderJS {
     }
 
     @HideFromJS
-    public static OreVeinBuilderJS fromDefinition(ResourceLocation id, GTOreDefinition definition) {
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        OreVeinBuilderJS builder = new OreVeinBuilderJS(id);
-
-        builder.clusterSize = definition.getClusterSize();
-        builder.density = definition.getDensity();
-        builder.weight = definition.getWeight();
-        builder.layer = definition.getLayer();
-        builder.dimensions.addAll(definition.getDimensionFilter());
-        builder.heightRange = definition.getRange();
-        builder.discardChanceOnAirExposure = definition.getDiscardChanceOnAirExposure();
-        builder.biomeWeightModifier = definition.getBiomeWeightModifier();
-        builder.generator = definition.getVeinGenerator();
-        builder.indicatorGenerators.addAll(definition.getIndicatorGenerators());
-
-
-        Supplier<HolderSet<Biome>> biomes = definition.getBiomes();
-        if (biomes != null) {
-            JsonElement element = RegistryCodecs.homogeneousList(Registries.BIOME)
-                    .encode(biomes.get(), registryOps, registryOps.empty())
-                    .getOrThrow(false, e -> {});
-
-            if (element.isJsonArray()) {
-                builder.biomeFilter.addAll(element.getAsJsonArray().asList().stream()
-                        .map(JsonElement::getAsString)
-                        .toList()
-                );
-            } else if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
-                builder.biomeFilter.add(element.getAsString());
-            } else {
-                GTCEu.LOGGER.error("Cannot add biome filter from json element");
-            }
-        }
-
-        return builder;
-    }
-
-    @HideFromJS
     public GTOreDefinition build() {
         isBuilt = true;
         return new GTOreDefinition(
@@ -174,4 +135,41 @@ public class OreVeinBuilderJS {
         return jsonArray;
     }
 
+    @HideFromJS
+    public static OreVeinBuilderJS fromDefinition(ResourceLocation id, GTOreDefinition definition) {
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        OreVeinBuilderJS builder = new OreVeinBuilderJS(id);
+
+        builder.clusterSize = definition.getClusterSize();
+        builder.density = definition.getDensity();
+        builder.weight = definition.getWeight();
+        builder.layer = definition.getLayer();
+        builder.dimensions.addAll(definition.getDimensionFilter());
+        builder.heightRange = definition.getRange();
+        builder.discardChanceOnAirExposure = definition.getDiscardChanceOnAirExposure();
+        builder.biomeWeightModifier = definition.getBiomeWeightModifier();
+        builder.generator = definition.getVeinGenerator();
+        builder.indicatorGenerators.addAll(definition.getIndicatorGenerators());
+
+
+        Supplier<HolderSet<Biome>> biomes = definition.getBiomes();
+        if (biomes != null) {
+            JsonElement element = RegistryCodecs.homogeneousList(Registries.BIOME)
+                    .encode(biomes.get(), registryOps, registryOps.empty())
+                    .getOrThrow(false, e -> {});
+
+            if (element.isJsonArray()) {
+                builder.biomeFilter.addAll(element.getAsJsonArray().asList().stream()
+                        .map(JsonElement::getAsString)
+                        .toList()
+                );
+            } else if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+                builder.biomeFilter.add(element.getAsString());
+            } else {
+                GTCEu.LOGGER.error("Cannot add biome filter from json element");
+            }
+        }
+
+        return builder;
+    }
 }
