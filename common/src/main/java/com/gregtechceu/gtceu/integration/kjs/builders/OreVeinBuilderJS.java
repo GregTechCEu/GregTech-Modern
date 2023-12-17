@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
@@ -16,6 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.HolderSet;
+import net.minecraft.core.Registry;
 import net.minecraft.core.RegistryCodecs;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
@@ -27,17 +29,14 @@ import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
 public class OreVeinBuilderJS {
-    private final ResourceLocation id;
+    public final ResourceLocation id;
     @Setter
     public transient int clusterSize, weight;
     @Setter
@@ -48,13 +47,13 @@ public class OreVeinBuilderJS {
     public transient HeightRangePlacement heightRange;
     @Setter
     public transient BiomeWeightModifier biomeWeightModifier;
+    public transient HolderSet<Biome> biomeFilter = null;
 
     @Setter
     public VeinGenerator generator;
     private final transient List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();
 
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
-    private final transient JsonArray biomeFilter = new JsonArray();
 
     @Getter
     private boolean isBuilt = false;
@@ -70,10 +69,13 @@ public class OreVeinBuilderJS {
         return this;
     }
 
-    public OreVeinBuilderJS biomes(String... biomes) {
-        for (String biome : biomes) {
-            this.biomeFilter.add(biome);
-        }
+    public OreVeinBuilderJS biome(String biome) {
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        RegistryCodecs.homogeneousList(Registries.BIOME)
+                .decode(registryOps, new JsonPrimitive(biome))
+                .map(Pair::getFirst)
+                .getOrThrow(false, GTCEu.LOGGER::error);
+
         return this;
     }
 
@@ -96,6 +98,27 @@ public class OreVeinBuilderJS {
         return build().generator(id);
     }
 
+    @HideFromJS
+    public static OreVeinBuilderJS fromDefinition(ResourceLocation id, GTOreDefinition definition) {
+        Registry<Biome> biomeRegistry = GTRegistries.builtinRegistry().registry(Registries.BIOME).orElseThrow();
+        OreVeinBuilderJS builder = new OreVeinBuilderJS(id);
+
+        builder.clusterSize = definition.getClusterSize();
+        builder.density = definition.getDensity();
+        builder.weight = definition.getWeight();
+        builder.layer = definition.getLayer();
+        builder.dimensions.addAll(definition.getDimensionFilter());
+        builder.heightRange = definition.getRange();
+        builder.discardChanceOnAirExposure = definition.getDiscardChanceOnAirExposure();
+        builder.biomeFilter = Optional.ofNullable(definition.getBiomes())
+                .map(Supplier::get)
+                .orElse(null);
+        builder.biomeWeightModifier = definition.getBiomeWeightModifier();
+        builder.generator = definition.getVeinGenerator();
+        builder.indicatorGenerators.addAll(definition.getIndicatorGenerators());
+
+        return builder;
+    }
 
     @HideFromJS
     public GTOreDefinition build() {
@@ -118,23 +141,11 @@ public class OreVeinBuilderJS {
 
     @Nullable
     private Supplier<HolderSet<Biome>> resolveBiomes() {
-        if (biomeFilter.isEmpty())
+        if (biomeFilter == null)
             return null;
 
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
 
-        return () -> {
-            var biomes = biomeFilter.asList().stream()
-                    .map(loc -> RegistryCodecs.homogeneousList(Registries.BIOME)
-                            .decode(registryOps, loc)
-                            .map(Pair::getFirst)
-                            .getOrThrow(false, GTCEu.LOGGER::error)
-                    )
-                    .flatMap(HolderSet::stream)
-                    .toList();
-
-            return HolderSet.direct(biomes);
-        };
+        return () -> biomeFilter;
     }
 
 }
