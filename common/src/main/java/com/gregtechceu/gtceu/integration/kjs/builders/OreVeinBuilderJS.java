@@ -61,13 +61,17 @@ public class OreVeinBuilderJS {
         this.id = id;
     }
 
-    public OreVeinBuilderJS addSpawnDimension(ResourceLocation dimension) {
-        dimensions.add(ResourceKey.create(Registries.DIMENSION, dimension));
+    public OreVeinBuilderJS dimensions(ResourceLocation... dimensions) {
+        for (ResourceLocation dimension : dimensions) {
+            this.dimensions.add(ResourceKey.create(Registries.DIMENSION, dimension));
+        }
         return this;
     }
 
-    public OreVeinBuilderJS addSpawnBiome(String biome) {
-        biomeFilter.add(biome);
+    public OreVeinBuilderJS biomes(String... biomes) {
+        for (String biome : biomes) {
+            this.biomeFilter.add(biome);
+        }
         return this;
     }
 
