@@ -47,13 +47,13 @@ public class OreVeinBuilderJS {
     public transient HeightRangePlacement heightRange;
     @Setter
     public transient BiomeWeightModifier biomeWeightModifier;
-    public transient HolderSet<Biome> biomeFilter = null;
 
     @Setter
     public VeinGenerator generator;
     private final transient List<IndicatorGenerator> indicatorGenerators = new ArrayList<>();
 
     private final transient Set<ResourceKey<Level>> dimensions = new HashSet<>();
+    private final transient List<String> biomeFilter = new ArrayList<>();
 
     @Getter
     private boolean isBuilt = false;
@@ -69,13 +69,8 @@ public class OreVeinBuilderJS {
         return this;
     }
 
-    public OreVeinBuilderJS biome(String biome) {
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        RegistryCodecs.homogeneousList(Registries.BIOME)
-                .decode(registryOps, new JsonPrimitive(biome))
-                .map(Pair::getFirst)
-                .getOrThrow(false, GTCEu.LOGGER::error);
-
+    public OreVeinBuilderJS biomes(String... biomes) {
+        this.biomeFilter.addAll(Arrays.asList(biomes));
         return this;
     }
 
@@ -100,7 +95,7 @@ public class OreVeinBuilderJS {
 
     @HideFromJS
     public static OreVeinBuilderJS fromDefinition(ResourceLocation id, GTOreDefinition definition) {
-        Registry<Biome> biomeRegistry = GTRegistries.builtinRegistry().registry(Registries.BIOME).orElseThrow();
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         OreVeinBuilderJS builder = new OreVeinBuilderJS(id);
 
         builder.clusterSize = definition.getClusterSize();
@@ -110,12 +105,28 @@ public class OreVeinBuilderJS {
         builder.dimensions.addAll(definition.getDimensionFilter());
         builder.heightRange = definition.getRange();
         builder.discardChanceOnAirExposure = definition.getDiscardChanceOnAirExposure();
-        builder.biomeFilter = Optional.ofNullable(definition.getBiomes())
-                .map(Supplier::get)
-                .orElse(null);
         builder.biomeWeightModifier = definition.getBiomeWeightModifier();
         builder.generator = definition.getVeinGenerator();
         builder.indicatorGenerators.addAll(definition.getIndicatorGenerators());
+
+
+        Supplier<HolderSet<Biome>> biomes = definition.getBiomes();
+        if (biomes != null) {
+            JsonElement element = RegistryCodecs.homogeneousList(Registries.BIOME)
+                    .encode(biomes.get(), registryOps, registryOps.empty())
+                    .getOrThrow(false, e -> {});
+
+            if (element.isJsonArray()) {
+                builder.biomeFilter.addAll(element.getAsJsonArray().asList().stream()
+                        .map(JsonElement::getAsString)
+                        .toList()
+                );
+            } else if (element.isJsonPrimitive() && element.getAsJsonPrimitive().isString()) {
+                builder.biomeFilter.add(element.getAsString());
+            } else {
+                GTCEu.LOGGER.error("Cannot add biome filter from json element");
+            }
+        }
 
         return builder;
     }
@@ -141,11 +152,26 @@ public class OreVeinBuilderJS {
 
     @Nullable
     private Supplier<HolderSet<Biome>> resolveBiomes() {
-        if (biomeFilter == null)
+        if (biomeFilter.isEmpty())
             return null;
 
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
+                .decode(registryOps, resolveBiomeCodecInput())
+                .map(Pair::getFirst)
+                .getOrThrow(false, GTCEu.LOGGER::error);
+    }
 
-        return () -> biomeFilter;
+    private JsonElement resolveBiomeCodecInput() {
+        if (biomeFilter.size() == 1)
+            return new JsonPrimitive(biomeFilter.get(0));
+
+        if (biomeFilter.stream().anyMatch(filter -> filter.startsWith("#")))
+            throw new IllegalStateException("Cannot resolve biomes for vein " + id + ": You may use either a single tag or multiple individual biomes.");
+
+        var jsonArray = new JsonArray();
+        biomeFilter.forEach(jsonArray::add);
+        return jsonArray;
     }
 
 }
