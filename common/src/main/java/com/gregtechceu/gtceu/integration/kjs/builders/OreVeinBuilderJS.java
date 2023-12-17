@@ -25,12 +25,14 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)
@@ -97,11 +99,33 @@ public class OreVeinBuilderJS {
 
     @HideFromJS
     public GTOreDefinition build() {
-        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
-        Supplier<HolderSet<Biome>> biomes = biomeFilter.isEmpty() ? null : () -> RegistryCodecs.homogeneousList(Registries.BIOME)
-                .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter).map(Pair::getFirst).getOrThrow(false, GTCEu.LOGGER::error);
         isBuilt = true;
-        return new GTOreDefinition(id, clusterSize, density, weight, layer, dimensions, heightRange, discardChanceOnAirExposure, biomes, biomeWeightModifier, generator,  indicatorGenerators);
+        return new GTOreDefinition(
+                id, clusterSize, density, weight, layer, resolveDimensions(),
+                heightRange, discardChanceOnAirExposure, resolveBiomes(),
+                biomeWeightModifier, generator,  indicatorGenerators
+        );
+    }
+
+    private Set<ResourceKey<Level>> resolveDimensions() {
+        if (!this.dimensions.isEmpty())
+            return this.dimensions;
+
+        return layer.getLevels().stream()
+                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
+                .collect(Collectors.toSet());
+    }
+
+    @Nullable
+    private Supplier<HolderSet<Biome>> resolveBiomes() {
+        if (biomeFilter.isEmpty())
+            return null;
+
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
+                .decode(registryOps, biomeFilter.size() == 1 ? biomeFilter.get(0) : biomeFilter)
+                .map(Pair::getFirst)
+                .getOrThrow(false, GTCEu.LOGGER::error);
     }
 
 }
