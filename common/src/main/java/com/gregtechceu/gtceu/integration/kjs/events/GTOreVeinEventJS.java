@@ -49,6 +49,8 @@ public class GTOreVeinEventJS extends EventJS {
 
     public void removeAll(BiPredicate<ResourceLocation, GTOreDefinition> predicate) {
         Set<ResourceLocation> keys = Set.copyOf(GTRegistries.ORE_VEINS.keys());
-        keys.forEach(this::remove);
+        keys.stream()
+                .filter(key -> predicate.test(key, GTRegistries.ORE_VEINS.get(key)))
+                .forEach(this::remove);
     }
 }
