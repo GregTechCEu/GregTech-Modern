@@ -261,4 +261,50 @@ public class GTOreDefinition {
         }
         return bedrockVeinMaterial;
     }
+
+    // TODO replace these with fluent accessors:
+    public GTOreDefinition clusterSize(int clusterSize) {
+        this.clusterSize = clusterSize;
+        return this;
+    }
+
+    public GTOreDefinition density(float density) {
+        this.density = density;
+        return this;
+    }
+
+    public GTOreDefinition weight(int weight) {
+        this.weight = weight;
+        return this;
+    }
+
+    public GTOreDefinition dimensionFilter(Set<ResourceKey<Level>> dimensionFilter) {
+        this.dimensionFilter = dimensionFilter;
+        return this;
+    }
+
+    public GTOreDefinition range(HeightRangePlacement range) {
+        this.range = range;
+        return this;
+    }
+
+    public GTOreDefinition discardChanceOnAirExposure(float discardChanceOnAirExposure) {
+        this.discardChanceOnAirExposure = discardChanceOnAirExposure;
+        return this;
+    }
+
+    public GTOreDefinition biomeWeightModifier(BiomeWeightModifier biomeWeightModifier) {
+        this.biomeWeightModifier = biomeWeightModifier;
+        return this;
+    }
+
+    public GTOreDefinition veinGenerator(VeinGenerator veinGenerator) {
+        this.veinGenerator = veinGenerator;
+        return this;
+    }
+
+    public GTOreDefinition indicatorGenerators(List<IndicatorGenerator> indicatorGenerators) {
+        this.indicatorGenerators = indicatorGenerators;
+        return this;
+    }
 }

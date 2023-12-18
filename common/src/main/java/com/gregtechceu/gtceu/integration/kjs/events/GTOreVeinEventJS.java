@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import dev.latvian.mods.kubejs.event.EventJS;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -19,7 +20,7 @@ public class GTOreVeinEventJS extends EventJS {
     }
 
     public void add(ResourceLocation id, Consumer<GTOreDefinition> consumer) {
-        var vein = blankOreDefinition();
+        var vein = GTOres.blankOreDefinition();
         consumer.accept(vein);
         registerVein(id, vein);
     }
@@ -41,9 +42,5 @@ public class GTOreVeinEventJS extends EventJS {
 
     private static void registerVein(ResourceLocation id, GTOreDefinition vein) {
         new GTOreDefinition(id, vein);
-    }
-
-    private static GTOreDefinition blankOreDefinition() {
-        return new GTOreDefinition(0, 0, 0, IWorldGenLayer.nowhere(), Set.of(), HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)), 0, null, null, null, null);
     }
 }
