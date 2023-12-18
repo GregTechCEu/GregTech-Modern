@@ -113,8 +113,6 @@ public class GTOres {
                     .minRichness(0.3f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(10)
-                    .minYLevel(10)
-                    .maxYLevel(90)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Naquadah)
@@ -136,8 +134,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(30)
-                    .maxYLevel(60)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Pitchblende)
@@ -154,8 +150,6 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Scheelite, 3, 20, 60))
                     .withBlock(new DikeBlockDefinition(Tungstate, 2, 35, 55))
                     .withBlock(new DikeBlockDefinition(Lithium, 1, 20, 40))
-                    .minYLevel(20)
-                    .maxYLevel(60)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Scheelite)
@@ -203,8 +197,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(20)
-                    .maxYLevel(40)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Goethite)
@@ -221,8 +213,6 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Beryllium, 3, 5, 30))
                     .withBlock(new DikeBlockDefinition(Emerald, 2, 5, 19))
                     .withBlock(new DikeBlockDefinition(Emerald, 2, 16, 30))
-                    .minYLevel(5)
-                    .maxYLevel(30)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Beryllium)
@@ -257,8 +247,6 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Grossular, 3, 20, 30))
                     .withBlock(new DikeBlockDefinition(Pyrolusite, 2, 20, 26))
                     .withBlock(new DikeBlockDefinition(Tantalite, 1, 24, 30))
-                    .minYLevel(20)
-                    .maxYLevel(30)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Grossular)
@@ -396,8 +384,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(80)
-                    .maxYLevel(120)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Tetrahedrite)
@@ -467,8 +453,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(10)
-                    .maxYLevel(60)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Cassiterite)
@@ -507,8 +491,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(-10)
-                    .maxYLevel(160)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Chalcopyrite)
@@ -562,8 +544,6 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(GarnetYellow, 2, -10, 50))
                     .withBlock(new DikeBlockDefinition(Amethyst, 2, -10, 22))
                     .withBlock(new DikeBlockDefinition(Opal, 1, 18, 50))
-                    .minYLevel(-10)
-                    .minYLevel(50)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(GarnetRed)
@@ -586,8 +566,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(-10)
-                    .maxYLevel(60)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Goethite)
@@ -725,8 +703,6 @@ public class GTOres {
                     .minRichness(0.2f)
                     .maxRichness(0.5f)
                     .edgeRoundoffBegin(12)
-                    .minYLevel(-40)
-                    .maxYLevel(-10)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Copper)
@@ -763,8 +739,6 @@ public class GTOres {
                     .withBlock(new DikeBlockDefinition(Sodalite, 2, -50, 0))
                     .withBlock(new DikeBlockDefinition(Lapis, 2, -50, 0))
                     .withBlock(new DikeBlockDefinition(Calcite, 1, -40, 10))
-                    .minYLevel(-60)
-                    .maxYLevel(10)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Lapis)
