@@ -33,7 +33,6 @@ import org.apache.commons.lang3.function.TriFunction;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,10 +77,10 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     }
 
     public SurfaceIndicatorGenerator block(Block block) {
-        return this.block(block.defaultBlockState());
+        return this.state(block.defaultBlockState());
     }
 
-    public SurfaceIndicatorGenerator block(BlockState state) {
+    public SurfaceIndicatorGenerator state(BlockState state) {
         this.block = Either.left(state);
         return this;
     }

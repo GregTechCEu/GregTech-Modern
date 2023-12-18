@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -68,6 +69,8 @@ public class GTOreDefinition {
             ).apply(instance, (clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator, indicatorGenerators) ->
                     new GTOreDefinition(clusterSize, density, weight, layer, new HashSet<>(dimensionFilter), range, discardChanceOnAirExposure, biomes == null ? null : () -> biomes, biomeWeightModifier, veinGenerator, indicatorGenerators))
     );
+
+    private final InferredProperties inferredProperties = new InferredProperties();
 
     @Getter @Setter
     private int clusterSize;
@@ -181,11 +184,13 @@ public class GTOreDefinition {
 
     public GTOreDefinition heightRangeUniform(int min, int max) {
         heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
+        inferredProperties.heightRange = Pair.of(min, max);
         return this;
     }
 
     public GTOreDefinition heightRangeTriangle(int min, int max) {
         heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
+        inferredProperties.heightRange = Pair.of(min, max);
         return this;
     }
 
@@ -196,8 +201,8 @@ public class GTOreDefinition {
 
     public GTOreDefinition standardVeinGenerator(Consumer<StandardVeinGenerator> config) {
         var veinGenerator = new StandardVeinGenerator(this);
-        config.accept(veinGenerator);
 
+        config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
 
         return this;
@@ -205,8 +210,8 @@ public class GTOreDefinition {
 
     public GTOreDefinition layeredVeinGenerator(Consumer<LayeredVeinGenerator> config) {
         var veinGenerator = new LayeredVeinGenerator(this);
-        config.accept(veinGenerator);
 
+        config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
 
         return this;
@@ -214,8 +219,8 @@ public class GTOreDefinition {
 
     public GTOreDefinition geodeVeinGenerator(Consumer<GeodeVeinGenerator> config) {
         var veinGenerator = new GeodeVeinGenerator(this);
-        config.accept(veinGenerator);
 
+        config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
 
         return this;
@@ -223,8 +228,12 @@ public class GTOreDefinition {
 
     public GTOreDefinition dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
         var veinGenerator = new DikeVeinGenerator(this);
-        config.accept(veinGenerator);
+        if (inferredProperties.heightRange != null) {
+            veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
+            veinGenerator.maxYLevel(inferredProperties.heightRange.getSecond());
+        }
 
+        config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
 
         return this;
@@ -232,8 +241,12 @@ public class GTOreDefinition {
 
     public GTOreDefinition veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
         var veinGenerator = new VeinedVeinGenerator(this);
-        config.accept(veinGenerator);
+        if (inferredProperties.heightRange != null) {
+            veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
+            veinGenerator.maxYLevel(inferredProperties.heightRange.getSecond());
+        }
 
+        config.accept(veinGenerator);
         this.veinGenerator = veinGenerator;
 
         return this;
@@ -276,5 +289,9 @@ public class GTOreDefinition {
             }
         }
         return bedrockVeinMaterial;
+    }
+
+    private static class InferredProperties {
+        public Pair<Integer, Integer> heightRange = null;
     }
 }
