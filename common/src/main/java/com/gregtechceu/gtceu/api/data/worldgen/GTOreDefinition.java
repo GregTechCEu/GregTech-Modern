@@ -178,39 +178,49 @@ public class GTOreDefinition {
         return this;
     }
 
-    public StandardVeinGenerator standardVeinGenerator() {
-        if (this.veinGenerator == null) {
-            this.veinGenerator = new StandardVeinGenerator(this);
-        }
-        return (StandardVeinGenerator) veinGenerator;
+    public GTOreDefinition standardVeinGenerator(Consumer<StandardVeinGenerator> config) {
+        var veinGenerator = new StandardVeinGenerator(this);
+        config.accept(veinGenerator);
+
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
-    public LayeredVeinGenerator layeredVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new LayeredVeinGenerator(this);
-        }
-        return (LayeredVeinGenerator) veinGenerator;
+    public GTOreDefinition layeredVeinGenerator(Consumer<LayeredVeinGenerator> config) {
+        var veinGenerator = new LayeredVeinGenerator(this);
+        config.accept(veinGenerator);
+
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
-    public GeodeVeinGenerator geodeVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new GeodeVeinGenerator(this);
-        }
-        return (GeodeVeinGenerator) veinGenerator;
+    public GTOreDefinition geodeVeinGenerator(Consumer<GeodeVeinGenerator> config) {
+        var veinGenerator = new GeodeVeinGenerator(this);
+        config.accept(veinGenerator);
+
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
-    public DikeVeinGenerator dikeVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new DikeVeinGenerator(this);
-        }
-        return (DikeVeinGenerator) veinGenerator;
+    public GTOreDefinition dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
+        var veinGenerator = new DikeVeinGenerator(this);
+        config.accept(veinGenerator);
+
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
-    public VeinedVeinGenerator veinedVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new VeinedVeinGenerator(this);
-        }
-        return (VeinedVeinGenerator) veinGenerator;
+    public GTOreDefinition veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
+        var veinGenerator = new VeinedVeinGenerator(this);
+        config.accept(veinGenerator);
+
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
     @Nullable
