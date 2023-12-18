@@ -49,7 +49,7 @@ public class WorldGeneratorUtils {
 
         public WorldOreVeinCache(ServerLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
-                    .filter(entry -> entry.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
+                    .filter(entry -> entry.dimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
                     .collect(Collectors.toList());
         }
 
@@ -57,8 +57,8 @@ public class WorldGeneratorUtils {
             if (!veins.isEmpty())
                 return veins;
             List<Entry<Integer, GTOreDefinition>> result = worldVeins.stream()
-                    .filter(entry -> entry.getBiomes() == null || entry.getBiomes().get().contains(biome))
-                    .map(vein -> new AbstractMap.SimpleEntry<>(vein.getWeight() + (vein.getBiomeWeightModifier() == null ? 0 : vein.getBiomeWeightModifier().apply(biome)), vein))
+                    .filter(entry -> entry.biomes() == null || entry.biomes().get().contains(biome))
+                    .map(vein -> new AbstractMap.SimpleEntry<>(vein.weight() + (vein.biomeWeightModifier() == null ? 0 : vein.biomeWeightModifier().apply(biome)), vein))
                     .filter(entry -> entry.getKey() > 0)
                     .collect(Collectors.toList());
             veins.addAll(result);
