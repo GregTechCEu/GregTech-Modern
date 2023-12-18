@@ -28,7 +28,9 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.WorldgenRandom;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
+import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
 import java.util.ArrayList;
@@ -157,6 +159,15 @@ public class DikeVeinGenerator extends VeinGenerator {
     @Override
     public Codec<? extends VeinGenerator> codec() {
         return CODEC;
+    }
+
+    public DikeVeinGenerator withBlock(Material block, int weight, int minY, int maxY) {
+        return this.withBlock(new DikeBlockDefinition(block, weight, minY, maxY));
+    }
+
+    public DikeVeinGenerator withBlock(BlockState blockState, int weight, int minY, int maxY) {
+        TargetBlockState target = OreConfiguration.target(AlwaysTrueTest.INSTANCE, blockState);
+        return this.withBlock(new DikeBlockDefinition(List.of(target), weight, minY, maxY));
     }
 
     public DikeVeinGenerator withBlock(DikeBlockDefinition block) {

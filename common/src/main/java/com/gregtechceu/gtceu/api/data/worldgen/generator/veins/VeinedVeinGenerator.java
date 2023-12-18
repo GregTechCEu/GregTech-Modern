@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.jozufozu.flywheel.util.NonNullSupplier;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -35,12 +36,15 @@ import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
+import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -271,10 +275,28 @@ public class VeinedVeinGenerator extends VeinGenerator {
         return CODEC;
     }
 
+    public VeinedVeinGenerator oreBlock(Material block, int weight) {
+        return this.oreBlock(new VeinBlockDefinition(block, weight));
+    }
+
+    public VeinedVeinGenerator oreBlock(BlockState blockState, int weight) {
+        OreConfiguration.TargetBlockState target = OreConfiguration.target(AlwaysTrueTest.INSTANCE, blockState);
+        return this.oreBlock(new VeinBlockDefinition(List.of(target), weight));
+    }
+
     public VeinedVeinGenerator oreBlock(VeinBlockDefinition material) {
         if (this.oreBlocks == null) this.oreBlocks = new ArrayList<>();
         this.oreBlocks.add(material);
         return this;
+    }
+
+    public VeinedVeinGenerator rareBlock(Material block, int weight) {
+        return this.rareBlock(new VeinBlockDefinition(block, weight));
+    }
+
+    public VeinedVeinGenerator rareBlock(BlockState blockState, int weight) {
+        OreConfiguration.TargetBlockState target = OreConfiguration.target(AlwaysTrueTest.INSTANCE, blockState);
+        return this.rareBlock(new VeinBlockDefinition(List.of(target), weight));
     }
 
     public VeinedVeinGenerator rareBlock(VeinBlockDefinition material) {

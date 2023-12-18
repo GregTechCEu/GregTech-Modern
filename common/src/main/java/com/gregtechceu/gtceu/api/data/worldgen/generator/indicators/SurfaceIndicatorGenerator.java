@@ -31,7 +31,9 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.apache.commons.lang3.function.TriFunction;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -213,6 +215,11 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
         @Override
         public String getSerializedName() {
             return name().toLowerCase();
+        }
+
+        @Nullable
+        public static IndicatorPlacement getByName(String name) {
+            return IndicatorPlacement.valueOf(name.toUpperCase());
         }
     }
 }
