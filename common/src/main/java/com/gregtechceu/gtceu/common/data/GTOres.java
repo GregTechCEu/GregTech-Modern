@@ -927,13 +927,13 @@ public class GTOres {
 
     public static void updateLargestVeinSize() {
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
-                .map(GTOreDefinition::getClusterSize)
+                .map(GTOreDefinition::clusterSize)
                 .max(Integer::compareTo)
                 .orElse(0);
 
         GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
-                .flatMap(definition -> definition.getIndicatorGenerators().stream().map(indicatorGenerator ->
-                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.getClusterSize() / 2.0))
+                .flatMap(definition -> definition.indicatorGenerators().stream().map(indicatorGenerator ->
+                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.clusterSize() / 2.0))
                 ))
                 .max(Integer::compareTo)
                 .orElse(0);

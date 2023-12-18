@@ -92,8 +92,8 @@ public class BedrockOreVeinSavedData extends SavedData {
             if (totalWeight > 0) {
                 int weight = Math.abs(query % totalWeight);
                 for (var oreDefinition : GTRegistries.ORE_VEINS) {
-                    int veinWeight = oreDefinition.getWeight() + (oreDefinition.getBiomeWeightModifier() != null ? oreDefinition.getBiomeWeightModifier().apply(biome) : 0);
-                    if (veinWeight > 0 && oreDefinition.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
+                    int veinWeight = oreDefinition.weight() + (oreDefinition.biomeWeightModifier() != null ? oreDefinition.biomeWeightModifier().apply(biome) : 0);
+                    if (veinWeight > 0 && oreDefinition.dimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
                         weight -= veinWeight;
                         if (weight < 0) {
                             definition = oreDefinition;
@@ -107,12 +107,12 @@ public class BedrockOreVeinSavedData extends SavedData {
 
             int maximumYield = 0;
             if (definition != null) {
-                if (definition.getMaximumYield() - definition.getMinimumYield() <= 0) {
-                    maximumYield = definition.getMinimumYield();
+                if (definition.maximumYield() - definition.minimumYield() <= 0) {
+                    maximumYield = definition.minimumYield();
                 } else {
-                    maximumYield = random.nextInt(definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield();
+                    maximumYield = random.nextInt(definition.maximumYield() - definition.minimumYield()) + definition.minimumYield();
                 }
-                maximumYield = Math.round(Math.min(maximumYield, definition.getMaximumYield()) * ConfigHolder.INSTANCE.worldgen.oreVeins.bedrockOreMultiplier);
+                maximumYield = Math.round(Math.min(maximumYield, definition.maximumYield()) * ConfigHolder.INSTANCE.worldgen.oreVeins.bedrockOreMultiplier);
             }
             veinOres.put(new ChunkPos(chunkX, chunkZ), new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
             setDirty();
@@ -122,7 +122,7 @@ public class BedrockOreVeinSavedData extends SavedData {
 
     public void createVein(ChunkPos pos, GTOreDefinition definition) {
         if (definition != null) {
-            int radius = SectionPos.blockToSectionCoord(definition.getClusterSize() / 2f);
+            int radius = SectionPos.blockToSectionCoord(definition.clusterSize() / 2f);
             for (int x = pos.x - radius; x <= pos.x + radius; ++x) {
                 for (int z = pos.z - radius; z <= pos.z + radius; ++z) {
                     ChunkPos pos2 = new ChunkPos(x, z);
@@ -134,13 +134,13 @@ public class BedrockOreVeinSavedData extends SavedData {
                         var random = RandomSource.create(31L * 31 * pos2.x + pos2.z * 31L + Long.hashCode(serverLevel.getSeed()));
 
                         int maximumYield = 0;
-                        if ((definition.getMaximumYield() - definition.getMinimumYield()) / distanceFromOriginal <= 0) {
-                            maximumYield = definition.getMinimumYield();
+                        if ((definition.maximumYield() - definition.minimumYield()) / distanceFromOriginal <= 0) {
+                            maximumYield = definition.minimumYield();
                         } else {
-                            maximumYield = (int) (random.nextInt((definition.getMaximumYield() - definition.getMinimumYield()) + definition.getMinimumYield()) / distanceFromOriginal);
-                            maximumYield = Math.max(maximumYield, definition.getMinimumYield());
+                            maximumYield = (int) (random.nextInt((definition.maximumYield() - definition.minimumYield()) + definition.minimumYield()) / distanceFromOriginal);
+                            maximumYield = Math.max(maximumYield, definition.minimumYield());
                         }
-                        maximumYield = Math.min(maximumYield, definition.getMaximumYield());
+                        maximumYield = Math.min(maximumYield, definition.maximumYield());
 
                         veinOres.put(pos2, new OreVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
                     }
@@ -160,9 +160,9 @@ public class BedrockOreVeinSavedData extends SavedData {
         return biomeWeights.computeIfAbsent(biome, b -> {
             int totalWeight = 0;
             for (var definition : GTRegistries.ORE_VEINS) {
-                if (definition.getDimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
-                    totalWeight += definition.getBiomeWeightModifier() != null ? definition.getBiomeWeightModifier().apply(biome) : 0;
-                    totalWeight += definition.getWeight();
+                if (definition.dimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, serverLevel.dimension()))) {
+                    totalWeight += definition.biomeWeightModifier() != null ? definition.biomeWeightModifier().apply(biome) : 0;
+                    totalWeight += definition.weight();
                 }
             }
             return totalWeight;
@@ -190,7 +190,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     public int getDepletedOreYield(int chunkX, int chunkZ) {
         OreVeinWorldEntry info = getOreVeinWorldEntry(chunkX, chunkZ);
         if (info.getDefinition() == null) return 0;
-        return info.getDefinition().getDepletedYield();
+        return info.getDefinition().depletedYield();
     }
 
     /**
@@ -240,11 +240,11 @@ public class BedrockOreVeinSavedData extends SavedData {
         GTOreDefinition definition = info.getDefinition();
 
         // prevent division by zero, veins that never deplete don't need updating
-        if (definition == null || definition.getDepletionChance() == 0)
+        if (definition == null || definition.depletionChance() == 0)
             return;
 
-        if (definition.getDepletionChance() == 100 || GTValues.RNG.nextInt(100) <= definition.getDepletionChance()) {
-            info.decreaseOperations(definition.getDepletionAmount());
+        if (definition.depletionChance() == 100 || GTValues.RNG.nextInt(100) <= definition.depletionChance()) {
+            info.decreaseOperations(definition.depletionAmount());
             setDirty();
         }
     }

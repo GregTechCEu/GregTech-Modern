@@ -74,8 +74,8 @@ public class DikeVeinGenerator extends VeinGenerator {
         NormalNoise normalNoise = NormalNoise.create(worldgenRandom, -2, 4.0D);
         ChunkPos chunkPos = new ChunkPos(origin);
 
-        float density = entry.getDensity();
-        int size = entry.getClusterSize();
+        float density = entry.density();
+        int size = entry.clusterSize();
 
         int radius = Mth.ceil(size / 2f);
 

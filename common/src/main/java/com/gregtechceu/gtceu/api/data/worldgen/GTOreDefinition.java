@@ -29,11 +29,14 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.Serializable;
+import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Screret
@@ -42,7 +45,7 @@ import java.util.stream.Collectors;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-@Accessors(chain = true)
+@Accessors(chain = true, fluent = true)
 public class GTOreDefinition {
     public static final Codec<GTOreDefinition> CODEC = ResourceLocation.CODEC
             .flatXmap(rl -> Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
@@ -148,8 +151,13 @@ public class GTOreDefinition {
         return this;
     }
 
-    public GTOreDefinition biomes(String... biomes) {
-        this.biomes = OreVeinUtil.resolveBiomes(Arrays.asList(biomes));
+    public GTOreDefinition biomes(String first, String... biomes) {
+        // The first param is separate to avoid method confusion with the Lombok-generated fluent getter
+        List<String> biomeList = Stream.of(Stream.of(first), Arrays.stream(biomes))
+                .flatMap(Function.identity())
+                .toList();
+
+        this.biomes = OreVeinUtil.resolveBiomes(biomeList);
         return this;
     }
 
@@ -254,57 +262,11 @@ public class GTOreDefinition {
     public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
         if (bedrockVeinMaterial == null) {
             if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
+                bedrockVeinMaterial = this.veinGenerator().getValidMaterialsChances();
             } else {
                 bedrockVeinMaterial = List.of();
             }
         }
         return bedrockVeinMaterial;
-    }
-
-    // TODO replace these with fluent accessors:
-    public GTOreDefinition clusterSize(int clusterSize) {
-        this.clusterSize = clusterSize;
-        return this;
-    }
-
-    public GTOreDefinition density(float density) {
-        this.density = density;
-        return this;
-    }
-
-    public GTOreDefinition weight(int weight) {
-        this.weight = weight;
-        return this;
-    }
-
-    public GTOreDefinition dimensionFilter(Set<ResourceKey<Level>> dimensionFilter) {
-        this.dimensionFilter = dimensionFilter;
-        return this;
-    }
-
-    public GTOreDefinition range(HeightRangePlacement range) {
-        this.range = range;
-        return this;
-    }
-
-    public GTOreDefinition discardChanceOnAirExposure(float discardChanceOnAirExposure) {
-        this.discardChanceOnAirExposure = discardChanceOnAirExposure;
-        return this;
-    }
-
-    public GTOreDefinition biomeWeightModifier(BiomeWeightModifier biomeWeightModifier) {
-        this.biomeWeightModifier = biomeWeightModifier;
-        return this;
-    }
-
-    public GTOreDefinition veinGenerator(VeinGenerator veinGenerator) {
-        this.veinGenerator = veinGenerator;
-        return this;
-    }
-
-    public GTOreDefinition indicatorGenerators(List<IndicatorGenerator> indicatorGenerators) {
-        this.indicatorGenerators = indicatorGenerators;
-        return this;
     }
 }

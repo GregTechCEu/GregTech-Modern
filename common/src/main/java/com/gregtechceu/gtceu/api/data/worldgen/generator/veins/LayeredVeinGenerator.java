@@ -72,8 +72,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
         GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
 
-        int size = entry.getClusterSize();
-        float density = entry.getDensity();
+        int size = entry.clusterSize();
+        float density = entry.density();
 
         int radius = Mth.ceil(size / 2f);
 
@@ -190,10 +190,10 @@ public class LayeredVeinGenerator extends VeinGenerator {
     }
 
     public LayeredVeinGenerator buildLayerPattern(Consumer<GTLayerPattern.Builder> config) {
-        var builder = GTLayerPattern.builder(parent().getLayer().getTarget());
+        var builder = GTLayerPattern.builder(parent().layer().getTarget());
         config.accept(builder);
-        this.bakingLayerPatterns.add(builder.build());
-        return this;
+
+        return withLayerPattern(builder::build);
     }
 
     public LayeredVeinGenerator withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {

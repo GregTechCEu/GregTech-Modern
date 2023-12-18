@@ -43,7 +43,7 @@ public class OreVeinUtil {
                                       BlockPos.MutableBlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure()))
             return true;
 
         return !Feature.isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
@@ -52,9 +52,9 @@ public class OreVeinUtil {
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                       RandomSource pRandom, GTOreDefinition entry,
                                       BlockPos.MutableBlockPos pMatablePos) {
-        if (!entry.getLayer().getTarget().test(pState, pRandom))
+        if (!entry.layer().getTarget().test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure()))
             return true;
 
         return !Feature.isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);

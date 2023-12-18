@@ -132,7 +132,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
         DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
 
-        int size = entry.getClusterSize();
+        int size = entry.clusterSize();
 
         int radius = Mth.ceil(size / 2f);
 
@@ -185,7 +185,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
             if (absToggleNoise + edgeRoundoff < veininessThreshold) {
                 continue;
             }
-            if (random.nextFloat() > entry.getDensity()) {
+            if (random.nextFloat() > entry.density()) {
                 continue;
             }
             if (veinRidged.compute(functionContext) >= 0.0) {
@@ -212,7 +212,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         int sectionZ = SectionPos.sectionRelative(pos.getZ());
 
         BlockState current = section.getBlockState(sectionX, sectionY, sectionZ);
-        if (random.nextFloat() <= entry.getDensity()) {
+        if (random.nextFloat() <= entry.density()) {
             if (random.nextFloat() < chance) {
                 if (rareBlocks != null && !rareBlocks.isEmpty() && random.nextFloat() < rareBlockChance) {
                     placeOre(rareBlocks.get(GTUtil.getRandomItem(random, rareEntries, rareEntries.size())).block, current, access, section, random, pos, entry);
