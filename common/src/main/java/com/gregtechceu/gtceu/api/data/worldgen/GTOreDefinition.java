@@ -5,11 +5,13 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,8 +24,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,6 +33,7 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 /**
  * @author Screret
@@ -95,6 +98,10 @@ public class GTOreDefinition {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
+    public GTOreDefinition(ResourceLocation id, GTOreDefinition definition) {
+        this(id, definition.clusterSize, definition.density, definition.weight, definition.layer, definition.dimensionFilter, definition.range, definition.discardChanceOnAirExposure, definition.biomes, definition.biomeWeightModifier, definition.veinGenerator, definition.indicatorGenerators);
+    }
+
     public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
         this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator, indicatorGenerators);
         if (GTRegistries.ORE_VEINS.containKey(id)) {
@@ -125,6 +132,27 @@ public class GTOreDefinition {
         this.depletionChance = (int) (weight * density / 5);
     }
 
+    public GTOreDefinition layer(IWorldGenLayer layer) {
+        this.layer = layer;
+        if (this.dimensionFilter == null || this.dimensionFilter.isEmpty()) {
+            dimensions(layer.getLevels().toArray(ResourceLocation[]::new));
+        }
+
+        return this;
+    }
+
+    public GTOreDefinition dimensions(ResourceLocation... dimensions) {
+        this.dimensionFilter = Arrays.stream(dimensions)
+                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
+                .collect(Collectors.toSet());
+        return this;
+    }
+
+    public GTOreDefinition biomes(String... biomes) {
+        this.biomes = OreVeinUtil.resolveBiomes(Arrays.asList(biomes));
+        return this;
+    }
+
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
         this.biomes = () -> GTRegistries.builtinRegistry().lookupOrThrow(Registries.BIOME).getOrThrow(biomes);
         return this;
@@ -135,20 +163,19 @@ public class GTOreDefinition {
         return this;
     }
 
-    public GTOreDefinition range(HeightRangePlacement range) {
-        this.range = range;
+    public GTOreDefinition heightRangeUniform(int min, int max) {
+        heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
         return this;
     }
 
-    public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
-        if (bedrockVeinMaterial == null) {
-            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
-            } else {
-                bedrockVeinMaterial = List.of();
-            }
-        }
-        return bedrockVeinMaterial;
+    public GTOreDefinition heightRangeTriangle(int min, int max) {
+        heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
+        return this;
+    }
+
+    public GTOreDefinition heightRange(HeightRangePlacement range) {
+        this.range = range;
+        return this;
     }
 
     public StandardVeinGenerator standardVeinGenerator() {
@@ -186,6 +213,14 @@ public class GTOreDefinition {
         return (VeinedVeinGenerator) veinGenerator;
     }
 
+    @Nullable
+    public VeinGenerator veinGenerator(ResourceLocation id) {
+        if (veinGenerator == null) {
+            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+        }
+        return veinGenerator;
+    }
+
     public GTOreDefinition surfaceIndicatorGenerator(Consumer<SurfaceIndicatorGenerator> config) {
         config.accept(getOrCreateIndicatorGenerator(SurfaceIndicatorGenerator.class, SurfaceIndicatorGenerator::new));
         return this;
@@ -205,12 +240,15 @@ public class GTOreDefinition {
         return generator;
     }
 
-    @Nullable
-    public VeinGenerator generator(ResourceLocation id) {
-        if (veinGenerator == null) {
-            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+    @HideFromJS
+    public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
+        if (bedrockVeinMaterial == null) {
+            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
+            } else {
+                bedrockVeinMaterial = List.of();
+            }
         }
-        return veinGenerator;
+        return bedrockVeinMaterial;
     }
-
 }

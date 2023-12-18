@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
 import java.util.Set;
@@ -24,5 +25,29 @@ public interface IWorldGenLayer extends StringRepresentable {
     @FunctionalInterface
     interface RuleTestSupplier {
         RuleTest get();
+    }
+
+    static IWorldGenLayer nowhere() {
+        return new IWorldGenLayer() {
+            @Override
+            public boolean isApplicableForLevel(ResourceLocation level) {
+                return false;
+            }
+
+            @Override
+            public Set<ResourceLocation> getLevels() {
+                return Set.of();
+            }
+
+            @Override
+            public RuleTest getTarget() {
+                return AlwaysTrueTest.INSTANCE;
+            }
+
+            @Override
+            public String getSerializedName() {
+                return "nowhere";
+            }
+        };
     }
 }
