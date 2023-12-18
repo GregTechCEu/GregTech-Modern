@@ -17,6 +17,8 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
+import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator.IndicatorPlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
@@ -282,6 +284,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     .map(tag -> IndicatorGenerator.DIRECT_CODEC.parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
+        });
+        typeWrappers.register(IndicatorPlacement.class, (ctx, o) -> {
+            if (o instanceof IndicatorPlacement placement) return placement;
+            if (o instanceof CharSequence str) return IndicatorPlacement.getByName(str.toString());
+            return null;
         });
         // jank because Rhino doesn't agree that it's an interface
         typeWrappers.register(IWorldGenLayer.RuleTestSupplier.class, (ctx, o) -> {
