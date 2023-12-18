@@ -1,6 +1,6 @@
 # ChangeLog
 
-Version: 1.0.17.a
+Version: 1.0.18
 
 * add preliminary second layer textures to ores, for better visibility
 * improve ore generation KubeJS API
