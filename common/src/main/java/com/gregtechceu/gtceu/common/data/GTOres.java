@@ -909,18 +909,6 @@ public class GTOres {
         return block;
     }
 
-    public static Set<ResourceKey<Level>> overworld() {
-        return Set.of(Level.OVERWORLD);
-    }
-
-    public static Set<ResourceKey<Level>> nether() {
-        return Set.of(Level.NETHER);
-    }
-
-    public static Set<ResourceKey<Level>> end() {
-        return Set.of(Level.END);
-    }
-
     public static void init() {
         toReRegister.forEach(GTRegistries.ORE_VEINS::registerOrOverride);
     }
