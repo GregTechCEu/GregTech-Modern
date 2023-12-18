@@ -754,12 +754,11 @@ public class GTOres {
             .heightRangeUniform(-30, 0)
             .biomes(BiomeTags.IS_OVERWORLD)
             .dikeVeinGenerator(generator -> generator
-                    .withBlock(new DikeBlockDefinition(Grossular, 3, 20, 30))
-                    .withBlock(new DikeBlockDefinition(Spessartine, 2, 20, 30))
-                    .withBlock(new DikeBlockDefinition(Pyrolusite, 2, 20, 26))
-                    .withBlock(new DikeBlockDefinition(Tantalite, 1, 24, 30))
-                    .minYLevel(-50)
-                    .maxYLevel(-5)
+                    .withBlock(new DikeBlockDefinition(Grossular, 3, -50, -5))
+                    .withBlock(new DikeBlockDefinition(Spessartine, 2, -40, -15))
+                    .withBlock(new DikeBlockDefinition(Pyrolusite, 2, -40, -15))
+                    .withBlock(new DikeBlockDefinition(Tantalite, 1, -30, -5))
+                    .minYLevel(-50).maxYLevel(-5)
             )
             .surfaceIndicatorGenerator(indicator -> indicator
                     .surfaceRock(Grossular)
