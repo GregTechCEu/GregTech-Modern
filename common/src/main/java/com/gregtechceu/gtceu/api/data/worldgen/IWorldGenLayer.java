@@ -27,27 +27,26 @@ public interface IWorldGenLayer extends StringRepresentable {
         RuleTest get();
     }
 
-    static IWorldGenLayer nowhere() {
-        return new IWorldGenLayer() {
-            @Override
-            public boolean isApplicableForLevel(ResourceLocation level) {
-                return false;
-            }
 
-            @Override
-            public Set<ResourceLocation> getLevels() {
-                return Set.of();
-            }
+    IWorldGenLayer NOWHERE = new IWorldGenLayer() {
+        @Override
+        public boolean isApplicableForLevel(ResourceLocation level) {
+            return false;
+        }
 
-            @Override
-            public RuleTest getTarget() {
-                return AlwaysTrueTest.INSTANCE;
-            }
+        @Override
+        public Set<ResourceLocation> getLevels() {
+            return Set.of();
+        }
 
-            @Override
-            public String getSerializedName() {
-                return "nowhere";
-            }
-        };
-    }
+        @Override
+        public RuleTest getTarget() {
+            return AlwaysTrueTest.INSTANCE;
+        }
+
+        @Override
+        public String getSerializedName() {
+            return "nowhere";
+        }
+    };
 }

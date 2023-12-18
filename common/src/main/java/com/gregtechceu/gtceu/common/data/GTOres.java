@@ -894,7 +894,7 @@ public class GTOres {
 
     public static GTOreDefinition blankOreDefinition() {
         return new GTOreDefinition(
-                0, 0, 0, IWorldGenLayer.nowhere(), Set.of(),
+                0, 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
                 0, null, null, null, null
         );
