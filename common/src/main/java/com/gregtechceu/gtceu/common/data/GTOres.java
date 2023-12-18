@@ -10,11 +10,9 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndic
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -876,20 +874,13 @@ public class GTOres {
     );
 
     private static GTOreDefinition create(String name, Consumer<GTOreDefinition> config) {
-        ResourceLocation id = GTCEu.id(name);
-
         GTOreDefinition def = blankOreDefinition();
         config.accept(def);
 
-        GTOreDefinition registeredDef = new GTOreDefinition(id, def);
-        toReRegister.put(id, registeredDef);
-        return registeredDef;
-    }
-
-    private static GTOreDefinition create(String name, int clusterSize, float density, int weight, WorldGenLayers layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range) {
         ResourceLocation id = GTCEu.id(name);
-        GTOreDefinition def = new GTOreDefinition(id, clusterSize, density, weight, layer, dimensionFilter, range, 0.0F, null, null, null, null /* TODO */);
+        def.register(id);
         toReRegister.put(id, def);
+
         return def;
     }
 

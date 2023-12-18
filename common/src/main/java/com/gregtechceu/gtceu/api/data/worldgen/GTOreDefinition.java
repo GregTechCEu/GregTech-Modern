@@ -29,8 +29,6 @@ import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.io.Serializable;
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -101,19 +99,20 @@ public class GTOreDefinition {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
-    public GTOreDefinition(ResourceLocation id, GTOreDefinition definition) {
-        this(id, definition.clusterSize, definition.density, definition.weight, definition.layer, definition.dimensionFilter, definition.range, definition.discardChanceOnAirExposure, definition.biomes, definition.biomeWeightModifier, definition.veinGenerator, definition.indicatorGenerators);
-    }
+    public GTOreDefinition(GTOreDefinition other) {
+        this(
+                other.clusterSize, other.density, other.weight, other.layer,
+                Set.copyOf(other.dimensionFilter), other.range, other.discardChanceOnAirExposure,
+                other.biomes, other.biomeWeightModifier, other.veinGenerator, List.copyOf(other.indicatorGenerators)
+        );
 
-    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
-        this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator, indicatorGenerators);
-        if (GTRegistries.ORE_VEINS.containKey(id)) {
-            GTRegistries.ORE_VEINS.replace(id, this);
-        } else {
-            GTRegistries.ORE_VEINS.register(id, this);
-        }
+        this.minimumYield = other.minimumYield;
+        this.maximumYield = other.maximumYield;
+        this.depletedYield = other.depletedYield;
+        this.depletionChance = other.depletionChance;
+        this.depletionAmount = other.depletionAmount;
 
-        this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
+        this.bedrockVeinMaterial = List.copyOf(other.bedrockVeinMaterial);
     }
 
     public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
@@ -127,12 +126,21 @@ public class GTOreDefinition {
         this.biomes = biomes;
         this.biomeWeightModifier = biomeWeightModifier;
         this.veinGenerator = veinGenerator;
-        this.indicatorGenerators = indicatorGenerators != null ? indicatorGenerators : new ArrayList<>();
+        this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
 
         this.maximumYield = (int) (density * 100) * clusterSize;
         this.minimumYield = this.maximumYield / 7;
         this.depletedYield = (int) (clusterSize / density / 10);
         this.depletionChance = (int) (weight * density / 5);
+    }
+
+    @HideFromJS
+    public void register(ResourceLocation id) {
+        if (GTRegistries.ORE_VEINS.containKey(id)) {
+            GTRegistries.ORE_VEINS.replace(id, this);
+        } else {
+            GTRegistries.ORE_VEINS.register(id, this);
+        }
     }
 
     public GTOreDefinition layer(IWorldGenLayer layer) {
