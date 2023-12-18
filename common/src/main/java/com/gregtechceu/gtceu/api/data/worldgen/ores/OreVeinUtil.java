@@ -117,8 +117,9 @@ public class OreVeinUtil {
             return null;
 
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        JsonElement codecInput = resolveBiomeCodecInput(biomes);
         return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
-                .decode(registryOps, resolveBiomeCodecInput(biomes))
+                .decode(registryOps, codecInput)
                 .map(Pair::getFirst)
                 .getOrThrow(false, GTCEu.LOGGER::error);
     }
