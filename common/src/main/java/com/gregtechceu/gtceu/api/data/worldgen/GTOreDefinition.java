@@ -5,11 +5,14 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -22,8 +25,8 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,6 +34,8 @@ import java.util.*;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author Screret
@@ -39,7 +44,7 @@ import java.util.function.Supplier;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-@Accessors(chain = true)
+@Accessors(chain = true, fluent = true)
 public class GTOreDefinition {
     public static final Codec<GTOreDefinition> CODEC = ResourceLocation.CODEC
             .flatXmap(rl -> Optional.ofNullable(GTRegistries.ORE_VEINS.get(rl))
@@ -65,11 +70,13 @@ public class GTOreDefinition {
                     new GTOreDefinition(clusterSize, density, weight, layer, new HashSet<>(dimensionFilter), range, discardChanceOnAirExposure, biomes == null ? null : () -> biomes, biomeWeightModifier, veinGenerator, indicatorGenerators))
     );
 
-    @Getter @Setter
+    private final InferredProperties inferredProperties = new InferredProperties();
+
+    @Getter
     private int clusterSize;
-    @Getter @Setter
+    @Getter
     private float density;
-    @Getter @Setter
+    @Getter
     private int weight;
     @Getter @Setter
     private IWorldGenLayer layer;
@@ -84,9 +91,6 @@ public class GTOreDefinition {
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
-    @Getter
-    private List<PlacementModifier> modifiers;
-
     @Getter @Setter
     private VeinGenerator veinGenerator;
 
@@ -98,15 +102,12 @@ public class GTOreDefinition {
     @Setter
     private List<Map.Entry<Integer, Material>> bedrockVeinMaterial;
 
-    public GTOreDefinition(ResourceLocation id, int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
-        this(clusterSize, density, weight, layer, dimensionFilter, range, discardChanceOnAirExposure, biomes, biomeWeightModifier, veinGenerator, indicatorGenerators);
-        if (GTRegistries.ORE_VEINS.containKey(id)) {
-            GTRegistries.ORE_VEINS.replace(id, this);
-        } else {
-            GTRegistries.ORE_VEINS.register(id, this);
-        }
-
-        this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
+    public GTOreDefinition(GTOreDefinition other) {
+        this(
+                other.clusterSize, other.density, other.weight, other.layer,
+                Set.copyOf(other.dimensionFilter), other.range, other.discardChanceOnAirExposure,
+                other.biomes, other.biomeWeightModifier, other.veinGenerator, List.copyOf(other.indicatorGenerators)
+        );
     }
 
     public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
@@ -120,12 +121,72 @@ public class GTOreDefinition {
         this.biomes = biomes;
         this.biomeWeightModifier = biomeWeightModifier;
         this.veinGenerator = veinGenerator;
-        this.indicatorGenerators = indicatorGenerators != null ? indicatorGenerators : new ArrayList<>();
+        this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
 
+        recomputeBedrockOres();
+    }
+
+    @HideFromJS
+    public void register(ResourceLocation id) {
+        if (GTRegistries.ORE_VEINS.containKey(id)) {
+            GTRegistries.ORE_VEINS.replace(id, this);
+        } else {
+            GTRegistries.ORE_VEINS.register(id, this);
+        }
+    }
+
+    private void recomputeBedrockOres() {
         this.maximumYield = (int) (density * 100) * clusterSize;
         this.minimumYield = this.maximumYield / 7;
         this.depletedYield = (int) (clusterSize / density / 10);
         this.depletionChance = (int) (weight * density / 5);
+    }
+
+    public GTOreDefinition clusterSize(int clusterSize) {
+        this.clusterSize = clusterSize;
+        recomputeBedrockOres();
+
+        return this;
+    }
+
+    public GTOreDefinition density(float density) {
+        this.density = density;
+        recomputeBedrockOres();
+
+        return this;
+    }
+
+    public GTOreDefinition weight(int weight) {
+        this.weight = weight;
+        recomputeBedrockOres();
+
+        return this;
+    }
+
+    public GTOreDefinition layer(IWorldGenLayer layer) {
+        this.layer = layer;
+        if (this.dimensionFilter == null || this.dimensionFilter.isEmpty()) {
+            dimensions(layer.getLevels().toArray(ResourceLocation[]::new));
+        }
+
+        return this;
+    }
+
+    public GTOreDefinition dimensions(ResourceLocation... dimensions) {
+        this.dimensionFilter = Arrays.stream(dimensions)
+                .map(location -> ResourceKey.create(Registries.DIMENSION, location))
+                .collect(Collectors.toSet());
+        return this;
+    }
+
+    public GTOreDefinition biomes(String first, String... biomes) {
+        // The first param is separate to avoid method confusion with the Lombok-generated fluent getter
+        List<String> biomeList = Stream.of(Stream.of(first), Arrays.stream(biomes))
+                .flatMap(Function.identity())
+                .toList();
+
+        this.biomes = OreVeinUtil.resolveBiomes(biomeList);
+        return this;
     }
 
     public GTOreDefinition biomes(TagKey<Biome> biomes) {
@@ -138,55 +199,82 @@ public class GTOreDefinition {
         return this;
     }
 
-    public GTOreDefinition range(HeightRangePlacement range) {
+    public GTOreDefinition heightRangeUniform(int min, int max) {
+        heightRange(HeightRangePlacement.uniform(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
+        inferredProperties.heightRange = Pair.of(min, max);
+        return this;
+    }
+
+    public GTOreDefinition heightRangeTriangle(int min, int max) {
+        heightRange(HeightRangePlacement.triangle(VerticalAnchor.absolute(min), VerticalAnchor.absolute(max)));
+        inferredProperties.heightRange = Pair.of(min, max);
+        return this;
+    }
+
+    public GTOreDefinition heightRange(HeightRangePlacement range) {
         this.range = range;
         return this;
     }
 
-    public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
-        if (bedrockVeinMaterial == null) {
-            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-                bedrockVeinMaterial = this.getVeinGenerator().getValidMaterialsChances();
-            } else {
-                bedrockVeinMaterial = List.of();
-            }
-        }
-        return bedrockVeinMaterial;
+    public GTOreDefinition standardVeinGenerator(Consumer<StandardVeinGenerator> config) {
+        var veinGenerator = new StandardVeinGenerator(this);
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
-    public StandardVeinGenerator standardVeinGenerator() {
-        if (this.veinGenerator == null) {
-            this.veinGenerator = new StandardVeinGenerator(this);
-        }
-        return (StandardVeinGenerator) veinGenerator;
+    public GTOreDefinition layeredVeinGenerator(Consumer<LayeredVeinGenerator> config) {
+        var veinGenerator = new LayeredVeinGenerator(this);
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
     }
 
-    public LayeredVeinGenerator layeredVeinGenerator() {
+    public GTOreDefinition geodeVeinGenerator(Consumer<GeodeVeinGenerator> config) {
+        var veinGenerator = new GeodeVeinGenerator(this);
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
+    }
+
+    public GTOreDefinition dikeVeinGenerator(Consumer<DikeVeinGenerator> config) {
+        var veinGenerator = new DikeVeinGenerator(this);
+        if (inferredProperties.heightRange != null) {
+            veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
+            veinGenerator.maxYLevel(inferredProperties.heightRange.getSecond());
+        }
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
+    }
+
+    public GTOreDefinition veinedVeinGenerator(Consumer<VeinedVeinGenerator> config) {
+        var veinGenerator = new VeinedVeinGenerator(this);
+        if (inferredProperties.heightRange != null) {
+            veinGenerator.minYLevel(inferredProperties.heightRange.getFirst());
+            veinGenerator.maxYLevel(inferredProperties.heightRange.getSecond());
+        }
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
+    }
+
+    @Nullable
+    public VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
-            veinGenerator = new LayeredVeinGenerator(this);
+            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
         }
-        return (LayeredVeinGenerator) veinGenerator;
-    }
-
-    public GeodeVeinGenerator geodeVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new GeodeVeinGenerator(this);
-        }
-        return (GeodeVeinGenerator) veinGenerator;
-    }
-
-    public DikeVeinGenerator dikeVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new DikeVeinGenerator(this);
-        }
-        return (DikeVeinGenerator) veinGenerator;
-    }
-
-    public VeinedVeinGenerator veinedVeinGenerator() {
-        if (veinGenerator == null) {
-            veinGenerator = new VeinedVeinGenerator(this);
-        }
-        return (VeinedVeinGenerator) veinGenerator;
+        return veinGenerator;
     }
 
     public GTOreDefinition surfaceIndicatorGenerator(Consumer<SurfaceIndicatorGenerator> config) {
@@ -208,12 +296,19 @@ public class GTOreDefinition {
         return generator;
     }
 
-    @Nullable
-    public VeinGenerator generator(ResourceLocation id) {
-        if (veinGenerator == null) {
-            veinGenerator = WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.containsKey(id) ? WorldGeneratorUtils.VEIN_GENERATOR_FUNCTIONS.get(id).apply(this) : null;
+    @HideFromJS
+    public List<Map.Entry<Integer, Material>> getBedrockVeinMaterials() {
+        if (bedrockVeinMaterial == null) {
+            if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
+                bedrockVeinMaterial = this.veinGenerator().getValidMaterialsChances();
+            } else {
+                bedrockVeinMaterial = List.of();
+            }
         }
-        return veinGenerator;
+        return bedrockVeinMaterial;
     }
 
+    private static class InferredProperties {
+        public Pair<Integer, Integer> heightRange = null;
+    }
 }

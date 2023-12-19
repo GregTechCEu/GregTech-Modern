@@ -1,5 +1,5 @@
 # ChangeLog
 
-Version: 1.0.17.a
+Version: 1.0.18.a
 
-* add preliminary second layer textures to ores, for better visibility
+* fix bedrock ores not generating

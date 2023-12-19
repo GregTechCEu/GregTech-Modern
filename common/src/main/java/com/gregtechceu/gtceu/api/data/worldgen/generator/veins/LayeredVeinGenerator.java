@@ -27,6 +27,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -71,8 +72,8 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
         GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
 
-        int size = entry.getClusterSize();
-        float density = entry.getDensity();
+        int size = entry.clusterSize();
+        float density = entry.density();
 
         int radius = Mth.ceil(size / 2f);
 
@@ -186,6 +187,13 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public LayeredVeinGenerator(List<GTLayerPattern> layerPatterns) {
         super();
         this.layerPatterns = layerPatterns;
+    }
+
+    public LayeredVeinGenerator buildLayerPattern(Consumer<GTLayerPattern.Builder> config) {
+        var builder = GTLayerPattern.builder(parent().layer().getTarget());
+        config.accept(builder);
+
+        return withLayerPattern(builder::build);
     }
 
     public LayeredVeinGenerator withLayerPattern(NonNullSupplier<GTLayerPattern> pattern) {
