@@ -1,19 +1,34 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonPrimitive;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderSet;
+import net.minecraft.core.RegistryCodecs;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 
 @MethodsReturnNonnullByDefault
@@ -28,7 +43,7 @@ public class OreVeinUtil {
                                       BlockPos.MutableBlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure()))
             return true;
 
         return !Feature.isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
@@ -37,9 +52,9 @@ public class OreVeinUtil {
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                       RandomSource pRandom, GTOreDefinition entry,
                                       BlockPos.MutableBlockPos pMatablePos) {
-        if (!entry.getLayer().getTarget().test(pState, pRandom))
+        if (!entry.layer().getTarget().test(pState, pRandom))
             return false;
-        if (shouldSkipAirCheck(pRandom, entry.getDiscardChanceOnAirExposure()))
+        if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure()))
             return true;
 
         return !Feature.isAdjacentToAir(pAdjacentStateAccessor, pMatablePos);
@@ -94,5 +109,30 @@ public class OreVeinUtil {
      */
     static int getMaxIndicatorSearchDistance() {
         return getMaxVeinSearchDistance() + (int) Math.ceil((double) GTOres.getLargestIndicatorOffset() / 16.0);
+    }
+
+    @Nullable
+    public static Supplier<HolderSet<Biome>> resolveBiomes(List<String> biomes) {
+        if (biomes.isEmpty())
+            return null;
+
+        RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
+        JsonElement codecInput = resolveBiomeCodecInput(biomes);
+        return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
+                .decode(registryOps, codecInput)
+                .map(Pair::getFirst)
+                .getOrThrow(false, GTCEu.LOGGER::error);
+    }
+
+    private static JsonElement resolveBiomeCodecInput(List<String> biomes) {
+        if (biomes.size() == 1)
+            return new JsonPrimitive(biomes.get(0));
+
+        if (biomes.stream().anyMatch(filter -> filter.startsWith("#")))
+            throw new IllegalStateException("Cannot resolve biomes: You may use either a single tag or multiple individual biomes.");
+
+        var jsonArray = new JsonArray();
+        biomes.forEach(jsonArray::add);
+        return jsonArray;
     }
 }

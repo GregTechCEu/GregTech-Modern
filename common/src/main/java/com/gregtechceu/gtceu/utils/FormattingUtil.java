@@ -23,6 +23,7 @@ public class FormattingUtil {
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
     private static final int SMALL_UP_NUMBER_BASE = '\u2070';
+    private static final int SMALL_UP_NUMBER_ONE = '\u00B9';
     private static final int SMALL_UP_NUMBER_TWO = '\u00B2';
     private static final int SMALL_UP_NUMBER_THREE = '\u00B3';
     private static final int NUMBER_BASE = '0';
@@ -42,7 +43,10 @@ public class FormattingUtil {
             int relativeIndex = charArray[i] - NUMBER_BASE;
             if (relativeIndex >= 0 && relativeIndex <= 9) {
                 if (isUp) {
-                    if (relativeIndex == 2 ) {
+                    if (relativeIndex == 1 ) {
+                        charArray[i] = SMALL_UP_NUMBER_ONE;
+                        continue;
+                    } else if (relativeIndex == 2 ) {
                         charArray[i] = SMALL_UP_NUMBER_TWO;
                         continue;
                     } else if (relativeIndex == 3) {

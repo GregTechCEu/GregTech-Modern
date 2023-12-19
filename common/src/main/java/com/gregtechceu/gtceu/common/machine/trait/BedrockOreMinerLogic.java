@@ -92,7 +92,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     private int getOreToProduce(OreVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {
-            int depletedYield = definition.getDepletedYield();
+            int depletedYield = definition.depletedYield();
             int regularYield = entry.getOreYield();
             int remainingOperations = entry.getOperationsRemaining();
 

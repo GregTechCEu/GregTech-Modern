@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 public class SimpleWorldGenLayer implements IWorldGenLayer {
     private final String name;
     private final IWorldGenLayer.RuleTestSupplier target;
+    @Getter
     private final Set<ResourceLocation> levels;
 
     public SimpleWorldGenLayer(String name, IWorldGenLayer.RuleTestSupplier target, Set<ResourceLocation> levels) {

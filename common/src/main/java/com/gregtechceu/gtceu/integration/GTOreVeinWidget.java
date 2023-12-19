@@ -43,8 +43,8 @@ public class GTOreVeinWidget extends WidgetGroup {
     public GTOreVeinWidget(GTOreDefinition oreDefinition) {
         super(0, 0, width, 160);
         this.name = getOreName(oreDefinition);
-        this.weight = oreDefinition.getWeight();
-        this.dimensionFilter = oreDefinition.getDimensionFilter();
+        this.weight = oreDefinition.weight();
+        this.dimensionFilter = oreDefinition.dimensionFilter();
         this.dimensions = dimensions();
         this.range = range(oreDefinition);
         setClientSideWidget();
@@ -65,7 +65,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     private String range(GTOreDefinition oreDefinition) {
-        HeightProvider height = oreDefinition.getRange().height;
+        HeightProvider height = oreDefinition.range().height;
         int minHeight = 0, maxHeight = 0;
         if (height instanceof UniformHeight uniform) {
             minHeight = uniform.minInclusive.resolveY(null);
@@ -76,7 +76,7 @@ public class GTOreVeinWidget extends WidgetGroup {
 
     private void setupBaseGui(GTOreDefinition oreDefinition){
         NonNullList<ItemStack> containedOresAsItemStacks = NonNullList.create();
-        List<Integer> chances = oreDefinition.getVeinGenerator().getAllChances();
+        List<Integer> chances = oreDefinition.veinGenerator().getAllChances();
         containedOresAsItemStacks.addAll(getContainedOresAndBlocks(oreDefinition));
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
@@ -131,7 +131,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     }
 
     public static List<ItemStack> getContainedOresAndBlocks(GTOreDefinition oreDefinition) {
-        return oreDefinition.getVeinGenerator().getAllEntries().stream()
+        return oreDefinition.veinGenerator().getAllEntries().stream()
                 .map(entry -> entry.getKey().map(state -> state.getBlock().asItem().getDefaultInstance(), material -> ChemicalHelper.get(TagPrefix.rawOre, material)))
                 .toList();
     }

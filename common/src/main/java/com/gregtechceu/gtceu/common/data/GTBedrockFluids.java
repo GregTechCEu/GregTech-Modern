@@ -7,14 +7,17 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.dimension.BuiltinDimensionTypes;
 import net.minecraft.world.level.dimension.DimensionType;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -98,7 +101,7 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(30)
-            .dimensions(GTOres.nether())
+            .dimensions(nether())
             .register();
 
     public static BedrockFluidDefinition NETHER_NATURAL_GAS = BedrockFluidDefinition.builder(GTCEu.id("nether_natural_gas_deposit"))
@@ -108,10 +111,14 @@ public class GTBedrockFluids {
             .depletionAmount(1)
             .depletionChance(100)
             .depletedYield(40)
-            .dimensions(GTOres.nether())
+            .dimensions(nether())
             .register();
 
     public static void init() {
         toReRegister.forEach(GTRegistries.BEDROCK_FLUID_DEFINITIONS::registerOrOverride);
+    }
+
+    public static Set<ResourceKey<Level>> nether() {
+        return Set.of(Level.NETHER);
     }
 }

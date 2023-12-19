@@ -60,7 +60,7 @@ public class OreGenerator {
     private GeneratedIndicators generateIndicators(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
         GTOreDefinition definition = config.data.definition();
 
-        Map<ChunkPos, List<OreIndicatorPlacer>> generatedIndicators = definition.getIndicatorGenerators().stream()
+        Map<ChunkPos, List<OreIndicatorPlacer>> generatedIndicators = definition.indicatorGenerators().stream()
                 .flatMap(gen -> gen.generate(level, config.newRandom(), config.data).entrySet().stream())
                 .collect(Collectors.toMap(
                         Map.Entry::getKey, entry -> List.of(entry.getValue()),
@@ -92,7 +92,7 @@ public class OreGenerator {
 
     private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
         GTOreDefinition definition = config.data.definition();
-        Map<BlockPos, OreBlockPlacer> generatedVeins = definition.getVeinGenerator()
+        Map<BlockPos, OreBlockPlacer> generatedVeins = definition.veinGenerator()
                 .generate(level, config.newRandom(), definition, config.data.center());
 
 
@@ -102,7 +102,7 @@ public class OreGenerator {
         }
 
         generateBedrockOreVein(config, level);
-        return Optional.of(new GeneratedVein(chunkPos, definition.getLayer(), generatedVeins));
+        return Optional.of(new GeneratedVein(chunkPos, definition.layer(), generatedVeins));
     }
 
     private static void generateBedrockOreVein(VeinConfiguration config, WorldGenLevel level) {
@@ -141,7 +141,7 @@ public class OreGenerator {
     @Nullable
     private GTOreDefinition getEntry(WorldGenLevel level, Holder<Biome> biome, RandomSource random, IWorldGenLayer layer) {
         var veins = WorldGeneratorUtils.getCachedBiomeVeins(level.getLevel(), biome, random).stream()
-                .filter(vein -> vein.getValue().getLayer().equals(layer))
+                .filter(vein -> vein.getValue().layer().equals(layer))
                 .toList();
         int randomEntryIndex = GTUtil.getRandomItem(random, veins, veins.size());
         return randomEntryIndex == -1 ? null : veins.get(randomEntryIndex).getValue();
@@ -151,12 +151,12 @@ public class OreGenerator {
     private static Optional<BlockPos> computeVeinOrigin(WorldGenLevel level, ChunkGenerator generator,
                                                         RandomSource random, BlockPos veinCenter, GTOreDefinition entry
     ) {
-        int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.getLayer())
+        int layerSeed = WorldGeneratorUtils.getWorldGenLayerKey(entry.layer())
                 .map(String::hashCode)
                 .orElse(0);
         var layeredRandom = new XoroshiroRandomSource(random.nextLong() ^ ((long) layerSeed));
 
-        return entry.getRange().getPositions(
+        return entry.range().getPositions(
                 new PlacementContext(level, generator, Optional.empty()),
                 layeredRandom, veinCenter
         ).findFirst();
