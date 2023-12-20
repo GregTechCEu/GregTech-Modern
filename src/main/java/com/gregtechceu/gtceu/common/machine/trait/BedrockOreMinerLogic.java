@@ -72,7 +72,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
             var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
-            Material material = veinMaterials.get(GTUtil.getRandomItem(veinMaterials, veinMaterials.size())).getValue();
+            Material material = veinMaterials.get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ())));
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()))); // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()))); // backup 2: gem; if crushed ore doesn't exist

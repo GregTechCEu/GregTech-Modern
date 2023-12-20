@@ -100,19 +100,8 @@ public class OreGenerator {
             return Optional.empty();
         }
 
-        generateBedrockOreVein(config, level);
         return Optional.of(new GeneratedVein(chunkPos, definition.layer(), generatedVeins));
     }
-
-    private static void generateBedrockOreVein(VeinConfiguration config, WorldGenLevel level) {
-        if (ConfigHolder.INSTANCE.machines.doBedrockOres) {
-            BedrockOreVeinSavedData.getOrCreate(level.getLevel()).createVein(
-                    new ChunkPos(config.data.center()),
-                    config.data.definition()
-            );
-        }
-    }
-
     private List<VeinConfiguration> createConfigs(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
 
