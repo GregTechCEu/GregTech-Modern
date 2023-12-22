@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
+import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.network.chat.Component;
@@ -14,16 +14,13 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem.Type;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
-
+    @Getter
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
@@ -54,7 +51,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     @Override
     public void addToolComponents(ArmorComponentItem mvi) {
-        mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
+        /*mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
 
             @Override
             public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
@@ -65,7 +62,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
             public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
                 addInfo(stack, tooltipComponents);
             }
-        });
+        });*/
     }
 
     public void addInfo(ItemStack itemStack, List<Component> lines) {
@@ -117,13 +114,9 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         return this.slot == Type.CHESTPLATE;
     }
 
-    public int getEnergyPerUse() {
-        return this.energyPerUse;
-    }
-
     protected float getAbsorption() {
         return switch (this.getEquipmentSlot()) {
-            case HELMET , BOOTS ->
+            case HELMET, BOOTS ->
                     0.15F;
             case CHESTPLATE ->
                     0.4F;

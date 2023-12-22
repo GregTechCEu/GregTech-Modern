@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -23,14 +22,14 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst, IItemComponent{
+public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst, IItemComponent {
     @Getter
     private IArmorLogic armorLogic = new DummyArmorLogic();
     @Getter
-    protected List<IItemComponent> components;
+    protected List<IItemComponent> components = new ArrayList<>();
 
 
     public ArmorComponentItem(ArmorMaterial material, Type slot, Properties properties) {
@@ -49,12 +48,12 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
         return this;
     }
 
-    public void attachComponents(IItemComponent... components) {
-        this.components.addAll(Arrays.asList(components));
-        for (IItemComponent component : components) {
-            component.onAttached((IComponentItem) this);
-        }
-    }
+    //public void attachComponents(IItemComponent... components) {
+    //     this.components.addAll(Arrays.asList(components));
+    //     for (IItemComponent component : components) {
+    //         component.onAttached(this);
+    //     }
+    // }
 
     @Override
     public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {

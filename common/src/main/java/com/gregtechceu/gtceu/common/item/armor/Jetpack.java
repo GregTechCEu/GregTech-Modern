@@ -27,7 +27,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     @Environment(EnvType.CLIENT)
     public Jetpack(int energyPerUse, long capacity, int tier) {
         super(energyPerUse, capacity, tier, ArmorItem.Type.CHESTPLATE);
-        if (Minecraft.getInstance().level.isClientSide() && this.shouldDrawHUD()) {
+        if (Minecraft.getInstance().level != null && Minecraft.getInstance().level.isClientSide() && this.shouldDrawHUD()) {
             //noinspection NewExpressionSideOnly
             HUD = new ArmorUtils.ModularHUD();
         }

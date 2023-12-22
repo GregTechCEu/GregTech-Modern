@@ -247,22 +247,22 @@ public class ArmorUtils {
             int windowHeight = mc.getWindow().getGuiScaledHeight();
             int windowWidth = mc.getWindow().getGuiScaledWidth();
             int stringWidth = mc.font.width(stringList.get(index));
-            switch (ConfigHolder.INSTANCE.client.armorHud.hudLocation) {
+            switch (ConfigHolder.INSTANCE.toolOptions.armorHud.hudLocation) {
                 case 1 -> {
-                    posX = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;
-                    posY = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetY + (fontHeight * index);
+                    posX = 1 + ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetX;
+                    posY = 1 + ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetY + (fontHeight * index);
                 }
                 case 2 -> {
-                    posX = windowWidth - (1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX) - stringWidth;
-                    posY = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetY + (fontHeight * index);
+                    posX = windowWidth - (1 + ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetX) - stringWidth;
+                    posY = 1 + ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetY + (fontHeight * index);
                 }
                 case 3 -> {
-                    posX = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;
-                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
+                    posX = 1 + ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetX;
+                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetY;
                 }
                 case 4 -> {
-                    posX = windowWidth - (1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX) - stringWidth;
-                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
+                    posX = windowWidth - (1 + ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetX) - stringWidth;
+                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.toolOptions.armorHud.hudOffsetY;
                 }
                 default ->
                         throw new IllegalArgumentException("Armor Hud config hudLocation is improperly configured.");

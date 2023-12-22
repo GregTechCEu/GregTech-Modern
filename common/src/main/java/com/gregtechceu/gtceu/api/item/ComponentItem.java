@@ -53,7 +53,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     public void attachComponents(IItemComponent... components) {
         this.components.addAll(Arrays.asList(components));
         for (IItemComponent component : components) {
-            component.onAttached((IComponentItem) this);
+            component.onAttached(this);
         }
     }
 

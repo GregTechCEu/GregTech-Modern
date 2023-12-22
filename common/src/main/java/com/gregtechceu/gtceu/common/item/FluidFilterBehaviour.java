@@ -3,13 +3,12 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Function;
@@ -22,9 +21,9 @@ import java.util.function.Function;
 public record FluidFilterBehaviour(Function<ItemStack, FluidFilter> filterCreator) implements IItemUIFactory {
 
     @Override
-    public void onAttached(IComponentItem item) {
+    public void onAttached(ComponentItem item) {
         IItemUIFactory.super.onAttached(item);
-        FluidFilter.FILTERS.put((Item) item, filterCreator);
+        FluidFilter.FILTERS.put(item, filterCreator);
     }
 
     @Override

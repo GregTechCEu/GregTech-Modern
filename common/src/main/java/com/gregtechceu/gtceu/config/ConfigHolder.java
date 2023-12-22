@@ -28,6 +28,8 @@ public class ConfigHolder {
     @Configurable
     public ClientConfigs client = new ClientConfigs();
     @Configurable
+    public static ToolOptions toolOptions = new ToolOptions();
+    @Configurable
     @Configurable.Comment("Config options for Mod Compatibility")
     public CompatibilityConfigs compat = new CompatibilityConfigs();
     @Configurable
@@ -306,22 +308,58 @@ public class ConfigHolder {
         @Configurable.Comment({"Use VBO cache for multiblock preview.", "Disable it if you have issues with rendering multiblocks.", "Default: true"})
         @Configurable.Gui.ColorValue
         public boolean useVBO = true;
-        @Configurable
+    }
+
+    public static class ToolOptions {
+        @Configurable.Comment("NightVision Goggles Voltage Tier. Default: 1 (LV)")
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierNightVision = 1;
+
+        @Configurable.Comment("NanoSuit Voltage Tier. Default: 3 (HV)")
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierNanoSuit = 3;
+
+        @Configurable.Comment({"Advanced NanoSuit Chestplate Voltage Tier.", "Default: 3 (HV)"})
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierAdvNanoSuit = 3;
+
+        @Configurable.Comment({"QuarkTech Suit Voltage Tier.", "Default: 5 (IV)"})
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierQuarkTech = 5;
+
+        @Configurable.Comment({"Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)"})
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierAdvQuarkTech = 6;
+
+        @Configurable.Comment({"Electric Impeller Jetpack Voltage Tier.", "Default: 2 (MV)"})
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierImpeller = 2;
+
+        @Configurable.Comment({"Advanced Electric Jetpack Voltage Tier.", "Default: 3 (HV)"})
+        @Configurable.Range(min = 0, max = 14)
+        public int voltageTierAdvImpeller = 3;
+
+        @Configurable.Comment({"Random chance for electric tools to take actual damage", "Default: 10%"})
+        @Configurable.Range(min = 0, max = 100)
+        public int rngDamageElectricTools = 10;
+
+        @Configurable.Comment("Armor HUD Location")
         public ArmorHud armorHud = new ArmorHud();
-        public static class ArmorHud {
-            @Configurable
-            @Configurable.Comment({"Sets HUD location", "1 - left-upper corner", "2 - right-upper corner", "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1"})
-            @Configurable.Range(min = 1, max = 4)
-            public int hudLocation = 1;
-            @Configurable
-            @Configurable.Comment({"Horizontal offset of HUD.", "Default: 0"})
-            @Configurable.Range(min = 0, max = 100)
-            public int hudOffsetX = 0;
-            @Configurable
-            @Configurable.Comment({"Vertical offset of HUD.", "Default: 0"})
-            @Configurable.Range(min = 0, max = 100)
-            public int hudOffsetY = 0;
-        }
+    }
+
+    public static class ArmorHud {
+        @Configurable
+        @Configurable.Comment({"Sets HUD location", "1 - left-upper corner", "2 - right-upper corner", "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1"})
+        @Configurable.Range(min = 1, max = 4)
+        public int hudLocation = 1;
+        @Configurable
+        @Configurable.Comment({"Horizontal offset of HUD.", "Default: 0"})
+        @Configurable.Range(min = 0, max = 100)
+        public int hudOffsetX = 0;
+        @Configurable
+        @Configurable.Comment({"Vertical offset of HUD.", "Default: 0"})
+        @Configurable.Range(min = 0, max = 100)
+        public int hudOffsetY = 0;
     }
 
     public static class DeveloperConfigs {

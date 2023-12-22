@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.GTToolItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
@@ -32,6 +33,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.*;
+import com.gregtechceu.gtceu.common.item.armor.Jetpack;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -72,7 +74,8 @@ import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
-import static com.gregtechceu.gtceu.common.data.GTModels.*;
+import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
+import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
@@ -171,7 +174,7 @@ public class GTItems {
             }
         }
     }
-
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE.item("electric_jetpack", p -> new ArmorComponentItem(ArmorMaterials.IRON, ArmorItem.Type.CHESTPLATE, p).setArmorLogic(new Jetpack(30, 1_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.toolOptions.voltageTierImpeller - 2)), ConfigHolder.toolOptions.voltageTierImpeller))).lang("Electric Jetpack").properties(p -> p.rarity(Rarity.UNCOMMON)).register();
 
     //////////////////////////////////////
     //*******     Misc Items    ********//
