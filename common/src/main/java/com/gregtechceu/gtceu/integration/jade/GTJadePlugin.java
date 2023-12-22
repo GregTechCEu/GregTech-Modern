@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.api.item.GTToolItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.ControllableBlockProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockProvider;

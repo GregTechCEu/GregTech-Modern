@@ -1,8 +1,9 @@
-package com.gregtechceu.gtceu.api.item.fabric;
+package com.gregtechceu.gtceu.api.item.tool.fabric;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.item.GTToolItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import net.fabricmc.fabric.api.item.v1.FabricItem;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -20,12 +21,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GTToolItemImpl extends GTToolItem implements FabricItem {
 
-    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Properties properties) {
-        super(toolType, tier, electricTier, material, properties);
+    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
+        super(toolType, tier, material, electricTier, definition, properties);
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Item.Properties properties) {
-        return new GTToolItemImpl(toolType, tier, material, electricTier, properties);
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
+        return new GTToolItemImpl(toolType, tier, material, electricTier, definition, properties);
     }
 
     @Override

@@ -22,7 +22,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.GTToolItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.component.*;
@@ -169,9 +169,8 @@ public class GTItems {
 
                 for (GTToolType toolType : GTToolType.values()) {
                     if (property.hasType(toolType)) {
-                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, material, 0, p))
+                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, material, 0, toolType.toolDefinition.apply(new ToolDefinitionBuilder()).build(), p))
                                 .properties(p -> p.craftRemainder(Items.AIR).durability(tier.getUses() * toolType.durabilityMultiplier))
-                                .transform(toolDefinition(toolType.toolDefinition))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> GTToolItem::tintColor)
@@ -1664,13 +1663,6 @@ public class GTItems {
                 toUnify.put(entry, item);
                 ChemicalHelper.registerUnificationItems(entry, item);
             });
-            return builder;
-        };
-    }
-
-    public static <P, T extends Item & IGTTool, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> toolDefinition(UnaryOperator<ToolDefinitionBuilder> toolBuilder) {
-        return builder -> {
-            builder.onRegister(item -> item.setToolDefinition(toolBuilder.apply(new ToolDefinitionBuilder()).build()));
             return builder;
         };
     }

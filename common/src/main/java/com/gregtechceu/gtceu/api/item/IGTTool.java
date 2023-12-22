@@ -28,6 +28,7 @@ import com.gregtechceu.gtceu.core.ICraftRemainder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ModHandler;
+import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
@@ -72,15 +73,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
 public interface IGTTool extends IItemUIFactory {
-
-    void setToolDefinition(IGTToolDefinition definition);
 
     Material getMaterial();
     
@@ -94,9 +92,6 @@ public interface IGTTool extends IItemUIFactory {
     SoundEntry getSound();
 
     boolean playSoundOnBlockDestroy();
-
-    @Nullable
-    Supplier<ItemStack> getMarkerItem();
 
     default Item get() {
         return (Item) this;
@@ -353,7 +348,7 @@ public interface IGTTool extends IItemUIFactory {
         return getToolStats().isToolEffective(state) ? getTotalToolSpeed(stack) : 1.0F;
     }
 
-    default boolean definition$hitEntity(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+    default boolean definition$hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
         getToolStats().getBehaviors().forEach(behavior -> behavior.hitEntity(stack, target, attacker));
         damageItem(stack, attacker, getToolStats().getToolDamagePerAttack(stack));
         return true;
@@ -399,7 +394,7 @@ public interface IGTTool extends IItemUIFactory {
         return false;
     }
 
-    default boolean definition$onBlockDestroyed(ItemStack stack, Level worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
+    default boolean definition$mineBlock(ItemStack stack, Level worldIn, BlockState state, BlockPos pos, LivingEntity entityLiving) {
         if (!worldIn.isClientSide) {
             getToolStats().getBehaviors().forEach(behavior -> behavior.onBlockDestroyed(stack, worldIn, state, pos, entityLiving));
 
@@ -417,7 +412,7 @@ public interface IGTTool extends IItemUIFactory {
         return true;
     }
 
-    default boolean definition$getIsRepairable(ItemStack toRepair, ItemStack repair) {
+    default boolean definition$isValidRepairItem(ItemStack toRepair, ItemStack repair) {
         // full durability tools in the left slot are not repairable
         // this is needed so enchantment merging works when both tools are full durability
         if (toRepair.getDamageValue() == 0) return false;
@@ -447,7 +442,7 @@ public interface IGTTool extends IItemUIFactory {
         return false;
     }
 
-    default Multimap<Attribute, AttributeModifier> definition$getAttributeModifiers(EquipmentSlot equipmentSlot, ItemStack stack) {
+    default Multimap<Attribute, AttributeModifier> definition$getDefaultAttributeModifiers(EquipmentSlot equipmentSlot, ItemStack stack) {
         Multimap<Attribute, AttributeModifier> multimap = HashMultimap.create();
         if (equipmentSlot == EquipmentSlot.MAINHAND) {
             multimap.put(Attributes.ATTACK_DAMAGE, new AttributeModifier(BASE_ATTACK_DAMAGE_UUID, "Weapon modifier", getTotalAttackDamage(stack), AttributeModifier.Operation.ADDITION));
@@ -472,13 +467,13 @@ public interface IGTTool extends IItemUIFactory {
         return oldStack.getItem() != newStack.getItem() || oldStack.getDamageValue() < newStack.getDamageValue();
     }
 
-    default boolean definition$hasContainerItem(ItemStack stack) {
+    default boolean definition$hasCraftingRemainingItem(ItemStack stack) {
         return stack.getTag() == null || !stack.getTag().getBoolean(DISALLOW_CONTAINER_ITEM_KEY);
     }
 
-    default ItemStack definition$getContainerItem(ItemStack stack) {
+    default ItemStack definition$getCraftingRemainingItem(ItemStack stack) {
         // Sanity-check, callers should really validate with hasContainerItem themselves...
-        if (!definition$hasContainerItem(stack)) {
+        if (!definition$hasCraftingRemainingItem(stack)) {
             return ItemStack.EMPTY;
         }
         stack = stack.copy();
@@ -573,7 +568,7 @@ public interface IGTTool extends IItemUIFactory {
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> definition$onItemRightClick(Level world, Player player, InteractionHand hand) {
+    default InteractionResultHolder<ItemStack> definition$use(Level world, Player player, InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         if (!world.isClientSide) {
             // TODO: relocate to keybind action when keybind PR happens
@@ -592,9 +587,7 @@ public interface IGTTool extends IItemUIFactory {
     }
 
     default void definition$getSubItems(@Nonnull NonNullList<ItemStack> items) {
-        if (getMarkerItem() != null) {
-            items.add(getMarkerItem().get());
-        } else if (isElectric()) {
+        if (isElectric()) {
             items.add(get(GTMaterials.Iron, Integer.MAX_VALUE));
         } else {
             items.add(get(GTMaterials.Iron));
@@ -795,9 +788,9 @@ public interface IGTTool extends IItemUIFactory {
         }
     }
 
-    default ModularUI createUI(PlayerInventoryHolder holder, Player entityPlayer) {
-        CompoundTag tag = getBehaviorsTag(holder.getCurrentItem());
-        AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getCurrentItem());
+    default ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
+        CompoundTag tag = getBehaviorsTag(holder.getHeld());
+        AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
         return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
                 .widget(new LabelWidget(6, 10, "item.gt.tool.aoe.columns"))
                 .widget(new LabelWidget(49, 10, "item.gt.tool.aoe.rows"))
@@ -827,11 +820,11 @@ public interface IGTTool extends IItemUIFactory {
                     holder.markAsDirty();
                 }))
                 .widget(new LabelWidget(23, 65, () ->
-                        Integer.toString(1 + 2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getCurrentItem()), defaultDefinition))))
+                        Integer.toString(1 + 2 * AoESymmetrical.getColumn(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
                 .widget(new LabelWidget(58, 65, () ->
-                        Integer.toString(1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getCurrentItem()), defaultDefinition))))
+                        Integer.toString(1 + 2 * AoESymmetrical.getRow(getBehaviorsTag(holder.getHeld()), defaultDefinition))))
                 .widget(new LabelWidget(93, 65, () ->
-                        Integer.toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getCurrentItem()), defaultDefinition))));
+                        Integer.toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition))));
     }
 
     Set<GTToolType> getToolClasses(ItemStack stack);

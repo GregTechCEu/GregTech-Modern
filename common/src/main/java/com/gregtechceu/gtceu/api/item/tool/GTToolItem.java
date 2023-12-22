@@ -1,14 +1,13 @@
-package com.gregtechceu.gtceu.api.item;
+package com.gregtechceu.gtceu.api.item.tool;
 
+import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.item.tool.*;
+import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.mojang.datafixers.util.Pair;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
@@ -24,13 +23,19 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.RotatedPillarBlock;
@@ -44,7 +49,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -61,17 +65,20 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     protected final int electricTier;
     @Getter
     protected final Material material;
+    @Getter
+    private IGTToolDefinition toolStats;
 
     @ExpectPlatform
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Properties properties) {
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
         throw new AssertionError();
     }
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, Properties properties) {
+    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
         super(0, 0, tier, toolType.harvestTag, properties);
         this.toolType = toolType;
         this.material = material;
         this.electricTier = electricTier;
+        this.toolStats = definition;
         if (Platform.isClient()) {
             ToolItemRenderer.create(this, toolType);
         }
@@ -265,51 +272,112 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
 
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
+        return definition$mineBlock(stack, level, state, pos, miningEntity);
+        /*
         if (stack.is(CustomTags.TREE_FELLING_TOOLS) && state.is(BlockTags.LOGS)) {
             new TreeFellingHelper().fellTree(stack, level, state, pos, miningEntity);
         }
         return super.mineBlock(stack, level, state, pos, miningEntity);
-    }
-
-    @Override
-    public void setToolDefinition(IGTToolDefinition definition) {
-
+         */
     }
 
     @Override
     public boolean isElectric() {
-        return false;
-    }
-
-    @Override
-    public IGTToolDefinition getToolStats() {
-        return null;
+        return electricTier > -1;
     }
 
     @Nullable
     @Override
     public SoundEntry getSound() {
-        return null;
+        return toolType.soundEntry;
     }
 
     @Override
     public boolean playSoundOnBlockDestroy() {
-        return false;
-    }
-
-    @Nullable
-    @Override
-    public Supplier<ItemStack> getMarkerItem() {
-        return null;
+        return toolType.playSoundOnBlockDestroy;
     }
 
     @Override
     public Set<GTToolType> getToolClasses(ItemStack stack) {
-        return null;
+        return Set.of(this.toolType);
     }
 
     @Override
-    public ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
-        return null;
+    public float getDestroySpeed(ItemStack stack, BlockState state) {
+        return definition$getDestroySpeed(stack, state);
     }
+
+    @Override
+    public boolean hurtEnemy(ItemStack stack, LivingEntity target, LivingEntity attacker) {
+        return definition$hurtEnemy(stack, target, attacker);
+    }
+
+    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
+        return definition$onBlockStartBreak(stack, pos, player);
+    }
+
+
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return definition$canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    public int getEnchantmentValue(ItemStack stack) {
+        return getTotalEnchantability(stack);
+    }
+
+    @Override
+    public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
+        return definition$isValidRepairItem(stack, repairCandidate);
+    }
+
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        return definition$getDefaultAttributeModifiers(slot, stack);
+    }
+
+    public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
+        return definition$canDisableShield(shield, shield, entity, attacker);
+    }
+
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+        return definition$doesSneakBypassUse(stack, level, pos, player);
+    }
+
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return definition$shouldCauseBlockBreakReset(oldStack, newStack);
+    }
+
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return definition$hasCraftingRemainingItem(stack);
+    }
+
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        return definition$getCraftingRemainingItem(itemStack);
+    }
+
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return definition$shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+    }
+
+    public boolean isDamaged(ItemStack stack) {
+        return definition$isDamaged(stack);
+    }
+
+    public int getDamage(ItemStack stack) {
+        return definition$getDamage(stack);
+    }
+
+    public int getMaxDamage(ItemStack stack) {
+        return definition$getMaxDamage(stack);
+    }
+
+    public void setDamage(ItemStack stack, int damage) {
+        definition$setDamage(stack, damage);
+    }
+
+    @Override
+    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
+        return definition$use(level, player, usedHand);
+    }
+
+
 }
