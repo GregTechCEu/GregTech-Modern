@@ -7,17 +7,18 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
-import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -35,8 +36,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class ArmorUtils {
-
-    public static final SoundEvent JET_ENGINE = new SoundEvent(GTCEu.id("jet_engine"));
+    public static final SoundEvent JET_ENGINE = SoundEvent.createVariableRangeEvent(GTCEu.id("jet_engine"));
 
     /**
      * Check is possible to charge item
@@ -115,7 +115,7 @@ public class ArmorUtils {
     }
 
     public static void playJetpackSound(@Nonnull Player player) {
-        if (player.level.isClientSide()) {
+        if (player.level().isClientSide()) {
             float cons = (float) player.getDeltaMovement().y + player.moveDist;
             cons = Mth.clamp(cons, 0.6F, 1.0F);
 
@@ -233,7 +233,9 @@ public class ArmorUtils {
         public void draw(PoseStack poseStack) {
             for (int i = 0; i < stringAmount; i++) {
                 Pair<Integer, Integer> coords = this.getStringCoord(i);
-                mc.gui.getFont().draw(poseStack, stringList.get(i), coords.getFirst(), coords.getSecond(), 0xFFFFFF);
+                MultiBufferSource.BufferSource source = MultiBufferSource.immediate(Tesselator.getInstance().getBuilder());
+                mc.gui.getFont().drawInBatch(stringList.get(i), coords.getFirst(), coords.getSecond(), 0xFFFFFF, false, poseStack.last()
+                        .pose(), source, Font.DisplayMode.NORMAL, 0, 15728880);
             }
         }
 

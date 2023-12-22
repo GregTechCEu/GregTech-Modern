@@ -36,7 +36,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst, IComponentItem {
+public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst {
     @Getter
     protected List<IItemComponent> components;
 
@@ -53,7 +53,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     public void attachComponents(IItemComponent... components) {
         this.components.addAll(Arrays.asList(components));
         for (IItemComponent component : components) {
-            component.onAttached(this);
+            component.onAttached((IComponentItem) this);
         }
     }
 

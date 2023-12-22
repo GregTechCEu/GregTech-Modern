@@ -24,11 +24,6 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         return self() instanceof ITieredMachine tieredMachine ? tieredMachine.getTier() : self().getDefinition().getTier();
     }
 
-    @Override
-    default int getChanceTier() {
-        return self() instanceof ITieredMachine tieredMachine ? tieredMachine.getTier() : self().getDefinition().getTier();
-    }
-
     /**
      * RecipeType held
      */

@@ -12,6 +12,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 
@@ -26,13 +27,13 @@ public interface IArmorLogic {
     default void addToolComponents(ArmorComponentItem metaValueItem) {
     }
 
-    EquipmentSlot getEquipmentSlot();
+    Type getEquipmentSlot();
 
     default boolean canBreakWithDamage(ItemStack stack) {
         return false;
     }
 
-    default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, EquipmentSlot equipmentSlot) {
+    default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, Type equipmentSlot) {
 
     }
 
@@ -40,7 +41,7 @@ public interface IArmorLogic {
         return ImmutableMultimap.of();
     }
 
-    default boolean isValidArmor(ItemStack itemStack, Entity entity, EquipmentSlot equipmentSlot) {
+    default boolean isValidArmor(ItemStack itemStack, Entity entity, Type equipmentSlot) {
         return getEquipmentSlot() == equipmentSlot;
     }
 
@@ -59,10 +60,10 @@ public interface IArmorLogic {
         return 0xFFFFFF;
     }
 
-    String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type);
+    String getArmorTexture(ItemStack stack, Entity entity, Type slot, String type);
 
     @Nullable
-    default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel) {
+    default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, Type armorSlot, HumanoidModel<?> defaultModel) {
         return null;
     }
 

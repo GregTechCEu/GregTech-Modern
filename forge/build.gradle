@@ -158,12 +158,6 @@ dependencies {
     //AlmostUnified
     modImplementation(forge.almostUnified.forge)
 
-    // AE2
-    modImplementation(forge.ae2) { transitive = false }
-
-    //AlmostUnified
-    modImplementation(forge.almostUnified.forge)
-
     // KJS
     modImplementation forge.kubejs
 

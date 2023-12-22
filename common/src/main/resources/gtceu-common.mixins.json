@@ -33,7 +33,6 @@
     "RecipeMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
-    "ServerPlayNetworkHandlerAccessor",
     "ShapedRecipeInvoker",
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",

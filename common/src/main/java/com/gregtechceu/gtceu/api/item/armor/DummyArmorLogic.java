@@ -1,22 +1,23 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.ItemStack;
 
 class DummyArmorLogic implements IArmorLogic {
     @Override
-    public EquipmentSlot getEquipmentSlot() {
-        return EquipmentSlot.HEAD;
+    public ArmorItem.Type getEquipmentSlot() {
+        return ArmorItem.Type.HELMET;
     }
 
     @Override
-    public boolean isValidArmor(ItemStack itemStack, Entity entity, EquipmentSlot equipmentSlot) {
+    public boolean isValidArmor(ItemStack itemStack, Entity entity, Type equipmentSlot) {
         return false;
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, Type slot, String type) {
         return "minecraft:textures/models/armor/diamond_layer_0.png";
     }
 }

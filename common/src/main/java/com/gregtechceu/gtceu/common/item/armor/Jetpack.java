@@ -1,56 +1,56 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
-import gregtech.api.capability.GregtechCapabilities;
-import gregtech.api.capability.IElectricItem;
-import gregtech.api.items.armor.ArmorLogicSuite;
-import gregtech.api.items.armor.ArmorUtils;
-import gregtech.api.util.GTUtility;
-import gregtech.api.util.input.KeyBind;
-import net.minecraft.client.resources.I18n;
-import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.inventory.EntityEquipmentSlot;
-import net.minecraft.item.ItemStack;
-import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.DamageSource;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.text.TextComponentTranslation;
-import net.minecraft.world.World;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.misc.InputHandler;
+import com.mojang.blaze3d.systems.RenderSystem;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+import net.minecraft.client.Minecraft;
+import net.minecraft.core.particles.SimpleParticleType;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import java.util.List;
 
 public class Jetpack extends ArmorLogicSuite implements IJetpack {
-
     protected ArmorUtils.ModularHUD HUD;
 
-    //client
+    @Environment(EnvType.CLIENT)
     public Jetpack(int energyPerUse, long capacity, int tier) {
-        super(energyPerUse, capacity, tier, EntityEquipmentSlot.CHEST);
-        if (ArmorUtils.SIDE.isClient() && this.shouldDrawHUD()) {
+        super(energyPerUse, capacity, tier, ArmorItem.Type.CHESTPLATE);
+        if (Minecraft.getInstance().level.isClientSide() && this.shouldDrawHUD()) {
             //noinspection NewExpressionSideOnly
             HUD = new ArmorUtils.ModularHUD();
         }
     }
 
     @Override
-    public void onArmorTick(World world, EntityPlayer player, @Nonnull ItemStack stack) {
-        NBTTagCompound data = GTUtility.getOrCreateNbtCompound(stack);
+    public void onArmorTick(Level level, Entity entity, @Nonnull ItemStack stack) {
+        Player player = (Player) entity;
+        CompoundTag data = stack.getOrCreateTag();
         byte toggleTimer = 0;
         boolean hover = false;
-        if (data.hasKey("toggleTimer")) toggleTimer = data.getByte("toggleTimer");
-        if (data.hasKey("hover")) hover = data.getBoolean("hover");
+        if (data.contains("toggleTimer")) toggleTimer = data.getByte("toggleTimer");
+        if (data.contains("hover")) hover = data.getBoolean("hover");
 
-        if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
+        if (toggleTimer == 0 && InputHandler.isHoldingDown(player)) {
             hover = !hover;
             toggleTimer = 5;
-            data.setBoolean("hover", hover);
-            if (!world.isRemote) {
+            data.putBoolean("hover", hover);
+            if (!level.isClientSide()) {
                 if (hover)
-                    player.sendStatusMessage(new TextComponentTranslation("metaarmor.jetpack.hover.enable"), true);
+                    player.sendSystemMessage(Component.translatable("metaarmor.jetpack.hover.enable"));
                 else
-                    player.sendStatusMessage(new TextComponentTranslation("metaarmor.jetpack.hover.disable"), true);
+                    player.sendSystemMessage(Component.translatable("metaarmor.jetpack.hover.disable"));
             }
         }
 
@@ -58,9 +58,9 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
 
-        data.setBoolean("hover", hover);
-        data.setByte("toggleTimer", toggleTimer);
-        player.inventoryContainer.detectAndSendChanges();
+        data.putBoolean("hover", hover);
+        data.putByte("toggleTimer", toggleTimer);
+        // player.inventoryContainer.detectAndSendChanges();
     }
 
     @Override
@@ -88,47 +88,43 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     private static IElectricItem getIElectricItem(@Nonnull ItemStack stack) {
-        return stack.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+        return GTCapabilityHelper.getElectricItem(stack);
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EntityEquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, ArmorItem.Type slot, String type) {
         return "gregtech:textures/armor/jetpack.png";
     }
 
-    @Override
-    public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, EntityEquipmentSlot equipmentSlot) {
-        return new ArmorProperties(0, 0, 0);
-    }
+    //@Override
+    // public ArmorProperties getProperties(EntityLivingBase player, @Nonnull ItemStack armor, DamageSource source, double damage, EntityEquipmentSlot equipmentSlot) {
+    //     return new ArmorProperties(0, 0, 0);
+    // }
 
-    @SideOnly(Side.CLIENT)
+    @Environment(EnvType.CLIENT)
     @Override
     public void drawHUD(ItemStack item) {
         addCapacityHUD(item, this.HUD);
-        NBTTagCompound data = item.getTagCompound();
-        if (data != null) {
-            if (data.hasKey("hover")) {
-                String status = (data.getBoolean("hover") ? I18n.format("metaarmor.hud.status.enabled") : I18n.format("metaarmor.hud.status.disabled"));
-                String result = I18n.format("metaarmor.hud.hover_mode", status);
-                this.HUD.newString(result);
-            }
+        CompoundTag data = item.getOrCreateTag();
+        if (data.contains("hover")) {
+            String status = String.valueOf((data.getBoolean("hover") ? Component.translatable("metaarmor.hud.status.enabled") : Component.translatable("metaarmor.hud.status.disabled")));
+            Component result = Component.translatable("metaarmor.hud.hover_mode", status);
+            this.HUD.newString(result);
         }
-        this.HUD.draw();
+        this.HUD.draw(RenderSystem.getModelViewStack());
         this.HUD.reset();
     }
 
     @Override
-    public void addInfo(ItemStack itemStack, List<String> lines) {
+    public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        NBTTagCompound data = itemStack.getTagCompound();
-        if (data != null) {
-            String status = I18n.format("metaarmor.hud.status.disabled");
-            if (data.hasKey("hover")) {
-                if (data.getBoolean("hover"))
-                    status = I18n.format("metaarmor.hud.status.enabled");
-            }
-            lines.add(I18n.format("metaarmor.hud.hover_mode", status));
+        CompoundTag data = itemStack.getOrCreateTag();
+        String status = String.valueOf(Component.translatable("metaarmor.hud.status.disabled"));
+        if (data.contains("hover")) {
+            if (data.getBoolean("hover"))
+                status = String.valueOf(Component.translatable("metaarmor.hud.status.enabled"));
         }
+        lines.add(Component.translatable("metaarmor.hud.hover_mode", status));
     }
 
     @Override
@@ -152,7 +148,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public EnumParticleTypes getParticle() {
-        return EnumParticleTypes.SMOKE_NORMAL;
+    public SimpleParticleType getParticle() {
+        return IJetpack.super.getParticle();
     }
 }

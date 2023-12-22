@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
@@ -34,14 +33,6 @@ public class Content {
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
         if (modifier == null || chance == 0) {
-            return new Content(capability.copyContent(content), chance, tierChanceBoost, slotName, uiName);
-        } else {
-            return new Content(capability.copyContent(content, modifier), chance, tierChanceBoost, slotName, uiName);
-        }
-    }
-
-    public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
-        if (modifier == null) {
             return new Content(capability.copyContent(content), chance, tierChanceBoost, slotName, uiName);
         } else {
             return new Content(capability.copyContent(content, modifier), chance, tierChanceBoost, slotName, uiName);

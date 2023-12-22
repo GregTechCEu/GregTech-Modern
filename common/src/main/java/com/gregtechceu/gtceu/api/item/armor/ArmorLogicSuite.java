@@ -12,8 +12,8 @@ import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem.Type;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -27,9 +27,9 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
-    protected final EquipmentSlot slot;
+    protected final Type slot;
 
-    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, EquipmentSlot slot) {
+    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, Type slot) {
         this.energyPerUse = energyPerUse;
         this.maxCapacity = maxCapacity;
         this.tier = tier;
@@ -77,10 +77,10 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
         if (player.getItemInHand(hand).getItem() instanceof ArmorComponentItem) {
             ItemStack armor = player.getItemInHand(hand);
-            if (armor.getItem() instanceof ArmorComponentItem && player.getInventory().armor.get(slot.getIndex()).isEmpty() && !player.isCrouching()) {
-                player.getInventory().armor.set(slot.getIndex(), armor.copy());
+            if (armor.getItem() instanceof ArmorComponentItem && player.getInventory().armor.get(slot.getSlot().getIndex()).isEmpty() && !player.isCrouching()) {
+                player.getInventory().armor.set(slot.getSlot().getIndex(), armor.copy());
                 player.setItemInHand(hand, ItemStack.EMPTY);
-                player.playSound(new SoundEvent(new ResourceLocation("item.armor.equip_generic")), 1.0F, 1.0F);
+                player.playSound(SoundEvent.createVariableRangeEvent(new ResourceLocation("item.armor.equip_generic")), 1.0F, 1.0F);
                 return InteractionResultHolder.success(armor);
             }
         }
@@ -89,12 +89,12 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
-    public EquipmentSlot getEquipmentSlot() {
+    public Type getEquipmentSlot() {
         return slot;
     }
 
     @Override
-    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public String getArmorTexture(ItemStack stack, Entity entity, Type slot, String type) {
         return "";
     }
 
@@ -114,7 +114,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @Environment(EnvType.CLIENT)
     @Override
     public boolean shouldDrawHUD() {
-        return this.slot == EquipmentSlot.CHEST;
+        return this.slot == Type.CHESTPLATE;
     }
 
     public int getEnergyPerUse() {
@@ -123,11 +123,11 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     protected float getAbsorption() {
         return switch (this.getEquipmentSlot()) {
-            case HEAD, FEET ->
+            case HELMET , BOOTS ->
                     0.15F;
-            case CHEST ->
+            case CHESTPLATE ->
                     0.4F;
-            case LEGS ->
+            case LEGGINGS ->
                     0.3F;
             default ->
                     0.0F;

@@ -91,10 +91,4 @@ public class TagPrefixItemRenderer {
         this.type = type;
         this.iconSet = iconSet;
     }
-
-    @Override
-    @Environment(EnvType.CLIENT)
-    public boolean isGui3d() {
-        return false;
-    }
 }

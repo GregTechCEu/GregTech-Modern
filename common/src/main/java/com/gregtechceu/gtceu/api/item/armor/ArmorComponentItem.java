@@ -26,14 +26,14 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.List;
 
-public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst, IComponentItem {
+public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst, IItemComponent{
     @Getter
     private IArmorLogic armorLogic = new DummyArmorLogic();
     @Getter
     protected List<IItemComponent> components;
 
 
-    public ArmorComponentItem(ArmorMaterial material, EquipmentSlot slot, Properties properties) {
+    public ArmorComponentItem(ArmorMaterial material, Type slot, Properties properties) {
         super(material, slot, properties);
     }
 
@@ -52,7 +52,7 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
     public void attachComponents(IItemComponent... components) {
         this.components.addAll(Arrays.asList(components));
         for (IItemComponent component : components) {
-            component.onAttached(this);
+            component.onAttached((IComponentItem) this);
         }
     }
 
@@ -62,13 +62,13 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
     }
 
     @Override
-    public EquipmentSlot getSlot() {
-        return armorLogic.getEquipmentSlot();
+    public EquipmentSlot getEquipmentSlot() {
+        return armorLogic.getEquipmentSlot().getSlot();
     }
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (this.getSlot().getFilterFlag() + 100 == slotId) {
+        if (this.getEquipmentSlot().getFilterFlag() + 100 == slotId) {
             this.armorLogic.onArmorTick(level, entity, stack);
         }
     }

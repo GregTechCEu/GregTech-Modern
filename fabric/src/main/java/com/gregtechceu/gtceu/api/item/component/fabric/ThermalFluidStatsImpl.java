@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.item.component.fabric;
 
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.api.misc.fabric.FluidCellStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
@@ -21,7 +21,7 @@ public class ThermalFluidStatsImpl extends ThermalFluidStats {
     }
 
     @Override
-    public void onAttached(ComponentItem item) {
+    public void onAttached(IComponentItem item) {
         FluidStorage.ITEM.registerForItems((itemStack, context) -> new FluidCellStorage(context, capacity, allowPartialFill, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof), item);
     }
 
