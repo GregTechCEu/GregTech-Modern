@@ -109,4 +109,9 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
     public float reBakeCustomQuadsOffset() {
         return 0f;
     }
+
+    @Environment(EnvType.CLIENT)
+    public float reBakeCustomQuadsOffset() {
+        return 0f;
+    }
 }

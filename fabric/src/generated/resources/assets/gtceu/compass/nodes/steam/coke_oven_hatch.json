@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:coke_oven_hatch"
+  },
+  "items": [
+    "gtceu:coke_oven_hatch"
+  ],
+  "page": "gtceu:steam/coke_oven_hatch",
+  "position": [
+    -200,
+    100
+  ],
+  "section": "gtceu:steam"
+}

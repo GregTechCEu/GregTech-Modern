@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -21,7 +21,7 @@ import java.util.function.Function;
 public record ItemFilterBehaviour(Function<ItemStack, ItemFilter> filterCreator) implements IItemUIFactory {
 
     @Override
-    public void onAttached(ComponentItem item) {
+    public void onAttached(IComponentItem item) {
         IItemUIFactory.super.onAttached(item);
         ItemFilter.FILTERS.put(item, filterCreator);
     }

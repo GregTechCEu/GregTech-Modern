@@ -39,6 +39,11 @@ public class BiomeTagsProviderImpl extends BiomeTagsProvider implements IBiomeTa
     }
 
     @Override
+    public void addSandyTag() {
+        tag(CustomTags.IS_SANDY).addTag(Tags.Biomes.IS_SANDY).add(Biomes.DESERT, Biomes.BEACH, Biomes.BADLANDS, Biomes.WOODED_BADLANDS);
+    }
+
+    @Override
     public TagAppender<Biome> tag(TagKey<Biome> tag) {
         return super.tag(tag);
     }
