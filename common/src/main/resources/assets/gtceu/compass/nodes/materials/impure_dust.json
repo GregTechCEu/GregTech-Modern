@@ -13,6 +13,7 @@
   ],
   "section": "gtceu:materials",
   "pre_nodes": [
-    "gtceu:materials/crushed_ore"
+    "gtceu:materials/crushed_ore",
+    "gtceu:materials/dust"
   ]
 }

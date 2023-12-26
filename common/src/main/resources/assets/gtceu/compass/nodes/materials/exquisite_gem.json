@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:almandine_exquisite_gem"
+    "res": "gtceu:ruby_exquisite_gem"
   },
   "items": [
     "#c:exquisite_gems"

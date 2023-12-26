@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:diamond_lens"
+    "res": "gtceu:ruby_lens"
   },
   "items": [
     "#c:lenses"

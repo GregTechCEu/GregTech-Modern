@@ -4,12 +4,8 @@
     "res": "gtceu:aluminium_refined_ore"
   },
   "page": "gtceu:materials/refined_ore",
-  "position": [
-    -100,
-    100
-  ],
+  "itms:": ["#c:refined_ores"],
+  "position": [-100, 150],
   "section": "gtceu:materials",
-  "pre_nodes": [
-    "gtceu:materials/crushed_ore"
-  ]
+  "pre_nodes": ["gtceu:materials/purified_ore", "gtceu:materials/crushed_ore"]
 }

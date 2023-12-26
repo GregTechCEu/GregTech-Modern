@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:almandine_chipped_gem"
+    "res": "gtceu:ruby_chipped_gem"
   },
   "items": [
     "#c:chipped_gems"

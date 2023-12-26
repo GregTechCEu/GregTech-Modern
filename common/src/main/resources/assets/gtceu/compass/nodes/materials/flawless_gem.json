@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:almandine_flawless_gem"
+    "res": "gtceu:ruby_flawless_gem"
   },
   "items": [
     "#c:flawless_gems"
