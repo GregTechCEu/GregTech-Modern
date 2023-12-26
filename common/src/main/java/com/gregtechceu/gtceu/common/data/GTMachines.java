@@ -1005,7 +1005,7 @@ public class GTMachines {
 
     public final static MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES, GTRecipeTypes.ARC_FURNACE_RECIPES)
+            .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
@@ -1523,7 +1523,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.power_substation.tooltip.1"),
                     Component.translatable("gtceu.machine.power_substation.tooltip.2", PowerSubstationMachine.MAX_BATTERY_LAYERS),
                     Component.translatable("gtceu.machine.power_substation.tooltip.3"),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.4", PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE),
+                    Component.translatable("gtceu.machine.power_substation.tooltip.4", PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
                     Component.translatable("gtceu.machine.power_substation.tooltip.5").append(Component.translatable("gtceu.machine.power_substation.tooltip.6").withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
