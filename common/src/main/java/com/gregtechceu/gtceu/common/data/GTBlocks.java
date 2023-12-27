@@ -124,7 +124,7 @@ public class GTBlocks {
     //////////////////////////////////////
 
     // Compressed Blocks
-    public static void generateMaterialBlocks() {
+    private static void generateMaterialBlocks() {
         GTCEu.LOGGER.info("Generating Compressed Blocks...");
         for (Material material : GTRegistries.MATERIALS) {
             if (allowMaterialBlock(material)) {
@@ -133,13 +133,13 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.info("Generating Compressed Blocks... Complete!");
     }
-    public static boolean allowMaterialBlock(Material material) {
+    private static boolean allowMaterialBlock(Material material) {
         return (material.hasProperty(PropertyKey.INGOT)
                 || material.hasProperty(PropertyKey.GEM)
                 || material.hasFlag(FORCE_GENERATE_BLOCK))
             && !TagPrefix.block.isIgnored(material);
     }
-    public static void registerMaterialBlock(Material material) {
+    private static void registerMaterialBlock(Material material) {
         var entry = REGISTRATE.block("%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .transform(unificationBlock(TagPrefix.block, material))
@@ -158,7 +158,7 @@ public class GTBlocks {
     }
 
     // Frame Blocks
-    public static void generateFrameBlocks() {
+    private static void generateFrameBlocks() {
         GTCEu.LOGGER.info("Generating Frame Blocks...");
         for (Material material : GTRegistries.MATERIALS) {
             if (allowFrameBlock(material)) {
@@ -167,11 +167,11 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.info("Generating Frame Blocks... Complete!");
     }
-    public static boolean allowFrameBlock(Material material) {
+    private static boolean allowFrameBlock(Material material) {
         return material.hasProperty(PropertyKey.DUST)
                 && material.hasFlag(GENERATE_FRAME);
     }
-    public static void registerFrameBlock(Material material) {
+    private static void registerFrameBlock(Material material) {
         var entry = REGISTRATE.block("%s_frame".formatted(material.getName()), properties -> new MaterialBlock(properties, TagPrefix.frameGt, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(properties -> properties.noOcclusion().noLootTable())
@@ -191,7 +191,7 @@ public class GTBlocks {
     }
 
     // Raw Ore Blocks
-    public static void generateRawOreBlocks() {
+    private static void generateRawOreBlocks() {
         GTCEu.LOGGER.info("Generating Raw Ore Blocks...");
         for (Material material : GTRegistries.MATERIALS) {
             if (allowRawOreBlock(material)) {
@@ -200,12 +200,12 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.info("Generating Raw Ore Blocks... Complete!");
     }
-    public static boolean allowRawOreBlock(Material material) {
+    private static boolean allowRawOreBlock(Material material) {
         return !TagPrefix.rawOreBlock.isIgnored(material)
                 && TagPrefix.rawOreBlock.generationCondition().test(material)
                 && material.hasProperty(PropertyKey.ORE);
     }
-    public static void registerRawOreBlock(Material material) {
+    private static void registerRawOreBlock(Material material) {
         var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
                 .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
                 .transform(unificationBlock(TagPrefix.rawOreBlock, material))
@@ -225,7 +225,7 @@ public class GTBlocks {
     }
 
     // Ore Blocks
-    public static void generateOreBlocks() {
+    private static void generateOreBlocks() {
         GTCEu.LOGGER.info("Generating Ore Blocks...");
         for (Material material : GTRegistries.MATERIALS) {
             if (allowOreBlock(material)) {
@@ -234,10 +234,10 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.info("Generating Ore Blocks... Complete!");
     }
-    public static boolean allowOreBlock(Material material) {
+    private static boolean allowOreBlock(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
-    public static void registerOreBlock(Material material) {
+    private static void registerOreBlock(Material material) {
         var oreProperty = material.getProperty(PropertyKey.ORE);
         for (var ore : TagPrefix.ORES.entrySet()) {
             if (ore.getKey().isIgnored(material)) continue;
@@ -281,7 +281,7 @@ public class GTBlocks {
     }
 
     // Ore Indicator Piles
-    public static void generateOreIndicators() {
+    private static void generateOreIndicators() {
         GTCEu.LOGGER.info("Generating Surface Rock Indicator Blocks...");
         for (Material material : GTRegistries.MATERIALS) {
             if (allowOreIndicator(material)) {
@@ -291,10 +291,10 @@ public class GTBlocks {
         SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Surface Rock Indicator Blocks... Complete!");
     }
-    public static boolean allowOreIndicator(Material material) {
+    private static boolean allowOreIndicator(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
-    public static void registerOreIndicator(Material material) {
+    private static void registerOreIndicator(Material material) {
         var entry = REGISTRATE.block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
@@ -308,7 +308,7 @@ public class GTBlocks {
     }
 
     // Cable/Wire Blocks
-    public static void generateCableBlocks() {
+    private static void generateCableBlocks() {
         GTCEu.LOGGER.info("Generating Cable/Wire Blocks...");
         for (Insulation insulation : Insulation.values()) {
             for (Material material : GTRegistries.MATERIALS) {
@@ -320,12 +320,12 @@ public class GTBlocks {
         CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Cable/Wire Blocks... Complete!");
     }
-    public static boolean allowCableBlock(Material material, Insulation insulation) {
+    private static boolean allowCableBlock(Material material, Insulation insulation) {
         return material.hasProperty(PropertyKey.WIRE)
                 && !insulation.tagPrefix.isIgnored(material)
                 && !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
-    public static void registerCableBlock(Material material, Insulation insulation) {
+    private static void registerCableBlock(Material material, Insulation insulation) {
         var entry = REGISTRATE.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
@@ -345,7 +345,7 @@ public class GTBlocks {
     }
 
     // Fluid Pipe Blocks
-    public static void generateFluidPipeBlocks() {
+    private static void generateFluidPipeBlocks() {
         GTCEu.LOGGER.info("Generating Fluid Pipe Blocks...");
         for (var fluidPipeType : FluidPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
@@ -357,11 +357,11 @@ public class GTBlocks {
         FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Fluid Pipe Blocks... Complete!");
     }
-    public static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
+    private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
         return material.hasProperty(PropertyKey.FLUID_PIPE)
                 && !fluidPipeType.tagPrefix.isIgnored(material);
     }
-    public static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
+    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
         var entry = REGISTRATE.block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p, fluidPipeType, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
@@ -385,7 +385,7 @@ public class GTBlocks {
     }
 
     // Item Pipe Blocks
-    public static void generateItemPipeBlocks() {
+    private static void generateItemPipeBlocks() {
         GTCEu.LOGGER.info("Generating Item Pipe Blocks...");
         for (var itemPipeType : ItemPipeType.values()) {
             for (Material material : GTRegistries.MATERIALS) {
@@ -397,11 +397,11 @@ public class GTBlocks {
         ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Item Pipe Blocks... Complete!");
     }
-    public static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
+    private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
         return material.hasProperty(PropertyKey.ITEM_PIPE)
                 && !itemPipeType.getTagPrefix().isIgnored(material);
     }
-    public static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType) {
+    private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType) {
         var entry = REGISTRATE.block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name), p -> new ItemPipeBlock(p, itemPipeType, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
@@ -425,12 +425,12 @@ public class GTBlocks {
     }
 
     // Laser Pipe Blocks
-    public static void generateLaserPipeBlocks() {
+    private static void generateLaserPipeBlocks() {
         for (int i = 0; i < LaserPipeType.values().length; ++i) {
             registerLaserPipeBlock(i);
         }
     }
-    public static void registerLaserPipeBlock(int slot) {
+    private static void registerLaserPipeBlock(int slot) {
         var type = LaserPipeType.values()[slot];
         var entry = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
@@ -447,6 +447,8 @@ public class GTBlocks {
                 .register();
         LASER_PIPES[slot] = entry;
     }
+
+
 
 
 
