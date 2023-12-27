@@ -425,9 +425,11 @@ public class GTBlocks {
 
     // Laser Pipe Blocks
     private static void generateLaserPipeBlocks() {
+        GTCEu.LOGGER.info("Generating Laser Pipe Blocks...");
         for (int i = 0; i < LaserPipeType.values().length; ++i) {
             registerLaserPipeBlock(i);
         }
+        GTCEu.LOGGER.info("Generating Laser Pipe Blocks... Complete!");
     }
     private static void registerLaserPipeBlock(int slot) {
         var type = LaserPipeType.values()[slot];
