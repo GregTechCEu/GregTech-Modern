@@ -116,7 +116,14 @@ public class GTItems {
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
                                 .onRegister(GTItems::cauldronInteraction)
-                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags()))
+                                .onRegister(item -> {
+									switch(tagPrefix.name) {
+										case "buzzSawBlade", "screwDriverTip", "drillHead", "chainSawHead", "wrenchTip", "turbineBlade" -> CompassNode.getOrCreate(GTCompassSections.MATERIALS, "tool_heads").addItem(() -> item);
+										default -> 
+											CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
+											.iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
+									}
+								})
                                 .register());
                     }
                 }
