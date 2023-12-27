@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:raw_aluminium"
+  },
+  "items": [
+    "#c:raw_ores"
+  ],
+  "page": "gtceu:materials/raw",
+  "position": [
+    -100,
+    0
+  ],
+  "section": "gtceu:materials"
+}
