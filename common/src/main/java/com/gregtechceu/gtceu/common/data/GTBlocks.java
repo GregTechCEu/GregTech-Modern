@@ -288,6 +288,7 @@ public class GTBlocks {
                 registerOreIndicator(material);
             }
         }
+        SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Surface Rock Indicator Blocks... Complete!");
     }
     public static boolean allowOreIndicator(Material material) {
@@ -316,6 +317,7 @@ public class GTBlocks {
                 }
             }
         }
+        CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Cable/Wire Blocks... Complete!");
     }
     public static boolean allowCableBlock(Material material, Insulation insulation) {
@@ -352,6 +354,7 @@ public class GTBlocks {
                 }
             }
         }
+        FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Fluid Pipe Blocks... Complete!");
     }
     public static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
@@ -391,6 +394,7 @@ public class GTBlocks {
                 }
             }
         }
+        ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
         GTCEu.LOGGER.info("Generating Item Pipe Blocks... Complete!");
     }
     public static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
@@ -995,7 +999,6 @@ public class GTBlocks {
         generateOreBlocks();        // Ore Blocks
         generateOreIndicators();    // Ore Indicators
         MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.build();
-        SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
 
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
@@ -1003,9 +1006,13 @@ public class GTBlocks {
         generateFluidPipeBlocks();  // Fluid Pipe Blocks
         generateItemPipeBlocks();   // Item Pipe Blocks
         generateLaserPipeBlocks();  // Laser Pipe Blocks
-        CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
-        FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
-        ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
+
+        // Remove Builder Tables
+        MATERIAL_BLOCKS_BUILDER = null;
+        SURFACE_ROCK_BLOCKS_BUILDER = null;
+        CABLE_BLOCKS_BUILDER = null;
+        FLUID_PIPE_BLOCKS_BUILDER = null;
+        ITEM_PIPE_BLOCKS_BUILDER = null;
 
         // GCyM
         GCyMBlocks.init();
