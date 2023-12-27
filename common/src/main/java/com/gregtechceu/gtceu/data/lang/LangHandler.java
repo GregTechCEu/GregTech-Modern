@@ -751,7 +751,7 @@ public class LangHandler {
                 "§fCapacitors§7 do not need to be all the same tier.",
                 "Allows up to §f%d Capacitor Layers§7.",
                 "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
-                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block.",
+                "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
                 "Can use",
                 " Laser Hatches§7."
         );
