@@ -46,6 +46,11 @@ public class FuelRecipes {
                 .duration(600 * 12)
                 .save(provider);
 
+        STEAM_BOILER_RECIPES.recipeBuilder("creosote")
+                .inputFluids(Creosote.getFluid(250))
+                .duration(600 * 12)
+                .save(provider);
+
         //semi-fluid fuels, like creosote
         LARGE_BOILER_RECIPES.recipeBuilder("creosote")
                 .inputFluids(Creosote.getFluid(160))
