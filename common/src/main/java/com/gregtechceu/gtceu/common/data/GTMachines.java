@@ -990,6 +990,28 @@ public class GTMachines {
                     .where('C', Predicates.heatingCoils())
                     .where('#', Predicates.air())
                     .build())
+			.shapeInfos(definition -> {
+				List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
+				var builder = MultiblockShapeInfo.builder()				
+					.aisle("IXO", "XSX", "FMD")
+                    .aisle("CCC", "C#C", "CCC")
+                    .aisle("CCC", "C#C", "CCC")
+					.aisle("EEX", "XHX", "XXX")
+                    .where('S', definition, Direction.NORTH)
+                    .where('X', MACHINE_CASING_ULV.getDefaultState())
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('#', Blocks.AIR.defaultBlockState());
+                ALL_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
+				return shapeInfo;
+			})
             .workableCasingRenderer(GTCEu.id("block/casings/voltage/ulv/side"),
                     GTCEu.id("block/multiblock/pyrolyse_oven"), false)
             .tooltips(Component.translatable("gtceu.machine.pyrolyse_oven.tooltip.1"))
@@ -1019,6 +1041,25 @@ public class GTMachines {
                     .where('C', heatingCoils())
                     .where('#', air())
                     .build())
+			.shapeInfos(definition -> {
+				List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
+				var builder = MultiblockShapeInfo.builder()
+					.aisle("ISO", "CCC", "XMX")
+					.aisle("XXX", "C#C", "XHX")
+                    .aisle("EEX", "CCC", "XXX")
+                    .where('S', definition, Direction.NORTH)
+                    .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('#', Blocks.AIR.defaultBlockState());
+                ALL_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
+				return shapeInfo;
+			})
             .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/multi_furnace"), false)
@@ -1048,6 +1089,25 @@ public class GTMachines {
                     .where('#', Predicates.air())
                     .where('C', Predicates.heatingCoils())
                     .build())
+			.shapeInfos(definition -> {
+				List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
+				var builder = MultiblockShapeInfo.builder()
+					.aisle("FCICD", "HCSCH", "HCMCH")
+					.aisle("ECHCH", "H###H", "HCHCH")
+                    .aisle("ECHCH", "HCHCH", "HCHCH")
+                    .where('S', definition, Direction.NORTH)
+                    .where('H', CASING_STAINLESS_CLEAN.getDefaultState()) 
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.WEST)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('#', Blocks.AIR.defaultBlockState());
+                ALL_COILS.entrySet().stream()
+                        .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
+                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
+				return shapeInfo;
+			})
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
                     GTCEu.id("block/multiblock/cracking_unit"), false)
             .tooltips(Component.translatable("gtceu.machine.cracker.tooltip.1"))
