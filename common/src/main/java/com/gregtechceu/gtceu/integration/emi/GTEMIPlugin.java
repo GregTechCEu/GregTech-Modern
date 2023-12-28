@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
-import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluid;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTOreVeinEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -35,6 +35,7 @@ public class GTEMIPlugin implements EmiPlugin {
                 registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
             }
         }
+        registry.addRecipeHandler(null, new GTEmiRecipeHandler());
         // recipes
         MultiblockInfoEmiCategory.registerDisplays(registry);
         GTRecipeTypeEmiCategory.registerDisplays(registry);
