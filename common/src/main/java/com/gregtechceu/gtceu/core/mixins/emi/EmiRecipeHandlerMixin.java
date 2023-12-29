@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 
 @Mixin(EmiRecipeFiller.class)
-public class AddEmiRecipeHandler {
+public class EmiRecipeHandlerMixin {
     @Inject(method = "getAllHandlers", at = @At("HEAD"), cancellable = true)
     private static <T extends AbstractContainerMenu> void AddGTEmiRecipeHandler(AbstractContainerScreen<T> screen, CallbackInfoReturnable<List<EmiRecipeHandler<T>>> cir){
         if (screen.getMenu() instanceof ModularUIContainer) {
