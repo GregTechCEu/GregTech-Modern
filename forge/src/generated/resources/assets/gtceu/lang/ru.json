@@ -4955,5 +4955,9 @@
     "tile.gtceu.petrified_foam.name": "Затвердевшая пена",
     "tile.gtceu.reinforced_foam.name": "Армированная пена",
     "tile.gtceu.reinforced_stone.name": "Армированный камень",
-    "tile.gtceu.seal.name": "Запечатанный блок"
+    "tile.gtceu.seal.name": "Запечатанный блок",
+    "config.gtceu.option.asyncRecipeSearching": "asyncRecipeSearching",
+    "compass.node.gtceu.circuits/components": "Компоненты",
+    "compass.node.gtceu.circuits/cpus": "ЦПУ",
+    "compass.node.gtceu.circuits/socs": "СнК"
 }
