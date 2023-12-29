@@ -10,7 +10,7 @@
     <br></br>
   </text>
   <h2>Crafting</h2>
-  <recipe id"gtceu:shaped/electronic_circuit_mv"></recipe>
+  <recipe id="gtceu:shaped/electronic_circuit_mv"></recipe>
   <h3>With Circuit Assembler</h3>
   <recipe id="gtceu:circuit_assembler/electronic_circuit_mv_soldering_alloy"></recipe>
 </page>
