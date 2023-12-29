@@ -11,6 +11,8 @@ import dev.emi.emi.api.recipe.handler.EmiCraftContext;
 import dev.emi.emi.api.recipe.handler.EmiRecipeHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
+import dev.emi.emi.screen.RecipeScreen;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.Item;
@@ -42,6 +44,9 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
         EncodingHelper.encodeProcessingRecipe(menu,
                 ofInputs(recipe),
                 ofOutputs(recipe));
+        if (Minecraft.getInstance().screen instanceof RecipeScreen e){
+            e.onClose();
+        }
         return true;
     }
     public static List<List<GenericStack>> ofInputs(EmiRecipe emiRecipe) {
