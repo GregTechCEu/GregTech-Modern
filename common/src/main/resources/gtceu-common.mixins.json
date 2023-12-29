@@ -40,7 +40,7 @@
     "WorldLoaderPackConfigMixin",
     "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
-    "emi.AddEmiRecipeHandler",
+    "emi.EmiRecipeHandlerMixin",
     "kjs.RecipeEventJSMixin",
     "top.ConfigMixin"
   ],
