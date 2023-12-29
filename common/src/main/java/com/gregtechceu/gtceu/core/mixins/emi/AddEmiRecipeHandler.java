@@ -17,7 +17,8 @@ import java.util.List;
 public class AddEmiRecipeHandler {
     @Inject(method = "getAllHandlers", at = @At("HEAD"), cancellable = true)
     private static <T extends AbstractContainerMenu> void AddGTEmiRecipeHandler(AbstractContainerScreen<T> screen, CallbackInfoReturnable<List<EmiRecipeHandler<T>>> cir){
-        if (screen.getMenu() instanceof ModularUIContainer)
+        if (screen.getMenu() instanceof ModularUIContainer) {
             cir.setReturnValue((List<EmiRecipeHandler<T>>) (List<?>) List.of(new GTEmiRecipeHandler()));
+        }
     }
 }
