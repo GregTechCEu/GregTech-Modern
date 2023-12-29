@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -431,6 +432,16 @@ public class LangHandler {
         replace(provider, GTMaterials.Stellite100.getUnlocalizedName(), "Stellite-100");
         replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
 
+        replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_IV.get().getDescriptionId(), "IV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_EMPTY_TIER_II.get().getDescriptionId(), "Empty Tier II Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_LuV.get().getDescriptionId(), "LuV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_ZPM.get().getDescriptionId(), "ZPM Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_EMPTY_TIER_III.get().getDescriptionId(), "Empty Tier III Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_UV.get().getDescriptionId(), "UV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_ULTIMATE_UHV.get().getDescriptionId(), "UHV Ultimate Capacitor");
+
         provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
         provider.add("block.surface_rock", "%s Surface Rock");
 
@@ -740,7 +751,7 @@ public class LangHandler {
                 "§fCapacitors§7 do not need to be all the same tier.",
                 "Allows up to §f%d Capacitor Layers§7.",
                 "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
-                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block.",
+                "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
                 "Can use",
                 " Laser Hatches§7."
         );
@@ -754,12 +765,12 @@ public class LangHandler {
 
         multiLang(provider, "gtceu.machine.laser_hatch.source.tooltip",
                 "Transmitting power at distance",
-                "§cLaser Cables must be in a straight line!§7"
+                "§cLaser cables must be in a straight line!§7"
         );
 
         multiLang(provider, "gtceu.machine.laser_hatch.target.tooltip",
                 "Receiving power from distance",
-                "§cLaser Cables must be in a straight line!§7"
+                "§cLaser cables must be in a straight line!§7"
         );
 
         multiLang(provider, "gtceu.machine.endpoint.tooltip",

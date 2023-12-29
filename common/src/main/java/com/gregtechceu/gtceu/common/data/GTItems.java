@@ -116,7 +116,14 @@ public class GTItems {
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
                                 .onRegister(GTItems::cauldronInteraction)
-                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags()))
+                                .onRegister(item -> {
+									switch(tagPrefix.name) {
+										case "buzzSawBlade", "screwDriverTip", "drillHead", "chainSawHead", "wrenchTip", "turbineBlade" -> CompassNode.getOrCreate(GTCompassSections.MATERIALS, "tool_heads").addItem(() -> item);
+										default -> 
+											CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
+											.iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
+									}
+								})
                                 .register());
                     }
                 }
@@ -159,7 +166,7 @@ public class GTItems {
                 for (GTToolType toolType : GTToolType.values()) {
                     if (property.hasType(toolType)) {
                         TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, p))
-                                .properties(p -> p.craftRemainder(Items.AIR))
+                                .properties(p -> p.craftRemainder(Items.AIR).durability(tier.getUses() * toolType.durabilityMultiplier))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> GTToolItem::tintColor)
