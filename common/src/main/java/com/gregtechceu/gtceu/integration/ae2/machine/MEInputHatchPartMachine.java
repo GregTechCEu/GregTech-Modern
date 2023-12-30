@@ -7,17 +7,13 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.FluidHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -29,13 +25,10 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -46,13 +39,13 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     @Persisted
     private ExportOnlyAEFluidList aeFluidTanks;
 
-    public MEInputHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, IO.IN);
+    public MEInputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
+        super(holder, IO.IN, args);
     }
 
     @Override
     @NotNull
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots) {
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
         this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots, 0, IO.IN);
         return aeFluidTanks;
     }

@@ -39,13 +39,13 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
     @Persisted
     private SerializableGenericStackInv internalBuffer;
 
-    public MEOutputHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, IO.IN);
+    public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
+        super(holder, IO.IN, args);
     }
 
     @Override
     @NotNull
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots) {
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
         this.internalBuffer = new SerializableGenericStackInv(this::onChanged, slots);
         return new InaccessibleInfiniteSlot(this, this.internalBuffer);
     }
