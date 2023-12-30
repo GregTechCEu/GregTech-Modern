@@ -493,31 +493,39 @@ public class GTMachines {
                     .register(),
             ALL_TIERS);
 
-    public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("input_hatch",
-            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1),
-            (tier, builder) -> builder
-                    .langValue(VNF[tier] + " Input Hatch")
-                    .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.IMPORT_FLUIDS)
-                    .overlayTieredHullRenderer("fluid_hatch.import")
-                    .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", (8 * FluidHelper.getBucket()) * (1L << Math.min(9, tier))))
-                    .compassNode("fluid_hatch")
-                    .register(),
-            ALL_TIERS);
 
-    public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("output_hatch",
-            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1),
-            (tier, builder) -> builder
-                    .langValue(VNF[tier] + " Output Hatch")
-                    .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.EXPORT_FLUIDS)
-                    .overlayTieredHullRenderer("fluid_hatch.export")
-                    .tooltips(Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"),
-                            Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", (8 * FluidHelper.getBucket()) * (1L << Math.min(9, tier))))
-                    .compassNode("fluid_hatch")
-                    .register(),
-            ALL_TIERS);
+    public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
+            "input_hatch", "Input Hatch",
+            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1, ALL_TIERS
+    );
+
+    public final static MachineDefinition[] FLUID_IMPORT_HATCH_4X = registerFluidHatches(
+            "input_hatch_4x", "Quadruple Input Hatch",
+            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4, MULTI_HATCH_TIERS
+    );
+
+    public final static MachineDefinition[] FLUID_IMPORT_HATCH_9X = registerFluidHatches(
+            "input_hatch_9x", "Nonuple Input Hatch",
+            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9, MULTI_HATCH_TIERS
+    );
+
+
+    public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
+            "output_hatch", " Output Hatch",
+            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1, ALL_TIERS
+    );
+
+
+    public final static MachineDefinition[] FLUID_EXPORT_HATCH_4X = registerFluidHatches(
+            "output_hatch_4x", "Quadruple Output Hatch",
+            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4, MULTI_HATCH_TIERS
+    );
+
+
+    public final static MachineDefinition[] FLUID_EXPORT_HATCH_9X = registerFluidHatches(
+            "output_hatch_9x", "Nonuple Output Hatch",
+            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9, MULTI_HATCH_TIERS
+    );
 
     public final static MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
@@ -1599,6 +1607,28 @@ public class GTMachines {
             definitions[tier] = builder.apply(tier, register);
         }
         return definitions;
+    }
+
+    private static MachineDefinition[] registerFluidHatches(String name, String displayname, IO io, long initialCapacity, int slots, int[] tiers) {
+        return registerTieredMachines(name,
+                (holder, tier) -> new FluidHatchPartMachine(holder, tier, io, initialCapacity, slots),
+                (tier, builder) -> {
+                    builder.langValue(VNF[tier] + ' ' + displayname)
+                            .rotationState(RotationState.ALL)
+                            .abilities(PartAbility.IMPORT_FLUIDS)
+                            .overlayTieredHullRenderer("fluid_hatch.import")
+                            .compassNode("fluid_hatch")
+                            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"));
+
+                    if (slots == 1) {
+                        builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
+                    } else {
+                        builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity_mult", slots, FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
+                    }
+
+                    return builder.register();
+                },
+                tiers);
     }
 
     public static MachineDefinition[] registerTransformerMachines(String langName, int baseAmp) {
