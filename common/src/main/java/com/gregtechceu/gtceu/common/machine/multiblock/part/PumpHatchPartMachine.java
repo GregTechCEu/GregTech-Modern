@@ -22,12 +22,12 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class PumpHatchPartMachine extends FluidHatchPartMachine {
 
     public PumpHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, 0, IO.OUT, FluidHelper.getBucket());
+        super(holder, 0, IO.OUT, FluidHelper.getBucket(), 1);
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity) {
-        return super.createTank(initialCapacity).setFilter(fluidStack -> fluidStack.getFluid() == GTMaterials.Water.getFluid());
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots) {
+        return super.createTank(initialCapacity, slots).setFilter(fluidStack -> fluidStack.getFluid() == GTMaterials.Water.getFluid());
     }
 
     @Override

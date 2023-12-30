@@ -40,8 +40,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
 public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
@@ -53,12 +51,14 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity) {
-        this.aeFluidTanks = new ExportOnlyAEFluidList(this, CONFIG_SIZE, 0, IO.IN);
+    @NotNull
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots) {
+        this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots, 0, IO.IN);
         return aeFluidTanks;
     }
 
     @Override
+    @NotNull
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
@@ -242,6 +242,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
+        @NotNull
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
                 return FluidStack.create(fluidKey.getFluid(), this.stock == null ? 0 : this.stock.amount(), fluidKey.getTag());
@@ -306,6 +307,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
+        @NotNull
         public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
             if (this.stock == null || !(this.stock.what() instanceof AEFluidKey fluidKey)) {
                 return FluidStack.empty();

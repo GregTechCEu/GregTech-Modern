@@ -30,12 +30,12 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 
     public SteamHatchPartMachine(IMachineBlockEntity holder) {
-        super(holder, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY);
+        super(holder, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY, 1);
     }
 
     @Override
-    protected NotifiableFluidTank createTank(long initialCapacity) {
-        return super.createTank(initialCapacity).setFilter(fluidStack -> FluidIngredient.of(CustomTags.STEAM, 1).test(fluidStack));
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots) {
+        return super.createTank(initialCapacity, slots).setFilter(fluidStack -> FluidIngredient.of(CustomTags.STEAM, 1).test(fluidStack));
     }
 
 

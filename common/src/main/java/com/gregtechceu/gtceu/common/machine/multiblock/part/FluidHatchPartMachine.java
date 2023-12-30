@@ -44,9 +44,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     @Nullable
     protected ISubscription tankSubs;
 
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, long initialCapacity) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, long initialCapacity, int slots) {
         super(holder, tier, io);
-        this.tank = createTank(initialCapacity);
+        this.tank = createTank(initialCapacity, slots);
     }
 
     //////////////////////////////////////
@@ -57,8 +57,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableFluidTank createTank(long initialCapacity) {
-        return new NotifiableFluidTank(this, 1, getTankCapacity(initialCapacity), io);
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots) {
+        return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity), io);
     }
 
     protected long getTankCapacity(long initialCapacity) {
