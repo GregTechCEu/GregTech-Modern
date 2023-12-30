@@ -8,8 +8,6 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
@@ -17,7 +15,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -29,6 +26,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import org.jetbrains.annotations.NotNull;
@@ -50,12 +48,14 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     }
 
     @Override
-    protected NotifiableFluidTank createTank(Object... args) {
-        this.aeFluidTanks = new ExportOnlyAEFluidList(this, CONFIG_SIZE, 0, IO.IN);
+    @NotNull
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+        this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots, 0, IO.IN);
         return aeFluidTanks;
     }
 
     @Override
+    @NotNull
     public Widget createUIWidget() {
         WidgetGroup group = new WidgetGroup(new Position(0, 0));
         // ME Network status
@@ -250,6 +250,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
+        @NotNull
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
                 return FluidStack.create(fluidKey.getFluid(), this.stock == null ? 0 : this.stock.amount(), fluidKey.getTag());
@@ -314,6 +315,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
+        @NotNull
         public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
             if (this.stock == null || !(this.stock.what() instanceof AEFluidKey fluidKey)) {
                 return FluidStack.empty();

@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api;
 
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.LegacyRandomSource;
 import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 
 import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
@@ -90,7 +92,12 @@ public class GTValues {
     public static final int OpV = 13;
     public static final int MAX = 14;
 
-    public static final int TIER_COUNT = 15;
+    public static final int[] ALL_TIERS = new int[]{ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX};
+    public static final int TIER_COUNT = ALL_TIERS.length;
+
+    public static int[] tiersBetween(int min, int max) {
+        return Arrays.stream(ALL_TIERS).dropWhile(tier -> tier < min).takeWhile(tier -> tier <= max).toArray();
+    }
 
     public static final String
             MODID_TOP = "theoneprobe",
