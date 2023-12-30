@@ -43,8 +43,8 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine implement
     protected boolean isOnline;
     private IGrid aeProxy;
 
-    public MEHatchPartMachine(IMachineBlockEntity holder, IO io, Object... args) {
-        super(holder, GTValues.UHV, io, args);
+    public MEHatchPartMachine(IMachineBlockEntity holder, IO io) {
+        super(holder, GTValues.UHV, io, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X);
     }
 
     protected boolean shouldSyncME() {

@@ -28,27 +28,31 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.stream.Stream;
 
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
 public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEOutputHatchPartMachine.class, MEHatchPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private SerializableGenericStackInv internalBuffer;
 
-    public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, IO.IN, args);
+    public MEOutputHatchPartMachine(IMachineBlockEntity holder) {
+        super(holder, IO.IN);
     }
 
     @Override
-    protected NotifiableFluidTank createTank(Object... args) {
+    protected NotifiableFluidTank createTank(long initialCapacity) {
         this.internalBuffer = new SerializableGenericStackInv(this::onChanged, 16);
         return new InaccessibleInfiniteSlot(this, this.internalBuffer);
     }

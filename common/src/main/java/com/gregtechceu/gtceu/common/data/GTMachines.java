@@ -109,6 +109,7 @@ public class GTMachines {
     public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEu.isHighTier() ? OpV : UV);
     public final static int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
     public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEu.isHighTier() ? OpV : UHV);
+    public final static int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEu.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8: tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
@@ -493,7 +494,7 @@ public class GTMachines {
             ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerTieredMachines("input_hatch",
-            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN),
+            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Input Hatch")
                     .rotationState(RotationState.ALL)
@@ -506,7 +507,7 @@ public class GTMachines {
             ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerTieredMachines("output_hatch",
-            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT),
+            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X),
             (tier, builder) -> builder
                     .langValue(VNF[tier] + " Output Hatch")
                     .rotationState(RotationState.ALL)
@@ -726,7 +727,7 @@ public class GTMachines {
             ELECTRIC_TIERS);
 
     public static final MachineDefinition[] FLUID_PASSTHROUGH_HATCH = registerTieredMachines("fluid_passthrough_hatch",
-            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.BOTH),
+            (holder, tier) -> new FluidHatchPartMachine(holder, tier, IO.BOTH, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X),
             (tier, builder) -> builder
                     .langValue("%s Fluid Passthrough Hatch".formatted(VNF[tier]))
                     .rotationState(RotationState.ALL)

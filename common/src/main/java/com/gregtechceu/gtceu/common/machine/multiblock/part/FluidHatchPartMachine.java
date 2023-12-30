@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -32,7 +32,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
-    private static final long INITIAL_TANK_CAPACITY = 8 * FluidHelper.getBucket();
+
+    public static final long INITIAL_TANK_CAPACITY_1X = 8 * FluidHelper.getBucket();
+    public static final long INITIAL_TANK_CAPACITY_4X = 2 * FluidHelper.getBucket();
+    public static final long INITIAL_TANK_CAPACITY_9X = FluidHelper.getBucket();
+
     @Persisted
     public final NotifiableFluidTank tank;
     @Nullable
@@ -40,9 +44,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     @Nullable
     protected ISubscription tankSubs;
 
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, long initialCapacity) {
         super(holder, tier, io);
-        this.tank = createTank(args);
+        this.tank = createTank(initialCapacity);
     }
 
     //////////////////////////////////////
@@ -53,12 +57,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected long getTankCapacity() {
-        return INITIAL_TANK_CAPACITY * (1L << Math.min(9, getTier()));
+    protected NotifiableFluidTank createTank(long initialCapacity) {
+        return new NotifiableFluidTank(this, 1, getTankCapacity(initialCapacity), io);
     }
 
-    protected NotifiableFluidTank createTank(Object... args) {
-        return new NotifiableFluidTank(this, 1, getTankCapacity(), io);
+    protected long getTankCapacity(long initialCapacity) {
+        return initialCapacity * (1L << Math.min(9, getTier()));
     }
 
     @Override
