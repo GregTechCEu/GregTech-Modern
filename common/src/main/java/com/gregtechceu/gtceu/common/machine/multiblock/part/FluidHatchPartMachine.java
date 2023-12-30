@@ -70,6 +70,10 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         tankSubs = tank.addChangedListener(this::updateTankSubscription);
     }
 
+    private void upgradeToMultiTanks() {
+
+    }
+
     @Override
     public void onUnload() {
         super.onUnload();

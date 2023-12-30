@@ -105,21 +105,17 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
  * @implNote GTMachines
  */
 public class GTMachines {
-    public final static int[] ALL_TIERS = GTCEu.isHighTier() ?
-            new int[] {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV, GTValues.UEV, GTValues.UIV, GTValues.UXV, GTValues.OpV, GTValues.MAX} :
-            new int[] {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV};
-    public final static int[] ELECTRIC_TIERS = GTCEu.isHighTier() ?
-            new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV, GTValues.UEV, GTValues.UIV, GTValues.UXV, GTValues.OpV} :
-            new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV};
-    public final static int[] LOW_TIERS = new int[] {GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV};
-    public final static int[] HIGH_TIERS = GTCEu.isHighTier() ?
-            new int[] {GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV, GTValues.UEV, GTValues.UIV, GTValues.UXV, GTValues.OpV} :
-            new int[] {GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV, GTValues.UHV};
+    public final static int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEu.isHighTier() ? MAX : UHV);
+    public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEu.isHighTier() ? OpV : UV);
+    public final static int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
+    public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEu.isHighTier() ? OpV : UHV);
+
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8: tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
     public static final Int2LongFunction largeTankSizeFunction = tier -> (tier <= GTValues.LV ? 32 : tier == GTValues.MV ? 48 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction steamGeneratorTankSizeFunction = tier -> Math.min(16 * (1 << (tier - 1)), 64) * FluidHelper.getBucket();
     public static final Int2LongFunction genericGeneratorTankSizeFunction = tier -> Math.min(4 * (1 << (tier - 1)), 16) * FluidHelper.getBucket();
+
     public static Object2IntMap<MachineDefinition> DRUM_CAPACITY = new Object2IntArrayMap<>();
 
     static {
