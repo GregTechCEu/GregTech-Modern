@@ -154,6 +154,9 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                 if (!section.getBlockState(sectionX, sectionY, sectionZ).isAir())
                     return;
 
+                if (!blockState.canSurvive(level, pos))
+                    return;
+
                 section.setBlockState(sectionX, sectionY, sectionZ, blockState, false);
             }
         };
