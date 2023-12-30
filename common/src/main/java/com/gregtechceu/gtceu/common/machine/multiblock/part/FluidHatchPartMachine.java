@@ -44,6 +44,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     @Nullable
     protected ISubscription tankSubs;
 
+    // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
+    // We can't use fields here because those won't be available while createTank() is called.
     public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, long initialCapacity, int slots, Object... args) {
         super(holder, tier, io);
         this.tank = createTank(initialCapacity, slots, args);
