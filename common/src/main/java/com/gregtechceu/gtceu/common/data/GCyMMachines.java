@@ -419,14 +419,14 @@ public class GCyMMachines {
                     .where('A', air())
                     .where('#', any())
                     .build())
-			.shapeInfos(definition -> {
+            .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-					.aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
+                    .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
                     .aisle("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
                     .aisle("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
                     .aisle("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-					.aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
+                    .aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
                     .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
                     .where('S', definition, Direction.NORTH)
                     .where('G', HEAT_VENT.getDefaultState())
@@ -439,9 +439,9 @@ public class GCyMMachines {
                     .where('M', MAINTENANCE_HATCH, Direction.NORTH);
                 ALL_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
+                        .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
-			})
+            })
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/blast_alloy_smelter"), false)
             .compassSections(GTCompassSections.TIER[IV])
@@ -743,10 +743,10 @@ public class GCyMMachines {
                         .where('#', any())
                         .build();
             })
-			.shapeInfos(definition -> {
+            .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-					.aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                    .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                     .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
                     .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
                     .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
@@ -758,7 +758,7 @@ public class GCyMMachines {
                     .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
                     .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
                     .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-					.aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                    .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
                     .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
                     .where('S', definition, Direction.NORTH)
                     .where('A', Blocks.AIR.defaultBlockState())
@@ -777,9 +777,9 @@ public class GCyMMachines {
                     .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
                 ALL_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(coil -> shapeInfo.add(builder.where('C', coil.getValue().get()).build()));
+                        .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
-			})
+            })
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
                     GTCEu.id("block/multiblock/gcym/mega_blast_furnace"), false)
             .compassSections(GTCompassSections.TIER[LuV])
