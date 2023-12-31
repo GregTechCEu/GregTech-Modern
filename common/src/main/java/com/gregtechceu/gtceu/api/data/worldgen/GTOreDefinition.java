@@ -78,7 +78,7 @@ public class GTOreDefinition {
     private float density;
     @Getter
     private int weight;
-    @Getter @Setter
+    @Getter
     private IWorldGenLayer layer;
     @Getter @Setter
     private Set<ResourceKey<Level>> dimensionFilter;
@@ -86,12 +86,12 @@ public class GTOreDefinition {
     private HeightRangePlacement range;
     @Getter @Setter
     private float discardChanceOnAirExposure;
-    @Getter @Setter
+    @Getter
     private Supplier<HolderSet<Biome>> biomes;
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
-    @Getter @Setter
+    @Getter
     private VeinGenerator veinGenerator;
 
     @Getter @Setter
