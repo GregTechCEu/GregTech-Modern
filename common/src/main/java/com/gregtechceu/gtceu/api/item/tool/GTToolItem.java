@@ -74,7 +74,7 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     }
 
     protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
-        super(0, 0, tier, toolType.harvestTag, properties);
+        super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
         this.toolType = toolType;
         this.material = material;
         this.electricTier = electricTier;

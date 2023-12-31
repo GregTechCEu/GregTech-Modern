@@ -38,8 +38,8 @@ public class GTJadePlugin implements IWailaPlugin {
 
     static {
         GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.harvestTag.location().getNamespace().equals("minecraft")) return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTag, map.values().stream().filter(Objects::nonNull).filter(ItemEntry::isPresent).map(ItemEntry::get).toArray(GTToolItem[]::new)));
+            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
+            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0), map.values().stream().filter(Objects::nonNull).filter(ItemEntry::isPresent).map(ItemEntry::get).toArray(GTToolItem[]::new)));
         });
     }
 }

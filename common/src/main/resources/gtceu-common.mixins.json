@@ -33,7 +33,7 @@
     "ResultSlotMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
-    "ShapedRecipeInvoker",
+    "ShapedRecipeAccessor",
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",

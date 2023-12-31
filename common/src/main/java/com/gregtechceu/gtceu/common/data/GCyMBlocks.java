@@ -49,7 +49,7 @@ public class GCyMBlocks {
             .properties(p -> p.sound(SoundType.METAL).mapColor(MapColor.METAL))
             .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
-            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item(RendererBlockItem::new)
             .model(NonNullBiConsumer.noop())
             .build()
@@ -59,7 +59,7 @@ public class GCyMBlocks {
             .block("molybdenum_disilicide_coil_block", Block::new)
             .lang("Molybdenum Disilicide Coil Block")
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item()
             .build()
             .register();
@@ -68,7 +68,7 @@ public class GCyMBlocks {
             .block("electrolytic_cell", Block::new)
             .lang("Electrolytic Cell")
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .simpleItem()
             .register();
 
@@ -76,7 +76,7 @@ public class GCyMBlocks {
             .block("crushing_wheels", Block::new)
             .lang("Crushing Wheels")
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .simpleItem()
             .register();
 
@@ -84,7 +84,7 @@ public class GCyMBlocks {
             .block("heat_vent", Block::new)
             .lang("Heat Vent")
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .tag(GTToolType.WRENCH.harvestTag, BlockTags.MINEABLE_WITH_PICKAXE)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .simpleItem()
             .register();
 }

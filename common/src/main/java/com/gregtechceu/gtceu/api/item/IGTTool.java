@@ -369,7 +369,7 @@ public interface IGTTool extends IItemUIFactory {
                 BlockState state = player.level().getBlockState(pos);
                 boolean effective = false;
                 for (GTToolType type : getToolClasses(stack)) {
-                    if (state.is(type.harvestTag)) {
+                    if (type.harvestTags.stream().anyMatch(state::is)) {
                         effective = true;
                         break;
                     }

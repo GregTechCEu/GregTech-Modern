@@ -70,7 +70,6 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
-import java.util.function.UnaryOperator;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
@@ -141,7 +140,7 @@ public class GTItems {
     //////////////////////////////////////
     public final static Table<MaterialToolTier, GTToolType, ItemEntry<? extends IGTTool>> TOOL_ITEMS =
             ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
-                    Arrays.stream(GTToolType.values()).toList());
+                    GTToolType.getTypes().values().stream().toList());
 
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
@@ -167,14 +166,14 @@ public class GTItems {
                 List<ResourceLocation> higher = tiers.values().stream().filter(high -> high.getB().getLevel() == tier.getLevel() + 1).map(Tuple::getA).toList();
                 registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
 
-                for (GTToolType toolType : GTToolType.values()) {
+                for (GTToolType toolType : GTToolType.getTypes().values()) {
                     if (property.hasType(toolType)) {
-                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, material, 0, toolType.toolDefinition.apply(new ToolDefinitionBuilder()).build(), p))
+                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, material, 0, toolType.toolDefinition, p))
                                 .properties(p -> p.craftRemainder(Items.AIR).durability(tier.getUses() * toolType.durabilityMultiplier))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> GTToolItem::tintColor)
-                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTag))
+                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTags.get(0)))
                                 .register());
                     }
                 }

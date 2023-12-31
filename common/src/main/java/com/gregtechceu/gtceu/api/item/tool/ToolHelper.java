@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -91,6 +93,38 @@ public class ToolHelper {
     public static final String DISABLE_SHIELDS_KEY = "DisableShields";
     public static final String RELOCATE_MINED_BLOCKS_KEY = "RelocateMinedBlocks";
 
+
+    // Crafting Symbols
+    private static final BiMap<Character, GTToolType> symbols = HashBiMap.create();
+
+
+
+    private ToolHelper() {/**/}
+
+    /**
+     * @return finds the registered crafting symbol with the tool
+     */
+    public static Character getSymbolFromTool(GTToolType tool) {
+        return symbols.inverse().get(tool);
+    }
+
+    /**
+     * @return finds the registered tool with the crafting symbol
+     */
+    public static GTToolType getToolFromSymbol(Character symbol) {
+        return symbols.get(symbol);
+    }
+
+    public static Set<Character> getToolSymbols() {
+        return symbols.keySet();
+    }
+
+    /**
+     * Registers the tool against a crafting symbol, this is used in {@link com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper}
+     */
+    public static void registerToolSymbol(Character symbol, GTToolType tool) {
+        symbols.put(symbol, tool);
+    }
 
     public static CompoundTag getToolTag(ItemStack stack) {
         return stack.getOrCreateTagElement(TOOL_TAG_KEY);
@@ -425,7 +459,7 @@ public class ToolHelper {
      */
     public static boolean isTool(ItemStack tool, GTToolType... toolClasses) {
         for (GTToolType toolType : toolClasses) {
-            if (tool.is(toolType.itemTag)) return true;
+            if (toolType.itemTags.stream().anyMatch(tool::is)) return true;
         }
 
         if (tool.getItem() instanceof IGTTool igtTool) {
@@ -446,7 +480,7 @@ public class ToolHelper {
     // encompasses all vanilla special case tool checks for harvesting
     public static boolean isToolEffective(BlockState state, Set<GTToolType> toolClasses, int harvestLevel) {
         Block block = state.getBlock();
-        if (toolClasses.stream().anyMatch(type -> state.is(type.harvestTag))) {
+        if (toolClasses.stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is))) {
             return getHarvestLevel(state) <= harvestLevel;
         }
 

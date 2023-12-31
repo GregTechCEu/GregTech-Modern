@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.generated;
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -20,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -307,15 +309,17 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, GTToolItem[] toolItems) {
+    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, GTToolItem[] toolItems, Consumer<FinishedRecipe> provider) {
         for (GTToolItem toolItem : toolItems) {
             int tier = toolItem.getElectricTier();
-            ItemStack powerUnitStack = powerUnitItems.get(tier).getStackForm();
-            IElectricItem powerUnit = powerUnitStack.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+            ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
+            IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);
             ItemStack tool = toolItem.get(material, 0, powerUnit.getMaxCharge());
-            ModHandler.addShapedEnergyTransferRecipe(String.format("%s_%s", toolItem.getId(), material),
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
+                    true, true, true,
+                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem).getPath(), material),
+                    Ingredient.of(powerUnitStack),
                     tool,
-                    Ingredient.fromStacks(powerUnitStack), true, true,
                     "wHd", " U ",
                     'H', new UnificationEntry(toolHead, material),
                     'U', powerUnitStack);

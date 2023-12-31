@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
@@ -27,7 +28,6 @@ import javax.annotation.Nonnull;
 import java.util.Comparator;
 import java.util.Locale;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 /**
@@ -81,20 +81,6 @@ public class VanillaRecipeHelper {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
-    private static final Char2ObjectMap<TagKey<Item>> TOOLS = new Char2ObjectArrayMap<>();
-    static {
-        TOOLS.put('c', GTToolType.CROWBAR.itemTag);
-        TOOLS.put('d', GTToolType.SCREWDRIVER.itemTag);
-        TOOLS.put('f', GTToolType.FILE.itemTag);
-        TOOLS.put('h', GTToolType.HARD_HAMMER.itemTag);
-        TOOLS.put('k', GTToolType.KNIFE.itemTag);
-        TOOLS.put('m', GTToolType.MORTAR.itemTag);
-        TOOLS.put('r', GTToolType.SOFT_MALLET.itemTag);
-        TOOLS.put('s', GTToolType.SAW.itemTag);
-        TOOLS.put('w', GTToolType.WRENCH.itemTag);
-        TOOLS.put('x', GTToolType.WIRE_CUTTER.itemTag);
-    }
-
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         addShapedRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
     }
@@ -144,7 +130,7 @@ public class VanillaRecipeHelper {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : TOOLS.keySet()) {
+                for (Character c : ToolHelper.getToolSymbols()) {
                     if (pattern.indexOf(c) >= 0) {
                         set.add(c.charValue());
                     }
@@ -153,7 +139,7 @@ public class VanillaRecipeHelper {
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : TOOLS.keySet()) {
+                    for (Character c : ToolHelper.getToolSymbols()) {
                         if (s.indexOf(c) >= 0) {
                             set.add(c.charValue());
                         }
@@ -182,7 +168,7 @@ public class VanillaRecipeHelper {
             }
         }
         for (Character c : set) {
-            builder.define(c, TOOLS.get(c.charValue()));
+            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
         }
         builder.save(provider);
 
@@ -216,7 +202,7 @@ public class VanillaRecipeHelper {
             var o = recipe[i];
             if (o instanceof String pattern) {
                 builder.pattern(pattern);
-                for (Character c : TOOLS.keySet()) {
+                for (Character c : ToolHelper.getToolSymbols()) {
                     if (pattern.indexOf(c) >= 0) {
                         set.add(c.charValue());
                     }
@@ -225,7 +211,7 @@ public class VanillaRecipeHelper {
             if (o instanceof String[] pattern) {
                 for (String s : pattern) {
                     builder.pattern(s);
-                    for (Character c : TOOLS.keySet()) {
+                    for (Character c : ToolHelper.getToolSymbols()) {
                         if (s.indexOf(c) >= 0) {
                             set.add(c.charValue());
                         }
@@ -254,7 +240,7 @@ public class VanillaRecipeHelper {
             }
         }
         for (Character c : set) {
-            builder.define(c, TOOLS.get(c.charValue()));
+            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
         }
         builder.save(provider);
 
@@ -286,7 +272,7 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemProviderEntry<?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
-                builder.requires(TOOLS.get(c.charValue()));
+                builder.requires(ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
             }
         }
         builder.save(provider);
@@ -300,7 +286,7 @@ public class VanillaRecipeHelper {
         int itr = 0;
         while (recipe[itr] instanceof String s) {
             for (char c : s.toCharArray()) {
-                if (TOOLS.containsKey(c)) continue; // skip tools
+                if (ToolHelper.getToolFromSymbol(c) != null) continue; // skip tools
                 int count = inputCountMap.getOrDefault(c, 0);
                 inputCountMap.put(c, count + 1);
             }
@@ -339,8 +325,8 @@ public class VanillaRecipeHelper {
                 ItemStack stack = ChemicalHelper.get(entry.tagPrefix, entry.material);
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
-            } else if (ingredient instanceof ItemEntry<?> entry) {
-                itemLike = entry.asStack().getItem();
+            } else if (ingredient instanceof ItemProviderEntry<?> entry) {
+                itemLike = entry.asItem();
             } else continue; // throw out bad entries
 
 

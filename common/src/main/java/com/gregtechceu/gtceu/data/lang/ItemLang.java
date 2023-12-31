@@ -31,7 +31,7 @@ public class ItemLang {
             provider.add(tagPrefix.getUnlocalizedName(), tagPrefix.langValue);
         }
         // GTToolType
-        for (GTToolType toolType : GTToolType.values()) {
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
             provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType));
         }
 
