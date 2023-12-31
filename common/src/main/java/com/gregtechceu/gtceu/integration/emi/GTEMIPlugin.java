@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.integration.emi;
 
+import appeng.menu.me.items.PatternEncodingTermMenu;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
-import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluid;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTOreVeinEmiCategory;
+import com.gregtechceu.gtceu.integration.emi.recipe.Ae2PatternTerminalHandler;
+import com.gregtechceu.gtceu.integration.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
@@ -24,6 +27,7 @@ import net.minecraft.world.item.crafting.RecipeType;
  */
 @EmiEntrypoint
 public class GTEMIPlugin implements EmiPlugin {
+
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
@@ -34,6 +38,10 @@ public class GTEMIPlugin implements EmiPlugin {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
                 registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
             }
+        }
+        registry.addRecipeHandler(null, new GTEmiRecipeHandler());
+        if(GTCEu.isAE2Loaded()){
+            registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
         // recipes
         MultiblockInfoEmiCategory.registerDisplays(registry);
