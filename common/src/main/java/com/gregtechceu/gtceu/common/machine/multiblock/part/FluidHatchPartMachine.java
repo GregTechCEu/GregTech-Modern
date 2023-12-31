@@ -78,10 +78,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         tankSubs = tank.addChangedListener(this::updateTankSubscription);
     }
 
-    private void upgradeToMultiTanks() {
-
-    }
-
     @Override
     public void onUnload() {
         super.onUnload();
@@ -175,7 +171,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         int index = 0;
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                container.addWidget(new TankWidget(tank.storages[index++], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN)).setBackground(GuiTextures.SLOT));
+                container.addWidget(new TankWidget(tank.storages[index++], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
             }
         }
 
