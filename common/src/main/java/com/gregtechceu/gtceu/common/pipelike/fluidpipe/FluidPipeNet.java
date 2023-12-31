@@ -163,8 +163,8 @@ public class FluidPipeNet extends PipeNet<FluidPipeData> {
 
         long leastUsedAmount = Long.MAX_VALUE;
         int bestChannel = -1;
-
-        for (int channel = 0; channel < channelFluids.length; channel++) {
+        var nodeData = getNodeAt(BlockPos.of(pos)).data;
+        for (int channel = 0; channel < nodeData.properties.getChannels(); channel++) {
             if (channelFluids[channel] != null)
                 continue;
 
