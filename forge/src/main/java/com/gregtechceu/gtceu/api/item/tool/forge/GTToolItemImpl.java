@@ -1,13 +1,22 @@
 package com.gregtechceu.gtceu.api.item.tool.forge;
 
+import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.LevelReader;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -20,21 +29,81 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class GTToolItemImpl extends GTToolItem {
 
-    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
-        super(toolType, tier, material, electricTier, definition, properties);
+    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
+        super(toolType, tier, material, definition, properties);
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
-        return new GTToolItemImpl(toolType, tier, material, electricTier, definition, properties);
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
+        return new GTToolItemImpl(toolType, tier, material, definition, properties);
+    }
+
+    @Override
+    public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
+        return super.onBlockStartBreak(stack, pos, player);
+    }
+
+    @Override
+    public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
+        return super.canApplyAtEnchantingTable(stack, enchantment);
+    }
+
+    @Override
+    public int getEnchantmentValue(ItemStack stack) {
+        return super.getEnchantmentValue(stack);
+    }
+
+    @Override
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        return super.getDefaultAttributeModifiers(slot, stack);
+    }
+
+    @Override
+    public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
+        return super.canDisableShield(stack, shield, entity, attacker);
+    }
+
+    @Override
+    public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
+        return super.doesSneakBypassUse(stack, level, pos, player);
+    }
+
+    @Override
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return super.shouldCauseBlockBreakReset(oldStack, newStack);
+    }
+
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        return super.hasCraftingRemainingItem(stack);
     }
 
     @Override
     public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
-        if (itemStack.getMaxDamage() >= itemStack.getDamageValue()) {
-            itemStack = itemStack.copy();
-            itemStack.setDamageValue(itemStack.getDamageValue() + 1);
-            return itemStack;
-        }
-        return ItemStack.EMPTY;
+        return super.getCraftingRemainingItem(itemStack);
+    }
+
+    @Override
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
+    }
+
+    @Override
+    public boolean isDamaged(ItemStack stack) {
+        return super.isDamaged(stack);
+    }
+
+    @Override
+    public int getDamage(ItemStack stack) {
+        return super.getDamage(stack);
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return super.getMaxDamage(stack);
+    }
+
+    @Override
+    public void setDamage(ItemStack stack, int damage) {
+        super.setDamage(stack, damage);
     }
 }

@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
@@ -22,42 +24,44 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unused")
+@Accessors(fluent = true, chain = true)
 public class ToolDefinitionBuilder {
 
     private final List<IToolBehavior> behaviours = new ArrayList<>();
+    @Setter
     private int damagePerAction = 1;
+    @Setter
     private int damagePerCraftingAction = 1;
     private boolean suitableForBlockBreaking = false;
     private boolean suitableForAttacking = false;
     private boolean suitableForCrafting = false;
+    @Setter
     private int baseDurability = 0;
+    @Setter
     private float durabilityMultiplier = 1.0f;
+    @Setter
     private int baseQuality = 0;
+    @Setter
     private float attackDamage = 0F;
+    @Setter
     private float baseEfficiency = 4F;
+    @Setter
     private float efficiencyMultiplier = 1.0F;
     private boolean isEnchantable;
     private BiPredicate<ItemStack, Enchantment> canApplyEnchantment;
+    @Setter
     private float attackSpeed = 0F;
     private boolean sneakBypassUse = false;
+    @Setter
     private Supplier<ItemStack> brokenStack = () -> ItemStack.EMPTY;
-    private AoESymmetrical aoeSymmetrical = AoESymmetrical.none();
+    @Setter
+    private AoESymmetrical aoe = AoESymmetrical.none();
     private final Set<Block> effectiveBlocks = new ObjectOpenHashSet<>();
     private Predicate<BlockState> effectiveStates;
     private final Object2IntMap<Enchantment> defaultEnchantments = new Object2IntArrayMap<>();
 
     public ToolDefinitionBuilder behaviors(IToolBehavior... behaviours) {
         Collections.addAll(this.behaviours, behaviours);
-        return this;
-    }
-
-    public ToolDefinitionBuilder damagePerAction(int damagePerAction) {
-        this.damagePerAction = damagePerAction;
-        return this;
-    }
-
-    public ToolDefinitionBuilder damagePerCraftingAction(int damagePerCraftingAction) {
-        this.damagePerCraftingAction = damagePerCraftingAction;
         return this;
     }
 
@@ -76,28 +80,8 @@ public class ToolDefinitionBuilder {
         return this;
     }
 
-    public ToolDefinitionBuilder baseDurability(int baseDurability) {
-        this.baseDurability = baseDurability;
-        return this;
-    }
-
-    public ToolDefinitionBuilder durabilityMultiplier(float multiplier) {
-        this.durabilityMultiplier = multiplier;
-        return this;
-    }
-
-    public ToolDefinitionBuilder baseQuality(int baseQuality) {
-        this.baseQuality = baseQuality;
-        return this;
-    }
-
     public ToolDefinitionBuilder baseQuality() {
         return baseQuality(0);
-    }
-
-    public ToolDefinitionBuilder attackDamage(float attackDamage) {
-        this.attackDamage = attackDamage;
-        return this;
     }
 
     /**
@@ -107,16 +91,6 @@ public class ToolDefinitionBuilder {
      */
     public ToolDefinitionBuilder cannotAttack() {
         this.attackDamage = Float.MIN_VALUE;
-        return this;
-    }
-
-    public ToolDefinitionBuilder baseEfficiency(float baseEfficiency) {
-        this.baseEfficiency = baseEfficiency;
-        return this;
-    }
-
-    public ToolDefinitionBuilder efficiencyMultiplier(float efficiencyMultiplier) {
-        this.efficiencyMultiplier = efficiencyMultiplier;
         return this;
     }
 
@@ -144,23 +118,8 @@ public class ToolDefinitionBuilder {
         return this;
     }
 
-    public ToolDefinitionBuilder attackSpeed(float attackSpeed) {
-        this.attackSpeed = attackSpeed;
-        return this;
-    }
-
     public ToolDefinitionBuilder sneakBypassUse() {
         this.sneakBypassUse = true;
-        return this;
-    }
-
-    public ToolDefinitionBuilder brokenStack(Supplier<ItemStack> brokenStack) {
-        this.brokenStack = brokenStack;
-        return this;
-    }
-
-    public ToolDefinitionBuilder aoe(AoESymmetrical aoeSymmetrical) {
-        this.aoeSymmetrical = aoeSymmetrical;
         return this;
     }
 
@@ -207,7 +166,7 @@ public class ToolDefinitionBuilder {
             private final float attackSpeed = ToolDefinitionBuilder.this.attackSpeed;
             private final boolean sneakBypassUse = ToolDefinitionBuilder.this.sneakBypassUse;
             private final Supplier<ItemStack> brokenStack = ToolDefinitionBuilder.this.brokenStack;
-            private final AoESymmetrical aoeSymmetrical = ToolDefinitionBuilder.this.aoeSymmetrical;
+            private final AoESymmetrical aoeSymmetrical = ToolDefinitionBuilder.this.aoe;
             private final Predicate<BlockState> effectiveStatePredicate;
             private final Object2IntMap<Enchantment> defaultEnchantments = ToolDefinitionBuilder.this.defaultEnchantments;
 

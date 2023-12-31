@@ -2,14 +2,11 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.RailBlock;
@@ -28,13 +25,11 @@ public class RotateRailBehavior implements IToolBehavior {
 
     @NotNull
     @Override
-    public InteractionResult onItemUseFirst(@NotNull Player player, @NotNull Level world, @NotNull BlockPos pos,
-                                            @NotNull Direction facing, float hitX, float hitY, float hitZ,
-                                            @NotNull InteractionHand hand) {
-        BlockState state = world.getBlockState(pos);
+    public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
+        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         if (state.getBlock() instanceof RailBlock) {
-            if (world.setBlock(pos, state.rotate(Rotation.CLOCKWISE_90), Block.UPDATE_ALL)) {
-                ToolHelper.onActionDone(player, world, hand);
+            if (context.getLevel().setBlock(context.getClickedPos(), state.rotate(Rotation.CLOCKWISE_90), Block.UPDATE_ALL)) {
+                ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
                 return InteractionResult.SUCCESS;
             }
         }

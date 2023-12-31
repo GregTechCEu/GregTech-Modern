@@ -7,6 +7,12 @@
   ],
   "mixins": [
     "AppearanceBlockMixin",
+    "EnchantmentHelperMixin",
+    "EnchantmentMixin",
+    "ItemMixin",
+    "ItemStackMixin",
+    "LivingEntityAccessor",
+    "PlayerMixin",
     "ServerPlayerGameModeMixin",
     "SimpleCookingSerializerMixin"
   ],

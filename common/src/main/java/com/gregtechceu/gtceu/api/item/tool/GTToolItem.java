@@ -69,15 +69,15 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     private IGTToolDefinition toolStats;
 
     @ExpectPlatform
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
         throw new AssertionError();
     }
 
-    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Properties properties) {
+    protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
         super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
         this.toolType = toolType;
         this.material = material;
-        this.electricTier = electricTier;
+        this.electricTier = toolType.electricTier;
         this.toolStats = definition;
         if (Platform.isClient()) {
             ToolItemRenderer.create(this, toolType);
@@ -316,7 +316,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
         return definition$onBlockStartBreak(stack, pos, player);
     }
 
-
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return definition$canApplyAtEnchantingTable(stack, enchantment);
     }
@@ -378,6 +377,4 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         return definition$use(level, player, usedHand);
     }
-
-
 }

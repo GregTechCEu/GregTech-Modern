@@ -66,8 +66,8 @@ public class ToolHelper {
     public static final String DISALLOW_CONTAINER_ITEM_KEY = "DisallowContainerItem";
 
     // Keys that resides in tool tag
-    public static final String DURABILITY_KEY = "Durability";
-    public static final String MAX_DURABILITY_KEY = "MaxDurability";
+    public static final String DURABILITY_KEY = ItemStack.TAG_DAMAGE;
+    public static final String MAX_DURABILITY_KEY = "MaxDamage";
     public static final String TOOL_SPEED_KEY = "ToolSpeed";
     public static final String ATTACK_DAMAGE_KEY = "AttackDamage";
     public static final String ATTACK_SPEED_KEY = "AttackSpeed";
@@ -223,8 +223,8 @@ public class ToolHelper {
      * AoE Block Breaking Routine.
      */
     public static boolean areaOfEffectBlockBreakRoutine(ItemStack stack, ServerPlayer player) {
-        int currentDurability = getToolTag(stack).getInt(DURABILITY_KEY);
-        int maximumDurability = getToolTag(stack).getInt(MAX_DURABILITY_KEY);
+        int currentDurability = stack.getDamageValue();
+        int maximumDurability = stack.getMaxDamage();
         int remainingUses = maximumDurability - currentDurability;
         Set<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {

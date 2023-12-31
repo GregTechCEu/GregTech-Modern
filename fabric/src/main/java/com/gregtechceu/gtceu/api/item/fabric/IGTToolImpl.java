@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.item.fabric;
 
-public class IGTToolImpl {
+import com.gregtechceu.gtceu.api.item.IGTTool;
+
+public interface IGTToolImpl extends IGTTool {
     public static void init() {
     }
 }

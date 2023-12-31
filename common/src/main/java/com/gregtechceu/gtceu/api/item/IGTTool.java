@@ -60,6 +60,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.MendingEnchantment;
@@ -548,9 +549,9 @@ public interface IGTTool extends IItemUIFactory {
 
     }
 
-    default InteractionResult definition$onItemUseFirst(@Nonnull Player player, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull Direction facing, float hitX, float hitY, float hitZ, @Nonnull InteractionHand hand) {
+    default InteractionResult definition$onItemUseFirst(ItemStack stack, UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemUseFirst(player, world, pos, facing, hitX, hitY, hitZ, hand) == InteractionResult.SUCCESS)  {
+            if (behavior.onItemUseFirst(stack, context) == InteractionResult.SUCCESS)  {
                 return InteractionResult.SUCCESS;
             }
         }

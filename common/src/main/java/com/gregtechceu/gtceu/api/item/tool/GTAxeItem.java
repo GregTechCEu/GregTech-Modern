@@ -25,6 +25,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 import net.minecraft.world.item.context.UseOnContext;
@@ -36,7 +37,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 
-public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
+public class GTAxeItem extends AxeItem implements IItemUseFirst, IGTTool {
 
     @Getter
     private final GTToolType toolType;
@@ -47,7 +48,7 @@ public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    public GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    public GTAxeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
@@ -59,7 +60,7 @@ public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
     }
 
     @ExpectPlatform
-    public static GTSwordItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    public static GTAxeItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         throw new AssertionError();
     }
 

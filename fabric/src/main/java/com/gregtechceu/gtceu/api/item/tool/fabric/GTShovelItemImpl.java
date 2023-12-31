@@ -2,13 +2,8 @@ package com.gregtechceu.gtceu.api.item.tool.fabric;
 
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.item.fabric.IGTFabricItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.gregtechceu.gtceu.api.item.fabric.IGTToolImpl;
+import com.gregtechceu.gtceu.api.item.tool.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -19,25 +14,14 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.LevelReader;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote GTToolItemImpl
- */
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricItem {
-
-    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material,  IGTToolDefinition definition, Properties properties) {
-        super(toolType, tier, material, definition, properties);
+public class GTShovelItemImpl extends GTShovelItem implements IGTToolImpl {
+    public GTShovelItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+        super(toolType, tier, material, toolStats, properties);
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
-        return new GTToolItemImpl(toolType, tier, material, definition, properties);
+    public static GTShovelItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
+        return new GTShovelItemImpl(toolType, tier, material, toolStats, properties);
     }
 
     @Override

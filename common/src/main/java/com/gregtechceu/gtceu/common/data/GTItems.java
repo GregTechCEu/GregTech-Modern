@@ -138,7 +138,7 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Tools    ******//
     //////////////////////////////////////
-    public final static Table<MaterialToolTier, GTToolType, ItemEntry<? extends IGTTool>> TOOL_ITEMS =
+    public final static Table<MaterialToolTier, GTToolType, ItemEntry<TieredItem>> TOOL_ITEMS =
             ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
                     GTToolType.getTypes().values().stream().toList());
 
@@ -168,8 +168,8 @@ public class GTItems {
 
                 for (GTToolType toolType : GTToolType.getTypes().values()) {
                     if (property.hasType(toolType)) {
-                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, material, 0, toolType.toolDefinition, p))
-                                .properties(p -> p.craftRemainder(Items.AIR).durability(tier.getUses() * toolType.durabilityMultiplier))
+                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p))
+                                .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> GTToolItem::tintColor)

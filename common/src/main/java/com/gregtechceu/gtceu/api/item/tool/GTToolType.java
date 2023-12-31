@@ -22,6 +22,7 @@ import net.minecraft.world.entity.animal.IronGolem;
 import net.minecraft.world.entity.monster.Spider;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
@@ -47,6 +48,7 @@ public class GTToolType {
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/sword"))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/sword"))
             .toolStats(b -> b.attacking().attackDamage(3.0F).attackSpeed(-2.4F))
+            .constructor(GTSwordItem::create)
             .build();
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(FORGE, TagUtil.createItemTag("pickaxes", true))
@@ -267,7 +269,7 @@ public class GTToolType {
 
     @FunctionalInterface
     public interface ToolConstructor {
-        IGTTool apply(GTToolType type, MaterialToolTier tier, Material material, int electricTier, IGTToolDefinition definition, Item.Properties properties);
+        TieredItem apply(GTToolType type, MaterialToolTier tier, Material material, IGTToolDefinition definition, Item.Properties properties);
     }
 
     public static Builder builder(String name) {
@@ -286,7 +288,7 @@ public class GTToolType {
         @Setter
         private IGTToolDefinition toolStats;
         @Setter
-        private int tier;
+        private int tier = -1;
         @Setter
         private Character symbol = null;
         @Setter

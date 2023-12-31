@@ -1,16 +1,11 @@
-package com.gregtechceu.gtceu.api.item.tool.fabric;
+package com.gregtechceu.gtceu.api.item.tool.forge;
 
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.item.fabric.IGTFabricItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import net.fabricmc.fabric.api.item.v1.FabricItem;
-import net.minecraft.MethodsReturnNonnullByDefault;
+import com.gregtechceu.gtceu.api.item.forge.IGTToolImpl;
+import com.gregtechceu.gtceu.api.item.tool.*;
 import net.minecraft.core.BlockPos;
-import net.minecraft.world.InteractionHand;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
@@ -20,24 +15,21 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.LevelReader;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-
-/**
- * @author KilaBash
- * @date 2023/2/26
- * @implNote GTToolItemImpl
- */
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricItem {
-
-    protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material,  IGTToolDefinition definition, Properties properties) {
-        super(toolType, tier, material, definition, properties);
+public class GTHoeItemImpl extends GTHoeItem implements IGTToolImpl {
+    public GTHoeItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+        super(toolType, tier, material, toolStats, properties);
     }
 
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
-        return new GTToolItemImpl(toolType, tier, material, definition, properties);
+    public static GTHoeItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
+        return new GTHoeItemImpl(toolType, tier, material, toolStats, properties);
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return definition$initCapabilities(stack, nbt);
     }
 
     @Override
@@ -56,7 +48,7 @@ public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricI
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(ItemStack stack, EquipmentSlot slot) {
+    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return super.getDefaultAttributeModifiers(slot, stack);
     }
 
@@ -65,16 +57,14 @@ public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricI
         return super.canDisableShield(stack, shield, entity, attacker);
     }
 
-    /*
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
         return super.doesSneakBypassUse(stack, level, pos, player);
     }
-    */
 
     @Override
-    public boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {
-        return !super.shouldCauseBlockBreakReset(oldStack, newStack);
+    public boolean shouldCauseBlockBreakReset(ItemStack oldStack, ItemStack newStack) {
+        return super.shouldCauseBlockBreakReset(oldStack, newStack);
     }
 
     @Override
@@ -83,13 +73,13 @@ public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricI
     }
 
     @Override
-    public ItemStack getRecipeRemainder(ItemStack itemStack) {
-        return hasCraftingRemainingItem(itemStack) ? super.getCraftingRemainingItem(itemStack) : ItemStack.EMPTY;
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        return super.getCraftingRemainingItem(itemStack);
     }
 
     @Override
-    public boolean allowNbtUpdateAnimation(Player player, InteractionHand hand, ItemStack oldStack, ItemStack newStack) {
-        return super.shouldCauseReequipAnimation(oldStack, newStack, ItemStack.matches(oldStack, newStack));
+    public boolean shouldCauseReequipAnimation(ItemStack oldStack, ItemStack newStack, boolean slotChanged) {
+        return super.shouldCauseReequipAnimation(oldStack, newStack, slotChanged);
     }
 
     @Override

@@ -429,7 +429,7 @@ public class GTBlocks {
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
                 .blockstate(NonNullBiConsumer.noop())
                 .defaultLoot()
-                .tag(GTToolType.WIRE_CUTTER.harvestTag)
+                .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .color(() -> LaserPipeBlock::tintedColor)
                 .item(LaserPipeBlockItem::new)
