@@ -232,7 +232,6 @@ public class GTToolType {
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/shears", false))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/shears", false))
             .toolStats(b -> b)
-            .sound(GTSoundEntries.PLUNGER_TOOL)
             .build();
 
 
