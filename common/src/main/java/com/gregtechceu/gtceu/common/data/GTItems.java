@@ -172,7 +172,7 @@ public class GTItems {
                                 .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
-                                .color(() -> GTToolItem::tintColor)
+                                .color(() -> IGTTool::tintColor)
                                 .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTags.get(0)))
                                 .register());
                     }

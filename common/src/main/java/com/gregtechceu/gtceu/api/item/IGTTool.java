@@ -38,6 +38,7 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
@@ -683,8 +684,8 @@ public interface IGTTool extends IItemUIFactory {
         // valid tools
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClasses(stack).stream()
-                        .map(s -> Component.translatable("gt.tool.class." + s))
-                        .collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))
+                        .map(s -> Component.translatable("gtceu.tool.class." + s.name))
+                        .collect(Component::empty, (c1, c2) -> {}, (c1, c2) -> c1.append(", ").append(c2))
         ));
 
         // repair info
@@ -832,4 +833,27 @@ public interface IGTTool extends IItemUIFactory {
     }
 
     Set<GTToolType> getToolClasses(ItemStack stack);
+
+
+
+    @Environment(EnvType.CLIENT)
+    static ItemColor tintColor() {
+        return (itemStack, index) ->{
+            if (itemStack.getItem() instanceof IGTTool item) {
+                return switch (index) {
+                    case 0 -> {
+                        if (item.getToolClasses(itemStack).contains(GTToolType.CROWBAR)) {
+                            if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
+                                yield itemStack.getTag().getInt("tint_color");
+                            }
+                        }
+                        yield -1;
+                    }
+                    case 1 -> item.getMaterial().getMaterialARGB();
+                    default -> -1;
+                };
+            }
+            return -1;
+        };
+    }
 }

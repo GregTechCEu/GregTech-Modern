@@ -76,27 +76,6 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
         return super.hasCraftingRemainingItem();
     }
 
-    @Environment(EnvType.CLIENT)
-    public static ItemColor tintColor() {
-        return (itemStack, index) ->{
-            if (itemStack.getItem() instanceof GTToolItem item) {
-                return switch (index) {
-                    case 0 -> {
-                        if (item.toolType == GTToolType.CROWBAR) {
-                            if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
-                                yield itemStack.getTag().getInt("tint_color");
-                            }
-                        }
-                        yield -1;
-                    }
-                    case 1 -> item.getTier().material.getMaterialARGB();
-                    default -> -1;
-                };
-            }
-            return -1;
-        };
-    }
-
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
         definition$onItemUseFirst(itemStack, context);
