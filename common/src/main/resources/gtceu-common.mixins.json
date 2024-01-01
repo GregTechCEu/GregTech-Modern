@@ -20,6 +20,7 @@
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",
+    "InventoryMixin",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootTablesMixin",
@@ -42,6 +43,7 @@
     "create.RotationPropagatorMixin",
     "emi.EmiRecipeHandlerMixin",
     "kjs.RecipeEventJSMixin",
+    "rei.InputSlotCrafterMixin",
     "top.ConfigMixin"
   ],
   "injectors": {

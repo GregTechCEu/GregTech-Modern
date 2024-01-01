@@ -49,8 +49,8 @@ import java.util.*;
  */
 public class ToolHelper {
 
-    public static final String TOOL_TAG_KEY = "gtceu:tool";
-    public static final String BEHAVIOURS_TAG_KEY = "gtceu:behaviours";
+    public static final String TOOL_TAG_KEY = "GT.Tool";
+    public static final String BEHAVIOURS_TAG_KEY = "GT.Behaviours";
 
     // Base item keys
 
