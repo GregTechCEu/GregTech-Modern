@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundSource;
@@ -22,8 +21,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,6 +28,7 @@ import java.util.List;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.TORCH_PLACING_KEY;
 
+// TODO this currently voids the used tool as well as a torch. how fix?
 public class TorchPlaceBehavior implements IToolBehavior {
 
     public static final TorchPlaceBehavior INSTANCE = new TorchPlaceBehavior();
@@ -39,9 +37,7 @@ public class TorchPlaceBehavior implements IToolBehavior {
 
     @Override
     public @NotNull InteractionResult onItemUse(UseOnContext context) {
-        Level world = context.getLevel();
         Player player = context.getPlayer();
-        BlockPos pos = context.getClickedPos();
         InteractionHand hand = context.getHand();
 
         ItemStack stack = player.getItemInHand(hand);
@@ -87,7 +83,6 @@ public class TorchPlaceBehavior implements IToolBehavior {
                         slotStack.is(TagUtil.createItemTag("torches"))) {
                     BlockPos pos = context.getClickedPos();
                     BlockState state = context.getLevel().getBlockState(pos);
-                    Block block = state.getBlock();
                     if (!state.canBeReplaced()) {
                         pos = pos.relative(context.getClickedFace());
                     }

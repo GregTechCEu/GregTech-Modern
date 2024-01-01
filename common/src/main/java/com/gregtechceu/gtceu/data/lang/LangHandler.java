@@ -116,6 +116,25 @@ public class LangHandler {
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
 
 
+        provider.add("gtceu.tool.class.sword", "Sword");
+        provider.add("gtceu.tool.class.pickaxe", "Pickaxe");
+        provider.add("gtceu.tool.class.shovel", "Shovel");
+        provider.add("gtceu.tool.class.axe", "Axe");
+        provider.add("gtceu.tool.class.hoe", "Hoe");
+        provider.add("gtceu.tool.class.saw", "Saw");
+        provider.add("gtceu.tool.class.hammer", "Hammer");
+        provider.add("gtceu.tool.class.mallet", "Soft Mallet");
+        provider.add("gtceu.tool.class.wrench", "Wrench");
+        provider.add("gtceu.tool.class.file", "File");
+        provider.add("gtceu.tool.class.crowbar", "Crowbar");
+        provider.add("gtceu.tool.class.mortar", "Mortar");
+        provider.add("gtceu.tool.class.wire_cutter", "Wire Cutter");
+        provider.add("gtceu.tool.class.knife", "Knife");
+        provider.add("gtceu.tool.class.butchery_knife", "Butchery Knife");
+        provider.add("gtceu.tool.class.scythe", "Scythe");
+        provider.add("gtceu.tool.class.rolling_pin", "Rolling Pin");
+        provider.add("gtceu.tool.class.plunger", "Plunger");
+
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");

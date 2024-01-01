@@ -12,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 public class ItemMixin implements IGTFabricItem {
 
     @ModifyExpressionValue(method = "isEnchantable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getMaxStackSize()I"))
-    private int gtceu$stackSensitiveEnchantability(boolean original, ItemStack stack) {
+    private int gtceu$stackSensitiveEnchantability(int original, ItemStack stack) {
         return this.getMaxStackSize(stack);
     }
 }

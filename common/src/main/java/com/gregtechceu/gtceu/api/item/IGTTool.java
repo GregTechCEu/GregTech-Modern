@@ -684,7 +684,7 @@ public interface IGTTool extends IItemUIFactory {
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClasses(stack).stream()
                         .map(s -> Component.translatable("gtceu.tool.class." + s.name))
-                        .collect(Component::empty, (c1, c2) -> {}, (c1, c2) -> c1.append(", ").append(c2))
+                        .collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))
         ));
 
         // repair info

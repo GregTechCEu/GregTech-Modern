@@ -5,7 +5,6 @@ import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Extra methods not available in {@link net.fabricmc.fabric.api.item.v1.FabricItem}.
@@ -40,8 +39,7 @@ public interface IGTFabricItem {
      * @param enchantment the enchantment to be applied
      * @return true if the enchantment can be applied to this item
      */
-    default boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment)
-    {
+    default boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
         return enchantment.category.canEnchant(stack.getItem());
     }
 
@@ -73,8 +71,7 @@ public interface IGTFabricItem {
      * @param stack The itemstack that is damaged
      * @return the damage value
      */
-    default int getDamage(ItemStack stack)
-    {
+    default int getDamage(ItemStack stack) {
         return !stack.hasTag() ? 0 : stack.getTag().getInt("Damage");
     }
 
@@ -85,8 +82,7 @@ public interface IGTFabricItem {
      * @param stack The itemstack that is damaged
      * @return the damage value
      */
-    default int getMaxDamage(ItemStack stack)
-    {
+    default int getMaxDamage(ItemStack stack) {
         return self().getMaxDamage();
     }
 

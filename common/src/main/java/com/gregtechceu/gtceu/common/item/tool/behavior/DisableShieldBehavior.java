@@ -20,8 +20,7 @@ public class DisableShieldBehavior implements IToolBehavior {
     protected DisableShieldBehavior() {/**/}
 
     @Override
-    public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity,
-                                    LivingEntity attacker) {
+    public boolean canDisableShield(ItemStack stack, ItemStack shield, LivingEntity entity, LivingEntity attacker) {
         return true;
     }
 
@@ -31,8 +30,7 @@ public class DisableShieldBehavior implements IToolBehavior {
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
-                               @NotNull TooltipFlag flag) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
         tooltip.add(Component.translatable("item.gtceu.tool.behavior.shield_disable"));
     }
 }

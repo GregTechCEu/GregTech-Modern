@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_plunger"
+    "res": "gtceu:aluminium_spade"
   },
   "items": [
-    "#c:plungers"
+    "#forge:tools/spades"
   ],
-  "page": "gtceu:tools/plunger",
+  "page": "gtceu:tools/spade",
   "position": [
-    -50,
-    100
+    -150,
+    50
   ],
   "section": "gtceu:tools"
 }
