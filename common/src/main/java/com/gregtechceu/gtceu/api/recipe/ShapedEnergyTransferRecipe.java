@@ -13,6 +13,8 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
@@ -21,7 +23,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Irgendwer01
@@ -33,6 +38,7 @@ import java.util.Map;
 public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     public static final RecipeSerializer<ShapedEnergyTransferRecipe> SERIALIZER = new Serializer();
 
+    @Nullable // if matches() isn't called
     private CraftingContainer craftingContainer;
 
     @Getter
@@ -60,6 +66,80 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     public ItemStack getResultItem(RegistryAccess registryManager) {
         long maxCharge = 0L;
         long charge = 0L;
+        if (this.craftingContainer == null) {
+            List<ItemStack> items = this.getIngredients().stream().map(i -> i.getItems()[0]).collect(Collectors.toList());
+            this.craftingContainer = new CraftingContainer() {
+                @Override
+                public int getWidth() {
+                    return 3;
+                }
+
+                @Override
+                public int getHeight() {
+                    return 3;
+                }
+
+                @Override
+                public List<ItemStack> getItems() {
+                    return items;
+                }
+
+                @Override
+                public int getContainerSize() {
+                    return 9;
+                }
+
+                @Override
+                public boolean isEmpty() {
+                    return false;
+                }
+
+                @Override
+                public ItemStack getItem(int slot) {
+                    return items.get(slot);
+                }
+
+                @Override
+                public ItemStack removeItem(int slot, int amount) {
+                    items.get(slot).shrink(amount);
+                    return items.get(slot).isEmpty() ? ItemStack.EMPTY : items.get(slot);
+                }
+
+                @Override
+                public ItemStack removeItemNoUpdate(int slot) {
+                    return items.set(slot, ItemStack.EMPTY);
+                }
+
+                @Override
+                public void setItem(int slot, ItemStack stack) {
+                    items.set(slot, stack);
+                }
+
+                @Override
+                public void setChanged() {
+
+                }
+
+                @Override
+                public boolean stillValid(Player player) {
+                    return true;
+                }
+
+                @Override
+                public void clearContent() {
+                    for (int i = 0; i < items.size(); ++i) {
+                        items.set(i, ItemStack.EMPTY);
+                    }
+                }
+
+                @Override
+                public void fillStackedContents(StackedContents helper) {
+                    for (ItemStack stack : items) {
+                        helper.accountStack(stack);
+                    }
+                }
+            };
+        }
         ItemStack resultStack = super.getResultItem(registryManager);
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
             for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
