@@ -47,7 +47,7 @@ public class MultiPlayerGameModeMixin {
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         if (minecraft.player == null ||
                 minecraft.level == null ||
-                (!minecraft.player.getMainHandItem().is(CustomTags.AOE_TOOLS) || ToolHelper.getAoEDefinition(minecraft.player.getMainHandItem()) == AoESymmetrical.none()) ||
+                ToolHelper.getAoEDefinition(minecraft.player.getMainHandItem()) == AoESymmetrical.none() ||
                 minecraft.player.isCrouching() ||
                 !minecraft.player.getMainHandItem().isCorrectToolForDrops(minecraft.level.getBlockState(pos))
         ) return;

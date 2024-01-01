@@ -48,7 +48,7 @@ public class AoESymmetrical {
         tag.putInt(ToolHelper.AOE_COLUMN_KEY, column);
         tag.putInt(ToolHelper.AOE_ROW_KEY, row);
         tag.putInt(ToolHelper.AOE_LAYER_KEY, layer);
-        return new AoESymmetrical(column, row, layer);
+        return AoESymmetrical.of(column, row, layer);
     }
 
     public static int getColumn(CompoundTag tag, AoESymmetrical defaultDefinition) {

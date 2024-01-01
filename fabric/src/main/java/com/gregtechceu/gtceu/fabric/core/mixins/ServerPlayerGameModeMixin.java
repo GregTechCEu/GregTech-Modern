@@ -30,13 +30,13 @@ public class ServerPlayerGameModeMixin {
 
     @Shadow protected ServerLevel level;
 
-    @Inject(
+    /*Inject(
             method = {"destroyBlock"},
             at = {@At(
                     value = "INVOKE",
                     target = "Lnet/minecraft/world/level/block/Block;playerWillDestroy(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Lnet/minecraft/world/entity/player/Player;)V"
             )}
-    )
+    )*/
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ItemStack mainHandItem = player.getMainHandItem();
 

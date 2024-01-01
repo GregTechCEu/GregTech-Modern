@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -53,7 +53,7 @@ public abstract class LevelRendererMixin {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
-        if (!mainHandItem.is(CustomTags.AOE_TOOLS) || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
+        if (ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
 
         BlockPos hitResultPos = result.getBlockPos();
         BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
