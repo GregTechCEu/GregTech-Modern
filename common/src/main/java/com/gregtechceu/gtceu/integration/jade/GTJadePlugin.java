@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockPro
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.WorkableBlockProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import snownee.jade.addon.harvest.HarvestToolProvider;
@@ -39,7 +40,7 @@ public class GTJadePlugin implements IWailaPlugin {
     static {
         GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
             if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0), map.values().stream().filter(Objects::nonNull).filter(ItemEntry::isPresent).map(ItemEntry::get).toArray(GTToolItem[]::new)));
+            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0), map.values().stream().filter(Objects::nonNull).filter(ItemEntry::isPresent).map(ItemEntry::get).toArray(TieredItem[]::new)));
         });
     }
 }
