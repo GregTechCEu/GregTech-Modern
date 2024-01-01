@@ -422,7 +422,7 @@ public class ToolHelper {
     public static boolean isToolEffective(BlockState state, Set<GTToolType> toolClasses, int harvestLevel) {
         Block block = state.getBlock();
         if (toolClasses.stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is))) {
-            return getHarvestLevel(state) <= harvestLevel;
+            return isCorrectTierForDrops(state, harvestLevel);
         }
 
         if (toolClasses.contains(GTToolType.PICKAXE)) {
@@ -449,7 +449,7 @@ public class ToolHelper {
             }
         }
         if (toolClasses.contains(GTToolType.CROWBAR)) {
-            return block instanceof RailBlock;
+            return block instanceof BaseRailBlock;
         }
         return false;
     }
@@ -540,13 +540,8 @@ public class ToolHelper {
         return -1;
     }
 
-    public static int getHarvestLevel(BlockState state) {
-        for (int i = 0; i < CustomTags.TOOL_TIERS.length; ++i) {
-            TagKey<Block> tag = CustomTags.TOOL_TIERS[i];
-            if (state.is(tag)) {
-                return i + 1;
-            }
-        }
-        return 0;
+    @ExpectPlatform
+    private static boolean isCorrectTierForDrops(BlockState state, int tier) {
+        throw new AssertionError();
     }
 }
