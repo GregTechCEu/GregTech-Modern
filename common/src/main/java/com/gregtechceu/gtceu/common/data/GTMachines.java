@@ -514,7 +514,7 @@ public class GTMachines {
 
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
-            "output_hatch", " Output Hatch","fluid_hatch.export",
+            "output_hatch", "Output Hatch", "fluid_hatch.export",
             IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1, ALL_TIERS,
             PartAbility.EXPORT_FLUIDS, PartAbility.EXPORT_FLUIDS_1X
     );
