@@ -63,6 +63,7 @@ public class GTToolType {
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/shovel", true))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/shovel", true))
             .toolStats(b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
+            .constructor(GTShovelItem::create)
             .build();
     public static final GTToolType AXE = GTToolType.builder("axe")
             .toolTag(FORGE, TagUtil.createItemTag("axes", true))
@@ -72,6 +73,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
                     .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE))
+            .constructor(GTAxeItem::create)
             .build();
     public static final GTToolType HOE = GTToolType.builder("hoe")
             .toolTag(FORGE, TagUtil.createItemTag("hoes", true))
@@ -79,6 +81,7 @@ public class GTToolType {
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/hoe", true))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/hoe", true))
             .toolStats(b -> b.cannotAttack().attackSpeed(-1.0F))
+            .constructor(GTHoeItem::create)
             .build();
 
     public static final GTToolType MINING_HAMMER = GTToolType.builder("mining_hammer")
@@ -111,6 +114,7 @@ public class GTToolType {
                     .aoe(2, 2, 2)
                     .behaviors(HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
                     .canApplyEnchantment(EnchantmentCategory.DIGGER))
+            .constructor(GTSwordItem::create)
             .build();
 
     public static final GTToolType SAW = GTToolType.builder("saw")
@@ -205,12 +209,14 @@ public class GTToolType {
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/knife", false))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/knife", false))
             .toolStats(b -> b.crafting().attacking().attackSpeed(3.0F))
+            .constructor(GTSwordItem::create)
             .symbol('k')
             .build();
     public static final GTToolType BUTCHERY_KNIFE = GTToolType.builder("butchery_knife")
             .toolTag(FORGE, TagUtil.createItemTag("tools/butchery_knives", false))
             .toolTag(FABRIC, TagUtil.createItemTag("butchery_knives", false))
             .toolStats(b -> b.attacking().attackDamage(1.5F).attackSpeed(-1.3F).defaultEnchantment(Enchantments.MOB_LOOTING, 3))
+            .constructor(GTSwordItem::create)
             .build();
     //public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"), GTCEu.id("item/tools/hammer"));
     public static final GTToolType PLUNGER = GTToolType.builder("plunger")
