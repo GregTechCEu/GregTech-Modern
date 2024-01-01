@@ -1619,8 +1619,8 @@ public class GTMachines {
                             .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"));
                             
                     builder.abilities(switch (io) {
-                        case IO.IN -> PartAbility.IMPORT_FLUIDS;
-                        case IO.OUT -> PartAbility.EXPORT_FLUIDS;
+                        case IN -> PartAbility.IMPORT_FLUIDS;
+                        case OUT -> PartAbility.EXPORT_FLUIDS;
                         default -> throw new IllegalArgumentException("This can only be used for IO.IN and IO.OUT");
                     });
 
