@@ -15,6 +15,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
@@ -33,11 +34,14 @@ public class LogStripBehavior implements IToolBehavior {
 
     @NotNull
     @Override
-    public InteractionResult onItemUse(@NotNull Player player, @NotNull Level level, @NotNull BlockPos pos,
-                                       @NotNull InteractionHand hand, @NotNull Direction facing, float hitX, float hitY,
-                                       float hitZ) {
-        if (facing == Direction.DOWN)
+    public InteractionResult onItemUse(UseOnContext context) {
+        if (context.getClickedFace() == Direction.DOWN)
             return InteractionResult.PASS;
+
+        Level level = context.getLevel();
+        Player player = context.getPlayer();
+        BlockPos pos = context.getClickedPos();
+        InteractionHand hand = context.getHand();
 
         ItemStack stack = player.getItemInHand(hand);
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);

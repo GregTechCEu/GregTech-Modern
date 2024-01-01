@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -28,9 +29,10 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 /**
- * Used to allow a tool to hoe the ground, only if it cannot extend the {@link gregtech.api.items.toolitem.ItemGTHoe}
+ * Used to allow a tool to hoe the ground, only if it cannot extend the {@link com.gregtechceu.gtceu.api.item.tool.GTHoeItem}
  * class.
  */
 public class HoeGroundBehavior implements IToolBehavior {
@@ -41,8 +43,13 @@ public class HoeGroundBehavior implements IToolBehavior {
 
     @NotNull
     @Override
-    public InteractionResult onItemUse(@NotNull Player player, @NotNull Level world, @NotNull BlockPos pos, @NotNull InteractionHand hand, @NotNull Direction facing, float hitX, float hitY, float hitZ) {
-        if (facing == Direction.DOWN) return InteractionResult.PASS;
+    public InteractionResult onItemUse(UseOnContext context) {
+        if (context.getClickedFace() == Direction.DOWN) return InteractionResult.PASS;
+
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
+        BlockPos pos = context.getClickedPos();
+        InteractionHand hand = context.getHand();
 
         ItemStack stack = player.getItemInHand(hand);
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
@@ -74,7 +81,7 @@ public class HoeGroundBehavior implements IToolBehavior {
             BlockState state = world.getBlockState(blockPos);
             Block block = state.getBlock();
             if (HoeItem.TILLABLES.containsKey(block)) {
-                tillGround(world, player, hand, new Vec3(hitX, hitY, hitZ), stack, facing, blockPos, HoeItem.TILLABLES.get(block).getSecond());
+                tillGround(context, HoeItem.TILLABLES.get(block));
                 tilled = true;
             }
         }
@@ -102,10 +109,12 @@ public class HoeGroundBehavior implements IToolBehavior {
         return false;
     }
 
-    private static void tillGround(@NotNull Level world, Player player, InteractionHand hand, Vec3 hitPos, ItemStack stack, Direction direction, BlockPos pos, Consumer<UseOnContext> state) {
-        state.accept(new UseOnContext(player, hand, new BlockHitResult(hitPos, direction, pos, false)));
-        if (!player.isCreative()) {
-            ToolHelper.damageItem(stack, player);
+    private static void tillGround(UseOnContext context, Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> state) {
+        if (state.getFirst().test(context)) {
+            state.getSecond().accept(context);
+        }
+        if (!context.getPlayer().isCreative()) {
+            ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
         }
     }
 

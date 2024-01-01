@@ -16,6 +16,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -37,9 +38,12 @@ public class TorchPlaceBehavior implements IToolBehavior {
     protected TorchPlaceBehavior() {/**/}
 
     @Override
-    public InteractionResult onItemUse(@NotNull Player player, @NotNull Level Level, @NotNull BlockPos pos,
-                                       @NotNull InteractionHand hand, @NotNull Direction facing, float hitX, float hitY,
-                                       float hitZ) {
+    public @NotNull InteractionResult onItemUse(UseOnContext context) {
+        Level world = context.getLevel();
+        Player player = context.getPlayer();
+        BlockPos pos = context.getClickedPos();
+        InteractionHand hand = context.getHand();
+
         ItemStack stack = player.getItemInHand(hand);
         CompoundTag behaviourTag = ToolHelper.getBehaviorsTag(stack);
         if (behaviourTag.getBoolean(TORCH_PLACING_KEY)) {
@@ -52,20 +56,20 @@ public class TorchPlaceBehavior implements IToolBehavior {
                 } else {
                     slotStack = player.getInventory().items.get(cachedTorchSlot);
                 }
-                if (checkAndPlaceTorch(slotStack, player, Level, pos, hand, facing, hitX, hitY, hitZ)) {
+                if (checkAndPlaceTorch(context, slotStack)) {
                     return InteractionResult.SUCCESS;
                 }
             }
             for (int i = 0; i < player.getInventory().offhand.size(); i++) {
                 slotStack = player.getInventory().offhand.get(i);
-                if (checkAndPlaceTorch(slotStack, player, Level, pos, hand, facing, hitX, hitY, hitZ)) {
+                if (checkAndPlaceTorch(context, slotStack)) {
                     behaviourTag.putInt(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY, -(i + 1));
                     return InteractionResult.SUCCESS;
                 }
             }
             for (int i = 0; i < player.getInventory().items.size(); i++) {
                 slotStack = player.getInventory().items.get(i);
-                if (checkAndPlaceTorch(slotStack, player, Level, pos, hand, facing, hitX, hitY, hitZ)) {
+                if (checkAndPlaceTorch(context, slotStack)) {
                     behaviourTag.putInt(ToolHelper.TORCH_PLACING_CACHE_SLOT_KEY, i);
                     return InteractionResult.SUCCESS;
                 }
@@ -74,28 +78,28 @@ public class TorchPlaceBehavior implements IToolBehavior {
         return InteractionResult.PASS;
     }
 
-    private static boolean checkAndPlaceTorch(ItemStack slotStack, Player player, Level level, BlockPos pos,
-                                              InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    private static boolean checkAndPlaceTorch(UseOnContext context, ItemStack slotStack) {
         if (!slotStack.isEmpty()) {
             Item slotItem = slotStack.getItem();
             if (slotItem instanceof BlockItem slotItemBlock) {
                 Block slotBlock = slotItemBlock.getBlock();
                 if (slotBlock == Blocks.TORCH ||
                         slotStack.is(TagUtil.createItemTag("torches"))) {
-                    BlockState state = level.getBlockState(pos);
+                    BlockPos pos = context.getClickedPos();
+                    BlockState state = context.getLevel().getBlockState(pos);
                     Block block = state.getBlock();
                     if (!state.canBeReplaced()) {
-                        pos = pos.relative(facing);
+                        pos = pos.relative(context.getClickedFace());
                     }
-                    if (player.mayUseItemAt(pos, facing, slotStack)) {
-                        var context = new BlockPlaceContext(player, hand, slotStack, new BlockHitResult(new Vec3(hitX, hitY, hitZ), facing, pos, false));
-                        BlockState slotState = slotBlock.getStateForPlacement(context);
-                        if (slotItemBlock.place(context).consumesAction()) {
-                            slotState = level.getBlockState(pos);
+                    if (context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), slotStack)) {
+                        var blockPlaceContext = new BlockPlaceContext(context);
+                        BlockState slotState = slotBlock.getStateForPlacement(blockPlaceContext);
+                        if (slotItemBlock.place(blockPlaceContext).consumesAction()) {
+                            slotState = context.getLevel().getBlockState(pos);
                             SoundType soundtype = slotState.getBlock().getSoundType(slotState);
-                            level.playSound(player, pos, soundtype.getPlaceSound(), SoundSource.BLOCKS,
+                            context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(), SoundSource.BLOCKS,
                                     (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
-                            if (!player.isCreative()) slotStack.shrink(1);
+                            if (!context.getPlayer().isCreative()) slotStack.shrink(1);
                             return true;
                         }
                     }

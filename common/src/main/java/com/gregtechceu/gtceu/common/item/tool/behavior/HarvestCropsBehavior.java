@@ -16,6 +16,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
@@ -36,12 +37,15 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
     @NotNull
     @Override
-    public InteractionResult onItemUse(@NotNull Player player, @NotNull Level world, @NotNull BlockPos pos,
-                                       @NotNull InteractionHand hand, @NotNull Direction facing, float hitX, float hitY,
-                                       float hitZ) {
-        if (world.isClientSide) {
+    public InteractionResult onItemUse(UseOnContext context) {
+        if (context.getLevel().isClientSide) {
             return InteractionResult.PASS;
         }
+
+        Player player = context.getPlayer();
+        BlockPos pos = context.getClickedPos();
+        InteractionHand hand = context.getHand();
+
         ItemStack stack = player.getItemInHand(hand);
 
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
@@ -62,7 +66,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
 
             blocks = ToolHelper.iterateAoE(stack, aoeDefinition, player.level(), player, rayTraceResult,
                     HarvestCropsBehavior::isBlockCrops);
-            if (isBlockCrops(stack, world, player, blockHitResult.getBlockPos(), null)) {
+            if (isBlockCrops(stack, context.getLevel(), player, blockHitResult.getBlockPos(), null)) {
                 blocks.add(blockHitResult.getBlockPos());
             }
         }
