@@ -15,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -40,9 +40,9 @@ public class ServerPlayerGameModeMixin {
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ItemStack mainHandItem = player.getMainHandItem();
         if (mainHandItem.is(CustomTags.AOE_TOOLS) && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
-            List<BlockPos> blockPosList = ToolHelper.getAOEPositions(player, player.getMainHandItem(), pos, 1);
-            for (BlockPos blockPos : blockPosList) {
-                if (!ToolHelper.aoeCanBreak(mainHandItem, level, pos, blockPos)) continue;
+            Set<BlockPos> breakablePositions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, player, player.pick(player.getBlockReach(), 1, false));
+            for (BlockPos blockPos : breakablePositions) {
+                //if (!ToolHelper.aoeCanBreak(mainHandItem, level, pos, blockPos)) continue;
                 level.destroyBlock(blockPos, true, player);
                 if (mainHandItem.hurt(1, RandomSource.create(), player)) break;
             }

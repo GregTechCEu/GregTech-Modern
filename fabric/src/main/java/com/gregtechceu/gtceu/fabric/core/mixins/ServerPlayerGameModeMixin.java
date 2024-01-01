@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.fabric.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.server.level.ServerPlayerGameMode;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -16,7 +15,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -41,11 +40,10 @@ public class ServerPlayerGameModeMixin {
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
         ItemStack mainHandItem = player.getMainHandItem();
 
-        if (mainHandItem.is(CustomTags.AOE_TOOLS) && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
-            List<BlockPos> blockPosList = ToolHelper.getAOEPositions(player, player.getMainHandItem(), pos, 1);
-
-            for (BlockPos blockPos : blockPosList) {
-                if (!ToolHelper.aoeCanBreak(mainHandItem, level, pos, blockPos)) continue;
+        if (ToolHelper.getAoEDefinition(mainHandItem) != AoESymmetrical.none() && mainHandItem.isCorrectToolForDrops(level.getBlockState(pos)) && !player.isCrouching()) {
+            Set<BlockPos> breakablePositions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, player, player.pick(4.5F, 1, false)); // TODO in 1.21 change hitDistance to entity reach attrib value
+            for (BlockPos blockPos : breakablePositions) {
+                //if (!ToolHelper.aoeCanBreak(mainHandItem, level, pos, blockPos)) continue;
                 level.destroyBlock(blockPos, true, player);
                 if (mainHandItem.hurt(1, RandomSource.create(), player)) break;
             }

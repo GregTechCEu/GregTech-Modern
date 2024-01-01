@@ -156,12 +156,7 @@ public class ToolHelper {
     }
 
     public static void damageItem(@Nonnull ItemStack stack,/* RandomSource random,*/ LivingEntity user, int damageAmount) {
-        /*if (canUse(stack)) {
-            stack.hurt(1, random, user);
-        } else {
-            stack.shrink(1);
-        }*/
-        stack.hurtAndBreak(damageAmount, user, e -> {});
+        stack.hurtAndBreak(damageAmount, user, p -> p.broadcastBreakEvent(user.getUsedItemHand()));
     }
 
     public static void playToolSound(GTToolType toolType, ServerPlayer player) {
@@ -169,55 +164,6 @@ public class ToolHelper {
             toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
     }
-
-    public static List<BlockPos> getAOEPositions(LivingEntity miner, ItemStack stack, BlockPos pos, int radius) {
-
-        Level level = miner.level();
-
-        ArrayList<BlockPos> aoePositions = new ArrayList<>();
-        ArrayList<BlockPos> potentialPositions = new ArrayList<>();
-
-
-        for(int x = -radius; x <= radius; x++) {
-            for(int y = -radius; y <= radius; y++) {
-                for(int z = -radius; z <= radius; z++) {
-                    potentialPositions.add(new BlockPos(x, y, z));
-                }
-            }
-        }
-
-        Vec3 cameraPos = miner.getEyePosition(1);
-        Vec3 rotation = miner.getViewVector(1);
-
-        Vec3 combined = cameraPos.add(rotation.x * 4.5F, rotation.y * 4.5F, rotation.z * 4.5F);
-
-        BlockHitResult result = level.clip(new ClipContext(cameraPos, combined, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, miner));
-
-
-        for (BlockPos blockPos : potentialPositions) {
-
-            switch (result.getDirection().getAxis()) {
-                case X -> {
-                    if(blockPos.getX() == 0) {
-                        aoePositions.add(pos.offset(blockPos));
-                    }
-                }
-                case Y -> {
-                    if(blockPos.getY() == 0) {
-                        aoePositions.add(pos.offset(blockPos));
-                    }
-                }
-                case Z -> {
-                    if(blockPos.getZ() == 0) {
-                        aoePositions.add(pos.offset(blockPos));
-                    }
-                }
-            }
-        }
-
-        return aoePositions;
-    }
-
 
     /**
      * AoE Block Breaking Routine.
@@ -234,8 +180,7 @@ public class ToolHelper {
                 }
 
                 remainingUses--;
-                if (stack.getItem() instanceof IGTTool && !((IGTTool) stack.getItem()).isElectric() &&
-                        remainingUses == 0) {
+                if (stack.getItem() instanceof IGTTool && !((IGTTool) stack.getItem()).isElectric() && remainingUses == 0) {
                     return true;
                 }
                 // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
@@ -340,19 +285,6 @@ public class ToolHelper {
         return stack.getItem().isCorrectToolForDrops(state);
     }
 
-    public static boolean aoeCanBreak(ItemStack stack, Level level, BlockPos origin, BlockPos pos) {
-        if (origin.equals(pos)) return false;
-        if (!stack.isCorrectToolForDrops(level.getBlockState(pos))) return false;
-
-        BlockState state = level.getBlockState(pos);
-        BlockState originState = level.getBlockState(origin);
-
-        //Adapted from GTCEU 1.12.2, used to stop mining blocks like obsidian faster by targeting neighbouring stone. The value 8 is an arbitrary and does not represent anything.
-        if (state.getDestroySpeed(level, pos) < 0 || state.getDestroySpeed(level, pos) - originState.getDestroySpeed(level, pos) > 8) return false;
-
-        return true;
-    }
-
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
         // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
@@ -367,7 +299,7 @@ public class ToolHelper {
         BlockState state = world.getBlockState(pos);
         Block block = state.getBlock();
         BlockEntity tile = world.getBlockEntity(pos);
-        if ((block instanceof CommandBlock || block instanceof StructureBlock) && !player.canUseGameMasterBlocks()) {
+        if (block instanceof GameMasterBlock && !player.canUseGameMasterBlocks()) {
             world.sendBlockUpdated(pos, state, state, 3);
             return false;
         } else {
@@ -384,6 +316,7 @@ public class ToolHelper {
                         onPlayerDestroyItem(player, copiedTool, InteractionHand.MAIN_HAND);
                     }
                 }
+
                 successful = removeBlockRoutine(null, world, player, pos, canHarvest);
                 if (successful && canHarvest) {
                     block.playerDestroy(world, player, pos, state, tile, copiedTool);
@@ -406,9 +339,12 @@ public class ToolHelper {
     public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player,
                                              BlockPos pos, boolean canHarvest) {
         state = state == null ? world.getBlockState(pos) : state;
+        state.getBlock().playerWillDestroy(world, pos, state, player);
+
         boolean successful = world.destroyBlock(pos, canHarvest, player);
         if (successful) {
             player.getMainHandItem().mineBlock(world, state, pos, player);
+            state.getBlock().destroy(world, pos, state);
         }
         return successful;
     }
@@ -429,10 +365,12 @@ public class ToolHelper {
     }
 
     public static HitResult getPlayerDefaultRaytrace(@NotNull Player player) {
-        Vec3 lookPos = player.getEyePosition(1F);
-        Vec3 rotation = player.getLookAngle();
-        Vec3 realLookPos = lookPos.add(rotation.x * 5, rotation.y * 5, rotation.z * 5);
-        return player.level().clip(new ClipContext(lookPos, realLookPos, ClipContext.Block.OUTLINE, ClipContext.Fluid.NONE, player));
+        return player.pick(getPlayerBlockReach(player), 1.0f, false);
+    }
+
+    @ExpectPlatform
+    private static double getPlayerBlockReach(@NotNull Player player) {
+        throw new AssertionError();
     }
 
     /**

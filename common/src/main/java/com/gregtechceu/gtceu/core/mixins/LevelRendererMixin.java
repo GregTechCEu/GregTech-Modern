@@ -10,6 +10,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,9 +31,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.SortedSet;
+import java.util.*;
 
 @Mixin(LevelRenderer.class)
 @Environment(EnvType.CLIENT)
@@ -43,6 +43,8 @@ public abstract class LevelRendererMixin {
 
     @Shadow @Final private RenderBuffers renderBuffers;
 
+    @Shadow private @Nullable ClientLevel level;
+
     @Inject(
             method = {"renderLevel"},
             at = {@At("HEAD")}
@@ -51,36 +53,33 @@ public abstract class LevelRendererMixin {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
-
         if (!mainHandItem.is(CustomTags.AOE_TOOLS) || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
 
         BlockPos hitResultPos = result.getBlockPos();
         BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
 
         SortedSet<BlockDestructionProgress> progresses = destructionProgress.get(hitResultPos.asLong());
-
         if (progresses == null || progresses.isEmpty() || !mainHandItem.isCorrectToolForDrops(hitResultState)) return;
-
         BlockDestructionProgress progress = progresses.last();
 
-        List<BlockPos> positions = ToolHelper.getAOEPositions(minecraft.player, mainHandItem, hitResultPos, 1);
+        Set<BlockPos> positions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, result);
 
         Vec3 vec3 = camera.getPosition();
-        double d = vec3.x();
-        double e = vec3.y();
-        double f = vec3.z();
+        double camX = vec3.x();
+        double camY = vec3.y();
+        double camZ = vec3.z();
 
         for (BlockPos pos : positions) {
             poseStack.pushPose();
-            poseStack.translate((double)pos.getX() - d, (double)pos.getY() - e, (double)pos.getZ() - f);
-            PoseStack.Pose pose2 = poseStack.last();
-            VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(
+            poseStack.translate((double)pos.getX() - camX, (double)pos.getY() - camY, (double)pos.getZ() - camZ);
+            PoseStack.Pose last = poseStack.last();
+            VertexConsumer breakProgressDecal = new SheetedDecalTextureGenerator(
                     this.renderBuffers.crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress.getProgress())),
-                    pose2.pose(),
-                    pose2.normal(),
+                    last.pose(),
+                    last.normal(),
                     1.0f
             );
-            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos, minecraft.level, poseStack, vertexConsumer2);
+            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos, minecraft.level, poseStack, breakProgressDecal);
             poseStack.popPose();
         }
     }
@@ -99,13 +98,13 @@ public abstract class LevelRendererMixin {
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
-        if (!mainHandItem.is(CustomTags.AOE_TOOLS) || state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching()) return;
+        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching()) return;
 
-        List<BlockPos> blockPositions = ToolHelper.getAOEPositions(minecraft.player, mainHandItem, pos, 1);
-        List<VoxelShape> outlineShapes = new ArrayList<>();
+        Set<BlockPos> blockPositions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, minecraft.hitResult);
+        Set<VoxelShape> outlineShapes = new HashSet<>();
 
         for (BlockPos position : blockPositions) {
-            if (!ToolHelper.aoeCanBreak(mainHandItem, minecraft.level, pos, position)) continue;
+            //if (!ToolHelper.aoeCanBreak(mainHandItem, minecraft.level, pos, position)) continue;
 
             BlockPos diffPos = position.subtract(pos);
             BlockState offsetState = minecraft.level.getBlockState(position);

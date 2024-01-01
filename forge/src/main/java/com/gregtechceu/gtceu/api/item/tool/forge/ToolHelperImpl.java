@@ -1,20 +1,15 @@
 package com.gregtechceu.gtceu.api.item.tool.forge;
 
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
+import org.jetbrains.annotations.NotNull;
 
 public class ToolHelperImpl {
 
@@ -24,5 +19,9 @@ public class ToolHelperImpl {
 
     public static void onPlayerDestroyItem(Player player, ItemStack stack, InteractionHand hand) {
         ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
+    }
+
+    public static double getPlayerBlockReach(@NotNull Player player) {
+        return player.getBlockReach();
     }
 }

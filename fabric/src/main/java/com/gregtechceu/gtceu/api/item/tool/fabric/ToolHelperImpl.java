@@ -9,7 +9,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 
 public class ToolHelperImpl {
 
@@ -19,5 +19,9 @@ public class ToolHelperImpl {
 
     public static void onPlayerDestroyItem(Player player, ItemStack stack, InteractionHand hand) {
 
+    }
+
+    public static double getPlayerBlockReach(@NotNull Player player) {
+        return 5.0F;
     }
 }

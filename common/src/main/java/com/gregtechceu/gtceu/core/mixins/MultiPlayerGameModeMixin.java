@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
@@ -29,14 +31,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class MultiPlayerGameModeMixin {
     @Shadow @Final private Minecraft minecraft;
 
-    @Inject(
-            method = {"performUseItemOn"},
-            at = {@At(
-                    value = "INVOKE",
-                    target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"
-            )},
-            cancellable = true
-    )
+    @Inject(method = "performUseItemOn", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getMainHandItem()Lnet/minecraft/world/item/ItemStack;"), cancellable = true)
     public void gtceu$useItemOn(LocalPlayer clientPlayerEntity, InteractionHand hand, BlockHitResult blockRayTraceResult, CallbackInfoReturnable<InteractionResult> cir) {
         Item held = clientPlayerEntity.getItemInHand(hand).getItem();
         if (held instanceof IItemUseFirst first) {
@@ -48,20 +43,16 @@ public class MultiPlayerGameModeMixin {
         }
     }
 
-    @Inject(
-            method = {"destroyBlock"},
-            at = {@At("HEAD")}
-    )
+    @Inject(method = "destroyBlock", at = @At("HEAD"), cancellable = true)
     private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
-        if (
-                minecraft.player == null ||
+        if (minecraft.player == null ||
                 minecraft.level == null ||
-                !minecraft.player.getMainHandItem().is(CustomTags.AOE_TOOLS) ||
+                (!minecraft.player.getMainHandItem().is(CustomTags.AOE_TOOLS) || ToolHelper.getAoEDefinition(minecraft.player.getMainHandItem()) == AoESymmetrical.none()) ||
                 minecraft.player.isCrouching() ||
                 !minecraft.player.getMainHandItem().isCorrectToolForDrops(minecraft.level.getBlockState(pos))
         ) return;
 
-        cir.cancel();
+        cir.setReturnValue(false);
         Level level = minecraft.level;
 
         if (level == null) return;

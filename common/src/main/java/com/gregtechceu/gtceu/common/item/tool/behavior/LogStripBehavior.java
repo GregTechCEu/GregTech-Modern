@@ -14,11 +14,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
@@ -45,8 +43,8 @@ public class LogStripBehavior implements IToolBehavior {
         AoESymmetrical aoeDefinition = ToolHelper.getAoEDefinition(stack);
 
         Set<BlockPos> blocks;
-        // only attempt to till if the center block is tillable
-        if (level.getBlockState(pos.above()).isAir() && isBlockLogConvertible(stack, level, player, pos, null)) {
+        // only attempt to strip if the center block is strippable
+        if (isBlockStrippable(stack, level, player, pos, null)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -61,7 +59,7 @@ public class LogStripBehavior implements IToolBehavior {
                 if (blockHitResult.getDirection() == null)
                     return InteractionResult.PASS;
 
-                blocks = getPathConvertibleBlocks(stack, aoeDefinition, level, player, rayTraceResult);
+                blocks = getStrippableBlocks(stack, aoeDefinition, level, player, rayTraceResult);
                 blocks.add(blockHitResult.getBlockPos());
             }
         } else
@@ -76,7 +74,7 @@ public class LogStripBehavior implements IToolBehavior {
         }
 
         if (pathed) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.SHOVEL_FLATTEN,
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_STRIP,
                     SoundSource.PLAYERS, 1.0F, 1.0F);
             player.swing(hand);
             return InteractionResult.SUCCESS;
@@ -85,14 +83,14 @@ public class LogStripBehavior implements IToolBehavior {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getPathConvertibleBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
-                                                         Player player, HitResult rayTraceResult) {
+    public static Set<BlockPos> getStrippableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
+                                                    Player player, HitResult rayTraceResult) {
         return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
-                LogStripBehavior::isBlockLogConvertible);
+                LogStripBehavior::isBlockStrippable);
     }
 
-    private static boolean isBlockLogConvertible(ItemStack stack, Level level, Player player, BlockPos pos,
-                                                 @Nullable BlockPos hitBlockPos) {
+    private static boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos,
+                                             @Nullable BlockPos hitBlockPos) {
         if (level.getBlockState(pos.above()).isAir()) {
             Block block = level.getBlockState(pos).getBlock();
             return AxeItem.STRIPPABLES.containsKey(block);
