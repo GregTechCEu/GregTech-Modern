@@ -1,5 +1,5 @@
 # ChangeLog
 
-Version: 1.0.19.a
+Version: 1.0.19.b
 
-- add missing recipe for fluid multi hatches
+- fix output hatches not being recognized
