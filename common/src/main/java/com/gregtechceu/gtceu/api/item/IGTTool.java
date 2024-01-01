@@ -58,10 +58,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -88,6 +85,8 @@ public interface IGTTool extends IItemUIFactory {
     boolean isElectric();
 
     int getElectricTier();
+
+    Tier getTier();
 
     IGTToolDefinition getToolStats();
 
@@ -834,7 +833,10 @@ public interface IGTTool extends IItemUIFactory {
 
     Set<GTToolType> getToolClasses(ItemStack stack);
 
-
+    @ExpectPlatform
+    static boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        throw new AssertionError();
+    }
 
     @Environment(EnvType.CLIENT)
     static ItemColor tintColor() {

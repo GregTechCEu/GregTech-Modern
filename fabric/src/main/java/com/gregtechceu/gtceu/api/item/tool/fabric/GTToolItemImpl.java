@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.tool.fabric;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.fabric.IGTFabricItem;
+import com.gregtechceu.gtceu.api.item.fabric.IGTToolImpl;
 import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
@@ -20,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockState;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -110,5 +112,10 @@ public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricI
     @Override
     public void setDamage(ItemStack stack, int damage) {
         super.setDamage(stack, damage);
+    }
+
+    @Override
+    public boolean isSuitableFor(ItemStack stack, BlockState state) {
+        return IGTToolImpl.definition$isCorrectToolForDrops(stack, state);
     }
 }

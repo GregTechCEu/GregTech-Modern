@@ -7,7 +7,11 @@ import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.tags.BlockTags;
+import net.minecraft.world.item.DiggerItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
@@ -46,5 +50,23 @@ public interface IGTToolImpl extends IGTTool {
         if (providers.isEmpty()) return null;
         if (providers.size() == 1) return providers.get(0);
         return new CombinedCapabilityProvider(providers);
+    }
+
+    static boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        if (stack.getItem() instanceof IGTTool gtTool) {
+            if (TierSortingRegistry.isTierSorted(gtTool.getTier())) {
+                return TierSortingRegistry.isCorrectTierForDrops(gtTool.getTier(), state) && gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
+            } else {
+                int i = gtTool.getTier().getLevel();
+                if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
+                    return false;
+                } else if (i < 2 && state.is(BlockTags.NEEDS_IRON_TOOL)) {
+                    return false;
+                } else {
+                    return i < 1 && state.is(BlockTags.NEEDS_STONE_TOOL) ? false : gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
+                }
+            }
+        }
+        return false;
     }
 }

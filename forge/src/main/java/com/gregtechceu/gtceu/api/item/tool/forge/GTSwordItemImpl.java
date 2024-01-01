@@ -18,6 +18,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.LevelReader;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
@@ -103,5 +104,10 @@ public class GTSwordItemImpl extends GTSwordItem implements IGTToolImpl {
     @Override
     public void setDamage(ItemStack stack, int damage) {
         super.setDamage(stack, damage);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return IGTToolImpl.definition$isCorrectToolForDrops(stack, state);
     }
 }
