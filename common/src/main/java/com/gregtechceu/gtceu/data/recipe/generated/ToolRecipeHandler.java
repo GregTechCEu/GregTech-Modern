@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -138,10 +139,10 @@ public class ToolRecipeHandler {
                     'P', plate,
                     'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.SPADE, false,
-            //        "fPh", "PSP", " S ",
-            //        'P', plate,
-            //        'S', stick);
+            addToolRecipe(provider, material, GTToolType.SPADE, false,
+                    "fPh", "PSP", " S ",
+                    'P', plate,
+                    'S', stick);
 
             addToolRecipe(provider, material, GTToolType.SAW, false,
                     "PPS", "fhS",
@@ -309,15 +310,15 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, GTToolItem[] toolItems, Consumer<FinishedRecipe> provider) {
-        for (GTToolItem toolItem : toolItems) {
+    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, IGTTool[] toolItems, Consumer<FinishedRecipe> provider) {
+        for (IGTTool toolItem : toolItems) {
             int tier = toolItem.getElectricTier();
             ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);
-            ItemStack tool = toolItem.get(material, 0, powerUnit.getMaxCharge());
+            ItemStack tool = toolItem.get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,
-                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem).getPath(), material),
+                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem()).getPath(), material),
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",

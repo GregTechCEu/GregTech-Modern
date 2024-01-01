@@ -40,7 +40,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -48,6 +47,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -57,6 +57,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -94,18 +95,18 @@ public interface IGTTool extends IItemUIFactory {
 
     boolean playSoundOnBlockDestroy();
 
-    default Item get() {
+    default Item asItem() {
         return (Item) this;
     }
 
     default ItemStack getRaw() {
-        ItemStack stack = new ItemStack(get());
+        ItemStack stack = new ItemStack(asItem());
         getBehaviorsTag(stack);
         return stack;
     }
 
-    default ItemStack get(Material material) {
-        ItemStack stack = new ItemStack(get());
+    default ItemStack get() {
+        ItemStack stack = new ItemStack(asItem());
 
         CompoundTag stackCompound = stack.getOrCreateTag();
         stackCompound.putBoolean(DISALLOW_CONTAINER_ITEM_KEY, false);
@@ -121,7 +122,7 @@ public interface IGTTool extends IItemUIFactory {
         AoESymmetrical aoeDefinition = getToolStats().getAoEDefinition(stack);
 
         // Set other tool stats (durability)
-        ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
+        ToolProperty toolProperty = this.getMaterial().getProperty(PropertyKey.TOOL);
 
         // Durability formula we are working with:
         // Final Durability = (material durability * material durability multiplier) + (tool definition durability * definition durability multiplier) - 1
@@ -172,8 +173,8 @@ public interface IGTTool extends IItemUIFactory {
         return stack;
     }
 
-    default ItemStack get(Material material, long defaultCharge, long defaultMaxCharge) {
-        ItemStack stack = get(material);
+    default ItemStack get(long defaultCharge, long defaultMaxCharge) {
+        ItemStack stack = get();
         if (isElectric()) {
             ElectricItem electricItem = (ElectricItem) GTCapabilityHelper.getElectricItem(stack);
             if (electricItem != null) {
@@ -184,8 +185,8 @@ public interface IGTTool extends IItemUIFactory {
         return stack;
     }
 
-    default ItemStack get(Material material, long defaultMaxCharge) {
-        return get(material, defaultMaxCharge, defaultMaxCharge);
+    default ItemStack get(long defaultMaxCharge) {
+        return get(defaultMaxCharge, defaultMaxCharge);
     }
 
     default Material getToolMaterial(ItemStack stack) {
@@ -383,7 +384,9 @@ public interface IGTTool extends IItemUIFactory {
                         if (playSoundOnBlockDestroy()) playSound(player);
                     } else {
                         if (result == -1) {
-                            new TreeFellingHelper().fellTree(stack, player.level(), state, pos, player);
+                            if (state.is(BlockTags.LOGS)) {
+                                new TreeFellingHelper().fellTree(stack, player.level(), state, pos, player);
+                            }
                             if (playSoundOnBlockDestroy()) playSound(player);
                         } else {
                             return true;
@@ -559,9 +562,9 @@ public interface IGTTool extends IItemUIFactory {
         return InteractionResult.PASS;
     }
 
-    default InteractionResult definition$onItemUse(Player player, Level world, BlockPos pos, InteractionHand hand, Direction facing, float hitX, float hitY, float hitZ) {
+    default InteractionResult definition$onItemUse(UseOnContext context) {
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
-            if (behavior.onItemUse(player, world, pos, hand, facing, hitX, hitY, hitZ) == InteractionResult.SUCCESS)  {
+            if (behavior.onItemUse(context) == InteractionResult.SUCCESS)  {
                 return InteractionResult.SUCCESS;
             }
         }
@@ -587,11 +590,11 @@ public interface IGTTool extends IItemUIFactory {
         return InteractionResultHolder.pass(stack);
     }
 
-    default void definition$getSubItems(@Nonnull NonNullList<ItemStack> items) {
+    default void definition$fillItemCategory(CreativeModeTab category, @Nonnull NonNullList<ItemStack> items) {
         if (isElectric()) {
-            items.add(get(GTMaterials.Iron, Integer.MAX_VALUE));
+            items.add(get(Integer.MAX_VALUE));
         } else {
-            items.add(get(GTMaterials.Iron));
+            items.add(get());
         }
     }
 
@@ -669,7 +672,7 @@ public interface IGTTool extends IItemUIFactory {
         toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, world, tooltip, flag));
 
         // unique tooltip
-        String uniqueTooltip = "item.gt.tool." + BuiltInRegistries.ITEM.getKey(this.get()).getPath() + ".tooltip";
+        String uniqueTooltip = "item.gt.tool." + BuiltInRegistries.ITEM.getKey(this.asItem()).getPath() + ".tooltip";
         if (I18n.exists(uniqueTooltip)) {
             tooltip.add(Component.literal(""));
             tooltip.add(Component.translatable(uniqueTooltip));

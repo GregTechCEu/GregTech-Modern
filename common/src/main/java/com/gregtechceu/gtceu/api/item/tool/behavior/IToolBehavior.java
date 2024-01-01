@@ -92,17 +92,10 @@ public interface IToolBehavior {
     /**
      * Called when a Block is right-clicked with this Item
      *
-     * @param player the player clicking with the item
-     * @param world  the world in which the block is clicked
-     * @param pos    the position of the blocked clicked
-     * @param hand   the hand holding the item
-     * @param facing the face of the block hit
-     * @param hitX   the x location of the block hit
-     * @param hitY   the y location of the block hit
-     * @param hitZ   the z location of the block hit
+     * @param context The UseOnContext used to determine actions.
      */
     @Nonnull
-    default InteractionResult onItemUse(@Nonnull Player player, @Nonnull Level world, @Nonnull BlockPos pos, @Nonnull InteractionHand hand, @Nonnull Direction facing, float hitX, float hitY, float hitZ) {
+    default InteractionResult onItemUse(UseOnContext context) {
         return InteractionResult.PASS;
     }
 

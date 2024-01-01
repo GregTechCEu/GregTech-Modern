@@ -138,7 +138,10 @@ public class ToolHelper {
         if (material.hasProperty(PropertyKey.TOOL)) {
             var entry = GTItems.TOOL_ITEMS.get(material.getToolTier(), toolType);
             if (entry != null) {
-                return entry.asStack();
+                if (entry.get() instanceof IGTTool gtTool) {
+                    return gtTool.get();
+                } else
+                    return entry.asStack();
             }
         }
         return ItemStack.EMPTY;
