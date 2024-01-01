@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
 public class FormattingUtil {
-    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
+    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.ROOT);
     private static final DecimalFormat TWO_PLACES_FORMAT = new DecimalFormat("#.##");
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
