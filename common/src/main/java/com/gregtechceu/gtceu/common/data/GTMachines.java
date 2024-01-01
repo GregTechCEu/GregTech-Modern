@@ -1085,7 +1085,7 @@ public class GTMachines {
                             .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3))
                             .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setExactLimit(1)))
                     .where('X', blocks(CASING_STAINLESS_CLEAN.get())
-                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinLayerLimited(1).setMaxLayerLimited(1)))
+                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS_1X).setMinLayerLimited(1).setMaxLayerLimited(1)))
                     .where('#', Predicates.air())
                     .build())
             .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
