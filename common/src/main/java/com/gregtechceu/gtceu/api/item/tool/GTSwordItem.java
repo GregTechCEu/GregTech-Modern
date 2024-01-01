@@ -130,12 +130,6 @@ public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
         return definition$mineBlock(stack, level, state, pos, miningEntity);
-        /*
-        if (stack.is(CustomTags.TREE_FELLING_TOOLS) && state.is(BlockTags.LOGS)) {
-            new TreeFellingHelper().fellTree(stack, level, state, pos, miningEntity);
-        }
-        return super.mineBlock(stack, level, state, pos, miningEntity);
-         */
     }
 
     @Override

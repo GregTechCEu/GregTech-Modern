@@ -35,6 +35,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -142,12 +143,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
         return definition$mineBlock(stack, level, state, pos, miningEntity);
-        /*
-        if (stack.is(CustomTags.TREE_FELLING_TOOLS) && state.is(BlockTags.LOGS)) {
-            new TreeFellingHelper().fellTree(stack, level, state, pos, miningEntity);
-        }
-        return super.mineBlock(stack, level, state, pos, miningEntity);
-         */
     }
 
     @Override
@@ -183,6 +178,11 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
 
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         return definition$onBlockStartBreak(stack, pos, player);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        definition$appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {

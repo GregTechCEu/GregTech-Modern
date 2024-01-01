@@ -601,7 +601,7 @@ public interface IGTTool extends IItemUIFactory {
     // Client-side methods
 
     @Environment(EnvType.CLIENT)
-    default void definition$addInformation(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, TooltipFlag flag) {
+    default void definition$appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, TooltipFlag flag) {
         if (!(stack.getItem() instanceof IGTTool tool)) return;
 
         CompoundTag tagCompound = stack.getTag();
@@ -622,28 +622,28 @@ public interface IGTTool extends IItemUIFactory {
             // Plus 1 to match vanilla behavior where tools can still be used once at zero durability. We want to not show this
             int damageRemaining = tool.getTotalMaxDurability(stack) - stack.getDamageValue() + 1;
             if (toolStats.isSuitableForCrafting(stack)) {
-                tooltip.add(Component.translatable("item.gt.tool.tooltip.crafting_uses", FormattingUtil.formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)))));
+                tooltip.add(Component.translatable("item.gtceu.tool.tooltip.crafting_uses", FormattingUtil.formatNumbers(damageRemaining / Math.max(1, toolStats.getToolDamagePerCraft(stack)))));
             }
 
-            tooltip.add(Component.translatable("item.gt.tool.tooltip.general_uses", FormattingUtil.formatNumbers(damageRemaining)));
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.general_uses", FormattingUtil.formatNumbers(damageRemaining)));
         }
 
         // attack info
         if (toolStats.isSuitableForAttacking(stack)) {
-            tooltip.add(Component.translatable("item.gt.tool.tooltip.attack_damage", FormattingUtil.formatNumbers(2 + tool.getTotalAttackDamage(stack))));
-            tooltip.add(Component.translatable("item.gt.tool.tooltip.attack_speed", FormattingUtil.formatNumbers(4 + tool.getTotalAttackSpeed(stack))));
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.attack_damage", FormattingUtil.formatNumbers(2 + tool.getTotalAttackDamage(stack))));
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.attack_speed", FormattingUtil.formatNumbers(4 + tool.getTotalAttackSpeed(stack))));
         }
 
         // mining info
         if (toolStats.isSuitableForBlockBreak(stack)) {
-            tooltip.add(Component.translatable("item.gt.tool.tooltip.mining_speed", FormattingUtil.formatNumbers(tool.getTotalToolSpeed(stack))));
+            tooltip.add(Component.translatable("item.gtceu.tool.tooltip.mining_speed", FormattingUtil.formatNumbers(tool.getTotalToolSpeed(stack))));
 
             int harvestLevel = tool.getTotalHarvestLevel(stack);
-            String harvestName = "item.gt.tool.harvest_level." + harvestLevel;
+            String harvestName = "item.gtceu.tool.harvest_level." + harvestLevel;
             if (I18n.exists(harvestName)) { // if there's a defined name for the harvest level, use it
-                tooltip.add(Component.translatable("item.gt.tool.tooltip.harvest_level_extra", harvestLevel, Component.translatable(harvestName)));
+                tooltip.add(Component.translatable("item.gtceu.tool.tooltip.harvest_level_extra", harvestLevel, Component.translatable(harvestName)));
             } else {
-                tooltip.add(Component.translatable("item.gt.tool.tooltip.harvest_level", harvestLevel));
+                tooltip.add(Component.translatable("item.gtceu.tool.tooltip.harvest_level", harvestLevel));
             }
         }
 
@@ -653,7 +653,7 @@ public interface IGTTool extends IItemUIFactory {
 
         if (aoeDefinition != AoESymmetrical.none()) {
             addedBehaviorNewLine = tooltip.add(Component.literal(""));
-            tooltip.add(Component.translatable("item.gt.tool.behavior.aoe_mining",
+            tooltip.add(Component.translatable("item.gtceu.tool.behavior.aoe_mining",
                     aoeDefinition.column * 2 + 1, aoeDefinition.row * 2 + 1, aoeDefinition.layer + 1));
         }
 
@@ -663,7 +663,7 @@ public interface IGTTool extends IItemUIFactory {
                 addedBehaviorNewLine = true;
                 tooltip.add(Component.literal(""));
             }
-            tooltip.add(Component.translatable("item.gt.tool.behavior.relocate_mining"));
+            tooltip.add(Component.translatable("item.gtceu.tool.behavior.relocate_mining"));
         }
 
         if (!addedBehaviorNewLine && !toolStats.getBehaviors().isEmpty()) {
@@ -672,7 +672,7 @@ public interface IGTTool extends IItemUIFactory {
         toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, world, tooltip, flag));
 
         // unique tooltip
-        String uniqueTooltip = "item.gt.tool." + BuiltInRegistries.ITEM.getKey(this.asItem()).getPath() + ".tooltip";
+        String uniqueTooltip = "item.gtceu.tool." + BuiltInRegistries.ITEM.getKey(this.asItem()).getPath() + ".tooltip";
         if (I18n.exists(uniqueTooltip)) {
             tooltip.add(Component.literal(""));
             tooltip.add(Component.translatable(uniqueTooltip));
@@ -681,7 +681,7 @@ public interface IGTTool extends IItemUIFactory {
         tooltip.add(Component.literal(""));
 
         // valid tools
-        tooltip.add(Component.translatable("item.gt.tool.usable_as",
+        tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClasses(stack).stream()
                         .map(s -> Component.translatable("gt.tool.class." + s))
                         .collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))
@@ -704,14 +704,14 @@ public interface IGTTool extends IItemUIFactory {
                     repairItems.add(TagPrefix.plate.getLocalizedName(material));
                 }
                 if (!repairItems.isEmpty()) {
-                    tooltip.add(Component.translatable("item.gt.tool.tooltip.repair_material", repairItems.stream().collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))));
+                    tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream().collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))));
                 }
             } else {
-                tooltip.add(Component.translatable("item.gt.tool.tooltip.repair_info"));
+                tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_info"));
             }
         }
         if (this.isElectric()) {
-            tooltip.add(Component.translatable("item.gt.tool.replace_tool_head"));
+            tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
         }
     }
 
@@ -796,9 +796,9 @@ public interface IGTTool extends IItemUIFactory {
         CompoundTag tag = getBehaviorsTag(holder.getHeld());
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
         return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
-                .widget(new LabelWidget(6, 10, "item.gt.tool.aoe.columns"))
-                .widget(new LabelWidget(49, 10, "item.gt.tool.aoe.rows"))
-                .widget(new LabelWidget(79, 10, "item.gt.tool.aoe.layers"))
+                .widget(new LabelWidget(6, 10, "item.gtceu.tool.aoe.columns"))
+                .widget(new LabelWidget(49, 10, "item.gtceu.tool.aoe.rows"))
+                .widget(new LabelWidget(79, 10, "item.gtceu.tool.aoe.layers"))
                 .widget(new ButtonWidget(15, 24, 20, 20, new TextTexture("+"), (data) -> {
                     AoESymmetrical.increaseColumn(tag, defaultDefinition);
                     holder.markAsDirty();

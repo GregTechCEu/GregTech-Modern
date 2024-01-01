@@ -39,6 +39,6 @@ public class RotateRailBehavior implements IToolBehavior {
     @Override
     public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flag) {
-        tooltip.add(Component.translatable("item.gt.tool.behavior.rail_rotation"));
+        tooltip.add(Component.translatable("item.gtceu.tool.behavior.rail_rotation"));
     }
 }

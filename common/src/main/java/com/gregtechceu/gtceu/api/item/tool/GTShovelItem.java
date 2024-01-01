@@ -28,6 +28,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShovelItem;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
@@ -35,6 +36,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.List;
 import java.util.Set;
 
 public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
@@ -131,12 +133,6 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
     @Override
     public boolean mineBlock(ItemStack stack, Level level, BlockState state, BlockPos pos, LivingEntity miningEntity) {
         return definition$mineBlock(stack, level, state, pos, miningEntity);
-        /*
-        if (stack.is(CustomTags.TREE_FELLING_TOOLS) && state.is(BlockTags.LOGS)) {
-            new TreeFellingHelper().fellTree(stack, level, state, pos, miningEntity);
-        }
-        return super.mineBlock(stack, level, state, pos, miningEntity);
-         */
     }
 
     @Override
@@ -177,6 +173,11 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
 
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
         return definition$onBlockStartBreak(stack, pos, player);
+    }
+
+    @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        definition$appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 
     public boolean canApplyAtEnchantingTable(ItemStack stack, Enchantment enchantment) {
