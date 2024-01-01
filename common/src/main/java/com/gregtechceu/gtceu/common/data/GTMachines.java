@@ -1614,10 +1614,15 @@ public class GTMachines {
                 (tier, builder) -> {
                     builder.langValue(VNF[tier] + ' ' + displayname)
                             .rotationState(RotationState.ALL)
-                            .abilities(PartAbility.IMPORT_FLUIDS)
                             .overlayTieredHullRenderer(model)
                             .compassNode("fluid_hatch")
                             .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"));
+                            
+                    builder.abilities(switch (io) {
+                        case IO.IN -> PartAbility.IMPORT_FLUIDS;
+                        case IO.OUT -> PartAbility.EXPORT_FLUIDS;
+                        default -> throw new IllegalArgumentException("This can only be used for IO.IN and IO.OUT");
+                    });
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
