@@ -166,8 +166,56 @@ public class ToolHelper {
         return stack.getDamageValue() <= stack.getMaxDamage();
     }
 
-    public static void damageItem(@Nonnull ItemStack stack,/* RandomSource random,*/ LivingEntity user, int damageAmount) {
-        stack.hurtAndBreak(damageAmount, user, p -> p.broadcastBreakEvent(user.getUsedItemHand()));
+    public static void damageItem(@Nonnull ItemStack stack, @Nullable LivingEntity user, int damage) {
+        if (!(stack.getItem() instanceof IGTTool tool)) {
+            if (user != null) stack.hurtAndBreak(damage, user, p -> {});
+        } else {
+            if (stack.getTag() != null && stack.getTag().getBoolean(UNBREAKABLE_KEY)) {
+                return;
+            }
+            if (!(user instanceof Player player) || !player.isCreative()) {
+                RandomSource random = user == null ? GTValues.RNG : user.getRandom();
+                if (tool.isElectric()) {
+                    int electricDamage = damage * ConfigHolder.INSTANCE.machines.energyUsageMultiplier;
+                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+                    if (electricItem != null) {
+                        electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
+                        if (electricItem.getCharge() > 0 &&
+                                random.nextInt(100) > ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
+                            return;
+                        }
+                    } else {
+                        throw new IllegalStateException("Electric tool does not have an attached electric item capability.");
+                    }
+                }
+                int unbreakingLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.UNBREAKING, stack);
+                int negated = 0;
+                for (int k = 0; unbreakingLevel > 0 && k < damage; k++) {
+                    if (DigDurabilityEnchantment.shouldIgnoreDurabilityDrop(stack, unbreakingLevel, random)) {
+                        negated++;
+                    }
+                }
+                damage -= negated;
+                if (damage <= 0) {
+                    return;
+                }
+                int newDurability = stack.getDamageValue() + damage;
+                if (user instanceof ServerPlayer serverPlayer) {
+                    CriteriaTriggers.ITEM_DURABILITY_CHANGED.trigger(serverPlayer, stack, newDurability);
+                }
+                stack.setDamageValue(newDurability);
+                if (newDurability > stack.getMaxDamage()) {
+                    if (user instanceof Player player) {
+                        Stat<?> stat = Stats.ITEM_BROKEN.get(stack.getItem());
+                        player.awardStat(stat);
+                    }
+                    if (user != null) {
+                        user.breakItem(stack);
+                    }
+                    stack.shrink(1);
+                }
+            }
+        }
     }
 
     public static void playToolSound(GTToolType toolType, ServerPlayer player) {
