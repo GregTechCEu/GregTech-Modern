@@ -6,6 +6,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -13,12 +14,12 @@ import javax.annotation.Nullable;
  * @implNote IBlockGridHighLight
  */
 public interface IToolGridHighLight {
-    default boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
+    default boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
         return true;
     }
 
     @Nullable
-    default ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
+    default ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         return null;
     }
 

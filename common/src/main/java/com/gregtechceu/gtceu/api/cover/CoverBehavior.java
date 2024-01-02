@@ -31,6 +31,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Represents cover instance attached on the specific side of meta tile entity
@@ -178,16 +179,16 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        return toolType == GTToolType.CROWBAR || (toolType == GTToolType.SCREWDRIVER && this instanceof IUICover);
+    public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
+        return toolTypes.contains(GTToolType.CROWBAR) || (toolTypes.contains(GTToolType.SCREWDRIVER ) && this instanceof IUICover);
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.CROWBAR) {
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(GTToolType.CROWBAR)) {
             return GuiTextures.TOOL_REMOVE_COVER;
         }
-        if (toolType == GTToolType.SCREWDRIVER && this instanceof IUICover) {
+        if (toolTypes.contains(GTToolType.SCREWDRIVER) && this instanceof IUICover) {
             return GuiTextures.TOOL_COVER_SETTINGS;
         }
         return null;

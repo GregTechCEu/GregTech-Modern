@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.core.BlockPos;
@@ -25,6 +26,10 @@ import java.util.List;
  * Describes generic behaviour attachable to tools. Multiple behaviours can be attached to one tool.
  */
 public interface IToolBehavior {
+
+    default void init(IGTTool toolItem) {
+
+    }
 
     /**
      * @param stack    The current ItemStack

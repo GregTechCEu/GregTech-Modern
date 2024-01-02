@@ -2,29 +2,37 @@ package com.gregtechceu.gtceu.api.item.tool;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.fabricators_of_create.porting_lib.extensions.extensions.IShearable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.ClipContext;
@@ -393,6 +401,14 @@ public class ToolHelper {
                     1.0F);
         }
         player.swing(hand);
+    }
+
+    public static Set<GTToolType> getToolTypes(ItemStack tool) {
+        Set<GTToolType> types = new HashSet<>();
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            if (toolType.itemTags.stream().anyMatch(tool::is)) types.add(toolType);
+        }
+        return types;
     }
 
     /**

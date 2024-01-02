@@ -58,6 +58,7 @@ public class GTHoeItem extends ShovelItem implements IItemUseFirst, IGTTool {
         if (Platform.isClient()) {
             ToolItemRenderer.create(this, toolType);
         }
+        definition$init();
     }
 
     @ExpectPlatform
@@ -77,20 +78,7 @@ public class GTHoeItem extends ShovelItem implements IItemUseFirst, IGTTool {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        definition$onItemUseFirst(itemStack, context);
-        var toolable = GTCapabilityHelper.getToolable(context.getLevel(), context.getClickedPos(), context.getClickedFace());
-        if (toolable != null && ToolHelper.canUse(itemStack)) {
-            var result = toolable.onToolClick(getToolType(), itemStack, context);
-            if (result == InteractionResult.CONSUME && context.getPlayer() instanceof ServerPlayer serverPlayer) {
-                ToolHelper.playToolSound(toolType, serverPlayer);
-
-                if (!serverPlayer.isCreative()) {
-                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
-                }
-            }
-            return result;
-        }
-        return InteractionResult.PASS;
+        return definition$onItemUseFirst(itemStack, context);
     }
 
     @Override

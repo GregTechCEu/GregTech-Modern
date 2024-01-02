@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
@@ -22,8 +24,11 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
@@ -31,6 +36,7 @@ import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
+import java.util.Set;
 import java.util.function.Function;
 
 
@@ -47,11 +53,11 @@ public class BlockHighLightRenderer {
         var level = mc.level;
         var player = mc.player;
         if (level != null && player != null) {
-            var held = player.getMainHandItem();
-            var blockPos = target.getBlockPos();
+            ItemStack held = player.getMainHandItem();
+            BlockPos blockPos = target.getBlockPos();
 
-            var toolType = held.getItem() instanceof GTToolItem toolItem ? toolItem.getToolType() : null;
-            var blockEntity = level.getBlockEntity(blockPos);
+            Set<GTToolType> toolType = held.getItem() instanceof IGTTool toolItem ? toolItem.getToolClasses(held) : null;
+            BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight
             if (toolType != null && blockEntity instanceof IToolGridHighLight gridHighLight) {

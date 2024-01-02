@@ -22,9 +22,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface IGTToolImpl extends IGTTool {
-    static void init() {
-    }
-
     @Nullable
     default ICapabilityProvider definition$initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
         List<ICapabilityProvider> providers = new ArrayList<>();

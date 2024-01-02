@@ -547,8 +547,7 @@ public interface IGTTool extends IItemUIFactory {
         return (double) (maxDamage - damage) / (double) maxDamage;
     }
 
-    @ExpectPlatform
-    public static void init() {
+    default void definition$init() {
 
     }
 
