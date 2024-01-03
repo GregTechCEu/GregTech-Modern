@@ -385,7 +385,7 @@ public interface IGTTool extends IItemUIFactory {
                         if (playSoundOnBlockDestroy()) playSound(player);
                     } else {
                         if (result == -1) {
-                            if (state.is(BlockTags.LOGS)) {
+                            if (getBehaviorsTag(stack).getBoolean(TREE_FELLING_KEY) && state.is(BlockTags.LOGS)) {
                                 new TreeFellingHelper().fellTree(stack, player.level(), state, pos, player);
                             }
                             if (playSoundOnBlockDestroy()) playSound(player);
