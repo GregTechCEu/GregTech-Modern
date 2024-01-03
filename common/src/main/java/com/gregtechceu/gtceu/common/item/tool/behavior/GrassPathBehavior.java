@@ -55,7 +55,7 @@ public class GrassPathBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
         // only attempt to till if the center block is tillable
-        if (level.getBlockState(pos.above()).isAir() && isBlockPathConvertible(stack, level, player, pos, null)) {
+        if (level.getBlockState(pos.above()).isAir() && isBlockPathConvertible(stack, level, player, pos, context)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -101,7 +101,7 @@ public class GrassPathBehavior implements IToolBehavior {
         return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, GrassPathBehavior.INSTANCE::isBlockPathConvertible);
     }
 
-    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         if (level.isEmptyBlock(pos.above())) {
             Block block = level.getBlockState(pos).getBlock();
             return ShovelItem.FLATTENABLES.containsKey(block);

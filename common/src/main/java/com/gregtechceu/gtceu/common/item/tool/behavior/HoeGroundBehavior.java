@@ -76,7 +76,7 @@ public class HoeGroundBehavior implements IToolBehavior {
                     return InteractionResult.PASS;
 
                 blocks = getTillableBlocks(stack, aoeDefinition, world, player, blockHitResult);
-                if (isBlockTillable(stack, world, player, blockHitResult.getBlockPos(), null)) {
+                if (isBlockTillable(stack, world, player, blockHitResult.getBlockPos(), context)) {
                     blocks.add(blockHitResult.getBlockPos());
                 }
             }
@@ -110,7 +110,7 @@ public class HoeGroundBehavior implements IToolBehavior {
         return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, HoeGroundBehavior.INSTANCE::isBlockTillable);
     }
 
-    protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
         if (world.getBlockState(pos.above()).isAir()) {
             Block block = world.getBlockState(pos).getBlock();
             return HoeItem.TILLABLES.containsKey(block) && HoeItem.TILLABLES.get(block).getFirst().test(context);

@@ -8,14 +8,13 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.ToolActions;
-import org.jetbrains.annotations.Nullable;
 
 public class GrassPathBehaviorImpl extends GrassPathBehavior {
     public static GrassPathBehavior create() {
         return new GrassPathBehaviorImpl();
     }
 
-    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         if (level.getBlockState(pos.above()).isAir()) {
             BlockState state = level.getBlockState(pos);
             BlockState newState = state.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);

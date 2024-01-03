@@ -52,7 +52,7 @@ public class ScrapeBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
         // only attempt to strip if the center block is strippable
-        if (isBlockScrapable(stack, level, player, pos, null)) {
+        if (isBlockScrapable(stack, level, player, pos, context)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -94,14 +94,12 @@ public class ScrapeBehavior implements IToolBehavior {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getScrapableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
-                                                   Player player, HitResult rayTraceResult) {
+    public static Set<BlockPos> getScrapableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level, Player player, HitResult rayTraceResult) {
         return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
                 ScrapeBehavior.INSTANCE::isBlockScrapable);
     }
 
-    protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos,
-                                            @Nullable UseOnContext context) {
+    protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         return WeatheringCopper.getPrevious(state).isPresent();
     }

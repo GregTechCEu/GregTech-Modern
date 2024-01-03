@@ -16,7 +16,7 @@ public class LogStripBehaviorImpl extends LogStripBehavior {
     }
 
     @Override
-    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
         return newState != null && newState != state;

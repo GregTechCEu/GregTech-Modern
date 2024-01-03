@@ -64,7 +64,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
                 return InteractionResult.PASS;
 
             blocks = ToolHelper.iterateAoE(stack, aoeDefinition, player.level(), player, rayTraceResult, HarvestCropsBehavior::isBlockCrops);
-            if (isBlockCrops(stack, context.getLevel(), player, blockHitResult.getBlockPos(), null)) {
+            if (isBlockCrops(stack, context.getLevel(), player, blockHitResult.getBlockPos(), context)) {
                 blocks.add(blockHitResult.getBlockPos());
             }
         }

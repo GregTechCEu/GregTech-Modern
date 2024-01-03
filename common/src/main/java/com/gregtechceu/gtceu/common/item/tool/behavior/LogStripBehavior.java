@@ -52,7 +52,7 @@ public class LogStripBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
         // only attempt to strip if the center block is strippable
-        if (isBlockStrippable(stack, level, player, pos, null)) {
+        if (isBlockStrippable(stack, level, player, pos, context)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -98,7 +98,7 @@ public class LogStripBehavior implements IToolBehavior {
         return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult, LogStripBehavior.INSTANCE::isBlockStrippable);
     }
 
-    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         Block block = level.getBlockState(pos).getBlock();
         return AxeItem.STRIPPABLES.containsKey(block);
     }

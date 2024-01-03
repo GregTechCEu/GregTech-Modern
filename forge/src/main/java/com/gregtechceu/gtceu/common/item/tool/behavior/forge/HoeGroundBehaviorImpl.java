@@ -16,7 +16,7 @@ public class HoeGroundBehaviorImpl extends HoeGroundBehavior {
         return new HoeGroundBehaviorImpl();
     }
 
-    protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
         if (world.getBlockState(pos.above()).isAir()) {
             BlockState state = world.getBlockState(pos);
             BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);

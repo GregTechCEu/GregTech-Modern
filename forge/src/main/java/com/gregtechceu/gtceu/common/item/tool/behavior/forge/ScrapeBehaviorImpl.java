@@ -16,8 +16,7 @@ public class ScrapeBehaviorImpl extends ScrapeBehavior {
         return new ScrapeBehaviorImpl();
     }
 
-    protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos,
-                                       @Nullable UseOnContext context) {
+    protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
         return newState != null && newState != state;

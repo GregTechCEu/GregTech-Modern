@@ -52,7 +52,7 @@ public class WaxOffBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
         // only attempt to strip if the center block is strippable
-        if (isBlockUnWaxable(stack, level, player, pos, null)) {
+        if (isBlockUnWaxable(stack, level, player, pos, context)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -85,8 +85,7 @@ public class WaxOffBehavior implements IToolBehavior {
         }
 
         if (pathed) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF,
-                    SoundSource.PLAYERS, 1.0F, 1.0F);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF, SoundSource.PLAYERS, 1.0F, 1.0F);
             player.swing(hand);
             return InteractionResult.SUCCESS;
         }
@@ -99,7 +98,7 @@ public class WaxOffBehavior implements IToolBehavior {
                 WaxOffBehavior.INSTANCE::isBlockUnWaxable);
     }
 
-    protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         Block block = level.getBlockState(pos).getBlock();
         return HoneycombItem.WAX_OFF_BY_BLOCK.get().containsKey(block);
     }

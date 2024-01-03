@@ -16,7 +16,7 @@ public class WaxOffBehaviorImpl extends WaxOffBehavior {
     }
 
     @Override
-    protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
         return newState != null && newState != state;
