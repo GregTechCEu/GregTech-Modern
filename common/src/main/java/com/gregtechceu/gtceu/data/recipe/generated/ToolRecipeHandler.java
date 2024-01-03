@@ -463,7 +463,7 @@ public class ToolRecipeHandler {
                 "EPS", "CDC", "PBP",
                 'E', GTItems.EMITTER_LuV.asStack(),
                 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.RhodiumPlatedPalladium),
-                'S', GTItems.SENSOR_HV.asStack(),
+                'S', GTItems.SENSOR_LuV.asStack(),
                 'D', GTItems.COVER_SCREEN.asStack(),
                 'C', CustomTags.LuV_CIRCUITS,
                 'B', CustomTags.LuV_BATTERIES);
