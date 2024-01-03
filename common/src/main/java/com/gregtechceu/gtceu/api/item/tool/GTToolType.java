@@ -55,7 +55,7 @@ public class GTToolType {
             .toolTag(FABRIC, TagUtil.createItemTag("pickaxes", true))
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/pickaxe", true))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/pickaxe", true))
-            .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F).behaviors(TorchPlaceBehavior.INSTANCE))
+            .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)/*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
             .toolTag(FORGE, TagUtil.createItemTag("shovels", true))
@@ -92,7 +92,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
-                    .behaviors(TorchPlaceBehavior.INSTANCE))
+                    /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
             .build();
     public static final GTToolType SPADE = GTToolType.builder("spade")
             .toolTag(FORGE, TagUtil.createItemTag("tools/spades", false))
