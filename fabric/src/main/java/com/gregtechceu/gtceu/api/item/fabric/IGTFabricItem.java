@@ -30,6 +30,21 @@ public interface IGTFabricItem {
     }
 
     /**
+     * Called before a block is broken. Return true to prevent default block
+     * harvesting.
+     *
+     * Note: In SMP, this is called on both client and server sides!
+     *
+     * @param itemstack The current ItemStack
+     * @param pos       Block's position in world
+     * @param player    The Player that is wielding the item
+     * @return True to prevent harvesting, false to continue as normal
+     */
+    default boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+        return false;
+    }
+
+    /**
      * Checks whether an item can be enchanted with a certain enchantment. This
      * applies specifically to enchanting an item in the enchanting table and is
      * called when retrieving the list of possible enchantments for an item.

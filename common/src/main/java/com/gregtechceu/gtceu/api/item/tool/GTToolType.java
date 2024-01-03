@@ -72,7 +72,7 @@ public class GTToolType {
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/axe", true))
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
-                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE))
+                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE, ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
             .constructor(GTAxeItem::create)
             .build();
     public static final GTToolType HOE = GTToolType.builder("hoe")

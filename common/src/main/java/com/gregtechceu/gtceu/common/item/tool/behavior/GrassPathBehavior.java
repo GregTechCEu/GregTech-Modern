@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -18,7 +19,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +30,14 @@ import java.util.Set;
 
 public class GrassPathBehavior implements IToolBehavior {
 
-    public static final GrassPathBehavior INSTANCE = new GrassPathBehavior();
+    public static final GrassPathBehavior INSTANCE = create();
 
     protected GrassPathBehavior() {/**/}
+
+    @ExpectPlatform
+    protected static GrassPathBehavior create() {
+        throw new AssertionError();
+    }
 
     @NotNull
     @Override
@@ -72,8 +78,10 @@ public class GrassPathBehavior implements IToolBehavior {
 
         boolean pathed = false;
         for (BlockPos blockPos : blocks) {
-            pathed |= level.setBlock(blockPos, Blocks.DIRT_PATH.defaultBlockState(), Block.UPDATE_ALL);
-            ToolHelper.damageItem(stack, player);
+            pathed |= level.setBlock(blockPos, getFlattened(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))), Block.UPDATE_ALL);
+            if (!player.isCreative()) {
+                ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
+            }
             if (stack.isEmpty())
                 break;
         }
@@ -88,19 +96,22 @@ public class GrassPathBehavior implements IToolBehavior {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getPathConvertibleBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
+    public static Set<BlockPos> getPathConvertibleBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
                                                          Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
-                GrassPathBehavior::isBlockPathConvertible);
+        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, GrassPathBehavior.INSTANCE::isBlockPathConvertible);
     }
 
-    private static boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos,
-                                                  @Nullable BlockPos hitBlockPos) {
-        if (level.getBlockState(pos.above()).isAir()) {
+    protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, @Nullable UseOnContext context) {
+        if (level.isEmptyBlock(pos.above())) {
             Block block = level.getBlockState(pos).getBlock();
             return ShovelItem.FLATTENABLES.containsKey(block);
         }
         return false;
+    }
+
+    protected BlockState getFlattened(BlockState unFlattenedState, UseOnContext context) {
+        // just assume it exists.
+        return ShovelItem.FLATTENABLES.get(unFlattenedState.getBlock());
     }
 
     @Override

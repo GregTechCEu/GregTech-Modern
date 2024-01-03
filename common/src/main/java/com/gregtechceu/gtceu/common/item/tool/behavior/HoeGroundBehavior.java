@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.mojang.datafixers.util.Pair;
+import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -22,7 +23,6 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,9 +37,14 @@ import java.util.function.Predicate;
  */
 public class HoeGroundBehavior implements IToolBehavior {
 
-    public static final HoeGroundBehavior INSTANCE = new HoeGroundBehavior();
+    public static final HoeGroundBehavior INSTANCE = create();
 
     protected HoeGroundBehavior() {/**/}
+
+    @ExpectPlatform
+    protected static HoeGroundBehavior create() {
+        throw new AssertionError();
+    }
 
     @NotNull
     @Override
@@ -82,8 +87,12 @@ public class HoeGroundBehavior implements IToolBehavior {
             BlockState state = world.getBlockState(blockPos);
             Block block = state.getBlock();
             if (HoeItem.TILLABLES.containsKey(block)) {
-                tillGround(new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)), HoeItem.TILLABLES.get(block));
-                tilled = true;
+                tilled |= tillGround(new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)), state);
+                if (!player.isCreative()) {
+                    ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
+                }
+                if (stack.isEmpty())
+                    break;
             }
         }
 
@@ -98,24 +107,24 @@ public class HoeGroundBehavior implements IToolBehavior {
     }
 
     public static Set<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world, Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, HoeGroundBehavior::isBlockTillable);
+        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, HoeGroundBehavior.INSTANCE::isBlockTillable);
     }
 
-    private static boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, @Nullable BlockPos hitBlockPos) {
+    protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, @Nullable UseOnContext context) {
         if (world.getBlockState(pos.above()).isAir()) {
             Block block = world.getBlockState(pos).getBlock();
-            return HoeItem.TILLABLES.containsKey(block);
+            return HoeItem.TILLABLES.containsKey(block) && HoeItem.TILLABLES.get(block).getFirst().test(context);
         }
         return false;
     }
 
-    private static void tillGround(UseOnContext context, Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> state) {
+    protected boolean tillGround(UseOnContext context, BlockState block) {
+        Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> state = HoeItem.TILLABLES.get(block.getBlock());
         if (state.getFirst().test(context)) {
             state.getSecond().accept(context);
+            return true;
         }
-        if (!context.getPlayer().isCreative()) {
-            ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
-        }
+        return false;
     }
 
     @Override

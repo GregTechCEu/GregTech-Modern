@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
 import dev.architectury.injectables.annotations.ExpectPlatform;
 import io.github.fabricators_of_create.porting_lib.extensions.extensions.IShearable;
@@ -25,17 +24,16 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stat;
 import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
-import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.*;
@@ -43,7 +41,6 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -254,7 +251,7 @@ public class ToolHelper {
     
     @FunctionalInterface
     public interface AOEFunction {
-        boolean apply(ItemStack stack, Level level, Player player, BlockPos start, BlockPos end);
+        boolean apply(ItemStack stack, Level level, Player player, BlockPos start, UseOnContext context);
     }
 
     public static AoESymmetrical getMaxAoEDefinition(ItemStack stack) {
@@ -286,7 +283,7 @@ public class ToolHelper {
                             if (!(x == 0 && y == 0 && z == 0)) {
                                 BlockPos pos = blockHit.getBlockPos().offset(x, isDown ? y : -y, z);
                                 if (player.mayUseItemAt(pos.relative(blockHit.getDirection()), blockHit.getDirection(), stack)) {
-                                    if (function.apply(stack, world, player, pos, blockHit.getBlockPos())) {
+                                    if (function.apply(stack, world, player, pos, new UseOnContext(player.level(), player, player.getUsedItemHand(), stack, blockHit))) {
                                         validPositions.add(pos);
                                     }
                                 }
@@ -306,7 +303,7 @@ public class ToolHelper {
                                 BlockPos pos = blockHit.getBlockPos().offset(
                                         isX ? (isNegative ? x : -x) : (isNegative ? z : -z), y,
                                         isX ? (isNegative ? z : -z) : (isNegative ? x : -x));
-                                if (function.apply(stack, world, player, pos, blockHit.getBlockPos())) {
+                                if (function.apply(stack, world, player, pos, new UseOnContext(player.level(), player, player.getUsedItemHand(), stack, blockHit))) {
                                     validPositions.add(pos);
                                 }
                             }
@@ -319,18 +316,17 @@ public class ToolHelper {
         return Collections.emptySet();
     }
 
-    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
-                                                     Player player, HitResult rayTraceResult) {
+    public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world, Player player, HitResult rayTraceResult) {
         return iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, ToolHelper::isBlockAoEHarvestable);
     }
 
-    private static boolean isBlockAoEHarvestable(ItemStack stack, Level world, Player player, BlockPos pos,
-                                                 BlockPos hitBlockPos) {
+    private static boolean isBlockAoEHarvestable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
         if (world.getBlockState(pos).isAir()) return false;
 
         BlockState state = world.getBlockState(pos);
         if (state.getBlock() instanceof LiquidBlock) return false;
 
+        BlockPos hitBlockPos = context.getClickedPos();
         BlockState hitBlockState = world.getBlockState(hitBlockPos);
         if (state.getDestroySpeed(world, pos) < 0 ||
                 state.getDestroySpeed(world, pos) - hitBlockState.getDestroySpeed(world, hitBlockPos) > 8) {
