@@ -114,7 +114,7 @@ public class GTToolType {
                     .aoe(2, 2, 2)
                     .behaviors(HoeGroundBehavior.INSTANCE, HarvestCropsBehavior.INSTANCE)
                     .canApplyEnchantment(EnchantmentCategory.DIGGER))
-            .constructor(GTSwordItem::create)
+            .constructor(GTHoeItem::create)
             .build();
 
     public static final GTToolType SAW = GTToolType.builder("saw")

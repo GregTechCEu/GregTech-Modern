@@ -8,6 +8,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,7 +29,8 @@ public class HoeGroundBehaviorImpl extends HoeGroundBehavior {
     protected boolean tillGround(UseOnContext context, BlockState state) {
         BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
         if (newState != null && newState != state) {
-            return context.getLevel().setBlock(context.getClickedPos(), newState, Block.UPDATE_ALL);
+            context.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, context.getClickedPos(), GameEvent.Context.of(context.getPlayer(), state));
+            return context.getLevel().setBlock(context.getClickedPos(), newState, Block.UPDATE_ALL_IMMEDIATE);
         }
         return false;
     }
