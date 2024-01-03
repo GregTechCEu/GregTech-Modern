@@ -2580,7 +2580,7 @@
     "gtceu.machine.energy_converter.message_conversion_native":"FE/E转为EU，输入：%dFE/E，输出：%dA %d EU",
     "gtceu.machine.energy_converter.tooltip_conversion_eu":"§aEU转换：§f%dA %d EU（%s§f)）§7 -> %d FE/E",
     "gtceu.machine.energy_converter.tooltip_conversion_native":"§cFE/E转换：§f%d FE/E -> %dA %d EU （%s§f）",
-    "gtceu.machine.energy_converter.tooltip_tool_usage":"默认§f转换为FE/E，§7使用软锤切换。",
+    "gtceu.machine.energy_converter.tooltip_tool_usage":"默认§f转换为FE/E§r，使用软锤切换。",
     "gtceu.machine.energy_hatch.input.tooltip":"为多方块结构输入能量",
     "gtceu.machine.energy_hatch.input_hi_amp.tooltip":"为多方块结构输入更多电流",
     "gtceu.machine.energy_hatch.output.tooltip":"为多方块结构输出能量",
