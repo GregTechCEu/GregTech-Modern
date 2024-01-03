@@ -46,6 +46,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -772,7 +773,7 @@ public interface IGTTool extends IItemUIFactory {
         if (ConfigHolder.INSTANCE.client.toolCraftingSounds && getSound() != null && player != null) {
             if (canPlaySound(stack)) {
                 setLastCraftingSoundTime(stack);
-                player.level().playSound(null, player.position().x, player.position().y, player.position().z, getSound().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
+                playSound(player);
             }
         }
     }

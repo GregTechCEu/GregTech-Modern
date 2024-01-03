@@ -18,12 +18,15 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.RotatedPillarBlock;
+import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 public class LogStripBehavior implements IToolBehavior {
@@ -71,7 +74,7 @@ public class LogStripBehavior implements IToolBehavior {
 
         boolean pathed = false;
         for (BlockPos blockPos : blocks) {
-            pathed |= level.setBlock(blockPos, AxeItem.STRIPPABLES.get(level.getBlockState(blockPos).getBlock()).defaultBlockState(), Block.UPDATE_ALL);
+            pathed |= level.setBlock(blockPos, getStripped(level.getBlockState(pos)), Block.UPDATE_ALL);
             ToolHelper.damageItem(stack, player);
             if (stack.isEmpty())
                 break;
@@ -100,6 +103,11 @@ public class LogStripBehavior implements IToolBehavior {
             return AxeItem.STRIPPABLES.containsKey(block);
         }
         return false;
+    }
+
+    private BlockState getStripped(BlockState unstrippedState) {
+        // just assume it exists.
+        return AxeItem.STRIPPABLES.get(unstrippedState.getBlock()).defaultBlockState().setValue(RotatedPillarBlock.AXIS, unstrippedState.getValue(RotatedPillarBlock.AXIS));
     }
 
     @Override

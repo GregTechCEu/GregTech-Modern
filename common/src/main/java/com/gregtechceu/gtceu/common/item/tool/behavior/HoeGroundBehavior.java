@@ -56,7 +56,8 @@ public class HoeGroundBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
         // only attempt to till if the center block is tillable
-        if (world.getBlockState(pos.above()).isAir() && isBlockTillable(stack, world, player, pos, null)) {
+        Block hitBlock = world.getBlockState(pos).getBlock();
+        if (HoeItem.TILLABLES.containsKey(hitBlock) && HoeItem.TILLABLES.get(hitBlock).getFirst().test(context)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -81,7 +82,7 @@ public class HoeGroundBehavior implements IToolBehavior {
             BlockState state = world.getBlockState(blockPos);
             Block block = state.getBlock();
             if (HoeItem.TILLABLES.containsKey(block)) {
-                tillGround(context, HoeItem.TILLABLES.get(block));
+                tillGround(new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)), HoeItem.TILLABLES.get(block));
                 tilled = true;
             }
         }
@@ -97,8 +98,7 @@ public class HoeGroundBehavior implements IToolBehavior {
     }
 
     public static Set<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world, Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult,
-                HoeGroundBehavior::isBlockTillable);
+        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, HoeGroundBehavior::isBlockTillable);
     }
 
     private static boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, @Nullable BlockPos hitBlockPos) {

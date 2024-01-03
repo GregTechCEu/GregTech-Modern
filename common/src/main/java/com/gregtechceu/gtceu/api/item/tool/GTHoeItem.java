@@ -82,6 +82,11 @@ public class GTHoeItem extends ShovelItem implements IItemUseFirst, IGTTool {
     }
 
     @Override
+    public InteractionResult useOn(UseOnContext context) {
+        return definition$onItemUse(context);
+    }
+
+    @Override
     public String getDescriptionId() {
         return toolType.getUnlocalizedName();
     }
