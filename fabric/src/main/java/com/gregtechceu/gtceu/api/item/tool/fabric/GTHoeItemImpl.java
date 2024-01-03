@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool.fabric;
 
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.item.fabric.IGTFabricItem;
 import com.gregtechceu.gtceu.api.item.fabric.IGTToolImpl;
 import com.gregtechceu.gtceu.api.item.tool.*;
 import net.minecraft.core.BlockPos;
@@ -14,9 +15,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.Enchantment;
+import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class GTHoeItemImpl extends GTHoeItem implements IGTToolImpl {
+public class GTHoeItemImpl extends GTHoeItem implements IGTToolImpl, IGTFabricItem {
     public GTHoeItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(toolType, tier, material, toolStats, properties);
     }
@@ -50,12 +52,10 @@ public class GTHoeItemImpl extends GTHoeItem implements IGTToolImpl {
         return super.canDisableShield(stack, shield, entity, attacker);
     }
 
-    /*
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
         return super.doesSneakBypassUse(stack, level, pos, player);
     }
-    */
 
     @Override
     public boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {

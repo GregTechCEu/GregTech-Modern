@@ -67,12 +67,10 @@ public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricI
         return super.canDisableShield(stack, shield, entity, attacker);
     }
 
-    /*
     @Override
     public boolean doesSneakBypassUse(ItemStack stack, LevelReader level, BlockPos pos, Player player) {
         return super.doesSneakBypassUse(stack, level, pos, player);
     }
-    */
 
     @Override
     public boolean allowContinuingBlockBreaking(Player player, ItemStack oldStack, ItemStack newStack) {

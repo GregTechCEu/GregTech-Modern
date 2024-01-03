@@ -14,7 +14,7 @@ import net.minecraft.world.phys.BlockHitResult;
  * @date 2022/11/6
  * @implNote A machine which hooks right click events.
  */
-public interface IInteractedMachine extends IMachineFeature{
+public interface IInteractedMachine extends IMachineFeature {
 
     /**
      * Basically a hook from block {@link net.minecraft.world.level.block.state.BlockBehaviour#use(BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)}

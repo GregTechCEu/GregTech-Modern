@@ -4,6 +4,7 @@
   "package": "com.gregtechceu.gtceu.fabric.core.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "MultiPlayerGameModeMixin"
   ],
   "mixins": [
     "AppearanceBlockMixin",

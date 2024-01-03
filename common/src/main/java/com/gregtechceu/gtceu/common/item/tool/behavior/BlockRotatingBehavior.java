@@ -3,17 +3,27 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
+import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
+import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RailBlock;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,30 +37,33 @@ public class BlockRotatingBehavior implements IToolBehavior {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        BlockEntity te = context.getLevel().getBlockEntity(context.getClickedPos());
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+        BlockEntity te = level.getBlockEntity(pos);
         // MTEs have special handling on rotation
         if (te instanceof IMachineBlockEntity) {
             return InteractionResult.PASS;
         }
 
-        BlockState state = context.getLevel().getBlockState(context.getClickedPos());
+        Player player = context.getPlayer();
+
+        BlockState state = level.getBlockState(pos);
         Block b = state.getBlock();
         // leave rail rotation to Crowbar only
-        if (b instanceof RailBlock) {
+        if (b instanceof BaseRailBlock) {
             return InteractionResult.FAIL;
         }
 
-        if (!context.getPlayer().isCrouching()) {
+        if (!player.isCrouching()) {
             // Special cases for vanilla blocks where the default rotation behavior is less than ideal
-            /* TODO custom rotation behaviour
             ICustomRotationBehavior behavior = CustomBlockRotations.getCustomRotation(b);
             if (behavior != null) {
-                if (behavior.customRotate(state, world, pos, RayTracer.retraceBlock(world, player, pos))) {
-                    ToolHelper.onActionDone(player, world, hand);
+                if (behavior.customRotate(state, level, pos, retraceBlock(level, player, pos))) {
+                    ToolHelper.onActionDone(player, level, context.getHand());
                     return InteractionResult.SUCCESS;
                 }
-            } else*/ if (state.rotate(context.getPlayer().getDirection().getClockWise() == context.getClickedFace() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
-                ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
+            } else if (state.rotate(player.getDirection().getClockWise() == context.getClickedFace() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
+                ToolHelper.onActionDone(player, level, context.getHand());
                 return InteractionResult.SUCCESS;
             }
         }
@@ -61,5 +74,20 @@ public class BlockRotatingBehavior implements IToolBehavior {
     public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
                                @NotNull TooltipFlag flag) {
         tooltip.add(Component.translatable("item.gtceu.tool.behavior.block_rotation"));
+    }
+
+    public static BlockHitResult retraceBlock(BlockGetter level, Player player, BlockPos pos) {
+        Vec3 startVec = RayTraceHelper.getTraceOrigin(player);
+        Vec3 endVec = RayTraceHelper.getTraceTarget(player, ToolHelper.getPlayerBlockReach(player), startVec);
+        BlockState state = level.getBlockState(pos);
+        VoxelShape baseShape = state.getShape(level, pos);
+        BlockHitResult baseTraceResult = baseShape.clip(startVec, endVec, pos);
+        if (baseTraceResult != null) {
+            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player)).clip(startVec, endVec, pos);
+            if (raytraceTraceShape != null) {
+                return raytraceTraceShape;
+            }
+        }
+        return baseTraceResult;
     }
 }

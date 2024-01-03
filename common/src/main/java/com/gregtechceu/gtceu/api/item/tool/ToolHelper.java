@@ -428,7 +428,7 @@ public class ToolHelper {
     }
 
     @ExpectPlatform
-    private static double getPlayerBlockReach(@NotNull Player player) {
+    public static double getPlayerBlockReach(@NotNull Player player) {
         throw new AssertionError();
     }
 
