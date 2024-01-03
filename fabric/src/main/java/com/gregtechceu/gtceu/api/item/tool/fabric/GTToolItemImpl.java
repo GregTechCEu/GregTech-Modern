@@ -32,7 +32,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTToolItemImpl extends GTToolItem implements FabricItem, IGTFabricItem {
+public class GTToolItemImpl extends GTToolItem implements IGTToolImpl, IGTFabricItem {
 
     protected GTToolItemImpl(GTToolType toolType, MaterialToolTier tier, Material material,  IGTToolDefinition definition, Properties properties) {
         super(toolType, tier, material, definition, properties);

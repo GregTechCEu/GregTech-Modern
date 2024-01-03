@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import dev.architectury.injectables.annotations.ExpectPlatform;
@@ -39,7 +40,7 @@ public class PlungerBehavior implements IToolBehavior {
 //                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).input : null) :
 //                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).output : fluidHandler);
 
-        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(1000, true) != null) {
+        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(FluidHelper.getBucket(), true) != null) {
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
             return InteractionResult.PASS;
         }

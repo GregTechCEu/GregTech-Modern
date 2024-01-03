@@ -7,11 +7,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
 public interface IGTToolImpl extends IGTTool {
-    @Override
-    default void definition$init() {
-        getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
-    }
-
     static boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (stack.getItem() instanceof IGTTool gtTool) {
             int toolMiningLevel = gtTool.getTier().getLevel();

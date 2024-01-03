@@ -549,7 +549,7 @@ public interface IGTTool extends IItemUIFactory {
     }
 
     default void definition$init() {
-
+        getToolStats().getBehaviors().forEach(behavior -> behavior.init(this));
     }
 
     default InteractionResult definition$onItemUseFirst(ItemStack stack, UseOnContext context) {
