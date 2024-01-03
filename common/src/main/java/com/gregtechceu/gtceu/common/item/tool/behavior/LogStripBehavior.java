@@ -38,9 +38,6 @@ public class LogStripBehavior implements IToolBehavior {
     @NotNull
     @Override
     public InteractionResult onItemUse(UseOnContext context) {
-        if (context.getClickedFace() == Direction.DOWN)
-            return InteractionResult.PASS;
-
         Level level = context.getLevel();
         Player player = context.getPlayer();
         BlockPos pos = context.getClickedPos();
@@ -98,11 +95,8 @@ public class LogStripBehavior implements IToolBehavior {
 
     private static boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos,
                                              @Nullable BlockPos hitBlockPos) {
-        if (level.getBlockState(pos.above()).isAir()) {
-            Block block = level.getBlockState(pos).getBlock();
-            return AxeItem.STRIPPABLES.containsKey(block);
-        }
-        return false;
+        Block block = level.getBlockState(pos).getBlock();
+        return AxeItem.STRIPPABLES.containsKey(block);
     }
 
     private BlockState getStripped(BlockState unstrippedState) {
