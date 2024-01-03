@@ -72,13 +72,13 @@ public class GTOreDefinition {
 
     private final InferredProperties inferredProperties = new InferredProperties();
 
-    @Getter @Setter
+    @Getter
     private int clusterSize;
-    @Getter @Setter
+    @Getter
     private float density;
-    @Getter @Setter
+    @Getter
     private int weight;
-    @Getter @Setter
+    @Getter
     private IWorldGenLayer layer;
     @Getter @Setter
     private Set<ResourceKey<Level>> dimensionFilter;
@@ -86,12 +86,12 @@ public class GTOreDefinition {
     private HeightRangePlacement range;
     @Getter @Setter
     private float discardChanceOnAirExposure;
-    @Getter @Setter
+    @Getter
     private Supplier<HolderSet<Biome>> biomes;
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
-    @Getter @Setter
+    @Getter
     private VeinGenerator veinGenerator;
 
     @Getter @Setter
@@ -108,14 +108,6 @@ public class GTOreDefinition {
                 Set.copyOf(other.dimensionFilter), other.range, other.discardChanceOnAirExposure,
                 other.biomes, other.biomeWeightModifier, other.veinGenerator, List.copyOf(other.indicatorGenerators)
         );
-
-        this.minimumYield = other.minimumYield;
-        this.maximumYield = other.maximumYield;
-        this.depletedYield = other.depletedYield;
-        this.depletionChance = other.depletionChance;
-        this.depletionAmount = other.depletionAmount;
-
-        this.bedrockVeinMaterial = List.copyOf(other.bedrockVeinMaterial);
     }
 
     public GTOreDefinition(int clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
@@ -131,10 +123,7 @@ public class GTOreDefinition {
         this.veinGenerator = veinGenerator;
         this.indicatorGenerators = Objects.requireNonNullElseGet(indicatorGenerators, ArrayList::new);
 
-        this.maximumYield = (int) (density * 100) * clusterSize;
-        this.minimumYield = this.maximumYield / 7;
-        this.depletedYield = (int) (clusterSize / density / 10);
-        this.depletionChance = (int) (weight * density / 5);
+        recomputeBedrockOres();
     }
 
     @HideFromJS
@@ -144,6 +133,34 @@ public class GTOreDefinition {
         } else {
             GTRegistries.ORE_VEINS.register(id, this);
         }
+    }
+
+    private void recomputeBedrockOres() {
+        this.maximumYield = (int) (density * 100) * clusterSize;
+        this.minimumYield = this.maximumYield / 7;
+        this.depletedYield = (int) (clusterSize / density / 10);
+        this.depletionChance = (int) (weight * density / 5);
+    }
+
+    public GTOreDefinition clusterSize(int clusterSize) {
+        this.clusterSize = clusterSize;
+        recomputeBedrockOres();
+
+        return this;
+    }
+
+    public GTOreDefinition density(float density) {
+        this.density = density;
+        recomputeBedrockOres();
+
+        return this;
+    }
+
+    public GTOreDefinition weight(int weight) {
+        this.weight = weight;
+        recomputeBedrockOres();
+
+        return this;
     }
 
     public GTOreDefinition layer(IWorldGenLayer layer) {

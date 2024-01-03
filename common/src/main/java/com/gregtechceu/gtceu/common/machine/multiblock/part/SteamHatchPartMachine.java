@@ -4,10 +4,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -32,18 +30,14 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
     public static final boolean IS_STEEL = ConfigHolder.INSTANCE.machines.steelSteamMultiblocks;
 
     public SteamHatchPartMachine(IMachineBlockEntity holder, Object... args) {
-        super(holder, 0, IO.IN, args);
+        super(holder, 0, IO.IN, SteamHatchPartMachine.INITIAL_TANK_CAPACITY, 1, args);
     }
 
     @Override
-    protected NotifiableFluidTank createTank(Object... args) {
-        return super.createTank(args).setFilter(fluidStack -> FluidIngredient.of(CustomTags.STEAM, 1).test(fluidStack));
+    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+        return super.createTank(initialCapacity, slots).setFilter(fluidStack -> FluidIngredient.of(CustomTags.STEAM, 1).test(fluidStack));
     }
 
-    @Override
-    protected long getTankCapacity() {
-        return INITIAL_TANK_CAPACITY;
-    }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {

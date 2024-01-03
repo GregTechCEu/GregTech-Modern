@@ -3,15 +3,18 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
@@ -124,11 +127,49 @@ public class MetaTileEntityLoader {
         VanillaRecipeHelper.addShapelessRecipe("noise_hazard_to_steel_solid_casing", MetaBlocks.METAL_CASING.getItemVariant(STEEL_SOLID), MetaBlocks.WARNING_SIGN.getItemVariant(NOISE_HAZARD));
         */
 
-        // TODO Multi-fluid hatches
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "fluid_import_hatch_4x", GTMachines.MULTI_FLUID_IMPORT_HATCH[0].getStackForm(), "P", "M", 'M', GTMachines.HULL[GTValues.HV].getStackForm(), 'P', new UnificationEntry(TagPrefix.pipeQuadrupleFluid, GTMaterials.Titanium));
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "fluid_import_hatch_9x", GTMachines.MULTI_FLUID_IMPORT_HATCH[1].getStackForm(), "P", "M", 'M', GTMachines.HULL[GTValues.IV].getStackForm(), 'P', new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.TungstenSteel));
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "fluid_export_hatch_4x", GTMachines.MULTI_FLUID_EXPORT_HATCH[0].getStackForm(), "M", "P", 'M', GTMachines.HULL[GTValues.HV].getStackForm(), 'P', new UnificationEntry(TagPrefix.pipeQuadrupleFluid, GTMaterials.Titanium));
-        //VanillaRecipeHelper.addShapedRecipe(provider, true, "fluid_export_hatch_9x", GTMachines.MULTI_FLUID_EXPORT_HATCH[1].getStackForm(), "M", "P", 'M', GTMachines.HULL[GTValues.IV].getStackForm(), 'P', new UnificationEntry(TagPrefix.pipeNonupleFluid, GTMaterials.TungstenSteel));
+        var multiHatchMaterials = new Material[]{
+                GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
+                GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
+        };
+        for (int i = 0; i < multiHatchMaterials.length; i++) {
+            var tier = GTMachines.MULTI_HATCH_TIERS[i];
+            var tierName = VN[tier].toLowerCase();
+
+            var material = multiHatchMaterials[i];
+
+            var importHatch = GTMachines.FLUID_IMPORT_HATCH[tier];
+            var exportHatch = GTMachines.FLUID_EXPORT_HATCH[tier];
+
+            var importHatch4x = GTMachines.FLUID_IMPORT_HATCH_4X[tier];
+            var exportHatch4x = GTMachines.FLUID_EXPORT_HATCH_4X[tier];
+            var importHatch9x = GTMachines.FLUID_IMPORT_HATCH_9X[tier];
+            var exportHatch9x = GTMachines.FLUID_EXPORT_HATCH_9X[tier];
+
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, true, "fluid_import_hatch_4x_" + tierName,
+                    importHatch4x.asStack(), "P", "M",
+                    'M', importHatch.asStack(),
+                    'P', new UnificationEntry(TagPrefix.pipeQuadrupleFluid, material)
+            );
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, true, "fluid_export_hatch_4x_" + tierName,
+                    exportHatch4x.asStack(), "M", "P",
+                    'M', exportHatch.asStack(),
+                    'P', new UnificationEntry(TagPrefix.pipeQuadrupleFluid, material)
+            );
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, true, "fluid_import_hatch_9x_" + tierName,
+                    importHatch9x.asStack(), "P", "M",
+                    'M', importHatch.asStack(),
+                    'P', new UnificationEntry(TagPrefix.pipeNonupleFluid, material)
+            );
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, true, "fluid_export_hatch_9x_" + tierName,
+                    exportHatch9x.asStack(), "M", "P",
+                    'M', exportHatch.asStack(),
+                    'P', new UnificationEntry(TagPrefix.pipeNonupleFluid, material)
+            );
+        }
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "rotor_holder_hv", GTMachines.ROTOR_HOLDER[HV].asStack(), "SGS", "GHG", "SGS", 'H', GTMachines.HULL[HV].asStack(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.BlackSteel), 'S', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.StainlessSteel));
         VanillaRecipeHelper.addShapedRecipe(provider, true, "rotor_holder_ev", GTMachines.ROTOR_HOLDER[EV].asStack(), "SGS", "GHG", "SGS", 'H', GTMachines.HULL[GTValues.EV].asStack(), 'G', new UnificationEntry(TagPrefix.gear, GTMaterials.Ultimet), 'S', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Titanium));

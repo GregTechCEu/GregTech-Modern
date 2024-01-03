@@ -133,6 +133,33 @@ public class MiscRecipeLoader {
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
 
+        ROCK_BREAKER_RECIPES.recipeBuilder("basalt")
+                .notConsumable(Blocks.BASALT.asItem())
+                .outputItems(Blocks.BASALT.asItem())
+                .duration(16)
+                .EUt(VA[HV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
+                .save(provider);
+
+        ROCK_BREAKER_RECIPES.recipeBuilder("blackstone")
+                .notConsumable(Blocks.BLACKSTONE.asItem())
+                .outputItems(Blocks.BLACKSTONE.asItem())
+                .duration(16)
+                .EUt(VA[HV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
+                .save(provider);
+
+
+        ROCK_BREAKER_RECIPES.recipeBuilder("deepslate")
+                .notConsumable(Blocks.DEEPSLATE.asItem())
+                .outputItems(Blocks.DEEPSLATE.asItem())
+                .duration(16)
+                .EUt(VA[EV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
+                .save(provider);
         // TODO stone types
 /*
         ROCK_BREAKER_RECIPES.recipeBuilder("marble")
