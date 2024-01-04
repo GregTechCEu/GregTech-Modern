@@ -71,6 +71,7 @@ public class ToolHelper {
 
     // Misc keys
     public static final String DISALLOW_CONTAINER_ITEM_KEY = "DisallowContainerItem";
+    public static final String TINT_COLOR_KEY = "TintColor";
 
     // Keys that resides in tool tag
     public static final String DURABILITY_KEY = ItemStack.TAG_DAMAGE;
@@ -145,7 +146,7 @@ public class ToolHelper {
         if (material.hasProperty(PropertyKey.TOOL)) {
             var entry = GTItems.TOOL_ITEMS.get(material, toolType);
             if (entry != null) {
-                entry.get().get();
+                return entry.get().get();
             }
         }
         return ItemStack.EMPTY;
