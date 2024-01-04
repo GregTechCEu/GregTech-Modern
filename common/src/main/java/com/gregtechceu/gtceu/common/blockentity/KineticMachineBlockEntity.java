@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -104,13 +105,13 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     }
 
     @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        return metaMachine.shouldRenderGrid(player, held, toolType);
+    public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
+        return metaMachine.shouldRenderGrid(player, held, toolTypes);
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        return metaMachine.sideTips(player, toolType, side);
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        return metaMachine.sideTips(player, toolTypes, side);
     }
 
     //////////////////////////////////////

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -92,6 +93,10 @@ public class GTCreativeModeTabs {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
+                } else if (item instanceof IGTTool tool) {
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    tool.definition$fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
                 } else {
                     output.accept(item);
                 }
@@ -105,6 +110,10 @@ public class GTCreativeModeTabs {
                 if (item instanceof ComponentItem componentItem) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
+                } else if (item instanceof IGTTool tool) {
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    tool.definition$fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
                 } else {
                     output.accept(item);

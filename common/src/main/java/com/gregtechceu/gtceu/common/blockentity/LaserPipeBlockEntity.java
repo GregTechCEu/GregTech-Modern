@@ -133,8 +133,8 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     }
 
     @Override
-    protected boolean canToolTunePipe(GTToolType toolType) {
-        return toolType == GTToolType.WIRE_CUTTER;
+    protected GTToolType getPipeTuneTool() {
+        return GTToolType.WIRE_CUTTER;
     }
 
     @Override
