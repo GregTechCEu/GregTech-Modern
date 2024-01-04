@@ -7,6 +7,15 @@ The tool rework unfortunately requires some breaking changes.
 You will still have your tool items and may still use some of them in crafting recipes,
 but you will need to craft the ones you're actively using again to regain functionality.
 
+
+**Additions:**
+- port missing tooltips from 1.12
+- add maintenance to large boilers
+- add shape info to all machines using coils
+- mark multiblock info blocks as inputs for the recipe viewer pattern preview
+- add UHV+ electric motors
+
+**Tool Rework:**
 - revamps tools, bringing parity with 1.12 (except electric tools)
 - adds spades, an AOE shovel
 - adds functionality to most tools that were missing it previously
@@ -19,6 +28,9 @@ but you will need to craft the ones you're actively using again to regain functi
 - crowbars now rotate rail blocks
 - plungers made from different rubbers now have different durabilities
 
+**Fixes:**
+- fix LuV prospector recipe
+- fix EMI screen loading error
 - fix diodes being reset to 1A on chunk load
 - fix diodes not being able to transfer more than 8A
 - fix surface rocks not breaking when their supporting block is broken
