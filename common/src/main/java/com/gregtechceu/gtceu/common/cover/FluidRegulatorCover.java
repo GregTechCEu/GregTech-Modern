@@ -227,7 +227,7 @@ public class FluidRegulatorCover extends PumpCover {
         if (!this.filterHandler.isFilterPresent())
             return true;
 
-        return this.filterHandler.getFilter().isBlackList();
+        return !this.filterHandler.getFilter().supportsAmounts();
     }
 
     //////////////////////////////////////

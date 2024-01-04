@@ -34,6 +34,13 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
     long testFluidAmount(FluidStack fluidStack);
 
     /**
+     * @return Whether this filter supports querying for exact fluid amounts.
+     */
+    default boolean supportsAmounts() {
+        return !isBlackList();
+    }
+
+    /**
      * An empty fluid filter that allows all fluids.<br>
      * ONLY TO BE USED FOR FLUID MATCHING! All other functionality will throw an exception.
      */

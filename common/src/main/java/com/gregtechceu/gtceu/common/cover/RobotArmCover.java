@@ -185,6 +185,6 @@ public class RobotArmCover extends ConveyorCover {
         if (!this.filterHandler.isFilterPresent())
             return true;
 
-        return this.filterHandler.getFilter().isBlackList();
+        return !this.filterHandler.getFilter().supportsAmounts();
     }
 }
