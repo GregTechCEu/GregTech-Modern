@@ -69,7 +69,7 @@ public class GTREIPlugin implements REIClientPlugin {
     @SuppressWarnings("UnstableApiUsage")
     public void registerCollapsibleEntries(CollapsibleEntryRegistry registry) {
         for (GTToolType toolType : GTToolType.values()) {
-            registry.group(GTCEu.id("tool/" + toolType.name()), Component.translatable(toolType.getUnlocalizedName()), EntryIngredients.ofItemTag(toolType.itemTag));
+            registry.group(GTCEu.id("tool/" + toolType.name()), Component.translatable(toolType.getUnlocalizedName()), EntryIngredients.ofItemTag(toolType.gtItemGroupTag));
         }
     }
 

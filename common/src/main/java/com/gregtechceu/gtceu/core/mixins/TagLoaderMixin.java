@@ -17,7 +17,6 @@ import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.tags.BlockTags;
@@ -69,6 +68,7 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()), GTValues.CUSTOM_TAG_SOURCE);
                         //GTCEu.LOGGER.info("Tool tag registered. Tier: " + toolTier.getLevel() +  ". Item: " + item.getId() + ". Block type: " + type.harvestTag);
                         tagMap.computeIfAbsent(type.itemTag.location(), path -> new ArrayList<>()).add(entry);
+                        tagMap.computeIfAbsent(type.gtItemGroupTag.location(), path -> new ArrayList<>()).add(entry);
                     }
                 });
             });

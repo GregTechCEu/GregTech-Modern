@@ -32,7 +32,7 @@ public enum GTToolType {
     SAW("saw", "saws", -1.0F, 1, GTSoundEntries.SAW_TOOL),
     HARD_HAMMER("hammer", "hammers", 1, -2.8F, GTSoundEntries.FORGE_HAMMER),
     SOFT_MALLET("mallet", "mallets", 0, -2.4F, GTSoundEntries.SOFT_MALLET_TOOL),
-    WRENCH("wrench", "wrenches", 1, -2.8F, GTSoundEntries.WRENCH_TOOL),
+    WRENCH("wrench", "wrench", 1, -2.8F, GTSoundEntries.WRENCH_TOOL),
     FILE("file", "files", 0, -2.4F, GTSoundEntries.FILE_TOOL),
     CROWBAR("crowbar", "crowbars", 2.0F, -2.4F, new ExistingSoundEntry(SoundEvents.ITEM_BREAK, SoundSource.BLOCKS)),
     SCREWDRIVER("screwdriver", "screwdrivers", -1.0F, 3.0F, GTSoundEntries.SCREWDRIVER_TOOL),
@@ -47,6 +47,7 @@ public enum GTToolType {
 
     public final String name;
     public final TagKey<Item> itemTag;
+    public final TagKey<Item> gtItemGroupTag;
     public final TagKey<Block> harvestTag;
     public final float attackDamageModifier;
     public final float attackSpeedModifier;
@@ -58,6 +59,7 @@ public enum GTToolType {
     GTToolType(String name, TagKey<Block> harvestTag, TagKey<Item> itemTag, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry, int durabilityMultiplier) {
         this.name = name;
         this.itemTag = itemTag;
+        this.gtItemGroupTag = TagUtil.createModItemTag("tools/" + name);
         this.harvestTag = harvestTag;
         this.attackDamageModifier = attackDamageModifier;
         this.attackSpeedModifier = attackSpeedModifier;
@@ -66,28 +68,28 @@ public enum GTToolType {
         this.durabilityMultiplier = durabilityMultiplier;
     }
 
-    GTToolType(String name, String plural, TagKey<Block> harvestTag, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry, boolean isVanilla, int durabilityMultiplier) {
-        this(name, harvestTag, isVanilla ? TagUtil.createItemTag(plural, true) : TagUtil.createPlatformItemTag("tools/" + plural, plural), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry, durabilityMultiplier);
+    GTToolType(String name, String tagName, TagKey<Block> harvestTag, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry, boolean isVanilla, int durabilityMultiplier) {
+        this(name, harvestTag, isVanilla ? TagUtil.createItemTag(tagName, true) : TagUtil.createPlatformItemTag("tools/" + tagName, tagName), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry, durabilityMultiplier);
     }
 
-    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry, boolean isVanilla) {
-        this(name, plural, isVanilla ? TagUtil.createBlockTag("mineable/" + name, true) : TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:mineable/" + name, "fabric:mineable/" + name), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry, isVanilla, 1);
+    GTToolType(String name, String tagName, float attackDamageModifier, float attackSpeedModifier, ResourceLocation modelLocation, SoundEntry soundEntry, boolean isVanilla) {
+        this(name, tagName, isVanilla ? TagUtil.createBlockTag("mineable/" + name, true) : TagUtil.createPlatformUnprefixedTag(BuiltInRegistries.BLOCK, "forge:mineable/" + name, "fabric:mineable/" + name), attackDamageModifier, attackSpeedModifier, modelLocation, soundEntry, isVanilla, 1);
     }
 
-    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, SoundEntry soundEntry, boolean isVanilla) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), soundEntry, isVanilla);
+    GTToolType(String name, String tagName, float attackDamageModifier, float attackSpeedModifier, SoundEntry soundEntry, boolean isVanilla) {
+        this(name, tagName, attackDamageModifier, attackSpeedModifier, GTCEu.id(String.format("item/tools/%s", name)), soundEntry, isVanilla);
     }
 
-    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, SoundEntry soundEntry) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, soundEntry, false);
+    GTToolType(String name, String tagName, float attackDamageModifier, float attackSpeedModifier, SoundEntry soundEntry) {
+        this(name, tagName, attackDamageModifier, attackSpeedModifier, soundEntry, false);
     }
 
-    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier, boolean isVanilla) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, null, isVanilla);
+    GTToolType(String name, String tagName, float attackDamageModifier, float attackSpeedModifier, boolean isVanilla) {
+        this(name, tagName, attackDamageModifier, attackSpeedModifier, null, isVanilla);
     }
 
-    GTToolType(String name, String plural, float attackDamageModifier, float attackSpeedModifier) {
-        this(name, plural, attackDamageModifier, attackSpeedModifier, false);
+    GTToolType(String name, String tagName, float attackDamageModifier, float attackSpeedModifier) {
+        this(name, tagName, attackDamageModifier, attackSpeedModifier, false);
     }
 
     public boolean is(ItemStack itemStack) {

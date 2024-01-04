@@ -8,3 +8,4 @@ Version: 1.0.19.c
 - fix crash when placing pump covers on fluid pipes in certain cases
 - fix voiding mode not working in quantum tanks
 - fix charger not dropping contents when broken
+- fix GT wrenches not being compatible with other mods
