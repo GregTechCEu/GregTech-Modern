@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -545,7 +544,7 @@ public class GTRecipeBuilder {
         json.addProperty("type", recipeType.registryName.toString());
         json.addProperty("duration", Math.abs(duration));
         if (data != null && !data.isEmpty()) {
-            json.add("data", new JsonPrimitive(data.getAsString()));
+            json.add("data", NBTToJsonConverter.getObject(data));
         }
         json.add("inputs", capabilitiesToJson(input));
         json.add("outputs", capabilitiesToJson(output));

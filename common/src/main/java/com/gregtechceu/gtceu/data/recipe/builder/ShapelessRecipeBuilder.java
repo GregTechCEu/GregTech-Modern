@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
@@ -112,7 +111,7 @@ public class ShapelessRecipeBuilder {
                 result.addProperty("count", output.getCount());
             }
             if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", new JsonPrimitive(output.getTag().getAsString()));
+                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
             }
             json.add("result", result);
         }
