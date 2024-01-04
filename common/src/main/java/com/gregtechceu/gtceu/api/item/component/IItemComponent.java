@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import net.minecraft.world.item.Item;
 
 /**
  * @author KilaBash
@@ -12,7 +13,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
  *
  */
 public interface IItemComponent {
-    default void onAttached(ComponentItem item) {
+    default void onAttached(Item item) {
 
     }
 }

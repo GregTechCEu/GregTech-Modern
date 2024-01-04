@@ -129,6 +129,29 @@ public class LangHandler {
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
 
 
+        provider.add("gtceu.tool.class.sword", "Sword");
+        provider.add("gtceu.tool.class.pickaxe", "Pickaxe");
+        provider.add("gtceu.tool.class.shovel", "Shovel");
+        provider.add("gtceu.tool.class.axe", "Axe");
+        provider.add("gtceu.tool.class.hoe", "Hoe");
+        provider.add("gtceu.tool.class.mining_hammer", "Mining Hammer");
+        provider.add("gtceu.tool.class.spade", "Spade");
+        provider.add("gtceu.tool.class.saw", "Saw");
+        provider.add("gtceu.tool.class.hammer", "Hammer");
+        provider.add("gtceu.tool.class.mallet", "Soft Mallet");
+        provider.add("gtceu.tool.class.wrench", "Wrench");
+        provider.add("gtceu.tool.class.file", "File");
+        provider.add("gtceu.tool.class.crowbar", "Crowbar");
+        provider.add("gtceu.tool.class.screwdriver", "Screwdriver");
+        provider.add("gtceu.tool.class.mortar", "Mortar");
+        provider.add("gtceu.tool.class.wire_cutter", "Wire Cutter");
+        provider.add("gtceu.tool.class.knife", "Knife");
+        provider.add("gtceu.tool.class.butchery_knife", "Butchery Knife");
+        provider.add("gtceu.tool.class.scythe", "Scythe");
+        provider.add("gtceu.tool.class.rolling_pin", "Rolling Pin");
+        provider.add("gtceu.tool.class.plunger", "Plunger");
+        provider.add("gtceu.tool.class.shears", "Shears");
+
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
@@ -193,6 +216,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.screwdriver_lv.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
+        replace(provider, "item.gtceu.tool.shears", "%s Shears");
         provider.add("item.gtceu.tool.tooltip.crafting_uses", "§a%s Crafting Uses");
         provider.add("item.gtceu.tool.tooltip.general_uses", "§b%s Durability");
         provider.add("item.gtceu.tool.tooltip.attack_damage", "§c%s Attack Damage");

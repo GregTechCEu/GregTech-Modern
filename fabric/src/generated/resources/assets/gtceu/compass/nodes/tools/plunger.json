@@ -1,14 +1,14 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_plunger"
+    "res": "gtceu:polybenzimidazole_plunger"
   },
   "items": [
     "#c:plungers"
   ],
   "page": "gtceu:tools/plunger",
   "position": [
-    -200,
+    -50,
     150
   ],
   "section": "gtceu:tools"

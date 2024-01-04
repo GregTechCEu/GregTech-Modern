@@ -33,7 +33,7 @@ public class ServerPlayerGameModeMixin {
             )},
             cancellable = true
     )
-    public void port_lib$onItemFirstUse(ServerPlayer serverPlayer, Level level, ItemStack itemStack, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
+    public void gtceu$onItemFirstUse(ServerPlayer serverPlayer, Level level, ItemStack itemStack, InteractionHand interactionHand, BlockHitResult blockHitResult, CallbackInfoReturnable<InteractionResult> cir) {
         Item held = itemStack.getItem();
         if (held instanceof IItemUseFirst first) {
             UseOnContext useoncontext = new UseOnContext(serverPlayer, interactionHand, blockHitResult);

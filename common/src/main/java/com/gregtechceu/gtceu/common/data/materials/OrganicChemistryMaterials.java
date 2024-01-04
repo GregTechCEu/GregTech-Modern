@@ -98,7 +98,7 @@ public class OrganicChemistryMaterials {
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1450))
                 .color(0x464441).secondaryColor(0x382e1b)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_FOIL)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
+                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 20, Hydrogen, 12, Nitrogen, 4)
                 .fluidPipeProperties(1000, 350, true)
                 .buildAndRegister();
@@ -115,7 +115,7 @@ public class OrganicChemistryMaterials {
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(408))
                 .color(0xC8C8C8)
                 .flags(GENERATE_FOIL)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
+                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Hydrogen, 4)
                 .fluidPipeProperties(370, 50, true)
                 .buildAndRegister();
@@ -141,7 +141,7 @@ public class OrganicChemistryMaterials {
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
                 .color(0xFFFFFF).secondaryColor(0x919187)
                 .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
+                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Fluorine, 4)
                 .fluidPipeProperties(600, 100, true, true, false, false)
                 .buildAndRegister();
@@ -485,7 +485,7 @@ public class OrganicChemistryMaterials {
                 .polymer(0)
                 .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
                 .color(0x353529).secondaryColor(0x080808)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
+                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .components(Carbon, 5, Hydrogen, 8)
                 .buildAndRegister();

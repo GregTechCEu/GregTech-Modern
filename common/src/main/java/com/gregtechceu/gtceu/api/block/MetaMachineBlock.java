@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -14,6 +16,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,6 +26,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -42,6 +46,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -232,10 +237,24 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
     }
 
-
     @Override
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = getMachine(world, pos);
+        ItemStack itemStack = player.getItemInHand(hand);
+
+        Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
+        if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
+            var result = machine.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+            if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
+                ToolHelper.playToolSound(result.getFirst(), serverPlayer);
+
+                if (!serverPlayer.isCreative()) {
+                    ToolHelper.damageItem(itemStack, serverPlayer, 1);
+                }
+            }
+            if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
+        }
+
         if (machine instanceof IInteractedMachine interactedMachine) {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;

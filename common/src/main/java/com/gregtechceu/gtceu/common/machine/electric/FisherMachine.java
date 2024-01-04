@@ -57,6 +57,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -416,20 +417,20 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     //*******     Rendering     ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.WRENCH) {
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isCrouching()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
         }
-        if (toolType == GTToolType.SCREWDRIVER) {
+        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingItems()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
-        return super.sideTips(player, toolType, side);
+        return super.sideTips(player, toolTypes, side);
     }
 
     //////////////////////////////////////

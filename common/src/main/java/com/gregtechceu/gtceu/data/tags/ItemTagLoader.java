@@ -31,9 +31,6 @@ public class ItemTagLoader {
 
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
-        create(provider, CustomTags.TREE_FELLING_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.AXE).values().stream().filter(Objects::nonNull).map(RegistryEntry::getId).toArray(ResourceLocation[]::new));
-        create(provider, CustomTags.AOE_TOOLS, GTItems.TOOL_ITEMS.column(GTToolType.MINING_HAMMER).values().stream().filter(Objects::nonNull).map(RegistryEntry::getId).toArray(ResourceLocation[]::new));
-
         // TODO add to planks mc tag?
         //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
         //    for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {

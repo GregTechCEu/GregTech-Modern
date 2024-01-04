@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -8,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -15,31 +19,45 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.utils.ToolItemHelper;
+import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.function.Consumer;
 
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public class ToolRecipeHandler {
 
     // todo electric tools
-    //public static Map<Integer, ItemEntry<? extends Item>> motorItems = new HashMap<>();
-    //public static Map<Integer, Material> baseMaterials = new HashMap<>();
-    //public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
-    //public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
+    public static Map<Integer, ItemEntry<? extends Item>> motorItems = new HashMap<>();
+    public static Map<Integer, Material> baseMaterials = new HashMap<>();
+    public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
+    public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
 
     public static void init(Consumer<FinishedRecipe> provider) {
+        initializeGTItems();
         TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processTool(tagPrefix, material, property, provider));
         TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processElectricTool(tagPrefix, material, property, provider));
+        registerPowerUnitRecipes(provider);
         registerCustomToolRecipes(provider);
     }
-/*
+
     public static void initializeGTItems() {
         motorItems.put(GTValues.LV, GTItems.ELECTRIC_MOTOR_LV);
         motorItems.put(GTValues.MV, GTItems.ELECTRIC_MOTOR_MV);
@@ -89,24 +107,26 @@ public class ToolRecipeHandler {
         for (int tier : powerUnitItems.keySet()) {
             List<ItemEntry<? extends Item>> tieredBatteryItems = batteryItems.get(tier);
             for (ItemEntry<? extends Item> batteryItem : tieredBatteryItems) {
-                ItemStack batteryStack = batteryItem.getStackForm();
-                long maxCharge = batteryStack.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null).getMaxCharge();
-                ItemStack powerUnitStack = powerUnitItems.get(tier).getMaxChargeOverrideStack(maxCharge);
-                String recipeName = String.format("%s_%s", powerUnitItems.get(tier).unlocalizedName, batteryItem.unlocalizedName);
+                if (powerUnitItems.get(tier) != null) {
+                    ItemStack batteryStack = batteryItem.asStack();
+                    long maxCharge = GTCapabilityHelper.getElectricItem(batteryStack).getMaxCharge();
+                    ItemStack powerUnitStack = ToolItemHelper.getMaxChargeOverrideStack(powerUnitItems.get(tier).get(), maxCharge);
+                    String recipeName = String.format("%s_%s", powerUnitItems.get(tier).get().getDescriptionId(powerUnitStack), batteryItem.get().getDescriptionId());
 
-                ModHandler.addShapedEnergyTransferRecipe(recipeName, powerUnitStack,
-                        Ingredient.fromStacks(batteryStack), true, false,
-                        "S d", "GMG", "PBP",
-                        'M', motorItems.get(tier).getStackForm(),
-                        'S', new UnificationEntry(screw, baseMaterials.get(tier)),
-                        'P', new UnificationEntry(plate, baseMaterials.get(tier)),
-                        'G', new UnificationEntry(gearSmall, baseMaterials.get(tier)),
-                        'B', batteryStack);
+                    VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, recipeName,
+                            Ingredient.of(batteryStack), powerUnitStack,
+                            "S d", "GMG", "PBP",
+                            'M', motorItems.get(tier).asStack(),
+                            'S', new UnificationEntry(screw, baseMaterials.get(tier)),
+                            'P', new UnificationEntry(plate, baseMaterials.get(tier)),
+                            'G', new UnificationEntry(gearSmall, baseMaterials.get(tier)),
+                            'B', batteryStack);
+                }
             }
         }
 
     }
-*/
+
     private static void processTool(TagPrefix prefix, Material material, ToolProperty property, Consumer<FinishedRecipe> provider) {
         ItemStack stick = new ItemStack(Items.STICK);
         UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
@@ -119,10 +139,10 @@ public class ToolRecipeHandler {
                     'P', plate,
                     'S', stick);
 
-            //addToolRecipe(provider, material, GTToolType.SPADE, false,
-            //        "fPh", "PSP", " S ",
-            //        'P', plate,
-            //        'S', stick);
+            addToolRecipe(provider, material, GTToolType.SPADE, false,
+                    "fPh", "PSP", " S ",
+                    'P', plate,
+                    'S', stick);
 
             addToolRecipe(provider, material, GTToolType.SAW, false,
                     "PPS", "fhS",
@@ -186,11 +206,6 @@ public class ToolRecipeHandler {
         if (material.hasFlag(GENERATE_ROD)) {
             UnificationEntry rod = new UnificationEntry(TagPrefix.rod, material);
 
-            addToolRecipe(provider, material, GTToolType.PLUNGER, false,
-                        "xRR", " SR", "S f",
-                        'S', rod,
-                        'R', new UnificationEntry(TagPrefix.plate, GTMaterials.Rubber));
-
             if (material.hasFlag(GENERATE_PLATE)) {
                 addToolRecipe(provider, material, GTToolType.BUTCHERY_KNIFE, false,
                         "PPf", "PP ", "Sh ",
@@ -211,10 +226,10 @@ public class ToolRecipeHandler {
                     'S', rod,
                     'W', stick);
 
-            addToolRecipe(provider, material, GTToolType.CROWBAR, true,
+            // D is inferred as the dye key
+            addDyeableToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
-                    'S', rod,
-                    'D', new UnificationEntry(TagPrefix.dye, MarkerMaterials.Color.Blue));
+                    'S', rod);
         }
     }
 
@@ -290,20 +305,22 @@ public class ToolRecipeHandler {
         }
     }
 
-//    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, IGTTool[] toolItems) {
-//        for (IGTTool toolItem : toolItems) {
-//            int tier = toolItem.getElectricTier();
-//            ItemStack powerUnitStack = powerUnitItems.get(tier).getStackForm();
-//            IElectricItem powerUnit = powerUnitStack.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
-//            ItemStack tool = toolItem.get(material, 0, powerUnit.getMaxCharge());
-//            ModHandler.addShapedEnergyTransferRecipe(String.format("%s_%s", toolItem.getId(), material),
-//                    tool,
-//                    Ingredient.fromStacks(powerUnitStack), true, true,
-//                    "wHd", " U ",
-//                    'H', new UnificationEntry(toolHead, material),
-//                    'U', powerUnitStack);
-//        }
-//    }
+    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, IGTTool[] toolItems, Consumer<FinishedRecipe> provider) {
+        for (IGTTool toolItem : toolItems) {
+            int tier = toolItem.getElectricTier();
+            ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
+            IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);
+            ItemStack tool = toolItem.get(0, powerUnit.getMaxCharge());
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
+                    true, true, true,
+                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem()).getPath(), material),
+                    Ingredient.of(powerUnitStack),
+                    tool,
+                    "wHd", " U ",
+                    'H', new UnificationEntry(toolHead, material),
+                    'U', powerUnitStack);
+        }
+    }
 
     public static void addToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
@@ -314,6 +331,23 @@ public class ToolRecipeHandler {
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material),
                     toolStack, recipe);
+        }
+    }
+
+    public static void addDyeableToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+        ItemStack toolStack = ToolHelper.get(tool, material);
+        if (toolStack.isEmpty()) return;
+        for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
+            ToolHelper.getToolTag(toolStack).putInt(ToolHelper.TINT_COLOR_KEY, color.getKey().getTextColor());
+            Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D', new UnificationEntry(TagPrefix.dye, color.getValue()));
+
+            if (mirrored) { // todo mirrored
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s_%s", tool.name, material, color.getKey().getSerializedName()),
+                    toolStack, recipeWithDye);
+            } else {
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s_%s", tool.name, material, color.getKey().getSerializedName()),
+                    toolStack, recipeWithDye);
+            }
         }
     }
 
@@ -401,72 +435,84 @@ public class ToolRecipeHandler {
                         'I', new UnificationEntry(TagPrefix.ingot, material),
                         'S', stick);
 
-                // todo fix plunger
-                //ModHandler.addMirroredShapedRecipe(String.format("plunger_%s", material),
-                //        ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
-                //        "xPP", " SP", "S f",
-                //        'P', new UnificationEntry(TagPrefix.plate, material),
-                //        'S', rod);
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("plunger_%s", material),
+                        ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
+                        "xPP", " SP", "S f",
+                        'P', new UnificationEntry(TagPrefix.plate, material),
+                        'S', rod);
             }
         }
     }
 
     private static void registerElectricRecipes(Consumer<FinishedRecipe> provider) {
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "prospector_lv", GTItems.PROSPECTOR_LV.asStack(),
-                "EPS", "CDC", "PBP",
-                'E', GTItems.EMITTER_LV.asStack(),
-                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel),
-                'S', GTItems.SENSOR_LV.asStack(),
-                'D', new UnificationEntry(TagPrefix.plate, GTMaterials.Glass),
-                'C', CustomTags.LV_CIRCUITS,
-                'B', CustomTags.LV_BATTERIES);
+        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LV)) {
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_lv_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_LV.asStack(),
+                    "EPS", "CDC", "PBP",
+                    'E', GTItems.EMITTER_LV.asStack(),
+                    'P', new UnificationEntry(plate, GTMaterials.Steel),
+                    'S', GTItems.SENSOR_LV.asStack(),
+                    'D', new UnificationEntry(plate, GTMaterials.Glass),
+                    'C', CustomTags.LV_CIRCUITS,
+                    'B', batteryItem.asStack());
 
-//        ModHandler.addShapedEnergyTransferRecipe("magnet_lv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_LV.getStackForm(),
-//                batteryItem::isItemEqual, true, true,
-//                "MwM", "MBM", "CPC",
-//                'M', new UnificationEntry(rod, Materials.SteelMagnetic),
-//                'P', new UnificationEntry(plate, Materials.Steel),
-//                'C', new UnificationEntry(cableGtSingle, Materials.Tin),
-//                'B', batteryItem.getStackForm());
+            // todo magnets
+//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "magnet_lv_" + batteryItem.getId().getPath(),
+//                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
+//                    "MwM", "MBM", "CPC",
+//                    'M', new UnificationEntry(rod, GTMaterials.SteelMagnetic),
+//                    'P', new UnificationEntry(plate, GTMaterials.Steel),
+//                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin),
+//                    'B', batteryItem.asStack());
+        }
 
-//        for (MetaValueItem batteryItem : batteryItems.get(MV)) {
-//            ModHandler.addShapedEnergyTransferRecipe("tricorder_" + batteryItem.unlocalizedName, GTItems.TRICORDER_SCANNER.getStackForm(),
-//                    batteryItem::isItemEqual, true, true,
+        // todo tricoder
+//        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
+//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, "tricorder_" + batteryItem.getId().getPath(), GTItems.TRICORDER_SCANNER.asStack(),
+//                    stack -> batteryItem.is(stack.getItem()), true, true,
 //                    "EPS", "CDC", "PBP",
-//                    'E', GTItems.EMITTER_MV.getStackForm(),
-//                    'P', new UnificationEntry(plate, Materials.Aluminium),
-//                    'S', GTItems.SENSOR_MV.getStackForm(),
-//                    'D', GTItems.COVER_SCREEN.getStackForm(),
-//                    'C', new UnificationEntry(circuit, MarkerMaterials.Tier.HV),
-//                    'B', batteryItem.getStackForm());
+//                    'E', GTItems.EMITTER_MV.asStack(),
+//                    'P', new UnificationEntry(plate, GTMaterials.Aluminium),
+//                    'S', GTItems.SENSOR_MV.asStack(),
+//                    'D', GTItems.COVER_SCREEN.asStack(),
+//                    'C', CustomTags.MV_CIRCUITS,
+//                    'B', batteryItem.asStack());
 //        }
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "prospector_hv", GTItems.PROSPECTOR_HV.asStack(),
-                "EPS", "CDC", "PBP",
-                'E', GTItems.EMITTER_HV.asStack(),
-                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel),
-                'S', GTItems.SENSOR_HV.asStack(),
-                'D', GTItems.COVER_SCREEN.asStack(),
-                'C', CustomTags.HV_CIRCUITS,
-                'B', CustomTags.HV_BATTERIES);
 
-//        ModHandler.addShapedEnergyTransferRecipe("magnet_hv_" + batteryItem.unlocalizedName, GTItems.ITEM_MAGNET_HV.getStackForm(),
-//                batteryItem::isItemEqual, true, true,
-//                "MwM", "MBM", "CPC",
-//                'M', new UnificationEntry(rod, Materials.NeodymiumMagnetic),
-//                'P', new UnificationEntry(plate, Materials.StainlessSteel),
-//                'C', new UnificationEntry(cableGtSingle, Materials.Gold),
-//                'B', batteryItem.getStackForm());
+        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(HV)) {
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_hv_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_HV.asStack(),
+                    "EPS", "CDC", "PBP",
+                    'E', GTItems.EMITTER_HV.asStack(),
+                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
+                    'S', GTItems.SENSOR_HV.asStack(),
+                    'D', GTItems.COVER_SCREEN.asStack(),
+                    'C', CustomTags.HV_CIRCUITS,
+                    'B', batteryItem.asStack());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "prospector_luv", GTItems.PROSPECTOR_LUV.asStack(),
-                "EPS", "CDC", "PBP",
-                'E', GTItems.EMITTER_LuV.asStack(),
-                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.RhodiumPlatedPalladium),
-                'S', GTItems.SENSOR_HV.asStack(),
-                'D', GTItems.COVER_SCREEN.asStack(),
-                'C', CustomTags.LuV_CIRCUITS,
-                'B', CustomTags.LuV_BATTERIES);
+            // todo magnets
+//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "magnet_hv_" + batteryItem.getId().getPath(),
+//                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
+//                    "MwM", "MBM", "CPC",
+//                    'M', new UnificationEntry(rod, GTMaterials.NeodymiumMagnetic),
+//                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
+//                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold),
+//                    'B', batteryItem.asStack());
+        }
 
+        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_luv_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_LUV.asStack(),
+                    "EPS", "CDC", "PBP",
+                    'E', GTItems.EMITTER_LuV.asStack(),
+                    'P', new UnificationEntry(plate, GTMaterials.RhodiumPlatedPalladium),
+                    'S', GTItems.SENSOR_LuV.asStack(),
+                    'D', GTItems.COVER_SCREEN.asStack(),
+                    'C', CustomTags.LuV_CIRCUITS,
+                    'B', batteryItem.asStack());
+        }
     }
+
 }
