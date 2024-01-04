@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
@@ -161,7 +162,7 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
                 result.addProperty("count", output.getCount());
             }
             if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
+                result.add("nbt", new JsonPrimitive(output.getTag().getAsString()));
             }
             json.add("result", result);
         }

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
@@ -106,7 +107,7 @@ public class SmeltingRecipeBuilder {
                 result.addProperty("count", output.getCount());
             }
             if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
+                result.add("nbt", new JsonPrimitive(output.getTag().getAsString()));
             }
             json.add("result", result);
         }
