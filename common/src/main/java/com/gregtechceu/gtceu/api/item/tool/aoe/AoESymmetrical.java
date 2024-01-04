@@ -22,7 +22,7 @@ public class AoESymmetrical {
         if (tag.contains(ToolHelper.MAX_AOE_LAYER_KEY, Tag.TAG_INT)) {
             layer = tag.getInt(ToolHelper.MAX_AOE_LAYER_KEY);
         }
-        return column == 0 && row == 0 && layer == 0 ? NONE : new AoESymmetrical(column, row, layer);
+        return column == 0 && row == 0 && layer == 0 ? NONE : AoESymmetrical.of(column, row, layer);
     }
 
     public static AoESymmetrical read(CompoundTag tag, @Nullable AoESymmetrical defaultDefinition) {
