@@ -32,6 +32,12 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
      */
     int testItemCount(ItemStack itemStack);
 
+    /**
+     * @return Whether this filter supports querying for exact item amounts.
+     */
+    default boolean supportsAmounts() {
+        return !isBlackList();
+    }
 
     /**
      * An empty item filter that allows all items.<br>
@@ -58,5 +64,4 @@ public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
             throw new NotImplementedException("Not available for empty item filter");
         }
     };
-
 }

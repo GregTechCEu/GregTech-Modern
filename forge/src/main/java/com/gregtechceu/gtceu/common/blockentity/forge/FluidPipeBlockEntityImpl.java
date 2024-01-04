@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.blockentity.forge;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
@@ -80,7 +81,9 @@ public class FluidPipeBlockEntityImpl extends FluidPipeBlockEntity {
     }
 
     public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
-        return FluidTransferHelperImpl.toFluidTransfer(((FluidPipeBlockEntityImpl) pipe).getFluidHandler(side));
+        IFluidHandler handler = ((FluidPipeBlockEntityImpl) pipe).getFluidHandler(side);
+
+        return handler == null ? NoOpFluidTransfer.INSTANCE : FluidTransferHelperImpl.toFluidTransfer(handler);
     }
 
     public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> cableBlockEntityBlockEntityType) {

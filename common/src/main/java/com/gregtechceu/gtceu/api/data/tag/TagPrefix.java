@@ -33,7 +33,6 @@ import lombok.experimental.Accessors;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -1005,7 +1004,7 @@ public class TagPrefix {
 
     public String getUnlocalizedName(Material material) {
         String formattedPrefix = FormattingUtil.toLowerCaseUnderscore(this.name);
-        String matSpecificKey = String.format("item.%s_%s", this.invertedName ? material.getName() : formattedPrefix, this.invertedName ? formattedPrefix : material.getName());
+        String matSpecificKey = String.format("item.%s_%s", this.invertedName ? formattedPrefix : material.getName(), this.invertedName ? material.getName() : formattedPrefix);
         if (LocalizationUtils.exist(matSpecificKey)) {
             return matSpecificKey;
         }

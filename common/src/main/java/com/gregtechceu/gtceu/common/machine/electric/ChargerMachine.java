@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -23,6 +24,8 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,7 +39,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine {
+public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine, IMachineModifyDrops {
     public static final long AMPS_PER_ITEM = 4L;
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
@@ -95,6 +98,11 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             return GTValues.VC[getTier()];
         }
         return super.tintColor(index);
+    }
+
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        clearInventory(drops, chargerInventory);
     }
 
     //////////////////////////////////////

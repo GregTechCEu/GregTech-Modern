@@ -56,4 +56,9 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     public long testFluidAmount(FluidStack fluidStack) {
         return test(fluidStack) ? Long.MAX_VALUE : 0;
     }
+
+    @Override
+    public boolean supportsAmounts() {
+        return false;
+    }
 }
