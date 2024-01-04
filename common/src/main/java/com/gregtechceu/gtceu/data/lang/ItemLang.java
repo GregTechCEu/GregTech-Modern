@@ -32,7 +32,7 @@ public class ItemLang {
         }
         // GTToolType
         for (GTToolType toolType : GTToolType.getTypes().values()) {
-            provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType));
+            provider.add(toolType.getUnlocalizedName(), toEnglishName(toolType.name));
         }
 
         provider.add("tagprefix.polymer.plate", "%s Sheet");

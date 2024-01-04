@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_plunger"
+    "res": "gtceu:polybenzimidazole_plunger"
   },
   "items": [
     "#forge:tools/plungers"
@@ -9,7 +9,7 @@
   "page": "gtceu:tools/plunger",
   "position": [
     -50,
-    100
+    150
   ],
   "section": "gtceu:tools"
 }

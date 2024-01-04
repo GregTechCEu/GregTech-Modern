@@ -13,7 +13,6 @@ Version: 1.0.20
 - wrenches now rotate blocks other than GT machines
 - crowbars now rotate rail blocks
 - plungers made from different rubbers now have different durabilities
-- 
 
 WARNING: 
 - breaks most existing tools.
