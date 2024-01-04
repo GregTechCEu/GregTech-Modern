@@ -10,6 +10,7 @@ bin/
 libs/
 
 .classpath
+*/.factorypath
 .project
 .idea/
 classes/
@@ -23,3 +24,4 @@ fabric/src/generated/resources/.cache/
 
 *.patch
 *.DS_Store
+
