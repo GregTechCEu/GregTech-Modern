@@ -64,6 +64,6 @@ public interface IGTToolImpl extends IGTTool {
                 }
             }
         }
-        return false;
+        return stack.getItem().isCorrectToolForDrops(state);
     }
 }

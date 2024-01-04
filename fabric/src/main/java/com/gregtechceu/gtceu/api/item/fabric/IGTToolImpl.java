@@ -21,6 +21,6 @@ public interface IGTToolImpl extends IGTTool {
                 return toolMiningLevel < 1 && state.is(BlockTags.NEEDS_STONE_TOOL) ? false : gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
             }
         }
-        return false;
+        return stack.getItem().isCorrectToolForDrops(state);
     }
 }
