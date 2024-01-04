@@ -4959,5 +4959,9 @@
     "config.gtceu.option.asyncRecipeSearching": "asyncRecipeSearching",
     "compass.node.gtceu.circuits/components": "Компоненты",
     "compass.node.gtceu.circuits/cpus": "ЦПУ",
-    "compass.node.gtceu.circuits/socs": "СнК"
+    "compass.node.gtceu.circuits/socs": "СнК",
+    "block.gtceu.ev_input_hatch_4x": "Четверной входной люк (§5EV§r)",
+    "block.gtceu.ev_output_hatch_4x": "Четверной выходной люк (§5EV§r)",
+    "block.gtceu.ev_output_hatch_9x": "Девятерной входной люк (§5EV§r)",
+    "block.gtceu.ev_input_hatch_9x": "Девятерной входной люк (§5EV§r)"
 }
