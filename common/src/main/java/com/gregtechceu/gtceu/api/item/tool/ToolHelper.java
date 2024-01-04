@@ -5,6 +5,7 @@ import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -30,6 +31,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TieredItem;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -141,12 +143,9 @@ public class ToolHelper {
 
     public static ItemStack get(GTToolType toolType, Material material) {
         if (material.hasProperty(PropertyKey.TOOL)) {
-            var entry = GTItems.TOOL_ITEMS.get(material.getToolTier(), toolType);
+            var entry = GTItems.TOOL_ITEMS.get(material, toolType);
             if (entry != null) {
-                if (entry.get() instanceof IGTTool gtTool) {
-                    return gtTool.get();
-                } else
-                    return entry.asStack();
+                entry.get().get();
             }
         }
         return ItemStack.EMPTY;
@@ -219,6 +218,28 @@ public class ToolHelper {
         if (toolType.soundEntry != null) {
             toolType.soundEntry.playOnServer(player.level(), player.blockPosition());
         }
+    }
+
+    public static ItemStack getAndSetToolData(GTToolType toolType, Material material, int maxDurability, int harvestLevel,
+                                              float toolSpeed, float attackDamage) {
+        var entry = GTItems.TOOL_ITEMS.get(material, toolType);
+        if (entry == null) return ItemStack.EMPTY;
+        ItemStack stack = entry.get().getRaw();
+        stack.getOrCreateTag().putInt(HIDE_FLAGS, 2);
+        CompoundTag toolTag = getToolTag(stack);
+        toolTag.putInt(MAX_DURABILITY_KEY, maxDurability);
+        toolTag.putInt(HARVEST_LEVEL_KEY, harvestLevel);
+        toolTag.putFloat(TOOL_SPEED_KEY, toolSpeed);
+        toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
+        ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
+        if (toolProperty != null) {
+            toolProperty.getEnchantments().forEach((enchantment, level) -> {
+                if (entry.get().definition$canApplyAtEnchantingTable(stack, enchantment)) {
+                    stack.enchant(enchantment, level);
+                }
+            });
+        }
+        return stack;
     }
 
     /**

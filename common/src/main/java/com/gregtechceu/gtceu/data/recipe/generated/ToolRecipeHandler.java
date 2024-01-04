@@ -206,11 +206,6 @@ public class ToolRecipeHandler {
         if (material.hasFlag(GENERATE_ROD)) {
             UnificationEntry rod = new UnificationEntry(TagPrefix.rod, material);
 
-            addToolRecipe(provider, material, GTToolType.PLUNGER, false,
-                        "xRR", " SR", "S f",
-                        'S', rod,
-                        'R', new UnificationEntry(TagPrefix.plate, GTMaterials.Rubber));
-
             if (material.hasFlag(GENERATE_PLATE)) {
                 addToolRecipe(provider, material, GTToolType.BUTCHERY_KNIFE, false,
                         "PPf", "PP ", "Sh ",
@@ -423,12 +418,11 @@ public class ToolRecipeHandler {
                         'I', new UnificationEntry(TagPrefix.ingot, material),
                         'S', stick);
 
-                // todo fix plunger
-                //ModHandler.addMirroredShapedRecipe(String.format("plunger_%s", material),
-                //        ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
-                //        "xPP", " SP", "S f",
-                //        'P', new UnificationEntry(TagPrefix.plate, material),
-                //        'S', rod);
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("plunger_%s", material),
+                        ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
+                        "xPP", " SP", "S f",
+                        'P', new UnificationEntry(TagPrefix.plate, material),
+                        'S', rod);
             }
         }
     }
