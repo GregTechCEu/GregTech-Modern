@@ -63,6 +63,11 @@ public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
     }
 
     @Override
+    public ItemStack getDefaultInstance() {
+        return get();
+    }
+
+    @Override
     public MaterialToolTier getTier() {
         return (MaterialToolTier) super.getTier();
     }

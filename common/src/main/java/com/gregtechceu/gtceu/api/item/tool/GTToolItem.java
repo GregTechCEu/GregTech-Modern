@@ -54,10 +54,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     @Getter
     private IGTToolDefinition toolStats;
 
-    @ExpectPlatform
-    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
-        throw new AssertionError();
-    }
 
     protected GTToolItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
         super(0, 0, tier, toolType.harvestTags.isEmpty() ? null : toolType.harvestTags.get(0), properties);
@@ -69,6 +65,11 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
             ToolItemRenderer.create(this, toolType);
         }
         definition$init();
+    }
+
+    @ExpectPlatform
+    public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
+        throw new AssertionError();
     }
 
     @Override

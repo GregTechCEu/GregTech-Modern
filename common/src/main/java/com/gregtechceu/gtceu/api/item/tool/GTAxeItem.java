@@ -61,6 +61,11 @@ public class GTAxeItem extends AxeItem implements IItemUseFirst, IGTTool {
     }
 
     @Override
+    public ItemStack getDefaultInstance() {
+        return get();
+    }
+
+    @Override
     public MaterialToolTier getTier() {
         return (MaterialToolTier) super.getTier();
     }
