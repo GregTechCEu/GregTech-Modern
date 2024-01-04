@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -8,15 +7,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -25,17 +20,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import org.apache.logging.log4j.LogManager;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
-import java.util.logging.Logger;
 
-import static com.gregtechceu.gtceu.GTCEu.LOGGER;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -1077,15 +1066,36 @@ public class MachineRecipeLoader {
             }
         }
 
-        // TODO multi fluid hatches
-        //for (int i = 0; i < MULTI_FLUID_IMPORT_HATCH.length; i++) {
-        //    if (MULTI_FLUID_IMPORT_HATCH[i] != null && MULTI_FLUID_EXPORT_HATCH[i] != null) {
-        //        ModHandler.addShapedRecipe("multi_fluid_hatch_output_to_input_" + MULTI_FLUID_IMPORT_HATCH[i].getTier(), MULTI_FLUID_IMPORT_HATCH[i],
-        //                "d", "B", 'B', MULTI_FLUID_EXPORT_HATCH[i]);
-        //        ModHandler.addShapedRecipe("multi_fluid_hatch_input_to_output_" + MULTI_FLUID_EXPORT_HATCH[i].getTier(), MULTI_FLUID_EXPORT_HATCH[i],
-        //                "d", "B", 'B', MULTI_FLUID_IMPORT_HATCH[i]);
-        //    }
-        //}
+        for (int tier : MULTI_HATCH_TIERS) {
+            var tierName = VN[tier].toLowerCase();
+
+            var importHatch4x = FLUID_IMPORT_HATCH_4X[tier];
+            var exportHatch4x = FLUID_EXPORT_HATCH_4X[tier];
+            var importHatch9x = FLUID_IMPORT_HATCH_9X[tier];
+            var exportHatch9x = FLUID_EXPORT_HATCH_9X[tier];
+
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, "fluid_hatch_4x_output_to_input_" + tierName,
+                    importHatch4x.asStack(), "d", "B",
+                    'B', exportHatch4x.asStack()
+            );
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, "fluid_hatch_4x_input_to_output_" + tierName,
+                    exportHatch4x.asStack(), "d", "B",
+                    'B', importHatch4x.asStack()
+            );
+
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, "fluid_hatch_9x_output_to_input_" + tierName,
+                    importHatch9x.asStack(), "d", "B",
+                    'B', exportHatch9x.asStack()
+            );
+            VanillaRecipeHelper.addShapedRecipe(
+                    provider, "fluid_hatch_9x_input_to_output_" + tierName,
+                    exportHatch9x.asStack(), "d", "B",
+                    'B', importHatch9x.asStack()
+            );
+        }
 
         //Steam
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_output_to_input", STEAM_EXPORT_BUS.asStack(),

@@ -1,5 +1,5 @@
 # ChangeLog
 
-Version: 1.0.18.a
+Version: 1.0.19.b
 
-* fix bedrock ores not generating
+- fix output hatches not being recognized
