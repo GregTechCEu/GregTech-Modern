@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
@@ -20,7 +19,6 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -51,7 +49,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 import java.util.function.BiFunction;
 
 /**
@@ -409,19 +407,19 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     //*******     Rendering     ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.WRENCH) {
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isCrouching()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
         }
-        if (toolType == GTToolType.SCREWDRIVER) {
+        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingItems() || side == getOutputFacingFluids()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
-        return super.sideTips(player, toolType, side);
+        return super.sideTips(player, toolTypes, side);
     }
 }

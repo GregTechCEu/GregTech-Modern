@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.ThermalFluidStats;
 import com.gregtechceu.gtceu.api.misc.fabric.FluidCellStorage;
 import net.fabricmc.fabric.api.transfer.v1.fluid.FluidStorage;
+import net.minecraft.world.item.Item;
 
 /**
  * @author KilaBash
@@ -21,7 +22,7 @@ public class ThermalFluidStatsImpl extends ThermalFluidStats {
     }
 
     @Override
-    public void onAttached(ComponentItem item) {
+    public void onAttached(Item item) {
         FluidStorage.ITEM.registerForItems((itemStack, context) -> new FluidCellStorage(context, capacity, allowPartialFill, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof), item);
     }
 

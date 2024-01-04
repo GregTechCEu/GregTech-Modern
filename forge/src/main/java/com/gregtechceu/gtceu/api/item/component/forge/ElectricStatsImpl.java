@@ -13,7 +13,7 @@ import org.jetbrains.annotations.NotNull;
  * @date 2023/3/19
  * @implNote ElectricStatsImpl
  */
-public class ElectricStatsImpl extends ElectricStats implements IComponentCapability{
+public class ElectricStatsImpl extends ElectricStats implements IComponentCapability {
     public ElectricStatsImpl(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
         super(maxCharge, tier, chargeable, dischargeable);
     }
@@ -23,7 +23,7 @@ public class ElectricStatsImpl extends ElectricStats implements IComponentCapabi
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack,  @NotNull Capability<T> capability) {
+    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> capability) {
         if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
             return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability, LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
         }

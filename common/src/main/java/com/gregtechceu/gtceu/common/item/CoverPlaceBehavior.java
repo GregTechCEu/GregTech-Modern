@@ -57,7 +57,7 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
                     }
                 }
             }
-        } else if (itemStack.is(GTToolType.CROWBAR.itemTag) || itemStack.is(GTToolType.SOFT_MALLET.itemTag)) {
+        } else if (GTToolType.CROWBAR.itemTags.stream().anyMatch(itemStack::is) || GTToolType.SOFT_MALLET.itemTags.stream().anyMatch(itemStack::is)) {
             return hasCoverSupplier == null || hasCoverSupplier.getAsBoolean();
         }
         return false;

@@ -4,10 +4,18 @@
   "package": "com.gregtechceu.gtceu.fabric.core.mixins",
   "compatibilityLevel": "JAVA_17",
   "client": [
+    "MultiPlayerGameModeMixin"
   ],
   "mixins": [
     "AppearanceBlockMixin",
+    "EnchantmentHelperMixin",
+    "EnchantmentMixin",
+    "ItemMixin",
+    "ItemStackMixin",
+    "LivingEntityAccessor",
+    "PlayerMixin",
     "ServerPlayerGameModeMixin",
+    "ShapedRecipeMixin",
     "SimpleCookingSerializerMixin"
   ],
   "injectors": {

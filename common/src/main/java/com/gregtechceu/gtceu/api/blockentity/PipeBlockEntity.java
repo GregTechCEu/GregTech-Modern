@@ -27,6 +27,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -42,12 +43,12 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -228,10 +229,10 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //*******     Interaction    *******//
     //////////////////////////////////////
     @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        if (canToolTunePipe(toolType) || toolType == GTToolType.SCREWDRIVER) return true;
+    public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
+        if (toolTypes.contains(getPipeTuneTool()) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
-            if (cover.shouldRenderGrid(player, held, toolType)) return true;
+            if (cover.shouldRenderGrid(player, held, toolTypes)) return true;
         }
         return false;
     }
@@ -241,22 +242,22 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (canToolTunePipe(toolType)) {
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(getPipeTuneTool())) {
             return getPipeTexture(isBlocked(side));
         }
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {
-            return cover.sideTips(player, toolType, side);
+            return cover.sideTips(player, toolTypes, side);
         }
         return null;
     }
 
     @Override
-    public InteractionResult onToolClick(@NotNull GTToolType toolType, ItemStack itemStack, UseOnContext context) {
+    public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack, UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
-        if (playerIn == null) return InteractionResult.PASS;
+        if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
 
         var hand = context.getHand();
         var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), false);
@@ -265,15 +266,15 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolType == GTToolType.SCREWDRIVER) {
+        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
-                return coverBehavior.onScrewdriverClick(playerIn, hand, hitResult);
+                return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
             }
-        } else if (toolType == GTToolType.SOFT_MALLET) {
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (coverBehavior != null) {
-                return coverBehavior.onSoftMalletClick(playerIn, hand, hitResult);
+                return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
             }
-        } else if (canToolTunePipe(toolType)) {
+        } else if (toolTypes.contains(getPipeTuneTool())) {
             setBlocked(gridSide, !isBlocked(gridSide));
             // try to connect to the next node.
             if (!isBlocked(gridSide)) {
@@ -282,21 +283,21 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     node.setBlocked(gridSide.getOpposite(), false);
                 }
             }
-            return InteractionResult.CONSUME;
-        } else if (toolType == GTToolType.CROWBAR) {
+            return Pair.of(getPipeTuneTool(), InteractionResult.CONSUME);
+        } else if (toolTypes.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
                     getCoverContainer().removeCover(gridSide, playerIn);
                 }
-                return InteractionResult.CONSUME;
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
             }
         }
 
-        return InteractionResult.PASS;
+        return Pair.of(null, InteractionResult.PASS);
     }
 
-    protected boolean canToolTunePipe(GTToolType toolType) {
-        return toolType == GTToolType.WRENCH;
+    protected GTToolType getPipeTuneTool() {
+        return GTToolType.WRENCH;
     }
 
     @Override
