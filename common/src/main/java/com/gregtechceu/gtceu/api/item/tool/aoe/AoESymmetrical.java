@@ -9,7 +9,32 @@ import javax.annotation.Nullable;
 
 public class AoESymmetrical {
 
+    public final int column, row, layer;
+
+    private AoESymmetrical() {
+        this.column = 0;
+        this.row = 0;
+        this.layer = 0;
+    }
+
+    private AoESymmetrical(int column, int row, int layer) {
+        this.column = column;
+        this.row = row;
+        this.layer = layer;
+    }
+
     private static final AoESymmetrical NONE = new AoESymmetrical();
+
+    public static AoESymmetrical none() {
+        return NONE;
+    }
+
+    public static AoESymmetrical of(int column, int row, int layer) {
+        Preconditions.checkArgument(column >= 0, "Height cannot be negative.");
+        Preconditions.checkArgument(row >= 0, "Width cannot be negative.");
+        Preconditions.checkArgument(layer >= 0, "Depth cannot be negative.");
+        return column == 0 && row == 0 && layer == 0 ? NONE : new AoESymmetrical(column, row, layer);
+    }
 
     public static AoESymmetrical readMax(CompoundTag tag) {
         int column = 0, row = 0, layer = 0;
@@ -137,30 +162,4 @@ public class AoESymmetrical {
             }
         }
     }
-
-    public static AoESymmetrical none() {
-        return NONE;
-    }
-
-    public static AoESymmetrical of(int column, int row, int layer) {
-        Preconditions.checkArgument(column >= 0, "Height cannot be negative.");
-        Preconditions.checkArgument(row >= 0, "Width cannot be negative.");
-        Preconditions.checkArgument(layer >= 0, "Depth cannot be negative.");
-        return column == 0 && row == 0 && layer == 0 ? NONE : new AoESymmetrical(column, row, layer);
-    }
-
-    public final int column, row, layer;
-
-    private AoESymmetrical() {
-        this.column = 0;
-        this.row = 0;
-        this.layer = 0;
-    }
-
-    private AoESymmetrical(int column, int row, int layer) {
-        this.column = column;
-        this.row = row;
-        this.layer = layer;
-    }
-
 }

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -32,13 +33,15 @@ public class DiodePartMachine extends TieredIOPartMachine {
 
     public DiodePartMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier, IO.BOTH);
-        amps = 1;
         long tierVoltage = GTValues.V[getTier()];
-        this.energyContainer = new NotifiableEnergyContainer(this, tierVoltage * 16, tierVoltage, amps, tierVoltage, amps);
+
+        this.amps = 1;
+        this.energyContainer = new NotifiableEnergyContainer(this, tierVoltage * MAX_AMPS * 2, tierVoltage, MAX_AMPS, tierVoltage, MAX_AMPS);
+
         reinitializeEnergyContainer();
     }
 
-    private void setAmpMode() {
+    private void cycleAmpMode() {
         amps = amps == getMaxAmperage() ? 1 : amps << 1;
         if (!getLevel().isClientSide) {
             reinitializeEnergyContainer();
@@ -52,9 +55,18 @@ public class DiodePartMachine extends TieredIOPartMachine {
         return MAX_AMPS;
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+
+        if (!LDLib.isRemote())
+            reinitializeEnergyContainer();
+    }
+
     protected void reinitializeEnergyContainer() {
         long tierVoltage = GTValues.V[getTier()];
-        this.energyContainer.resetBasicInfo(tierVoltage * 16, tierVoltage, amps, tierVoltage, amps);
+
+        this.energyContainer.resetBasicInfo(tierVoltage * MAX_AMPS * 2, tierVoltage, amps, tierVoltage, amps);
         this.energyContainer.setSideInputCondition(s -> s != getFrontFacing());
         this.energyContainer.setSideOutputCondition(s -> s == getFrontFacing());
     }
@@ -70,7 +82,7 @@ public class DiodePartMachine extends TieredIOPartMachine {
             scheduleRenderUpdate();
             return InteractionResult.CONSUME;
         }
-        setAmpMode();
+        cycleAmpMode();
         playerIn.sendSystemMessage(Component.translatable("gtceu.machine.diode.message", amps));
         return InteractionResult.CONSUME;
     }
