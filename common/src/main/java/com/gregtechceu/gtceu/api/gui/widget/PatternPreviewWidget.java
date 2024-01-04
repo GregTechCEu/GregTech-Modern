@@ -215,6 +215,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
                 candidates[i] = new SlotWidget(itemHandler, i, 9 + (i / maxCol) * 18, 33 + (i % maxCol) * 18, false, false)
+                        .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
                         .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));
                 addWidget(candidates[i]);
