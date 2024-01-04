@@ -479,6 +479,16 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        if (GTCEu.isHighTier()) {
+            MOTOR.appendIngredients(Stream.of(new Object[][]{
+                    { 9, GTItems.ELECTRIC_MOTOR_UHV.asStack()},
+                    {10, GTItems.ELECTRIC_MOTOR_UEV.asStack()},
+                    {11, GTItems.ELECTRIC_MOTOR_UIV.asStack()},
+                    {12, GTItems.ELECTRIC_MOTOR_UXV.asStack()},
+                    {13, GTItems.ELECTRIC_MOTOR_OpV.asStack()},
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
         ROTOR = new Component(Stream.of(new Object[][]{
 
                 {0, new UnificationEntry(TagPrefix.rotor, GTMaterials.Tin)},
