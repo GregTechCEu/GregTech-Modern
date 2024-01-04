@@ -841,10 +841,11 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
 
     @Environment(EnvType.CLIENT)
     static ItemColor tintColor() {
-        return (itemStack, index) ->{
+        return (itemStack, index) -> {
             if (itemStack.getItem() instanceof IGTTool item) {
+                Material material = item.getMaterial();
                 return switch (index) {
-                    case 0 -> {
+                    case 0, -101 -> {
                         if (item.getToolClasses(itemStack).contains(GTToolType.CROWBAR)) {
                             if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
                                 yield itemStack.getTag().getInt("tint_color");
@@ -852,7 +853,14 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                         }
                         yield -1;
                     }
-                    case 1 -> item.getMaterial().getMaterialARGB();
+                    case 1, -111 -> material.getMaterialARGB();
+                    case 2, -121 -> {
+                        if (material.getMaterialSecondaryARGB() != -1) {
+                            yield material.getMaterialSecondaryARGB();
+                        } else {
+                            yield material.getMaterialARGB();
+                        }
+                    }
                     default -> -1;
                 };
             }
