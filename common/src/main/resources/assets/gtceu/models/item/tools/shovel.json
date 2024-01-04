@@ -1,8 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "gtceu:item/tools/shovel",
-    "layer1": "gtceu:item/void",
-    "layer2": "gtceu:item/tools/handle_shovel"
+    "layer0": "gtceu:item/tools/handle_shovel",
+    "layer1": "gtceu:item/tools/shovel"
   }
 }

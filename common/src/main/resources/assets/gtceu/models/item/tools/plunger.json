@@ -2,7 +2,7 @@
   "parent": "item/handheld",
   "textures": {
     "layer0": "gtceu:item/tools/plunger",
-    "layer1": "gtceu:item/tools/plunger_overlay",
-    "layer2": "gtceu:item/tools/handle_plunger"
+    "layer1": "gtceu:item/tools/handle_plunger",
+    "layer2": "gtceu:item/tools/plunger_overlay"
   }
 }
