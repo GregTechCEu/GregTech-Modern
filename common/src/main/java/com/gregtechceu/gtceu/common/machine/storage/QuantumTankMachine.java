@@ -97,11 +97,26 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH) {
             @Override
+            public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+                return handleVoiding(super.fill(resource, simulate, notifyChanges), resource);
+            }
+
+            @Override
+            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+                return handleVoiding(super.fill(tank, resource, simulate, notifyChanges), resource);
+            }
+
+            @Override
             public long fill(FluidStack resource, boolean simulate) {
-                var filled = super.fill(resource, simulate);
+                return handleVoiding(super.fill(resource, simulate), resource);
+
+            }
+
+            private long handleVoiding(long filled, FluidStack resource) {
                 if (filled < resource.getAmount() && isVoiding && isFluidValid(0, resource)) {
-                    filled = resource.getAmount();
+                    return resource.getAmount();
                 }
+
                 return filled;
             }
         }.setFilter(fluidStack -> !isLocked() || lockedFluid.getFluid().isFluidEqual(fluidStack));
