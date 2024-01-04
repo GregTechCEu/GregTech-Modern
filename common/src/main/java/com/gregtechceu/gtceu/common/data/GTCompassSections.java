@@ -34,7 +34,7 @@ public class GTCompassSections {
             .register();
 
     public final static CompassSection TOOLS = CompassSection.create("tools")
-            .icon(() -> new ItemStackTexture(GTItems.TOOL_ITEMS.get(GTMaterials.Iron.getToolTier(), GTToolType.WRENCH).asStack()))
+            .icon(() -> new ItemStackTexture(GTItems.TOOL_ITEMS.get(GTMaterials.Iron, GTToolType.WRENCH).asStack()))
             .priority(priority++)
             .register();
 

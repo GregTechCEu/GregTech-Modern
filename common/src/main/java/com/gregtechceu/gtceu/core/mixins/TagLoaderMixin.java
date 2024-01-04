@@ -62,7 +62,7 @@ public class TagLoaderMixin<T> implements IGTTagLoader<T> {
                 }
             });
 
-            GTItems.TOOL_ITEMS.rowMap().forEach((toolTier, map) -> {
+            GTItems.TOOL_ITEMS.rowMap().forEach((material, map) -> {
                 map.forEach((type, item) -> {
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()), GTValues.CUSTOM_TAG_SOURCE);

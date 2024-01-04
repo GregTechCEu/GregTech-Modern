@@ -47,6 +47,7 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -138,8 +139,8 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Tools    ******//
     //////////////////////////////////////
-    public final static Table<MaterialToolTier, GTToolType, ItemEntry<TieredItem>> TOOL_ITEMS =
-            ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
+    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS =
+            ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).toList(),
                     GTToolType.getTypes().values().stream().toList());
 
     public static void generateTools() {
@@ -168,7 +169,7 @@ public class GTItems {
 
                 for (GTToolType toolType : GTToolType.getTypes().values()) {
                     if (property.hasType(toolType)) {
-                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p))
+                        TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
                                 .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
@@ -242,19 +243,19 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
 
     public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[13];
-    public static ItemEntry<Item> SHAPE_MOLD_PLATE;
-    public static ItemEntry<Item> SHAPE_MOLD_GEAR;
-    public static ItemEntry<Item> SHAPE_MOLD_CREDIT;
-    public static ItemEntry<Item> SHAPE_MOLD_BOTTLE;
-    public static ItemEntry<Item> SHAPE_MOLD_INGOT;
-    public static ItemEntry<Item> SHAPE_MOLD_BALL;
-    public static ItemEntry<Item> SHAPE_MOLD_BLOCK;
-    public static ItemEntry<Item> SHAPE_MOLD_NUGGET;
-    public static ItemEntry<Item> SHAPE_MOLD_CYLINDER;
-    public static ItemEntry<Item> SHAPE_MOLD_ANVIL;
-    public static ItemEntry<Item> SHAPE_MOLD_NAME;
-    public static ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
-    public static ItemEntry<Item> SHAPE_MOLD_ROTOR;
+    public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
+    public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
+    public static final ItemEntry<Item> SHAPE_MOLD_CREDIT;
+    public static final ItemEntry<Item> SHAPE_MOLD_BOTTLE;
+    public static final ItemEntry<Item> SHAPE_MOLD_INGOT;
+    public static final ItemEntry<Item> SHAPE_MOLD_BALL;
+    public static final ItemEntry<Item> SHAPE_MOLD_BLOCK;
+    public static final ItemEntry<Item> SHAPE_MOLD_NUGGET;
+    public static final ItemEntry<Item> SHAPE_MOLD_CYLINDER;
+    public static final ItemEntry<Item> SHAPE_MOLD_ANVIL;
+    public static final ItemEntry<Item> SHAPE_MOLD_NAME;
+    public static final ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
+    public static final ItemEntry<Item> SHAPE_MOLD_ROTOR;
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
