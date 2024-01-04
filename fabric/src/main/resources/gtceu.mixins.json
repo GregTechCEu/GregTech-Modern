@@ -15,6 +15,7 @@
     "LivingEntityAccessor",
     "PlayerMixin",
     "ServerPlayerGameModeMixin",
+    "ShapedRecipeMixin",
     "SimpleCookingSerializerMixin"
   ],
   "injectors": {

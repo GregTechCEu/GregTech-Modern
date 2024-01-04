@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import mcjty.theoneprobe.config.Config;
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -32,7 +33,7 @@ public class ConfigMixin {
     private static void gtceu$injectToolTags(CallbackInfoReturnable<Map<ResourceLocation, String>> cir) {
         for (GTToolType type : GTToolType.getTypes().values()) {
             for (TagKey<Item> tag : type.itemTags) {
-                if (!tooltypeTagsSet.containsKey(tag.location())) tooltypeTagsSet.put(tag.location(), I18n.get(type.getUnlocalizedName()));
+                if (!tooltypeTagsSet.containsKey(tag.location())) tooltypeTagsSet.put(tag.location(), Component.translatable("gtceu.tool.class." + type.name).getString());
             }
         }
     }

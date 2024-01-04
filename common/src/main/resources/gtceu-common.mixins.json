@@ -25,7 +25,6 @@
     "LevelMixin",
     "LootTablesMixin",
     "MinecraftServerMixin",
-    "MixinEnchantmentCategory",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
     "RecipeManagerAccessor",
