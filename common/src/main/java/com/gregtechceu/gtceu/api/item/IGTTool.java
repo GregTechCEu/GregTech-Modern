@@ -422,8 +422,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         // full durability tools in the left slot are not repairable
         // this is needed so enchantment merging works when both tools are full durability
         if (toRepair.getDamageValue() == 0) return false;
-        if (repair.getItem() instanceof IGTTool) {
-            return getToolMaterial(toRepair) == ((IGTTool) repair.getItem()).getToolMaterial(repair);
+        if (repair.getItem() instanceof IGTTool gtTool) {
+            return getToolMaterial(toRepair) == gtTool.getToolMaterial(repair);
         }
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(repair.getItem());
         if (entry == null || entry.material == null) return false;
@@ -847,20 +847,20 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                 // TODO switch around main and secondary color once new textures are added
                 return switch (index) {
                     case 0, -101 -> {
-                        if (material.getMaterialSecondaryARGB() != -1) {
-                            yield material.getMaterialSecondaryARGB();
-                        } else {
-                            yield material.getMaterialARGB();
-                        }
-                    }
-                    case 1, -111 -> material.getMaterialARGB();
-                    case 2, -121 -> {
                         if (item.getToolClasses(itemStack).contains(GTToolType.CROWBAR)) {
                             if (itemStack.hasTag() && getToolTag(itemStack).contains(TINT_COLOR_KEY, Tag.TAG_INT)) {
                                 yield getToolTag(itemStack).getInt(TINT_COLOR_KEY);
                             }
                         }
                         yield -1;
+                    }
+                    case 1, -111 -> material.getMaterialARGB();
+                    case 2, -121 -> {
+                        if (material.getMaterialSecondaryARGB() != -1) {
+                            yield material.getMaterialSecondaryARGB();
+                        } else {
+                            yield material.getMaterialARGB();
+                        }
                     }
                     default -> -1;
                 };

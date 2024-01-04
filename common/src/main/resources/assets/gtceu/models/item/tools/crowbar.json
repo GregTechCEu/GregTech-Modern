@@ -1,8 +1,7 @@
 {
   "parent": "item/handheld",
   "textures": {
-    "layer0": "gtceu:item/void",
-    "layer1": "gtceu:item/tools/crowbar",
-    "layer2": "gtceu:item/tools/crowbar_overlay"
+    "layer0": "gtceu:item/tools/crowbar_overlay",
+    "layer1": "gtceu:item/tools/crowbar"
   }
 }
