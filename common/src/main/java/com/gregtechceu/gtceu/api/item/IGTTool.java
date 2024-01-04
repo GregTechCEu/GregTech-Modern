@@ -844,22 +844,23 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         return (itemStack, index) -> {
             if (itemStack.getItem() instanceof IGTTool item) {
                 Material material = item.getMaterial();
+                // TODO switch around main and secondary color once new textures are added
                 return switch (index) {
                     case 0, -101 -> {
-                        if (item.getToolClasses(itemStack).contains(GTToolType.CROWBAR)) {
-                            if (itemStack.hasTag() && itemStack.getTag().contains("tint_color", Tag.TAG_INT)) {
-                                yield itemStack.getTag().getInt("tint_color");
-                            }
-                        }
-                        yield -1;
-                    }
-                    case 1, -111 -> material.getMaterialARGB();
-                    case 2, -121 -> {
                         if (material.getMaterialSecondaryARGB() != -1) {
                             yield material.getMaterialSecondaryARGB();
                         } else {
                             yield material.getMaterialARGB();
                         }
+                    }
+                    case 1, -111 -> material.getMaterialARGB();
+                    case 2, -121 -> {
+                        if (item.getToolClasses(itemStack).contains(GTToolType.CROWBAR)) {
+                            if (itemStack.hasTag() && getToolTag(itemStack).contains(TINT_COLOR_KEY, Tag.TAG_INT)) {
+                                yield getToolTag(itemStack).getInt(TINT_COLOR_KEY);
+                            }
+                        }
+                        yield -1;
                     }
                     default -> -1;
                 };

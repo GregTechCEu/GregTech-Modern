@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
@@ -12,13 +12,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -30,6 +29,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
+import org.apache.commons.lang3.ArrayUtils;
 
 import javax.annotation.Nonnull;
 import java.util.Collections;
@@ -226,10 +226,10 @@ public class ToolRecipeHandler {
                     'S', rod,
                     'W', stick);
 
-            addToolRecipe(provider, material, GTToolType.CROWBAR, true,
+            // D is inferred as the dye key
+            addDyeableToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
-                    'S', rod,
-                    'D', new UnificationEntry(TagPrefix.dye, MarkerMaterials.Color.Blue));
+                    'S', rod);
         }
     }
 
@@ -331,6 +331,23 @@ public class ToolRecipeHandler {
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material),
                     toolStack, recipe);
+        }
+    }
+
+    public static void addDyeableToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+        ItemStack toolStack = ToolHelper.get(tool, material);
+        if (toolStack.isEmpty()) return;
+        for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
+            ToolHelper.getToolTag(toolStack).putInt(ToolHelper.TINT_COLOR_KEY, color.getKey().getTextColor());
+            Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D', new UnificationEntry(TagPrefix.dye, color.getValue()));
+
+            if (mirrored) { // todo mirrored
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s_%s", tool.name, material, color.getKey().getSerializedName()),
+                    toolStack, recipeWithDye);
+            } else {
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s_%s", tool.name, material, color.getKey().getSerializedName()),
+                    toolStack, recipeWithDye);
+            }
         }
     }
 

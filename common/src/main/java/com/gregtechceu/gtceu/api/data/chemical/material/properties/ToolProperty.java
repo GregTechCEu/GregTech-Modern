@@ -174,7 +174,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SCYTHE,
                     KNIFE,
                     BUTCHERY_KNIFE,
-                    PLUNGER
+//                    PLUNGER
             });
         }
 

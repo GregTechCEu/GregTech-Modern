@@ -156,7 +156,9 @@ public class VanillaRecipeHelper {
                 } else if (content instanceof TagKey<?> key) {
                     builder.define(sign, (TagKey<Item>) key);
                 } else if (content instanceof TagPrefix prefix) {
-                    builder.define(sign, prefix.getItemParentTags()[0]);
+                    if (prefix.getItemParentTags().length > 0) {
+                        builder.define(sign, prefix.getItemParentTags()[0]);
+                    }
                 } else if (content instanceof ItemLike itemLike) {
                     builder.define(sign, itemLike);
                 } else if (content instanceof UnificationEntry entry) {
