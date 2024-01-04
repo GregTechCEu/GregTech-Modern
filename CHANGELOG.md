@@ -14,7 +14,8 @@ Version: 1.0.20
 - crowbars now rotate rail blocks
 - plungers made from different rubbers now have different durabilities
 
-WARNING: 
-- breaks most existing tools.
+***WARNING: THIS BREAKS MOST EXISTING TOOLS!***
+
+Notes for addon devs:  
 - GTItems.TOOL_ITEMS is now a table<Material, Type, Tool item> instead of the old <Tier, Type, Item>
 - torch placing with pickaxes is currently disabled as none of us can find a fix for it deleting the tool.
