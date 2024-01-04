@@ -75,6 +75,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
@@ -685,7 +687,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
                 getToolClasses(stack).stream()
                         .map(s -> Component.translatable("gtceu.tool.class." + s.name))
-                        .collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))
+                        .collect(Component::empty, FormattingUtil::combineComponents, FormattingUtil::combineComponents)
         ));
 
         // repair info
@@ -705,7 +707,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                     repairItems.add(TagPrefix.plate.getLocalizedName(material));
                 }
                 if (!repairItems.isEmpty()) {
-                    tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream().collect(Component::empty, (c1, c2) -> c1.append(", ").append(c2), (c1, c2) -> c1.append(", ").append(c2))));
+                    tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream().collect(Component::empty, FormattingUtil::combineComponents, FormattingUtil::combineComponents)));
                 }
             } else {
                 tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_info"));
@@ -715,6 +717,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             tooltip.add(Component.translatable("item.gtceu.tool.replace_tool_head"));
         }
     }
+    
+    
 
     default boolean definition$canApplyAtEnchantingTable(@Nonnull ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) return false;
