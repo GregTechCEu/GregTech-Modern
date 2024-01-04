@@ -357,8 +357,7 @@ public class GTUtil {
     public static FluidStack getFluidFromContainer(Object ingredient) {
         if (ingredient instanceof FluidStack) {
             return (FluidStack) ingredient;
-        } else if (ingredient instanceof ItemStack) {
-            ItemStack itemStack = (ItemStack) ingredient;
+        } else if (ingredient instanceof ItemStack itemStack) {
             IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
             if (fluidHandler != null)
                 return fluidHandler.drain(Integer.MAX_VALUE, false);
@@ -376,14 +375,10 @@ public class GTUtil {
                 return false;
             }
         }
-
-
         if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
             return false;
-        };
-
+        }
         return world.isDay();
-
     }
 
 }

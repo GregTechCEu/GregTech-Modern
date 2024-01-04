@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
@@ -26,7 +25,6 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
-import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
@@ -76,7 +74,6 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
@@ -240,34 +237,31 @@ public class GTBlocks {
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
             var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
-                    properties -> new RendererMaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
-                        Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
-                        Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), "layer2", true)),
-                        oreProperty.isEmissive()) : null))
-                .initialProperties(() -> {
-                    if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                        return Blocks.STONE;
-                    }
-                    return oreType.stoneType().get().getBlock();
-                })
-                .properties(properties -> {
-                    if (oreType.color() != null) properties.mapColor(oreType.color());
-                    if (oreType.sound() != null) properties.sound(oreType.sound());
-                    return properties.noLootTable();
-                })
-                .transform(unificationBlock(oreTag, material))
-                .addLayer(() -> RenderType::translucent)
-                .blockstate(NonNullBiConsumer.noop())
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                .color(() -> MaterialBlock::tintedColor)
-                .item(MaterialBlockItem::create)
-                .onRegister(MaterialBlockItem::onRegister)
-                .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialBlockItem::tintColor)
-                .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
-                .build()
-                .register();
+                            properties -> new OreBlock(properties, oreTag, material, true))
+                    .initialProperties(() -> {
+                        if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
+                            return Blocks.STONE;
+                        }
+                        return oreType.stoneType().get().getBlock();
+                    })
+                    .properties(properties -> {
+                        if (oreType.color() != null) properties.mapColor(oreType.color());
+                        if (oreType.sound() != null) properties.sound(oreType.sound());
+                        return properties.noLootTable();
+                    })
+                    .transform(unificationBlock(oreTag, material))
+                    .addLayer(() -> RenderType::translucent)
+                    .blockstate(NonNullBiConsumer.noop())
+                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                    .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                    .color(() -> MaterialBlock::tintedColor)
+                    .item(MaterialBlockItem::create)
+                    .onRegister(MaterialBlockItem::onRegister)
+                    .model(NonNullBiConsumer.noop())
+                    .color(() -> MaterialBlockItem::tintColor)
+                    .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
+                    .build()
+                    .register();
             MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);
         }
     }

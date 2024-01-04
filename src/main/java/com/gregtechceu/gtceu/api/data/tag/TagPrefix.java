@@ -81,7 +81,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.STONE::defaultBlockState);
+            .registerOre(Blocks.STONE::defaultBlockState, new ResourceLocation("block/stone"));
 
     public static final TagPrefix oreGranite = oreTagPrefix("granite")
             .langValue("Granite %s Ore")
@@ -89,7 +89,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.GRANITE::defaultBlockState);
+            .registerOre(Blocks.GRANITE::defaultBlockState, new ResourceLocation("block/granite"));
 
     public static final TagPrefix oreDiorite = oreTagPrefix("diorite")
             .langValue("Diorite %s Ore")
@@ -97,7 +97,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.DIORITE::defaultBlockState);
+            .registerOre(Blocks.DIORITE::defaultBlockState, new ResourceLocation("block/diorite"));
 
     public static final TagPrefix oreAndesite = oreTagPrefix("andesite")
             .langValue("Andesite %s Ore")
@@ -105,7 +105,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.ANDESITE::defaultBlockState);
+            .registerOre(Blocks.ANDESITE::defaultBlockState, new ResourceLocation("block/andesite"));
 
     public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate")
             .langValue("Deepslate %s Ore")
@@ -113,7 +113,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.DEEPSLATE::defaultBlockState);
+            .registerOre(Blocks.DEEPSLATE::defaultBlockState, new ResourceLocation("block/deepslate"));
 
     public static final TagPrefix oreTuff = oreTagPrefix("tuff")
             .langValue("Tuff %s Ore")
@@ -121,7 +121,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.TUFF::defaultBlockState);
+            .registerOre(Blocks.TUFF::defaultBlockState, new ResourceLocation("block/tuff"));
 
     public static final TagPrefix oreSand = oreTagPrefix("sand")
             .langValue("Sand %s Ore")
@@ -129,7 +129,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.SAND::defaultBlockState, false, MapColor.SAND, SoundType.SAND, true);
+            .registerOre(Blocks.SAND::defaultBlockState, new ResourceLocation("block/sand"), false, MapColor.SAND, SoundType.SAND, true);
 
     public static final TagPrefix oreRedSand = oreTagPrefix("redSand")
             .langValue("Red Sand %s Ore")
@@ -137,7 +137,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.RED_SAND::defaultBlockState, false, MapColor.COLOR_ORANGE, SoundType.SAND, true);
+            .registerOre(Blocks.RED_SAND::defaultBlockState, new ResourceLocation("block/red_sand"), false, MapColor.COLOR_ORANGE, SoundType.SAND, true);
 
     public static final TagPrefix oreGravel = oreTagPrefix("gravel")
             .langValue("Gravel %s Ore")
@@ -145,7 +145,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_SHOVEL)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.GRAVEL::defaultBlockState, false, MapColor.STONE, SoundType.GRAVEL, true);
+            .registerOre(Blocks.GRAVEL::defaultBlockState, new ResourceLocation("block/gravel"), false, MapColor.STONE, SoundType.GRAVEL, true);
 
     public static final TagPrefix oreBasalt = oreTagPrefix("basalt")
             .langValue("Basalt %s Ore")
@@ -153,7 +153,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.BASALT::defaultBlockState, true, MapColor.COLOR_BLACK);
+            .registerOre(Blocks.BASALT::defaultBlockState, new ResourceLocation("block/basalt_side"), true, MapColor.COLOR_BLACK);
 
     public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
@@ -161,7 +161,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.NETHERRACK::defaultBlockState, true, MapColor.NETHER);
+            .registerOre(Blocks.NETHERRACK::defaultBlockState, new ResourceLocation("block/netherrack"), true, MapColor.NETHER);
 
     public static final TagPrefix oreEndstone = oreTagPrefix("endstone")
             .langValue("End %s Ore")
@@ -169,7 +169,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.END_STONE::defaultBlockState, true, MapColor.SAND);
+            .registerOre(Blocks.END_STONE::defaultBlockState, new ResourceLocation("block/end_stone"), true, MapColor.SAND);
 
     public static final TagPrefix rawOre = new TagPrefix("raw", true)
             .defaultTagPath(FORGE, "raw_materials/%s")
@@ -771,7 +771,7 @@ public class TagPrefix {
         }
     }
 
-    public record OreType(Supplier<BlockState> stoneType, boolean isNether, boolean isSand, MapColor color, SoundType sound) {}
+    public record OreType(Supplier<BlockState> stoneType, ResourceLocation stoneTexture, boolean isNether, boolean isSand, MapColor color, SoundType sound) {}
 
     @Getter
     public final String name;
@@ -848,24 +848,24 @@ public class TagPrefix {
         secondaryMaterials.add(secondaryMaterial);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType) {
-        return registerOre(stoneType, false);
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, ResourceLocation baseModelLocation) {
+        return registerOre(stoneType, baseModelLocation, false);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether) {
-        return registerOre(stoneType, isNether, MapColor.STONE);
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, ResourceLocation baseModelLocation, boolean isNether) {
+        return registerOre(stoneType, baseModelLocation, isNether, MapColor.STONE);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MapColor color) {
-        return registerOre(stoneType, isNether, color, SoundType.STONE, false);
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, ResourceLocation baseModelLocation, boolean isNether, MapColor color) {
+        return registerOre(stoneType, baseModelLocation, isNether, color, SoundType.STONE, false);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MapColor color, boolean isSand) {
-        return registerOre(stoneType, isNether, color, SoundType.STONE, isSand);
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, ResourceLocation baseModelLocation, boolean isNether, MapColor color, boolean isSand) {
+        return registerOre(stoneType, baseModelLocation, isNether, color, SoundType.STONE, isSand);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, boolean isNether, MapColor color, SoundType soundType, boolean isSand) {
-        ORES.put(this, new OreType(stoneType, isNether, isSand, color, soundType));
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, ResourceLocation baseModelLocation, boolean isNether, MapColor color, SoundType soundType, boolean isSand) {
+        ORES.put(this, new OreType(stoneType, baseModelLocation, isNether, isSand, color, soundType));
         return this;
     }
 
