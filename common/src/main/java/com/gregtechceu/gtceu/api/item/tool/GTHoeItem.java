@@ -43,7 +43,7 @@ public class GTHoeItem extends HoeItem implements IItemUseFirst, IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    public GTHoeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    protected GTHoeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;

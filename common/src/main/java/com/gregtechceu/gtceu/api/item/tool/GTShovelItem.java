@@ -50,7 +50,7 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    public GTShovelItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    protected GTShovelItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;

@@ -45,7 +45,7 @@ public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    public GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    protected GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
