@@ -29,7 +29,7 @@ but you will need to craft the ones you're actively using again to regain functi
 - plungers made from different rubbers now have different durabilities
 
 **Fixes:**
-- copper ore veins are now larger
+- fixed certain ore veins being too small
 - fix LuV prospector recipe
 - fix EMI screen loading error
 - fix diodes being reset to 1A on chunk load
