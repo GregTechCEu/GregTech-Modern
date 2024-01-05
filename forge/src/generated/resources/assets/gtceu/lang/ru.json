@@ -5276,5 +5276,8 @@
     "gtceu.machine.mv_thermal_centrifuge.tooltip": "§7Более точное разделение руд",
     "gtceu.machine.opv_gas_collector.tooltip": "§7Собирает газ из вселенной в зависимости от измерения",
     "gtceu.machine.uev_rock_crusher.tooltip": "§7Камера вулканического образования",
-    "gtceu.machine.uiv_gas_collector.tooltip": "§7Собирает газ из Солнечной системы в зависимости от измерения"
+    "gtceu.machine.uiv_gas_collector.tooltip": "§7Собирает газ из Солнечной системы в зависимости от измерения",
+    "gtceu.machine.uv_assembler.tooltip": "§7Сборочный конструктор",
+    "gtceu.machine.uv_autoclave.tooltip": "§7Блок обременения",
+    "gtceu.machine.uv_bender.tooltip": "§7Деформатор материи"
 }
