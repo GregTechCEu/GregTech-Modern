@@ -1,20 +1,18 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
-import com.mojang.blaze3d.vertex.VertexMultiConsumer;
 import com.mojang.math.Matrix4f;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.*;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.BlockDestructionProgress;
@@ -32,8 +30,9 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.ArrayList;
-import java.util.List;
+import javax.annotation.Nullable;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.SortedSet;
 
 @Mixin(LevelRenderer.class)
@@ -46,6 +45,8 @@ public abstract class LevelRendererMixin {
 
     @Shadow @Final private RenderBuffers renderBuffers;
 
+    @Shadow private @Nullable ClientLevel level;
+
     @Inject(
             method = {"renderLevel"},
             at = {@At("HEAD")}
@@ -54,33 +55,32 @@ public abstract class LevelRendererMixin {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
-
-        if (!mainHandItem.is(CustomTags.AOE_TOOLS) || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
+        if (ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
 
         BlockPos hitResultPos = result.getBlockPos();
         BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
 
         SortedSet<BlockDestructionProgress> progresses = destructionProgress.get(hitResultPos.asLong());
-
         if (progresses == null || progresses.isEmpty() || !mainHandItem.isCorrectToolForDrops(hitResultState)) return;
-
         BlockDestructionProgress progress = progresses.last();
 
-        List<BlockPos> positions = ToolHelper.getAOEPositions(minecraft.player, mainHandItem, hitResultPos, 1);
+        Set<BlockPos> positions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, result);
 
         Vec3 vec3 = camera.getPosition();
-        double d = vec3.x();
-        double e = vec3.y();
-        double f = vec3.z();
+        double camX = vec3.x();
+        double camY = vec3.y();
+        double camZ = vec3.z();
 
         for (BlockPos pos : positions) {
             poseStack.pushPose();
-            poseStack.translate((double)pos.getX() - d, (double)pos.getY() - e, (double)pos.getZ() - f);
-            PoseStack.Pose pose2 = poseStack.last();
-            VertexConsumer vertexConsumer2 = new SheetedDecalTextureGenerator(
-                    this.renderBuffers.crumblingBufferSource().getBuffer((RenderType)ModelBakery.DESTROY_TYPES.get(progress.getProgress())), pose2.pose(), pose2.normal()
+            poseStack.translate((double)pos.getX() - camX, (double)pos.getY() - camY, (double)pos.getZ() - camZ);
+            PoseStack.Pose last = poseStack.last();
+            VertexConsumer breakProgressDecal = new SheetedDecalTextureGenerator(
+                    this.renderBuffers.crumblingBufferSource().getBuffer((RenderType)ModelBakery.DESTROY_TYPES.get(progress.getProgress())),
+                    last.pose(),
+                    last.normal()
             );
-            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos, minecraft.level, poseStack, vertexConsumer2);
+            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos, minecraft.level, poseStack, breakProgressDecal);
             poseStack.popPose();
         }
     }
@@ -99,13 +99,13 @@ public abstract class LevelRendererMixin {
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
-        if (!mainHandItem.is(CustomTags.AOE_TOOLS) || state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching()) return;
+        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching()) return;
 
-        List<BlockPos> blockPositions = ToolHelper.getAOEPositions(minecraft.player, mainHandItem, pos, 1);
-        List<VoxelShape> outlineShapes = new ArrayList<>();
+        Set<BlockPos> blockPositions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, minecraft.hitResult);
+        Set<VoxelShape> outlineShapes = new HashSet<>();
 
         for (BlockPos position : blockPositions) {
-            if (!ToolHelper.aoeCanBreak(mainHandItem, minecraft.level, pos, position)) continue;
+            //if (!ToolHelper.aoeCanBreak(mainHandItem, minecraft.level, pos, position)) continue;
 
             BlockPos diffPos = position.subtract(pos);
             BlockState offsetState = minecraft.level.getBlockState(position);

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import lombok.Getter;
@@ -120,7 +121,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
     }
 
     public ToolProperty() {
-        this(1.0F, 1.0F, 100, 2, GTToolType.values());
+        this(1.0F, 1.0F, 100, 2, GTToolType.getTypes().values().toArray(GTToolType[]::new));
     }
 
     public Object2IntMap<Enchantment> getEnchantments() {
@@ -161,6 +162,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     AXE,
                     HOE,
                     MINING_HAMMER,
+                    SPADE,
                     SAW,
                     HARD_HAMMER,
 //                    SOFT_MALLET,
@@ -173,7 +175,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SCYTHE,
                     KNIFE,
                     BUTCHERY_KNIFE,
-                    PLUNGER
+//                    PLUNGER
             });
         }
 

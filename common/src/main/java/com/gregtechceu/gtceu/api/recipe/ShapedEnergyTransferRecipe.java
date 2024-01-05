@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.core.mixins.ShapedRecipeInvoker;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 import lombok.Getter;
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -11,6 +12,8 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -18,7 +21,10 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
 
+import javax.annotation.Nullable;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author Irgendwer01
@@ -30,6 +36,7 @@ import java.util.Map;
 public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     public static final RecipeSerializer<ShapedEnergyTransferRecipe> SERIALIZER = new Serializer();
 
+    @Nullable // if matches() isn't called
     private CraftingContainer craftingContainer;
 
     @Getter
@@ -57,6 +64,65 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     public ItemStack getResultItem() {
         long maxCharge = 0L;
         long charge = 0L;
+        if (this.craftingContainer == null) {
+            List<ItemStack> items = this.getIngredients().stream().map(i -> i.getItems()[0]).collect(Collectors.toList());
+            this.craftingContainer = new CraftingContainer(null, 3, 3) {
+                @Override
+                public int getContainerSize() {
+                    return 9;
+                }
+
+                @Override
+                public boolean isEmpty() {
+                    return false;
+                }
+
+                @Override
+                public ItemStack getItem(int slot) {
+                    return items.get(slot);
+                }
+
+                @Override
+                public ItemStack removeItem(int slot, int amount) {
+                    items.get(slot).shrink(amount);
+                    return items.get(slot).isEmpty() ? ItemStack.EMPTY : items.get(slot);
+                }
+
+                @Override
+                public ItemStack removeItemNoUpdate(int slot) {
+                    return items.set(slot, ItemStack.EMPTY);
+                }
+
+                @Override
+                public void setItem(int slot, ItemStack stack) {
+                    items.set(slot, stack);
+                }
+
+                @Override
+                public void setChanged() {
+
+                }
+
+                @Override
+                public boolean stillValid(Player player) {
+                    return true;
+                }
+
+                @Override
+                public void clearContent() {
+                    for (int i = 0; i < items.size(); ++i) {
+                        items.set(i, ItemStack.EMPTY);
+                    }
+                }
+
+                @Override
+                public void fillStackedContents(StackedContents helper) {
+                    for (ItemStack stack : items) {
+                        helper.accountStack(stack);
+                    }
+                }
+            };
+        }
         ItemStack resultStack = super.getResultItem();
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
             for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
@@ -83,11 +149,11 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         @Override
         public ShapedEnergyTransferRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             String string = GsonHelper.getAsString(json, "group", "");
-            Map<String, Ingredient> map = ShapedRecipeInvoker.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
-            String[] strings = ShapedRecipeInvoker.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
+            Map<String, Ingredient> map = ShapedRecipeAccessor.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
+            String[] strings = ShapedRecipeAccessor.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
             int i = strings[0].length();
             int j = strings.length;
-            NonNullList<Ingredient> nonNullList = ShapedRecipeInvoker.callDissolvePattern(strings, map, i, j);
+            NonNullList<Ingredient> nonNullList = ShapedRecipeAccessor.callDissolvePattern(strings, map, i, j);
             boolean overrideCharge = GsonHelper.getAsBoolean(json, "overrideCharge");
             boolean transferMaxCharge = GsonHelper.getAsBoolean(json, "transferMaxCharge");
             Ingredient chargeIngredient = Ingredient.fromJson(GsonHelper.getAsJsonObject(json, "chargeIngredient"));

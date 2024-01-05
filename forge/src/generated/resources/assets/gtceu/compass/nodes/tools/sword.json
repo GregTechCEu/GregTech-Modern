@@ -4,12 +4,12 @@
     "res": "gtceu:aluminium_sword"
   },
   "items": [
-    "#forge:tools/swords"
+    "#minecraft:swords"
   ],
   "page": "gtceu:tools/sword",
   "position": [
     -250,
-    0
+    100
   ],
   "section": "gtceu:tools"
 }

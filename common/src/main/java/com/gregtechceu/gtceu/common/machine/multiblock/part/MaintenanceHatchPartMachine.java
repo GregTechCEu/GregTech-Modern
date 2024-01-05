@@ -248,7 +248,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
                     for (ItemStack stack : entityPlayer.getInventory().items) {
                         if (ToolHelper.is(stack, toolToMatch)) {
                             setMaintenanceFixed(i);
-                            ToolHelper.damageItem(stack, GTValues.RNG, player);
+                            ToolHelper.damageItem(stack, player, 1);
                             if (toolsToMatch.stream().allMatch(Objects::isNull)) {
                                 return;
                             }
@@ -263,7 +263,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     private void fixProblemWithTool(int problemIndex, ItemStack stack, Player player) {
         setMaintenanceFixed(problemIndex);
         if (player instanceof ServerPlayer serverPlayer) {
-            ToolHelper.damageItem(stack, GTValues.RNG, serverPlayer);
+            ToolHelper.damageItem(stack, serverPlayer, 1);
         }
         setTaped(false);
     }
