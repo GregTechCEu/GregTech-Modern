@@ -329,7 +329,7 @@ public class VanillaRecipeHelper {
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
             } else if (ingredient instanceof ItemProviderEntry<?> entry) {
-                itemLike = entry.asItem();
+                itemLike = entry.get().asItem();
             } else continue; // throw out bad entries
 
 

@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -313,7 +313,7 @@ public class ToolRecipeHandler {
             ItemStack tool = toolItem.get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,
-                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem()).getPath(), material),
+                    String.format("%s_%s", Registry.ITEM.getKey(toolItem.asItem()).getPath(), material),
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",
@@ -448,7 +448,7 @@ public class ToolRecipeHandler {
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LV)) {
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_lv_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_LV.asStack(),
+                    Ingredient.of(batteryItem.get()), GTItems.PROSPECTOR_LV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_LV.asStack(),
                     'P', new UnificationEntry(plate, GTMaterials.Steel),
@@ -483,7 +483,7 @@ public class ToolRecipeHandler {
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(HV)) {
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_hv_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_HV.asStack(),
+                    Ingredient.of(batteryItem.get()), GTItems.PROSPECTOR_HV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_HV.asStack(),
                     'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
@@ -504,7 +504,7 @@ public class ToolRecipeHandler {
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_luv_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem), GTItems.PROSPECTOR_LUV.asStack(),
+                    Ingredient.of(batteryItem.get()), GTItems.PROSPECTOR_LUV.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_LuV.asStack(),
                     'P', new UnificationEntry(plate, GTMaterials.RhodiumPlatedPalladium),

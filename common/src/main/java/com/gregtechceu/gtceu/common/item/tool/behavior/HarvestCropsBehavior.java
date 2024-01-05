@@ -63,7 +63,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
             if (blockHitResult.getDirection() == null)
                 return InteractionResult.PASS;
 
-            blocks = ToolHelper.iterateAoE(stack, aoeDefinition, player.level(), player, rayTraceResult, HarvestCropsBehavior::isBlockCrops);
+            blocks = ToolHelper.iterateAoE(stack, aoeDefinition, player.level, player, rayTraceResult, HarvestCropsBehavior::isBlockCrops);
             if (isBlockCrops(stack, context.getLevel(), player, blockHitResult.getBlockPos(), context)) {
                 blocks.add(blockHitResult.getBlockPos());
             }
@@ -88,15 +88,15 @@ public class HarvestCropsBehavior implements IToolBehavior {
     }
 
     private static boolean harvestBlockRoutine(ItemStack stack, BlockPos pos, Player player) {
-        BlockState blockState = player.level().getBlockState(pos);
+        BlockState blockState = player.level.getBlockState(pos);
         Block block = blockState.getBlock();
         CropBlock blockCrops = (CropBlock) block;
         if (blockCrops.isMaxAge(blockState)) {
             NonNullList<ItemStack> drops = NonNullList.create();
-            drops.addAll(Block.getDrops(blockState, (ServerLevel) player.level(), pos, null));
-            dropListOfItems(player.level(), pos, drops);
-            player.level().levelEvent(2001, pos, Block.getId(blockState));
-            player.level().setBlock(pos, blockCrops.getStateForAge(0), Block.UPDATE_ALL);
+            drops.addAll(Block.getDrops(blockState, (ServerLevel) player.level, pos, null));
+            dropListOfItems(player.level, pos, drops);
+            player.level.levelEvent(2001, pos, Block.getId(blockState));
+            player.level.setBlock(pos, blockCrops.getStateForAge(0), Block.UPDATE_ALL);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(stack, player);
             }

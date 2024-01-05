@@ -37,7 +37,7 @@ public class MultiPlayerGameModeMixin {
     private boolean gtceu$doesSneakBypassUse(ItemStack instance, Operation<Boolean> original, LocalPlayer player, InteractionHand hand, BlockHitResult hitResult) {
         boolean isEmpty = original.call(instance);
         if (instance.getItem() instanceof IGTFabricItem gtItem) {
-            return isEmpty || gtItem.doesSneakBypassUse(instance, player.level(), hitResult.getBlockPos(), player);
+            return isEmpty || gtItem.doesSneakBypassUse(instance, player.level, hitResult.getBlockPos(), player);
         }
         return isEmpty;
     }

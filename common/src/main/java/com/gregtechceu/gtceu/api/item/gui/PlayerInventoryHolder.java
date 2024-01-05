@@ -32,14 +32,14 @@ public class PlayerInventoryHolder implements IUIHolder {
         this.player = player;
         this.hand = hand;
         this.sampleItem = sampleItem;
-        this.validityCheck = () -> ItemStack.isSameItem(sampleItem, player.getItemInHand(hand));
+        this.validityCheck = () -> ItemStack.isSame(sampleItem, player.getItemInHand(hand));
     }
 
     public PlayerInventoryHolder(Player Player, InteractionHand hand) {
         this.player = Player;
         this.hand = hand;
         this.sampleItem = player.getItemInHand(hand);
-        this.validityCheck = () -> ItemStack.isSameItem(sampleItem, player.getItemInHand(hand));
+        this.validityCheck = () -> ItemStack.isSame(sampleItem, player.getItemInHand(hand));
     }
 
     public PlayerInventoryHolder setCustomValidityCheck(BooleanSupplier validityCheck) {
@@ -63,12 +63,12 @@ public class PlayerInventoryHolder implements IUIHolder {
 
     @Override
     public boolean isRemote() {
-        return player.level().isClientSide;
+        return player.level.isClientSide;
     }
 
     public ItemStack getCurrentItem() {
         ItemStack itemStack = player.getItemInHand(hand);
-        if (!ItemStack.isSameItem(sampleItem, itemStack))
+        if (!ItemStack.isSame(sampleItem, itemStack))
             return null;
         return itemStack;
     }

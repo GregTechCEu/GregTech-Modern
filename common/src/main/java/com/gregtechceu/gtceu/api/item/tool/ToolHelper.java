@@ -11,12 +11,12 @@ import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.GTToolItem;
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import com.mojang.math.Vector3d;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
 import dev.architectury.injectables.annotations.ExpectPlatform;
+import io.github.fabricators_of_create.porting_lib.extensions.IShearable;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -264,7 +264,7 @@ public class ToolHelper {
                     return true;
                 }
                 // If the tool is an electric tool, catch the tool breaking and cancel the remaining AOE
-                else if (!ItemStack.isSameItem(player.getMainHandItem(), stack)) {
+                else if (!ItemStack.isSame(player.getMainHandItem(), stack)) {
                     return true;
                 }
             }
@@ -307,7 +307,7 @@ public class ToolHelper {
                             if (!(x == 0 && y == 0 && z == 0)) {
                                 BlockPos pos = blockHit.getBlockPos().offset(x, isDown ? y : -y, z);
                                 if (player.mayUseItemAt(pos.relative(blockHit.getDirection()), blockHit.getDirection(), stack)) {
-                                    if (function.apply(stack, world, player, pos, new UseOnContext(player.level(), player, player.getUsedItemHand(), stack, blockHit))) {
+                                    if (function.apply(stack, world, player, pos, new UseOnContext(player.level, player, player.getUsedItemHand(), stack, blockHit))) {
                                         validPositions.add(pos);
                                     }
                                 }
@@ -327,7 +327,7 @@ public class ToolHelper {
                                 BlockPos pos = blockHit.getBlockPos().offset(
                                         isX ? (isNegative ? x : -x) : (isNegative ? z : -z), y,
                                         isX ? (isNegative ? z : -z) : (isNegative ? x : -x));
-                                if (function.apply(stack, world, player, pos, new UseOnContext(player.level(), player, player.getUsedItemHand(), stack, blockHit))) {
+                                if (function.apply(stack, world, player, pos, new UseOnContext(player.level, player, player.getUsedItemHand(), stack, blockHit))) {
                                     validPositions.add(pos);
                                 }
                             }
@@ -370,7 +370,7 @@ public class ToolHelper {
         if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
             return false;
         }
-        Level world = player.level();
+        Level world = player.level;
         boolean canBreak = onBlockBreakEvent(world, player.gameMode.getGameModeForPlayer(), player, pos);
         if (!canBreak) {
             return false;
@@ -440,7 +440,7 @@ public class ToolHelper {
         }
 
         HitResult rayTraceResult = getPlayerDefaultRaytrace(player);
-        return getHarvestableBlocks(stack, aoeDefiniton, player.level(), player, rayTraceResult);
+        return getHarvestableBlocks(stack, aoeDefiniton, player.level, player, rayTraceResult);
     }
 
     public static HitResult getPlayerDefaultRaytrace(@NotNull Player player) {
@@ -592,8 +592,9 @@ public class ToolHelper {
      */
     public static int shearBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
         if (!player.isCreative()) {
-            Level world = player.serverLevel();
+            Level world = player.getLevel();
             BlockState state = world.getBlockState(pos);
+            /*
             if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool));
@@ -619,6 +620,7 @@ public class ToolHelper {
                     return tool.isEmpty() ? 0 : 1;
                 }
             }
+            */
         }
         return -1;
     }

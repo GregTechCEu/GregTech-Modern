@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.damagesource.DamageTypes;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -58,7 +56,7 @@ public class EntityDamageBehavior implements IToolBehavior {
                 .orElse(0f);
         if (damageBonus != 0f) {
             DamageSource source = attacker instanceof Player player ?
-                    attacker.damageSources().playerAttack(player) : attacker.damageSources().mobAttack(attacker);
+                    DamageSource.playerAttack(player) : DamageSource.mobAttack(attacker);
             target.hurt(source, damageBonus);
         }
     }

@@ -42,7 +42,7 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
@@ -361,7 +361,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     }
 
     default boolean definition$onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
-        if (player.level().isClientSide) return false;
+        if (player.level.isClientSide) return false;
         getToolStats().getBehaviors().forEach(behavior -> behavior.onBlockStartBreak(stack, pos, player));
 
         if (!player.isCrouching()) {
@@ -372,7 +372,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             }
             if (result != 0) {
                 // prevent exploits with instantly breakable blocks
-                BlockState state = player.level().getBlockState(pos);
+                BlockState state = player.level.getBlockState(pos);
                 boolean effective = false;
                 for (GTToolType type : getToolClasses(stack)) {
                     if (type.harvestTags.stream().anyMatch(state::is)) {
@@ -389,7 +389,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                     } else {
                         if (result == -1) {
                             if (getBehaviorsTag(stack).getBoolean(TREE_FELLING_KEY) && state.is(BlockTags.LOGS)) {
-                                new TreeFellingHelper().fellTree(stack, player.level(), state, pos, player);
+                                new TreeFellingHelper().fellTree(stack, player.level, state, pos, player);
                             }
                             if (playSoundOnBlockDestroy()) playSound(player);
                         } else {
@@ -675,7 +675,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         toolStats.getBehaviors().forEach(behavior -> behavior.addInformation(stack, world, tooltip, flag));
 
         // unique tooltip
-        String uniqueTooltip = "item.gtceu.tool." + BuiltInRegistries.ITEM.getKey(this.asItem()).getPath() + ".tooltip";
+        String uniqueTooltip = "item.gtceu.tool." + Registry.ITEM.getKey(this.asItem()).getPath() + ".tooltip";
         if (I18n.exists(uniqueTooltip)) {
             tooltip.add(Component.literal(""));
             tooltip.add(Component.translatable(uniqueTooltip));
@@ -793,7 +793,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
 
     default void playSound(Player player) {
         if (ConfigHolder.INSTANCE.client.toolUseSounds && getSound() != null) {
-            player.level().playSound(null, player.position().x, player.position().y, player.position().z, getSound().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
+            player.level.playSound(null, player.position().x, player.position().y, player.position().z, getSound().getMainEvent(), SoundSource.PLAYERS, 1F, 1F);
         }
     }
 

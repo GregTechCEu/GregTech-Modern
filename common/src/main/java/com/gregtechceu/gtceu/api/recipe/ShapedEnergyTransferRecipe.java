@@ -66,22 +66,7 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         long charge = 0L;
         if (this.craftingContainer == null) {
             List<ItemStack> items = this.getIngredients().stream().map(i -> i.getItems()[0]).collect(Collectors.toList());
-            this.craftingContainer = new CraftingContainer() {
-                @Override
-                public int getWidth() {
-                    return 3;
-                }
-
-                @Override
-                public int getHeight() {
-                    return 3;
-                }
-
-                @Override
-                public List<ItemStack> getItems() {
-                    return items;
-                }
-
+            this.craftingContainer = new CraftingContainer(null, 3, 3) {
                 @Override
                 public int getContainerSize() {
                     return 9;

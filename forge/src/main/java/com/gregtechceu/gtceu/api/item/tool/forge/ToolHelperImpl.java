@@ -27,7 +27,7 @@ public class ToolHelperImpl {
     }
 
     public static double getPlayerBlockReach(@NotNull Player player) {
-        return player.getBlockReach();
+        return player.getReachDistance();
     }
 
     public static boolean isCorrectTierForDrops(BlockState state, int tier) {

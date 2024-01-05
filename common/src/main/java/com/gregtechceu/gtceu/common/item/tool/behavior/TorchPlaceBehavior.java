@@ -83,7 +83,7 @@ public class TorchPlaceBehavior implements IToolBehavior {
                         slotStack.is(TagUtil.createItemTag("torches"))) {
                     BlockPos pos = context.getClickedPos();
                     BlockState state = context.getLevel().getBlockState(pos);
-                    if (!state.canBeReplaced()) {
+                    if (!state.getMaterial().isReplaceable()) {
                         pos = pos.relative(context.getClickedFace());
                     }
                     if (context.getPlayer().mayUseItemAt(pos, context.getClickedFace(), slotStack)) {
