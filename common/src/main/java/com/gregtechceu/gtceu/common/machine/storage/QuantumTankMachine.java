@@ -49,6 +49,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Set;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -97,11 +98,26 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH) {
             @Override
+            public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+                return handleVoiding(super.fill(resource, simulate, notifyChanges), resource);
+            }
+
+            @Override
+            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+                return handleVoiding(super.fill(tank, resource, simulate, notifyChanges), resource);
+            }
+
+            @Override
             public long fill(FluidStack resource, boolean simulate) {
-                var filled = super.fill(resource, simulate);
+                return handleVoiding(super.fill(resource, simulate), resource);
+
+            }
+
+            private long handleVoiding(long filled, FluidStack resource) {
                 if (filled < resource.getAmount() && isVoiding && isFluidValid(0, resource)) {
-                    filled = resource.getAmount();
+                    return resource.getAmount();
                 }
+
                 return filled;
             }
         }.setFilter(fluidStack -> !isLocked() || lockedFluid.getFluid().isFluidEqual(fluidStack));
@@ -325,18 +341,18 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     //*******     Rendering     ********//
     //////////////////////////////////////
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.WRENCH) {
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(GTToolType.WRENCH)) {
             if (!player.isCrouching()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
-        } else if (toolType == GTToolType.SCREWDRIVER) {
+        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingFluids()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         }
-        return super.sideTips(player, toolType, side);
+        return super.sideTips(player, toolTypes, side);
     }
 }

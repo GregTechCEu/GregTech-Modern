@@ -37,6 +37,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.fabricmc.api.EnvType;
@@ -69,6 +70,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Predicate;
 
 /**
@@ -287,10 +289,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and animations will be played
      */
     @Override
-    public final InteractionResult onToolClick(@NotNull GTToolType toolType, ItemStack itemStack, UseOnContext context) {
+    public final Pair<GTToolType, InteractionResult> onToolClick(Set<@NotNull GTToolType> toolType, ItemStack itemStack, UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
-        if (playerIn == null) return InteractionResult.PASS;
+        if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
 
         var hand = context.getHand();
         var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), false);
@@ -299,29 +301,28 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolType == GTToolType.SCREWDRIVER) {
+        if (toolType.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
-                return coverBehavior.onScrewdriverClick(playerIn, hand, hitResult);
-            } else return onScrewdriverClick(playerIn, hand, gridSide, hitResult);
-        } else if (toolType == GTToolType.SOFT_MALLET) {
+                return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
+            } else return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(playerIn, hand, gridSide, hitResult));
+        } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
             if (coverBehavior != null) {
-                return coverBehavior.onSoftMalletClick(playerIn, hand, hitResult);
-            } else return onSoftMalletClick(playerIn, hand, gridSide, hitResult);
-        } else
-        if (toolType == GTToolType.WRENCH) {
-            return onWrenchClick(playerIn, hand, gridSide, hitResult);
-        } else if (toolType == GTToolType.CROWBAR) {
+                return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
+            } else return Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(playerIn, hand, gridSide, hitResult));
+        } else if (toolType.contains(GTToolType.WRENCH)) {
+            return Pair.of(GTToolType.WRENCH, onWrenchClick(playerIn, hand, gridSide, hitResult));
+        } else if (toolType.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
                     getCoverContainer().removeCover(gridSide, playerIn);
                 }
-                return InteractionResult.CONSUME;
+                return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
             }
-            return onCrowbarClick(playerIn, hand, gridSide, hitResult);
-        } else if (toolType == GTToolType.HARD_HAMMER) {
-            return onHardHammerClick(playerIn, hand, gridSide, hitResult);
+            return Pair.of(GTToolType.CROWBAR, onCrowbarClick(playerIn, hand, gridSide, hitResult));
+        } else if (toolType.contains(GTToolType.HARD_HAMMER)) {
+            return Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(playerIn, hand, gridSide, hitResult));
         }
-        return InteractionResult.PASS;
+        return Pair.of(null, InteractionResult.PASS);
     }
 
     protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
@@ -401,35 +402,35 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Override
-    public boolean shouldRenderGrid(Player player, ItemStack held, GTToolType toolType) {
-        if (toolType == GTToolType.WRENCH || toolType == GTToolType.SCREWDRIVER) return true;
-        if (toolType == GTToolType.HARD_HAMMER && this instanceof IMufflableMachine) return true;
+    public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
+        if (toolTypes.contains(GTToolType.WRENCH) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
+        if (toolTypes.contains(GTToolType.HARD_HAMMER) && this instanceof IMufflableMachine) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
-            if (cover.shouldRenderGrid(player, held, toolType)) return true;
+            if (cover.shouldRenderGrid(player, held, toolTypes)) return true;
         }
         return false;
     }
 
     @Override
-    public ResourceTexture sideTips(Player player, GTToolType toolType, Direction side) {
-        if (toolType == GTToolType.WRENCH) {
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(GTToolType.WRENCH)) {
             if (player.isCrouching()) {
                 if (isFacingValid(side)) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }
             }
-        } else if (toolType == GTToolType.SOFT_MALLET) {
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (this instanceof IControllable controllable) {
                 return controllable.isWorkingEnabled() ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
             }
-        } else if (toolType == GTToolType.HARD_HAMMER) {
+        } else if (toolTypes.contains(GTToolType.HARD_HAMMER)) {
             if (this instanceof IMufflableMachine mufflableMachine) {
                 return mufflableMachine.isMuffled() ? GuiTextures.TOOL_SOUND : GuiTextures.TOOL_MUTE;
             }
         }
         var cover = coverContainer.getCoverAtSide(side);
         if (cover != null) {
-            return cover.sideTips(player, toolType, side);
+            return cover.sideTips(player, toolTypes, side);
         }
         return null;
     }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
@@ -106,7 +107,7 @@ public class LangHandler {
         provider.add("gtceu.tooltip.tool_fluid_hold_shift", "§7Hold SHIFT to show Fluid Containment and Tool Info");
         provider.add("metaitem.generic.fluid_container.tooltip", "%d/%dL %s");
         provider.add("metaitem.generic.electric_item.tooltip", "%d/%d EU - Tier %s");
-        provider.add("metaitem.generic.electric_item.stored", "%d/%d EU(%s)");
+        provider.add("metaitem.generic.electric_item.stored", "%d/%d EU (%s)");
         provider.add("metaitem.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("metaitem.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
         provider.add("metaitem.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
@@ -114,6 +115,29 @@ public class LangHandler {
         provider.add("metaitem.crushed.tooltip.purify", "Throw into Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
 
+
+        provider.add("gtceu.tool.class.sword", "Sword");
+        provider.add("gtceu.tool.class.pickaxe", "Pickaxe");
+        provider.add("gtceu.tool.class.shovel", "Shovel");
+        provider.add("gtceu.tool.class.axe", "Axe");
+        provider.add("gtceu.tool.class.hoe", "Hoe");
+        provider.add("gtceu.tool.class.mining_hammer", "Mining Hammer");
+        provider.add("gtceu.tool.class.spade", "Spade");
+        provider.add("gtceu.tool.class.saw", "Saw");
+        provider.add("gtceu.tool.class.hammer", "Hammer");
+        provider.add("gtceu.tool.class.mallet", "Soft Mallet");
+        provider.add("gtceu.tool.class.wrench", "Wrench");
+        provider.add("gtceu.tool.class.file", "File");
+        provider.add("gtceu.tool.class.crowbar", "Crowbar");
+        provider.add("gtceu.tool.class.screwdriver", "Screwdriver");
+        provider.add("gtceu.tool.class.mortar", "Mortar");
+        provider.add("gtceu.tool.class.wire_cutter", "Wire Cutter");
+        provider.add("gtceu.tool.class.knife", "Knife");
+        provider.add("gtceu.tool.class.butchery_knife", "Butchery Knife");
+        provider.add("gtceu.tool.class.scythe", "Scythe");
+        provider.add("gtceu.tool.class.rolling_pin", "Rolling Pin");
+        provider.add("gtceu.tool.class.plunger", "Plunger");
+        provider.add("gtceu.tool.class.shears", "Shears");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "Usable as: §f%s");
@@ -179,6 +203,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.screwdriver_lv.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
+        replace(provider, "item.gtceu.tool.shears", "%s Shears");
         provider.add("item.gtceu.tool.tooltip.crafting_uses", "§a%s Crafting Uses");
         provider.add("item.gtceu.tool.tooltip.general_uses", "§b%s Durability");
         provider.add("item.gtceu.tool.tooltip.attack_damage", "§c%s Attack Damage");
@@ -192,7 +217,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
-        provider.add("metaitem.turbine_rotor.tooltip", "Turbine Rotors for your power station");
+        provider.add("item.gtceu.turbine_rotor.tooltip", "Turbine Rotors for your power station");
         provider.add("metaitem.clipboard.tooltip", "Can be written on (without any writing Instrument). Right-click on Wall to place, and Shift-Right-Click to remove");
         provider.add("metaitem.behavior.mode_switch.tooltip", "Use while sneaking to switch mode");
         provider.add("metaitem.behavior.mode_switch.mode_switched", "§eMode Set to: %s");
@@ -201,21 +226,21 @@ public class LangHandler {
         provider.add("metaitem.tool.tooltip.durability", "§fDurability: §a%d / %d");
         provider.add("metaitem.tool.tooltip.rotor.efficiency", "Turbine Efficiency: §9%d%%");
         provider.add("metaitem.tool.tooltip.rotor.power", "Turbine Power: §9%d%%");
-        provider.add("metaitem.voltage_coil.ulv.tooltip", "Primitive Coil");
-        provider.add("metaitem.voltage_coil.lv.tooltip", "Basic Coil");
-        provider.add("metaitem.voltage_coil.mv.tooltip", "Good Coil");
-        provider.add("metaitem.voltage_coil.hv.tooltip", "Advanced Coil");
-        provider.add("metaitem.voltage_coil.ev.tooltip", "Extreme Coil");
-        provider.add("metaitem.voltage_coil.iv.tooltip", "Elite Coil");
-        provider.add("metaitem.voltage_coil.luv.tooltip", "Master Coil");
-        provider.add("metaitem.voltage_coil.zpm.tooltip", "Super Coil");
-        provider.add("metaitem.voltage_coil.uv.tooltip", "Ultimate Coil");
-        provider.add("metaitem.voltage_coil.uhv.tooltip", "Ultra Coil");
-        provider.add("metaitem.voltage_coil.uev.tooltip", "Unreal Coil");
-        provider.add("metaitem.voltage_coil.uiv.tooltip", "Insane Coil");
-        provider.add("metaitem.voltage_coil.uxv.tooltip", "Epic Coil");
-        provider.add("metaitem.voltage_coil.opv.tooltip", "Legendary Coil");
-        provider.add("metaitem.voltage_coil.max.tooltip", "Maximum Coil");
+        provider.add("item.gtceu.ulv_voltage_coil.tooltip", "Primitive Coil");
+        provider.add("item.gtceu.lv_voltage_coil.tooltip", "Basic Coil");
+        provider.add("item.gtceu.mv_voltage_coil.tooltip", "Good Coil");
+        provider.add("item.gtceu.hv_voltage_coil.tooltip", "Advanced Coil");
+        provider.add("item.gtceu.ev_voltage_coil.tooltip", "Extreme Coil");
+        provider.add("item.gtceu.iv_voltage_coil.tooltip", "Elite Coil");
+        provider.add("item.gtceu.luv_voltage_coil.tooltip", "Master Coil");
+        provider.add("item.gtceu.zpm_voltage_coil.tooltip", "Super Coil");
+        provider.add("item.gtceu.uv_voltage_coil.tooltip", "Ultimate Coil");
+        provider.add("item.gtceu.uhv_voltage_coil.tooltip", "Ultra Coil");
+        provider.add("item.gtceu.uev_voltage_coil.tooltip", "Unreal Coil");
+        provider.add("item.gtceu.uiv_voltage_coil.tooltip", "Insane Coil");
+        provider.add("item.gtceu.uxv_voltage_coil.tooltip", "Epic Coil");
+        provider.add("item.gtceu.opv_voltage_coil.tooltip", "Legendary Coil");
+        provider.add("item.gtceu.max_voltage_coil.tooltip", "Maximum Coil");
         provider.add("metaitem.liquid_fuel_jetpack.tooltip", "Uses Combustion Generator Fuels for Thrust");
         provider.add("metaarmor.nms.nightvision.enabled", "NanoMuscle™ Suite: NightVision Enabled");
         provider.add("metaarmor.nms.nightvision.disabled", "NanoMuscle™ Suite: NightVision Disabled");
@@ -256,8 +281,8 @@ public class LangHandler {
         provider.add("metaarmor.energy_share.tooltip", "Supply mode: %s");
         provider.add("metaarmor.energy_share.tooltip.guide", "To change mode shift-right click when holding item");
         provider.add("metaitem.record.sus.tooltip", "§7Leonz - Among Us Drip");
-        provider.add("metaitem.nan.certificate.tooltip", "Challenge Accepted!");
-        provider.add("metaitem.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
+        provider.add("item.gtceu.nan_certificate.tooltip", "Challenge Accepted!");
+        provider.add("item.gtceu.blacklight.tooltip", "Long-Wave §dUltraviolet§7 light source");
         provider.add("gui.widget.incrementButton.default_tooltip", "Hold Shift, Ctrl or both to change the amount");
         provider.add("gui.widget.recipeProgressWidget.default_tooltip", "Show Recipes");
         multilineLang(provider, "gtceu.recipe_memory_widget.tooltip", "§7Left click to automatically input this recipe into the crafting grid\n§7Shift click to lock/unlock this recipe");
@@ -430,6 +455,16 @@ public class LangHandler {
         replace(provider, GTMaterials.IncoloyMA956.getUnlocalizedName(), "Incoloy MA-956");
         replace(provider, GTMaterials.Stellite100.getUnlocalizedName(), "Stellite-100");
         replace(provider, GTMaterials.HastelloyC276.getUnlocalizedName(), "Hastelloy C-276");
+
+        replace(provider, GTBlocks.BATTERY_EMPTY_TIER_I.get().getDescriptionId(), "Empty Tier I Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_EV.get().getDescriptionId(), "EV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_IV.get().getDescriptionId(), "IV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_EMPTY_TIER_II.get().getDescriptionId(), "Empty Tier II Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_LuV.get().getDescriptionId(), "LuV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_ZPM.get().getDescriptionId(), "ZPM Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_EMPTY_TIER_III.get().getDescriptionId(), "Empty Tier III Capacitor");
+        replace(provider, GTBlocks.BATTERY_LAPOTRONIC_UV.get().getDescriptionId(), "UV Lapotronic Capacitor");
+        replace(provider, GTBlocks.BATTERY_ULTIMATE_UHV.get().getDescriptionId(), "UHV Ultimate Capacitor");
 
         provider.add("item.netherrack_nether_quartz", "Nether Quartz Ore");
         provider.add("block.surface_rock", "%s Surface Rock");
@@ -740,7 +775,7 @@ public class LangHandler {
                 "§fCapacitors§7 do not need to be all the same tier.",
                 "Allows up to §f%d Capacitor Layers§7.",
                 "Loses energy equal to §f1%%§7 of total capacity every §f24 hours§7.",
-                "Capped at §f%,d EU/t§7 passive loss per Capacitor Block.",
+                "Capped at §f%d kEU/t§7 passive loss per Capacitor Block.",
                 "Can use",
                 " Laser Hatches§7."
         );
@@ -754,12 +789,12 @@ public class LangHandler {
 
         multiLang(provider, "gtceu.machine.laser_hatch.source.tooltip",
                 "Transmitting power at distance",
-                "§cLaser Cables must be in a straight line!§7"
+                "§cLaser cables must be in a straight line!§7"
         );
 
         multiLang(provider, "gtceu.machine.laser_hatch.target.tooltip",
                 "Receiving power from distance",
-                "§cLaser Cables must be in a straight line!§7"
+                "§cLaser cables must be in a straight line!§7"
         );
 
         multiLang(provider, "gtceu.machine.endpoint.tooltip",

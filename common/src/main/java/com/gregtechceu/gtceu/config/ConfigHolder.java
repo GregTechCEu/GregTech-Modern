@@ -28,6 +28,9 @@ public class ConfigHolder {
     @Configurable
     public ClientConfigs client = new ClientConfigs();
     @Configurable
+    @Configurable.Comment("Config options for Tools and Armor")
+    public ToolConfigs tools = new ToolConfigs();
+    @Configurable
     @Configurable.Comment("Config options for Mod Compatibility")
     public CompatibilityConfigs compat = new CompatibilityConfigs();
     @Configurable
@@ -227,6 +230,9 @@ public class ConfigHolder {
         @Configurable.Comment({"Whether machines explode in rainy weather or when placed next to certain terrain, such as fire or lava", "Default: false"})
         public boolean doTerrainExplosion = false;
         @Configurable
+        @Configurable.Comment({ "Energy use multiplier for electric items.", "Default: 100" })
+        public int energyUsageMultiplier = 100;
+        @Configurable
         @Configurable.Comment({"Whether machines or boilers damage the terrain when they explode.",
                 "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.", "Default: true"})
         public boolean doesExplosionDamagesTerrain = false;
@@ -292,10 +298,23 @@ public class ConfigHolder {
         public boolean asyncRecipeSearching = true;
     }
 
+    public static class ToolConfigs {
+        @Configurable
+        @Configurable.Comment({ "Random chance for electric tools to take actual damage", "Default: 10%" })
+        @Configurable.Range(min = 0, max = 100)
+        public int rngDamageElectricTools = 10;
+    }
+
     public static class ClientConfigs {
         @Configurable
         @Configurable.Comment({"Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true"})
         public boolean machinesEmissiveTextures = true;
+        @Configurable
+        @Configurable.Comment({ "Whether or not sounds should be played when using tools outside of crafting.", "Default: true" })
+        public boolean toolUseSounds = true;
+        @Configurable
+        @Configurable.Comment({ "Whether or not sounds should be played when crafting with tools.", "Default: true" })
+        public boolean toolCraftingSounds = true;
         @Configurable
         @Configurable.Comment({"The default color to overlay onto machines.", "#FFFFFF is no coloring (default).",
                 "#D2DCFF is the classic blue from GT5."})

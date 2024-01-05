@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.google.common.base.CaseFormat;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.MutableComponent;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -18,7 +21,7 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
 public class FormattingUtil {
-    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance();
+    private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.ROOT);
     private static final DecimalFormat TWO_PLACES_FORMAT = new DecimalFormat("#.##");
 
     private static final int SMALL_DOWN_NUMBER_BASE = '\u2080';
@@ -153,5 +156,13 @@ public class FormattingUtil {
     @Nonnull
     public static String formatNumber2Places(float number) {
         return TWO_PLACES_FORMAT.format(number);
+    }
+
+    public static void combineComponents(MutableComponent c1, Component c2) {
+        if (c1.getContents() != ComponentContents.EMPTY && c2.getContents() != ComponentContents.EMPTY) {
+            c1.append(", ").append(c2);
+        } else {
+            c1.append(c2);
+        }
     }
 }

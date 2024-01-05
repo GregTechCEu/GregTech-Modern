@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -108,6 +109,11 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
 
     public TagPrefixBuilder customTagPath(TagPrefix.LoaderType loader, String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
         base.customTagPath(loader, path, formatter);
+        return this;
+    }
+
+    public TagPrefixBuilder miningToolTag(String path) {
+        this.miningToolTag(TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(path)));
         return this;
     }
 
