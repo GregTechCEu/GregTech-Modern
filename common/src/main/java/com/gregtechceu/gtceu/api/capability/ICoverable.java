@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.CoverContainerConfigurator;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -94,7 +95,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         markDirty();
         scheduleNeighborShapeUpdate();
         // TODO achievement
-//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((EntityPlayerMP) player);
+//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
         return true;
     }
 
@@ -197,7 +198,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
 
     @Nullable
     static Direction rayTraceCoverableSide(ICoverable coverable, Player player) {
-        var rayTrace = RayTraceHelper.rayTraceRange(coverable.getLevel(), player, 5);
+        var rayTrace = RayTraceHelper.rayTraceRange(coverable.getLevel(), player, ToolHelper.getPlayerBlockReach(player));
         if (rayTrace.getType() == HitResult.Type.MISS) {
             return null;
         }

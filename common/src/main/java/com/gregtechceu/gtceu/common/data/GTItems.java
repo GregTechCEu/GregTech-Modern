@@ -22,11 +22,13 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.GTToolItem;
+import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.item.tool.ToolDefinitionBuilder;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
@@ -45,6 +47,7 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
@@ -136,9 +139,9 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Tools    ******//
     //////////////////////////////////////
-    public final static Table<MaterialToolTier, GTToolType, ItemEntry<GTToolItem>> TOOL_ITEMS =
-            ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).map(Material::getToolTier).toList(),
-                    Arrays.stream(GTToolType.values()).toList());
+    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS =
+            ArrayTable.create(GTRegistries.MATERIALS.values().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).toList(),
+                    GTToolType.getTypes().values().stream().toList());
 
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
@@ -164,15 +167,14 @@ public class GTItems {
                 List<ResourceLocation> higher = tiers.values().stream().filter(high -> high.getB().getLevel() == tier.getLevel() + 1).map(Tuple::getA).toList();
                 registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
 
-                for (GTToolType toolType : GTToolType.values()) {
+                for (GTToolType toolType : GTToolType.getTypes().values()) {
                     if (property.hasType(toolType)) {
-                        TOOL_ITEMS.put(tier, toolType, REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> GTToolItem.create(toolType, tier, p))
-                                .properties(p -> p.craftRemainder(Items.AIR).durability(tier.getUses() * toolType.durabilityMultiplier))
+                        TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) REGISTRATE.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
+                                .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
-                                .color(() -> GTToolItem::tintColor)
-                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTag))
-                                //.tag(toolType.itemTag)
+                                .color(() -> IGTTool::tintColor)
+                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTags.get(0)))
                                 .register());
                     }
                 }
@@ -241,19 +243,19 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
 
     public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[13];
-    public static ItemEntry<Item> SHAPE_MOLD_PLATE;
-    public static ItemEntry<Item> SHAPE_MOLD_GEAR;
-    public static ItemEntry<Item> SHAPE_MOLD_CREDIT;
-    public static ItemEntry<Item> SHAPE_MOLD_BOTTLE;
-    public static ItemEntry<Item> SHAPE_MOLD_INGOT;
-    public static ItemEntry<Item> SHAPE_MOLD_BALL;
-    public static ItemEntry<Item> SHAPE_MOLD_BLOCK;
-    public static ItemEntry<Item> SHAPE_MOLD_NUGGET;
-    public static ItemEntry<Item> SHAPE_MOLD_CYLINDER;
-    public static ItemEntry<Item> SHAPE_MOLD_ANVIL;
-    public static ItemEntry<Item> SHAPE_MOLD_NAME;
-    public static ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
-    public static ItemEntry<Item> SHAPE_MOLD_ROTOR;
+    public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
+    public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
+    public static final ItemEntry<Item> SHAPE_MOLD_CREDIT;
+    public static final ItemEntry<Item> SHAPE_MOLD_BOTTLE;
+    public static final ItemEntry<Item> SHAPE_MOLD_INGOT;
+    public static final ItemEntry<Item> SHAPE_MOLD_BALL;
+    public static final ItemEntry<Item> SHAPE_MOLD_BLOCK;
+    public static final ItemEntry<Item> SHAPE_MOLD_NUGGET;
+    public static final ItemEntry<Item> SHAPE_MOLD_CYLINDER;
+    public static final ItemEntry<Item> SHAPE_MOLD_ANVIL;
+    public static final ItemEntry<Item> SHAPE_MOLD_NAME;
+    public static final ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
+    public static final ItemEntry<Item> SHAPE_MOLD_ROTOR;
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
@@ -1653,7 +1655,6 @@ public class GTItems {
     public static <T extends ItemLike> NonNullConsumer<T> materialInfo(ItemMaterialInfo materialInfo) {
         return item -> ChemicalHelper.registerMaterialInfo(item, materialInfo);
     }
-
 
     public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {

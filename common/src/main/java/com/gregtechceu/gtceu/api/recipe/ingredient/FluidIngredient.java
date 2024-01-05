@@ -192,17 +192,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
     }
 
-    public static CompoundTag getNBT(JsonElement element)
-    {
-        try
-        {
+    public static CompoundTag getNBT(JsonElement element) {
+        try {
             if (element.isJsonObject())
                 return TagParser.parseTag(GSON.toJson(element));
             else
                 return TagParser.parseTag(GsonHelper.convertToString(element, "nbt"));
         }
-        catch (CommandSyntaxException e)
-        {
+        catch (CommandSyntaxException e) {
             throw new JsonSyntaxException("Invalid NBT Entry: " + e);
         }
     }
