@@ -1,11 +1,14 @@
 pluginManagement {
     repositories {
-        maven { url = "https://maven.fabricmc.net/" }
-        maven { url = "https://maven.architectury.dev/" }
-        maven { url = "https://maven.minecraftforge.net/" }
-        maven { url = "https://maven.quiltmc.org/repository/release" }
+        mavenLocal()
         gradlePluginPortal()
+        maven { url = 'https://maven.neoforged.net/releases' }
+        maven { url = "https://maven.quiltmc.org/repository/release" }
     }
+}
+
+plugins {
+    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
 }
 
 dependencyResolutionManagement {
@@ -46,7 +49,7 @@ dependencyResolutionManagement {
         def ldLibVersion = "1.0.22.b"
         def mixinextrasVersion = "0.2.0"
         def shimmerVersion = "0.2.2"
-        
+
         forge {
             version("forgeShortVersion", forgeVersion)
             def minecraftForge = version("minecratfForge", "${minecraftVersion}-${forgeVersion}")

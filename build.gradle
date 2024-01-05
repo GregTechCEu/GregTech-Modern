@@ -1,11 +1,9 @@
-import net.fabricmc.loom.task.RemapJarTask;
-
 plugins {
-    alias libs.plugins.architectury
-    alias libs.plugins.architectury.loom
-    alias libs.plugins.vineFlower // VineFlower, a better decompiler
-    alias libs.plugins.machete // automatic jar compressing on build
-    alias libs.plugins.shadow
+    id 'java-library'
+    id 'eclipse'
+    id 'idea'
+    id 'maven-publish'
+    id 'net.neoforged.gradle.userdev' version '7.0.57'
 }
 
 apply plugin: "dev.architectury.loom"
@@ -45,4 +43,8 @@ tasks.withType(JavaCompile) {
 machete {
     // disable machete locally for faster builds
     enabled = false
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }

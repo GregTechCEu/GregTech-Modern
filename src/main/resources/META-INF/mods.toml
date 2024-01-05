@@ -7,22 +7,25 @@ license = "${mod_license}"
 modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
-authors = "KilaBash, screret, serenibyss, Tech22"
+authors = "KilaBash, screret, Mikerooni, serenibyss, Tech22"
 description = "${mod_description}"
 logoFile = "icon.png"
 displayURL = "${mod_url}"
 credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, the GT5u authors and maintainers for providing the original code, and the community."
 
 [[dependencies.${mod_id}]]
-modId = "forge"
-mandatory = true
-versionRange = "[${forge_version},)"
-ordering = "NONE"
-side = "BOTH"
+    modId = "neoforge"
+    type = "required"
+    versionRange = "[${forge_version},)"
+    ordering = "NONE"
+    side = "BOTH"
 
 [[dependencies.${mod_id}]]
-modId = "minecraft"
-mandatory = true
-versionRange = "${minecraft_version}"
-ordering = "NONE"
-side = "BOTH"
+    modId = "minecraft"
+    type = "required"
+    versionRange = "${minecraft_version}"
+    ordering = "NONE"
+    side = "BOTH"
+
+#[features.${mod_id}]
+#openGLVersion = "[3.2,)"
