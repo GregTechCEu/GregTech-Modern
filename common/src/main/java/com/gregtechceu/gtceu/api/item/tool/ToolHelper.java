@@ -592,6 +592,7 @@ public class ToolHelper {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
+            /*
             if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool));
@@ -617,6 +618,7 @@ public class ToolHelper {
                     return tool.isEmpty() ? 0 : 1;
                 }
             }
+            */
         }
         return -1;
     }
