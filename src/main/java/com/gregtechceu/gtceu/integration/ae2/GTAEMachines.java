@@ -1,9 +1,12 @@
-package com.gregtechceu.gtceu.integration.ae2;
+package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.integration.ae2.machine.*;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
+import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
 import net.minecraft.network.chat.Component;
 
 import static com.gregtechceu.gtceu.api.GTValues.UHV;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.data;
+package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -18,6 +18,8 @@ import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMa
 import com.gregtechceu.gtceu.client.renderer.machine.SplitShaftTieredHullMachineRenderer;
 import com.gregtechceu.gtceu.common.block.KineticMachineBlock;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.ElectricGearBoxMachine;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
