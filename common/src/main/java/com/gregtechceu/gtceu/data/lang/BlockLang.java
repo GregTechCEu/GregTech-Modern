@@ -78,8 +78,8 @@ public class BlockLang {
         replace(provider, "block.gtceu.fusion_casing_mk2", "Fusion Machine Casing MK II");
         replace(provider, "block.gtceu.fusion_casing_mk3", "Fusion Machine Casing MK III");
 
-        provider.add("block.filter.tooltip", "Creates a §aParticle-Free§7 environment");
-        provider.add("block.filter_sterile.tooltip", "Creates a §aSterilized§7 environment");
+        provider.add("block.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
+        provider.add("block.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
 
 
         // TODO warning sign blocks

@@ -664,7 +664,11 @@ public class GTItems {
     public static ItemEntry<Item> ELECTRIC_MOTOR_LuV = REGISTRATE.item("luv_electric_motor", Item::new).lang("LuV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_ZPM = REGISTRATE.item("zpm_electric_motor", Item::new).lang("ZPM Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register();
     public static ItemEntry<Item> ELECTRIC_MOTOR_UV = REGISTRATE.item("uv_electric_motor", Item::new).lang("UV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register();
-
+    public static ItemEntry<Item> ELECTRIC_MOTOR_UHV = GTCEu.isHighTier() ? REGISTRATE.item("uhv_electric_motor", Item::new).lang("UHV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register() : null;
+    public static ItemEntry<Item> ELECTRIC_MOTOR_UEV = GTCEu.isHighTier() ? REGISTRATE.item("uev_electric_motor", Item::new).lang("UEV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register() : null;
+    public static ItemEntry<Item> ELECTRIC_MOTOR_UIV = GTCEu.isHighTier() ? REGISTRATE.item("uiv_electric_motor", Item::new).lang("UIV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register() : null;
+    public static ItemEntry<Item> ELECTRIC_MOTOR_UXV = GTCEu.isHighTier() ? REGISTRATE.item("uxv_electric_motor", Item::new).lang("UXV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register() : null;
+    public static ItemEntry<Item> ELECTRIC_MOTOR_OpV = GTCEu.isHighTier() ? REGISTRATE.item("opv_electric_motor", Item::new).lang("OpV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor")).register() : null;
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::create)
             .lang("LV Electric Pump")

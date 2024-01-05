@@ -56,4 +56,9 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     public int testItemCount(ItemStack itemStack) {
         return test(itemStack) ? Integer.MAX_VALUE : 0;
     }
+
+    @Override
+    public boolean supportsAmounts() {
+        return false;
+    }
 }
