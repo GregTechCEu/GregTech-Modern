@@ -9,10 +9,13 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @SuppressWarnings("unused")
 @Mixin(Item.class)
-public class ItemMixin implements IGTFabricItem {
+public class ItemMixin {
 
     @ModifyExpressionValue(method = "isEnchantable", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/Item;getMaxStackSize()I"))
     private int gtceu$stackSensitiveEnchantability(int original, ItemStack stack) {
-        return this.getMaxStackSize(stack);
+        if (this instanceof IGTFabricItem gtItem) {
+            return gtItem.getMaxStackSize(stack);
+        }
+        return original;
     }
 }

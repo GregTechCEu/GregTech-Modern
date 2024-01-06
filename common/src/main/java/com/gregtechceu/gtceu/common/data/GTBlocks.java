@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.LaserPipeBlockItem;
@@ -264,17 +265,17 @@ public class GTBlocks {
                     })
                     .transform(unificationBlock(oreTag, material))
                     .addLayer(() -> RenderType::cutoutMipped)
-                    .blockstate(NonNullBiConsumer.noop())
-                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                    .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlock::tintedColor)
-                    .item(MaterialBlockItem::create)
-                    .onRegister(MaterialBlockItem::onRegister)
-                    .model(NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlockItem::tintColor)
-                    .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
-                    .build()
-                    .register();
+                .blockstate(NonNullBiConsumer.noop())
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .color(() -> MaterialBlock::tintedColor)
+                .item(MaterialBlockItem::create)
+                .onRegister(MaterialBlockItem::onRegister)
+                .model(NonNullBiConsumer.noop())
+                .color(() -> MaterialBlockItem::tintColor)
+                .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
+                .build()
+                .register();
             MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);
         }
     }
@@ -979,7 +980,11 @@ public class GTBlocks {
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
-            builder.onRegister(block -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, block));
+            builder.onRegister(block -> {
+                UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
+                GTItems.toUnify.put(entry, block);
+                ChemicalHelper.registerUnificationItems(entry, block);
+            });
             return builder;
         };
     }

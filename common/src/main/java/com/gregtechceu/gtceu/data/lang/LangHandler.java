@@ -157,6 +157,9 @@ public class LangHandler {
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
         provider.add("item.gtceu.tool.behavior.torch_place", "§eSpelunker: §fPlaces Torches on Right-Click");
         provider.add("item.gtceu.tool.behavior.tree_felling", "§4Lumberjack: §fTree Felling");
+        provider.add("item.gtceu.tool.behavior.strip_log", "§5Artisan: §fStrips Logs");
+        provider.add("item.gtceu.tool.behavior.scrape", "§bPolisher: §fRemoves Oxidation");
+        provider.add("item.gtceu.tool.behavior.remove_wax", "§6Cleaner: §fRemoves Wax");
         provider.add("item.gtceu.tool.behavior.shield_disable", "§cBrute: §fDisables Shields");
         provider.add("item.gtceu.tool.behavior.relocate_mining", "§2Magnetic: §fRelocates Mined Blocks");
         provider.add("item.gtceu.tool.behavior.aoe_mining", "§5Area-of-Effect: §f%sx%sx%s");
