@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.fabric.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.fabric.IGTFabricItem;
+import com.gregtechceu.gtceu.common.item.tool.ToolEventHandlers;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import net.minecraft.client.Minecraft;
@@ -8,6 +9,9 @@ import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import org.spongepowered.asm.mixin.Final;
@@ -40,5 +44,16 @@ public class MultiPlayerGameModeMixin {
             return isEmpty || gtItem.doesSneakBypassUse(instance, player.level, hitResult.getBlockPos(), player);
         }
         return isEmpty;
+    }
+
+    @Inject(method = "interact",
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/client/multiplayer/ClientPacketListener;send(Lnet/minecraft/network/protocol/Packet;)V",
+            shift = At.Shift.AFTER),
+        cancellable = true)
+    private void gtceu$toolEntityInteract(Player player, Entity entity, InteractionHand interactionHand, CallbackInfoReturnable<InteractionResult> cir) {
+        InteractionResult result = ToolEventHandlers.onPlayerEntityInteract(player, interactionHand, entity);
+        if (result != InteractionResult.PASS) {
+            cir.setReturnValue(result);
+        }
     }
 }

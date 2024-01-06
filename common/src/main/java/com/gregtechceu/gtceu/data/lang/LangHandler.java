@@ -153,10 +153,13 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
-        provider.add("item.gtceu.tool.usable_as", "Usable as: §f%s");
+        provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
         provider.add("item.gtceu.tool.behavior.torch_place", "§eSpelunker: §fPlaces Torches on Right-Click");
         provider.add("item.gtceu.tool.behavior.tree_felling", "§4Lumberjack: §fTree Felling");
+        provider.add("item.gtceu.tool.behavior.strip_log", "§5Artisan: §fStrips Logs");
+        provider.add("item.gtceu.tool.behavior.scrape", "§bPolisher: §fRemoves Oxidation");
+        provider.add("item.gtceu.tool.behavior.remove_wax", "§6Cleaner: §fRemoves Wax");
         provider.add("item.gtceu.tool.behavior.shield_disable", "§cBrute: §fDisables Shields");
         provider.add("item.gtceu.tool.behavior.relocate_mining", "§2Magnetic: §fRelocates Mined Blocks");
         provider.add("item.gtceu.tool.behavior.aoe_mining", "§5Area-of-Effect: §f%sx%sx%s");
@@ -217,16 +220,16 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
-        provider.add("item.gtceu.tool.tooltip.crafting_uses", "§a%s Crafting Uses");
-        provider.add("item.gtceu.tool.tooltip.general_uses", "§b%s Durability");
-        provider.add("item.gtceu.tool.tooltip.attack_damage", "§c%s Attack Damage");
-        provider.add("item.gtceu.tool.tooltip.attack_speed", "§9%s Attack Speed");
-        provider.add("item.gtceu.tool.tooltip.mining_speed", "§d%s Mining Speed");
+        provider.add("item.gtceu.tool.tooltip.crafting_uses", "%s §aCrafting Uses");
+        provider.add("item.gtceu.tool.tooltip.general_uses", "%s §bDurability");
+        provider.add("item.gtceu.tool.tooltip.attack_damage", "%s §cAttack Damage");
+        provider.add("item.gtceu.tool.tooltip.attack_speed", "%s §9Attack Speed");
+        provider.add("item.gtceu.tool.tooltip.mining_speed", "%s §dMining Speed");
         provider.add("item.gtceu.tool.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("item.gtceu.tool.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
         multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dUltimet", "§9Duranium", "§cNeutronium");
-        provider.add("item.gtceu.tool.tooltip.repair_info", "Hold SHIFT to show Repair Info");
-        provider.add("item.gtceu.tool.tooltip.repair_material", "Repair with: §a%s");
+        provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
+        provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
         provider.add("item.gtceu.tool.aoe.columns", "Columns");
         provider.add("item.gtceu.tool.aoe.layers", "Layers");
