@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineR
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.NetworkSwitchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
@@ -137,6 +138,41 @@ public class GTResearchMachines {
             .build())
         .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
             GTCEu.id("block/multiblock/data_bank"), false)
+        .register();
+
+
+    public static final MachineDefinition NETWORK_SWITCH = REGISTRATE.multiblock("network_switch", NetworkSwitchMachine::new)
+        .langValue("Data Bank")
+        .rotationState(RotationState.NON_Y_AXIS)
+        .appearanceBlock(COMPUTER_CASING)
+        .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+        .tooltips(LangHandler.getMultiLang("gtceu.machine.network_switch.tooltip").toArray(Component[]::new))
+        .pattern(definition -> FactoryBlockPattern.start()
+            .aisle("XXX", "XXX", "XXX")
+            .aisle("XXX", "XAX", "XXX")
+            .aisle("XXX", "XSX", "XXX")
+            .where('S', controller(blocks(definition.getBlock())))
+            .where('A', states(ADVANCED_COMPUTER_CASING.getDefaultState()))
+            .where('X', states(COMPUTER_CASING.getDefaultState()).setMinGlobalLimited(7)
+                .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1, 1))
+                .or(abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                .or(abilities(PartAbility.COMPUTATION_DATA_RECEPTION).setMinGlobalLimited(1, 2))
+                .or(abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setMinGlobalLimited(1, 1)))
+            .build())
+        .shapeInfo(definition -> MultiblockShapeInfo.builder()
+            .aisle("XEX", "XXX", "TTT")
+            .aisle("XXX", "XAX", "XXX")
+            .aisle("XMX", "XSX", "XRX")
+            .where('S', GTResearchMachines.NETWORK_SWITCH, Direction.SOUTH)
+            .where('X', COMPUTER_CASING)
+            .where('A', ADVANCED_COMPUTER_CASING)
+            .where('R', GTResearchMachines.COMPUTATION_HATCH_RECEIVER, Direction.SOUTH)
+            .where('T', GTResearchMachines.COMPUTATION_HATCH_TRANSMITTER, Direction.NORTH)
+            .where('M', GTMachines.MAINTENANCE_HATCH, Direction.SOUTH)
+            .where('E', GTMachines.ENERGY_INPUT_HATCH[LuV], Direction.SOUTH)
+            .build())
+        .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+            GTCEu.id("block/multiblock/network_switch"), false)
         .register();
 
 
