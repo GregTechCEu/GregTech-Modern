@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.core.fabric;
 
 import com.google.gson.*;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.resources.ResourceLocation;
@@ -20,7 +20,7 @@ public class RecipeHelpers {
     public static Item getItem(String itemName, boolean disallowsAirInRecipe) {
         Item item = tryGetItem(itemName, disallowsAirInRecipe);
         if (item == null) {
-            if (!BuiltInRegistries.ITEM.containsKey(new ResourceLocation(itemName)))
+            if (!Registry.ITEM.containsKey(new ResourceLocation(itemName)))
                 throw new JsonSyntaxException("Unknown item '" + itemName + "'");
             if (disallowsAirInRecipe && (item == Items.AIR || item == null))
                 throw new JsonSyntaxException("Invalid item: " + itemName);
@@ -31,10 +31,10 @@ public class RecipeHelpers {
     @Nullable
     public static Item tryGetItem(String itemName, boolean disallowsAirInRecipe) {
         ResourceLocation itemKey = new ResourceLocation(itemName);
-        if (!BuiltInRegistries.ITEM.containsKey(itemKey))
+        if (!Registry.ITEM.containsKey(itemKey))
             return null;
 
-        Item item = BuiltInRegistries.ITEM.get(itemKey);
+        Item item = Registry.ITEM.get(itemKey);
         if (disallowsAirInRecipe && item == Items.AIR)
             return null;
         return item;

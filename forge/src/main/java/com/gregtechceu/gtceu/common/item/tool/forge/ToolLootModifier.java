@@ -27,7 +27,7 @@ public class ToolLootModifier implements IGlobalLootModifier {
             Vec3 pos = context.getParam(LootContextParams.ORIGIN);
             BlockPos blockPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
             ItemStack tool = context.getParam(LootContextParams.TOOL);
-            boolean isSilktouch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 1;
+            boolean isSilktouch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
             int fortuneLevel = tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
             return ToolEventHandlers.onHarvestDrops(player, context.getParam(LootContextParams.TOOL), context.getLevel(), blockPos, context.getParam(LootContextParams.BLOCK_STATE), isSilktouch, fortuneLevel, objectArrayList, 1);
         } else {
