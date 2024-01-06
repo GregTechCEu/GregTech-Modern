@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.registry.forge.GTRegistriesImpl;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.forge.GTFeaturesImpl;
+import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
@@ -44,6 +45,7 @@ public class CommonProxyImpl {
             }
         }
         CommonProxy.init();
+        GTRegistriesImpl.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
 
     @SubscribeEvent

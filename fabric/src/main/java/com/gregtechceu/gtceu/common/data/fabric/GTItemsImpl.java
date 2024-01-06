@@ -33,7 +33,7 @@ public class GTItemsImpl {
         };
     }
 
-    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<Tier> before, Collection<Tier> after) {
+    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before, Collection<ResourceLocation> after) {
         // no-op
     }
 
