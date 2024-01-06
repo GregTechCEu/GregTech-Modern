@@ -37,4 +37,8 @@ public class ToolHelperImpl {
     private static Tier getTier(int harvestLevel) {
         return TierSortingRegistry.getSortedTiers().stream().dropWhile(tier -> tier.getLevel() < harvestLevel || tier.getLevel() > harvestLevel).findAny().orElse(Tiers.WOOD);
     }
+
+    public static boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
+        return itemstack.onBlockStartBreak(pos, player);
+    }
 }

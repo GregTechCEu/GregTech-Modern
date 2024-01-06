@@ -68,10 +68,11 @@ public abstract class LootTablesMixin {
                     if (outputDustMat != null) {
                         builder.withPool(LootPool.lootPool().add(
                                 LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.dust, outputDustMat).getItem())
-                                        .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
-                                        .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
-                                        .apply(LimitCount.limitCount(IntRange.range(0, 2)))
-                                        .apply(ApplyExplosionDecay.explosionDecay())));
+                                    .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)
+                                    .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
+                                    .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
+                                    .apply(LimitCount.limitCount(IntRange.range(0, 2)))
+                                    .apply(ApplyExplosionDecay.explosionDecay())));
                     }
                     lootTables.put(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());
                     ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
