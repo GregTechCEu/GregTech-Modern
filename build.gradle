@@ -81,11 +81,14 @@ subprojects {
         implementation 'com.google.code.findbugs:jsr305:3.0.2'
     }
 
+    tasks.register('slimJar', org.gradle.jvm.tasks.Jar) {
+        archiveClassifier.set("slim")
+    }
+
     tasks.register('remapSlimJar', RemapJarTask) {
-        dependsOn(jar)
+        dependsOn(slimJar)
         inputFile.set(jar.archiveFile)
         addNestedDependencies = false
-        archiveClassifier.set("slim")
     }
 
     tasks.remapJar.dependsOn('remapSlimJar')
