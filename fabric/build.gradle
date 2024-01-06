@@ -216,8 +216,18 @@ components.java {
 publishing {
     publications {
         mavenFabric(MavenPublication) {
-            artifactId = archivesBaseName
-            from components.java
+            artifact(remapJar) {
+                artifactId = archivesBaseName
+                builtBy remapJar
+            }
+            artifact(sourcesJar) {
+                artifactId = archivesBaseName
+                builtBy remapSourcesJar
+            }
+            artifact(slimJar) {
+                artifactId = archivesBaseName
+                builtBy remapSlimJar
+            }
         }
     }
 
