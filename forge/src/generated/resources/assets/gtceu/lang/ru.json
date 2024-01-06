@@ -3912,9 +3912,9 @@
     "item.gtceu.tool.tooltip.harvest_level": "§eУровень добычи: %s",
     "item.gtceu.tool.tooltip.harvest_level_extra": "§eУровень добычи: %s §f(%s§f)",
     "item.gtceu.tool.tooltip.mining_speed": "§dСкорость добычи: %s",
-    "item.gtceu.tool.tooltip.repair_info": "Удерживайте SHIFT для информации о Ремонте",
-    "item.gtceu.tool.tooltip.repair_material": "Чинится: §a%s",
-    "item.gtceu.tool.usable_as": "Используется как: §f%s",
+    "item.gtceu.tool.tooltip.repair_info": "§8Удерживайте SHIFT для информации о Ремонте",
+    "item.gtceu.tool.tooltip.repair_material": "§8Чинится: §f§a%s",
+    "item.gtceu.tool.usable_as": "§8Используется как: §f%s",
     "item.gtceu.tool.wire_cutter": "Кусачки (%s)",
     "item.gtceu.tool.wrench": "Ключ (%s)",
     "item.gtceu.tool.wrench.tooltip": "§8Удерживайте левую кнопку, чтобы демонтировать механизм",
@@ -5651,5 +5651,8 @@
     "item.gtceu.tool.shears": "Ножницы (%s)",
     "item.gtceu.transistor.tooltip": "§7Обычный электронный компонент",
     "item.gtceu.turbine_rotor.tooltip": "Турбинные роторы для вашей электростанции",
-    "item.gtceu.uhv_electric_motor": "Электрический мотор (§4UHV§r)"
+    "item.gtceu.uhv_electric_motor": "Электрический мотор (§4UHV§r)",
+    "item.gtceu.tool.behavior.scrape": "§bПолировщик: §fУдаляет окись",
+    "item.gtceu.tool.behavior.strip_log": "§5Ремесленник: §fОчищает брёвна",
+    "item.gtceu.tool.behavior.remove_wax": "§6Чистильщик: §fУдаляет воск"
 }
