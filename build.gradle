@@ -88,11 +88,14 @@ subprojects {
         testImplementation 'org.mockito:mockito-core:5.2.0'
     }
 
+    tasks.register('slimJar', org.gradle.jvm.tasks.Jar) {
+        archiveClassifier.set("slim")
+    }
+
     tasks.register('remapSlimJar', RemapJarTask) {
-        dependsOn(jar)
+        dependsOn(slimJar)
         inputFile.set(jar.archiveFile)
         addNestedDependencies = false
-        archiveClassifier.set("slim")
     }
 
     tasks.remapJar.dependsOn('remapSlimJar')
