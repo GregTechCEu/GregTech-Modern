@@ -159,10 +159,14 @@ public class FormattingUtil {
     }
 
     public static void combineComponents(MutableComponent c1, Component c2) {
-        if (c1.getContents() != ComponentContents.EMPTY && c2.getContents() != ComponentContents.EMPTY) {
+        if (!isEmptyComponent(c1) && !isEmptyComponent(c2)) {
             c1.append(", ").append(c2);
         } else {
             c1.append(c2);
         }
+    }
+
+    private static boolean isEmptyComponent(Component component) {
+        return component.getContents() == ComponentContents.EMPTY && component.getSiblings().isEmpty();
     }
 }
