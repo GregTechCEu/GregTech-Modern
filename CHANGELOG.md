@@ -15,7 +15,7 @@ but you will need to craft the ones you're actively using again to regain functi
 - mark multiblock info blocks as inputs for the recipe viewer pattern preview
 - add UHV+ electric motors
 - add initial Russian translation
-- 
+
 **Tool Rework:**
 - revamps tools, bringing parity with 1.12 (except electric tools)
 - adds spades, an AOE shovel
@@ -40,8 +40,7 @@ but you will need to craft the ones you're actively using again to regain functi
 - fix voiding mode not working in quantum tanks
 - fix charger not dropping contents when broken
 - fix missing transfer size input in robot arms and fluid regulators, when a tag filter is used
-- add initial Russian translation
-- 
+
 Notes for addon devs:  
 - GTItems.TOOL_ITEMS is now a table<Material, Type, Tool item> instead of the old <Tier, Type, Item>
 - torch placing with pickaxes is currently disabled as none of us can find a fix for it deleting the tool.
