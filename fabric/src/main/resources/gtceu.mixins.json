@@ -7,12 +7,14 @@
     "MultiPlayerGameModeMixin"
   ],
   "mixins": [
+    "AnvilMenuMixin",
     "AppearanceBlockMixin",
     "EnchantmentHelperMixin",
     "EnchantmentMixin",
     "ItemMixin",
     "ItemStackMixin",
     "LivingEntityAccessor",
+    "LootTableMixin",
     "PlayerMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeMixin",

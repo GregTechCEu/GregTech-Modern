@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.LaserPipeBlockItem;
@@ -232,40 +233,41 @@ public class GTBlocks {
     private static boolean allowOreBlock(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
-    private static void registerOreBlock(Material material) {        var oreProperty = material.getProperty(PropertyKey.ORE);
-                for (var ore : TagPrefix.ORES.entrySet()) {
-                    if (ore.getKey().isIgnored(material)) continue;
-                    var oreTag = ore.getKey();
-                    final TagPrefix.OreType oreType = ore.getValue();
-                    var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
-                                    properties -> new RendererMaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
-                                            Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
-                                            Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), "layer2", true)),
-                                            oreProperty.isEmissive()) : null))
-                            .initialProperties(() -> {
-                                if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                                    return Blocks.STONE;
-                                }
-                                return oreType.stoneType().get().getBlock();
-                            })
-                            .properties(properties -> {
-                                if (oreType.color() != null) properties.mapColor(oreType.color());
-                                if (oreType.sound() != null) properties.sound(oreType.sound());
-                                return properties.noLootTable();
-                            })
-                            .transform(unificationBlock(oreTag, material))
-                            .addLayer(() -> RenderType::translucent)
-                    .blockstate(NonNullBiConsumer.noop())
-                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                    .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlock::tintedColor)
-                    .item(MaterialBlockItem::create)
-                    .onRegister(MaterialBlockItem::onRegister)
-                    .model(NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlockItem::tintColor)
-                    .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
-                    .build()
-                    .register();
+    private static void registerOreBlock(Material material) {
+        var oreProperty = material.getProperty(PropertyKey.ORE);
+        for (var ore : TagPrefix.ORES.entrySet()) {
+            if (ore.getKey().isIgnored(material)) continue;
+            var oreTag = ore.getKey();
+            final TagPrefix.OreType oreType = ore.getValue();
+            var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
+                    properties -> new RendererMaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
+                        Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
+                        Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), "layer2", true)),
+                        oreProperty.isEmissive()) : null))
+                .initialProperties(() -> {
+                    if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
+                        return Blocks.STONE;
+                    }
+                    return oreType.stoneType().get().getBlock();
+                })
+                .properties(properties -> {
+                    if (oreType.color() != null) properties.mapColor(oreType.color());
+                    if (oreType.sound() != null) properties.sound(oreType.sound());
+                    return properties.noLootTable();
+                })
+                .transform(unificationBlock(oreTag, material))
+                .addLayer(() -> RenderType::translucent)
+                .blockstate(NonNullBiConsumer.noop())
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .color(() -> MaterialBlock::tintedColor)
+                .item(MaterialBlockItem::create)
+                .onRegister(MaterialBlockItem::onRegister)
+                .model(NonNullBiConsumer.noop())
+                .color(() -> MaterialBlockItem::tintColor)
+                .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
+                .build()
+                .register();
             MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);
         }
     }
@@ -974,7 +976,11 @@ public class GTBlocks {
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
-            builder.onRegister(block -> ChemicalHelper.registerUnificationItems(tagPrefix, mat, block));
+            builder.onRegister(block -> {
+                UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
+                GTItems.toUnify.put(entry, block);
+                ChemicalHelper.registerUnificationItems(entry, block);
+            });
             return builder;
         };
     }
