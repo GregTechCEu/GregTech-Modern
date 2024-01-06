@@ -18,7 +18,9 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
-    public Direction getFrontFacing() { return Direction.UP; }
+    public Direction getFrontFacing() {
+        return Direction.UP;
+    }
 
     @Override
     protected long getBaseSteamOutput() {
@@ -43,10 +45,14 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
-    protected int getCooldownInterval() { return isHighPressure ? 50 : 45; }
+    protected int getCooldownInterval() {
+        return isHighPressure ? 50 : 45;
+    }
 
     @Override
-    protected int getCoolDownRate() { return 3; }
+    protected int getCoolDownRate() {
+        return 3;
+    }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
@@ -57,5 +63,7 @@ public class SteamSolarBoiler extends SteamBoilerMachine {
     }
 
     @Override
-    protected void randomDisplayTick(RandomSource random, float x, float y, float z) { }
+    protected void randomDisplayTick(RandomSource random, float x, float y, float z) {
+        
+    }
 }
