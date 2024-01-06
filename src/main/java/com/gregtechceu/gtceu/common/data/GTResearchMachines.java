@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineR
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.NetworkSwitchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachine;
@@ -174,6 +175,34 @@ public class GTResearchMachines {
         .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
             GTCEu.id("block/multiblock/network_switch"), false)
         .register();
+
+
+    public static final MachineDefinition HPCA = REGISTRATE.multiblock("hpca", HPCAMachine::new)
+        .langValue("High Performance Computation Array (HPCA)")
+        .rotationState(RotationState.NON_Y_AXIS)
+        .appearanceBlock(ADVANCED_COMPUTER_CASING)
+        .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+        .tooltips(LangHandler.getMultiLang("gtceu.machine.hpca.tooltip").toArray(Component[]::new))
+        .pattern(definition -> FactoryBlockPattern.start()
+            .aisle("AA", "CC", "CC", "CC", "AA")
+            .aisle("VA", "XV", "XV", "XV", "VA")
+            .aisle("VA", "XV", "XV", "XV", "VA")
+            .aisle("VA", "XV", "XV", "XV", "VA")
+            .aisle("SA", "CC", "CC", "CC", "AA")
+            .where('S', controller(blocks(definition.getBlock())))
+            .where('A', states(ADVANCED_COMPUTER_CASING.getDefaultState()))
+            .where('V', states(COMPUTER_HEAT_VENT.getDefaultState()))
+            .where('X', abilities(PartAbility.HPCA_COMPONENT))
+            .where('C', states(COMPUTER_CASING.getDefaultState()).setMinGlobalLimited(5)
+                .or(abilities(PartAbility.MAINTENANCE).setExactLimit(1))
+                .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1))
+                .or(abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(1))
+                .or(abilities(PartAbility.COMPUTATION_DATA_TRANSMISSION).setExactLimit(1)))
+            .build())
+        .sidedWorkableCasingRenderer("block/casings/hpca/computer_casing",
+            GTCEu.id("block/multiblock/hpca"), false)
+        .register();
+
 
 
     ////////////////////////////////////////////
