@@ -26,7 +26,7 @@ public class LootTableMixin {
             Vec3 pos = context.getParam(LootContextParams.ORIGIN);
             BlockPos blockPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
             ItemStack tool = context.getParam(LootContextParams.TOOL);
-            boolean isSilktouch = EnchantmentHelper.hasSilkTouch(tool);
+            boolean isSilktouch = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
             int fortuneLevel = EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool);
             cir.setReturnValue(ToolEventHandlers.onHarvestDrops(player, context.getParam(LootContextParams.TOOL), context.getLevel(), blockPos, context.getParam(LootContextParams.BLOCK_STATE), isSilktouch, fortuneLevel, cir.getReturnValue(), 1));
         }
