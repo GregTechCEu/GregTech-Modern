@@ -46,7 +46,6 @@ import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
@@ -75,8 +74,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
@@ -707,7 +704,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                     repairItems.add(TagPrefix.plate.getLocalizedName(material));
                 }
                 if (!repairItems.isEmpty()) {
-                    tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream().collect(Component::empty, FormattingUtil::combineComponents, FormattingUtil::combineComponents)));
+                    tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_material", repairItems.stream()
+                        .collect(Component::empty, FormattingUtil::combineComponents, FormattingUtil::combineComponents)));
                 }
             } else {
                 tooltip.add(Component.translatable("item.gtceu.tool.tooltip.repair_info"));
