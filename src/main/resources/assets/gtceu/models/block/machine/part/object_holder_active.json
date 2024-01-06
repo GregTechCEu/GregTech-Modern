@@ -1,15 +1,6 @@
 {
-  "parent": "block/block",
+  "parent": "gtceu:block/overlay_model_front",
   "textures": {
     "front": "gtceu:block/machines/object_holder/overlay_front_active"
-  },
-  "elements": [
-    {
-      "from": [0, 0, 0],
-      "to": [16, 16, 0],
-      "faces": {
-        "north": {"uv": [0, 0, 16, 16], "texture": "#front", "cullface": "north", "tintindex": 2 }
-      }
-    }
-  ]
+  }
 }

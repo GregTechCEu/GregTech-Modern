@@ -1,6 +1,6 @@
 {
   "parent": "gtceu:block/overlay_model_front",
   "textures": {
-    "front": "gtceu:block/machines/object_holder/overlay_front"
+    "front": "gtceu:block/overlay/machine/overlay_data_hatch_optical"
   }
 }

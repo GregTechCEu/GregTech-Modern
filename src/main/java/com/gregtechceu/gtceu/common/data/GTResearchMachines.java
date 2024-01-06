@@ -10,12 +10,18 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.ResearchStationMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCACoolerPartMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAEmptyPartMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import net.minecraft.core.Direction;
@@ -25,7 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Function;
 
-import static com.gregtechceu.gtceu.api.GTValues.ZPM;
+import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -84,25 +90,98 @@ public class GTResearchMachines {
         .register();
 
     public static final MachineDefinition OBJECT_HOLDER = REGISTRATE.machine("object_holder", ObjectHolderMachine::new)
-            .langValue("Object Holder")
-            .tier(ZPM)
-            .rotationState(RotationState.ALL)
-            .abilities(PartAbility.OBJECT_HOLDER)
-            .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"), GTCEu.id("block/machine/part/object_holder_active")))
-            .register();
+        .langValue("Object Holder")
+        .tier(ZPM)
+        .rotationState(RotationState.ALL)
+        .abilities(PartAbility.OBJECT_HOLDER)
+        .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"), GTCEu.id("block/machine/part/object_holder_active")))
+        .register();
 
+
+    ////////////////////////////////////////////
+    //********    MULTIBLOCK PARTS    ********//
+    ////////////////////////////////////////////
 
     public static final MachineDefinition COMPUTATION_HATCH_TRANSMITTER = registerDataHatch(
-        "computation_transmitter_hatch", "Computation Transmitter Hatch",
-        ZPM, (holder) -> new OpticalComputationHatchMachine(holder, false),
-        "optical_data_access_hatch", PartAbility.COMPUTATION_DATA_TRANSMISSION
+        "computation_transmitter_hatch", "Computation Data Transmission Hatch",
+        ZPM, (holder) -> new OpticalComputationHatchMachine(holder, true),
+        "computation_data_hatch", PartAbility.COMPUTATION_DATA_TRANSMISSION
     );
 
     public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = registerDataHatch(
-        "computation_receiver_hatch", "Computation Receiver Hatch",
+        "computation_receiver_hatch", "Computation Data Reception Hatch",
         ZPM, (holder) -> new OpticalComputationHatchMachine(holder, false),
-        "optical_data_access_hatch", PartAbility.COMPUTATION_DATA_RECEPTION
+        "computation_data_hatch", PartAbility.COMPUTATION_DATA_RECEPTION
     );
+
+
+    public static final MachineDefinition DATA_HATCH_TRANSMITTER = registerDataHatch(
+        "data_transmitter_hatch", "Optical Data Transmission Hatch",
+        LuV, (holder) -> new OpticalComputationHatchMachine(holder, true),
+        "optical_data_hatch", PartAbility.OPTICAL_DATA_TRANSMISSION
+    );
+
+    public static final MachineDefinition DATA_HATCH_RECEIVER = registerDataHatch(
+        "data_receiver_hatch", "Optical Data Reception Hatch",
+        LuV, (holder) -> new OpticalComputationHatchMachine(holder, false),
+        "optical_data_hatch", PartAbility.OPTICAL_DATA_RECEPTION
+    );
+
+
+    public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE.machine("data_access_hatch", DataAccessHatchMachine::new)
+        .langValue("Data Access Hatch")
+        .tier(EV)
+        .rotationState(RotationState.ALL)
+        .abilities(PartAbility.DATA_ACCESS)
+        .overlayTieredHullRenderer("data_access_hatch")
+        .register();
+
+    public static final MachineDefinition ADVANCED_DATA_ACCESS_HATCH = REGISTRATE.machine("advanced_data_access_hatch", DataAccessHatchMachine::new)
+        .langValue("Advanced Data Access Hatch")
+        .tier(LuV)
+        .rotationState(RotationState.ALL)
+        .abilities(PartAbility.DATA_ACCESS)
+        .overlayTieredHullRenderer("data_access_hatch")
+        .register();
+
+    public static final MachineDefinition CREATIVE_DATA_ACCESS_HATCH = REGISTRATE.machine("creative_data_access_hatch", DataAccessHatchMachine::new)
+        .langValue("Creative Data Access Hatch")
+        .tier(MAX)
+        .rotationState(RotationState.ALL)
+        .abilities(PartAbility.DATA_ACCESS)
+        .overlayTieredHullRenderer("data_access_hatch_creative")
+        .register();
+
+
+    //////////////////////////////////////
+    //***********    HPCA    ***********//
+    //////////////////////////////////////
+
+    public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
+        "hpca_empty_component", "Empty HPCA Component",
+        HPCAEmptyPartMachine::new, "empty", false
+    );
+    public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = registerHPCAPart(
+        "hpca_computation_component", "HPCA Computation Component",
+        holder -> new HPCAComputationPartMachine(holder, false), "computation", false
+    );
+    public static final MachineDefinition HPCA_ADVANCED_COMPUTATION_COMPONENT = registerHPCAPart(
+        "hpca_advanced_computation_component", "Advanced HPCA Computation Component",
+        holder -> new HPCAComputationPartMachine(holder, true), "advanced_computation", true
+    );
+    public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
+        "hpca_heat_sink_component", "HPCA Heat Sink Component",
+        holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", false
+    );
+    public static final MachineDefinition HPCA_ACTIVE_COOLER_COMPONENT = registerHPCAPart(
+        "hpca_active_cooler_component", "HPCA Active Cooler Component",
+        holder -> new HPCACoolerPartMachine(holder, true), "active_cooler", true
+    );
+    public static final MachineDefinition HPCA_BRIDGE_COMPONENT = registerHPCAPart(
+        "hpca_bridge_component", "HPCA Bridge Component",
+        HPCAEmptyPartMachine::new, "bridge", false
+    );
+
 
     @NotNull
     private static MachineDefinition registerDataHatch(String name, String displayName, int tier, Function<IMachineBlockEntity, MetaMachine> constructor, String model, PartAbility... abilities) {
@@ -115,6 +194,17 @@ public class GTResearchMachines {
             .register();
     }
 
+    private static MachineDefinition registerHPCAPart(String name, String displayName, Function<IMachineBlockEntity, MetaMachine> constructor, String texture, boolean isAdvanced) {
+        return REGISTRATE.machine(name, constructor)
+            .langValue(displayName)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(
+                GTCEu.id("textures/block/overlay/machine/hpca/" + texture),
+                GTCEu.id("textures/block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))
+            ))
+            .register();
+    }
 
     public static void init() {
 
