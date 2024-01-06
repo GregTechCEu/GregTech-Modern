@@ -14,6 +14,7 @@ but you will need to craft the ones you're actively using again to regain functi
 - add shape info to all machines using coils
 - mark multiblock info blocks as inputs for the recipe viewer pattern preview
 - add UHV+ electric motors
+- add initial Russian translation
 
 **Tool Rework:**
 - revamps tools, bringing parity with 1.12 (except electric tools)
