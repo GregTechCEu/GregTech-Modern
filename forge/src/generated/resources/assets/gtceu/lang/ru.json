@@ -4812,7 +4812,7 @@
     "metaitem.terminal.tooltip": "Правильные инструменты делают хорошую работу",
     "metaitem.terminal.tooltip.creative": "§bТворческий режим",
     "metaitem.terminal.tooltip.hardware": "§aДополнений: %d",
-    "metaitem.tool.tooltip.durability": "§fПрочность: §a %d / %d",
+    "metaitem.tool.tooltip.durability": "§fПрочность: §a%d / %d",
     "metaitem.tool.tooltip.primary_material": "§fМатериал: §e%s",
     "metaitem.tool.tooltip.rotor.efficiency": "Эффективность ротора: §9%d%%",
     "metaitem.tool.tooltip.rotor.power": "Мощность турбины: §9%d%%",
