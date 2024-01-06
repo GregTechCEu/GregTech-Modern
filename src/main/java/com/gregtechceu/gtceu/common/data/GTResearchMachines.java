@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.OverlayTieredActiveMachineRenderer;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.machine.multiblock.electric.ResearchStationMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ResearchStationMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
@@ -95,6 +95,48 @@ public class GTResearchMachines {
         .rotationState(RotationState.ALL)
         .abilities(PartAbility.OBJECT_HOLDER)
         .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"), GTCEu.id("block/machine/part/object_holder_active")))
+        .register();
+
+
+    public static final MachineDefinition DATA_BANK = REGISTRATE.multiblock("data_bank", DataBankMachine::new)
+        .langValue("Data Bank")
+        .rotationState(RotationState.NON_Y_AXIS)
+        .appearanceBlock(COMPUTER_CASING)
+        .recipeType(GTRecipeTypes.DUMMY_RECIPES)
+        .tooltips(LangHandler.getMultiLang("gtceu.machine.data_bank.tooltip").toArray(Component[]::new))
+        .pattern(definition -> FactoryBlockPattern.start()
+            .aisle("XDDDX", "XDDDX", "XDDDX")
+            .aisle("XDDDX", "XAAAX", "XDDDX")
+            .aisle("XCCCX", "XCSCX", "XCCCX")
+            .where('S', controller(blocks(definition.getBlock())))
+            .where('X', states(COMPUTER_HEAT_VENT.getDefaultState()))
+            .where('D', states(COMPUTER_CASING.getDefaultState()).setMinGlobalLimited(3)
+                .or(abilities(PartAbility.DATA_ACCESS).setPreviewCount(3))
+                .or(abilities(PartAbility.OPTICAL_DATA_TRANSMISSION)
+                    .setMinGlobalLimited(1, 1))
+                .or(abilities(PartAbility.OPTICAL_DATA_RECEPTION).setPreviewCount(1)))
+            .where('A', states(COMPUTER_CASING.getDefaultState()))
+            .where('C', states(HIGH_POWER_CASING.getDefaultState())
+                .setMinGlobalLimited(4)
+                .or(autoAbilities())
+                .or(abilities(PartAbility.INPUT_ENERGY)
+                    .setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)))
+            .build())
+        .shapeInfo(definition -> MultiblockShapeInfo.builder()
+            .aisle("XDDDX", "XDHDX", "XTTTX")
+            .aisle("XDDDX", "XAAAX", "XRRRX")
+            .aisle("XCCCX", "XCSCX", "XCCCX")
+            .where('S', GTResearchMachines.DATA_BANK, Direction.SOUTH)
+            .where('X', COMPUTER_HEAT_VENT)
+            .where('D', COMPUTER_CASING)
+            .where('A', COMPUTER_CASING)
+            .where('C', HIGH_POWER_CASING)
+            .where('R', GTResearchMachines.DATA_HATCH_RECEIVER, Direction.UP)
+            .where('T', GTResearchMachines.DATA_HATCH_TRANSMITTER, Direction.NORTH)
+            .where('H', GTResearchMachines.ADVANCED_DATA_ACCESS_HATCH, Direction.NORTH)
+            .build())
+        .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
+            GTCEu.id("block/multiblock/data_bank"), false)
         .register();
 
 
