@@ -10,12 +10,27 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = InputSlotCrafter.class, remap = false)
 public class InputSlotCrafterMixin {
-
     @WrapOperation(method = "areItemsEqual", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;tagMatches(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private static boolean gtceu$modifyFindSlotMatcherREI(ItemStack stack, ItemStack other, Operation<Boolean> original) {
         if (stack.getItem() instanceof IGTTool) {
             return true;
         }
         return original.call(stack, other);
+    }
+
+    @WrapOperation(method = "takeInventoryStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z", remap = true))
+    private boolean gtceu$damagedToolBypass(ItemStack instance, Operation<Boolean> original) {
+        if (instance.getItem() instanceof IGTTool) {
+            return false;
+        }
+        return original.call(instance);
+    }
+
+    @WrapOperation(method = "takeInventoryStack", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z", remap = true))
+    private boolean gtceu$enchantedToolBypass(ItemStack instance, Operation<Boolean> original) {
+        if (instance.getItem() instanceof IGTTool) {
+            return false;
+        }
+        return original.call(instance);
     }
 }
