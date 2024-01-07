@@ -11,6 +11,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
@@ -44,12 +45,14 @@ public class MultiPlayerGameModeMixin {
     }
 
     @Inject(method = "destroyBlock", at = @At("HEAD"), cancellable = true)
-    private void destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+    private void gtceu$destroyBlock(BlockPos pos, CallbackInfoReturnable<Boolean> cir) {
+        ItemStack mainHandItem = minecraft.player.getMainHandItem();
         if (minecraft.player == null ||
                 minecraft.level == null ||
-                ToolHelper.getAoEDefinition(minecraft.player.getMainHandItem()) == AoESymmetrical.none() ||
+                !ToolHelper.hasBehaviorsTag(mainHandItem) ||
+                ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() ||
                 minecraft.player.isCrouching() ||
-                !minecraft.player.getMainHandItem().isCorrectToolForDrops(minecraft.level.getBlockState(pos))
+                !mainHandItem.isCorrectToolForDrops(minecraft.level.getBlockState(pos))
         ) return;
 
         cir.setReturnValue(false);
