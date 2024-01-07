@@ -99,6 +99,8 @@ public class ToolEventHandlers {
             if (!isSilkTouch) {
                 ToolHelper.applyHammerDropConversion(serverLevel, pos, tool, state, drops, fortuneLevel, dropChance, player.getRandom());
             }
+            if (!ToolHelper.hasBehaviorsTag(tool)) return drops;
+
             CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
             Block block = state.getBlock();
             if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBoolean(ToolHelper.HARVEST_ICE_KEY)) {
