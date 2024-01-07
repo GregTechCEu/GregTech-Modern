@@ -23,7 +23,7 @@ public class ToolLootModifier implements IGlobalLootModifier {
 
     @Override
     public @NotNull ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> objectArrayList, LootContext context) {
-        if (context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Player player) {
+        if (context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Player player && context.hasParam(LootContextParams.TOOL)) {
             Vec3 pos = context.getParam(LootContextParams.ORIGIN);
             BlockPos blockPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
             ItemStack tool = context.getParam(LootContextParams.TOOL);
