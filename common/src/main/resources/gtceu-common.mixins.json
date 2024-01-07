@@ -39,10 +39,11 @@
     "WorldLoaderPackConfigMixin",
     "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
-    "kjs.KubeJSMixin",
     "emi.EmiRecipeHandlerMixin",
+    "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin",
     "rei.InputSlotCrafterMixin",
+    "rei.RecipeFinderMixin",
     "top.ConfigMixin"
   ],
   "injectors": {
