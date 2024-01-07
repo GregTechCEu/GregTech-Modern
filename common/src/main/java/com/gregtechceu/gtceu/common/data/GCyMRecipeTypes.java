@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -37,9 +37,9 @@ public class GCyMRecipeTypes {
             .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                CoilBlock.CoilType requiredCoil = CoilBlock.CoilType.getMinRequiredType(temp);
+                ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
-                if (requiredCoil == null) {
+                if (requiredCoil == null || requiredCoil.getMaterial() == null) {
                     return LocalizationUtils.format("gtceu.recipe.temperature", temp);
                 } else {
                     return LocalizationUtils.format("gtceu.recipe.temperature_and_coil", temp, I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));

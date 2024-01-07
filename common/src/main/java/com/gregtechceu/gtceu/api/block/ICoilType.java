@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Arrays;
+import java.util.Comparator;
 
 public interface ICoilType {
 
@@ -50,4 +53,16 @@ public interface ICoilType {
      * @return the {@link ResourceLocation} defining the base texture of the coil
      */
     ResourceLocation getTexture();
+
+
+    ICoilType[] ALL_COILS_TEMPERATURE_SORTED = GTBlocks.ALL_COILS.keySet().stream()
+        .sorted(Comparator.comparing(ICoilType::getCoilTemperature))
+        .toArray(ICoilType[]::new);
+
+    @Nullable
+    static ICoilType getMinRequiredType(int requiredTemperature) {
+        return Arrays.stream(ALL_COILS_TEMPERATURE_SORTED)
+            .filter(coil -> coil.getCoilTemperature() >= requiredTemperature)
+            .findFirst().orElse(null);
+    }
 }

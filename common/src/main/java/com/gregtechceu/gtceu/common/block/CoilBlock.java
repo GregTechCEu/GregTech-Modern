@@ -20,8 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Arrays;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -109,17 +107,6 @@ public class CoilBlock extends ActiveBlock {
         @Nonnull
         public String getSerializedName() {
             return name;
-        }
-
-        private static final CoilType[] SORTED_BY_TEMPERATURE = Arrays.stream(values())
-            .sorted(Comparator.comparing(CoilType::getCoilTemperature))
-            .toArray(CoilType[]::new);
-
-        @Nullable
-        public static CoilType getMinRequiredType(int requiredTemperature) {
-            return Arrays.stream(SORTED_BY_TEMPERATURE)
-                .filter(coil -> coil.coilTemperature >= requiredTemperature)
-                .findFirst().orElse(null);
         }
     }
 }
