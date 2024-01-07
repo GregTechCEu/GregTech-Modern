@@ -2,6 +2,7 @@
 
 Version: 1.0.20.a
 
+- adds the minimum required coil tier to EBF and ABS recipe view
 - fixes the recipe book and REI not accepting tools
 - fixes random items getting NBT
 - fixes item viewers having duplicated items

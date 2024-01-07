@@ -1,17 +1,20 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MULTIBLOCK;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.register;
 import static com.lowdragmc.lowdraglib.gui.texture.ProgressTexture.FillDirection.LEFT_TO_RIGHT;
 
 /**
@@ -32,13 +35,22 @@ public class GCyMRecipeTypes {
             .setSlotOverlay(false, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .setSlotOverlay(true, true, false, GuiTextures.FURNACE_OVERLAY_2)
             .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
-            .addDataInfo(data -> LocalizationUtils.format("gtceu.recipe.temperature", data.getInt("ebf_temp")))
+            .addDataInfo(data -> {
+                int temp = data.getInt("ebf_temp");
+                ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
+
+                if (requiredCoil == null || requiredCoil.getMaterial() == null) {
+                    return LocalizationUtils.format("gtceu.recipe.temperature", temp);
+                } else {
+                    return LocalizationUtils.format("gtceu.recipe.temperature_and_coil", temp, I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
+                }
+            })
             .setMaxTooltips(4)
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
                 List<List<ItemStack>> items = new ArrayList<>();
                 items.add(GTBlocks.ALL_COILS.entrySet().stream().filter(coil -> coil.getKey().getCoilTemperature() >= temp).map(coil -> new ItemStack(coil.getValue().get())).toList());
-                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 25, false, false));
+                widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 40, false, false));
             })
             .setSound(GTSoundEntries.ARC);
 

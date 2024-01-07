@@ -15,6 +15,7 @@ import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -68,7 +69,7 @@ public class CoilBlock extends ActiveBlock {
         TRINIUM("trinium", 9001, 8, 8, GTMaterials.Trinium, GTCEu.id("block/casings/coils/machine_coil_trinium")),
         TRITANIUM("tritanium", 10800, 16, 8, GTMaterials.Tritanium, GTCEu.id("block/casings/coils/machine_coil_tritanium"));
 
-        @Getter
+        @NotNull @Getter
         private final String name;
         //electric blast furnace properties
         @Getter
@@ -78,9 +79,9 @@ public class CoilBlock extends ActiveBlock {
         private final int level;
         @Getter
         private final int energyDiscount;
-        @Getter
+        @NotNull @Getter
         private final Material material;
-        @Getter
+        @NotNull @Getter
         private final ResourceLocation texture;
 
         CoilType(String name, int coilTemperature, int level, int energyDiscount, Material material, ResourceLocation texture) {
@@ -107,6 +108,5 @@ public class CoilBlock extends ActiveBlock {
         public String getSerializedName() {
             return name;
         }
-
     }
 }
