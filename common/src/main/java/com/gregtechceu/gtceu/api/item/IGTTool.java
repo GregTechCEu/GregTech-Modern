@@ -330,14 +330,6 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         return harvestLevel;
     }
 
-    default AoESymmetrical getMaxAoEDefinition(ItemStack stack) {
-        return AoESymmetrical.readMax(getBehaviorsTag(stack));
-    }
-
-    default AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return AoESymmetrical.read(getToolTag(stack), getMaxAoEDefinition(stack));
-    }
-
     // Item.class methods
     default float definition$getDestroySpeed(ItemStack stack, BlockState state) {
         // special case check (mostly for the sword)
