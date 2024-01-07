@@ -30,9 +30,6 @@ import net.minecraft.world.item.CreativeModeTab;
  */
 public final class GTRegistries {
     public static final GTRegistrate REGISTRATE = GTRegistrate.create(GTCEu.MOD_ID);
-    static {
-        REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
-    }
 
     public static final GTRegistry.RL<GTRegistry<?, ?>> REGISTRIES = new GTRegistry.RL<>(GTCEu.id("root"));
 
