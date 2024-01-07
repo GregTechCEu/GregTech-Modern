@@ -18,21 +18,21 @@ dependencyResolutionManagement {
 
         // Mod Dependencies Versions
         // Common
-        def jeiVersion = "15.2.0.23"
-        def reiVersion = "12.0.625"
-        def emiVersion = "1.0.5+1.20.1"
-        def ae2Version = "15.0.4-beta"
-        def kjsVersion = "2001.6.3-build.37"
+        def jeiVersion = "15.2.0.27"
+        def reiVersion = "12.0.684"
+        def emiVersion = "1.0.30"
+        def ae2Version = "15.0.18"
+        def kjsVersion = "2001.6.4-build.120"
         def auVersion = "1.20.1-0.6.0"
 
         // Fabric
-        def fabricLoaderVersion = "0.14.21" // https://fabricmc.net/develop/
-        def fabricApiVersion = "0.83.0" // https://fabricmc.net/develop/
+        def fabricLoaderVersion = "0.15.3" // https://fabricmc.net/develop/
+        def fabricApiVersion = "0.91.0" // https://fabricmc.net/develop/
         def createVersion = "0.5.1-d-build.1161"
         def lazyDfuVersion = "0.1.3"
         def modMenuVersion = "7.1.0"
 //        def topFabricVersion = "1.19-6.0.0"
-        def jadeFabricVersion = "11.2.2"
+        def jadeFabricVersion = "11.7.0"
         def registrateFabricVersion = "1.3.62-MC1.20.1"
         def forgeConfigApiVersion = "8.0.0"
         def nightConfigVersion = "3.6.5"
@@ -50,7 +50,7 @@ dependencyResolutionManagement {
 
         // Libs
         def quiltMappingsVersion = "5"  // https://lambdaurora.dev/tools/import_quilt.html
-        def parchmentVersion = "2023.06.25" // https://parchmentmc.org/docs/getting-started
+        def parchmentVersion = "2023.09.03" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
         def architecturyLoomVersion = "1.3-SNAPSHOT"
@@ -99,7 +99,7 @@ dependencyResolutionManagement {
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-fabric").versionRef(rei)
             library("rei-fabric", "me.shedaniel", "RoughlyEnoughItems-fabric").versionRef(rei)
 
-            def emi = version("emi", emiVersion)
+            def emi = version("emi", emiVersion + "+" + minecraftVersion)
             library("emi", "dev.emi", "emi-fabric").versionRef(emi)
 
 //            def theoneprobe = version("theoneprobe", topFabricVersion)
@@ -169,7 +169,7 @@ dependencyResolutionManagement {
             library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-forge").versionRef(rei)
             library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
 
-            def emi = version("emi", emiVersion)
+            def emi = version("emi", emiVersion + "+" + minecraftVersion)
             library("emi", "dev.emi", "emi-forge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
