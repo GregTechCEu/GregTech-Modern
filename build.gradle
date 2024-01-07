@@ -69,7 +69,7 @@ subprojects {
             // layered mappings - Mojmap names, parchment and QM docs and parameters
             mappings loom.layered {
                 it.mappings("org.quiltmc:quilt-mappings:${libs.versions.minecraft.get()}+build.${libs.versions.quiltMappings.get()}:intermediary-v2")
-                it.parchment("org.parchmentmc.data:parchment-1.19.3:${libs.versions.parchment.get()}@zip")
+                it.parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
                 it.officialMojangMappings { nameSyntheticMembers = false }
             }
         }

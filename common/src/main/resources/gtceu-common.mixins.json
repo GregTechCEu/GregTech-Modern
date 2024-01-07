@@ -43,6 +43,7 @@
     "emi.EmiRecipeHandlerMixin",
     "kjs.RecipeEventJSMixin",
     "rei.InputSlotCrafterMixin",
+    "rei.RecipeFinderMixin",
     "top.ConfigMixin"
   ],
   "injectors": {
