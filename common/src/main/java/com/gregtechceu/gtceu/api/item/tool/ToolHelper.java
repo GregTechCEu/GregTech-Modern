@@ -161,6 +161,10 @@ public class ToolHelper {
         return stack.getOrCreateTagElement(BEHAVIOURS_TAG_KEY);
     }
 
+    public static boolean hasBehaviorsTag(ItemStack stack) {
+        return stack.getTagElement(BEHAVIOURS_TAG_KEY) != null;
+    }
+
     public static ItemStack get(GTToolType toolType, Material material) {
         if (material.hasProperty(PropertyKey.TOOL)) {
             var entry = GTItems.TOOL_ITEMS.get(material, toolType);
@@ -498,6 +502,8 @@ public class ToolHelper {
     }
 
     public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
+        if (!hasBehaviorsTag(stack)) return Collections.emptySet();
+
         AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
         if (aoeDefiniton == AoESymmetrical.none()) {
             return Collections.emptySet();
