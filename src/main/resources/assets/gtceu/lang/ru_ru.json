@@ -6514,5 +6514,17 @@
     "gtceu.multiblock.page_switcher.io.import": "§2Ввод",
     "gtceu.multiblock.fluid_rig.vein_depletion": "Размер: %s",
     "gtceu.multiblock.max_energy_per_tick_amps": "Макс. EU/т: %s (%sA %s)",
-    "gtceu.multiblock.max_recipe_tier_hover": "Макс. уровень рецепта возможный для старта"
+    "gtceu.multiblock.max_recipe_tier_hover": "Макс. уровень рецепта возможный для старта",
+    "cover.advanced_energy_detector.invert.enabled.1": "",
+    "gtceu.multiblock.charcoal_pile.description.1": "",
+    "gtceu.multiblock.charcoal_pile.description.3": "",
+    "cover.advanced_energy_detector.invert.disabled.1": "",
+    "cover.advanced_item_detector.invert.enabled.1": "",
+    "cover.advanced_energy_detector.use_percent.enabled.1": "",
+    "behavior.tricorder.divider=========================": "",
+    "cover.advanced_fluid_detector.invert.enabled.1": "",
+    "cover.advanced_fluid_detector.invert.disabled.1": "",
+    "gtceu.multiblock.primitive_water_pump.extra2.4": "",
+    "cover.advanced_energy_detector.use_percent.disabled.1": "",
+    "cover.advanced_item_detector.invert.disabled.1": ""
 }
