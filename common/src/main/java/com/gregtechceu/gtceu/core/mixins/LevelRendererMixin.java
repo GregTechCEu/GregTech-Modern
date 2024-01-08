@@ -53,7 +53,7 @@ public abstract class LevelRendererMixin {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
-        if (ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
+        if (!ToolHelper.hasBehaviorsTag(mainHandItem) || ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
 
         BlockPos hitResultPos = result.getBlockPos();
         BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
@@ -89,23 +89,18 @@ public abstract class LevelRendererMixin {
         throw new AssertionError();
     }
 
-    @Inject(
-            method = {"renderHitOutline"},
-            at = {@At("HEAD")}
-    )
+    @Inject(method = "renderHitOutline", at = @At("HEAD"))
     private void renderHitOutline(PoseStack poseStack, VertexConsumer consumer, Entity entity, double camX, double camY, double camZ, BlockPos pos, BlockState state, CallbackInfo ci) {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
-        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching()) return;
+        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching() || !ToolHelper.hasBehaviorsTag(mainHandItem)) return;
 
         Set<BlockPos> blockPositions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, minecraft.hitResult);
         Set<VoxelShape> outlineShapes = new HashSet<>();
 
         for (BlockPos position : blockPositions) {
-            //if (!ToolHelper.aoeCanBreak(mainHandItem, minecraft.level, pos, position)) continue;
-
             BlockPos diffPos = position.subtract(pos);
             BlockState offsetState = minecraft.level.getBlockState(position);
 

@@ -905,6 +905,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s%% +%s%%/tier");
         provider.add("gtceu.recipe.temperature", "Temperature: %,dK");
+        provider.add("gtceu.recipe.temperature_and_coil", "Temp.: %,dK (%s)");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");

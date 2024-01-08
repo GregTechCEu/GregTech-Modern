@@ -16,6 +16,7 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -91,7 +92,7 @@ public class GTOreDefinition {
     @Getter @Setter
     private BiomeWeightModifier biomeWeightModifier;
 
-    @Getter
+    @Getter @Setter
     private VeinGenerator veinGenerator;
 
     @Getter @Setter
@@ -269,6 +270,7 @@ public class GTOreDefinition {
         return this;
     }
 
+    @Tolerate
     @Nullable
     public VeinGenerator veinGenerator(ResourceLocation id) {
         if (veinGenerator == null) {
