@@ -18,7 +18,6 @@ classes/
 .vscode
 .settings
 *.launch
-.architectury-transformer/debug.log
 src/generated/resources/.cache/
 
 *.patch
