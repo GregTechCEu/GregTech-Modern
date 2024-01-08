@@ -23,13 +23,13 @@ public class ToolLootModifier implements IGlobalLootModifier {
 
     @Override
     public @NotNull ObjectArrayList<ItemStack> apply(ObjectArrayList<ItemStack> objectArrayList, LootContext context) {
-        if (context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Player player && context.hasParam(LootContextParams.TOOL)) {
+        if (context.getParamOrNull(LootContextParams.THIS_ENTITY) instanceof Player player && context.hasParam(LootContextParams.TOOL) && context.hasParam(LootContextParams.BLOCK_STATE)) {
             Vec3 pos = context.getParam(LootContextParams.ORIGIN);
             BlockPos blockPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
             ItemStack tool = context.getParam(LootContextParams.TOOL);
             boolean isSilktouch = EnchantmentHelper.hasSilkTouch(tool);
             int fortuneLevel = tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-            return ToolEventHandlers.onHarvestDrops(player, context.getParam(LootContextParams.TOOL), context.getLevel(), blockPos, context.getParam(LootContextParams.BLOCK_STATE), isSilktouch, fortuneLevel, objectArrayList, 1);
+            return ToolEventHandlers.onHarvestDrops(player, tool, context.getLevel(), blockPos, context.getParam(LootContextParams.BLOCK_STATE), isSilktouch, fortuneLevel, objectArrayList, 1);
         } else {
             return objectArrayList;
         }
