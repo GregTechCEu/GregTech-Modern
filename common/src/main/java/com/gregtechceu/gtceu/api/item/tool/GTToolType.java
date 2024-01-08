@@ -310,13 +310,13 @@ public class GTToolType {
         }
 
         @SafeVarargs
-        private Builder toolTag(TagPrefix.LoaderType loader, TagKey<Item>... tags) {
+        public final Builder toolTag(TagPrefix.LoaderType loader, TagKey<Item>... tags) {
             (loader == FORGE ? forgeItemTags : fabricItemTags).addAll(Arrays.stream(tags).toList());
             return this;
         }
 
         @SafeVarargs
-        private Builder harvestTag(TagPrefix.LoaderType loader, TagKey<Block>... tags) {
+        public final Builder harvestTag(TagPrefix.LoaderType loader, TagKey<Block>... tags) {
             (loader == FORGE ? forgeHarvestTags : fabricHarvestTags).addAll(Arrays.stream(tags).toList());
             return this;
         }
