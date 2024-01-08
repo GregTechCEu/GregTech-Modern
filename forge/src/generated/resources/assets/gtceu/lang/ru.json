@@ -5654,5 +5654,9 @@
     "item.gtceu.uhv_electric_motor": "Электрический мотор (§4UHV§r)",
     "item.gtceu.tool.behavior.scrape": "§bПолировщик: §fУдаляет окись",
     "item.gtceu.tool.behavior.strip_log": "§5Ремесленник: §fОчищает брёвна",
-    "item.gtceu.tool.behavior.remove_wax": "§6Чистильщик: §fУдаляет воск"
+    "item.gtceu.tool.behavior.remove_wax": "§6Чистильщик: §fУдаляет воск",
+    "block.gtceu.hp_steam_solar_boiler": "Солнечный паровой котел высокого давления",
+    "block.gtceu.lp_steam_solar_boiler": "Солнечный паровой котел",
+    "compass.node.gtceu.steam/steam_solar_boiler": "Солнечный паровой котел",
+    "gtceu.recipe.temperature_and_coil": "Темп.: %,dK (%s)"
 }
