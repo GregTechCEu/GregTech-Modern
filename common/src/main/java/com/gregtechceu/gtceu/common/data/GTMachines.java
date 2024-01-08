@@ -47,6 +47,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.steam.SteamParallelMultib
 import com.gregtechceu.gtceu.common.machine.steam.SteamLiquidBoilerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamMinerMachine;
 import com.gregtechceu.gtceu.common.machine.steam.SteamSolidBoilerMachine;
+import com.gregtechceu.gtceu.common.machine.steam.SteamSolarBoiler;
 import com.gregtechceu.gtceu.common.machine.storage.*;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
@@ -141,6 +142,15 @@ public class GTMachines {
                     .recipeModifier(SteamBoilerMachine::recipeModifier)
                     .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/lava"))
                     .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 600 : 240) * FluidHelper.getBucket() / 20000))
+                    .register());
+
+    public final static Pair<MachineDefinition, MachineDefinition> STEAM_SOLAR_BOILER = registerSteamMachines("steam_solar_boiler",
+            SteamSolarBoiler::new,
+            (pressure, builder) -> builder.rotationState(RotationState.NON_Y_AXIS)
+                    .recipeType(STEAM_BOILER_RECIPES)
+                    .recipeModifier(SteamBoilerMachine::recipeModifier)
+                    .workableSteamHullRenderer(pressure, GTCEu.id("block/generators/boiler/solar"))
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.produces_fluid", (pressure ? 360 : 120) * FluidHelper.getBucket() / 20000))
                     .register());
 
     public final static Pair<MachineDefinition, MachineDefinition> STEAM_EXTRACTOR = registerSimpleSteamMachines("extractor", GTRecipeTypes.EXTRACTOR_RECIPES);
