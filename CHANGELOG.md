@@ -1,9 +1,7 @@
 # ChangeLog
 
-Version: 1.0.20.a
+Version: 1.0.20.b
 
-- adds the minimum required coil tier to EBF and ABS recipe view
-- fixes the recipe book and REI not accepting tools
-- fixes random items getting NBT
-- fixes item viewers having duplicated items
-- updates GTM's dependencies internally
+- fix tools deleting chest loot
+- add way for addons to register custom ore veins
+- fix addon tooltype registration issue where tagging methods were inaccessible
