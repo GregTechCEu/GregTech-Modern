@@ -6,15 +6,75 @@ plugins {
     id 'net.neoforged.gradle.userdev' version '7.0.57'
 }
 
-apply plugin: "dev.architectury.loom"
-apply plugin: "io.github.juuxel.loom-vineflower"
-apply plugin: "java"
-apply plugin: "architectury-plugin"
-apply plugin: "maven-publish"
+version = mod_version
+group = mod_group_id
 
+repositories {
+    mavenLocal()
+}
 
-architectury {
-    minecraft = libs.versions.minecraft
+base {
+    archivesName = mod_id
+}
+
+// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
+java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+
+//minecraft.accessTransformers.file rootProject.file('src/main/resources/META-INF/accesstransformer.cfg')
+//minecraft.accessTransformers.entry public net.minecraft.client.Minecraft textureManager # textureManager
+
+// Default run configurations.
+// These can be tweaked, removed, or duplicated as needed.
+runs {
+    // applies to all the run configs below
+    configureEach {
+        // Recommended logging data for a userdev environment
+        // The markers can be added/remove as needed separated by commas.
+        // "SCAN": For mods scan.
+        // "REGISTRIES": For firing of registry events.
+        // "REGISTRYDUMP": For getting the contents of all registries.
+        systemProperty 'forge.logging.markers', 'REGISTRIES'
+
+        // Recommended logging level for the console
+        // You can set various levels here.
+        // Please read: https://stackoverflow.com/questions/2031163/when-to-use-the-different-log-levels
+        systemProperty 'forge.logging.console.level', 'debug'
+
+        modSource project.sourceSets.main
+    }
+
+    client {
+        // Comma-separated list of namespaces to load gametests from. Empty = all namespaces.
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+    }
+
+    server {
+        systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
+        programArgument '--nogui'
+    }
+
+tasks.register('remapSlimJar', RemapJarTask) {
+    dependsOn(jar)
+    inputFile.set jar.archiveFile
+}
+
+group = maven_group
+
+// Formats the mod version to include the loader, Minecraft version, and build number (if present)
+String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
+version = "${mod_version}" + (buildNumber != null ? "-build_${System.getenv("GITHUB_RUN_NUMBER")}" : "")
+
+    // Shimmer
+    implementation(forge.shimmer.forge) { transitive = false }
+    implementation("maven.modrinth:embeddium:0.2.10+mc1.20.1")
+    implementation("maven.modrinth:oculus:1.20.1-1.6.9")
+
+    // Runtime only testing mods
+    //runtimeOnly(forge.worldStripper)
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
 }
 
 tasks.register('remapSlimJar', RemapJarTask) {
@@ -38,6 +98,35 @@ apply from: "$rootDir/gradle/scripts/publishing.gradle"
 
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
+}
+
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            minecraft_version   : minecraft_version, minecraft_version_range: minecraft_version_range,
+            neo_version         : neo_version, neo_version_range: neo_version_range,
+            loader_version_range: loader_version_range,
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors         : mod_authors, mod_description: mod_description,
+    ]
+    inputs.properties replaceProperties
+
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties + [project: project]
+    }
+}
+
+// Example configuration to allow publishing using the maven-publish plugin
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            from components.java
+        }
+    }
+    repositories {
+        maven {
+            url "file://${project.projectDir}/repo"
+        }
+    }
 }
 
 machete {
