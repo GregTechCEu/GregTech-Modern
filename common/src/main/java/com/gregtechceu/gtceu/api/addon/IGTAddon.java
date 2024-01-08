@@ -2,11 +2,13 @@ package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
 
+@SuppressWarnings("unused")
 public interface IGTAddon {
 
     /**
@@ -81,6 +83,13 @@ public interface IGTAddon {
     }
 
     default void removeRecipes(Consumer<ResourceLocation> consumer) {
+
+    }
+
+    /**
+     * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
+     */
+    default void registerOreVeins() {
 
     }
 
