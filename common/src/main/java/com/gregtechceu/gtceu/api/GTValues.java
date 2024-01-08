@@ -1,16 +1,11 @@
 package com.gregtechceu.gtceu.api;
 
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.levelgen.LegacyRandomSource;
-import net.minecraft.world.level.levelgen.SingleThreadedRandomSource;
 
 import java.time.LocalDate;
 import java.util.Arrays;
-import java.util.Random;
-import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Supplier;
 
 import static net.minecraft.ChatFormatting.*;
@@ -133,7 +128,7 @@ public class GTValues {
             AQUA + "MV",
             GOLD + "HV",
             DARK_PURPLE + "EV",
-            DARK_BLUE + "IV",
+            BLUE + "IV",
             LIGHT_PURPLE + "LuV",
             RED + "ZPM",
             DARK_AQUA + "UV",
@@ -141,7 +136,7 @@ public class GTValues {
             GREEN + "UEV",
             DARK_GREEN + "UIV",
             YELLOW + "UXV",
-            BLUE + "OpV",
+            BLUE.toString() + BOLD  + "OpV",
             RED.toString() + BOLD + "MAX"};
 
 
@@ -151,7 +146,7 @@ public class GTValues {
             AQUA + "Advanced",
             GOLD + "Advanced",
             DARK_PURPLE + "Advanced",
-            DARK_BLUE + "Elite",
+            BLUE + "Elite",
             LIGHT_PURPLE + "Elite",
             RED + "Elite",
             DARK_AQUA + "Ultimate",
@@ -159,7 +154,7 @@ public class GTValues {
             GREEN + "Epic",
             DARK_GREEN + "Epic",
             YELLOW + "Epic",
-            BLUE + "Legendary",
+            BLUE.toString() + BOLD  + "Legendary",
             RED.toString() + BOLD + "MAX"};
 
     public static final String[] VLVT = new String[]{
