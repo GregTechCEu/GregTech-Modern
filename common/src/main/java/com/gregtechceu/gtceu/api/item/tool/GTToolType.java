@@ -200,7 +200,8 @@ public class GTToolType {
             .toolTag(FABRIC, TagUtil.createItemTag("wire_cutters", false))
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/wire_cutter", false))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/wire_cutter", false))
-            .toolStats(b -> b.blockBreaking().crafting().damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
+            .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
+                    .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
             .sound(GTSoundEntries.WIRECUTTER_TOOL)
             .symbol('x')
             .build();
@@ -310,13 +311,13 @@ public class GTToolType {
         }
 
         @SafeVarargs
-        private Builder toolTag(TagPrefix.LoaderType loader, TagKey<Item>... tags) {
+        public final Builder toolTag(TagPrefix.LoaderType loader, TagKey<Item>... tags) {
             (loader == FORGE ? forgeItemTags : fabricItemTags).addAll(Arrays.stream(tags).toList());
             return this;
         }
 
         @SafeVarargs
-        private Builder harvestTag(TagPrefix.LoaderType loader, TagKey<Block>... tags) {
+        public final Builder harvestTag(TagPrefix.LoaderType loader, TagKey<Block>... tags) {
             (loader == FORGE ? forgeHarvestTags : fabricHarvestTags).addAll(Arrays.stream(tags).toList());
             return this;
         }
