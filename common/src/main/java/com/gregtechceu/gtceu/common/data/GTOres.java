@@ -854,12 +854,15 @@ public class GTOres {
     );
 
     private static GTOreDefinition create(String name, Consumer<GTOreDefinition> config) {
+        return create(GTCEu.id(name), config);
+    }
+
+    public static GTOreDefinition create(ResourceLocation name, Consumer<GTOreDefinition> config) {
         GTOreDefinition def = blankOreDefinition();
         config.accept(def);
 
-        ResourceLocation id = GTCEu.id(name);
-        def.register(id);
-        toReRegister.put(id, def);
+        def.register(name);
+        toReRegister.put(name, def);
 
         return def;
     }
