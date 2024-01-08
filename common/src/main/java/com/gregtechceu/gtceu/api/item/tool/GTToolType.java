@@ -200,7 +200,8 @@ public class GTToolType {
             .toolTag(FABRIC, TagUtil.createItemTag("wire_cutters", false))
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/wire_cutter", false))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/wire_cutter", false))
-            .toolStats(b -> b.blockBreaking().crafting().damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
+            .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
+                    .damagePerCraftingAction(4).attackDamage(-1.0F).attackSpeed(-2.4F))
             .sound(GTSoundEntries.WIRECUTTER_TOOL)
             .symbol('x')
             .build();
