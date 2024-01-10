@@ -222,10 +222,4 @@ dependencyResolutionManagement {
     }
 }
 
-include("${mod_id}-common")
-include("${mod_id}-forge")
-
-project(":${mod_id}-common").setProjectDir(new File("common"))
-project(":${mod_id}-forge").setProjectDir(new File("forge"))
-
 rootProject.name = "${mod_name}"
