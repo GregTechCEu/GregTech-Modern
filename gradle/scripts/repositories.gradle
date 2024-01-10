@@ -1,0 +1,47 @@
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
+    maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
+    maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
+    maven {
+        url "https://cursemaven.com"
+        content {
+            includeGroup "curse.maven"
+        }
+    } // Curse Forge File
+    maven {
+        name = "Jared's maven"
+        url = "https://maven.blamejared.com/"
+    } // JEI
+    maven {
+        // location of a maven mirror for JEI files, as a fallback
+        name = "ModMaven"
+        url = "https://modmaven.dev"
+    } // JEI mirror, AE2
+    maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
+    maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
+    maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
+    maven { // Flywheel
+        url = "https://maven.tterrag.com/"
+        content {
+            // need to be specific here due to version overlaps
+            includeGroup("com.jozufozu.flywheel")
+            includeGroup("com.tterrag.registrate")
+            includeGroup("com.simibubi.create")
+        }
+    }
+    maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { // TOP
+        url "https://maven.k-4u.nl"
+    }
+    maven {
+        // saps.dev Maven (KubeJS and Rhino)
+        url = "https://maven.saps.dev/minecraft"
+        content {
+            includeGroup "dev.latvian.mods"
+        }
+    }
+    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+    maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+}
