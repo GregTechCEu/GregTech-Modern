@@ -12,25 +12,33 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
+import com.gregtechceu.gtceu.api.registry.registrate.forge.GTFluidBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.Builder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.builders.NoConfigBuilder;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.RegistryEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.function.TriFunction;
 
@@ -54,27 +62,39 @@ import java.util.stream.Stream;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class GTRegistrate extends Registrate {
+public class GTRegistrate extends Registrate {
 
     protected GTRegistrate(String modId) {
         super(modId);
     }
 
-    @Nonnull
-    @ExpectPlatform
-    public static GTRegistrate create(String modId) {
-        throw new AssertionError();
+    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
+        return parent.entry(name, callback -> new GTFluidBuilder<>(parent, parent, material, name, langKey, callback, stillTexture, flowingTexture, GTFluidBuilder::defaultFluidType).defaultLang().defaultSource().setData(ProviderType.LANG, NonNullBiConsumer.noop()));
     }
 
-    public abstract void registerRegistrate();
+    @Nonnull
+    public static GTRegistrate create(String modId) {
+        return new GTRegistrate(modId);
+    }
+
+    public void registerRegistrate() {
+        registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
+    }
+
+    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
+        var tab = ResourceKey.create(Registries.CREATIVE_MODE_TAB, new ResourceLocation(getModid(), name));
+        return this.generic(parent, name, Registries.CREATIVE_MODE_TAB, () -> {
+            var builder = CreativeModeTab.builder()
+                .icon(() -> getAll(Registries.ITEM).stream().findFirst().map(ItemEntry::cast).map(ItemEntry::asStack).orElse(new ItemStack(Items.AIR)))
+                .title(this.addLang("itemGroup", tab.location(), RegistrateLangProvider.toEnglishName(name)));
+            config.accept(builder);
+            return builder.build();
+        });
+    }
+
 
     public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
         return fluid(this, material, name, langKey, stillTexture, flowingTexture);
-    }
-
-    @ExpectPlatform
-    public static IGTFluidBuilder fluid(GTRegistrate parent, Material material, String name, String langKey, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
-        throw new AssertionError();
     }
 
     public <DEFINITION extends MachineDefinition> MachineBuilder<DEFINITION> machine(String name,
@@ -145,9 +165,5 @@ public abstract class GTRegistrate extends Registrate {
 
     public <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> defaultCreativeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
         return createCreativeModeTab(parent, name, config);
-    }
-
-    protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab,P> createCreativeModeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {
-        return super.defaultCreativeTab(parent, name, config);
     }
 }

@@ -5,19 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import com.tterrag.registrate.util.entry.RegistryEntry;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 
-import java.util.Objects;
-
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.lens;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class ItemTagLoader {
@@ -50,9 +44,11 @@ public class ItemTagLoader {
         create(provider, ChemicalHelper.getTag(prefix, material), rls);
     }
 
-    @ExpectPlatform
-    private static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, ResourceLocation... rls) {
-        throw new AssertionError();
+    public static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, ResourceLocation... rls) {
+        var builder = provider.addTag(tagKey);
+        for (ResourceLocation rl : rls) {
+            builder.addOptional(rl);
+        }
     }
 
     private static ResourceLocation rl(String name) {

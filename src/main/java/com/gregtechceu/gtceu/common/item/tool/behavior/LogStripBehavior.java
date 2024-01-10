@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -12,16 +11,15 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.AxeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.RotatedPillarBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,9 +32,8 @@ public class LogStripBehavior implements IToolBehavior {
 
     protected LogStripBehavior() {/**/}
 
-    @ExpectPlatform
     protected static LogStripBehavior create() {
-        throw new AssertionError();
+        return new LogStripBehavior();
     }
 
     @NotNull
@@ -99,13 +96,13 @@ public class LogStripBehavior implements IToolBehavior {
     }
 
     protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
-        Block block = level.getBlockState(pos).getBlock();
-        return AxeItem.STRIPPABLES.containsKey(block);
+        BlockState state = level.getBlockState(pos);
+        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
+        return newState != null && newState != state;
     }
 
-    protected BlockState getStripped(BlockState unstrippedState, UseOnContext context) {
-        // just assume it exists.
-        return AxeItem.STRIPPABLES.get(unstrippedState.getBlock()).defaultBlockState().setValue(RotatedPillarBlock.AXIS, unstrippedState.getValue(RotatedPillarBlock.AXIS));
+    protected BlockState getStripped(BlockState unscrapedState, UseOnContext context) {
+        return unscrapedState.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
     }
 
     @Override

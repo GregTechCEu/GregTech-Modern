@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
@@ -28,14 +28,17 @@ public class BlockTagLoader {
         create(provider, ChemicalHelper.getBlockTag(prefix, material), rls);
     }
 
-    @ExpectPlatform
-    private static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, ResourceLocation... rls) {
-        throw new AssertionError();
+    public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
+        var builder = provider.addTag(tagKey);
+        for (Block block : rls) {
+            builder.addOptional(BuiltInRegistries.BLOCK.getKey(block));
+        }
     }
 
-    @ExpectPlatform
-    private static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, Block... rls) {
-        throw new AssertionError();
+    public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, ResourceLocation... rls) {
+        var builder = provider.addTag(tagKey);
+        for (ResourceLocation rl : rls) {
+            builder.addOptional(rl);
+        }
     }
-
 }

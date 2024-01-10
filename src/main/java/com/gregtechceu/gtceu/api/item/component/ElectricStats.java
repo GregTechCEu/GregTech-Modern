@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -17,13 +19,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IDurabilityBar {
+public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IDurabilityBar, IComponentCapability {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -40,9 +45,16 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         this.dischargeable = dischargeable;
     }
 
-    @ExpectPlatform
     public static ElectricStats create(long maxCharge, long tier, boolean chargeable, boolean dischargeable) {
-        throw new AssertionError();
+        return new ElectricStats(maxCharge, tier, chargeable, dischargeable);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> capability) {
+        if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
+            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability, LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
+        }
+        return LazyOptional.empty();
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {

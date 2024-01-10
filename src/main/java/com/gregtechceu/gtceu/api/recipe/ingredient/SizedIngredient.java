@@ -3,16 +3,18 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.ints.IntList;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IIngredientSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -37,24 +39,20 @@ public class SizedIngredient extends Ingredient {
         this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.createNBTIngredient(itemStack) : Ingredient.of(itemStack), itemStack.getCount());
     }
 
-    @ExpectPlatform
     public static SizedIngredient create(ItemStack inner) {
-        throw new AssertionError();
+        return new SizedIngredient(inner);
     }
 
-    @ExpectPlatform
     public static SizedIngredient create(Ingredient inner, int amount) {
-        throw new AssertionError();
+        return new SizedIngredient(inner, amount);
     }
 
-    @ExpectPlatform
     public static SizedIngredient create(Ingredient inner) {
-        throw new AssertionError();
+        return new SizedIngredient(inner, 1);
     }
 
-    @ExpectPlatform
     public static SizedIngredient create(TagKey<Item> tag, int amount) {
-        throw new AssertionError();
+        return new SizedIngredient(tag, amount);
     }
 
     public static SizedIngredient copy(Ingredient ingredient) {
@@ -76,9 +74,14 @@ public class SizedIngredient extends Ingredient {
         return inner;
     }
 
-    @ExpectPlatform
+    @Override
+    @Nonnull
+    public IIngredientSerializer<? extends Ingredient> getSerializer() {
+        return SERIALIZER;
+    }
+
     public static SizedIngredient fromJson(JsonObject json) {
-        throw new AssertionError();
+        return SERIALIZER.parse(json);
     }
 
     @Override
@@ -116,4 +119,25 @@ public class SizedIngredient extends Ingredient {
     public boolean isEmpty() {
         return inner.isEmpty();
     }
+
+    public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {
+        @Override
+        public @NotNull SizedIngredient parse(FriendlyByteBuf buffer) {
+            int amount = buffer.readVarInt();
+            return new SizedIngredient(Ingredient.fromNetwork(buffer), amount);
+        }
+
+        @Override
+        public @NotNull SizedIngredient parse(JsonObject json) {
+            int amount = json.get("count").getAsInt();
+            Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
+            return new SizedIngredient(inner, amount);
+        }
+
+        @Override
+        public void write(FriendlyByteBuf buffer, SizedIngredient ingredient) {
+            buffer.writeVarInt(ingredient.getAmount());
+            ingredient.inner.toNetwork(buffer);
+        }
+    };
 }

@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.lowdragmc.lowdraglib.Platform;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
@@ -18,6 +17,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -46,9 +46,13 @@ public class TagPrefixItem extends Item {
         }
     }
 
-    @ExpectPlatform
-    public static TagPrefixItem create(Properties properties, TagPrefix tagPrefix, Material material) {
-        throw new AssertionError();
+    public static TagPrefixItem create(Item.Properties properties, TagPrefix tagPrefix, Material material) {
+        return new TagPrefixItem(properties, tagPrefix, material);
+    }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack, @org.jetbrains.annotations.Nullable RecipeType<?> recipeType) {
+        return getItemBurnTime();
     }
 
     public void onRegister() {

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.client.forge.ClientProxyImpl;
-import com.gregtechceu.gtceu.common.forge.CommonProxyImpl;
+import com.gregtechceu.gtceu.client.ClientProxy;
+import com.gregtechceu.gtceu.common.CommonProxy;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.common.Mod;
 
@@ -10,7 +10,7 @@ import net.minecraftforge.fml.common.Mod;
 public class GTCEuForge {
     public GTCEuForge() {
         GTCEu.init();
-        DistExecutor.unsafeRunForDist(() -> ClientProxyImpl::new, () -> CommonProxyImpl::new);
+        DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     }
 
 }

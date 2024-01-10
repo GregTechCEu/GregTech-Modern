@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.item.tool;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -27,10 +27,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.event.AnvilUpdateEvent;
+import net.minecraftforge.event.ForgeEventFactory;
+import net.minecraftforge.event.entity.player.PlayerDestroyItemEvent;
+import net.minecraftforge.event.entity.player.PlayerInteractEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
 
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID)
 public class ToolEventHandlers {
 
     /**
@@ -132,9 +140,8 @@ public class ToolEventHandlers {
         return drops;
     }
 
-    @ExpectPlatform
     public static int fireItemPickupEvent(ItemEntity drop, Player player) {
-        throw new AssertionError();
+        return ForgeEventFactory.onItemPickup(drop, player);
     }
 
     /**
@@ -154,4 +161,24 @@ public class ToolEventHandlers {
         return true;
     }
 
+    @SubscribeEvent
+    public static void onPlayerDestroyItem(@NotNull PlayerDestroyItemEvent event) {
+        ToolEventHandlers.onPlayerDestroyItem(event.getOriginal(), event.getHand(), event.getEntity());
+    }
+
+    @SubscribeEvent
+    public static void onPlayerEntityInteract(@NotNull PlayerInteractEvent.EntityInteract event) {
+        InteractionResult result = ToolEventHandlers.onPlayerEntityInteract(event.getEntity(), event.getHand(), event.getTarget());
+        if (result != InteractionResult.PASS) {
+            event.setCanceled(true);
+            event.setCancellationResult(result);
+        }
+    }
+
+    @SubscribeEvent
+    public static void onAnvilUpdateEvent(AnvilUpdateEvent event) {
+        if (!ToolEventHandlers.onAnvilUpdateEvent(event.getLeft(), event.getRight())) {
+            event.setCanceled(true);
+        }
+    }
 }

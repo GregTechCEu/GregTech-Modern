@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -20,6 +20,7 @@ import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HoeItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -27,6 +28,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -55,9 +57,13 @@ public class GTHoeItem extends HoeItem implements IItemUseFirst, IGTTool {
         definition$init();
     }
 
-    @ExpectPlatform
-    public static GTHoeItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
-        throw new AssertionError();
+    public static GTHoeItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
+        return new GTHoeItem(toolType, tier, material, toolStats, properties);
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return definition$initCapabilities(stack, nbt);
     }
 
     @Override
@@ -205,5 +211,10 @@ public class GTHoeItem extends HoeItem implements IItemUseFirst, IGTTool {
 
     public void setDamage(ItemStack stack, int damage) {
         definition$setDamage(stack, damage);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return IGTTool.definition$isCorrectToolForDrops(stack, state);
     }
 }

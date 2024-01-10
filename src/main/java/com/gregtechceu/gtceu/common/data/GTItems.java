@@ -22,13 +22,11 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.item.tool.ToolDefinitionBuilder;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
@@ -38,6 +36,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
@@ -51,8 +50,8 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.color.item.ItemColor;
+import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -65,6 +64,7 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.TierSortingRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -75,7 +75,8 @@ import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
-import static com.gregtechceu.gtceu.common.data.GTModels.*;
+import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
+import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
@@ -1698,28 +1699,28 @@ public class GTItems {
         }
     }
 
-    @ExpectPlatform
     public static <T extends ComponentItem> NonNullConsumer<T> burnTime(int burnTime) {
-        throw new AssertionError();
+        return item -> item.burnTime(burnTime);
     }
 
     public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
         return item -> item.attachComponents(components);
     }
 
-    @ExpectPlatform
     public static <T extends Item> NonNullConsumer<T> modelPredicate(ResourceLocation predicate, Function<ItemStack, Float> property) {
-        throw new AssertionError();
+        return item -> {
+            if (LDLib.isClient()) {
+                ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
+            }
+        };
     }
 
-    @ExpectPlatform
     public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before, Collection<ResourceLocation> after) {
-        throw new AssertionError();
+        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)), Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
     }
 
-    @ExpectPlatform
     public static ResourceLocation getTierName(Tier tier) {
-        throw new AssertionError();
+        return TierSortingRegistry.getName(tier);
     }
 
     @NotNull

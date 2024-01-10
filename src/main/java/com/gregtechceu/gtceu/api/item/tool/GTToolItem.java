@@ -1,19 +1,17 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.google.common.collect.Multimap;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,6 +28,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -67,9 +66,13 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
         definition$init();
     }
 
-    @ExpectPlatform
     public static GTToolItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition definition, Properties properties) {
-        throw new AssertionError();
+        return new GTToolItem(toolType, tier, material, definition, properties);
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return definition$initCapabilities(stack, nbt);
     }
 
     @Override
@@ -217,5 +220,10 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         return definition$use(level, player, usedHand);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return IGTTool.definition$isCorrectToolForDrops(stack, state);
     }
 }

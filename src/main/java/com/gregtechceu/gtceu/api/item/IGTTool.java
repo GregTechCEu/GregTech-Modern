@@ -4,6 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.forge.CombinedCapabilityProvider;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
@@ -13,7 +14,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.gui.PlayerInventoryHolder;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
@@ -33,12 +36,12 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -67,6 +70,11 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -828,9 +836,49 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
 
     Set<GTToolType> getToolClasses(ItemStack stack);
 
-    @ExpectPlatform
+    @Nullable
+    default ICapabilityProvider definition$initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        List<ICapabilityProvider> providers = new ArrayList<>();
+        if (isElectric()) {
+            ElectricStats item = ElectricStats.createElectricItem(0L, getElectricTier());
+            providers.add(new ICapabilityProvider() {
+                @Override
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @org.jetbrains.annotations.Nullable Direction arg) {
+                    return item.getCapability(stack, capability);
+                }
+            });
+        }
+        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+            if (behavior instanceof IComponentCapability componentCapability) {
+                providers.add(new ICapabilityProvider() {
+                    @Override
+                    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @org.jetbrains.annotations.Nullable Direction arg) {
+                        return componentCapability.getCapability(stack, capability);
+                    }
+                });
+            }
+        }
+        if (providers.isEmpty()) return null;
+        if (providers.size() == 1) return providers.get(0);
+        return new CombinedCapabilityProvider(providers);
+    }
+
     static boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        throw new AssertionError();
+        if (stack.getItem() instanceof IGTTool gtTool) {
+            if (TierSortingRegistry.isTierSorted(gtTool.getTier())) {
+                return TierSortingRegistry.isCorrectTierForDrops(gtTool.getTier(), state) && gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
+            } else {
+                int i = gtTool.getTier().getLevel();
+                if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
+                    return false;
+                } else if (i < 2 && state.is(BlockTags.NEEDS_IRON_TOOL)) {
+                    return false;
+                } else {
+                    return i < 1 && state.is(BlockTags.NEEDS_STONE_TOOL) ? false : gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
+                }
+            }
+        }
+        return stack.getItem().isCorrectToolForDrops(state);
     }
 
     @OnlyIn(Dist.CLIENT)

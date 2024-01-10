@@ -9,10 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
-import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
-import com.gregtechceu.gtceu.common.data.GTModels;
+import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
@@ -20,7 +17,6 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackResources;
@@ -31,10 +27,12 @@ import net.minecraft.tags.TagLoader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
-import java.util.*;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public class MixinHelpers {
@@ -76,9 +74,15 @@ public class MixinHelpers {
         });
     }
 
-    @ExpectPlatform
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
-        throw new AssertionError();
+        if (value != null) {
+            IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(value.getFluid().get());
+            if (extensions instanceof GTClientFluidTypeExtensions gtExtensions) {
+                gtExtensions.setFlowingTexture(value.getFlowTexture());
+                gtExtensions.setStillTexture(value.getStillTexture());
+                gtExtensions.setTintColor(material.getMaterialARGB());
+            }
+        }
     }
 
     public static List<PackResources> addDynamicDataPack(Collection<PackResources> packs) {

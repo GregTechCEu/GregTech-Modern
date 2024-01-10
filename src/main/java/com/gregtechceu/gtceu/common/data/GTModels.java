@@ -15,7 +15,6 @@ import com.tterrag.registrate.providers.DataGenContext;
 import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
 import com.tterrag.registrate.providers.RegistrateItemModelProvider;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -23,6 +22,8 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.client.model.generators.ModelFile;
+import net.minecraftforge.registries.ForgeRegistries;
 
 /**
  * @author KilaBash
@@ -30,44 +31,61 @@ import net.minecraft.world.level.material.Fluid;
  * @implNote GTModels
  */
 public class GTModels {
-    @ExpectPlatform
     public static void createModelBlockState(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov, ResourceLocation modelLocation) {
-        throw new AssertionError();
+        prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
     }
 
-    @ExpectPlatform
     public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
-        throw new AssertionError();
+        prov.simpleBlock(ctx.getEntry(), prov.models().cross(ForgeRegistries.BLOCKS.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry())));
     }
 
-    @ExpectPlatform
     public static void cellModel(DataGenContext<Item, ? extends Item> ctx, RegistrateItemModelProvider prov) {
-        throw new AssertionError();
+        // empty model
+        prov.getBuilder("item/" + prov.name(ctx::getEntry) + "_empty").parent(new ModelFile.UncheckedModelFile("item/generated"))
+            .texture("layer0", prov.modLoc("item/%s/base".formatted(prov.name(ctx))));
+
+        // filled model
+        prov.getBuilder("item/" + prov.name(ctx::getEntry) + "_filled").parent(new ModelFile.UncheckedModelFile("item/generated"))
+            .texture("layer0", prov.modLoc("item/%s/base".formatted(prov.name(ctx))))
+            .texture("layer1", prov.modLoc("item/%s/overlay".formatted(prov.name(ctx))));
+
+        // root model
+        prov.generated(ctx::getEntry, prov.modLoc("item/%s/base".formatted(prov.name(ctx))))
+            .override().predicate(GTCEu.id("fluid_cell"), 0)
+            .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s_empty".formatted(prov.name(ctx)))))
+            .end()
+            .override().predicate(GTCEu.id("fluid_cell"), 1)
+            .model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s_filled".formatted(prov.name(ctx)))))
+            .end();
     }
 
-    @ExpectPlatform
     public static <T extends Item> NonNullBiConsumer<DataGenContext<Item, T>, RegistrateItemModelProvider> overrideModel(ResourceLocation predicate, int modelNumber) {
-        throw new AssertionError();
+        if (modelNumber <= 0) return NonNullBiConsumer.noop();
+        return (ctx, prov) -> {
+            var rootModel = prov.generated(ctx::getEntry, prov.modLoc("item/%s/1".formatted(prov.name(ctx))));
+            for (int i = 0; i < modelNumber; i++) {
+                var subModelBuilder = prov.getBuilder("item/" + prov.name(ctx::getEntry) + "/" + i).parent(new ModelFile.UncheckedModelFile("item/generated"));
+                subModelBuilder.texture("layer0", prov.modLoc("item/%s/%d".formatted(prov.name(ctx), i + 1)));
+
+                rootModel = rootModel.override().predicate(predicate, i / 100f).model(new ModelFile.UncheckedModelFile(prov.modLoc("item/%s/%d".formatted(prov.name(ctx), i)))).end();
+            }
+        };
     }
 
-    @ExpectPlatform
     public static void createTextureModel(DataGenContext<Item, ? extends Item> ctx, RegistrateItemModelProvider prov, ResourceLocation texture) {
-        throw new AssertionError();
+        prov.generated(ctx, texture);
     }
 
-    @ExpectPlatform
     public static void rubberTreeSaplingModel(DataGenContext<Item, BlockItem> context, RegistrateItemModelProvider provider) {
-        throw new AssertionError();
+        provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
 
-    @ExpectPlatform
     public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
-        throw new AssertionError();
+        prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_item_pipeline", prov.modLoc("block/pipe/ld_item_pipe/block")));
     }
 
-    @ExpectPlatform
     public static void longDistanceFluidPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
-        throw new AssertionError();
+        prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
     }
 
     /**

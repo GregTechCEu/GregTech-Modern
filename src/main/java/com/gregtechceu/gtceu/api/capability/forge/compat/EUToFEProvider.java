@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IPlatformEnergyStorage;
 import com.gregtechceu.gtceu.api.capability.PlatformEnergyCompat;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapabilityHelperImpl;
 import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;

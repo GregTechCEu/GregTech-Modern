@@ -5,33 +5,38 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import net.minecraft.client.Minecraft;
 import com.mojang.blaze3d.platform.InputConstants;
-import dev.architectury.injectables.annotations.ExpectPlatform;
-import net.minecraft.tags.BiomeTags;
-import net.minecraft.world.level.Level;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.Tags;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
-import java.util.*;
+import java.util.Map;
 import java.util.Map.Entry;
 
 
@@ -266,9 +271,36 @@ public class GTUtil {
         return itemStack.getCount() % divisor == 0 && itemStack.getCount() % divisor != itemStack.getCount() && itemStack.getCount() / divisor != 0;
     }
 
-    @ExpectPlatform
     public static int getItemBurnTime(Item item) {
-        throw new AssertionError();
+        return ForgeHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
+    }
+
+    public static long getPumpBiomeModifier(Holder<Biome> biome) {
+        if (biome.is(BiomeTags.IS_NETHER)) {
+            return -1;
+        }
+
+        if (biome.is(BiomeTags.IS_DEEP_OCEAN)
+            || biome.is(BiomeTags.IS_OCEAN)
+            || biome.is(BiomeTags.IS_BEACH)
+            || biome.is(BiomeTags.IS_RIVER)) {
+            return FluidHelper.getBucket();
+        } else if (biome.is(Tags.Biomes.IS_SWAMP)
+            || biome.is(Tags.Biomes.IS_WET)) {
+            return FluidHelper.getBucket() * 4 / 5;
+        } else if (biome.is(BiomeTags.IS_JUNGLE)) {
+            return FluidHelper.getBucket() * 35 / 100;
+        } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
+            return FluidHelper.getBucket() * 3 / 10;
+        } else if (biome.is(Tags.Biomes.IS_PLAINS)
+            || biome.is(BiomeTags.IS_FOREST)) {
+            return FluidHelper.getBucket() / 4;
+        } else if (biome.is(Tags.Biomes.IS_COLD)) {
+            return FluidHelper.getBucket() * 175 / 1000;
+        } else if (biome.is(CustomTags.IS_SANDY)) {
+            return FluidHelper.getBucket() * 170 / 1000;
+        }
+        return FluidHelper.getBucket() / 10;
     }
 
     /**
@@ -300,11 +332,6 @@ public class GTUtil {
         // preserve existing opacity if present
         if (((colorValue >> 24) & 0xFF) != 0) return colorValue;
         return opacity << 24 | colorValue;
-    }
-
-    @ExpectPlatform
-    public static long getPumpBiomeModifier(Holder<Biome> biome) {
-        throw new AssertionError();
     }
 
     /**
