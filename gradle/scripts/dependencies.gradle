@@ -45,7 +45,7 @@ dependencies {
     modImplementation forge.rei.forge
 
     // EMI
-    modCompileOnly("dev.emi:emi-forge:${fabric.versions.emi.get()}:api")
+    modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
     modCompileOnly forge.emi
 
     // TOP
