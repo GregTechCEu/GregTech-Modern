@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_pickaxe"
+  },
+  "items": [
+    "#minecraft:pickaxes"
+  ],
+  "page": "gtceu:tools/pickaxe",
+  "position": [
+    -150,
+    0
+  ],
+  "section": "gtceu:tools"
+}

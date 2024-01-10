@@ -1,0 +1,21 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:wood_crate"
+  },
+  "items": [
+    "gtceu:wood_crate",
+    "gtceu:bronze_crate",
+    "gtceu:steel_crate",
+    "gtceu:aluminium_crate",
+    "gtceu:stainless_steel_crate",
+    "gtceu:titanium_crate",
+    "gtceu:tungsten_steel_crate"
+  ],
+  "page": "gtceu:machines/crate",
+  "position": [
+    -150,
+    300
+  ],
+  "section": "gtceu:machines"
+}

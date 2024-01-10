@@ -1,0 +1,7 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:maintenance_hatch"
+  },
+  "priority": 12
+}
