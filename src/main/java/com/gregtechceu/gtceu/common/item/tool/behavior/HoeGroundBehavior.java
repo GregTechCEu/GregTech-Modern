@@ -58,8 +58,7 @@ public class HoeGroundBehavior implements IToolBehavior {
 
         Set<BlockPos> blocks;
         // only attempt to till if the center block is tillable
-        Block hitBlock = world.getBlockState(pos).getBlock();
-        if (HoeItem.TILLABLES.containsKey(hitBlock) && HoeItem.TILLABLES.get(hitBlock).getFirst().test(context)) {
+        if (isBlockTillable(stack, world, player, pos, context)) {
             if (aoeDefinition == AoESymmetrical.none()) {
                 blocks = ImmutableSet.of(pos);
             } else {
@@ -82,15 +81,12 @@ public class HoeGroundBehavior implements IToolBehavior {
         boolean tilled = false;
         for (BlockPos blockPos : blocks) {
             BlockState state = world.getBlockState(blockPos);
-            Block block = state.getBlock();
-            if (HoeItem.TILLABLES.containsKey(block)) {
-                tilled |= tillGround(new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)), state);
-                if (!player.isCreative()) {
-                    ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
-                }
-                if (stack.isEmpty())
-                    break;
+            tilled |= tillGround(new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)), state);
+            if (!player.isCreative()) {
+                ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
             }
+            if (stack.isEmpty())
+                break;
         }
 
         if (tilled) {
