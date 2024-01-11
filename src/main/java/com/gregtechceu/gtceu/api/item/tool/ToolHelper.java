@@ -23,15 +23,12 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
-import com.mojang.math.Vector3d;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -48,6 +45,8 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Tiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -62,6 +61,9 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
+import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -470,19 +472,28 @@ public class ToolHelper {
         }
     }
 
-    @ExpectPlatform
     public static boolean onBlockBreakEvent(Level level, GameType gameType, ServerPlayer player, BlockPos pos) {
-        throw new AssertionError();
+        return ForgeHooks.onBlockBreakEvent(level, gameType, player, pos) != -1;
     }
 
-    @ExpectPlatform
     public static void onPlayerDestroyItem(Player player, ItemStack stack, InteractionHand hand) {
-        throw new AssertionError();
+        ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
     }
 
-    @ExpectPlatform
+    public static double getPlayerBlockReach(@NotNull Player player) {
+        return player.getReachDistance();
+    }
+
+    public static boolean isCorrectTierForDrops(BlockState state, int tier) {
+        return TierSortingRegistry.isCorrectTierForDrops(getTier(tier), state);
+    }
+
+    private static Tier getTier(int harvestLevel) {
+        return TierSortingRegistry.getSortedTiers().stream().dropWhile(tier -> tier.getLevel() < harvestLevel || tier.getLevel() > harvestLevel).findAny().orElse(Tiers.WOOD);
+    }
+
     public static boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
-        throw new AssertionError();
+        return itemstack.onBlockStartBreak(pos, player);
     }
 
     public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos) {
@@ -515,11 +526,6 @@ public class ToolHelper {
 
     public static HitResult getPlayerDefaultRaytrace(@NotNull Player player) {
         return player.pick(getPlayerBlockReach(player), 1.0f, false);
-    }
-
-    @ExpectPlatform
-    public static double getPlayerBlockReach(@NotNull Player player) {
-        throw new AssertionError();
     }
 
     /**
@@ -696,11 +702,6 @@ public class ToolHelper {
             */
         }
         return -1;
-    }
-
-    @ExpectPlatform
-    private static boolean isCorrectTierForDrops(BlockState state, int tier) {
-        throw new AssertionError();
     }
 
     /**

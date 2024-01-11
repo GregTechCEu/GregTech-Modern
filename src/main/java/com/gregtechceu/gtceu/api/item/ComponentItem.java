@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
@@ -21,9 +21,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -37,6 +41,9 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst {
+
+    protected int burnTime = -1;
+
     @Getter
     protected List<IItemComponent> components;
 
@@ -45,9 +52,8 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         components = new ArrayList<>();
     }
 
-    @ExpectPlatform
     public static ComponentItem create(Properties properties) {
-        throw new AssertionError();
+        return new ComponentItem(properties);
     }
 
     public void attachComponents(IItemComponent... components) {
@@ -215,5 +221,36 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
                 lifeCycle.inventoryTick(stack, level, entity, slotId, isSelected);
             }
         }
+    }
+
+    @Override
+    public ItemStack getCraftingRemainingItem(ItemStack itemStack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IRecipeRemainder recipeRemainder) {
+                return recipeRemainder.getRecipeRemained(itemStack);
+            }
+        }
+        return super.getCraftingRemainingItem(itemStack);
+    }
+
+    public <T> LazyOptional<T> getCapability(@Nonnull final ItemStack itemStack, @Nonnull final Capability<T> cap) {
+        for (IItemComponent component : components) {
+            if (component instanceof IComponentCapability componentCapability) {
+                var value = componentCapability.getCapability(itemStack, cap);
+                if (value.isPresent()) {
+                    return value;
+                }
+            }
+        }
+        return LazyOptional.empty();
+    }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+        return burnTime;
+    }
+
+    public void burnTime(int burnTime) {
+        this.burnTime = burnTime;
     }
 }

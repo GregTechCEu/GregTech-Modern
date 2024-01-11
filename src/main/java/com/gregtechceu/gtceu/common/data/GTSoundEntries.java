@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import dev.architectury.injectables.annotations.ExpectPlatform;
+import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
 
@@ -60,9 +60,10 @@ public class GTSoundEntries {
         registerSounds();
     }
 
-    @ExpectPlatform
     private static void registerSounds() {
-        throw new AssertionError();
+        for (SoundEntry entry : GTRegistries.SOUNDS) {
+            entry.register(soundEvent -> ForgeRegistries.SOUND_EVENTS.register(soundEvent.getLocation(), soundEvent));
+        }
     }
 
 }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.blockentity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.block.CableBlock;
@@ -11,18 +12,19 @@ import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNet;
 import com.gregtechceu.gtceu.common.pipelike.cable.EnergyNetHandler;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.util.LazyOptional;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
-import java.util.Set;
 
 /**
  * @author KilaBash
@@ -38,9 +40,23 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
         super(type, pos, blockState);
     }
 
-    @ExpectPlatform
     public static CableBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        throw new AssertionError();
+        return new CableBlockEntity(type, pos, blockState);
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
+        if (cap == GTCapability.CAPABILITY_ENERGY_CONTAINER) {
+            var container = getEnergyContainer(side);
+            if (container != null) {
+                return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> container));
+            }
+        } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
+        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
+        }
+        return super.getCapability(cap, side);
     }
 
     @Override
@@ -79,9 +95,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
         return IEnergyContainer.DEFAULT;
     }
 
-    @ExpectPlatform
     public static void onBlockEntityRegister(BlockEntityType<CableBlockEntity> cableBlockEntityBlockEntityType) {
-        throw new AssertionError();
     }
 
     //////////////////////////////////////

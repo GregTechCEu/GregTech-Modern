@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool.forge;
 
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.item.forge.IGTToolImpl;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.*;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -19,19 +19,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
-public class GTShovelItemImpl extends GTShovelItem implements IGTToolImpl {
+public class GTShovelItemImpl extends GTShovelItem implements IGTTool {
     public GTShovelItemImpl(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
         super(toolType, tier, material, toolStats, properties);
     }
 
-    public static GTShovelItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
-        return new GTShovelItemImpl(toolType, tier, material, toolStats, properties);
-    }
 
-    @Override
-    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return definition$initCapabilities(stack, nbt);
-    }
 
     @Override
     public boolean onBlockStartBreak(ItemStack stack, BlockPos pos, Player player) {
@@ -101,10 +94,5 @@ public class GTShovelItemImpl extends GTShovelItem implements IGTToolImpl {
     @Override
     public void setDamage(ItemStack stack, int damage) {
         super.setDamage(stack, damage);
-    }
-
-    @Override
-    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return IGTToolImpl.definition$isCorrectToolForDrops(stack, state);
     }
 }

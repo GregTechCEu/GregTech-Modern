@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -12,7 +11,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoneycombItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -22,6 +20,7 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,9 +33,8 @@ public class WaxOffBehavior implements IToolBehavior {
 
     protected WaxOffBehavior() {/**/}
 
-    @ExpectPlatform
     protected static WaxOffBehavior create() {
-        throw new AssertionError();
+        return new WaxOffBehavior();
     }
 
     @NotNull
@@ -99,13 +97,13 @@ public class WaxOffBehavior implements IToolBehavior {
     }
 
     protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
-        Block block = level.getBlockState(pos).getBlock();
-        return HoneycombItem.WAX_OFF_BY_BLOCK.get().containsKey(block);
+        BlockState state = level.getBlockState(pos);
+        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
+        return newState != null && newState != state;
     }
 
     protected BlockState getUnWaxed(BlockState unscrapedState, UseOnContext context) {
-        // just assume it exists.
-        return HoneycombItem.WAX_OFF_BY_BLOCK.get().get(unscrapedState.getBlock()).withPropertiesOf(unscrapedState);
+        return unscrapedState.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
     }
 
     @Override

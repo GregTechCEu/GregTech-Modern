@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 /**
  * @author KilaBash
@@ -10,8 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
  * @implNote NBTIngredient
  */
 public class NBTIngredient {
-    @ExpectPlatform
     public static Ingredient createNBTIngredient(ItemStack itemStack) {
-        throw new AssertionError();
+        return StrictNBTIngredient.of(itemStack);
     }
 }

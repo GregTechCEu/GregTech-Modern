@@ -1,21 +1,17 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.google.common.collect.Multimap;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import lombok.Getter;
-import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.Tag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -30,6 +26,7 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -58,9 +55,13 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
         definition$init();
     }
 
-    @ExpectPlatform
-    public static GTShovelItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
-        throw new AssertionError();
+    public static GTShovelItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
+        return new GTShovelItem(toolType, tier, material, toolStats, properties);
+    }
+
+    @Override
+    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
+        return definition$initCapabilities(stack, nbt);
     }
 
     @Override
@@ -213,5 +214,10 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
 
     public void setDamage(ItemStack stack, int damage) {
         definition$setDamage(stack, damage);
+    }
+
+    @Override
+    public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
+        return IGTTool.definition$isCorrectToolForDrops(stack, state);
     }
 }

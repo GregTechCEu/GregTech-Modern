@@ -4,8 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import com.mojang.datafixers.util.Pair;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -21,15 +19,15 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Set;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Used to allow a tool to hoe the ground, only if it cannot extend the {@link com.gregtechceu.gtceu.api.item.tool.GTHoeItem}
@@ -41,9 +39,8 @@ public class HoeGroundBehavior implements IToolBehavior {
 
     protected HoeGroundBehavior() {/**/}
 
-    @ExpectPlatform
     protected static HoeGroundBehavior create() {
-        throw new AssertionError();
+        return new HoeGroundBehavior();
     }
 
     @NotNull
@@ -112,17 +109,18 @@ public class HoeGroundBehavior implements IToolBehavior {
 
     protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
         if (world.getBlockState(pos.above()).isAir()) {
-            Block block = world.getBlockState(pos).getBlock();
-            return HoeItem.TILLABLES.containsKey(block) && HoeItem.TILLABLES.get(block).getFirst().test(context);
+            BlockState state = world.getBlockState(pos);
+            BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
+            return newState != null && newState != state;
         }
         return false;
     }
 
-    protected boolean tillGround(UseOnContext context, BlockState block) {
-        Pair<Predicate<UseOnContext>, Consumer<UseOnContext>> state = HoeItem.TILLABLES.get(block.getBlock());
-        if (state.getFirst().test(context)) {
-            state.getSecond().accept(context);
-            return true;
+    protected boolean tillGround(UseOnContext context, BlockState state) {
+        BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
+        if (newState != null && newState != state) {
+            context.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, context.getClickedPos(), GameEvent.Context.of(context.getPlayer(), state));
+            return context.getLevel().setBlock(context.getClickedPos(), newState, Block.UPDATE_ALL_IMMEDIATE);
         }
         return false;
     }

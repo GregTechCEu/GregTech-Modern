@@ -1,17 +1,21 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraftforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
@@ -1421,8 +1425,27 @@ public class LangHandler {
      * @param key the key for the value
      * @param value the value to use in place of the old one
      */
-    @ExpectPlatform
     public static void replace(@NotNull RegistrateLangProvider provider, @NotNull String key, @NotNull String value) {
-        throw new AssertionError();
+        try {
+            // the regular lang mappings
+            Field field = LanguageProvider.class.getDeclaredField("data");
+            field.setAccessible(true);
+            // noinspection unchecked
+            Map<String, String> map = (Map<String, String>) field.get(provider);
+            map.put(key, value);
+
+            // upside-down lang mappings
+            Field upsideDownField = RegistrateLangProvider.class.getDeclaredField("upsideDown");
+            upsideDownField.setAccessible(true);
+            // noinspection unchecked
+            map = (Map<String, String>) field.get(upsideDownField.get(provider));
+
+            Method toUpsideDown = RegistrateLangProvider.class.getDeclaredMethod("toUpsideDown", String.class);
+            toUpsideDown.setAccessible(true);
+
+            map.put(key, (String) toUpsideDown.invoke(provider, value));
+        } catch (NoSuchFieldException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            throw new RuntimeException("Error replacing entry in datagen.", e);
+        }
     }
 }

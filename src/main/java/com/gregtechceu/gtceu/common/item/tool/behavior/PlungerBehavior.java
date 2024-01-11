@@ -1,31 +1,52 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.api.misc.forge.VoidFluidHandlerItemStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PlungerBehavior implements IToolBehavior {
+public class PlungerBehavior implements IToolBehavior, IComponentCapability {
 
     public static final PlungerBehavior INSTANCE = PlungerBehavior.create();
 
     protected PlungerBehavior() {/**/}
 
-    @ExpectPlatform
     protected static PlungerBehavior create() {
-        throw new AssertionError();
+        return new PlungerBehavior();
+    }
+
+    @Override
+    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
+        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
+            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> new VoidFluidHandlerItemStack(itemStack) {
+                @Override
+                public int fill(FluidStack resource, FluidAction doFill) {
+                    int result = super.fill(resource, doFill);
+                    if (result > 0) {
+                        ToolHelper.damageItem(getContainer(), null);
+                    }
+                    return result;
+                }
+            }));
+        }
+        return LazyOptional.empty();
     }
 
     @Override

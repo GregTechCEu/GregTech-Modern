@@ -7,11 +7,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
@@ -28,9 +29,13 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
         super(block, properties);
     }
 
-    @ExpectPlatform
-    public static MaterialBlockItem create(MaterialBlock block, Properties properties) {
-        throw new AssertionError();
+    public static MaterialBlockItem create(MaterialBlock block, Item.Properties properties) {
+        return new MaterialBlockItem(block, properties);
+    }
+
+    @Override
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
+        return getItemBurnTime();
     }
 
     public void onRegister() {

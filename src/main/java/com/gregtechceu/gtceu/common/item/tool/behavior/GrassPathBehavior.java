@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -14,7 +13,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.ShovelItem;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -22,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,9 +33,8 @@ public class GrassPathBehavior implements IToolBehavior {
 
     protected GrassPathBehavior() {/**/}
 
-    @ExpectPlatform
     protected static GrassPathBehavior create() {
-        throw new AssertionError();
+        return new GrassPathBehavior();
     }
 
     @NotNull
@@ -102,16 +100,16 @@ public class GrassPathBehavior implements IToolBehavior {
     }
 
     protected boolean isBlockPathConvertible(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
-        if (level.isEmptyBlock(pos.above())) {
-            Block block = level.getBlockState(pos).getBlock();
-            return ShovelItem.FLATTENABLES.containsKey(block);
+        if (level.getBlockState(pos.above()).isAir()) {
+            BlockState state = level.getBlockState(pos);
+            BlockState newState = state.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
+            return newState != null && newState != state;
         }
         return false;
     }
 
     protected BlockState getFlattened(BlockState unFlattenedState, UseOnContext context) {
-        // just assume it exists.
-        return ShovelItem.FLATTENABLES.get(unFlattenedState.getBlock());
+        return unFlattenedState.getToolModifiedState(context, ToolActions.SHOVEL_FLATTEN, false);
     }
 
     @Override

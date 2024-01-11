@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
@@ -22,7 +23,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.BlockEntry;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.Registry;
 import net.minecraft.data.loot.BlockLoot;
 import net.minecraft.data.models.model.DelegatedModel;
@@ -36,6 +36,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
+import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -82,9 +83,15 @@ public class MixinHelpers {
         });
     }
 
-    @ExpectPlatform
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
-        throw new AssertionError();
+        if (value != null) {
+            IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(value.getFluid().get());
+            if (extensions instanceof GTClientFluidTypeExtensions gtExtensions) {
+                gtExtensions.setFlowingTexture(value.getFlowTexture());
+                gtExtensions.setStillTexture(value.getStillTexture());
+                gtExtensions.setTintColor(material.getMaterialARGB());
+            }
+        }
     }
 
     public static List<PackResources> addDynamicDataPack(Collection<PackResources> packs) {

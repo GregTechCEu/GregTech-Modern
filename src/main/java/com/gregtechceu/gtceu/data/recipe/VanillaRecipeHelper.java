@@ -313,7 +313,7 @@ public class VanillaRecipeHelper {
 
             ItemLike itemLike;
             if (ingredient instanceof Ingredient ingr) {
-                ItemStack[] stacks = ingr.itemStacks;
+                ItemStack[] stacks = ingr.getItems();
                 if (stacks.length == 0) continue;
                 ItemStack stack = stacks[0];
                 if (stack == ItemStack.EMPTY) continue;

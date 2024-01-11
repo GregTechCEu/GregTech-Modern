@@ -4,7 +4,6 @@ import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import dev.architectury.injectables.annotations.ExpectPlatform;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -18,10 +17,10 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.LevelEvent;
-import net.minecraft.world.level.block.WeatheringCopper;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+import net.minecraftforge.common.ToolActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,9 +33,8 @@ public class ScrapeBehavior implements IToolBehavior {
 
     protected ScrapeBehavior() {/**/}
 
-    @ExpectPlatform
-    protected static ScrapeBehavior create() {
-        throw new AssertionError();
+    public static ScrapeBehavior create() {
+        return new ScrapeBehavior();
     }
 
     @NotNull
@@ -101,12 +99,14 @@ public class ScrapeBehavior implements IToolBehavior {
 
     protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
         BlockState state = level.getBlockState(pos);
-        return WeatheringCopper.getPrevious(state).isPresent();
+        BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
+        return newState != null && newState != state;
     }
 
     protected BlockState getScraped(BlockState unscrapedState, UseOnContext context) {
         // just assume it exists.
-        return WeatheringCopper.getPrevious(unscrapedState).orElse(unscrapedState);
+        BlockState newState = unscrapedState.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
+        return newState != null ? newState : unscrapedState;
     }
 
     @Override
