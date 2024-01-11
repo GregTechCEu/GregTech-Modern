@@ -1,0 +1,46 @@
+apply plugin: "dev.architectury.loom"
+
+java {
+    withSourcesJar()
+}
+
+shadowJar {
+    exclude "fabric.mod.json"
+    exclude "architectury.common.json"
+
+    configurations = [project.configurations.shadow]
+    archiveClassifier = "dev-shadow"
+}
+
+remapJar {
+    input.set shadowJar.archiveFile
+    dependsOn shadowJar
+    archiveClassifier = null
+}
+
+jar {
+    archiveClassifier = "dev"
+}
+
+sourcesJar {
+    def commonSources = sourcesJar
+    dependsOn commonSources
+    from commonSources.archiveFile.map { zipTree(it) }
+}
+
+/*
+TODO:
+tasks.register('slimJar', org.gradle.jvm.tasks.Jar) {
+    archiveClassifier.set("slim")
+}
+
+tasks.register('remapSlimJar', RemapJarTask) {
+    dependsOn(slimJar)
+    inputFile.set(jar.archiveFile)
+    addNestedDependencies = false
+}
+
+tasks.remapJar.dependsOn('remapSlimJar')
+*/
+
+archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"

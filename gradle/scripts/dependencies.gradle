@@ -1,0 +1,81 @@
+dependencies {
+    minecraft "com.mojang:minecraft:${libs.versions.minecraft.get()}"
+    mappings loom.layered {
+        it.mappings("org.quiltmc:quilt-mappings:${libs.versions.minecraft.get()}+build.${libs.versions.quiltMappings.get()}:intermediary-v2")
+        it.parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
+        it.officialMojangMappings { nameSyntheticMembers = false }
+    }
+
+    forge forge.minecraftForge
+
+
+    // lombok
+    compileOnly 'org.projectlombok:lombok:1.18.24'
+    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+
+    implementation 'com.google.code.findbugs:jsr305:3.0.2'
+
+    // tests
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
+    testImplementation 'io.javalin:javalin:5.4.2'
+    testImplementation 'org.mockito:mockito-core:5.2.0'
+
+
+    // From Forge
+
+    // LDLib
+    modImplementation(forge.ldlib.forge) { transitive = false }
+    include(forge.ldlib.forge)
+
+    // Registrate
+    modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
+
+    // Create and its dependencies
+    modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    modImplementation forge.flywheel
+
+    // JEI
+    modCompileOnly(forge.jei.common.api) { transitive = false }
+    modCompileOnly(forge.jei.forge.api) { transitive = false }
+    modCompileOnly(forge.jei.forge.impl) { transitive = false }
+
+    // REI
+    modCompileOnly forge.rei.plugin
+    modCompileOnly forge.rei.api
+    modImplementation forge.rei.forge
+
+    // EMI
+    modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
+    modCompileOnly forge.emi
+
+    // TOP
+    modCompileOnly(forge.theoneprobe) { transitive = false }
+
+    // Jade
+    modImplementation(forge.jade)
+
+    // AE2
+    modImplementation(forge.ae2) { transitive = false }
+
+    //AlmostUnified
+    modImplementation(forge.almostUnified.forge)
+
+    // KJS
+    modImplementation forge.kubejs
+
+    // Mixin Extras
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
+    implementation(include("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}"))
+
+    // Configuration
+    modImplementation(forge.configuration)
+    include(forge.configuration)
+
+    // Shimmer
+    modImplementation(forge.shimmer.forge) { transitive = false }
+    modImplementation("maven.modrinth:embeddium:0.2.10+mc1.20.1")
+    modImplementation("maven.modrinth:oculus:1.20.1-1.6.9")
+
+    // Runtime only testing mods
+    //modRuntimeOnly(forge.worldStripper)
+}
