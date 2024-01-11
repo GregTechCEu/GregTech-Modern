@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_crowbar"
+  },
+  "items": [
+    "#forge:tools/crowbars"
+  ],
+  "page": "gtceu:tools/crowbar",
+  "position": [
+    -50,
+    100
+  ],
+  "section": "gtceu:tools"
+}

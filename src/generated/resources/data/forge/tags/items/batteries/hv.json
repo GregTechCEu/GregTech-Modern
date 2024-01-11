@@ -1,0 +1,8 @@
+{
+  "values": [
+    "gtceu:hv_sodium_battery",
+    "gtceu:hv_lithium_battery",
+    "gtceu:hv_cadmium_battery",
+    "gtceu:energy_crystal"
+  ]
+}

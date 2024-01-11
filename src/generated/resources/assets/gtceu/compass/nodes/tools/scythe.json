@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_scythe"
+  },
+  "items": [
+    "#forge:tools/scythes"
+  ],
+  "page": "gtceu:tools/scythe",
+  "position": [
+    -250,
+    0
+  ],
+  "section": "gtceu:tools"
+}

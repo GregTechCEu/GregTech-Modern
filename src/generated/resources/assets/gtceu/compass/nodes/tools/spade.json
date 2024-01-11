@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_spade"
+  },
+  "items": [
+    "#forge:tools/spades"
+  ],
+  "page": "gtceu:tools/spade",
+  "position": [
+    -150,
+    50
+  ],
+  "section": "gtceu:tools"
+}
