@@ -79,7 +79,7 @@ public class GTToolType {
             .toolTag(FABRIC, TagUtil.createItemTag("hoes", true))
             .harvestTag(FORGE, TagUtil.createBlockTag("mineable/hoe", true))
             .harvestTag(FABRIC, TagUtil.createBlockTag("mineable/hoe", true))
-            .toolStats(b -> b.cannotAttack().attackSpeed(-1.0F))
+            .toolStats(b -> b.cannotAttack().attackSpeed(-1.0F).behaviors(HoeGroundBehavior.INSTANCE))
             .constructor(GTHoeItem::create)
             .build();
 
