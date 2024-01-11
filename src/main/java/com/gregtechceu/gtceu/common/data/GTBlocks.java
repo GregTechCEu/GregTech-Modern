@@ -915,9 +915,10 @@ public class GTBlocks {
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(block -> {
+                Supplier<ItemLike> supplier = Suppliers.memoize(() -> block);
                 UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
-                GTItems.toUnify.put(entry, block);
-                ChemicalHelper.registerUnificationItems(entry, block);
+                GTItems.toUnify.put(entry, supplier);
+                ChemicalHelper.registerUnificationItems(entry, supplier);
             });
             return builder;
         };

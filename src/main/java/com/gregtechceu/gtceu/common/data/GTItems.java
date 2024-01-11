@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableTable;
@@ -73,6 +74,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -93,7 +95,7 @@ public class GTItems {
     //*****     Material Items    ******//
     //////////////////////////////////////
 
-    public static final Map<UnificationEntry, ItemLike> toUnify = new HashMap<>();
+    public static final Map<UnificationEntry, Supplier<ItemLike>> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
 
     static {
@@ -1667,9 +1669,10 @@ public class GTItems {
     public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(item -> {
+                Supplier<ItemLike> supplier = Suppliers.memoize(() -> item);
                 UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
-                toUnify.put(entry, item);
-                ChemicalHelper.registerUnificationItems(entry, item);
+                toUnify.put(entry, supplier);
+                ChemicalHelper.registerUnificationItems(entry, supplier);
             });
             return builder;
         };

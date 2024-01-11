@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -49,14 +50,15 @@ public class ChemicalHelper {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Set<Map.Entry<Supplier<ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = new HashSet<>();
+    public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY_COLLECTED = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, UnificationEntry> TAG_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a fluid to a material */
     public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
-    public static final Map<UnificationEntry, ArrayList<ItemLike>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
-    public static final Map<UnificationEntry, ArrayList<Block>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Supplier<ItemLike>>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Supplier<Block>>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
     public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectLinkedOpenHashMap<>();
 
@@ -68,17 +70,19 @@ public class ChemicalHelper {
         return ITEM_MATERIAL_INFO.get(item);
     }
 
-    public static void registerUnificationItems(UnificationEntry unificationEntry, ItemLike... items) {
+    @SafeVarargs
+    public static void registerUnificationItems(UnificationEntry unificationEntry, Supplier<ItemLike>... items) {
         UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                 .addAll(Arrays.stream(items).toList());
-        for (ItemLike item : items) {
-            ITEM_UNIFICATION_ENTRY.put(item, unificationEntry);
+        for (Supplier<ItemLike> item : items) {
+            item = Suppliers.memoize(item::get);
+            ITEM_UNIFICATION_ENTRY.add(Map.entry(item, unificationEntry));
             if (item instanceof Block block) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                        .add(block);
+                        .add(() -> block);
             } else if (item instanceof BlockEntry<?> blockEntry) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                        .add(blockEntry.get());
+                        .add(blockEntry::get);
             }
         }
         if (TagPrefix.ORES.containsKey(unificationEntry.tagPrefix) && !ORES_INVERSE.containsValue(unificationEntry.tagPrefix)) {
@@ -86,8 +90,16 @@ public class ChemicalHelper {
         }
     }
 
-    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
+    @SafeVarargs
+    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, Supplier<ItemLike>... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
+    }
+
+    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
+        registerUnificationItems(new UnificationEntry(tagPrefix, material), Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+        for (ItemLike item : items) {
+            ITEM_UNIFICATION_ENTRY_COLLECTED.put(item, new UnificationEntry(tagPrefix, material));
+        }
     }
 
     @Nullable
@@ -109,7 +121,7 @@ public class ChemicalHelper {
 
     @Nullable
     public static MaterialStack getMaterial(ItemLike itemLike) {
-        var entry = ITEM_UNIFICATION_ENTRY.get(itemLike);
+        var entry = getUnificationEntry(itemLike);
         if (entry != null) {
             Material entryMaterial = entry.material;
             if (entryMaterial != null) {
@@ -144,7 +156,7 @@ public class ChemicalHelper {
     @Nullable
     public static TagPrefix getPrefix(ItemLike itemLike) {
         if (itemLike == null) return null;
-        UnificationEntry entry = ITEM_UNIFICATION_ENTRY.get(itemLike);
+        UnificationEntry entry = getUnificationEntry(itemLike);
         if (entry != null) return entry.tagPrefix;
         return null;
     }
@@ -201,8 +213,15 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static UnificationEntry getUnificationEntry(ItemLike item) {
-        return ITEM_UNIFICATION_ENTRY.get(item);
+    public static UnificationEntry getUnificationEntry(ItemLike itemLike) {
+        return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
+            for (var entry : ITEM_UNIFICATION_ENTRY) {
+                if (entry.getKey().get() == itemLike) {
+                    return entry.getValue();
+                }
+            }
+            return null;
+        });
     }
 
     // TODO optimize this so it can be used in tooltips/etc.
@@ -220,9 +239,9 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static UnificationEntry getOrComputeUnificationEntry(ItemLike item) {
-        return ITEM_UNIFICATION_ENTRY.computeIfAbsent(item, itemLike -> {
-            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(itemLike.asItem());
+    public static UnificationEntry getOrComputeUnificationEntry(ItemLike itemLike) {
+        return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
+            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item.asItem());
             return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
                     .filter(entry -> !(entry instanceof UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
         });
@@ -230,18 +249,18 @@ public class ChemicalHelper {
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
         return UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> {
-            var items = new ArrayList<ItemLike>();
+            var items = new ArrayList<Supplier<ItemLike>>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix, entry.material)) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
-                    items.add(itemHolder.value());
+                    items.add(itemHolder::value);
                 }
             }
             TagPrefix prefix = entry.tagPrefix;
             if (items.isEmpty() && prefix.hasItemTable() && prefix.doGenerateItem(entry.material)) {
-                return new ArrayList<>(List.of(prefix.getItemFromTable(entry.material).get()));
+                return new ArrayList<>(List.of(prefix.getItemFromTable(entry.material)));
             }
             return items;
-        });
+        }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
     public static ItemStack get(UnificationEntry unificationEntry, int size) {
@@ -262,14 +281,14 @@ public class ChemicalHelper {
 
     public static List<Block> getBlocks(UnificationEntry unificationEntry) {
         return UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> {
-            var blocks = new ArrayList<Block>();
+            var blocks = new ArrayList<Supplier<Block>>();
             for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
                 for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
-                    blocks.add(itemHolder.value());
+                    blocks.add(itemHolder::value);
                 }
             }
             return blocks;
-        });
+        }).stream().map(Supplier::get).collect(Collectors.toList());
     }
 
     public static Block getBlock(UnificationEntry unificationEntry) {

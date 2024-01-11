@@ -702,7 +702,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, ItemLike[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, Supplier<ItemLike>[]> ignoredMaterials = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -889,15 +889,27 @@ public class TagPrefix {
         return ignoredMaterials.containsKey(material);
     }
 
-    public void setIgnored(Material material, ItemLike... items) {
+    public void setIgnored(Material material, Supplier<ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
         }
     }
 
+    public void setIgnored(Material material, ItemLike... items) {
+        this.setIgnored(material, Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+    }
+
+    public void setIgnored(Material material) {
+        this.ignoredMaterials.put(material, new Supplier[]{});
+    }
+
     public void removeIgnored(Material material) {
         ignoredMaterials.remove(material);
+    }
+
+    public Map<Material, Supplier<ItemLike>[]> getIgnored() {
+        return new HashMap<>(ignoredMaterials);
     }
 
     public boolean isAmountModified(Material material) {
@@ -906,10 +918,6 @@ public class TagPrefix {
 
     public void modifyMaterialAmount(@NotNull Material material, float amount) {
         materialAmounts.put(material, amount);
-    }
-
-    public Map<Material, ItemLike[]> getIgnored() {
-        return new HashMap<>(ignoredMaterials);
     }
 
     @Override
