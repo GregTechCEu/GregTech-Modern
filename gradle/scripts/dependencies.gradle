@@ -24,11 +24,11 @@ dependencies {
     // From Forge
 
     // LDLib
-    modImplementation(forge.ldlib.forge) { transitive = false }
+    modApi(forge.ldlib.forge) { transitive = false }
     include(forge.ldlib.forge)
 
     // Registrate
-    modImplementation(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
+    modApi(include("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}"))
 
     // Create and its dependencies
     modImplementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
@@ -65,10 +65,10 @@ dependencies {
 
     // Mixin Extras
     implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${this.forge.versions.mixinextras.get()}"))
-    implementation(include("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}"))
+    api(include("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}"))
 
     // Configuration
-    modImplementation(forge.configuration)
+    modApi(forge.configuration)
     include(forge.configuration)
 
     // Shimmer

@@ -5,17 +5,14 @@ publishing {
                 artifactId = archivesBaseName
                 builtBy remapJar
             }
-            artifact(sourcesJar) {
+            artifact(remapSourcesJar) {
                 artifactId = archivesBaseName
                 builtBy remapSourcesJar
             }
-            /*
-            TODO
-            artifact(slimJar) {
+            artifact(remapSlimJar) {
                 artifactId = archivesBaseName
                 builtBy remapSlimJar
             }
-             */
         }
     }
 
