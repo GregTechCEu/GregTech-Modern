@@ -13,7 +13,7 @@ shadowJar {
 }
 
 remapJar {
-    input.set shadowJar.archiveFile
+    inputFile.set shadowJar.archiveFile
     dependsOn shadowJar
     archiveClassifier = null
 }
@@ -22,25 +22,12 @@ jar {
     archiveClassifier = "dev"
 }
 
-sourcesJar {
-    def commonSources = sourcesJar
-    dependsOn commonSources
-    from commonSources.archiveFile.map { zipTree(it) }
-}
-
-/*
-TODO:
-tasks.register('slimJar', org.gradle.jvm.tasks.Jar) {
-    archiveClassifier.set("slim")
-}
-
-tasks.register('remapSlimJar', RemapJarTask) {
-    dependsOn(slimJar)
-    inputFile.set(jar.archiveFile)
+remapSlimJar {
     addNestedDependencies = false
+    archiveClassifier = "slim"
 }
 
 tasks.remapJar.dependsOn('remapSlimJar')
-*/
+
 
 archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"

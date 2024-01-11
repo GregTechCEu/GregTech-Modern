@@ -1,3 +1,5 @@
+import net.fabricmc.loom.task.RemapJarTask;
+
 plugins {
     alias libs.plugins.architectury
     alias libs.plugins.architectury.loom
@@ -17,6 +19,10 @@ architectury {
     minecraft = libs.versions.minecraft
 }
 
+tasks.register('remapSlimJar', RemapJarTask) {
+    dependsOn(jar)
+    inputFile.set jar.archiveFile
+}
 
 group = maven_group
 
