@@ -126,4 +126,4 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "${mod_name}"
+rootProject.name = "${mod_id}"
