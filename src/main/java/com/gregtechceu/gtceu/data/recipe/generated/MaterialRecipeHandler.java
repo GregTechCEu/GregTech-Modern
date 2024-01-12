@@ -297,12 +297,14 @@ public class MaterialRecipeHandler {
                     .save(provider);
         }
 
-        ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_to_nugget")
+        if (!ChemicalHelper.get(nugget, material).isEmpty()) {
+            ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_to_nugget")
                 .EUt(VA[ULV]).duration((int) material.getMass())
                 .inputItems(ingot, material)
                 .notConsumable(GTItems.SHAPE_MOLD_NUGGET)
                 .outputItems(nugget, material, 9)
                 .save(provider);
+        }
 
         if (!ChemicalHelper.get(block, material).isEmpty()) {
             ALLOY_SMELTER_RECIPES.recipeBuilder("alloy_smelt_" + material.getName() + "_to_ingot")
