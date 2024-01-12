@@ -1,0 +1,19 @@
+{
+  "type": "minecraft:cache_all_in_cell",
+  "argument": {
+    "type": "minecraft:shifted_noise",
+    "noise": "gtceu:strata",
+    "shift_x": "minecraft:shift_x",
+    "shift_y": {
+      "type": "minecraft:old_blended_noise",
+      "smear_scale_multiplier": 1.0,
+      "xz_factor": 180.0,
+      "xz_scale": 0.75,
+      "y_factor": 16.0,
+      "y_scale": 3.0
+    },
+    "shift_z": "minecraft:shift_z",
+    "xz_scale": 2.0,
+    "y_scale": 3.0
+  }
+}

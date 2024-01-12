@@ -41,6 +41,7 @@ import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
@@ -51,6 +52,8 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -84,6 +87,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
+import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
  * @author KilaBash
@@ -912,6 +916,50 @@ public class GTBlocks {
             .build()
             .register();
 
+    public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
+
+    public static BlockEntry<Block> RED_GRANITE;
+    public static BlockEntry<Block> MARBLE;
+    public static BlockEntry<Block> LIGHT_CONCRETE;
+    public static BlockEntry<Block> DARK_CONCRETE;
+
+    public static void generateStoneBlocks() {
+        // Stone type blocks
+        ImmutableTable.Builder<StoneBlockType, StoneTypes, BlockEntry<Block>> builder = ImmutableTable.builder();
+        for (StoneTypes strata : StoneTypes.values()) {
+            if (!strata.generateBlocks) continue;
+            for (StoneBlockType type : StoneBlockType.values()) {
+                String blockId = type.blockId.formatted(strata.getSerializedName());
+                if (BuiltInRegistries.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
+                var entry = REGISTRATE.block(blockId, Block::new)
+                    .initialProperties(() -> Blocks.STONE)
+                    .properties(p -> p.strength(type.hardness, type.resistance).mapColor(strata.mapColor))
+                    .transform(type == StoneBlockType.STONE ? GTBlocks.unificationBlock(strata.getTagPrefix(), strata.getMaterial()) : builder2 -> builder2)
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.NEEDS_WOOD_TOOL)
+                    .loot((tables, block) -> {
+                        if (type == StoneBlockType.STONE) {
+                            tables.add(block, tables.createSingleItemTableWithSilkTouch(block, STONE_BLOCKS.get(StoneBlockType.COBBLE, strata).get()));
+                        } else {
+                            tables.add(block, tables.createSingleItemTable(block));
+                        }
+                    })
+                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(ctx.getName(), prov.mcLoc(BLOCK_FOLDER + "/cube_all"), "all", prov.modLoc(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))))
+                    .item()
+                    .build();
+                if (type == StoneBlockType.STONE && strata.isNatural()) {
+                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD, BlockTags.BASE_STONE_NETHER);
+                }
+                builder.put(type, strata, entry.register());
+            }
+        }
+        STONE_BLOCKS = builder.build();
+
+        RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.RED_GRANITE);
+        MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.MARBLE);
+        LIGHT_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_LIGHT);
+        DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_DARK);
+    }
+
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
@@ -940,6 +988,7 @@ public class GTBlocks {
         generateMaterialBlocks();   // Compressed Blocks
         generateOreBlocks();        // Ore Blocks
         generateOreIndicators();    // Ore Indicators
+        generateStoneBlocks();      // Stone type blocks
         MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.build();
 
         // Procedural Pipes/Wires

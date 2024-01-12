@@ -23,7 +23,7 @@ public class GTBiomeModifiers {
     public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
 
 
-    public static void bootstrap(BootstapContext<BiomeModifier> ctx, CompletableFuture<HolderLookup.Provider> provider) {
+    public static void bootstrap(BootstapContext<BiomeModifier> ctx) {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
         /*HolderSet<Biome> biomes = new AnyHolderSet<>(ctx.registryLookup(Registries.BIOME).orElseThrow());

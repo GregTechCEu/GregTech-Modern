@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.StrataGenerationType;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -215,6 +216,10 @@ public class ConfigHolder {
             })
             public int oreIndicatorChunkCacheSize = 2048;
         }
+
+        @Configurable
+        @Configurable.Comment({"Generate strata layers in the world?", "Valid values: BLOB, LAYER, NONE", "Default: NONE"})
+        public StrataGenerationType strataGeneration = StrataGenerationType.NONE;
     }
 
     public static class MachineConfigs {

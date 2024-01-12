@@ -209,7 +209,7 @@ public class GTMaterials {
         rock.setIgnored(Marble);
         rock.setIgnored(Granite, Blocks.GRANITE);
         rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed);
+        rock.setIgnored(RedGranite);
         rock.setIgnored(Andesite, Blocks.ANDESITE);
         rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
         rock.setIgnored(Diorite, Blocks.DIORITE);
@@ -932,7 +932,7 @@ public class GTMaterials {
     public static Material GarnetYellow;
     public static Material Marble;
     public static Material Deepslate;
-    public static Material GraniteRed;
+    public static Material RedGranite;
     public static Material VanadiumMagnetite;
     public static Material QuartzSand;
     public static Material Pollucite;
