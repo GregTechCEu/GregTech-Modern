@@ -49,21 +49,20 @@ public class LayerStrata implements SurfaceRules.RuleSource {
                 int size = currentLayer.getSize().sample(random);
                 if (chosenY >= y && size >= Math.abs(strataNoise.getValue(x, y, z)) * difference) {
                     return currentLayer.getState().get().get();
-                } else {
-                    currentLayer = null;
                 }
             }
 
-            int i = (int)Math.round(strataNoise.getValue(x, y, z) * 8.0);
-            int index = Math.abs((y + i + LAYERS.length) % LAYERS.length);
+//            int i = (int)Math.round(strataNoise.getValue(x, y, z) * 8.0);
+//            int index = Math.abs((y + i + LAYERS.length) % LAYERS.length);
             //while (layer.getHeight().resolveY(context.context) > y) {
             //    if (index < LAYERS.length - 1)
             //        layer = LAYERS[++index];
             //    else
             //        layer = LAYERS[0];
             //}
-            currentLayer = LAYERS[index];
-            return currentLayer.getState().get().get();
+//            currentLayer = LAYERS[index];
+//            return currentLayer.getState().get().get();
+            return null;
         };
     }
 
@@ -89,21 +88,20 @@ public class LayerStrata implements SurfaceRules.RuleSource {
                 int size = currentLayer.getSize().sample(random);
                 if (chosenY >= y && size >= Math.abs(noise.getValue(x, y, z)) * difference) {
                     return currentLayer.getState().get().get();
-                } else {
-                    currentLayer = null;
                 }
             }
 
-            int i = (int)Math.round(noise.getValue(x, y, z) * 8.0);
-            int index = Math.abs((y + i + LAYERS.length) % LAYERS.length);
+//            int i = (int)Math.round(strataNoise.getValue(x, y, z) * 8.0);
+//            int index = Math.abs((y + i + LAYERS.length) % LAYERS.length);
             //while (layer.getHeight().resolveY(context.context) > y) {
             //    if (index < LAYERS.length - 1)
             //        layer = LAYERS[++index];
             //    else
             //        layer = LAYERS[0];
             //}
-            currentLayer = LAYERS[index];
-            return currentLayer.getState().get().get();
+//            currentLayer = LAYERS[index];
+//            return currentLayer.getState().get().get();
+            return null;
         };
     }
 
