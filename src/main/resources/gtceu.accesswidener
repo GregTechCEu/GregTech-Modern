@@ -34,9 +34,6 @@ accessible method net/minecraft/world/level/block/Block popExperience (Lnet/mine
 accessible class net/minecraft/world/level/levelgen/SurfaceRules$SurfaceRule
 accessible class net/minecraft/world/level/levelgen/SurfaceRules$Context
 
-accessible field net/minecraft/world/level/levelgen/RandomState random Lnet/minecraft/world/level/levelgen/PositionalRandomFactory;
-accessible field net/minecraft/world/level/levelgen/SurfaceSystem defaultBlock Lnet/minecraft/world/level/block/state/BlockState;
-
 # noise
 accessible field net/minecraft/world/level/levelgen/NoiseRouterData SHIFT_X Lnet/minecraft/resources/ResourceKey;
 accessible field net/minecraft/world/level/levelgen/NoiseRouterData SHIFT_Z Lnet/minecraft/resources/ResourceKey;

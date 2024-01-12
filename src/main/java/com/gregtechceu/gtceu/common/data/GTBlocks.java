@@ -943,11 +943,13 @@ public class GTBlocks {
                             tables.add(block, tables.createSingleItemTable(block));
                         }
                     })
-                    .blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(ctx.getName(), prov.mcLoc(BLOCK_FOLDER + "/cube_all"), "all", prov.modLoc(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))))
                     .item()
                     .build();
                 if (type == StoneBlockType.STONE && strata.isNatural()) {
-                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD, BlockTags.BASE_STONE_NETHER);
+                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD)
+                        .blockstate(GTModels.randomRotatedModel(GTCEu.id(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id)));
+                } else {
+                    entry.blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(ctx.getName(), prov.mcLoc(BLOCK_FOLDER + "/cube_all"), "all", prov.modLoc(BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))));
                 }
                 builder.put(type, strata, entry.register());
             }

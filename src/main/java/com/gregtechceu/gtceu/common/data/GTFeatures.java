@@ -8,9 +8,11 @@ import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.worldgen.strata.BlobStrata;
 import com.gregtechceu.gtceu.common.worldgen.strata.LayerStrata;
+import com.gregtechceu.gtceu.common.worldgen.strata.StrataPicker;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
@@ -52,6 +54,10 @@ public class GTFeatures {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
         inst = DimensionFilter.DIMENSION_FILTER;
         inst = BiomePlacement.BIOME_PLACEMENT;
+
+        GTRegistries.register(BuiltInRegistries.MATERIAL_RULE, BLOB_STRATA.location(), BlobStrata.CODEC.codec());
+        GTRegistries.register(BuiltInRegistries.MATERIAL_RULE, LAYER_STRATA.location(), LayerStrata.CODEC.codec());
+        GTRegistries.register(BuiltInRegistries.MATERIAL_RULE, STRATA.location(), StrataPicker.CODEC.codec());
     }
 
     public static void init(IEventBus modEventBus) {

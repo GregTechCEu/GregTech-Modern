@@ -39,7 +39,7 @@ dependencyResolutionManagement {
         def parchmentVersion = "2023.09.03" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
-        def architecturyLoomVersion = "1.3-SNAPSHOT"
+        def architecturyLoomVersion = "1.4-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.0"

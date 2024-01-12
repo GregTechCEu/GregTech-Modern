@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.common.worldgen.strata.BlobStrata;
-import com.gregtechceu.gtceu.common.worldgen.strata.LayerStrata;
-import com.gregtechceu.gtceu.common.worldgen.strata.StrataPicker;
-import com.mojang.serialization.Codec;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.level.levelgen.*;
+import net.minecraft.world.level.levelgen.DensityFunction;
+import net.minecraft.world.level.levelgen.DensityFunctions;
+import net.minecraft.world.level.levelgen.NoiseRouterData;
+import net.minecraft.world.level.levelgen.Noises;
 import net.minecraft.world.level.levelgen.synth.BlendedNoise;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
@@ -61,11 +60,5 @@ public class GTWorldgen {
     public static void bootstrapNoises(BootstapContext<NormalNoise.NoiseParameters> ctx) {
         ctx.register(STRATA_NOISE, new NormalNoise.NoiseParameters(-9, 1.0, 1.0, 0.0, 10.0));
         ctx.register(STRATA_TYPE_NOISE, new NormalNoise.NoiseParameters(-5, 1.0, 5.0, 10.0, 0.0, 1.0));
-    }
-
-    public static void bootstrapRules(BootstapContext<Codec<? extends SurfaceRules.RuleSource>> ctx) {
-        ctx.register(BLOB_STRATA, BlobStrata.CODEC.codec());
-        ctx.register(LAYER_STRATA, LayerStrata.CODEC.codec());
-        ctx.register(STRATA, StrataPicker.CODEC.codec());
     }
 }
