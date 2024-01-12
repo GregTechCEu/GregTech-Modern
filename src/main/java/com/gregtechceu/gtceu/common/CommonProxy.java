@@ -13,11 +13,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
+import com.gregtechceu.gtceu.api.data.worldgen.strata.StrataGenerationType;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.client.screen.CreateStrataWorldScreen;
 import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -36,6 +38,15 @@ import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
+import net.minecraft.client.gui.screens.worldselection.WorldCreationContext;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.level.biome.*;
+import net.minecraft.world.level.chunk.ChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
+import net.minecraft.world.level.levelgen.NoiseGeneratorSettings;
+import net.minecraftforge.client.event.RegisterPresetEditorsEvent;
 import com.tterrag.registrate.providers.ProviderType;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
@@ -206,6 +217,26 @@ public class CommonProxy {
     @SubscribeEvent
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
         GTCapability.register(event);
+    }
+
+    @SubscribeEvent
+    public void registerPresetEditors(RegisterPresetEditorsEvent event) {
+        event.register(GTFeatures.STRATA_PRESET, (screen, context) -> new CreateStrataWorldScreen(screen, (modifier) -> screen.getUiState().updateDimensions(strataConfigurator(modifier))));
+    }
+
+    private static WorldCreationContext.DimensionsUpdater strataConfigurator(StrataGenerationType type) {
+        return (registryManager, arg3) -> {
+            Registry<MultiNoiseBiomeSourceParameterList> parameterLists = registryManager.registryOrThrow(Registries.MULTI_NOISE_BIOME_SOURCE_PARAMETER_LIST);
+            Registry<NoiseGeneratorSettings> registry = registryManager.registryOrThrow(Registries.NOISE_SETTINGS);
+            Holder<NoiseGeneratorSettings> holder = switch (type) {
+                case BLOB -> registry.getHolderOrThrow(GTFeatures.BLOB_STRATA_NOISE_SETTINGS);
+                case LAYER -> registry.getHolderOrThrow(GTFeatures.LAYER_STRATA_NOISE_SETTINGS);
+                case NONE -> registry.getHolderOrThrow(NoiseGeneratorSettings.OVERWORLD);
+            };
+            MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromPreset(parameterLists.getHolderOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD));
+            ChunkGenerator chunkgenerator = new NoiseBasedChunkGenerator(biomeSource, holder);
+            return arg3.replaceOverworldGenerator(registryManager, chunkgenerator);
+        };
     }
 
     public static final class KJSEventWrapper {

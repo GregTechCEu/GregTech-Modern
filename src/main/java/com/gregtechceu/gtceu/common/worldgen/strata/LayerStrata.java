@@ -33,7 +33,7 @@ public class LayerStrata implements SurfaceRules.RuleSource {
             LAYERS = WorldGeneratorUtils.STRATA_LAYERS.values().stream()
                     .filter(IStrataLayer::isNatural)
                     .filter(strata -> strata.getHeight() != null)
-                    .filter(strata -> strata.getVerticalSize() != null)
+                    .filter(strata -> strata.getSize() != null)
                     .toArray(IStrataLayer[]::new);
         }
         return (ctx) -> {
@@ -46,7 +46,7 @@ public class LayerStrata implements SurfaceRules.RuleSource {
                 //int chosenY = currentLayer.getHeight().resolveY(new WorldGenerationContext(region.getLevel().getChunkSource().getGenerator(), region));
                 int chosenY = y + 20; // TODO look for a solution to not having a worldGenerationContext here.
                 int difference = Math.abs(chosenY - y);
-                int size = currentLayer.getVerticalSize().sample(random);
+                int size = currentLayer.getSize().sample(random);
                 if (chosenY >= y && size >= Math.abs(strataNoise.getValue(x, y, z)) * difference) {
                     return currentLayer.getState().get().get();
                 } else {
@@ -73,7 +73,7 @@ public class LayerStrata implements SurfaceRules.RuleSource {
             LAYERS = WorldGeneratorUtils.STRATA_LAYERS.values().stream()
                 .filter(IStrataLayer::isNatural)
                 .filter(strata -> strata.getHeight() != null)
-                .filter(strata -> strata.getVerticalSize() != null)
+                .filter(strata -> strata.getSize() != null)
                 .toArray(IStrataLayer[]::new);
         }
         NormalNoise noise = ((SurfaceRulesContextAccessor)(Object)context).getRandomState().getOrCreateNoise(GTFeatures.STRATA_NOISE);
@@ -86,7 +86,7 @@ public class LayerStrata implements SurfaceRules.RuleSource {
             if (currentLayer != null) {
                 int chosenY = currentLayer.getHeight().resolveY(((SurfaceRulesContextAccessor)(Object)context).getContext());
                 int difference = Math.abs(chosenY - y);
-                int size = currentLayer.getVerticalSize().sample(random);
+                int size = currentLayer.getSize().sample(random);
                 if (chosenY >= y && size >= Math.abs(noise.getValue(x, y, z)) * difference) {
                     return currentLayer.getState().get().get();
                 } else {
@@ -96,14 +96,13 @@ public class LayerStrata implements SurfaceRules.RuleSource {
 
             int i = (int)Math.round(noise.getValue(x, y, z) * 8.0);
             int index = Math.abs((y + i + LAYERS.length) % LAYERS.length);
-            IStrataLayer layer = LAYERS[index];
             //while (layer.getHeight().resolveY(context.context) > y) {
             //    if (index < LAYERS.length - 1)
             //        layer = LAYERS[++index];
             //    else
             //        layer = LAYERS[0];
             //}
-            currentLayer = layer;
+            currentLayer = LAYERS[index];
             return currentLayer.getState().get().get();
         };
     }

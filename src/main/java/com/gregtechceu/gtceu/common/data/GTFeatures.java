@@ -8,21 +8,15 @@ import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.worldgen.strata.BlobStrata;
 import com.gregtechceu.gtceu.common.worldgen.strata.LayerStrata;
-import com.gregtechceu.gtceu.common.worldgen.strata.StrataPicker;
 import com.mojang.serialization.Codec;
-import net.minecraft.core.Holder;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.DensityFunction;
-import net.minecraft.world.level.levelgen.DensityFunctions;
-import net.minecraft.world.level.levelgen.NoiseRouterData;
-import net.minecraft.world.level.levelgen.SurfaceRules;
+import net.minecraft.world.level.levelgen.*;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.synth.BlendedNoise;
+import net.minecraft.world.level.levelgen.presets.WorldPreset;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -48,7 +42,10 @@ public class GTFeatures {
 
     public static final ResourceKey<Codec<? extends SurfaceRules.RuleSource>> BLOB_STRATA = ResourceKey.create(Registries.MATERIAL_RULE, GTCEu.id("blob_strata"));
     public static final ResourceKey<Codec<? extends SurfaceRules.RuleSource>> LAYER_STRATA = ResourceKey.create(Registries.MATERIAL_RULE, GTCEu.id("layer_strata"));
-    public static final ResourceKey<Codec<? extends SurfaceRules.RuleSource>> STRATA = ResourceKey.create(Registries.MATERIAL_RULE, GTCEu.id("strata"));
+
+    public static final ResourceKey<WorldPreset> STRATA_PRESET = ResourceKey.create(Registries.WORLD_PRESET, GTCEu.id("strata"));
+    public static final ResourceKey<NoiseGeneratorSettings> BLOB_STRATA_NOISE_SETTINGS = ResourceKey.create(Registries.NOISE_SETTINGS, GTCEu.id("blob_strata"));
+    public static final ResourceKey<NoiseGeneratorSettings> LAYER_STRATA_NOISE_SETTINGS = ResourceKey.create(Registries.NOISE_SETTINGS, GTCEu.id("layer_strata"));
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
@@ -57,7 +54,6 @@ public class GTFeatures {
 
         GTRegistries.register(BuiltInRegistries.MATERIAL_RULE, BLOB_STRATA.location(), BlobStrata.CODEC.codec());
         GTRegistries.register(BuiltInRegistries.MATERIAL_RULE, LAYER_STRATA.location(), LayerStrata.CODEC.codec());
-        GTRegistries.register(BuiltInRegistries.MATERIAL_RULE, STRATA.location(), StrataPicker.CODEC.codec());
     }
 
     public static void init(IEventBus modEventBus) {

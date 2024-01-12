@@ -90,11 +90,11 @@ public class GTModels {
         prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
     }
 
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation modelPath) {
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation texturePath) {
         return (ctx, prov) -> {
             Block block = ctx.getEntry();
-            ModelFile cubeAll = prov.cubeAll(block);
-            ModelFile cubeMirroredAll = prov.models().singleTexture(ctx.getName() + "_mirrored", prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_mirrored_all"), "all", prov.blockTexture(block));
+            ModelFile cubeAll = prov.models().cubeAll(ctx.getName(), texturePath);
+            ModelFile cubeMirroredAll = prov.models().singleTexture(ctx.getName() + "_mirrored", prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_mirrored_all"), "all", texturePath);
             ConfiguredModel[] models = ConfiguredModel.builder()
                 .modelFile(cubeAll)
                 .rotationY(0)

@@ -59,6 +59,6 @@ public class GTWorldgen {
 
     public static void bootstrapNoises(BootstapContext<NormalNoise.NoiseParameters> ctx) {
         ctx.register(STRATA_NOISE, new NormalNoise.NoiseParameters(-9, 1.0, 1.0, 0.0, 10.0));
-        ctx.register(STRATA_TYPE_NOISE, new NormalNoise.NoiseParameters(-5, 1.0, 5.0, 10.0, 0.0, 1.0));
+        ctx.register(STRATA_TYPE_NOISE, new NormalNoise.NoiseParameters(-7, 1.0, 2.0, 3.0, 2.0, 1.0));
     }
 }

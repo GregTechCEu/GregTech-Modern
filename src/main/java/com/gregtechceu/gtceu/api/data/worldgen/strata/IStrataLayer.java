@@ -30,7 +30,7 @@ public interface IStrataLayer extends StringRepresentable {
     }
 
     @Nullable
-    default IntProvider getVerticalSize() {
+    default IntProvider getSize() {
         return null;
     }
 

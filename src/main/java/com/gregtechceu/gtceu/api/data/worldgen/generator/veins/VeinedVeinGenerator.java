@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
@@ -126,14 +127,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
         RandomState randomState = level.getLevel().getChunkSource().randomState();
-        Blender blender;
-        if (level instanceof WorldGenRegion region) {
-            blender = Blender.of(region);
-        } else {
-            blender = Blender.empty();
-        }
-
-        final Blender finalizedBlender = blender;
         DensityFunction veinToggle = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
         DensityFunction veinRidged = mapToNoise(densityFunctions.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
 
@@ -155,27 +148,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
             final int y = chunkedPos.getY();
             final int z = chunkedPos.getZ();
 
-            DensityFunction.FunctionContext functionContext = new DensityFunction.FunctionContext() {
-                @Override
-                public int blockX() {
-                    return x + randOffsetX;
-                }
-
-                @Override
-                public int blockY() {
-                    return y + randOffsetY;
-                }
-
-                @Override
-                public int blockZ() {
-                    return z + randOffsetZ;
-                }
-
-                @Override
-                public Blender getBlender() {
-                    return finalizedBlender;
-                }
-            };
+            DensityFunction.FunctionContext functionContext = WorldGeneratorUtils.createFunctionContext(x + randOffsetX, y + randOffsetY, z + randOffsetZ);
 
             double toggleNoise = veinToggle.compute(functionContext);
             int blockY = origin.getY();

@@ -26,7 +26,6 @@
     "LevelMixin",
     "LootDataManagerMixin",
     "MinecraftServerMixin",
-    "NoiseChunkMixin",
     "NormalNoiseAccessor",
     "OreConfigurationMixin",
     "OreVeinifierMixin",

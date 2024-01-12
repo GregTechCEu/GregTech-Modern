@@ -28,8 +28,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(12, 20);
+        public IntProvider getSize() {
+            return UniformInt.of(48, 100);
         }
     },
     DEEPSLATE("deepslate", MapColor.DEEPSLATE, true, () -> Blocks.DEEPSLATE::defaultBlockState, -0.1, 0.4, GTMaterials.Deepslate, false) {
@@ -39,8 +39,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(10, 16);
+        public IntProvider getSize() {
+            return UniformInt.of(40, 64);
         }
     },
     RED_GRANITE("red_granite", MapColor.COLOR_RED, true, () -> GTBlocks.RED_GRANITE::getDefaultState, -0.5, 1.0, GTMaterials.RedGranite) {
@@ -50,8 +50,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(8, 14);
+        public IntProvider getSize() {
+            return UniformInt.of(32, 56);
         }
     },
     MARBLE("marble", MapColor.QUARTZ, true, () -> GTBlocks.MARBLE::getDefaultState, -0.5, 1.0, GTMaterials.Marble) {
@@ -61,8 +61,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(6, 14);
+        public IntProvider getSize() {
+            return UniformInt.of(24, 56);
         }
     },
     ANDESITE("andesite", MapColor.STONE, true, () -> Blocks.ANDESITE::defaultBlockState, -0.5, 1.0, GTMaterials.Andesite, false) {
@@ -72,8 +72,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(8, 12);
+        public IntProvider getSize() {
+            return UniformInt.of(32, 48);
         }
     },
     GRANITE("granite", MapColor.DIRT, true, () -> Blocks.GRANITE::defaultBlockState, -0.5, 1.0, GTMaterials.Granite, false) {
@@ -83,8 +83,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(8, 12);
+        public IntProvider getSize() {
+            return UniformInt.of(32, 48);
         }
     },
     DIORITE("diorite", MapColor.QUARTZ, true, () -> Blocks.DIORITE::defaultBlockState, -0.5, 1.0, GTMaterials.Diorite, false) {
@@ -94,8 +94,8 @@ public enum StoneTypes implements IStrataLayer {
         }
 
         @Override
-        public IntProvider getVerticalSize() {
-            return UniformInt.of(8, 12);
+        public IntProvider getSize() {
+            return UniformInt.of(32, 48);
         }
     },
     /*

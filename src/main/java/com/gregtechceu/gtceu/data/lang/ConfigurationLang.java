@@ -16,6 +16,8 @@ public class ConfigurationLang {
 
     public static void init(RegistrateLangProvider provider) {
         dfs(provider, new HashSet<>(), Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getValueMap());
+
+        provider.add("generator.gtceu.strata", "GregTech Strata");
     }
 
     private static void dfs(RegistrateLangProvider provider, Set<String> added, Map<String, ConfigValue<?>> map) {
