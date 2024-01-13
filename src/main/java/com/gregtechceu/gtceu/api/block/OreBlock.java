@@ -10,7 +10,7 @@ public class OreBlock extends MaterialBlock {
     public OreBlock(Properties properties, TagPrefix tagPrefix, Material material, boolean registerModel) {
         super(properties, tagPrefix, material, false);
         if (registerModel && Platform.isClient()) {
-            OreBlockRenderer.create(this, TagPrefix.ORES.get(tagPrefix).stoneTexture(), tagPrefix.materialIconType(), material.getMaterialIconSet(), material.getProperty(PropertyKey.ORE).isEmissive());
+            OreBlockRenderer.create(this);
         }
     }
 }

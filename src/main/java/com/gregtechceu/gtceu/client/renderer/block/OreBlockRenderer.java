@@ -1,18 +1,27 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.OreBlock;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.util.GsonHelper;
 
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -24,54 +33,61 @@ import java.util.Set;
  */
 @MethodsReturnNonnullByDefault
 public class OreBlockRenderer {
-    private static final TextureSlot BASE_STONE = TextureSlot.create("stone");
-    private static final ModelTemplate ORE_TEMPLATE = new ModelTemplate(Optional.of(GTCEu.id("block/ore")), Optional.empty(), BASE_STONE, TextureSlot.LAYER0, TextureSlot.LAYER1);
-    private static final ModelTemplate ORE_EMISSIVE_TEMPLATE = new ModelTemplate(Optional.of(GTCEu.id("block/ore_emissive")), Optional.empty(), BASE_STONE, TextureSlot.LAYER0, TextureSlot.LAYER1);
-    private static final TexturedModel.Provider ORE_PROVIDER = TexturedModel.createDefault((block) -> {
-        if (block instanceof OreBlock oreBlock) {
-            ResourceLocation stoneTexture = TagPrefix.ORES.get(oreBlock.tagPrefix).stoneTexture();
-            ResourceLocation layer0 = oreBlock.tagPrefix.materialIconType().getBlockTexturePath(oreBlock.material.getMaterialIconSet(), true);
-            ResourceLocation layer1 = oreBlock.tagPrefix.materialIconType().getBlockTexturePath(oreBlock.material.getMaterialIconSet(), "layer2", true);
-            return new TextureMapping().put(BASE_STONE, stoneTexture).put(TextureSlot.LAYER0, layer0).put(TextureSlot.LAYER1, layer1);
-        }
-        return null;
-    }, ORE_TEMPLATE);
-    private static final TexturedModel.Provider ORE_EMISSIVE_PROVIDER = TexturedModel.createDefault((block) -> {
-        if (block instanceof OreBlock oreBlock) {
-            ResourceLocation stoneTexture = TagPrefix.ORES.get(oreBlock.tagPrefix).stoneTexture();
-            ResourceLocation layer0 = oreBlock.tagPrefix.materialIconType().getBlockTexturePath(oreBlock.material.getMaterialIconSet(), true);
-            ResourceLocation layer1 = oreBlock.tagPrefix.materialIconType().getBlockTexturePath(oreBlock.material.getMaterialIconSet(), "layer2", true);
-            return new TextureMapping().put(BASE_STONE, stoneTexture).put(TextureSlot.LAYER0, layer0).put(TextureSlot.LAYER1, layer1);
-        }
-        return null;
-    }, ORE_EMISSIVE_TEMPLATE);
-
     private static final Set<OreBlockRenderer> MODELS = new HashSet<>();
 
-    private final Block block;
-    private final boolean emissive;
+    private final MaterialBlock block;
 
-    public static void create(Block block, ResourceLocation stoneTexture, MaterialIconType type, MaterialIconSet set, boolean emissive) {
-        MODELS.add(new OreBlockRenderer(block, stoneTexture, type, set, emissive));
+    public static void create(MaterialBlock block) {
+        MODELS.add(new OreBlockRenderer(block));
     }
 
-    public OreBlockRenderer(Block block, ResourceLocation stoneTexture, MaterialIconType type, MaterialIconSet set, boolean emissive) {
+    public OreBlockRenderer(MaterialBlock block) {
         this.block = block;
-        this.emissive = emissive;
     }
 
     public static void reinitModels() {
         for (OreBlockRenderer model : MODELS) {
             ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
             ResourceLocation modelId = blockId.withPrefix("block/");
-            (model.emissive ? OreBlockRenderer.ORE_EMISSIVE_PROVIDER : OreBlockRenderer.ORE_PROVIDER).get(model.block).create(model.block, GTDynamicResourcePack::addBlockModel);
-            //GTDynamicResourcePack.addBlockModel(modelId, new DelegatedModel(model.type.getBlockModelPath(model.iconSet, true)));
+            OreBlockRenderer.cloneBlockModel(modelId, model.block.tagPrefix, model.block.material);
             GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
-            //        ModelTemplates.CUBE_ALL.create(model.block,
-            //                cubeTwoLayer(model.type.getBlockTexturePath(model.iconSet, true), model.type.getBlockTexturePath(model.iconSet, true).withSuffix(LAYER_2_SUFFIX)),
-            //                GTDynamicResourcePack::addBlockModel)));
             GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
         }
+    }
+
+    /**
+     * Clones & modifies the base JSON for a single ore block.
+     * @param modelId the model id (usually {@code gtceu:block/<block id path>})
+     * @param prefix the TagPrefix of the block being added.
+     * @param material the material of the block being added. must have an ore property.
+     */
+    public static void cloneBlockModel(ResourceLocation modelId, TagPrefix prefix, Material material) {
+        OreProperty prop = material.getProperty(PropertyKey.ORE);
+        Preconditions.checkNotNull(prop, "material %s has no ore property, but needs one for an ore model!".formatted(material.getName()));
+
+        // read the base ore model JSON
+        JsonObject original;
+        try(BufferedReader reader = Minecraft.getInstance().getResourceManager().openAsReader(GTCEu.id("models/block/ore%s.json".formatted(prop.isEmissive() ? "_emissive" : "")))) {
+            original = GsonHelper.parse(reader, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+        // clone it
+        JsonObject newJson = original.deepCopy();
+        JsonObject children = newJson.getAsJsonObject("children");
+        // add the base stone texture.
+        children.getAsJsonObject("base_stone").addProperty("parent", TagPrefix.ORES.get(prefix).baseModelLocation().toString());//.getAsJsonObject("textures").addProperty("stone", TagPrefix.ORES.get(prefix).baseModelLocation().toString());
+
+        ResourceLocation layer0 = prefix.materialIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+        ResourceLocation layer1 = prefix.materialIconType().getBlockTexturePath(material.getMaterialIconSet(), "layer2", true);
+        JsonObject oresTextures = children.getAsJsonObject("ore_texture").getAsJsonObject("textures");
+        oresTextures.addProperty("layer0", layer0.toString());
+        oresTextures.addProperty("layer1", layer1.toString());
+
+        newJson.getAsJsonObject("textures").addProperty("particle", layer0.toString());
+
+        GTDynamicResourcePack.addBlockModel(modelId, newJson);
     }
 
 }

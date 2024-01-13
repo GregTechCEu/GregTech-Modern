@@ -33,6 +33,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -153,7 +154,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty)
-            .registerOre(Blocks.BASALT::defaultBlockState, new ResourceLocation("block/basalt_side"), true, MapColor.COLOR_BLACK);
+            .registerOre(Blocks.BASALT::defaultBlockState, new ResourceLocation("block/basalt"), true, MapColor.COLOR_BLACK);
 
     public static final TagPrefix oreNetherrack = oreTagPrefix("netherrack")
             .langValue("Nether %s Ore")
@@ -771,7 +772,7 @@ public class TagPrefix {
         }
     }
 
-    public record OreType(Supplier<BlockState> stoneType, ResourceLocation stoneTexture, boolean isNether, boolean isSand, MapColor color, SoundType sound) {}
+    public record OreType(Supplier<BlockState> stoneType, ResourceLocation baseModelLocation, boolean isNether, boolean isSand, MapColor color, SoundType sound) {}
 
     @Getter
     public final String name;
