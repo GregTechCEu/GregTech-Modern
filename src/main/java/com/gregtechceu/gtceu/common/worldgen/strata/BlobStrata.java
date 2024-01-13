@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.strata.IStrataLayer;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTFeatures;
+import com.gregtechceu.gtceu.core.mixins.NoiseChunkAccessor;
 import com.gregtechceu.gtceu.core.mixins.NormalNoiseAccessor;
 import com.gregtechceu.gtceu.core.mixins.SurfaceRulesContextAccessor;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -52,7 +53,8 @@ public class BlobStrata implements SurfaceRules.RuleSource {
                 .filter(IStrataLayer::isNatural)
                 .toList();
         }
-        DensityFunction strata3d = applyNoiseHolder(GTRegistries.builtinRegistry().registryOrThrow(Registries.DENSITY_FUNCTION).getOrThrow(GTFeatures.BASE_3D_STRATA_NOISE), context);
+        DensityFunction strataNoise = GTRegistries.builtinRegistry().registryOrThrow(Registries.DENSITY_FUNCTION).getOrThrow(GTFeatures.BASE_3D_STRATA_NOISE);
+        final DensityFunction strata3d = ((NoiseChunkAccessor)((SurfaceRulesContextAccessor)(Object)context).getNoiseChunk()).invokeWrap(strataNoise);
         NormalNoise typeNoise = ((SurfaceRulesContextAccessor)(Object)context).getRandomState().getOrCreateNoise(GTFeatures.STRATA_TYPE_NOISE);
         return (x, y, z) -> {
             IStrataLayer stratum;

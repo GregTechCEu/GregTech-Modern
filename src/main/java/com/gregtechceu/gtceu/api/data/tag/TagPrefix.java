@@ -103,9 +103,13 @@ public class TagPrefix {
             .langValue("Tuff %s Ore")
             .registerOre(Blocks.TUFF::defaultBlockState, null, BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F), new ResourceLocation("block/tuff"));
 
-    public static final TagPrefix oreRedGranite = oreTagPrefix("redGranite")
-        .langValue("Red Granite %s Ore")
-        .registerOre(Blocks.TUFF::defaultBlockState);
+    public static final TagPrefix oreRedGranite = oreTagPrefix("redGranite", BlockTags.MINEABLE_WITH_PICKAXE)
+            .langValue("Red Granite %s Ore")
+            .registerOre(() -> GTBlocks.RED_GRANITE != null ? GTBlocks.RED_GRANITE.orElse(Blocks.GRANITE).defaultBlockState() : Blocks.GRANITE.defaultBlockState(), () -> GTMaterials.RedGranite, BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops().strength(3.0F, 3.0F));
+
+    public static final TagPrefix oreMarble = oreTagPrefix("marble", BlockTags.MINEABLE_WITH_PICKAXE)
+            .langValue("Marble %s Ore")
+            .registerOre(() -> GTBlocks.MARBLE != null ? GTBlocks.MARBLE.orElse(Blocks.DIORITE).defaultBlockState() : Blocks.DIORITE.defaultBlockState(), () -> GTMaterials.Marble, BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F));
 
     public static final TagPrefix oreSand = oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Sand %s Ore")

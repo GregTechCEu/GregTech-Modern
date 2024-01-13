@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.levelgen.RandomState;
-import net.minecraft.world.level.levelgen.SurfaceRules;
-import net.minecraft.world.level.levelgen.SurfaceSystem;
-import net.minecraft.world.level.levelgen.WorldGenerationContext;
+import net.minecraft.world.level.levelgen.*;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
 
@@ -18,4 +15,6 @@ public interface SurfaceRulesContextAccessor {
     WorldGenerationContext getContext();
     @Accessor
     SurfaceSystem getSystem();
+    @Accessor
+    NoiseChunk getNoiseChunk();
 }

@@ -6,12 +6,9 @@ import com.gregtechceu.gtceu.common.data.GTFeatures;
 import com.gregtechceu.gtceu.core.mixins.SurfaceRulesContextAccessor;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.BlockPos;
 import net.minecraft.util.KeyDispatchDataCodec;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.NoiseChunk;
-import net.minecraft.world.level.levelgen.RandomState;
+import net.minecraft.world.level.levelgen.PositionalRandomFactory;
 import net.minecraft.world.level.levelgen.SurfaceRules;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 
@@ -37,13 +34,10 @@ public class LayerStrata implements SurfaceRules.RuleSource {
                 .filter(strata -> strata.getSize() != null)
                 .toArray(IStrataLayer[]::new);
         }
-        NormalNoise noise = ((SurfaceRulesContextAccessor)(Object)context).getRandomState().getOrCreateNoise(GTFeatures.STRATA_NOISE);
+        final NormalNoise noise = ((SurfaceRulesContextAccessor)(Object)context).getRandomState().getOrCreateNoise(GTFeatures.STRATA_NOISE);
+        final PositionalRandomFactory randomFactory = ((SurfaceRulesContextAccessor)(Object)context).getRandomState().getOrCreateRandomFactory(GTFeatures.LAYER_STRATA.location());
         return (x, y, z) -> {
-            RandomSource random = ((SurfaceRulesContextAccessor)(Object)context).getRandomState().getOrCreateRandomFactory(GTFeatures.LAYER_STRATA.location()).at(x, y, z);
-            BlockState current = ((SurfaceRulesContextAccessor)(Object)context).getChunk().getBlockState(new BlockPos(x, y, z));
-            if (current.isAir()) {
-                return null;
-            }
+            RandomSource random = randomFactory.at(x, y, z);
             if (currentLayer != null) {
                 int chosenY = currentLayer.getHeight().resolveY(((SurfaceRulesContextAccessor)(Object)context).getContext());
                 int difference = Math.abs(chosenY - y);
