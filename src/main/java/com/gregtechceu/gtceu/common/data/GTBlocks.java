@@ -33,6 +33,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeT
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
+import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -237,30 +238,26 @@ public class GTBlocks {
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
             var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
-                            properties -> new OreBlock(properties, oreTag, material, true))
-                    .initialProperties(() -> {
-                        if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                            return Blocks.STONE;
-                        }
-                        return oreType.stoneType().get().getBlock();
-                    })
-                    .properties(properties -> {
-                        if (oreType.color() != null) properties.mapColor(oreType.color());
-                        if (oreType.sound() != null) properties.sound(oreType.sound());
-                        return properties.noLootTable();
-                    })
-                    .transform(unificationBlock(oreTag, material))
-                    .blockstate(NonNullBiConsumer.noop())
-                    .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                    .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlock::tintedColor)
-                    .item(MaterialBlockItem::create)
-                    .onRegister(MaterialBlockItem::onRegister)
-                    .model(NonNullBiConsumer.noop())
-                    .color(() -> MaterialBlockItem::tintColor)
-                    .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
-                    .build()
-                    .register();
+                    properties -> new OreBlock(properties, oreTag, material, true))
+                .initialProperties(() -> {
+                    if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
+                        return Blocks.STONE;
+                    }
+                    return oreType.stoneType().get().getBlock();
+                })
+                .properties(properties -> GTBlocks.copy(oreType.template(), properties).noLootTable())
+                .transform(unificationBlock(oreTag, material))
+                .blockstate(NonNullBiConsumer.noop())
+                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                .color(() -> MaterialBlock::tintedColor)
+                .item(MaterialBlockItem::create)
+                .onRegister(MaterialBlockItem::onRegister)
+                .model(NonNullBiConsumer.noop())
+                .color(() -> MaterialBlockItem::tintColor)
+                .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, oreTag.name, GTCompassNodes.ORE))
+                .build()
+                .register();
             MATERIAL_BLOCKS_BUILDER.put(oreTag, material, entry);
         }
     }
@@ -1017,5 +1014,41 @@ public class GTBlocks {
 
     public static boolean doMetalPipe(Material material) {
         return GTValues.FOOLS.get() && material.hasProperty(PropertyKey.INGOT) && !material.hasProperty(PropertyKey.POLYMER) && !material.hasProperty(PropertyKey.WOOD);
+    }
+
+    /**
+     * kinda nasty block property copy function because one doesn't exist.
+     * @param props the props to copy
+     * @return a shallow copy of the block properties like {@link BlockBehaviour.Properties#copy(BlockBehaviour)} does
+     */
+    public static BlockBehaviour.Properties copy(BlockBehaviour.Properties props, BlockBehaviour.Properties newProps) {
+        if (props == null) {
+            return newProps;
+        }
+        newProps.destroyTime(((BlockPropertiesAccessor)props).getDestroyTime());
+        newProps.explosionResistance(((BlockPropertiesAccessor)props).getExplosionResistance());
+        if (!((BlockPropertiesAccessor)props).isHasCollision()) newProps.noCollission();
+        if (((BlockPropertiesAccessor)props).isIsRandomlyTicking()) newProps.randomTicks();
+        newProps.lightLevel(((BlockPropertiesAccessor)props).getLightEmission());
+        newProps.mapColor(((BlockPropertiesAccessor)props).getMapColor());
+        newProps.sound(((BlockPropertiesAccessor)props).getSoundType());
+        newProps.friction(((BlockPropertiesAccessor)props).getFriction());
+        newProps.speedFactor(((BlockPropertiesAccessor)props).getSpeedFactor());
+        if (((BlockPropertiesAccessor)props).isDynamicShape()) newProps.dynamicShape();
+        if (!((BlockPropertiesAccessor)props).isCanOcclude()) newProps.noOcclusion();
+        if (((BlockPropertiesAccessor)props).isIsAir()) newProps.air();
+        if (((BlockPropertiesAccessor)props).isIgnitedByLava()) newProps.ignitedByLava();
+        if (((BlockPropertiesAccessor)props).isLiquid()) newProps.liquid();
+        if (((BlockPropertiesAccessor)props).isForceSolidOff()) newProps.forceSolidOff();
+        if (((BlockPropertiesAccessor)props).isForceSolidOn()) newProps.forceSolidOn();
+        newProps.pushReaction(((BlockPropertiesAccessor)props).getPushReaction());
+        if (((BlockPropertiesAccessor)props).isRequiresCorrectToolForDrops()) newProps.requiresCorrectToolForDrops();
+        ((BlockPropertiesAccessor)newProps).setOffsetFunction(((BlockPropertiesAccessor)props).getOffsetFunction());
+        if (!((BlockPropertiesAccessor)props).isSpawnParticlesOnBreak()) newProps.noParticlesOnBreak();
+        ((BlockPropertiesAccessor)newProps).setRequiredFeatures(((BlockPropertiesAccessor)props).getRequiredFeatures());
+        newProps.emissiveRendering(((BlockPropertiesAccessor)props).getEmissiveRendering());
+        newProps.instrument(((BlockPropertiesAccessor)props).getInstrument());
+        if (((BlockPropertiesAccessor)props).isReplaceable()) newProps.replaceable();
+        return newProps;
     }
 }
