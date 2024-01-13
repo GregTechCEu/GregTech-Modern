@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import net.minecraft.world.flag.FeatureFlagSet;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;

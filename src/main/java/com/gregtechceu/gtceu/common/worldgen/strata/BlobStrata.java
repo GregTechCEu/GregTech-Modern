@@ -45,30 +45,6 @@ public class BlobStrata implements SurfaceRules.RuleSource {
         this.layer = layer;
     }
 
-    public static NoiseChunk.BlockStateFiller create(RandomState randomState, DensityFunction strata3d) {
-        if (LAYERS == null || LAYERS.size() == 0) {
-            LAYERS = WorldGeneratorUtils.STRATA_LAYERS.values().stream()
-                    .filter(IStrataLayer::isNatural)
-                    .toList();
-        }
-        NormalNoise typeNoise = randomState.getOrCreateNoise(GTFeatures.STRATA_TYPE_NOISE);
-        return (ctx) -> {
-            int x = ctx.blockX();
-            int y = ctx.blockY();
-            int z = ctx.blockZ();
-
-            IStrataLayer stratum;
-            stratum = Objects.requireNonNullElseGet(INSTANCE.layer, () -> getStateForPos(typeNoise, LAYERS, x, y, z));
-
-            double threshold = strata3d.compute(ctx);
-
-            if (threshold >= stratum.getMinSpawnTreshold()) {
-                return stratum.getState().get().get();
-            }
-            return null;
-        };
-    }
-
     @Override
     public SurfaceRules.SurfaceRule apply(SurfaceRules.Context context) {
         if (LAYERS == null || LAYERS.size() == 0) {

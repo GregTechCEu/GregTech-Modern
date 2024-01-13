@@ -103,6 +103,10 @@ public class TagPrefix {
             .langValue("Tuff %s Ore")
             .registerOre(Blocks.TUFF::defaultBlockState, null, BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_GRAY).requiresCorrectToolForDrops().strength(3.0F, 3.0F), new ResourceLocation("block/tuff"));
 
+    public static final TagPrefix oreRedGranite = oreTagPrefix("redGranite")
+        .langValue("Red Granite %s Ore")
+        .registerOre(Blocks.TUFF::defaultBlockState);
+
     public static final TagPrefix oreSand = oreTagPrefix("sand", BlockTags.MINEABLE_WITH_SHOVEL)
             .langValue("Sand %s Ore")
             .registerOre(Blocks.SAND::defaultBlockState, () -> GTMaterials.QuartzSand, BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.SNARE).strength(0.5F).sound(SoundType.SAND), new ResourceLocation("block/sand"), false, true);
