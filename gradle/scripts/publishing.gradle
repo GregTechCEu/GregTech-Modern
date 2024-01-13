@@ -1,0 +1,30 @@
+publishing {
+    publications {
+        mavenForge(MavenPublication) {
+            artifact(remapJar) {
+                artifactId = archivesBaseName
+                builtBy remapJar
+            }
+            artifact(remapSourcesJar) {
+                artifactId = archivesBaseName
+                builtBy remapSourcesJar
+            }
+            artifact(remapSlimJar) {
+                artifactId = archivesBaseName
+                builtBy remapSlimJar
+            }
+        }
+    }
+
+    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
+    repositories {
+        // Add repositories to publish to here.
+        maven {
+            url "https://maven.firstdarkdev.xyz/snapshots"
+            credentials {
+                username System.getenv("MAVEN_USER")
+                password System.getenv("MAVEN_PASS")
+            }
+        }
+    }
+}

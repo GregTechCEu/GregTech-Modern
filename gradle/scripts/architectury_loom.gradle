@@ -1,0 +1,57 @@
+architectury {
+    platformSetupLoomIde()
+    forge()
+}
+
+static def isJetBrainsRuntime() {
+    return System.getProperty('java.vm.vendor').contains('JetBrains')
+}
+
+loom {
+    silentMojangMappingsLicense()
+
+    accessWidenerPath = file("src/main/resources/${mod_id}.accesswidener")
+
+    forge {
+        mixinConfig(
+                "${mod_id}-common.mixins.json",
+                "${mod_id}.mixins.json",
+        )
+
+        convertAccessWideners = true
+        extraAccessWideners.add loom.accessWidenerPath.get().asFile.name
+
+        dataGen{
+            mod(mod_id)
+        }
+    }
+
+    runConfigs.named("data").configure {
+        programArg("--existing=" + file("src/main/resources").absolutePath)
+    }
+
+    if (isJetBrainsRuntime()) {
+        runs {
+            client {
+                vmArgs '-XX:+AllowEnhancedClassRedefinition'
+                vmArgs '-XX:HotswapAgent=fatjar'
+            }
+        }
+    }
+    runs {
+        create("gameTestServer") {
+            server()
+            name("Minecraft Game Test")
+            source("main")
+
+            property("forge.enabledGameTestNamespaces", mod_id)
+            property("forge.gameTestServer", "true")
+
+            mods {
+                create(mod_id) {
+                    sourceSet("main")
+                }
+            }
+        }
+    }
+}

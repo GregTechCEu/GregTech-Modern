@@ -3,20 +3,11 @@ name: Auto Publish, Releasing
 on:
   workflow_dispatch:
     inputs:
-      forge_releaseType:
-        description: 'forge release type'
+      releaseType:
+        description: 'release type'
         required: true
         type: choice
         default: 'beta'
-        options:
-          - 'release'
-          - 'beta'
-          - 'alpha'
-      fabric_releaseType:
-        description: 'fabric release type'
-        required: true
-        type: choice
-        default: 'alpha'
         options:
           - 'release'
           - 'beta'
@@ -69,44 +60,8 @@ jobs:
         name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls fabric/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-fabric-|.jar' '{print $2}')
-          echo fabric_version=$MESSAGE >> $GITHUB_OUTPUT
-          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-forge-|.jar' '{print $2}')
-          echo forge_version=$MESSAGE >> $GITHUB_OUTPUT
-
-      - if: ${{ inputs.publishCurseForgeAndModrinth }}
-        name: mc-publish-fabric
-        uses: Kir-Antipov/mc-publish@v3.3
-        with:
-          # Only include this section if you wish to publish
-          # your assets on Modrinth.
-          modrinth-id: 7tG215v7
-          modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
-
-          # Only include this section if you wish to publish
-          # your assets on CurseForge.
-          curseforge-id: 890405
-          curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
-
-          files: |
-            fabric/build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
-            fabric/build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
-
-          name: GregTechCEu ${{ steps.var.outputs.fabric_version }}-fabric
-          version: mc${{ steps.var.outputs.fabric_version }}-fabric
-          version-type: ${{ inputs.fabric_releaseType }}
-          changelog-file: CHANGELOG.*
-
-          loaders: |
-            fabric
-          game-versions: |
-            ${{ github.ref_name }}
-          game-version-filter: none
-          java: |
-            17
-          retry-attempts: 2
-          retry-delay: 10000
-          fail-mode: fail
+          MESSAGE=$(ls forge/build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
+          echo version=$MESSAGE >> $GITHUB_OUTPUT
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: mc-publish-forge
@@ -123,12 +78,12 @@ jobs:
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
 
           files: |
-            forge/build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
-            forge/build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
+            build/libs/!(*-@(dev|sources|javadoc|dev-shadow|slim)).jar
+            build/libs/*-@(dev|sources|javadoc|dev-shadow|slim).jar
 
-          name: GregTechCEu ${{ steps.var.outputs.forge_version }}-forge
-          version: mc${{ steps.var.outputs.forge_version }}-forge
-          version-type: ${{ inputs.forge_releaseType }}
+          name: GregTechCEu ${{ steps.var.outputs.version }}
+          version: mc${{ steps.var.outputs.version }}
+          version-type: ${{ inputs.releaseType }}
           changelog-file: CHANGELOG.*
 
           loaders: |

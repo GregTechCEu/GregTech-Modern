@@ -1,136 +1,48 @@
-import net.fabricmc.loom.task.RemapJarTask
+import net.fabricmc.loom.task.RemapJarTask;
 
 plugins {
     alias libs.plugins.architectury
-    alias libs.plugins.architectury.loom apply false
-    alias libs.plugins.vineFlower apply false // VineFlower, a better decompiler
+    alias libs.plugins.architectury.loom
+    alias libs.plugins.vineFlower // VineFlower, a better decompiler
     alias libs.plugins.machete // automatic jar compressing on build
+    alias libs.plugins.shadow
 }
 
-def is_root_project = project == rootProject
+apply plugin: "dev.architectury.loom"
+apply plugin: "io.github.juuxel.loom-vineflower"
+apply plugin: "java"
+apply plugin: "architectury-plugin"
+apply plugin: "maven-publish"
+
 
 architectury {
     minecraft = libs.versions.minecraft
 }
 
-subprojects {
-    apply plugin: "dev.architectury.loom"
-    apply plugin: "io.github.juuxel.loom-vineflower"
-
-    loom {
-        silentMojangMappingsLicense()
-//        for (final def setting in runConfigs) {
-//            setting.vmArgs()
-//        }
-    }
-
-    repositories {
-        mavenLocal()
-        mavenCentral()
-        maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
-        maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
-        maven { url = "https://maven.shedaniel.me/" } // Cloth Config, REI
-        maven {
-            url "https://cursemaven.com"
-            content {
-                includeGroup "curse.maven"
-            }
-        } // Curse Forge File
-        maven {
-            name = "Jared's maven"
-            url = "https://maven.blamejared.com/"
-        } // JEI
-        maven {
-            // location of a maven mirror for JEI files, as a fallback
-            name = "ModMaven"
-            url = "https://modmaven.dev"
-        } // JEI mirror, AE2
-        maven { url = "https://maven.parchmentmc.org" } // Parchment mappings
-        maven { url = "https://maven.quiltmc.org/repository/release" } // Quilt Mappings
-        maven { url = "https://maven.firstdarkdev.xyz/snapshots" } // LDLib
-        maven { // Flywheel
-            url = "https://maven.tterrag.com/"
-            content {
-                // need to be specific here due to version overlaps
-                includeGroup("com.jozufozu.flywheel")
-                includeGroup("com.tterrag.registrate")
-                includeGroup("com.simibubi.create")
-            }
-        }
-        maven { // TOP-Fabric
-            url "https://maven.wispforest.io"
-        }
-    }
-
-    dependencies {
-        minecraft "com.mojang:minecraft:${libs.versions.minecraft.get()}"
-
-        if (is_root_project) {
-            // layered mappings - Mojmap names, parchment and QM docs and parameters
-            mappings loom.layered {
-                it.mappings("org.quiltmc:quilt-mappings:${libs.versions.minecraft.get()}+build.${libs.versions.quiltMappings.get()}:intermediary-v2")
-                it.parchment("org.parchmentmc.data:parchment-${libs.versions.minecraft.get()}:${libs.versions.parchment.get()}@zip")
-                it.officialMojangMappings { nameSyntheticMembers = false }
-            }
-        }
-
-        // see each subproject for dependencies.
-
-        // lombok
-        compileOnly 'org.projectlombok:lombok:1.18.24'
-        annotationProcessor 'org.projectlombok:lombok:1.18.24'
-
-        implementation 'com.google.code.findbugs:jsr305:3.0.2'
-
-        // tests
-        testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.9.2'
-        testImplementation 'io.javalin:javalin:5.4.2'
-        testImplementation 'org.mockito:mockito-core:5.2.0'
-    }
-
-    tasks.register('slimJar', org.gradle.jvm.tasks.Jar) {
-        archiveClassifier.set("slim")
-    }
-
-    tasks.register('remapSlimJar', RemapJarTask) {
-        dependsOn(slimJar)
-        inputFile.set(jar.archiveFile)
-        addNestedDependencies = false
-    }
-
-    tasks.remapJar.dependsOn('remapSlimJar')
+tasks.register('remapSlimJar', RemapJarTask) {
+    dependsOn(jar)
+    inputFile.set jar.archiveFile
 }
 
-allprojects {
-    apply plugin: "java"
-    apply plugin: "architectury-plugin"
-    apply plugin: "maven-publish"
+group = maven_group
 
-    archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
-    group = rootProject.maven_group
+// Formats the mod version to include the loader, Minecraft version, and build number (if present)
+String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
+version = "${mod_version}" + (buildNumber != null ? "-build_${System.getenv("GITHUB_RUN_NUMBER")}" : "")
 
-    // Formats the mod version to include the loader, Minecraft version, and build number (if present)
-    String buildNumber = System.getenv("GITHUB_ACTION_NUMBER")
-    version = "${mod_version}" + (buildNumber != null ? "-build_${System.getenv("GITHUB_RUN_NUMBER")}" : "")
+apply from: "$rootDir/gradle/scripts/architectury_loom.gradle"
+apply from: "$rootDir/gradle/scripts/capabilities.gradle"
+apply from: "$rootDir/gradle/scripts/repositories.gradle"
+apply from: "$rootDir/gradle/scripts/dependencies.gradle"
+apply from: "$rootDir/gradle/scripts/resources.gradle"
+apply from: "$rootDir/gradle/scripts/jars.gradle"
+apply from: "$rootDir/gradle/scripts/publishing.gradle"
 
-    repositories {
-        // Add repositories to retrieve artifacts from in here.
-        // You should only use this when depending on other mods because
-        // Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
-        // See https://docs.gradle.org/current/userguide/declaring_repositories.html
-        // for more information about repositories.
-    }
+tasks.withType(JavaCompile) {
+    options.encoding = "UTF-8"
+}
 
-    tasks.withType(JavaCompile) {
-        options.encoding = "UTF-8"
-    }
-
-    java {
-        withSourcesJar()
-    }
-
-    machete {
-        // disable machete locally for faster builds
-        enabled = false
-    }
+machete {
+    // disable machete locally for faster builds
+    enabled = false
 }

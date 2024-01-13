@@ -1,0 +1,29 @@
+String getConfig(String key) {
+    return project.properties.get(key)
+}
+
+def mod_id = getConfig("mod_id")
+def version = getConfig("version")
+def mod_license = getConfig("mod_license")
+def mod_name = getConfig("mod_name")
+def mod_description = getConfig("mod_description")
+def mod_url = getConfig("mod_url")
+
+processResources {
+    // set up properties for filling into metadata
+    var properties = [
+            "version": version,
+            "mod_id": mod_id,
+            "forge_version": forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
+            "minecraft_version": libs.versions.minecraft.get(),
+            "mod_license": mod_license,
+            "mod_name": mod_name,
+            "mod_description": mod_description,
+            "mod_url": mod_url
+    ]
+    inputs.properties(properties)
+
+    filesMatching("META-INF/mods.toml") {
+        expand properties
+    }
+}

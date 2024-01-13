@@ -1,0 +1,12 @@
+configurations {
+    /* TODO fix?
+    modImplementation {
+        outgoing {
+            capability("com.lowdragmc.ldlib:ldlib-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.ldlib.get()}")
+            capability("com.tterrag.registrate:Registrate:${this.forge.versions.registrate.get()}")
+            capability("dev.toma.configuration:configuration-forge-${this.libs.versions.minecraft.get()}:${this.forge.versions.configuration.get()}")
+            capability("io.github.llamalad7:mixinextras-forge:${this.forge.versions.mixinextras.get()}")
+        }
+    }
+    */
+}
