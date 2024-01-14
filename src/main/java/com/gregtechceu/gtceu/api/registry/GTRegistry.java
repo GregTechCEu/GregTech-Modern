@@ -78,12 +78,12 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean checkActiveModContainerIsGregtech() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && container.getModId().equals(GTCEu.MOD_ID);
+        return container != null && container.getModId().equals(GTCEu.MOD_ID) || container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
     }
 
     public void register(K key, V value) {
         if (frozen) {
-            throw new IllegalStateException("[register] registry %s has been frozen");
+            throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
         if (containKey(key)) {
             throw new IllegalStateException("[register] registry %s contains key %s already".formatted(registryName, key));
@@ -94,7 +94,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @Nullable
     public V replace(K key, V value) {
         if (frozen) {
-            throw new IllegalStateException("[replace] registry %s has been frozen");
+            throw new IllegalStateException("[replace] registry %s has been frozen".formatted(registryName));
         }
         if (!containKey(key)) {
             GTCEu.LOGGER.warn("[replace] couldn't find key %s in registry %s".formatted(registryName, key));
@@ -104,7 +104,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     public V registerOrOverride(K key, V value) {
         if (frozen) {
-            throw new IllegalStateException("[register] registry %s has been frozen");
+            throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
         return registry.put(key, value);
     }

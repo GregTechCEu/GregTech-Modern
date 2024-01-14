@@ -586,7 +586,7 @@ public class TagPrefix {
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true);
 
-    public static final TagPrefix frameGt = new TagPrefix("frameGt")
+    public static final TagPrefix frameGt = new TagPrefix("frame")
             .defaultTagPath("frames/%s")
             .langValue("%s Frame")
             .materialAmount(GTValues.M * 2)
