@@ -59,7 +59,7 @@ public class MarkerMaterials {
          */
         public static MarkerMaterial valueOf(String string) {
             for (MarkerMaterial color : VALUES) {
-                if (color.toString().equals(string)) {
+                if (color.getName().equals(string)) {
                     return color;
                 }
             }
