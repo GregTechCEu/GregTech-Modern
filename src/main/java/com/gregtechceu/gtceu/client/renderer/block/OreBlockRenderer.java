@@ -1,38 +1,30 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.google.common.base.Suppliers;
-import com.gregtechceu.gtceu.client.model.ItemBakedModel;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
-import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.impl.BlockStateRenderer;
-import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.mojang.blaze3d.vertex.PoseStack;
+import com.google.common.base.Preconditions;
+import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.block.OreBlock;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
-import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.models.BlockModelGenerators;
+import net.minecraft.data.models.model.*;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.inventory.InventoryMenu;
-import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.GsonHelper;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Supplier;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 /**
  * @author KilaBash
@@ -40,82 +32,62 @@ import java.util.function.Supplier;
  * @implNote OreBlockRenderer
  */
 @MethodsReturnNonnullByDefault
-public class OreBlockRenderer extends BlockStateRenderer {
-    private final Supplier<BlockState> stone;
-    private final Supplier<ResourceLocation> overlaySupplier;
-    private final Supplier<@Nullable ResourceLocation> secondaryOverlaySupplier;
-    private final boolean emissive;
+public class OreBlockRenderer {
+    private static final Set<OreBlockRenderer> MODELS = new HashSet<>();
 
-    public OreBlockRenderer(Supplier<BlockState> stone, Supplier<ResourceLocation> overlaySupplier, Supplier<@Nullable ResourceLocation> secondaryOverlaySupplier, boolean emissive) {
-        this.stone = Suppliers.memoize(stone::get);
-        this.overlaySupplier = overlaySupplier;
-        this.secondaryOverlaySupplier = secondaryOverlaySupplier;
-        this.emissive = emissive;
-        if (LDLib.isClient()) {
-            registerEvent();
+    private final MaterialBlock block;
+
+    public static void create(MaterialBlock block) {
+        MODELS.add(new OreBlockRenderer(block));
+    }
+
+    public OreBlockRenderer(MaterialBlock block) {
+        this.block = block;
+    }
+
+    public static void reinitModels() {
+        for (OreBlockRenderer model : MODELS) {
+            ResourceLocation blockId = BuiltInRegistries.BLOCK.getKey(model.block);
+            ResourceLocation modelId = blockId.withPrefix("block/");
+            OreBlockRenderer.cloneBlockModel(modelId, model.block.tagPrefix, model.block.material);
+            GTDynamicResourcePack.addBlockState(blockId, BlockModelGenerators.createSimpleBlock(model.block, modelId));
+            GTDynamicResourcePack.addItemModel(BuiltInRegistries.ITEM.getKey(model.block.asItem()), new DelegatedModel(ModelLocationUtils.getModelLocation(model.block)));
         }
     }
 
-    @Override
-    public BlockInfo getBlockInfo() {
-        return new BlockInfo(stone.get());
-    }
+    /**
+     * Clones & modifies the base JSON for a single ore block.
+     * @param modelId the model id (usually {@code gtceu:block/<block id path>})
+     * @param prefix the TagPrefix of the block being added.
+     * @param material the material of the block being added. must have an ore property.
+     */
+    public static void cloneBlockModel(ResourceLocation modelId, TagPrefix prefix, Material material) {
+        OreProperty prop = material.getProperty(PropertyKey.ORE);
+        Preconditions.checkNotNull(prop, "material %s has no ore property, but needs one for an ore model!".formatted(material.getName()));
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
-        super.renderItem(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay, model);
-        IItemRendererProvider.disabled.set(true);
-        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-                new ItemBakedModel() {
-                    @Override
-                    @OnlyIn(Dist.CLIENT)
-                    public List<BakedQuad> getQuads(@Nullable BlockState state, @Nullable Direction direction, RandomSource random) {
-                        List<BakedQuad> quads = new LinkedList<>();
-                        if (direction != null) {
-                            quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, emissive ? -101 : 0, emissive ? 15 : 0, true, !emissive));
-                            if (secondaryOverlaySupplier.get() != null) quads.add(FaceQuad.bakeFace(direction, ModelFactory.getBlockSprite(secondaryOverlaySupplier.get()), BlockModelRotation.X0_Y0, emissive ? -111 : 1, emissive ? 15 : 0, true, !emissive));
-                        }
-                        return quads;
-                    }
-                });
-        IItemRendererProvider.disabled.set(false);
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
-        List<BakedQuad> quads = new LinkedList<>(super.renderModel(level, pos, state, side, rand));
-        if (side != null) {
-            quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(overlaySupplier.get()), BlockModelRotation.X0_Y0, emissive ? -101 : 0, emissive ? 15 : 0, true, !emissive));
-            if (secondaryOverlaySupplier.get() != null) quads.add(FaceQuad.bakeFace(side, ModelFactory.getBlockSprite(secondaryOverlaySupplier.get()), BlockModelRotation.X0_Y0, emissive ? -111 : 1, emissive ? 15 : 0, true, !emissive));
+        // read the base ore model JSON
+        JsonObject original;
+        try(BufferedReader reader = Minecraft.getInstance().getResourceManager().openAsReader(GTCEu.id("models/block/ore%s.json".formatted(prop.isEmissive() ? "_emissive" : "")))) {
+            original = GsonHelper.parse(reader, true);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
-        return quads;
+
+        // clone it
+        JsonObject newJson = original.deepCopy();
+        JsonObject children = newJson.getAsJsonObject("children");
+        // add the base stone texture.
+        children.getAsJsonObject("base_stone").addProperty("parent", TagPrefix.ORES.get(prefix).baseModelLocation().toString());//.getAsJsonObject("textures").addProperty("stone", TagPrefix.ORES.get(prefix).baseModelLocation().toString());
+
+        ResourceLocation layer0 = prefix.materialIconType().getBlockTexturePath(material.getMaterialIconSet(), true);
+        ResourceLocation layer1 = prefix.materialIconType().getBlockTexturePath(material.getMaterialIconSet(), "layer2", true);
+        JsonObject oresTextures = children.getAsJsonObject("ore_texture").getAsJsonObject("textures");
+        oresTextures.addProperty("layer0", layer0.toString());
+        oresTextures.addProperty("layer1", layer1.toString());
+
+        newJson.getAsJsonObject("textures").addProperty("particle", layer0.toString());
+
+        GTDynamicResourcePack.addBlockModel(modelId, newJson);
     }
 
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
-        super.onPrepareTextureAtlas(atlasName, register);
-        if (atlasName.equals(InventoryMenu.BLOCK_ATLAS)) {
-            register.accept(overlaySupplier.get());
-            if (secondaryOverlaySupplier.get() != null) register.accept(secondaryOverlaySupplier.get());
-        }
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean useAO() {
-        BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = brd.getBlockModel(stone.get());
-        return model.useAmbientOcclusion();
-    }
-
-    @Override
-    @OnlyIn(Dist.CLIENT)
-    public boolean useBlockLight(ItemStack stack) {
-        BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
-        BakedModel model = brd.getBlockModel(stone.get());
-        return model.usesBlockLight();
-    }
 }

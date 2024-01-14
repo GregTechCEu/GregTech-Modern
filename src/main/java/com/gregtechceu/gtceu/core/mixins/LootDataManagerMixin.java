@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.data.loot.BlockLootSubProvider;
 import net.minecraft.data.loot.packs.VanillaBlockLoot;
@@ -31,9 +30,10 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.Map;
+import java.util.function.Supplier;
 
 @Mixin(LootDataManager.class)
-public abstract class LootTablesMixin {
+public abstract class LootDataManagerMixin {
 
     @Inject(method = "apply",
             at = @At(value = "HEAD"))
@@ -64,10 +64,10 @@ public abstract class LootTablesMixin {
                                             .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))));
                                             //.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for balance reasons. (for now, until we can think of a better solution.)
 
-                    Material outputDustMat = GTRegistries.MATERIALS.get(FormattingUtil.toLowerCaseUnder(prefix.name));
+                    Supplier<Material> outputDustMat = TagPrefix.ORES.get(prefix).material();
                     if (outputDustMat != null) {
                         builder.withPool(LootPool.lootPool().add(
-                                LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.dust, outputDustMat).getItem())
+                                LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.dust, outputDustMat.get()).getItem())
                                     .when(BlockLootSubProvider.HAS_NO_SILK_TOUCH)
                                     .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
                                     .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
