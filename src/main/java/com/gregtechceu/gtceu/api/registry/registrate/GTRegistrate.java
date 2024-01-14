@@ -38,6 +38,7 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.RegistryObject;
 import org.apache.commons.lang3.function.TriFunction;
@@ -49,6 +50,7 @@ import java.util.Arrays;
 import java.util.IdentityHashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -63,6 +65,8 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class GTRegistrate extends Registrate {
+
+    private final AtomicBoolean registered = new AtomicBoolean(false);
 
     protected GTRegistrate(String modId) {
         super(modId);
@@ -79,6 +83,14 @@ public class GTRegistrate extends Registrate {
 
     public void registerRegistrate() {
         registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
+    }
+
+    @Override
+    public Registrate registerEventListeners(IEventBus bus) {
+        if (!registered.getAndSet(true)) {
+            return super.registerEventListeners(bus);
+        }
+        return this;
     }
 
     protected <P> NoConfigBuilder<CreativeModeTab, CreativeModeTab, P> createCreativeModeTab(P parent, String name, Consumer<CreativeModeTab.Builder> config) {

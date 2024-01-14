@@ -1,7 +1,11 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
@@ -9,8 +13,13 @@ import java.util.Collection;
 
 public abstract class MaterialRegistry extends GTRegistry.String<Material> {
 
+    @Getter
+    private final GTRegistrate registrate;
+
     public MaterialRegistry(java.lang.String modId) {
         super(new ResourceLocation(modId, "material"));
+        IGTAddon addon = AddonFinder.getAddon(modId);
+        this.registrate = addon == null ? GTRegistrate.create(modId) : addon.getRegistrate();
     }
 
     public abstract void register(Material material);
@@ -20,7 +29,6 @@ public abstract class MaterialRegistry extends GTRegistry.String<Material> {
 
     /**
      * Set the fallback material for this registry.
-     * Using {@link #getObjectById(int)} or related will still return {@code null} when an entry cannot be found.
      * This is only for manual fallback usage.
      *
      * @param material the fallback material
@@ -28,7 +36,6 @@ public abstract class MaterialRegistry extends GTRegistry.String<Material> {
     public abstract void setFallbackMaterial(@NotNull Material material);
 
     /**
-     * Using {@link #getObjectById(int)} or related will still return {@code null} when an entry cannot be found.
      * This is only for manual fallback usage.
      *
      * @return the fallback material, used for when another material does not exist

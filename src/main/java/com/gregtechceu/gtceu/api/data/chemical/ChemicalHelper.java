@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -121,7 +123,7 @@ public class ChemicalHelper {
     @Nullable
     public static Material getMaterial(Fluid fluid) {
         return FLUID_MATERIAL.computeIfAbsent(fluid, f -> {
-            for (Material material : GTRegistries.MATERIALS) {
+            for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                 if (material.hasProperty(PropertyKey.FLUID)) {
                     FluidProperty property = material.getProperty(PropertyKey.FLUID);
                     for (FluidStorageKey key : FluidStorageKey.allKeys()) {
@@ -207,7 +209,7 @@ public class ChemicalHelper {
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
         return TAG_UNIFICATION_ENTRY.computeIfAbsent(tag, tagKey -> {
             for (TagPrefix prefix : TagPrefix.values()) {
-                for (Material material : GTRegistries.MATERIALS) {
+                for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                     if (Arrays.stream(prefix.getItemTags(material)).anyMatch(tagKey1 -> tagKey1.location().equals(tagKey.location()))) {
                         return new UnificationEntry(prefix, material);
                     }

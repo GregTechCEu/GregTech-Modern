@@ -24,6 +24,9 @@ import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
@@ -32,13 +35,15 @@ import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.javafmlmod.FMLModContainer;
 
 public class CommonProxy {
     private static final Object LOCK = new Object();
-    private static boolean isKubJSSetup = false;
+    private static boolean isKubeJSSetup = false;
 
     public CommonProxy() {
         // used for forge events (ClientProxy + CommonProxy)
@@ -49,7 +54,7 @@ public class CommonProxy {
         // init common features
         if (GTCEu.isKubeJSLoaded()) {
             synchronized (LOCK) {
-                if (!isKubJSSetup) {
+                if (!isKubeJSSetup) {
                     try { LOCK.wait(); } catch (InterruptedException ignored) {}
                 }
             }
@@ -63,7 +68,7 @@ public class CommonProxy {
      */
     public static void onKubeJSSetup() {
         synchronized (LOCK) {
-            isKubJSSetup = true;
+            isKubeJSSetup = true;
             LOCK.notify();
         }
     }
@@ -101,6 +106,16 @@ public class CommonProxy {
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistries.REGISTRATE.registerRegistrate();
+
+        // Register all material manager registries, for materials with mod ids.
+        GTCEuAPI.materialManager.getRegistries().forEach(registry ->
+            registry.getRegistrate()
+                .registerEventListeners(ModList.get().getModContainerById(registry.getModid())
+                    .filter(FMLModContainer.class::isInstance)
+                    .map(FMLModContainer.class::cast)
+                    .map(FMLModContainer::getEventBus)
+                    .orElse(FMLJavaModLoadingContext.get().getModEventBus())));
+
         WorldGenLayers.registerAll();
         GTFeatures.init();
         GTFeatures.register();
@@ -112,6 +127,9 @@ public class CommonProxy {
 
         GTCEu.LOGGER.info("Registering material registries");
         MinecraftForge.EVENT_BUS.post(new MaterialRegistryEvent());
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRegistryInfo.createKjsMaterialRegistry();
+        }
 
         // First, register CEu Materials
         managerInternal.unfreezeRegistries();
@@ -130,6 +148,11 @@ public class CommonProxy {
         // Block entirely new Materials from being added in the Post event
         managerInternal.closeRegistries();
         MinecraftForge.EVENT_BUS.post(new PostMaterialEvent());
+        if (GTCEu.isKubeJSLoaded()) {
+            if (GTCEuStartupEvents.MATERIAL_MODIFICATION.hasListeners()) {
+                GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
+            }
+        }
 
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         managerInternal.freezeRegistries();

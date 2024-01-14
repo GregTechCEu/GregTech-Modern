@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +11,12 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public interface IGTAddon {
+
+    /**
+     * @return this addon's GTRegistrate instance.
+     * remember to call{@link GTRegistrate#registerRegistrate} in your mod class!
+     */
+    GTRegistrate getRegistrate();
 
     /**
      * This runs after GTCEu has setup it's content.

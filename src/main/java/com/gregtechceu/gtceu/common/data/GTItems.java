@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -31,6 +32,7 @@ import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -66,6 +68,7 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.TierSortingRegistry;
+import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -108,12 +111,14 @@ public class GTItems {
         ImmutableTable.Builder<TagPrefix, Material, ItemEntry<TagPrefixItem>> builder = ImmutableTable.builder();
         for (var tagPrefix : TagPrefix.values()) {
             if (tagPrefix.doGenerateItem()) {
-                for (Material material : GTRegistries.MATERIALS) {
-                    if (tagPrefix.doGenerateItem(material)) {
-                        String first = tagPrefix.invertedName ? toLowerCaseUnder(tagPrefix.name) : material.getName();
-                        String last = tagPrefix.invertedName ? material.getName() : toLowerCaseUnder(tagPrefix.name);
-                        builder.put(tagPrefix, material, REGISTRATE
-                                .item(first + "_" + last, properties -> TagPrefixItem.create(properties, tagPrefix, material))
+                for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+                    GTRegistrate registrate = registry.getRegistrate();
+                    for (Material material : registry.getAllMaterials()) {
+                        if (tagPrefix.doGenerateItem(material)) {
+                            String first = tagPrefix.invertedName ? toLowerCaseUnder(tagPrefix.name) : material.getName();
+                            String last = tagPrefix.invertedName ? material.getName() : toLowerCaseUnder(tagPrefix.name);
+                            builder.put(tagPrefix, material, registrate
+                                .item(first + "_" + last, properties -> new TagPrefixItem(properties, tagPrefix, material))
                                 .onRegister(TagPrefixItem::onRegister)
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .transform(unificationItem(tagPrefix, material))
@@ -124,13 +129,14 @@ public class GTItems {
                                 .onRegister(item -> {
                                     switch (tagPrefix.name) {
                                         case "buzzSawBlade", "screwDriverTip", "drillHead", "chainSawHead", "wrenchTip", "turbineBlade" ->
-                                                CompassNode.getOrCreate(GTCompassSections.MATERIALS, "tool_heads").addItem(() -> item);
+                                            CompassNode.getOrCreate(GTCompassSections.MATERIALS, "tool_heads").addItem(() -> item);
                                         default ->
-                                                CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
-                                                        .iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
+                                            CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
+                                                .iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
                                     }
                                 })
                                 .register());
+                        }
                     }
                 }
             }
