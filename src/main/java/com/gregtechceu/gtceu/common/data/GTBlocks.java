@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
@@ -712,7 +713,7 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
-        if (!GTCEu.isHighTier() && tier > GTValues.UHV) {
+        if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
             REGISTRATE.setCreativeTab(entry, null);
         }
         return entry;
@@ -735,7 +736,7 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
-        if (!GTCEu.isHighTier() && tier > GTValues.UHV) {
+        if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
             REGISTRATE.setCreativeTab(entry, null);
         }
         return entry;
