@@ -13,22 +13,25 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 
 @Mixin(value = RepairItemRecipe.class)
-public abstract class RepairItemRecipeMixin {
+public class RepairItemRecipeMixin {
 
     @Inject(
         method = "matches(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/world/level/Level;)Z",
-        at = @At(value = "INVOKE_ASSIGN", target = "Ljava/util/List;get(I)Ljava/lang/Object;"),
+        at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getItem()Lnet/minecraft/world/item/Item;", ordinal = 0),
         cancellable = true
     )
-    public void gtceu$matches(CraftingContainer inv, Level worldIn, CallbackInfoReturnable<Boolean> cir, @Local ItemStack itemstack, @Local ItemStack itemstack1) {
+    public void gtceu$matches(CraftingContainer inv, Level worldIn, CallbackInfoReturnable<Boolean> cir,
+                              @Local(ordinal = 0) ItemStack itemstack,
+                              @Local(ordinal = 1) ItemStack itemstack1) {
         if (itemstack.getItem() instanceof IGTTool first && itemstack1.getItem() instanceof IGTTool second) {
+            // do not allow repairing tools if are electric
             if (first.isElectric() || second.isElectric()) {
                 cir.setReturnValue(false);
+            }
             // do not allow repairing tools if both are full durability
-            } else if (!first.definition$isDamaged(itemstack) && !second.definition$isDamaged(itemstack1)) {
+            if (!first.definition$isDamaged(itemstack) && !second.definition$isDamaged(itemstack1)) {
                 cir.setReturnValue(false);
             }
         }
     }
-
 }
