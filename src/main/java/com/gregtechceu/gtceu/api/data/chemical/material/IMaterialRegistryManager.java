@@ -3,9 +3,13 @@ package com.gregtechceu.gtceu.api.data.chemical.material;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface IMaterialRegistryManager {
 
@@ -75,6 +79,8 @@ public interface IMaterialRegistryManager {
      */
     Material getMaterial(String name);
 
+    ResourceLocation getKey(Material material);
+
     /**
      * @return the current phase in the material registration process
      * @see Phase
@@ -84,6 +90,10 @@ public interface IMaterialRegistryManager {
 
     default boolean canModifyMaterials() {
         return this.getPhase() != Phase.FROZEN && this.getPhase() != Phase.PRE;
+    }
+
+    default Codec<Material> codec() {
+        return ResourceLocation.CODEC.flatXmap(id -> Optional.ofNullable(this.getRegistry(id.getNamespace()).get(id.getPath())).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry key in material registry: " + id)), obj -> DataResult.success(obj.getResourceLocation()));
     }
 
     enum Phase {

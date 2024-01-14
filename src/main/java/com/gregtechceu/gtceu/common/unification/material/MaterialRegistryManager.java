@@ -9,6 +9,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -104,6 +105,11 @@ public final class MaterialRegistryManager implements IMaterialRegistryManager {
             return getRegistry(modid).get(materialName);
         }
         return null;
+    }
+
+    @Override
+    public ResourceLocation getKey(Material material) {
+        return material.getResourceLocation();
     }
 
     @NotNull

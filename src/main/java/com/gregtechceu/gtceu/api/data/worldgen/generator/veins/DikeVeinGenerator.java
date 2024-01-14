@@ -179,7 +179,7 @@ public class DikeVeinGenerator extends VeinGenerator {
     public record DikeBlockDefinition(Either<List<TargetBlockState>, Material> block, int weight,
                                       int minY, int maxY) {
         public static final Codec<DikeBlockDefinition> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-                Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()).fieldOf("block").forGetter(x -> x.block),
+                Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(x -> x.block),
                 Codec.INT.fieldOf("weight").forGetter(x -> x.weight),
                 Codec.INT.fieldOf("min_y").orElse(320).forGetter(x -> x.minY),
                 Codec.INT.fieldOf("max_y").orElse(-64).forGetter(x -> x.maxY)
