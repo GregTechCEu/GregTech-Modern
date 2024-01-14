@@ -126,10 +126,8 @@ public class GTBlocks {
                     GTRegistrate registrate = registry.getRegistrate();
                     for (Material material : registry.getAllMaterials()) {
                         if (tagPrefix.doGenerateBlock(material)) {
-                            String first = tagPrefix.invertedName ? toLowerCaseUnder(tagPrefix.name) : material.getName();
-                            String last = tagPrefix.invertedName ? material.getName() : toLowerCaseUnder(tagPrefix.name);
                             MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
-                                .block(first + "_" + last, properties -> new MaterialBlock(properties, tagPrefix, material))
+                                .block(tagPrefix.idPattern().formatted(material.getName()), properties -> new MaterialBlock(properties, tagPrefix, material))
                                 .initialProperties(() -> Blocks.IRON_BLOCK)
                                 .properties(BlockBehaviour.Properties::noLootTable)
                                 .transform(unificationBlock(tagPrefix, material))

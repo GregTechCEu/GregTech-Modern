@@ -136,6 +136,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix rawOreBlock = new TagPrefix("rawOreBlock")
+            .idPattern("raw_%s_block")
             .defaultTagPath("storage_blocks/raw_%s")
             .langValue("Block of Raw %s")
             .materialIconType(MaterialIconType.rawOreBlock)
@@ -145,6 +146,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
+            .idPattern("refined_%s_ore")
             .defaultTagPath("refined_ores/%s")
             .defaultTagPath("refined_ores")
             .langValue("Refined %s Ore")
@@ -154,6 +156,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushedPurified = new TagPrefix("purifiedOre")
+            .idPattern("purified_%s_ore")
             .defaultTagPath("purified_ores/%s")
             .defaultTagPath("purified_ores")
             .langValue("Purified %s Ore")
@@ -163,6 +166,7 @@ public class TagPrefix {
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushed = new TagPrefix("crushedOre")
+            .idPattern("crushed_%s_ore")
             .defaultTagPath("crushed_ores/%s")
             .unformattedTagPath("crushed_ores")
             .langValue("Crushed %s Ore")
@@ -174,6 +178,7 @@ public class TagPrefix {
 
     // A hot Ingot, which has to be cooled down by a Vacuum Freezer.
     public static final TagPrefix ingotHot = new TagPrefix("hotIngot")
+            .idPattern("hot_%s_ingot")
             .defaultTagPath("hot_ingots/%s")
             .unformattedTagPath("hot_ingots")
             .langValue("Hot %s Ingot")
@@ -206,6 +211,7 @@ public class TagPrefix {
 
     // A regular Gem worth one small Dust.
     public static final TagPrefix gemChipped = new TagPrefix("chippedGem")
+            .idPattern("chipped_%s_gem")
             .defaultTagPath("chipped_gems/%s")
             .unformattedTagPath("chipped_gems")
             .langValue("Chipped %s")
@@ -217,6 +223,7 @@ public class TagPrefix {
 
     // A regular Gem worth two small Dusts.
     public static final TagPrefix gemFlawed = new TagPrefix("flawedGem")
+            .idPattern("flawed_%s_gem")
             .defaultTagPath("flawed_gems/%s")
             .unformattedTagPath("flawed_gems")
             .langValue("Flawed %s")
@@ -228,6 +235,7 @@ public class TagPrefix {
 
     // A regular Gem worth two Dusts.
     public static final TagPrefix gemFlawless = new TagPrefix("flawlessGem")
+            .idPattern("flawless_%s_gem")
             .defaultTagPath("flawless_gems/%s")
             .unformattedTagPath("flawless_gems")
             .langValue("Flawless %s")
@@ -240,6 +248,7 @@ public class TagPrefix {
 
     // A regular Gem worth four Dusts.
     public static final TagPrefix gemExquisite = new TagPrefix("exquisiteGem")
+            .idPattern("exquisite_%s_gem")
             .defaultTagPath("exquisite_gems/%s")
             .unformattedTagPath("exquisite_gems")
             .langValue("Exquisite %s")
@@ -252,6 +261,7 @@ public class TagPrefix {
 
     // 1/4th of a Dust.
     public static final TagPrefix dustSmall = new TagPrefix("smallDust")
+            .idPattern("small_%s_dust")
             .defaultTagPath("small_dusts/%s")
             .unformattedTagPath("small_dusts")
             .langValue("Small Pile of %s Dust")
@@ -263,6 +273,7 @@ public class TagPrefix {
 
     // 1/9th of a Dust.
     public static final TagPrefix dustTiny = new TagPrefix("tinyDust")
+            .idPattern("tiny_%s_dust")
             .defaultTagPath("tiny_dusts/%s")
             .unformattedTagPath("tiny_dusts")
             .langValue("Tiny Pile of %s Dust")
@@ -274,6 +285,7 @@ public class TagPrefix {
 
     // Dust with impurities. 1 Unit of Main Material and 1/9 - 1/4 Unit of secondary Material
     public static final TagPrefix dustImpure = new TagPrefix("impureDust")
+            .idPattern("impure_%s_dust")
             .defaultTagPath("impure_dusts/%s")
             .unformattedTagPath("impure_dusts")
             .langValue("Impure Pile of %s Dust")
@@ -286,6 +298,7 @@ public class TagPrefix {
 
     // Pure Dust worth of one Ingot or Gem.
     public static final TagPrefix dustPure = new TagPrefix("pureDust")
+            .idPattern("pure_%s_dust")
             .defaultTagPath("pure_dusts/%s")
             .unformattedTagPath("pure_dusts")
             .langValue("Purified Pile of %s Dust")
@@ -317,6 +330,7 @@ public class TagPrefix {
 
     // 9 Plates combined in one Item.
     public static final TagPrefix plateDense = new TagPrefix("densePlate")
+            .idPattern("dense_%s_plate")
             .defaultTagPath("dense_plates/%s")
             .unformattedTagPath("dense_plates")
             .langValue("Dense %s Plate")
@@ -329,6 +343,7 @@ public class TagPrefix {
 
     // 2 Plates combined in one Item
     public static final TagPrefix plateDouble = new TagPrefix("doublePlate")
+            .idPattern("double_%s_plate")
             .defaultTagPath("double_plates/%s")
             .unformattedTagPath("double_plates")
             .langValue("Double %s Plate")
@@ -371,6 +386,7 @@ public class TagPrefix {
 
     // Stick made of an Ingot.
     public static final TagPrefix rodLong = new TagPrefix("longRod")
+            .idPattern("long_%s_rod")
             .defaultTagPath("rods/long/%s")
             .unformattedTagPath("rods/long")
             .langValue("Long %s Rod")
@@ -423,6 +439,7 @@ public class TagPrefix {
 
     // consisting out of 1 Fine Wire.
     public static final TagPrefix springSmall = new TagPrefix("smallSpring")
+            .idPattern("small_%s_spring")
             .defaultTagPath("small_springs/%s")
             .unformattedTagPath("small_springs")
             .langValue("Small %s Spring")
@@ -444,6 +461,7 @@ public class TagPrefix {
 
     // consisting out of 1/8 Ingot or 1/4 Wire.
     public static final TagPrefix wireFine = new TagPrefix("fineWire")
+            .idPattern("fine_%s_wire")
             .defaultTagPath("fine_wires/%s")
             .unformattedTagPath("fine_wires")
             .langValue("Fine %s Wire")
@@ -466,6 +484,7 @@ public class TagPrefix {
 
     // Consisting of 1 Plate.
     public static final TagPrefix gearSmall = new TagPrefix("smallGear")
+            .idPattern("small_%s_gear")
             .defaultTagPath("small_gears/%s")
             .unformattedTagPath("small_gears")
             .langValue("Small %s Gear")
@@ -645,6 +664,8 @@ public class TagPrefix {
 
     @Getter
     public final String name;
+    @Getter @Setter
+    private String idPattern;
     @Getter
     public final boolean invertedName;
 
@@ -700,6 +721,7 @@ public class TagPrefix {
 
     public TagPrefix(String name, boolean invertedName) {
         this.name = name;
+        this.idPattern = "%s_" + name;
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);

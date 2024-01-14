@@ -113,10 +113,8 @@ public class GTItems {
                     GTRegistrate registrate = registry.getRegistrate();
                     for (Material material : registry.getAllMaterials()) {
                         if (tagPrefix.doGenerateItem(material)) {
-                            String first = tagPrefix.invertedName ? toLowerCaseUnder(tagPrefix.name) : material.getName();
-                            String last = tagPrefix.invertedName ? material.getName() : toLowerCaseUnder(tagPrefix.name);
                             builder.put(tagPrefix, material, registrate
-                                .item(first + "_" + last, properties -> new TagPrefixItem(properties, tagPrefix, material))
+                                .item(tagPrefix.idPattern().formatted(material.getName()), properties -> new TagPrefixItem(properties, tagPrefix, material))
                                 .onRegister(TagPrefixItem::onRegister)
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .transform(unificationItem(tagPrefix, material))
