@@ -186,7 +186,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
 
     @Override
     public BlockState rotate(BlockState pState, Rotation pRotation) {
-        return super.rotate(pState, pRotation);
+        return pState.setValue(this.rotationState.property, pRotation.rotate(pState.getValue(this.rotationState.property)));
     }
 
     @Override

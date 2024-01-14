@@ -111,9 +111,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.2f", chance * 100) + "%"));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.2f", content.tierChanceBoost * 100) + "%"));
                         }
                     }
                     if (index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()) {
@@ -134,9 +134,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.2f", chance * 100) + "%"));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.2f", content.tierChanceBoost * 100) + "%"));
                         }
                     }
                     if (index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()) {
