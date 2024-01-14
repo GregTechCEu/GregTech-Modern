@@ -29,6 +29,7 @@ import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -140,6 +141,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.rawOreBlock)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
             .unificationEnabled(true)
+            .generateBlock(true)
             .generationCondition(hasOreProperty);
 
     public static final TagPrefix crushedRefined = new TagPrefix("refinedOre")
@@ -572,6 +574,8 @@ public class TagPrefix {
             .materialAmount(GTValues.M * 9)
             .materialIconType(MaterialIconType.block)
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
+            .generateBlock(true)
+            .generationCondition(material -> material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK))
             .unificationEnabled(true);
 
     // Prefix to determine which kind of Rock this is.
@@ -589,7 +593,8 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.frameGt)
             .miningToolTag(GTToolType.WRENCH.harvestTags.get(0))
             .unificationEnabled(true)
-            .generationCondition(material -> material.hasFlag(MaterialFlags.GENERATE_FRAME));
+            .generateBlock(true)
+            .generationCondition(material -> material.hasProperty(PropertyKey.DUST) && material.hasFlag(MaterialFlags.GENERATE_FRAME));
 
     // Pipes
     public static final TagPrefix pipeTinyFluid = new TagPrefix("pipeTinyFluid").itemTable(() -> GTBlocks.FLUID_PIPE_BLOCKS).langValue("Tiny %s Fluid Pipe").miningToolTag(GTToolType.WRENCH.harvestTags.get(0)).materialAmount(GTValues.M / 2).unificationEnabled(true);
@@ -655,6 +660,10 @@ public class TagPrefix {
     private boolean unificationEnabled;
     @Setter
     private boolean generateItem;
+    @Setter
+    private boolean generateBlock;
+    @Getter @Setter
+    private Supplier<Supplier<RenderType>> blockRenderType = () -> RenderType::translucent;
 
     @Getter
     @Setter
@@ -810,7 +819,15 @@ public class TagPrefix {
     }
 
     public boolean doGenerateItem(Material material) {
-        return (generateItem && !isIgnored(material) && (generationCondition == null || generationCondition.test(material))) || (hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null);
+        return generateItem && !isIgnored(material) && (generationCondition == null || generationCondition.test(material)) || (hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null);
+    }
+
+    public boolean doGenerateBlock() {
+        return generateBlock;
+    }
+
+    public boolean doGenerateBlock(Material material) {
+        return generateBlock && !isIgnored(material) && (generationCondition == null || generationCondition.test(material)) || hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
     }
 
     public <T extends IMaterialProperty<T>> void executeHandler(PropertyKey<T> propertyKey, TriConsumer<TagPrefix, Material, T> handler) {
