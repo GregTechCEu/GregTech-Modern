@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -106,11 +107,11 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
  * @implNote GTMachines
  */
 public class GTMachines {
-    public final static int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEu.isHighTier() ? MAX : UHV);
-    public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEu.isHighTier() ? OpV : UV);
+    public final static int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? OpV : UV);
     public final static int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
-    public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEu.isHighTier() ? OpV : UHV);
-    public final static int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEu.isHighTier() ? MAX : UHV);
+    public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
+    public final static int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8: tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
