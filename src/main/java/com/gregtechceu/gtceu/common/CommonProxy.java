@@ -33,12 +33,12 @@ import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
-import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
@@ -142,7 +142,7 @@ public class CommonProxy {
         MaterialRegistryManager managerInternal = (MaterialRegistryManager) GTCEuAPI.materialManager;
 
         GTCEu.LOGGER.info("Registering material registries");
-        MinecraftForge.EVENT_BUS.post(new MaterialRegistryEvent());
+        ModLoader.get().postEvent(new MaterialRegistryEvent());
 
         // First, register CEu Materials
         managerInternal.unfreezeRegistries();
@@ -155,7 +155,7 @@ public class CommonProxy {
 
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
-        MinecraftForge.EVENT_BUS.post(materialEvent);
+        ModLoader.get().postEvent(materialEvent);
         AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistryInfo.KJS_MATERIAL_REGISTRY.getRegistryName());
@@ -164,7 +164,7 @@ public class CommonProxy {
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
         // Block entirely new Materials from being added in the Post event
         managerInternal.closeRegistries();
-        MinecraftForge.EVENT_BUS.post(new PostMaterialEvent());
+        ModLoader.get().postEvent(new PostMaterialEvent());
         if (GTCEu.isKubeJSLoaded()) {
             if (GTCEuStartupEvents.MATERIAL_MODIFICATION.hasListeners()) {
                 GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
