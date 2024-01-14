@@ -143,6 +143,10 @@ public class CommonProxy {
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
         MinecraftForge.EVENT_BUS.post(materialEvent);
+        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRegistryInfo.registerFor(GTRegistryInfo.KJS_MATERIAL_REGISTRY.getRegistryName());
+        }
 
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
         // Block entirely new Materials from being added in the Post event

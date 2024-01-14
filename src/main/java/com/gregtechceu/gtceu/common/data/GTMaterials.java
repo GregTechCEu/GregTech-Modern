@@ -323,12 +323,6 @@ public class GTMaterials {
         rod.modifyMaterialAmount(Blaze, 4);
         rod.modifyMaterialAmount(Bone, 5);
 
-
-        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.KJS_MATERIAL_REGISTRY.getRegistryName());
-        }
-
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
                 addAlloyBlastProperty(material);

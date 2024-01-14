@@ -45,7 +45,9 @@ public interface IGTAddon {
 
     /**
      * Call init on your custom Material class(es) here
+     * @deprecated use {@link com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent} and {@link com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent} instead.
      */
+    @Deprecated(forRemoval = true, since = "1.0.21")
     default void registerMaterials() {
 
     }
