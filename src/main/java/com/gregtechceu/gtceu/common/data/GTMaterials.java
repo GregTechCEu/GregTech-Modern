@@ -322,18 +322,6 @@ public class GTMaterials {
 
         rod.modifyMaterialAmount(Blaze, 4);
         rod.modifyMaterialAmount(Bone, 5);
-
-        for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
-                addAlloyBlastProperty(material);
-            }
-        }
-        // Alloy Blast Overriding
-        AlloyBlastProperty property = NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST);
-        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
-
-        property = IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST);
-        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 
     @Nullable
@@ -351,29 +339,6 @@ public class GTMaterials {
         gemFlawed.setIgnored(material);
         gemFlawless.setIgnored(material);
         gemExquisite.setIgnored(material);
-    }
-
-    public static void addAlloyBlastProperty(@Nonnull Material material) {
-        final List<MaterialStack> components = material.getMaterialComponents();
-        // ignore materials which are not alloys
-        if (components.size() < 2) return;
-
-        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
-        if (blastProperty == null) return;
-
-        if (!material.hasProperty(PropertyKey.FLUID)) return;
-
-        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
-        if (components.stream().filter(GTMaterials::isMaterialStackFluidOnly).limit(3).count() > 2) {
-            return;
-        }
-
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
-        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(FluidState.MOLTEN));
-    }
-
-    private static boolean isMaterialStackFluidOnly(@Nonnull MaterialStack ms) {
-        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 
     public static final List<MaterialFlag> STD_METAL = new ArrayList<>();
