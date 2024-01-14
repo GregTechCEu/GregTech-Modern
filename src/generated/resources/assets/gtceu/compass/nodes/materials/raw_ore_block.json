@@ -1,12 +1,12 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_chainsaw_head"
+    "res": "gtceu:aluminium_raw_ore_block"
   },
-  "page": "gtceu:materials/chainsaw_head",
+  "page": "gtceu:materials/raw_ore_block",
   "position": [
     -300,
-    250
+    0
   ],
   "section": "gtceu:materials"
 }
