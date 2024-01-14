@@ -416,7 +416,7 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty<T>> void setProperty(PropertyKey<T> key, IMaterialProperty<T> property) {
-        if (GTCEuAPI.materialManager.canModifyMaterials()) {
+        if (!GTCEuAPI.materialManager.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);

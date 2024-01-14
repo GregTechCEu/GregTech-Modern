@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
+import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -53,7 +54,7 @@ public class CommonProxy {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
-
+        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();

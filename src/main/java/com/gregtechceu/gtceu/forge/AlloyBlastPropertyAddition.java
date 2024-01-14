@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.forge;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -23,7 +22,7 @@ import java.util.List;
 /**
  * Listen to PostMaterialEvent instead of doing this directly because it's a lot cleaner this way.
  */
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+//@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AlloyBlastPropertyAddition {
 
     @SubscribeEvent
