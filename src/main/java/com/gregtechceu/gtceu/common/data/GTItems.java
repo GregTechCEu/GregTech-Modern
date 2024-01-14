@@ -163,7 +163,7 @@ public class GTItems {
             for (Material material : registry.getAllMaterials()) {
                 if (material.hasProperty(PropertyKey.TOOL)) {
                     var tier = material.getToolTier();
-                    tiers.put(tier.getLevel(), new Tuple<>(GTCEu.id(material.getName()), tier));
+                    tiers.put(tier.getLevel(), new Tuple<>(material.getResourceLocation(), tier));
                 }
             }
 
@@ -174,7 +174,7 @@ public class GTItems {
 
                     List<ResourceLocation> lower = tiers.values().stream().filter(low -> low.getB().getLevel() == tier.getLevel() - 1).map(Tuple::getA).toList();
                     List<ResourceLocation> higher = tiers.values().stream().filter(high -> high.getB().getLevel() == tier.getLevel() + 1).map(Tuple::getA).toList();
-                    registerToolTier(tier, GTCEu.id(material.getName()), lower, higher);
+                    registerToolTier(tier, material.getResourceLocation(), lower, higher);
 
                     for (GTToolType toolType : GTToolType.getTypes().values()) {
                         if (property.hasType(toolType)) {
@@ -1181,7 +1181,7 @@ public class GTItems {
         for (int i = 0; i < MarkerMaterials.Color.VALUES.length; i++) {
             MarkerMaterial color = MarkerMaterials.Color.VALUES[i];
             if (color != MarkerMaterials.Color.White) {
-                GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color.toString()), Item::new)
+                GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
                         .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
                         .transform(unificationItem(TagPrefix.lens, color))
                         .onRegister(compassNodeExist(GTCompassSections.MISC, "glass_lens"))
@@ -1725,7 +1725,7 @@ public class GTItems {
     }
 
     public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before, Collection<ResourceLocation> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)), Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
+        TierSortingRegistry.registerTier(tier, id, Arrays.asList(before.toArray(ResourceLocation[]::new)), Arrays.asList(after.toArray(ResourceLocation[]::new)));
     }
 
     public static ResourceLocation getTierName(Tier tier) {
