@@ -107,7 +107,7 @@ public class MixinHelpers {
         GTDynamicResourcePack.clearClient();
 
         // Load the data
-        packResources.add(new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
+        packResources.add(0, new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
         return packResources;
     }
 
