@@ -335,14 +335,12 @@ public class FluidBuilder {
                     }
                     case GAS -> ROOM_TEMPERATURE;
                     case PLASMA -> BASE_PLASMA_TEMPERATURE;
-                    case MOLTEN -> SOLID_LIQUID_TEMPERATURE;
                 };
             } else {
                 temperature = property.getBlastTemperature() + switch (state) {
                     case LIQUID -> LIQUID_TEMPERATURE_OFFSET;
                     case GAS -> GAS_TEMPERATURE_OFFSET;
                     case PLASMA -> BASE_PLASMA_TEMPERATURE;
-                    case MOLTEN -> SOLID_LIQUID_TEMPERATURE;
                 };
             }
         }
@@ -361,7 +359,6 @@ public class FluidBuilder {
             case LIQUID -> DEFAULT_LIQUID_DENSITY;
             case GAS -> DEFAULT_GAS_DENSITY;
             case PLASMA -> DEFAULT_PLASMA_DENSITY;
-            case MOLTEN -> DEFAULT_MOLTEN_DENSITY;
         };
     }
 
@@ -394,7 +391,6 @@ public class FluidBuilder {
             }
             case GAS -> DEFAULT_GAS_VISCOSITY;
             case PLASMA -> DEFAULT_PLASMA_VISCOSITY;
-            case MOLTEN -> DEFAULT_MOLTEN_VISCOSITY;
         };
     }
 }
