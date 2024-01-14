@@ -24,7 +24,7 @@
     "InventoryMixin",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
-    "LootTablesMixin",
+    "LootDataManagerMixin",
     "MinecraftServerMixin",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
