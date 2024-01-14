@@ -55,6 +55,10 @@ public class GTRecipeTypes {
     public static final String DUMMY = "dummy";
     public static final String KINETIC = "kinetic";
 
+    static {
+        GTRegistries.RECIPE_TYPES.unfreeze();
+    }
+
     //////////////////////////////////////
     //*********     Steam     **********//
     //////////////////////////////////////
@@ -601,6 +605,8 @@ public class GTRecipeTypes {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
+        GTRegistries.RECIPE_TYPES.freeze();
+
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"), StrictShapedRecipe.SERIALIZER);

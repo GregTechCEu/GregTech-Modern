@@ -123,6 +123,7 @@ public class GTMachines {
 
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
+        GTRegistries.MACHINES.unfreeze();
     }
     //////////////////////////////////////
     //******     Steam Machine    ******//
@@ -1939,7 +1940,7 @@ public class GTMachines {
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
-        return REGISTRATE.machine(material + "_crate", holder -> new CrateMachine(holder, material, capacity))
+        return REGISTRATE.machine(material.getName() + "_crate", holder -> new CrateMachine(holder, material, capacity))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
@@ -1952,7 +1953,7 @@ public class GTMachines {
 
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
-        var definition = REGISTRATE.machine(material + "_drum", MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
+        var definition = REGISTRATE.machine(material.getName() + "_drum", MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
@@ -2036,6 +2037,7 @@ public class GTMachines {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
+        GTRegistries.MACHINES.freeze();
     }
 
     public static MachineDefinition get(String name) {

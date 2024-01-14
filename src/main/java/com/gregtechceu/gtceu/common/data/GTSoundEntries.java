@@ -15,6 +15,10 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
  * @implNote GTSounds
  */
 public class GTSoundEntries {
+    static {
+        GTRegistries.SOUNDS.unfreeze();
+    }
+
     // Machine Sounds
     public static final SoundEntry FORGE_HAMMER = REGISTRATE.sound("forge_hammer").build();
     public static final SoundEntry MACERATOR = REGISTRATE.sound("macerator").build();
@@ -58,6 +62,8 @@ public class GTSoundEntries {
         AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
         GTRegistries.SOUNDS.values().forEach(SoundEntry::prepare);
         registerSounds();
+
+        GTRegistries.SOUNDS.freeze();
     }
 
     private static void registerSounds() {

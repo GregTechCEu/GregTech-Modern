@@ -30,7 +30,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @Getter
     protected final ResourceLocation registryName;
     @Getter
-    protected boolean frozen = false;
+    protected boolean frozen = true;
 
     public GTRegistry(ResourceLocation registryName) {
         registry = initRegistry();

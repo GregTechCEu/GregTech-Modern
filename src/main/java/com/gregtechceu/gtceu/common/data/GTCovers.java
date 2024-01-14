@@ -29,6 +29,10 @@ public class GTCovers {
     public static final int[] ALL_TIERS = GTValues.tiersBetween(GTValues.LV, GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
     public static final int[] ALL_TIERS_WITH_ULV = new int[] {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV};
 
+    static {
+        GTRegistries.COVERS.unfreeze();
+    }
+
     public final static CoverDefinition FACADE = register(
             "facade", FacadeCover::new,
             FacadeCoverRenderer.INSTANCE
@@ -173,5 +177,6 @@ public class GTCovers {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerCovers);
+        GTRegistries.COVERS.freeze();
     }
 }

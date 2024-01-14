@@ -9,6 +9,10 @@ import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 public class GTElements {
 
+    static {
+        GTRegistries.ELEMENTS.unfreeze();
+    }
+
     public static final Element H = createAndRegister(1, 0, -1, null, "Hydrogen", "H", false);
     public static final Element D = createAndRegister(1, 1, -1, "H", "Deuterium", "D", true);
     public static final Element T = createAndRegister(1, 2, -1, "D", "Tritium", "T", true);
@@ -155,6 +159,7 @@ public class GTElements {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.ELEMENTS.getRegistryName());
         }
+        GTRegistries.ELEMENTS.freeze();
     }
 
     public static Element get(String name) {

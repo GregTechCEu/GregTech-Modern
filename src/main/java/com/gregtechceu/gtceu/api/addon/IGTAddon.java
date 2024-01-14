@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -67,6 +68,20 @@ public interface IGTAddon {
     }
 
     /**
+     * Call init on your custom Recipe Capabilities here
+     */
+    default void registerRecipeCapabilities() {
+
+    }
+
+    /**
+     * Call init on your custom Recipe Conditions here
+     */
+    default void registerRecipeConditions() {
+
+    }
+
+    /**
      * Call init on your custom IWorldGenLayer class(es) here
      */
     default void registerWorldgenLayers() {
@@ -99,6 +114,13 @@ public interface IGTAddon {
      * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
      */
     default void registerOreVeins() {
+
+    }
+
+    /**
+     * Use {@link BedrockFluidDefinition#builder(ResourceLocation)} to register the veins.
+     */
+    default void registerFluidVeins() {
 
     }
 

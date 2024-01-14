@@ -86,6 +86,7 @@ public class CommonProxy {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
+        GTRegistries.COMPASS_NODES.unfreeze();
 
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
