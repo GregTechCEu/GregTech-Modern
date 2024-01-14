@@ -24,12 +24,14 @@ import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
+import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
+import com.tterrag.registrate.providers.ProviderType;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
@@ -108,13 +110,16 @@ public class CommonProxy {
         GTRegistries.REGISTRATE.registerRegistrate();
 
         // Register all material manager registries, for materials with mod ids.
-        GTCEuAPI.materialManager.getRegistries().forEach(registry ->
+        GTCEuAPI.materialManager.getRegistries().forEach(registry -> {
+            registry.getRegistrate().addDataGenerator(ProviderType.LANG, (provider) -> MaterialLangGenerator.generate(provider, registry));
+
             registry.getRegistrate()
                 .registerEventListeners(ModList.get().getModContainerById(registry.getModid())
                     .filter(FMLModContainer.class::isInstance)
                     .map(FMLModContainer.class::cast)
                     .map(FMLModContainer::getEventBus)
-                    .orElse(FMLJavaModLoadingContext.get().getModEventBus())));
+                    .orElse(FMLJavaModLoadingContext.get().getModEventBus()));
+        });
 
         WorldGenLayers.registerAll();
         GTFeatures.init();

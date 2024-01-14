@@ -143,7 +143,7 @@ public class GTRegistrate extends Registrate {
 
     @Override
     public <T extends Item> @Nonnull ItemBuilder<T, Registrate> item(String name, NonNullFunction<Item.Properties, T> factory) {
-        return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("/.", "_")));
+        return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("\\.", "_")));
     }
 
     private RegistryEntry<CreativeModeTab> currentTab;

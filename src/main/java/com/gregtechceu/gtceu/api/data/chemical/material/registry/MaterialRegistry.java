@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.registry;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import lombok.Getter;
@@ -19,7 +21,7 @@ public abstract class MaterialRegistry extends GTRegistry.String<Material> {
     public MaterialRegistry(java.lang.String modId) {
         super(new ResourceLocation(modId, "material"));
         IGTAddon addon = AddonFinder.getAddon(modId);
-        this.registrate = addon == null ? GTRegistrate.create(modId) : addon.getRegistrate();
+        this.registrate = addon != null ? addon.getRegistrate() : GTCEu.MOD_ID.equals(modId) ? GTRegistries.REGISTRATE : GTRegistrate.create(modId);
     }
 
     public abstract void register(Material material);
