@@ -5,15 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 /**
  * @author KilaBash

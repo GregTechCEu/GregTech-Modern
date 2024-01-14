@@ -18,7 +18,7 @@ import net.minecraft.world.level.material.MapColor;
 
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.createCasingBlock;
 
 public class GCyMBlocks {

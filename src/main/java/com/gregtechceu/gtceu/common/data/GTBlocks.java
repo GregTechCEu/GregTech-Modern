@@ -79,7 +79,7 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;

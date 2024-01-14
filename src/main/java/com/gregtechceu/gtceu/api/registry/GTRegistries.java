@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
@@ -41,12 +41,9 @@ import net.minecraftforge.registries.ForgeRegistries;
  * @implNote ElementRegistry
  */
 public final class GTRegistries {
-    public static final GTRegistrate REGISTRATE = GTRegistrate.create(GTCEu.MOD_ID);
     static {
-        REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
+        GTRegistration.REGISTRATE.defaultCreativeTab((ResourceKey<CreativeModeTab>) null);
     }
-
-    public static final GTRegistry.RL<GTRegistry<?, ?>> REGISTRIES = new GTRegistry.RL<>(GTCEu.id("root"));
 
     // GT Registry
     public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));

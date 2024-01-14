@@ -92,7 +92,7 @@ import java.util.stream.Stream;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;

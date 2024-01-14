@@ -35,11 +35,8 @@ public class GTRegistryInfo<K, V> {
     }
     public record BuilderType<T>(String type, Class<? extends BuilderBase<? extends T>> builderClass, BuilderFactory<T> factory) { }
 
-    public static MaterialRegistry KJS_MATERIAL_REGISTRY;
-
-    public static void createKjsMaterialRegistry() {
-        KJS_MATERIAL_REGISTRY = GTCEuAPI.materialManager.createRegistry(KubeJS.MOD_ID);
-    }
+    // GTCEuAPI#materialManager should be init by the point this is called.
+    public static final MaterialRegistry KJS_MATERIAL_REGISTRY = GTCEuAPI.materialManager.createRegistry(KubeJS.MOD_ID);
 
     public static final Map<ResourceLocation, GTRegistryInfo<?, ?>> MAP = new LinkedHashMap<>();
     public static final Set<ResourceLocation> EXTRA_IDS = new HashSet<>();

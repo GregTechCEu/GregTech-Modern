@@ -16,10 +16,7 @@ import net.minecraftforge.fml.ModLoadingContext;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 /**
  * @author KilaBash
@@ -27,6 +24,8 @@ import java.util.Set;
  * @implNote GTRegistry
  */
 public abstract class GTRegistry<K, V> implements Iterable<V> {
+    public static final Map<ResourceLocation, GTRegistry<?, ?>> REGISTERED = new HashMap<>();
+
     protected final BiMap<K, V> registry;
     @Getter
     protected final ResourceLocation registryName;
@@ -37,9 +36,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         registry = initRegistry();
         this.registryName = registryName;
 
-        if (!registryName.getPath().equals("root")) {
-            GTRegistries.REGISTRIES.register(registryName, this);
-        }
+        REGISTERED.put(registryName, this);
     }
 
     protected BiMap<K, V> initRegistry() {

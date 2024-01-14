@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 /**
  * @author KilaBash

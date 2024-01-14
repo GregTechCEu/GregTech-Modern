@@ -29,7 +29,6 @@ import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -68,7 +67,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.fml.ModList;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -77,7 +75,7 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
 import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;

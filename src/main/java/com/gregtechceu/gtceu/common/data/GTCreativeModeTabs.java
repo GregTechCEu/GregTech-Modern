@@ -17,7 +17,7 @@ import net.minecraft.world.item.*;
 
 import javax.annotation.Nonnull;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 /**
  * @author KilaBash

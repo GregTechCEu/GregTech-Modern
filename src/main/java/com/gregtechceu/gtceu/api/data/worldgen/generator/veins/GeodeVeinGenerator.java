@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
 import com.google.common.collect.Lists;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;

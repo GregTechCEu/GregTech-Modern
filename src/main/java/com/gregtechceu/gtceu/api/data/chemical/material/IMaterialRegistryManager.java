@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
-import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import net.minecraft.resources.ResourceLocation;

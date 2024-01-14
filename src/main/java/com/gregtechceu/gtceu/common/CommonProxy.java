@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
@@ -39,6 +40,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
@@ -51,6 +53,11 @@ public class CommonProxy {
         // used for forge events (ClientProxy + CommonProxy)
         IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
         eventBus.register(this);
+
+        // must be set here because of KubeJS compat
+        // trying to read this before the pre-init stage
+        GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
+
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
         // init common features
@@ -90,6 +97,7 @@ public class CommonProxy {
         MaterialIconSet.init();
         MaterialIconType.init();
         initMaterials();
+        TagPrefix.init();
         GTSoundEntries.init();
         GTDamageTypes.init();
         GTCompassSections.init();
@@ -107,7 +115,7 @@ public class CommonProxy {
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
-        GTRegistries.REGISTRATE.registerRegistrate();
+        GTRegistration.REGISTRATE.registerRegistrate();
 
         // Register all material manager registries, for materials with mod ids.
         GTCEuAPI.materialManager.getRegistries().forEach(registry -> {
@@ -132,9 +140,6 @@ public class CommonProxy {
 
         GTCEu.LOGGER.info("Registering material registries");
         MinecraftForge.EVENT_BUS.post(new MaterialRegistryEvent());
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryInfo.createKjsMaterialRegistry();
-        }
 
         // First, register CEu Materials
         managerInternal.unfreezeRegistries();
@@ -166,9 +171,12 @@ public class CommonProxy {
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         managerInternal.freezeRegistries();
         /* End Material Registration */
-        TagPrefix.init();
     }
 
+    @SubscribeEvent
+    public void modConstruct(FMLConstructModEvent event) {
+
+    }
 
     @SubscribeEvent
     public void commonSetup(FMLCommonSetupEvent e) {

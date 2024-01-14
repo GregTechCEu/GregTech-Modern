@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
 import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
@@ -74,7 +74,7 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
     public static void onBlockEntityRegister(BlockEntityType blockEntityType, NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory, boolean renderNormally) {
         if (instanceFactory != null && LDLib.isClient()) {
             DistExecutor.unsafeRunWhenOn(Dist.CLIENT, () -> () ->
-                OneTimeEventReceiver.addModListener(GTRegistries.REGISTRATE, FMLClientSetupEvent.class,
+                OneTimeEventReceiver.addModListener(GTRegistration.REGISTRATE, FMLClientSetupEvent.class,
                     ($) -> InstancedRenderRegistry.configure(blockEntityType)
                         .factory(instanceFactory.get())
                         .skipRender((be) -> !renderNormally)
