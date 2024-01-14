@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.tag;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -14,12 +13,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -27,6 +24,8 @@ import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import it.unimi.dsi.fastutil.objects.Object2FloatMap;
+import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -46,6 +45,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 import org.apache.logging.log4j.util.TriConsumer;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -765,6 +765,7 @@ public class TagPrefix {
     private BiConsumer<Material, List<Component>> tooltip;
 
     private final Map<Material, ItemLike[]> ignoredMaterials = new HashMap<>();
+    private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
     @Setter
@@ -851,34 +852,11 @@ public class TagPrefix {
         return this;
     }
 
-    /**
-     * Mappings between materials and their corresponding material amount
-     */
-    private static final Map<UnificationEntry, Long> MATERIAL_AMOUNT_MAP = ImmutableMap.ofEntries(
-
-            // Blocks (4 materials)
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Amethyst), GTValues.M * 4),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Brick), GTValues.M * 4),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.CertusQuartz), GTValues.M * 4),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Clay), GTValues.M * 4),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Glowstone), GTValues.M * 4),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.NetherQuartz), GTValues.M * 4),
-
-            // Blocks (1 material)
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Concrete), GTValues.M),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Glass), GTValues.M),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Ice), GTValues.M),
-            Map.entry(new UnificationEntry(TagPrefix.block, GTMaterials.Obsidian), GTValues.M),
-
-            // Stick materials
-            Map.entry(new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze), GTValues.M * 4),
-            Map.entry(new UnificationEntry(TagPrefix.rod, GTMaterials.Bone), GTValues.M * 5)
-
-    );
-
     public long getMaterialAmount(@Nullable Material material) {
-        UnificationEntry key = new UnificationEntry(this, material);
-        return MATERIAL_AMOUNT_MAP.getOrDefault(key, materialAmount);
+        if (material == null || !isAmountModified(material)) {
+            return this.materialAmount;
+        }
+        return (long) (GTValues.M * materialAmounts.getFloat(material));
     }
 
     public static TagPrefix getPrefix(String prefixName) {
@@ -977,6 +955,14 @@ public class TagPrefix {
 
     public void removeIgnored(Material material) {
         ignoredMaterials.remove(material);
+    }
+
+    public boolean isAmountModified(Material material) {
+        return materialAmounts.containsKey(material);
+    }
+
+    public void modifyMaterialAmount(@NotNull Material material, float amount) {
+        materialAmounts.put(material, amount);
     }
 
     public Map<Material, ItemLike[]> getIgnored() {

@@ -306,7 +306,23 @@ public class GTMaterials {
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, GTMaterials.Basalt);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, GTMaterials.Concrete);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
-      
+
+        block.modifyMaterialAmount(Amethyst, 4);
+        block.modifyMaterialAmount(Glowstone, 4);
+        block.modifyMaterialAmount(NetherQuartz, 4);
+        block.modifyMaterialAmount(CertusQuartz, 4);
+        block.modifyMaterialAmount(Brick, 4);
+        block.modifyMaterialAmount(Clay, 4);
+
+        block.modifyMaterialAmount(Concrete, 1);
+        block.modifyMaterialAmount(Glass, 1);
+        block.modifyMaterialAmount(Ice, 1);
+        block.modifyMaterialAmount(Obsidian, 1);
+
+        rod.modifyMaterialAmount(Blaze, 4);
+        rod.modifyMaterialAmount(Bone, 5);
+
+
         AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
