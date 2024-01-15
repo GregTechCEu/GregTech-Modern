@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -24,7 +25,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTROLYZER_RECIP
 public class DecompositionRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        for (var material : GTRegistries.MATERIALS) {
+        for (var material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             var prefix = material.hasProperty(PropertyKey.DUST) ? dust : null;
             processDecomposition(prefix, material, provider);
         }

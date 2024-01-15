@@ -11,10 +11,10 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 
 import java.util.Locale;
@@ -36,7 +36,7 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
     public transient Int2LongFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
 
     public SimpleMachineBuilder(String name, Function<IMachineBlockEntity, MetaMachine> machineConstructor) {
-        super(GTRegistries.REGISTRATE, name, MachineDefinition::createDefinition, machineConstructor, MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+        super(GTRegistration.REGISTRATE, name, MachineDefinition::createDefinition, machineConstructor, MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
         this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
     }
 

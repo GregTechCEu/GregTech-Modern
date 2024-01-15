@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 /**
  * @author KilaBash

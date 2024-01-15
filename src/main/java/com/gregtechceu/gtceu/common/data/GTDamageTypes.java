@@ -20,10 +20,6 @@ public class GTDamageTypes {
             .simpleId("heat")
             .tag(DamageTypeTags.IS_FIRE, DamageTypeTags.BYPASSES_ARMOR)
             .build();
-    public static final DamageTypeData FROST = new DamageTypeData.Builder()
-            .simpleId("frost")
-            .tag(DamageTypeTags.IS_FREEZING)
-            .build();
     public static final DamageTypeData CHEMICAL = new DamageTypeData.Builder()
             .simpleId("chemical")
             .tag(DamageTypeTags.BYPASSES_ARMOR)

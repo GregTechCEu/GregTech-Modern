@@ -247,7 +247,7 @@ public class OreRecipeHandler {
                     .save(provider);
         }
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("crushed_ore_to_dust_%s", material),
+        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("crushed_ore_to_dust_%s", material.getName()),
                 impureDustStack, 'h', new UnificationEntry(crushedPrefix, material));
 
 
@@ -272,7 +272,7 @@ public class OreRecipeHandler {
                 .duration(400).EUt(2)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("centrifuged_ore_to_dust_%s", material), dustStack,
+        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("centrifuged_ore_to_dust_%s", material.getName()), dustStack,
                 'h', new UnificationEntry(centrifugedPrefix, material));
 
         processMetalSmelting(centrifugedPrefix, material, property, provider);
@@ -299,7 +299,7 @@ public class OreRecipeHandler {
                 .duration(400).EUt(2)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("purified_ore_to_dust_%s", material), dustStack,
+        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("purified_ore_to_dust_%s", material.getName()), dustStack,
                 'h', new UnificationEntry(purifiedPrefix, material));
 
         if (!crushedCentrifugedStack.isEmpty()) {

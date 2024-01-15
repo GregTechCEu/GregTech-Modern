@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
@@ -14,12 +15,13 @@ public interface GTCEuStartupEvents {
     private static boolean validateRegistry(Object o) {
         try {
             var id = GTCEu.appendId(o.toString());
-            return GTRegistries.REGISTRIES.containKey(id) || GTRegistryObjectBuilderTypes.EXTRA_IDS.contains(id);
+            return GTRegistry.REGISTERED.containsKey(id) || GTRegistryInfo.EXTRA_IDS.contains(id);
         } catch (Exception ex) {
             return false;
         }
     }
 
     EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
+    EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
 
 }

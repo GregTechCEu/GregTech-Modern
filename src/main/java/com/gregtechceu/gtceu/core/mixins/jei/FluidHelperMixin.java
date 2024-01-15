@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.forge.core.mixins.jei;
+package com.gregtechceu.gtceu.core.mixins.jei;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import mezz.jei.forge.platform.FluidHelper;

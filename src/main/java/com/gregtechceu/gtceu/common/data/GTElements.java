@@ -5,9 +5,13 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 
 public class GTElements {
+
+    static {
+        GTRegistries.ELEMENTS.unfreeze();
+    }
 
     public static final Element H = createAndRegister(1, 0, -1, null, "Hydrogen", "H", false);
     public static final Element D = createAndRegister(1, 1, -1, "H", "Deuterium", "D", true);
@@ -153,8 +157,9 @@ public class GTElements {
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerElements);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.ELEMENTS.getRegistryName());
+            GTRegistryInfo.registerFor(GTRegistries.ELEMENTS.getRegistryName());
         }
+        GTRegistries.ELEMENTS.freeze();
     }
 
     public static Element get(String name) {

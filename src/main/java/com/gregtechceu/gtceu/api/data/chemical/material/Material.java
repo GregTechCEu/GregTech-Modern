@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
@@ -14,19 +14,22 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -40,6 +43,7 @@ public class Material implements Comparable<Material> {
      * @see MaterialInfo
      */
     @Nonnull
+    @Getter
     private final MaterialInfo materialInfo;
 
     /**
@@ -48,6 +52,7 @@ public class Material implements Comparable<Material> {
      * @see MaterialProperties
      */
     @Nonnull
+    @Getter
     private final MaterialProperties properties;
 
     /**
@@ -100,8 +105,10 @@ public class Material implements Comparable<Material> {
         return materialInfo.componentList;
     }
 
-    public MaterialStack[] getMaterialComponentsCt() {
-        return getMaterialComponents().toArray(new MaterialStack[0]);
+    public Material setComponents(MaterialStack... components) {
+        this.materialInfo.setComponents(components);
+        this.chemicalFormula = this.calculateChemicalFormula();
+        return this;
     }
 
     private Material(@Nonnull MaterialInfo materialInfo, @Nonnull MaterialProperties properties, @Nonnull MaterialFlags flags) {
@@ -113,31 +120,28 @@ public class Material implements Comparable<Material> {
     }
 
     // thou shall not call
-    protected Material(String name) {
-        materialInfo = new MaterialInfo(name);
+    protected Material(ResourceLocation resourceLocation) {
+        materialInfo = new MaterialInfo(resourceLocation);
         materialInfo.iconSet = MaterialIconSet.DULL;
         properties = new MaterialProperties();
         flags = new MaterialFlags();
     }
 
     protected void registerMaterial() {
-        GTRegistries.MATERIALS.register(this.materialInfo.name, this);
+        GTCEuAPI.materialManager.getRegistry(getModid()).register(this);
     }
 
     public String getName() {
-        return materialInfo.name;
+        return materialInfo.resourceLocation.getPath();
+    }
+
+    public String getModid() {
+        return materialInfo.resourceLocation.getNamespace();
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (GTRegistries.MATERIALS.isFrozen()) throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
+        if (!GTCEuAPI.materialManager.canModifyMaterials()) throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         this.flags.addFlags(flags).verify(this);
-    }
-
-    public void addFlags(String... names) {
-        addFlags(Arrays.stream(names)
-                .map(MaterialFlag::getByName)
-                .filter(Objects::nonNull)
-                .toArray(MaterialFlag[]::new));
     }
 
     public boolean hasFlag(MaterialFlag flag) {
@@ -240,7 +244,7 @@ public class Material implements Comparable<Material> {
     public MaterialToolTier getToolTier() {
         ToolProperty prop = getProperty(PropertyKey.TOOL);
         if (prop == null)
-            throw new IllegalArgumentException("Material " + materialInfo.name + " does not have a tool!");
+            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation + " does not have a tool!");
         return prop.getTier(this);
     }
 
@@ -261,14 +265,14 @@ public class Material implements Comparable<Material> {
 
     public int getBlockHarvestLevel() {
         if (!hasProperty(PropertyKey.DUST))
-            throw new IllegalArgumentException("Material " + materialInfo.name + " does not have a harvest level! Is probably a Fluid");
+            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation + " does not have a harvest level! Is probably a Fluid");
         int harvestLevel = getProperty(PropertyKey.DUST).getHarvestLevel();
         return harvestLevel > 0 ? harvestLevel - 1 : harvestLevel;
     }
 
     public int getToolHarvestLevel() {
         if (!hasProperty(PropertyKey.TOOL))
-            throw new IllegalArgumentException("Material " + materialInfo.name + " does not have a tool harvest level! Is probably not a Tool Material");
+            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation + " does not have a tool harvest level! Is probably not a Tool Material");
         return getProperty(PropertyKey.TOOL).getHarvestLevel();
     }
 
@@ -375,8 +379,13 @@ public class Material implements Comparable<Material> {
         return FormattingUtil.lowerUnderscoreToUpperCamel(toString());
     }
 
+    @NotNull
+    public ResourceLocation getResourceLocation() {
+        return materialInfo.resourceLocation;
+    }
+
     public String getUnlocalizedName() {
-        return "material." + materialInfo.name;
+        return materialInfo.resourceLocation.toLanguageKey("material");
     }
 
     public MutableComponent getLocalizedName() {
@@ -390,17 +399,12 @@ public class Material implements Comparable<Material> {
 
     @Override
     public String toString() {
-        return materialInfo.name;
+        return materialInfo.resourceLocation.toString();
     }
 
     // must be named multiply for GroovyScript to allow `mat * quantity -> MaterialStack`
     public MaterialStack multiply(long amount) {
         return new MaterialStack(this, amount);
-    }
-
-    @Nonnull
-    public MaterialProperties getProperties() {
-        return properties;
     }
 
     public <T extends IMaterialProperty<T>> boolean hasProperty(PropertyKey<T> key) {
@@ -412,7 +416,7 @@ public class Material implements Comparable<Material> {
     }
 
     public <T extends IMaterialProperty<T>> void setProperty(PropertyKey<T> key, IMaterialProperty<T> property) {
-        if (GTRegistries.MATERIALS.isFrozen()) {
+        if (!GTCEuAPI.materialManager.canModifyMaterials()) {
             throw new IllegalStateException("Cannot add properties to a Material when registry is frozen!");
         }
         properties.setProperty(key, property);
@@ -459,21 +463,22 @@ public class Material implements Comparable<Material> {
          * Constructs a {@link Material}. This Builder replaces the old constructors, and
          * no longer uses a class hierarchy, instead using a {@link MaterialProperties} system.
          *
-         * @param name The Name of this Material. Will be formatted as
+         * @param resourceLocation The Name of this Material. Will be formatted as
          *             "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
-        public Builder(String name) {
-            super(GTCEu.id(name));
+        public Builder(ResourceLocation resourceLocation) {
+            super(resourceLocation);
+            String name = resourceLocation.getPath();
             if (name.charAt(name.length() - 1) == '_')
                 throw new IllegalArgumentException("Material name cannot end with a '_'!");
-            materialInfo = new MaterialInfo(name);
+            materialInfo = new MaterialInfo(resourceLocation);
             properties = new MaterialProperties();
             flags = new MaterialFlags();
         }
 
         public Builder(ResourceLocation id, Object... args) {
-            this(id.getPath());
+            this(id);
         }
 
         /*
@@ -818,7 +823,7 @@ public class Material implements Comparable<Material> {
             for (int i = 0; i < components.length; i += 2) {
                 if (components[i] == null) {
                     throw new IllegalArgumentException("Material in Components List is null for Material "
-                            + this.materialInfo.name);
+                            + this.materialInfo.resourceLocation);
                 }
                 composition.add(new MaterialStack(
                         components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) : (Material) components[i],
@@ -1044,19 +1049,21 @@ public class Material implements Comparable<Material> {
     /**
      * Holds the basic info for a Material, like the name, color, id, etc..
      */
+    @Accessors(chain = true)
     private static class MaterialInfo {
         /**
-         * The unlocalized name of this Material.
+         * The modid and unlocalized name of this Material.
          * <p>
          * Required.
          */
-        private final String name;
+        private final ResourceLocation resourceLocation;
 
         /**
          * The color of this Material.
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
+        @Getter @Setter
         private int color = -1;
 
         /**
@@ -1065,6 +1072,7 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
+        @Getter @Setter
         private int secondaryColor = -1;
 
         /**
@@ -1072,6 +1080,7 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
+        @Getter @Setter
         private boolean hasFluidColor = true;
 
         /**
@@ -1080,6 +1089,7 @@ public class Material implements Comparable<Material> {
          * Default: - GEM_VERTICAL if it has GemProperty.
          * - DULL if has DustProperty or IngotProperty.
          */
+        @Getter @Setter
         private MaterialIconSet iconSet;
 
         /**
@@ -1087,6 +1097,7 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: none.
          */
+        @Getter @Setter
         private ImmutableList<MaterialStack> componentList;
 
         /**
@@ -1094,12 +1105,14 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: none.
          */
+        @Getter @Setter
         private Element element;
 
-        private MaterialInfo(String name) {
+        private MaterialInfo(ResourceLocation resourceLocation) {
+            String name = resourceLocation.getPath();
             if (!FormattingUtil.toLowerCaseUnderscore(FormattingUtil.lowerUnderscoreToUpperCamel(name)).equals(name))
                 throw new IllegalStateException("Cannot add materials with names like 'materialnumber'! Use 'material_number' instead.");
-            this.name = name;
+            this.resourceLocation = resourceLocation;
         }
 
         private void verifyInfo(MaterialProperties p, boolean averageRGB) {
@@ -1128,7 +1141,11 @@ public class Material implements Comparable<Material> {
                     color = (int) (colorTemp / divisor);
                 }
             }
+        }
 
+        public MaterialInfo setComponents(MaterialStack... components) {
+            this.componentList = ImmutableList.copyOf(Arrays.stream(components).toList());
+            return this;
         }
     }
 }

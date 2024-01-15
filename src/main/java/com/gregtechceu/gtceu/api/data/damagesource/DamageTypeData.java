@@ -27,7 +27,7 @@ import java.util.stream.Stream;
  * @see DamageSources
  */
 public class DamageTypeData {
-    private static final List<DamageTypeData> all = new ArrayList<>();
+    private static final List<DamageTypeData> ALL = new ArrayList<>();
 
     public final ResourceKey<DamageType> key;
     public final ResourceLocation id;
@@ -77,7 +77,7 @@ public class DamageTypeData {
     }
 
     public static Stream<DamageTypeData> allInNamespace(String namespace) {
-        return all.stream().filter(data -> data.id.getNamespace().equals(namespace));
+        return ALL.stream().filter(data -> data.id.getNamespace().equals(namespace));
     }
 
     public static DamageTypeData.Builder builder() {
@@ -187,7 +187,7 @@ public class DamageTypeData {
                     new DamageType(msgId, scaling, exhaustion, effects, deathMessageType),
                     tags
             );
-            all.add(data);
+            ALL.add(data);
             return data;
         }
     }

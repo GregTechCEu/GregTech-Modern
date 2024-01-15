@@ -90,8 +90,8 @@ public class GTValues {
     public static final int[] ALL_TIERS = new int[]{ULV, LV, MV, HV, EV, IV, LuV, ZPM, UV, UHV, UEV, UIV, UXV, OpV, MAX};
     public static final int TIER_COUNT = ALL_TIERS.length;
 
-    public static int[] tiersBetween(int min, int max) {
-        return Arrays.stream(ALL_TIERS).dropWhile(tier -> tier < min).takeWhile(tier -> tier <= max).toArray();
+    public static int[] tiersBetween(int minInclusive, int maxInclusive) {
+        return Arrays.stream(ALL_TIERS).dropWhile(tier -> tier < minInclusive).takeWhile(tier -> tier <= maxInclusive).toArray();
     }
 
     public static final String

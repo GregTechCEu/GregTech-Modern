@@ -11,11 +11,11 @@ import net.minecraft.world.food.FoodProperties;
  */
 public class GTFoods {
     public final static FoodProperties CHOCOLATE = new FoodProperties.Builder()
-            .effect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 1), 0.1f)
+            .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 1), 0.1f)
             .alwaysEat().nutrition(4).saturationMod(0.3F).build();
 
     public final static FoodProperties DRINK = new FoodProperties.Builder()
-            .effect(new MobEffectInstance(MobEffects.HEAL, 200, 1), 0.1f)
+            .effect(() -> new MobEffectInstance(MobEffects.HEAL, 200, 1), 0.1f)
             .alwaysEat().nutrition(4).saturationMod(0.3F).build();
 
     public static void init() {
