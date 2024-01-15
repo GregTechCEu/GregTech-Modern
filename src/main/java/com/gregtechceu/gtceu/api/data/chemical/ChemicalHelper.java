@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -12,10 +10,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
@@ -31,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.registries.RegistryObject;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -71,18 +69,26 @@ public class ChemicalHelper {
     }
 
     @SafeVarargs
-    public static void registerUnificationItems(UnificationEntry unificationEntry, Supplier<ItemLike>... items) {
+    public static void registerUnificationItems(UnificationEntry unificationEntry, Supplier<? extends ItemLike>... items) {
         UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                .addAll(Arrays.stream(items).toList());
-        for (Supplier<ItemLike> item : items) {
-            item = Suppliers.memoize(item::get);
-            ITEM_UNIFICATION_ENTRY.add(Map.entry(item, unificationEntry));
+                .addAll(Arrays.stream(items).map(supplier -> (Supplier<ItemLike>) supplier::get).toList());
+        for (Supplier<? extends ItemLike> item : items) {
+            Supplier<ItemLike> memoized = SupplierMemoizer.memoize(item::get);
+            ITEM_UNIFICATION_ENTRY.add(Map.entry(memoized, unificationEntry));
             if (item instanceof Block block) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                         .add(() -> block);
             } else if (item instanceof BlockEntry<?> blockEntry) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                         .add(blockEntry::get);
+            } else if (item instanceof RegistryObject<?> registryObject) {
+                if (registryObject.getKey().isFor(Registries.BLOCK)) {
+                    UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
+                        .add((RegistryObject<Block>) registryObject);
+                }
+            } else if (item instanceof SupplierMemoizer.MemoizedBlockSupplier<? extends Block> supplier) {
+                UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
+                    .add(supplier::get);
             }
         }
         if (TagPrefix.ORES.containsKey(unificationEntry.tagPrefix) && !ORES_INVERSE.containsValue(unificationEntry.tagPrefix)) {
@@ -350,9 +356,9 @@ public class ChemicalHelper {
             });
         }
         GTItems.toUnify.forEach(ChemicalHelper::registerUnificationItems);
-        GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
-        GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
-        GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block.get())));
+        //GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
+        //GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
+        //GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
         // add new stuff here as more maps are added, IDK a better way
     }
 }

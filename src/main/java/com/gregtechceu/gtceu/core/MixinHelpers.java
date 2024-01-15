@@ -70,7 +70,7 @@ public class MixinHelpers {
                     var materialTags = entry.tagPrefix.getAllItemTags(material);
                     for (TagKey<Item> materialTag : materialTags) {
                         List<TagLoader.EntryWithSource> tags = new ArrayList<>();
-                        itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item.asItem())), GTValues.CUSTOM_TAG_SOURCE)));
+                        itemLikes.forEach(item -> tags.add(new TagLoader.EntryWithSource(TagEntry.element(BuiltInRegistries.ITEM.getKey(item.get().asItem())), GTValues.CUSTOM_TAG_SOURCE)));
                         tagMap.computeIfAbsent(materialTag.location(), path -> new ArrayList<>()).addAll(tags);
                     }
 

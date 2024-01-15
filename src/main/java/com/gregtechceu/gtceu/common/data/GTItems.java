@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ArrayTable;
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableTable;
@@ -39,6 +38,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -82,7 +82,6 @@ import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
 import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
 /**
  * @author KilaBash
@@ -95,7 +94,7 @@ public class GTItems {
     //*****     Material Items    ******//
     //////////////////////////////////////
 
-    public static final Map<UnificationEntry, Supplier<ItemLike>> toUnify = new HashMap<>();
+    public static final Map<UnificationEntry, Supplier<? extends ItemLike>> toUnify = new HashMap<>();
     public static final Map<TagPrefix, TagPrefix> purifyMap = new HashMap<>();
 
     static {
@@ -1669,7 +1668,7 @@ public class GTItems {
     public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(item -> {
-                Supplier<ItemLike> supplier = Suppliers.memoize(() -> item);
+                Supplier<ItemLike> supplier = SupplierMemoizer.memoize(() -> item);
                 UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
                 toUnify.put(entry, supplier);
                 ChemicalHelper.registerUnificationItems(entry, supplier);
