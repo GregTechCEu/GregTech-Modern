@@ -889,19 +889,22 @@ public class TagPrefix {
         return ignoredMaterials.containsKey(material);
     }
 
-    public void setIgnored(Material material, Supplier<ItemLike>... items) {
+    @SafeVarargs
+    public final void setIgnored(Material material, Supplier<ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
         }
     }
 
+    @SuppressWarnings("unchecked")
     public void setIgnored(Material material, ItemLike... items) {
         this.setIgnored(material, Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
     }
 
+    @SuppressWarnings("unchecked")
     public void setIgnored(Material material) {
-        this.ignoredMaterials.put(material, new Supplier[]{});
+        this.ignoredMaterials.put(material, new Supplier[0]);
     }
 
     public void removeIgnored(Material material) {
