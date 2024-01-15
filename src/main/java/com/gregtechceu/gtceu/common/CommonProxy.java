@@ -159,7 +159,7 @@ public class CommonProxy {
         ModLoader.get().postEvent(materialEvent);
         AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTRegistryInfo.KJS_MATERIAL_REGISTRY.getRegistryName());
+            GTRegistryInfo.registerFor(GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).getRegistryName());
         }
 
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
