@@ -118,7 +118,7 @@
   "page": "gtceu:generation/marble",
   "position": [
     -50,
-    50
+    0
   ],
   "pre_nodes": [
     "gtceu:generation/ore"

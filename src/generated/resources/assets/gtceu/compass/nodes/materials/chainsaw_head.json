@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_chainsaw_head"
+    "res": "gtceu:aluminium_chainsawHead"
   },
   "page": "gtceu:materials/chainsaw_head",
   "position": [

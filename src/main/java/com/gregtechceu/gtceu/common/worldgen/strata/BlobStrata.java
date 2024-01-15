@@ -60,12 +60,13 @@ public class BlobStrata implements SurfaceRules.RuleSource {
             IStrataLayer stratum;
             stratum = Objects.requireNonNullElseGet(INSTANCE.layer, () -> getStateForPos(typeNoise, LAYERS, x, y, z));
 
+            /*
             double threshold = strata3d.compute(WorldGeneratorUtils.createFunctionContext(x, y ,z));
-
             if (threshold >= stratum.getMinSpawnTreshold()) {
                 return stratum.getState().get().get();
             }
-            return null;
+            */
+            return stratum.getState().get().get();
         };
     }
 

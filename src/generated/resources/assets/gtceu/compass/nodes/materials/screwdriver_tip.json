@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_screwdriver_tip"
+    "res": "gtceu:aluminium_screwdriverTip"
   },
   "page": "gtceu:materials/screwdriver_tip",
   "position": [

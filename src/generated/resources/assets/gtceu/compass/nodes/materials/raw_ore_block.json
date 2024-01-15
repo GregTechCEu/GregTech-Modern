@@ -1,7 +1,7 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_raw_ore_block"
+    "res": "gtceu:raw_aluminium_block"
   },
   "page": "gtceu:materials/raw_ore_block",
   "position": [
