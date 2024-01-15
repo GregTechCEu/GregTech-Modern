@@ -33,11 +33,11 @@ public class AlloyBlastPropertyAddition {
             }
         }
         // Alloy Blast Overriding
-        AlloyBlastProperty property = GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST);
-        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
+        GTMaterials.NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST)
+                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
 
-        property = GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST);
-        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
+        GTMaterials.IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST)
+                .setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
     }
 
     public static void addAlloyBlastProperty(@Nonnull Material material) {
