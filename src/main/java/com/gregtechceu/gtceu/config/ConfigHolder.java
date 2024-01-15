@@ -42,7 +42,7 @@ public class ConfigHolder {
                 "Useful for mods like TerraFirmaCraft.", "Default: false"})
         public boolean generateLowQualityGems = true; // default true
         @Configurable
-        @Configurable.Comment({"Whether to remove Block/Ingot compression and decompression in the Crafting Table.", "Default: false"})
+        @Configurable.Comment({"Whether to remove Block/Ingot compression and decompression in the Crafting Table.", "Default: true"})
         public boolean disableManualCompression = true; // default true
         @Configurable
         @Configurable.Comment({"Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.", "Default: false"})
