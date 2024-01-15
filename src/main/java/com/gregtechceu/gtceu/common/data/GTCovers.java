@@ -27,7 +27,7 @@ import java.util.Locale;
 public class GTCovers {
 
     public static final int[] ALL_TIERS = GTValues.tiersBetween(GTValues.LV, GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
-    public static final int[] ALL_TIERS_WITH_ULV = new int[] {GTValues.ULV, GTValues.LV, GTValues.MV, GTValues.HV, GTValues.EV, GTValues.IV, GTValues.LuV, GTValues.ZPM, GTValues.UV};
+    public static final int[] ALL_TIERS_WITH_ULV = GTValues.tiersBetween(GTValues.ULV, GTCEuAPI.isHighTier() ? GTValues.OpV : GTValues.UV);
 
     static {
         GTRegistries.COVERS.unfreeze();
