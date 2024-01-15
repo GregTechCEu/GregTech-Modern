@@ -230,7 +230,7 @@ public class CommonProxy {
             Registry<NoiseGeneratorSettings> registry = registryManager.registryOrThrow(Registries.NOISE_SETTINGS);
             Holder<NoiseGeneratorSettings> holder = switch (type) {
                 case BLOB -> registry.getHolderOrThrow(GTFeatures.BLOB_STRATA_NOISE_SETTINGS);
-                case LAYER -> registry.getHolderOrThrow(GTFeatures.LAYER_STRATA_NOISE_SETTINGS);
+                //case LAYER -> registry.getHolderOrThrow(GTFeatures.LAYER_STRATA_NOISE_SETTINGS); // FIXME see LayerStrata
                 case NONE -> registry.getHolderOrThrow(NoiseGeneratorSettings.OVERWORLD);
             };
             MultiNoiseBiomeSource biomeSource = MultiNoiseBiomeSource.createFromPreset(parameterLists.getHolderOrThrow(MultiNoiseBiomeSourceParameterLists.OVERWORLD));

@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
-import lombok.Getter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -16,7 +15,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
@@ -26,9 +24,6 @@ import java.util.function.Predicate;
 @Accessors(chain = true)
 public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
     public final KJSTagPrefix base;
-
-    @Getter
-    private final List<MaterialStack> secondaryMaterials = new ArrayList<>();
 
     public TagPrefixBuilder(ResourceLocation id, Object... args) {
         super(id, args);
@@ -112,9 +107,8 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilder miningToolTag(String path) {
-        this.miningToolTag(TagKey.create(Registries.BLOCK, ResourceLocation.tryParse(path)));
-        return this;
+    public TagPrefixBuilder miningToolTag(ResourceLocation path) {
+        return this.miningToolTag(TagKey.create(Registries.BLOCK, path));
     }
 
     public TagPrefixBuilder miningToolTag(TagKey<Block> tag) {

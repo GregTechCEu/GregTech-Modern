@@ -17,6 +17,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+// FIXME very jank currently, generates vertical columns of a single block type randomly instead of the uniform-ish layers we want
 public class LayerStrata implements SurfaceRules.RuleSource {
     public static IStrataLayer[] LAYERS;
     public static final LayerStrata INSTANCE = new LayerStrata();

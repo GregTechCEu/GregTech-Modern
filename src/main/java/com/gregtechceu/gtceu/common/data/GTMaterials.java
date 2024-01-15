@@ -2,29 +2,20 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.common.block.StoneBlockType;
+import com.gregtechceu.gtceu.common.block.StoneTypes;
 import com.gregtechceu.gtceu.common.data.materials.*;
-import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -300,13 +291,11 @@ public class GTMaterials {
         rawOreBlock.setIgnored(Iron, Items.RAW_IRON_BLOCK);
         rawOreBlock.setIgnored(Copper, Items.RAW_COPPER_BLOCK);
 
-        // TODO GT stone types, move out of this file
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.Deepslate);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.RED_GRANITE, 1), TagPrefix.stone, GTMaterials.GraniteRed);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.MARBLE, 1), TagPrefix.stone, GTMaterials.Marble);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, GTMaterials.Basalt);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, GTMaterials.Concrete);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
+        ChemicalHelper.registerUnificationItems(rock, GTMaterials.RedGranite, GTBlocks.STONE_BLOCKS.get(StoneBlockType.SMOOTH, StoneTypes.RED_GRANITE));
+        ChemicalHelper.registerUnificationItems(rock, GTMaterials.Marble, GTBlocks.STONE_BLOCKS.get(StoneBlockType.SMOOTH, StoneTypes.MARBLE));
+        ChemicalHelper.registerUnificationItems(rock, GTMaterials.Basalt, Blocks.BASALT);
+        ChemicalHelper.registerUnificationItems(rock, GTMaterials.Concrete, GTBlocks.STONE_BLOCKS.get(StoneBlockType.SMOOTH, StoneTypes.CONCRETE_LIGHT));
+        ChemicalHelper.registerUnificationItems(rock, GTMaterials.Concrete, GTBlocks.STONE_BLOCKS.get(StoneBlockType.SMOOTH, StoneTypes.CONCRETE_DARK));
 
         block.modifyMaterialAmount(Amethyst, 4);
         block.modifyMaterialAmount(Glowstone, 4);
