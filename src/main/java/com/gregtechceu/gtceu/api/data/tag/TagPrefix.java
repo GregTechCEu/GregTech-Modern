@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -604,7 +605,9 @@ public class TagPrefix {
             .defaultTagPath("%s")
             .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
-            .unificationEnabled(true);
+            .unificationEnabled(true)
+            .generateBlock(true) // generate a block but not really, for TagPrefix#setIgnoredBlock
+            .generationCondition((material) -> false);
 
     public static final TagPrefix frameGt = new TagPrefix("frame")
             .defaultTagPath("frames/%s")
@@ -900,7 +903,17 @@ public class TagPrefix {
 
     @SuppressWarnings("unchecked")
     public void setIgnored(Material material, ItemLike... items) {
-        this.setIgnored(material, Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+        // go through setIgnoredBlock to wrap if this is a block prefix
+        if (this.doGenerateBlock()) {
+            this.setIgnoredBlock(material, Arrays.stream(items).filter(Block.class::isInstance).map(Block.class::cast).toArray(Block[]::new));
+        } else {
+            this.setIgnored(material, Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setIgnoredBlock(Material material, Block... items) {
+        this.setIgnored(material, Arrays.stream(items).map(block -> SupplierMemoizer.memoizeBlockSupplier(() -> block)).toArray(Supplier[]::new));
     }
 
     @SuppressWarnings("unchecked")
