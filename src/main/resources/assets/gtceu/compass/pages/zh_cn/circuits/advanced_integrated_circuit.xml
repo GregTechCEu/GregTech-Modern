@@ -1,32 +1,14 @@
 <page>
- <h1>
-  进阶集成电路
- </h1>
- <h3>
-  来源
- </h3>
- <text><style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/></style></text>
- <h2 font-color="0xff0000">
-  警告！！！
- </h2>
- <text isCenter="true">
-  <style color="0xff0000" pwt="true">这个警告表示这不是一个可靠的页面。</style>
-  <br/>
-  <style bold="true" color="0xffaa00" pwt="true">请不要在discord或github上报告任何和本页面相关的错误。</style>
-  <br/>
-  本页面翻译自中文维基，尚未经过审核和润色。可能存在错误和不准确之处。我们希望您能帮助我们改进本页面。
- </text>
- <text>
-  <br/>
-  <style lang="zh-cn">
-   第一代HV电路板，由
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">良好的集成电路</style>
-   套娃合成而来，它是你由MV进入HV的第一个门槛，推荐用它制作MV电路组装机来制作更便宜的
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">集成处理器</style>
-   以及
-   <style color="0xafff00" hover-info="click link" lang="zh-cn" link="gtceu:links" pwt="true" underlined="true">处理器组件</style>
-   。
-  </style>
-  <br/>
- </text>
+  <h1>进阶集成电路</h1>
+  <h3>来源</h3>
+  <text>
+    <style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style><br/>，<style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://github.com/blackdragon2447">BlackDragon2447</style> <br/></style>
+  </text>
+  <text>
+    <br/>
+    <style>第一代HV电路板。它由若干<style color="0xafff00" hover-info="click link" link="gtceu:circuits/good_integrated_circuits" underlined="true">优质集成电路</style>，<style color="0xafff00" hover-info="click link" link="gtceu:circuits/ilc_chip" underlined="true">IC芯片</style>和RAM芯片制作。</style>
+    <br/>
+  </text>
+  <h2>合成</h2>
+  <recipe id="gtceu:circuit_assembler/integrated_circuit_hv_soldering_alloy"></recipe>
 </page>
