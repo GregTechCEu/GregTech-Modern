@@ -88,7 +88,6 @@ public class SizedIngredient extends Ingredient {
     public @NotNull JsonElement toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", TYPE.toString());
-        json.addProperty("fabric:type", TYPE.toString());
         json.addProperty("count", amount);
         json.add("ingredient", inner.toJson());
         return json;

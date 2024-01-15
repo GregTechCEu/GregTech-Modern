@@ -16,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -53,12 +54,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         String recipeType = GsonHelper.getAsString(json, "type");
         int duration = json.has("duration") ? GsonHelper.getAsInt(json, "duration") : 100;
         CompoundTag data = new CompoundTag();
-        try {
-            if (json.has("data"))
-                data = TagParser.parseTag(json.get("data").toString());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        if (json.has("data"))
+            data = CraftingHelper.getNBT(json.get("data"));
         Map<RecipeCapability<?>, List<Content>> inputs = capabilitiesFromJson(json.has("inputs") ? json.getAsJsonObject("inputs") : new JsonObject());
         Map<RecipeCapability<?>, List<Content>> tickInputs = capabilitiesFromJson(json.has("tickInputs") ? json.getAsJsonObject("tickInputs") : new JsonObject());
         Map<RecipeCapability<?>, List<Content>> outputs = capabilitiesFromJson(json.has("outputs") ? json.getAsJsonObject("outputs") : new JsonObject());
