@@ -126,7 +126,7 @@ public class TagPrefix {
             .langValue("End %s Ore")
             .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone, BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(4.5F, 9.0F), new ResourceLocation("block/end_stone"), true);
 
-    public static final TagPrefix rawOre = new TagPrefix("raw")
+    public static final TagPrefix rawOre = new TagPrefix("raw", true)
             .idPattern("raw_%s")
             .defaultTagPath("raw_materials/%s")
             .unformattedTagPath("raw_materials")
