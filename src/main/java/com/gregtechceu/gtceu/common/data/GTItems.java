@@ -1578,7 +1578,7 @@ public class GTItems {
             var dyeColor = DyeColor.values()[i];
             DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
-                    .tag(TagUtil.createPlatformItemTag("dyes/" + dyeColor.getName(), dyeColor.getName() + "_dyes"))
+                    .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
                     .onRegister(compassNodeExist(GTCompassSections.MISC, "chemical_dye"))
                     .register();
         }
