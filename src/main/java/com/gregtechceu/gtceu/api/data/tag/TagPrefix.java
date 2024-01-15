@@ -871,7 +871,7 @@ public class TagPrefix {
 
     public String getUnlocalizedName(Material material) {
         String formattedPrefix = FormattingUtil.toLowerCaseUnderscore(this.name);
-        String matSpecificKey = String.format("item.%s_%s", this.invertedName ? formattedPrefix : material.getName(), this.invertedName ? material.getName() : formattedPrefix);
+        String matSpecificKey = String.format("item.%s.%s", material.getModid(), this.idPattern.formatted(material.getName()));
         if (LocalizationUtils.exist(matSpecificKey)) {
             return matSpecificKey;
         }
