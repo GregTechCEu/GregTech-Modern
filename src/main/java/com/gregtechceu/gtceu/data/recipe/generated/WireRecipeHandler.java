@@ -84,7 +84,7 @@ public class WireRecipeHandler {
                 .save(provider);
 
         if (!material.hasFlag(NO_WORKING) && material.hasFlag(GENERATE_PLATE)) {
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_wire_single", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_wire_single", material.getName()),
                     ChemicalHelper.get(wireGtSingle, material), "Xx",
                     'X', new UnificationEntry(plate, material));
         }
@@ -165,7 +165,7 @@ public class WireRecipeHandler {
         for (int i = 1; i <= insulationAmount; i++) {
             ingredients[i] = ChemicalHelper.get(plate, Rubber);
         }
-        VanillaRecipeHelper.addShapelessRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_cable_%d", material.getName(), cableAmount)),
+        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_cable_%d", material.getName(), cableAmount),
                 ChemicalHelper.get(cablePrefix, material),
                 ingredients
         );

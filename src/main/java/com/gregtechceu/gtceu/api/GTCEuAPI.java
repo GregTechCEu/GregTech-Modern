@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -11,7 +10,6 @@ import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.GenericEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -51,6 +49,20 @@ public class GTCEuAPI {
 
         public void register(K key, V value) {
             if (registry != null) registry.register(key, value);
+        }
+
+        public static class RL<V> extends RegisterEvent<ResourceLocation, V> {
+
+            public RL(GTRegistry<ResourceLocation, V> registry, Class<V> clazz) {
+                super(registry, clazz);
+            }
+        }
+
+        public static class String<V> extends RegisterEvent<java.lang.String, V> {
+
+            public String(GTRegistry<java.lang.String, V> registry, Class<V> clazz) {
+                super(registry, clazz);
+            }
         }
     }
 }
