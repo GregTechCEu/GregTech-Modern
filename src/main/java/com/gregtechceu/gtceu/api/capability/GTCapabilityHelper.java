@@ -8,6 +8,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.energy.IEnergyStorage;
 
@@ -32,79 +33,37 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IEnergyContainer getEnergyContainer(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, level, pos, side);
     }
 
     @Nullable
     public static IEnergyInfoProvider getEnergyInfoProvider(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER, level, pos, side);
     }
 
     @Nullable
     public static ICoverable getCoverable(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_COVERABLE, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_COVERABLE, level, pos, side);
     }
 
     @Nullable
     public static IToolable getToolable(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_TOOLABLE, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_TOOLABLE, level, pos, side);
     }
 
     @Nullable
     public static IWorkable getWorkable(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_WORKABLE, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_WORKABLE, level, pos, side);
     }
 
     @Nullable
     public static IControllable getControllable(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_CONTROLLABLE, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_CONTROLLABLE, level, pos, side);
     }
 
     @Nullable
     public static RecipeLogic getRecipeLogic(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, level, pos, side);
     }
 
     @Nullable
@@ -121,32 +80,25 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static ICleanroomReceiver getCleanroomReceiver(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_CLEANROOM_RECEIVER, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_CLEANROOM_RECEIVER, level, pos, side);
     }
 
     @Nullable
     public static IMaintenanceMachine getMaintenanceMachine(Level level, BlockPos pos, @Nullable Direction side) {
-        if (level.getBlockState(pos).hasBlockEntity()) {
-            var blockEntity = level.getBlockEntity(pos);
-            if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, side).resolve().orElse(null);
-            }
-        }
-        return null;
+        return getBlockEntityCapability(GTCapability.CAPABILITY_MAINTENANCE_MACHINE, level, pos, side);
     }
 
     @Nullable
     public static ILaserContainer getLaser(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_LASER, level, pos, side);
+    }
+
+    @Nullable
+    private static <T> T getBlockEntityCapability(Capability<T> capability, Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(GTCapability.CAPABILITY_LASER, side).resolve().orElse(null);
+                return blockEntity.getCapability(capability, side).resolve().orElse(null);
             }
         }
         return null;
