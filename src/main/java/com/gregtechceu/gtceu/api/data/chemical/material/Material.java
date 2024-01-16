@@ -376,7 +376,7 @@ public class Material implements Comparable<Material> {
     }
 
     public String toCamelCaseString() {
-        return FormattingUtil.lowerUnderscoreToUpperCamel(toString());
+        return FormattingUtil.lowerUnderscoreToUpperCamel(getName());
     }
 
     @NotNull

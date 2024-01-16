@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
@@ -127,6 +128,7 @@ public class TagPrefix {
             .registerOre(Blocks.END_STONE::defaultBlockState, () -> GTMaterials.Endstone, BlockBehaviour.Properties.of().mapColor(MapColor.SAND).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(4.5F, 9.0F), new ResourceLocation("block/end_stone"), true);
 
     public static final TagPrefix rawOre = new TagPrefix("raw", true)
+            .idPattern("raw_%s")
             .defaultTagPath("raw_materials/%s")
             .unformattedTagPath("raw_materials")
             .langValue("Raw %s")
@@ -603,7 +605,9 @@ public class TagPrefix {
             .defaultTagPath("%s")
             .langValue("%s")
             .miningToolTag(BlockTags.MINEABLE_WITH_PICKAXE)
-            .unificationEnabled(true);
+            .unificationEnabled(true)
+            .generateBlock(true) // generate a block but not really, for TagPrefix#setIgnoredBlock
+            .generationCondition((material) -> false);
 
     public static final TagPrefix frameGt = new TagPrefix("frame")
             .defaultTagPath("frames/%s")
@@ -702,7 +706,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, ItemLike[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, Supplier<ItemLike>[]> ignoredMaterials = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -870,7 +874,7 @@ public class TagPrefix {
 
     public String getUnlocalizedName(Material material) {
         String formattedPrefix = FormattingUtil.toLowerCaseUnderscore(this.name);
-        String matSpecificKey = String.format("item.%s_%s", this.invertedName ? formattedPrefix : material.getName(), this.invertedName ? material.getName() : formattedPrefix);
+        String matSpecificKey = String.format("item.%s.%s", material.getModid(), this.idPattern.formatted(material.getName()));
         if (LocalizationUtils.exist(matSpecificKey)) {
             return matSpecificKey;
         }
@@ -889,15 +893,40 @@ public class TagPrefix {
         return ignoredMaterials.containsKey(material);
     }
 
-    public void setIgnored(Material material, ItemLike... items) {
+    @SafeVarargs
+    public final void setIgnored(Material material, Supplier<ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
         }
     }
 
+    @SuppressWarnings("unchecked")
+    public void setIgnored(Material material, ItemLike... items) {
+        // go through setIgnoredBlock to wrap if this is a block prefix
+        if (this.doGenerateBlock()) {
+            this.setIgnoredBlock(material, Arrays.stream(items).filter(Block.class::isInstance).map(Block.class::cast).toArray(Block[]::new));
+        } else {
+            this.setIgnored(material, Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setIgnoredBlock(Material material, Block... items) {
+        this.setIgnored(material, Arrays.stream(items).map(block -> SupplierMemoizer.memoizeBlockSupplier(() -> block)).toArray(Supplier[]::new));
+    }
+
+    @SuppressWarnings("unchecked")
+    public void setIgnored(Material material) {
+        this.ignoredMaterials.put(material, new Supplier[0]);
+    }
+
     public void removeIgnored(Material material) {
         ignoredMaterials.remove(material);
+    }
+
+    public Map<Material, Supplier<ItemLike>[]> getIgnored() {
+        return new HashMap<>(ignoredMaterials);
     }
 
     public boolean isAmountModified(Material material) {
@@ -906,10 +935,6 @@ public class TagPrefix {
 
     public void modifyMaterialAmount(@NotNull Material material, float amount) {
         materialAmounts.put(material, amount);
-    }
-
-    public Map<Material, ItemLike[]> getIgnored() {
-        return new HashMap<>(ignoredMaterials);
     }
 
     @Override

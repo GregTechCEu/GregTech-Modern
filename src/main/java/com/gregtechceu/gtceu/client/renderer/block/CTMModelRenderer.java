@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.google.common.base.Suppliers;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import net.minecraft.Util;
@@ -17,7 +18,7 @@ import java.util.function.Supplier;
  * @implNote CTMModelRenderer
  */
 public class CTMModelRenderer extends IModelRenderer {
-    public static Supplier<Boolean> LOW_PRECISION = Suppliers.memoize(GTCEu::isSodiumRubidiumEmbeddiumLoaded);
+    public static Supplier<Boolean> LOW_PRECISION = SupplierMemoizer.memoize(GTCEu::isSodiumRubidiumEmbeddiumLoaded);
     public CTMModelRenderer(ResourceLocation modelLocation) {
         super(modelLocation);
     }
