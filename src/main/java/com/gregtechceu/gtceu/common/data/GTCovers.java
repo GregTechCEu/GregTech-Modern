@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
 import com.gregtechceu.gtceu.common.cover.*;
@@ -15,6 +16,7 @@ import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
 import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
+import net.minecraftforge.fml.ModLoader;
 
 import java.util.Arrays;
 import java.util.Locale;
@@ -177,6 +179,7 @@ public class GTCovers {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerCovers);
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.COVERS, CoverDefinition.class));
         GTRegistries.COVERS.freeze();
     }
 }

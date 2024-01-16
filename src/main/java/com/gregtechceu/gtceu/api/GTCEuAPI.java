@@ -3,10 +3,16 @@ package com.gregtechceu.gtceu.api;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
+import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraftforge.eventbus.api.GenericEvent;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 public class GTCEuAPI {
@@ -32,5 +38,19 @@ public class GTCEuAPI {
 
         if (isHighTier()) GTCEu.LOGGER.info("High-Tier is Enabled.");
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
+    }
+
+    public static class RegisterEvent<K, V> extends GenericEvent<V> implements IModBusEvent {
+
+        private final GTRegistry<K, V> registry;
+
+        public RegisterEvent(GTRegistry<K, V> registry, Class<V> clazz) {
+            super(clazz);
+            this.registry = registry;
+        }
+
+        public void register(K key, V value) {
+            if (registry != null) registry.register(key, value);
+        }
     }
 }
