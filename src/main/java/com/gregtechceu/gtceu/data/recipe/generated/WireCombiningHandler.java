@@ -54,20 +54,20 @@ public class WireCombiningHandler {
         int wireIndex = ArrayUtils.indexOf(WIRE_DOUBLING_ORDER, wirePrefix);
 
         if (wireIndex < WIRE_DOUBLING_ORDER.length - 1) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_wire_%s_doubling", material.getName(), wirePrefix)),
+            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_wire_%s_doubling", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex + 1], material),
                     new UnificationEntry(wirePrefix, material),
                     new UnificationEntry(wirePrefix, material));
         }
 
         if (wireIndex > 0) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_wire_%s_splitting", material.getName(), wirePrefix)),
+            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_wire_%s_splitting", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex - 1], material, 2),
                     new UnificationEntry(wirePrefix, material));
         }
 
         if (wireIndex < 3) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_wire_%s_quadrupling", material.getName(), wirePrefix)),
+            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_wire_%s_quadrupling", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex + 2], material),
                     new UnificationEntry(wirePrefix, material),
                     new UnificationEntry(wirePrefix, material),

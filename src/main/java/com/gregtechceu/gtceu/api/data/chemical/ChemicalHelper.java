@@ -229,7 +229,6 @@ public class ChemicalHelper {
         });
     }
 
-    // TODO optimize this so it can be used in tooltips/etc.
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
         return TAG_UNIFICATION_ENTRY.computeIfAbsent(tag, tagKey -> {
             for (TagPrefix prefix : TagPrefix.values()) {
@@ -243,6 +242,7 @@ public class ChemicalHelper {
         });
     }
 
+    // TODO optimize this so it can be used in tooltips/etc.
     @Nullable
     public static UnificationEntry getOrComputeUnificationEntry(ItemLike itemLike) {
         return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
