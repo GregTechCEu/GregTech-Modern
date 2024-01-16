@@ -35,7 +35,7 @@ public class PipeBlockItem extends BlockItem {
     public InteractionResult place(BlockPlaceContext context) {
         if (!context.replacingClickedOnBlock()) {
             var realPos = context.getClickedPos().relative(context.getClickedFace().getOpposite());
-            var baseNode = getBlock().getPileTile(context.getLevel(), realPos);
+            var baseNode = getBlock().getPipeTile(context.getLevel(), realPos);
             if (baseNode != null) {
                 var sideAttach = ICoverable.traceCoverSide(new BlockHitResult(context.getClickLocation(), context.getClickedFace(), realPos, false));
                 if (sideAttach != null && context.getLevel().isEmptyBlock(realPos.relative(sideAttach))) {
