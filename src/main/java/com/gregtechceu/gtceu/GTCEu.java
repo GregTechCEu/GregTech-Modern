@@ -21,6 +21,7 @@ public class GTCEu {
 
     public GTCEu() {
         GTCEu.init();
+        GTCEuAPI.instance = this;
         DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
     }
 
