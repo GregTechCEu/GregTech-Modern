@@ -38,7 +38,7 @@ import java.util.stream.Collectors;
 public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output) {
-        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output);
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output) {
@@ -46,7 +46,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
@@ -54,7 +54,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        addBlastingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+        addBlastingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
@@ -62,7 +62,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
-        addSmokingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+        addSmokingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
     public static void addSmokingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
@@ -70,11 +70,11 @@ public class VanillaRecipeHelper {
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output) {
-        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, 0.0f);
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, 0.0f);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, ItemStack input, ItemStack output, float experience) {
-        addSmeltingRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), input, output, experience);
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, ItemStack input, ItemStack output, float experience) {
@@ -82,7 +82,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        addShapedRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+        addShapedRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -90,7 +90,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        addStrictShapedRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+        addStrictShapedRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
     public static void addStrictShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -183,7 +183,7 @@ public class VanillaRecipeHelper {
 
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        addShapedRecipe(provider, withUnificationData, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+        addShapedRecipe(provider, withUnificationData, GTCEu.id(regName), result, recipe);
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -195,7 +195,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        addShapelessRecipe(provider, GTCEu.id(regName.toLowerCase(Locale.ROOT)), result, recipe);
+        addShapelessRecipe(provider, GTCEu.id(regName), result, recipe);
     }
 
     public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull ResourceLocation regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -254,7 +254,7 @@ public class VanillaRecipeHelper {
     }
 
     public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull String regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
-        addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge, GTCEu.id(regName.toLowerCase(Locale.ROOT)), chargeIngredient, result, recipe);
+        addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge, GTCEu.id(regName), chargeIngredient, result, recipe);
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {

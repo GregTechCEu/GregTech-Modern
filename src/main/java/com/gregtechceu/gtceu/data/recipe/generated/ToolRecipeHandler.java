@@ -314,7 +314,7 @@ public class ToolRecipeHandler {
             ItemStack tool = toolItem.get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,
-                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem().getPath(), material.getName())),
+                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem()).getPath()),
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",
