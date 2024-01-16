@@ -278,7 +278,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             setBlocked(gridSide, !isBlocked(gridSide));
             // try to connect to the next node.
             if (!isBlocked(gridSide)) {
-                var node = getPipeBlock().getPileTile(getPipeLevel(), getPipePos().relative(gridSide));
+                var node = getPipeBlock().getPipeTile(getPipeLevel(), getPipePos().relative(gridSide));
                 if (node != null && node.isBlocked(gridSide.getOpposite())) { // if is a pipe node
                     node.setBlocked(gridSide.getOpposite(), false);
                 }
