@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 import net.minecraft.core.Direction;
@@ -15,7 +15,7 @@ public class EnergyDetectorCover extends DetectorCover {
 
     @Override
     public boolean canAttach() {
-        return getEnergyContainer() != null;
+        return getEnergyInfoProvider() != null;
     }
 
     @Override
@@ -23,20 +23,23 @@ public class EnergyDetectorCover extends DetectorCover {
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
-        IEnergyContainer energyContainer = getEnergyContainer();
-        if (energyContainer != null) {
-            long storedEnergy = energyContainer.getEnergyStored();
-            long energyCapacity = energyContainer.getEnergyCapacity();
+        IEnergyInfoProvider energyInfoProvider = getEnergyInfoProvider();
+        if (energyInfoProvider == null)
+            return;
 
-            if (energyCapacity == 0)
-                return;
+        var energyInfo = energyInfoProvider.getEnergyInfo();
 
-            setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedEnergy, energyCapacity, isInverted()));
-        }
+        long storedEnergy = energyInfo.stored().longValue();
+        long energyCapacity = energyInfo.capacity().longValue();
+
+        if (energyCapacity == 0)
+            return;
+
+        setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedEnergy, energyCapacity, isInverted()));
     }
 
     @Nullable
-    protected IEnergyContainer getEnergyContainer() {
-        return GTCapabilityHelper.getEnergyContainer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    protected IEnergyInfoProvider getEnergyInfoProvider() {
+        return GTCapabilityHelper.getEnergyInfoProvider(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 }

@@ -42,6 +42,17 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
+    public static IEnergyInfoProvider getEnergyInfoProvider(Level level, BlockPos pos, @Nullable Direction side) {
+        if (level.getBlockState(pos).hasBlockEntity()) {
+            var blockEntity = level.getBlockEntity(pos);
+            if (blockEntity != null) {
+                return blockEntity.getCapability(GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER, side).resolve().orElse(null);
+            }
+        }
+        return null;
+    }
+
+    @Nullable
     public static ICoverable getCoverable(Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
