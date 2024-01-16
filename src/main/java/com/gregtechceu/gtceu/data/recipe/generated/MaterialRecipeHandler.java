@@ -372,24 +372,24 @@ public class MaterialRecipeHandler {
         ItemStack crushedStack = ChemicalHelper.getDust(material, materialAmount);
 
         if (material.hasFlag(MORTAR_GRINDABLE)) {
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("gem_to_dust_%s_%s", material.getName(), gemPrefix)), crushedStack,
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("gem_to_dust_%s_%s", material.getName(), FormattingUtil.toLowerCaseUnder(gemPrefix.name)), crushedStack,
                     "X", "m", 'X', new UnificationEntry(gemPrefix, material));
         }
 
         TagPrefix prevPrefix = GTUtil.getItem(GEM_ORDER, GEM_ORDER.indexOf(gemPrefix) - 1, null);
         ItemStack prevStack = prevPrefix == null ? ItemStack.EMPTY : ChemicalHelper.get(prevPrefix, material, 2);
         if (!prevStack.isEmpty() && prevPrefix != null) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, new ResourceLocation(material.getModid(), String.format("gem_to_gem_%s_%s", prevPrefix, material.getName())), prevStack,
+            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("gem_to_gem_%s_%s", FormattingUtil.toLowerCaseUnder(prevPrefix.name), material.getName()), prevStack,
                     "h", new UnificationEntry(gemPrefix, material));
 
-            CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_" + gemPrefix.name + "_to_" + prevPrefix.name)
+            CUTTER_RECIPES.recipeBuilder("cut_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(gemPrefix.name) + "_to_" + FormattingUtil.toLowerCaseUnder(prevPrefix.name))
                     .inputItems(gemPrefix, material)
                     .outputItems(prevStack)
                     .duration(20)
                     .EUt(16)
                     .save(provider);
 
-            LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + material.getName() + "_" + gemPrefix.name + "_to_" + prevPrefix.name)
+            LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + material.getName() + "_" + FormattingUtil.toLowerCaseUnder(gemPrefix.name) + "_to_" + FormattingUtil.toLowerCaseUnder(prevPrefix.name))
                     .inputItems(prevStack)
                     .notConsumable(lens, MarkerMaterials.Color.White)
                     .outputItems(gemPrefix, material)
