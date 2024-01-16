@@ -27,13 +27,16 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
+import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
+import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -156,7 +159,7 @@ public class CommonProxy {
         ModLoader.get().postEvent(materialEvent);
         AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryInfo.registerFor(GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).getRegistryName());
+            KJSEventWrapper.materialRegistry();
         }
 
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
@@ -164,9 +167,7 @@ public class CommonProxy {
         managerInternal.closeRegistries();
         ModLoader.get().postEvent(new PostMaterialEvent());
         if (GTCEu.isKubeJSLoaded()) {
-            if (GTCEuStartupEvents.MATERIAL_MODIFICATION.hasListeners()) {
-                GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
-            }
+            KJSEventWrapper.materialModification();
         }
 
         // Freeze Material Registry before processing Items, Blocks, and Fluids
@@ -200,5 +201,17 @@ public class CommonProxy {
     @SubscribeEvent
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
         GTCapability.register(event);
+    }
+
+    public static final class KJSEventWrapper {
+        public static void materialRegistry() {
+            GTRegistryInfo.registerFor(GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).getRegistryName());
+        }
+
+        public static void materialModification() {
+            if (GTCEuStartupEvents.MATERIAL_MODIFICATION.hasListeners()) {
+                GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
+            }
+        }
     }
 }

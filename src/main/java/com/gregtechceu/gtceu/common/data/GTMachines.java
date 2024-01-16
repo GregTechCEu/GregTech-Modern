@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -79,6 +80,7 @@ import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraftforge.fml.ModLoader;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -2037,6 +2039,7 @@ public class GTMachines {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
         GTRegistries.MACHINES.freeze();
     }
 

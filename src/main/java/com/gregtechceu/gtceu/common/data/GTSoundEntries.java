@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.common.data;
 
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import net.minecraftforge.fml.ModLoader;
 import net.minecraftforge.registries.ForgeRegistries;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
@@ -60,6 +63,7 @@ public class GTSoundEntries {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
         GTRegistries.SOUNDS.values().forEach(SoundEntry::prepare);
         registerSounds();
 

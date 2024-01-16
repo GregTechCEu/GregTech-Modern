@@ -725,7 +725,7 @@ public class TagPrefix {
 
     public TagPrefix(String name, boolean invertedName) {
         this.name = name;
-        this.idPattern = "%s_" + name;
+        this.idPattern = "%s_" + FormattingUtil.toLowerCaseUnder(name);
         this.invertedName = invertedName;
         this.langValue = "%s " + FormattingUtil.toEnglishName(FormattingUtil.toLowerCaseUnder(name));
         PREFIXES.put(name, this);

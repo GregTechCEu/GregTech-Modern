@@ -1,10 +1,14 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.*;
+import net.minecraftforge.fml.ModLoader;
 
 /**
  * @author KilaBash
@@ -31,6 +35,7 @@ public final class GTRecipeConditions {
         }
 
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeConditions);
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS, (Class<Class<? extends RecipeCondition>>) (Class<?>) RecipeCondition.class));
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 }
