@@ -35,7 +35,7 @@ public final class GTRecipeConditions {
         }
 
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeConditions);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS, (Class<Class<? extends RecipeCondition>>) (Class<?>) RecipeCondition.class));
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS, (Class<Class<? extends RecipeCondition>>) RecipeCondition.class.getClass()));
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 }
