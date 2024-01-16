@@ -93,14 +93,14 @@ public class PartsRecipeHandler {
                 .EUt(4)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("screw_%s", material.getName())),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("screw_%s", material.getName()),
                 screwStack, "fX", "X ",
                 'X', new UnificationEntry(bolt, material));
     }
 
     public static void processFoil(TagPrefix foilPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         if (!material.hasFlag(NO_SMASHING))
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("foil_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("foil_%s", material.getName()),
                     ChemicalHelper.get(foilPrefix, material, 2),
                     "hP ", 'P', new UnificationEntry(plate, material));
 
@@ -143,7 +143,7 @@ public class PartsRecipeHandler {
         ItemStack fineWireStack = ChemicalHelper.get(fineWirePrefix, material);
 
         if (!ChemicalHelper.get(foil, material).isEmpty())
-            VanillaRecipeHelper.addShapelessRecipe(provider, new ResourceLocation(material.getModid(), String.format("fine_wire_%s", material.getName())),
+            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("fine_wire_%s", material.getName()),
                     fineWireStack, 'x', new UnificationEntry(foil, material));
 
         if (material.hasProperty(PropertyKey.WIRE)) {
@@ -207,7 +207,7 @@ public class PartsRecipeHandler {
 
         if (material.hasFlag(GENERATE_PLATE) && material.hasFlag(GENERATE_ROD)) {
             if (gearPrefix == gearSmall) {
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("small_gear_%s", material.getName())), ChemicalHelper.get(gearSmall, material),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_gear_%s", material.getName()), ChemicalHelper.get(gearSmall, material),
                         " R ", "hPx", " R ", 'R', new UnificationEntry(rod, material), 'P', new UnificationEntry(plate, material));
 
                 EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_ingot_to_small_gear")
@@ -235,7 +235,7 @@ public class PartsRecipeHandler {
                             .save(provider);
                 }
             } else {
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("gear_%s", material.getName())), stack,
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("gear_%s", material.getName()), stack,
                         "RPR", "PwP", "RPR",
                         'P', new UnificationEntry(plate, material),
                         'R', new UnificationEntry(rod, material));
@@ -276,7 +276,7 @@ public class PartsRecipeHandler {
     public static void processPlateDouble(TagPrefix doublePrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         if (material.hasFlag(GENERATE_PLATE)) {
             if (!material.hasFlag(NO_SMASHING)) {
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("plate_double_%s", material.getName())),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("plate_double_%s", material.getName()),
                         ChemicalHelper.get(doublePrefix, material),
                         "h", "P", "P", 'P', new UnificationEntry(plate, material));
             }
@@ -326,7 +326,7 @@ public class PartsRecipeHandler {
                 .save(provider);
 
         if (!material.hasFlag(NO_SMASHING)) {
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("ring_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("ring_%s", material.getName()),
                     ChemicalHelper.get(ringPrefix, material),
                     "h ", " X",
                     'X', new UnificationEntry(rod, material));
@@ -342,7 +342,7 @@ public class PartsRecipeHandler {
     }
 
     public static void processSpringSmall(TagPrefix springPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("spring_small_%s", material.getName())),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_small_%s", material.getName()),
                 ChemicalHelper.get(springSmall, material),
                 " s ", "fRx", 'R', new UnificationEntry(rod, material));
 
@@ -363,14 +363,14 @@ public class PartsRecipeHandler {
                 .EUt(16)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("spring_%s", material.getName())),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("spring_%s", material.getName()),
                 ChemicalHelper.get(spring, material),
                 " s ", "fRx", " R ", 'R', new UnificationEntry(rodLong, material));
     }
 
     public static void processRotor(TagPrefix rotorPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         ItemStack stack = ChemicalHelper.get(rotorPrefix, material);
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("rotor_%s", material.getName())), stack,
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("rotor_%s", material.getName()), stack,
                 "ChC", "SRf", "CdC",
                 'C', new UnificationEntry(plate, material),
                 'S', new UnificationEntry(screw, material),
@@ -430,7 +430,7 @@ public class PartsRecipeHandler {
                     .EUt(4)
                     .save(provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("bolt_saw_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("bolt_saw_%s", material.getName()),
                     GTUtil.copyAmount(2, boltStack),
                     "s ", " X",
                     'X', new UnificationEntry(rod, material));
@@ -447,25 +447,25 @@ public class PartsRecipeHandler {
                 .duration((int) Math.max(material.getMass(), 1L)).EUt(4)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("stick_long_%s", material.getName())),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_%s", material.getName()),
                 GTUtil.copyAmount(2, stickStack),
                 "s", "X", 'X', new UnificationEntry(rodLong, material));
 
         if(material.hasProperty(PropertyKey.GEM)) {
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("stick_long_gem_flawless_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_gem_flawless_%s", material.getName()),
                     stickStack,
                     "sf",
                     "G ",
                     'G', new UnificationEntry(gemFlawless, material));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("stick_long_gem_exquisite_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_gem_exquisite_%s", material.getName()),
                     GTUtil.copyAmount(2, stickStack),
                     "sf", "G ",
                     'G', new UnificationEntry(gemExquisite, material));
 
         }
 
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("stick_long_stick_%s", material.getName())), stack,
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("stick_long_stick_%s", material.getName()), stack,
                 "ShS",
                 'S', new UnificationEntry(rod, material));
 
@@ -518,7 +518,7 @@ public class PartsRecipeHandler {
                 .EUt(256)
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("turbine_blade_%s", material.getName())),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("turbine_blade_%s", material.getName()),
                 ChemicalHelper.get(toolPrefix, material),
                 "PPP", "SPS", "fPd",
                 'P', new UnificationEntry(plateDouble, material),
@@ -528,11 +528,11 @@ public class PartsRecipeHandler {
     public static void processRound(TagPrefix roundPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         if (!material.hasFlag(NO_SMASHING)) {
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("round_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_%s", material.getName()),
                     ChemicalHelper.get(round, material),
                     "fN", "Nh", 'N', new UnificationEntry(nugget, material));
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("round_from_ingot_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("round_from_ingot_%s", material.getName()),
                     ChemicalHelper.get(round, material, 4),
                     "fIh", 'I', new UnificationEntry(ingot, material));
         }

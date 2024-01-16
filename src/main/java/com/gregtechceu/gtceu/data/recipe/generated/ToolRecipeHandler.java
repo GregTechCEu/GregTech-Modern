@@ -245,7 +245,7 @@ public class ToolRecipeHandler {
 
             // drill
             toolPrefix = TagPrefix.toolHeadDrill;
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("drill_head_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("drill_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "XSX", "XSX", "ShS",
                     'X', plate,
@@ -255,7 +255,7 @@ public class ToolRecipeHandler {
 
             // chainsaw
             toolPrefix = TagPrefix.toolHeadChainsaw;
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("chainsaw_head_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("chainsaw_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "SRS", "XhX", "SRS",
                     'X', plate,
@@ -268,7 +268,7 @@ public class ToolRecipeHandler {
             toolPrefix = TagPrefix.toolHeadWrench;
 //            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.WRENCH_LV, ToolItems.WRENCH_HV, ToolItems.WRENCH_IV});
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("wrench_head_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("wrench_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "hXW", "XRX", "WXd",
                     'X', plate,
@@ -279,13 +279,13 @@ public class ToolRecipeHandler {
             toolPrefix = TagPrefix.toolHeadBuzzSaw;
 //            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.BUZZSAW});
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("buzzsaw_blade_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("buzzsaw_blade_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "sXh", "X X", "fXx",
                     'X', plate);
 
             if (material.hasFlag(GENERATE_GEAR)) {
-                GTRecipeTypes.LATHE_RECIPES.recipeBuilder(new ResourceLocation(material.getModid(), "buzzsaw_gear_" + material.getName()))
+                GTRecipeTypes.LATHE_RECIPES.recipeBuilder("buzzsaw_gear_" + material.getName())
                         .inputItems(TagPrefix.gear, material)
                         .outputItems(toolPrefix, material)
                         .duration((int) material.getMass() * 4)
@@ -299,7 +299,7 @@ public class ToolRecipeHandler {
             toolPrefix = TagPrefix.toolHeadScrewdriver;
 //            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.SCREWDRIVER_LV});
 
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("screwdriver_tip_%s", material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "fR", " h",
                     'R', new UnificationEntry(TagPrefix.rodLong, material));
@@ -314,7 +314,7 @@ public class ToolRecipeHandler {
             ItemStack tool = toolItem.get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,
-                    new ResourceLocation(material.getModid(), String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem()).getPath(), material.getName())),
+                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem().getPath(), material.getName())),
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",
@@ -327,10 +327,10 @@ public class ToolRecipeHandler {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
         if (mirrored) { // todo mirrored
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_%s", tool.name, material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.getName()),
                     toolStack, recipe);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_%s", tool.name, material.getName())),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s", tool.name, material.getName()),
                     toolStack, recipe);
         }
     }
@@ -343,10 +343,10 @@ public class ToolRecipeHandler {
             Object[] recipeWithDye = ArrayUtils.addAll(recipe, 'D', new UnificationEntry(TagPrefix.dye, color.getValue()));
 
             if (mirrored) { // todo mirrored
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName())),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName()),
                     toolStack, recipeWithDye);
             } else {
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName())),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_%s_%s", tool.name, material.getName(), color.getKey().getSerializedName()),
                     toolStack, recipeWithDye);
             }
         }
@@ -424,19 +424,19 @@ public class ToolRecipeHandler {
 
             if (material.hasProperty(PropertyKey.WOOD)) {
                 // todo allow these 3 to be mirrored
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("soft_mallet_%s", material.getName())),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material.getName()),
                         ToolHelper.get(GTToolType.SOFT_MALLET, material),
                         "II ", "IIS", "II ",
                         'I', ItemTags.PLANKS,
                         'S', stick);
             } else {
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("soft_mallet_%s", material.getName())),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("soft_mallet_%s", material.getName()),
                         ToolHelper.get(GTToolType.SOFT_MALLET, material),
                         "II ", "IIS", "II ",
                         'I', new UnificationEntry(TagPrefix.ingot, material),
                         'S', stick);
 
-                VanillaRecipeHelper.addShapedRecipe(provider, new ResourceLocation(material.getModid(), String.format("plunger_%s", material.getName())),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("plunger_%s", material.getName()),
                         ToolHelper.getAndSetToolData(GTToolType.PLUNGER, material, 128 * (i << 1), 1, 4F, 0F),
                         "xPP", " SP", "S f",
                         'P', new UnificationEntry(TagPrefix.plate, material),
