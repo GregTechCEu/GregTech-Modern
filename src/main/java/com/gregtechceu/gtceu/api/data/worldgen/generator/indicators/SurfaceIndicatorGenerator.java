@@ -177,9 +177,10 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     @AllArgsConstructor
     public enum IndicatorPlacement implements StringRepresentable {
         SURFACE(
-                (level, access, pos) -> pos.atY(
-                        level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ())
-                ),
+                (level, access, pos) -> pos.atY(Math.max(
+                    level.getHeight(Heightmap.Types.OCEAN_FLOOR_WG, pos.getX(), pos.getZ()),
+                    pos.getY()
+                )),
                 block -> getBlockState(block, Direction.DOWN)
         ),
 

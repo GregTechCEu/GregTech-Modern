@@ -1854,7 +1854,7 @@ public class GTMachines {
                         .aisle("XXX", "CSC", "CCC", "CCC")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('P', blocks(pipe.get()))
-                        .where('X', states(ALL_FIREBOXES.get(firebox).getDefaultState()).setMinGlobalLimited(4)
+                        .where('X', states(ALL_FIREBOXES.get(firebox).getDefaultState()).setMinGlobalLimited(3)
                                 .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
                                 .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
