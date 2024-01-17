@@ -14,6 +14,7 @@
   ],
   "mixins": [
     "BlockBehaviourAccessor",
+    "BlockPropertiesAccessor",
     "ChunkGeneratorMixin",
     "ChunkMixin",
     "IFoliagePlacerTypeAccessor",
@@ -22,7 +23,7 @@
     "InventoryMixin",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
-    "LootTablesMixin",
+    "LootDataManagerMixin",
     "MinecraftServerMixin",
     "OreConfigurationMixin",
     "OreVeinifierMixin",

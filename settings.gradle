@@ -43,8 +43,8 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.0-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.22.a"
-        def mixinextrasVersion = "0.2.0-rc.2"
+        def ldLibVersion = "1.0.22.b"
+        def mixinextrasVersion = "0.2.0"
 
         forge {
             version("forgeShortVersion", forgeVersion)

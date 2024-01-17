@@ -8,7 +8,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RepairItemRecipe;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -23,8 +22,8 @@ import java.util.Map;
 @Mixin(value = RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin extends CustomRecipe {
 
-    public RepairItemRecipeMixin(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public RepairItemRecipeMixin(ResourceLocation id) {
+        super(id);
     }
 
     /**
@@ -63,10 +62,10 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
     }
 
     @Inject(
-        method = "assemble(Lnet/minecraft/world/inventory/CraftingContainer;Lnet/minecraft/core/RegistryAccess;)Lnet/minecraft/world/item/ItemStack;",
+        method = "assemble(Lnet/minecraft/world/inventory/CraftingContainer;)Lnet/minecraft/world/item/ItemStack;",
         at = @At(value = "RETURN", ordinal = 1), cancellable = true
     )
-    public void gtceu$assemble(CraftingContainer container, RegistryAccess registryAccess, CallbackInfoReturnable<ItemStack> cir,
+    public void gtceu$assemble(CraftingContainer inv, CallbackInfoReturnable<ItemStack> cir,
                                @Local(ordinal = 1) ItemStack itemstack3,
                                @Local(ordinal = 2) LocalRef<ItemStack> itemstack2,
                                @Local(ordinal = 3) int i1,
