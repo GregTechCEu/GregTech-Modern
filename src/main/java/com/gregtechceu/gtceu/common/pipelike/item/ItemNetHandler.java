@@ -110,6 +110,9 @@ public class ItemNetHandler implements IItemTransfer {
 
     public ItemStack insertFirst(ItemStack stack, boolean simulate) {
         for (ItemPipeNet.Inventory inv : net.getNetData(pipe.getPipePos())) {
+            if (inv.getPipePos().equals(this.pipe.getPipePos()) && inv.getFaceToHandler() == this.facing)
+                continue;
+
             stack = insert(inv, stack, simulate);
             if (stack.isEmpty())
                 return ItemStack.EMPTY;
