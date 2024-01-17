@@ -7,7 +7,7 @@ Version: 1.1.0
 
 ### FIXES:
 - fixed hoes not being able to hoe the ground
-- fixed EMI crashes when clicking in a GT crate
+- fixed EMI crashes when clicking in a GT crate and when viewing recipes from the crafting tree
 - fixed issues with tool repairing (infinitely duping tool repair recipe, electric tools can be repaired... etc.)
 - remade how ore blocks are rendered
   - removes xray from block selection outline
