@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.ICraftRemainder;
@@ -591,6 +592,9 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     }
 
     default void definition$fillItemCategory(CreativeModeTab category, @Nonnull NonNullList<ItemStack> items) {
+        if (category != GTCreativeModeTabs.TOOL && category != CreativeModeTab.TAB_SEARCH)
+            return;
+
         if (isElectric()) {
             items.add(get(Integer.MAX_VALUE));
         } else {
