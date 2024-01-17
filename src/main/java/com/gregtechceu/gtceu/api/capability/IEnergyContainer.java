@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.capability;
 
 import net.minecraft.core.Direction;
 
-public interface IEnergyContainer {
+import java.math.BigInteger;
+
+public interface IEnergyContainer extends IEnergyInfoProvider {
 
     /**
      * This method is basically {@link #changeEnergy(long)}, but it also handles amperes.
@@ -73,6 +75,17 @@ public interface IEnergyContainer {
      * @return maximum amount of storable energy
      */
     long getEnergyCapacity();
+
+
+    @Override
+    default EnergyInfo getEnergyInfo() {
+        return new EnergyInfo(BigInteger.valueOf(getEnergyCapacity()), BigInteger.valueOf(getEnergyStored()));
+    }
+
+    @Override
+    default boolean supportsBigIntEnergyValues() {
+        return false;
+    }
 
     /**
      * @return maximum amount of outputable energy packets per tick
