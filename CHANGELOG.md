@@ -14,6 +14,11 @@ Version: 1.1.0
   - fixes ores being transparent underwater sometimes
   - fixes some other issues with ore models
 - fixed structure blocks not being able to rotate GT machines
+- fixed conveyor covers on pipes not working before looking at the pipe
+- fixed transfer amounts when using tag filters in robot arms and fluid regulators
+- fixed surface indicators generating if the ore vein's center would have generated above ground
+- allow energy detector covers to be placed on power substations
+- reduced the firebox requirement on large boilers from 4 to 3 after recently requiring a maintenance hatch
 
 ### ADDITIONS:
 - full chinese translations of every compass page
