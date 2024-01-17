@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 
@@ -15,6 +16,10 @@ import java.util.Locale;
  * @implNote GTCompassSections
  */
 public class GTCompassSections {
+
+    static {
+        GTRegistries.COMPASS_SECTIONS.unfreeze();
+    }
 
     private static int priority = 0;
 

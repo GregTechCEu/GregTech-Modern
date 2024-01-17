@@ -7,7 +7,6 @@ public enum FluidState {
     LIQUID("gtceu.fluid.state_liquid"),
     GAS("gtceu.fluid.state_gas"),
     PLASMA("gtceu.fluid.state_plasma"),
-    MOLTEN("gtceu.fluid.state_molten"),
     ;
 
     @Getter

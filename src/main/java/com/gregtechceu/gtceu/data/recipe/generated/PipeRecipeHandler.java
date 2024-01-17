@@ -11,8 +11,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
@@ -62,7 +64,7 @@ public class PipeRecipeHandler {
                 .EUt(VA[ULV])
                 .save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, pipePrefix.toString()) + "_" + material.toCamelCaseString(),
+        VanillaRecipeHelper.addShapedRecipe(provider, FormattingUtil.toLowerCaseUnder(pipePrefix.toString() + "_" + material.getName()),
                 ChemicalHelper.get(pipePrefix, material), "PR", "Rh",
                 'P', new UnificationEntry(unrestrictive, material), 'R', ChemicalHelper.get(ring, Iron));
     }
@@ -87,7 +89,7 @@ public class PipeRecipeHandler {
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_%s_pipe", material),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("tiny_%s_pipe", material.getName()),
                     GTUtil.copyAmount(2, pipeStack), " s ", "hXw",
                     'X', new UnificationEntry(plate, material));
         }
@@ -113,7 +115,7 @@ public class PipeRecipeHandler {
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_%s_pipe", material),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("small_%s_pipe", material.getName()),
                     pipeStack, "wXh",
                     'X', new UnificationEntry(plate, material));
         }
@@ -139,7 +141,7 @@ public class PipeRecipeHandler {
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("medium_%s_pipe", material),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("medium_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h",
                     'X', new UnificationEntry(plate, material));
         }
@@ -165,7 +167,7 @@ public class PipeRecipeHandler {
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
         } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("large_%s_pipe", material),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("large_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h", "XXX",
                     'X', new UnificationEntry(plate, material));
         }
@@ -191,7 +193,7 @@ public class PipeRecipeHandler {
                     .EUt(6L * getVoltageMultiplier(material))
                     .save(provider);
         } else if (plateDouble.doGenerateItem(material)) {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("huge_%s_pipe", material),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("huge_%s_pipe", material.getName()),
                     pipeStack, "XXX", "w h", "XXX",
                     'X', new UnificationEntry(plateDouble, material));
         }
@@ -201,7 +203,7 @@ public class PipeRecipeHandler {
         if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack smallPipe = ChemicalHelper.get(pipeSmallFluid, material);
         ItemStack quadPipe = ChemicalHelper.get(pipePrefix, material);
-        VanillaRecipeHelper.addShapedRecipe(provider, String.format("quadruple_%s_pipe", material.toString()),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("quadruple_%s_pipe", material.getName()),
                 quadPipe, "XX", "XX",
                 'X', smallPipe);
 
@@ -218,7 +220,7 @@ public class PipeRecipeHandler {
         if (material.hasProperty(PropertyKey.WOOD)) return;
         ItemStack smallPipe = ChemicalHelper.get(pipeSmallFluid, material);
         ItemStack nonuplePipe = ChemicalHelper.get(pipePrefix, material);
-        VanillaRecipeHelper.addShapedRecipe(provider, String.format("nonuple_%s_pipe", material.toString()),
+        VanillaRecipeHelper.addShapedRecipe(provider, String.format("nonuple_%s_pipe", material.getName()),
                 nonuplePipe, "XXX", "XXX", "XXX",
                 'X', smallPipe);
 

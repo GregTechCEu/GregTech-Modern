@@ -124,7 +124,7 @@ public class RobotArmCover extends ConveyorCover {
             return globalTransferLimit;
 
         ItemFilter filter = filterHandler.getFilter();
-        return filter.isBlackList() ? globalTransferLimit : filter.testItemCount(itemStack);
+        return filter.supportsAmounts() ? filter.testItemCount(itemStack) : globalTransferLimit;
     }
 
 

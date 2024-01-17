@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -17,7 +19,7 @@ import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
@@ -34,6 +36,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.fml.ModLoader;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -54,6 +57,10 @@ public class GTRecipeTypes {
     public static final String MULTIBLOCK = "multiblock";
     public static final String DUMMY = "dummy";
     public static final String KINETIC = "kinetic";
+
+    static {
+        GTRegistries.RECIPE_TYPES.unfreeze();
+    }
 
     //////////////////////////////////////
     //*********     Steam     **********//
@@ -599,8 +606,11 @@ public class GTRecipeTypes {
             });
         }
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
+            GTRegistryInfo.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
+        GTRegistries.RECIPE_TYPES.freeze();
+
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"), GTRecipeSerializer.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"), FacadeCoverRecipe.SERIALIZER);
         GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"), StrictShapedRecipe.SERIALIZER);

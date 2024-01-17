@@ -7,9 +7,9 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.steam.SimpleSteamMachine;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.WorkableSteamMachineRenderer;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
@@ -23,7 +23,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 public class SteamMachineBuilder extends MachineBuilder<MachineDefinition> {
 
     public SteamMachineBuilder(String id, boolean isHighPressure, Object... args) {
-        super(GTRegistries.REGISTRATE, id, MachineDefinition::createDefinition, holder -> new SimpleSteamMachine(holder, isHighPressure, args), MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+        super(GTRegistration.REGISTRATE, id, MachineDefinition::createDefinition, holder -> new SimpleSteamMachine(holder, isHighPressure, args), MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
     }
 
     public static <T extends MachineBuilder<? extends MachineDefinition>> void simple(T builder, int tier) {

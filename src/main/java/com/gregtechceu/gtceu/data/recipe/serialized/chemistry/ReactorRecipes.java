@@ -629,7 +629,7 @@ public class ReactorRecipes {
 
         // Dyes
         for (int i = 0; i < GTMaterials.CHEMICAL_DYES.length; i++) {
-            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + MarkerMaterials.Color.VALUES[i])
+            CHEMICAL_RECIPES.recipeBuilder("chemical_dye_" + MarkerMaterials.Color.VALUES[i].getName())
                     .inputItems(dye, MarkerMaterials.Color.VALUES[i])
                     .inputItems(dust, Salt, 2)
                     .inputFluids(SulfuricAcid.getFluid(250))

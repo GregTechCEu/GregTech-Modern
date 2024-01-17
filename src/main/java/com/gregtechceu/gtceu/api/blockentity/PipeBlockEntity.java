@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentity;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
@@ -15,7 +16,6 @@ import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.api.pipenet.PipeCoverContainer;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
 import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
@@ -278,7 +278,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             setBlocked(gridSide, !isBlocked(gridSide));
             // try to connect to the next node.
             if (!isBlocked(gridSide)) {
-                var node = getPipeBlock().getPileTile(getPipeLevel(), getPipePos().relative(gridSide));
+                var node = getPipeBlock().getPipeTile(getPipeLevel(), getPipePos().relative(gridSide));
                 if (node != null && node.isBlocked(gridSide.getOpposite())) { // if is a pipe node
                     node.setBlocked(gridSide.getOpposite(), false);
                 }
@@ -308,7 +308,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Nullable
     @Override
     public Material getFrameMaterial() {
-        return frameMaterial == null ? null : GTRegistries.MATERIALS.get(frameMaterial);
+        return frameMaterial == null ? null : GTCEuAPI.materialManager.getMaterial(frameMaterial);
     }
 
 }

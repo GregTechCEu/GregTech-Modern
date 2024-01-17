@@ -103,7 +103,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
      */
     @Nullable
     @SuppressWarnings("unchecked")
-    public IPipeNode<PipeType, NodeDataType> getPileTile(BlockGetter level, BlockPos pos) {
+    public IPipeNode<PipeType, NodeDataType> getPipeTile(BlockGetter level, BlockPos pos) {
         if (level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeTile && pipeTile.getPipeType().type().equals(pipeType.type())) {
             return (IPipeNode<PipeType, NodeDataType>) pipeTile;
         }
@@ -113,7 +113,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-        var pipeNode = getPileTile(pLevel, pPos);
+        var pipeNode = getPipeTile(pLevel, pPos);
         if (pipeNode != null && pLevel instanceof ServerLevel serverLevel) {
             var net = getWorldPipeNet(serverLevel);
             if (net.getNetFromPos(pPos) == null) {
@@ -128,7 +128,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
                 var attachSide = PipeBlockItem.LAST_CONTEXT.getClickedFace();
                 if (attachPos.relative(attachSide).equals(pPos)) {
 
-                    var attachNode = getPileTile(pLevel, attachPos);
+                    var attachNode = getPipeTile(pLevel, attachPos);
                     if (attachNode != null) { // if is a pipe node
                         if (attachNode.isBlocked(attachSide)) {
                             attachNode.setBlocked(attachSide, false);
@@ -146,7 +146,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
             for (var side : Direction.values()) {
                 if (pipeNode.isBlocked(side)) {
                     var attachPos = pPos.relative(side);
-                    var attachNode = getPileTile(pLevel, attachPos);
+                    var attachNode = getPipeTile(pLevel, attachPos);
                     if (attachNode != null && !attachNode.isBlocked(side.getOpposite())) {
                         pipeNode.setBlocked(side, false);
                     }
@@ -171,7 +171,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
     @Override
     public void neighborChanged(BlockState pState, Level pLevel, BlockPos pPos, Block pBlock, BlockPos pFromPos, boolean pIsMoving) {
         super.neighborChanged(pState, pLevel, pPos, pBlock, pFromPos, pIsMoving);
-        var pipeNode = getPileTile(pLevel, pPos);
+        var pipeNode = getPipeTile(pLevel, pPos);
         if (pipeNode != null) {
             pipeNode.onNeighborChanged(pBlock, pFromPos, pIsMoving);
         }
@@ -215,7 +215,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
 
     @Override
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext context) {
-        var pipeNode = getPileTile(pLevel, pPos);
+        var pipeNode = getPipeTile(pLevel, pPos);
         var connections = 0;
         if (pipeNode != null) {
             connections = pipeNode.getVisualConnections();
@@ -254,7 +254,7 @@ public abstract class PipeBlock <PipeType extends Enum<PipeType> & IPipeType<Nod
 
     @Override
     public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
-        var pipe = getPileTile(level, pos);
+        var pipe = getPipeTile(level, pos);
         if (pipe != null) {
             var appearance = pipe.getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
             if (appearance != null) return appearance;

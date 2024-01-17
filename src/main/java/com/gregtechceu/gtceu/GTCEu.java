@@ -1,27 +1,29 @@
 package com.gregtechceu.gtceu;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.client.ClientProxy;
+import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
-import org.jetbrains.annotations.ApiStatus;
+import net.minecraftforge.fml.DistExecutor;
+import net.minecraftforge.fml.common.Mod;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@Mod(GTCEu.MOD_ID)
 public class GTCEu {
     public static final String MOD_ID = "gtceu";
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
-    /** Will be available at the Pre-Initialization stage */
-    @Getter
-    private static boolean highTier;
-    private static boolean highTierInitialized;
+    public GTCEu() {
+        GTCEu.init();
+        GTCEuAPI.instance = this;
+        DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+    }
 
     public static void init() {
         LOGGER.info("{} is initializing on platform: {}", NAME, Platform.platformName());
@@ -75,17 +77,8 @@ public class GTCEu {
         return LDLib.isModLoaded(GTValues.MODID_ALMOSTUNIFIED);
     }
 
-
-    /**
-     * Initializes High-Tier. Internal use only, do not attempt to call this.
-     */
-    @ApiStatus.Internal
-    public static void initializeHighTier() {
-        if (highTierInitialized) throw new IllegalStateException("High-Tier is already initialized.");
-        highTier = ConfigHolder.INSTANCE.machines.highTierContent || AddonFinder.getAddons().stream().anyMatch(IGTAddon::requiresHighTier) || Platform.isDevEnv();
-        highTierInitialized = true;
-
-        if (isHighTier()) GTCEu.LOGGER.info("High-Tier is Enabled.");
-        else GTCEu.LOGGER.info("High-Tier is Disabled.");
+    @Deprecated(forRemoval = true, since = "1.0.21")
+    public static boolean isHighTier() {
+        return GTCEuAPI.isHighTier();
     }
 }

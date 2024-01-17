@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.api.addon;
 
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
@@ -10,6 +12,12 @@ import java.util.function.Consumer;
 
 @SuppressWarnings("unused")
 public interface IGTAddon {
+
+    /**
+     * @return this addon's GTRegistrate instance.
+     * remember to call{@link GTRegistrate#registerRegistrate} in your mod class!
+     */
+    GTRegistrate getRegistrate();
 
     /**
      * This runs after GTCEu has setup it's content.
@@ -38,7 +46,9 @@ public interface IGTAddon {
 
     /**
      * Call init on your custom Material class(es) here
+     * @deprecated use {@link com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent} and {@link com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent} instead.
      */
+    @Deprecated(forRemoval = true, since = "1.0.21")
     default void registerMaterials() {
 
     }
@@ -54,6 +64,20 @@ public interface IGTAddon {
      * Call init on your custom Cover class(es) here
      */
     default void registerCovers() {
+
+    }
+
+    /**
+     * Call init on your custom Recipe Capabilities here
+     */
+    default void registerRecipeCapabilities() {
+
+    }
+
+    /**
+     * Call init on your custom Recipe Conditions here
+     */
+    default void registerRecipeConditions() {
 
     }
 
@@ -90,6 +114,13 @@ public interface IGTAddon {
      * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
      */
     default void registerOreVeins() {
+
+    }
+
+    /**
+     * Use {@link BedrockFluidDefinition#builder(ResourceLocation)} to register the veins.
+     */
+    default void registerFluidVeins() {
 
     }
 

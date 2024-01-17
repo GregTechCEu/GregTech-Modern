@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.fluids.store;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -67,7 +68,7 @@ public final class FluidStorage {
      * @param material the material the fluid is based off of
      */
     @ApiStatus.Internal
-    public void registerFluids(@NotNull Material material) {
+    public void registerFluids(@NotNull Material material, GTRegistrate registrate) {
         if (registered) {
             throw new IllegalStateException("FluidStorage has already been registered");
         }
@@ -76,7 +77,7 @@ public final class FluidStorage {
             if (map.containsKey(entry.getKey())) {
                 continue;
             }
-            storeWithLogging(entry.getKey(), new FluidEntry(entry.getValue().build(GTCEu.MOD_ID, material, entry.getKey()), entry.getValue().getStill(), entry.getValue().getFlowing()), material);
+            storeWithLogging(entry.getKey(), new FluidEntry(entry.getValue().build(material.getModid(), material, entry.getKey(), registrate), entry.getValue().getStill(), entry.getValue().getFlowing()), material);
         }
         toRegister = null;
         registered = true;

@@ -1,0 +1,12 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:aluminium_frame"
+  },
+  "page": "gtceu:materials/frame",
+  "position": [
+    -250,
+    0
+  ],
+  "section": "gtceu:materials"
+}

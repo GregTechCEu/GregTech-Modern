@@ -13,9 +13,9 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -70,7 +70,7 @@ public class MachineFunctionPresets {
                                                                                                        Function<ResourceLocation, D> definitionFactory,
                                                                                                        BiFunction<BlockBehaviour.Properties, D, IMachineBlock> blockFactory,
                                                                                                        TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MachineBuilder<D>(GTRegistries.REGISTRATE, name, definitionFactory, holder -> null, blockFactory, MetaMachineItem::new, blockEntityFactory) {
+        return new MachineBuilder<D>(GTRegistration.REGISTRATE, name, definitionFactory, holder -> null, blockFactory, MetaMachineItem::new, blockEntityFactory) {
             public MachineBuilder<D> renderer(@Nullable Supplier<IRenderer> renderer) {
                 for (var builder : builders) {
                     if (builder == null) continue;

@@ -129,11 +129,7 @@ public class GTOreDefinition {
 
     @HideFromJS
     public void register(ResourceLocation id) {
-        if (GTRegistries.ORE_VEINS.containKey(id)) {
-            GTRegistries.ORE_VEINS.replace(id, this);
-        } else {
-            GTRegistries.ORE_VEINS.register(id, this);
-        }
+        GTRegistries.ORE_VEINS.registerOrOverride(id, this);
     }
 
     private void recomputeBedrockOres() {
