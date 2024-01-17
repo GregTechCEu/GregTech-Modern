@@ -58,8 +58,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
             if (world.isClientSide())
                 return LazyOptional.empty();
 
-            if (getHandlers().size() == 0)
-                initHandlers();
+            ensureHandlersInitialized();
             checkNetwork();
             return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, true))));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
@@ -68,6 +67,11 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
             return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
         }
         return super.getCapability(cap, side);
+    }
+
+    private void ensureHandlersInitialized() {
+        if (getHandlers().isEmpty())
+            initHandlers();
     }
 
     public void initHandlers() {
@@ -121,6 +125,8 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
     }
 
     public IItemTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
+        ensureHandlersInitialized();
+
         ItemNetHandler handler = getHandlers().getOrDefault(side, getDefaultHandler());
         if (!useCoverCapability || side == null) return handler;
 
