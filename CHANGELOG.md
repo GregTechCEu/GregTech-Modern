@@ -7,7 +7,7 @@ Version: 1.1.0
 
 ### FIXES:
 - fixed hoes not being able to hoe the ground
-- fixed EMI crashes when clicking in a GT crate
+- fixed EMI crashes when clicking in a GT crate and when viewing recipes from the crafting tree
 - fixed issues with tool repairing (infinitely duping tool repair recipe, electric tools can be repaired... etc.)
 - remade how ore blocks are rendered
   - removes xray from block selection outline
@@ -19,6 +19,7 @@ Version: 1.1.0
 - fixed surface indicators generating if the ore vein's center would have generated above ground
 - allow energy detector covers to be placed on power substations
 - reduced the firebox requirement on large boilers from 4 to 3 after recently requiring a maintenance hatch
+- fixed GT tools showing up in every creative tab
 
 ### ADDITIONS:
 - full chinese translations of every compass page
