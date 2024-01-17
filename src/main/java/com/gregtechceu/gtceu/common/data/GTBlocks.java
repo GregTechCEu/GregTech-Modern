@@ -35,6 +35,7 @@ import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
@@ -917,9 +918,10 @@ public class GTBlocks {
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(block -> {
+                Supplier<Block> blockSupplier = SupplierMemoizer.memoizeBlockSupplier(() -> block);
                 UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
-                GTItems.toUnify.put(entry, block);
-                ChemicalHelper.registerUnificationItems(entry, block);
+                GTItems.toUnify.put(entry, blockSupplier);
+                ChemicalHelper.registerUnificationItems(entry, blockSupplier);
             });
             return builder;
         };

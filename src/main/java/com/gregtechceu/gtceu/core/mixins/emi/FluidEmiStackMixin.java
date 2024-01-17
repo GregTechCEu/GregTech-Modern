@@ -24,10 +24,12 @@ public class FluidEmiStackMixin {
 
     @Shadow @Final private Fluid fluid;
 
-    @Inject(method = "getTooltip", at = @At("TAIL"), remap = false, locals = LocalCapture.CAPTURE_FAILHARD)
-    private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir, List<ClientTooltipComponent> list, String namespace) {
+    @Inject(method = "getTooltip", at = @At("TAIL"), remap = false)
+    private void gtceu$addFluidTooltip(CallbackInfoReturnable<List<ClientTooltipComponent>> cir) {
         List<Component> tooltips = Lists.newArrayList(Component.empty(), Component.empty());
         TooltipsHandler.appendFluidTooltips(this.fluid, tooltips, TooltipFlag.Default.NORMAL);
+
+        List<ClientTooltipComponent> list = cir.getReturnValue();
         tooltips.stream()
                 .filter(component -> component.getContents() != ComponentContents.EMPTY)
                 .map(component -> Map.entry(tooltips.indexOf(component), ClientTooltipComponent.create(component.getVisualOrderText())))
