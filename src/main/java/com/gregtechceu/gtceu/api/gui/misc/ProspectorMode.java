@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -275,7 +276,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public void serialize(OreInfo item, FriendlyByteBuf buf) {
-            buf.writeUtf(GTRegistries.MATERIALS.getKey(item.material));
+            buf.writeResourceLocation(item.material.getResourceLocation());
             buf.writeVarInt(item.weight);
             buf.writeVarInt(item.left);
             buf.writeVarInt(item.yield);
@@ -283,7 +284,8 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public OreInfo deserialize(FriendlyByteBuf buf) {
-            return new OreInfo(GTRegistries.MATERIALS.get(buf.readUtf()), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
+            ResourceLocation materialId = buf.readResourceLocation();
+            return new OreInfo(GTCEuAPI.materialManager.getRegistry(materialId.getNamespace()).get(materialId.getPath()), buf.readVarInt(), buf.readVarInt(), buf.readVarInt());
         }
 
         @Override

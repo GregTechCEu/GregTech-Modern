@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.google.common.annotations.VisibleForTesting;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -42,7 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-public class PowerSubstationMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine {
+public class PowerSubstationMachine extends WorkableMultiblockMachine implements IEnergyInfoProvider, IFancyUIMachine, IDisplayUIMachine {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PowerSubstationMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     // Structure Constants
@@ -275,6 +276,16 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
             return "0";
         }
         return FormattingUtil.formatNumbers(energyBank.getCapacity());
+    }
+
+    @Override
+    public EnergyInfo getEnergyInfo() {
+        return new EnergyInfo(energyBank.getCapacity(), energyBank.getStored());
+    }
+
+    @Override
+    public boolean supportsBigIntEnergyValues() {
+        return true;
     }
 
     @Override

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -60,20 +60,27 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
     protected void update() {
         if (coverHolder.getOffsetTimer() % 20 != 0) return;
 
-        IEnergyContainer energyContainer = getEnergyContainer();
+        IEnergyInfoProvider energyInfoProvider = getEnergyInfoProvider();
 
-        if (energyContainer != null) {
-            if (usePercent) {
-                if (energyContainer.getEnergyCapacity() > 0) {
-                    float ratio = (float) energyContainer.getEnergyStored() / energyContainer.getEnergyCapacity();
-                    this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(ratio * 100, this.maxValue, this.minValue, isInverted(), this.outputAmount);
-                } else {
-                    this.outputAmount = isInverted() ? 0 : 15;
-                }
+        if (energyInfoProvider == null) {
+            setRedstoneSignalOutput(outputAmount);
+            return;
+        }
+
+        // TODO properly support values > MAX_LONG
+        IEnergyInfoProvider.EnergyInfo energyInfo = energyInfoProvider.getEnergyInfo();
+        long capacity = energyInfo.capacity().longValue();
+        long stored = energyInfo.stored().longValue();
+
+        if (usePercent) {
+            if (capacity > 0) {
+                float ratio = (float) stored / capacity;
+                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(ratio * 100, this.maxValue, this.minValue, isInverted(), this.outputAmount);
             } else {
-                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(energyContainer.getEnergyStored(),
-                        this.maxValue, this.minValue, isInverted(), this.outputAmount);
+                this.outputAmount = isInverted() ? 0 : 15;
             }
+        } else {
+            this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(stored, this.maxValue, this.minValue, isInverted(), this.outputAmount);
         }
         setRedstoneSignalOutput(outputAmount);
     }
@@ -144,7 +151,7 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         if (LDLib.isRemote() || minValueInput == null || maxValueInput == null)
             return;
 
-        long energyCapacity = getEnergyContainer().getEnergyCapacity();
+        long energyCapacity = getEnergyInfoProvider().getEnergyInfo().capacity().longValue();
 
         minValueInput.setMin(0L);
         maxValueInput.setMin(0L);

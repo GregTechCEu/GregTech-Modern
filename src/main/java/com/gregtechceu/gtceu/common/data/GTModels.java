@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -26,7 +26,7 @@ public class GTModels {
      * register fluid models for materials
      */
     public static void registerMaterialFluidModels() {
-        for (var material : GTRegistries.MATERIALS) {
+        for (var material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             var fluidProperty = material.getProperty(PropertyKey.FLUID);
             if (fluidProperty == null) continue;
             MaterialIconSet iconSet = material.getMaterialIconSet();

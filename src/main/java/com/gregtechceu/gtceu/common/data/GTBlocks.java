@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.google.common.base.Suppliers;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
@@ -12,21 +12,18 @@ import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.item.LaserPipeBlockItem;
-import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
-import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
-import com.gregtechceu.gtceu.api.item.RendererBlockItem;
+import com.gregtechceu.gtceu.api.item.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
-import com.gregtechceu.gtceu.client.renderer.block.OreBlockRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.block.*;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
@@ -35,10 +32,13 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeT
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
+import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
 import com.tterrag.registrate.providers.loot.RegistrateBlockLootTables;
@@ -47,6 +47,7 @@ import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullFunction;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import dev.latvian.mods.kubejs.block.KubeJSBlockProperties;
 import net.minecraft.advancements.critereon.StatePropertiesPredicate;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
@@ -80,15 +81,13 @@ import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.FORCE_GENERATE_BLOCK;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FRAME;
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
@@ -96,6 +95,7 @@ import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOL
  * @date 2023/2/13
  * @implNote GTBlocks
  */
+@SuppressWarnings("removal")
 public class GTBlocks {
 
     //////////////////////////////////////
@@ -125,146 +125,73 @@ public class GTBlocks {
 
     // Compressed Blocks
     private static void generateMaterialBlocks() {
-        GTCEu.LOGGER.info("Generating Compressed Blocks...");
-        for (Material material : GTRegistries.MATERIALS) {
-            if (allowMaterialBlock(material)) {
-                registerMaterialBlock(material);
-            }
-        }
-        GTCEu.LOGGER.info("Generating Compressed Blocks... Complete!");
-    }
-    private static boolean allowMaterialBlock(Material material) {
-        return (material.hasProperty(PropertyKey.INGOT)
-                || material.hasProperty(PropertyKey.GEM)
-                || material.hasFlag(FORCE_GENERATE_BLOCK))
-            && !TagPrefix.block.isIgnored(material);
-    }
-    private static void registerMaterialBlock(Material material) {
-        var entry = REGISTRATE.block("%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.block, material))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .transform(unificationBlock(TagPrefix.block, material))
-                .addLayer(() -> RenderType::translucent)
-                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                .color(() -> MaterialBlock::tintedColor)
-                .item(MaterialBlockItem::create)
-                .onRegister(MaterialBlockItem::onRegister)
-                .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialBlockItem::tintColor)
-                .build()
-                .register();
-        MATERIAL_BLOCKS_BUILDER.put(TagPrefix.block, material, entry);
-    }
+        GTCEu.LOGGER.debug("Generating GTCEu Material Blocks...");
 
-    // Frame Blocks
-    private static void generateFrameBlocks() {
-        GTCEu.LOGGER.info("Generating Frame Blocks...");
-        for (Material material : GTRegistries.MATERIALS) {
-            if (allowFrameBlock(material)) {
-                registerFrameBlock(material);
+        for (TagPrefix tagPrefix : TagPrefix.values()) {
+            if (!TagPrefix.ORES.containsKey(tagPrefix) && tagPrefix.doGenerateBlock()) {
+                for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+                    GTRegistrate registrate = registry.getRegistrate();
+                    for (Material material : registry.getAllMaterials()) {
+                        if (tagPrefix.doGenerateBlock(material)) {
+                            MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
+                                .block(tagPrefix.idPattern().formatted(material.getName()), properties -> new MaterialBlock(properties, tagPrefix, material))
+                                .initialProperties(() -> Blocks.IRON_BLOCK)
+                                .properties(BlockBehaviour.Properties::noLootTable)
+                                .transform(unificationBlock(tagPrefix, material))
+                                .addLayer(tagPrefix.blockRenderType())
+                                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+                                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
+                                .color(() -> MaterialBlock::tintedColor)
+                                .item(MaterialBlockItem::create)
+                                .onRegister(MaterialBlockItem::onRegister)
+                                .model(NonNullBiConsumer.noop())
+                                .color(() -> MaterialBlockItem::tintColor)
+                                .onRegister(item -> {
+                                    CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
+                                        .iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
+                                })
+                                .build()
+                                .register());
+                        }
+                    }
+                }
             }
         }
-        GTCEu.LOGGER.info("Generating Frame Blocks... Complete!");
-    }
-    private static boolean allowFrameBlock(Material material) {
-        return material.hasProperty(PropertyKey.DUST)
-                && material.hasFlag(GENERATE_FRAME);
-    }
-    private static void registerFrameBlock(Material material) {
-        var entry = REGISTRATE.block("%s_frame".formatted(material.getName()), properties -> new MaterialBlock(properties, TagPrefix.frameGt, material))
-                .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(properties -> properties.noOcclusion().noLootTable())
-                .transform(unificationBlock(TagPrefix.frameGt, material))
-                .addLayer(() -> RenderType::translucent)
-                .blockstate(NonNullBiConsumer.noop())
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                .color(() -> MaterialBlock::tintedColor)
-                .item(MaterialBlockItem::create)
-                .onRegister(MaterialBlockItem::onRegister)
-                .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialBlockItem::tintColor)
-                .build()
-                .register();
-        MATERIAL_BLOCKS_BUILDER.put(TagPrefix.frameGt, material, entry);
-    }
-
-    // Raw Ore Blocks
-    private static void generateRawOreBlocks() {
-        GTCEu.LOGGER.info("Generating Raw Ore Blocks...");
-        for (Material material : GTRegistries.MATERIALS) {
-            if (allowRawOreBlock(material)) {
-                registerRawOreBlock(material);
-            }
-        }
-        GTCEu.LOGGER.info("Generating Raw Ore Blocks... Complete!");
-    }
-    private static boolean allowRawOreBlock(Material material) {
-        return !TagPrefix.rawOreBlock.isIgnored(material)
-                && TagPrefix.rawOreBlock.generationCondition().test(material)
-                && material.hasProperty(PropertyKey.ORE);
-    }
-    private static void registerRawOreBlock(Material material) {
-        var entry = REGISTRATE.block("raw_%s_block".formatted(material.getName()), properties -> new MaterialBlock(properties.noLootTable(), TagPrefix.rawOreBlock, material))
-                .initialProperties(() -> Blocks.RAW_IRON_BLOCK)
-                .transform(unificationBlock(TagPrefix.rawOreBlock, material))
-                .addLayer(() -> RenderType::translucent)
-                .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
-                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
-                .color(() -> MaterialBlock::tintedColor)
-                .item(MaterialBlockItem::create)
-                .onRegister(MaterialBlockItem::onRegister)
-                .model(NonNullBiConsumer.noop())
-                .color(() -> MaterialBlockItem::tintColor)
-                .onRegister(compassNodeExist(GTCompassSections.GENERATIONS, "raw_ore", GTCompassNodes.ORE))
-                .build()
-                .register();
-        MATERIAL_BLOCKS_BUILDER.put(TagPrefix.rawOreBlock, material, entry);
+        GTCEu.LOGGER.debug("Generating GTCEu Material Blocks... Complete!");
     }
 
     // Ore Blocks
     private static void generateOreBlocks() {
-        GTCEu.LOGGER.info("Generating Ore Blocks...");
-        for (Material material : GTRegistries.MATERIALS) {
-            if (allowOreBlock(material)) {
-                registerOreBlock(material);
+        GTCEu.LOGGER.debug("Generating GTCEu Ore Blocks...");
+        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+            GTRegistrate registrate = registry.getRegistrate();
+            for (Material material : registry.getAllMaterials()) {
+                if (allowOreBlock(material)) {
+                    registerOreBlock(material, registrate);
+                }
             }
         }
-        GTCEu.LOGGER.info("Generating Ore Blocks... Complete!");
+        GTCEu.LOGGER.debug("Generating GTCEu Ore Blocks... Complete!");
     }
     private static boolean allowOreBlock(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
-    private static void registerOreBlock(Material material) {
-        var oreProperty = material.getProperty(PropertyKey.ORE);
+    private static void registerOreBlock(Material material, GTRegistrate registrate) {
         for (var ore : TagPrefix.ORES.entrySet()) {
             if (ore.getKey().isIgnored(material)) continue;
             var oreTag = ore.getKey();
             final TagPrefix.OreType oreType = ore.getValue();
-            var entry = REGISTRATE.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
-                            oreType.material(),
-                            properties -> new RendererMaterialBlock(properties, oreTag, material, Platform.isClient() ? new OreBlockRenderer(oreType.stoneType(),
-                                    Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), true)),
-                                    Suppliers.memoize(() -> Objects.requireNonNull(oreTag.materialIconType()).getBlockTexturePath(material.getMaterialIconSet(), "layer2", true)),
-                                    oreProperty.isEmissive()) : null))
-                    .initialProperties(() -> {
-                        if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                            return Blocks.STONE;
-                        }
-                        return oreType.stoneType().get().getBlock();
-                    })
-                    .properties(properties -> {
-                        if (oreType.color() != null) properties.color(oreType.color());
-                        if (oreType.material() == net.minecraft.world.level.material.Material.SAND) {
-                            properties.strength(1.0f, 0.5f);
-                        }
-                        if (oreType.sound() != null) properties.sound(oreType.sound());
-                        return properties.noLootTable();
-                    })
-                    .transform(unificationBlock(oreTag, material))
-                    .addLayer(() -> RenderType::cutoutMipped)
+            var entry = registrate.block("%s%s_ore".formatted(oreTag != TagPrefix.ore ? FormattingUtil.toLowerCaseUnder(oreTag.name) + "_" : "", material.getName()),
+                    properties -> new OreBlock(properties, oreTag, material, true))
+                .initialProperties(() -> {
+                    if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
+                        return Blocks.STONE;
+                    }
+                    return oreType.stoneType().get().getBlock();
+                })
+                .properties(properties -> GTBlocks.copy(oreType.template(), properties).noLootTable())
+                .transform(unificationBlock(oreTag, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -282,20 +209,23 @@ public class GTBlocks {
 
     // Ore Indicator Piles
     private static void generateOreIndicators() {
-        GTCEu.LOGGER.info("Generating Surface Rock Indicator Blocks...");
-        for (Material material : GTRegistries.MATERIALS) {
-            if (allowOreIndicator(material)) {
-                registerOreIndicator(material);
+        GTCEu.LOGGER.debug("Generating GTCEu Surface Rock Indicator Blocks...");
+        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+            GTRegistrate registrate = registry.getRegistrate();
+            for (Material material : registry.getAllMaterials()) {
+                if (allowOreIndicator(material)) {
+                    registerOreIndicator(material, registrate);
+                }
             }
         }
         SURFACE_ROCK_BLOCKS = SURFACE_ROCK_BLOCKS_BUILDER.build();
-        GTCEu.LOGGER.info("Generating Surface Rock Indicator Blocks... Complete!");
+        GTCEu.LOGGER.debug("Generating GTCEu Surface Rock Indicator Blocks... Complete!");
     }
     private static boolean allowOreIndicator(Material material) {
         return material.hasProperty(PropertyKey.ORE);
     }
-    private static void registerOreIndicator(Material material) {
-        var entry = REGISTRATE.block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
+    private static void registerOreIndicator(Material material, GTRegistrate registrate) {
+        var entry = registrate.block("%s_indicator".formatted(material.getName()), p -> new SurfaceRockBlock(p, material))
                 .initialProperties(() -> Blocks.GRAVEL)
                 .properties(p -> p.noLootTable().strength(0.25f))
                 .blockstate(NonNullBiConsumer.noop())
@@ -309,24 +239,27 @@ public class GTBlocks {
 
     // Cable/Wire Blocks
     private static void generateCableBlocks() {
-        GTCEu.LOGGER.info("Generating Cable/Wire Blocks...");
+        GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks...");
         for (Insulation insulation : Insulation.values()) {
-            for (Material material : GTRegistries.MATERIALS) {
-                if (allowCableBlock(material, insulation)) {
-                    registerCableBlock(material, insulation);
+            for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+                GTRegistrate registrate = registry.getRegistrate();
+                for (Material material : registry.getAllMaterials()) {
+                    if (allowCableBlock(material, insulation)) {
+                        registerCableBlock(material, insulation, registrate);
+                    }
                 }
             }
         }
         CABLE_BLOCKS = CABLE_BLOCKS_BUILDER.build();
-        GTCEu.LOGGER.info("Generating Cable/Wire Blocks... Complete!");
+        GTCEu.LOGGER.debug("Generating GTCEu Cable/Wire Blocks... Complete!");
     }
     private static boolean allowCableBlock(Material material, Insulation insulation) {
         return material.hasProperty(PropertyKey.WIRE)
                 && !insulation.tagPrefix.isIgnored(material)
                 && !(insulation.isCable && material.getProperty(PropertyKey.WIRE).isSuperconductor());
     }
-    private static void registerCableBlock(Material material, Insulation insulation) {
-        var entry = REGISTRATE.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
+    private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
+        var entry = registrate.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
                 .transform(unificationBlock(insulation.tagPrefix, material))
@@ -346,23 +279,26 @@ public class GTBlocks {
 
     // Fluid Pipe Blocks
     private static void generateFluidPipeBlocks() {
-        GTCEu.LOGGER.info("Generating Fluid Pipe Blocks...");
+        GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks...");
         for (var fluidPipeType : FluidPipeType.values()) {
-            for (Material material : GTRegistries.MATERIALS) {
-                if (allowFluidPipeBlock(material, fluidPipeType)) {
-                    registerFluidPipeBlock(material, fluidPipeType);
+            for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+                GTRegistrate registrate = registry.getRegistrate();
+                for (Material material : registry.getAllMaterials()) {
+                    if (allowFluidPipeBlock(material, fluidPipeType)) {
+                        registerFluidPipeBlock(material, fluidPipeType, registrate);
+                    }
                 }
             }
         }
         FLUID_PIPE_BLOCKS = FLUID_PIPE_BLOCKS_BUILDER.build();
-        GTCEu.LOGGER.info("Generating Fluid Pipe Blocks... Complete!");
+        GTCEu.LOGGER.debug("Generating GTCEu Fluid Pipe Blocks... Complete!");
     }
     private static boolean allowFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
         return material.hasProperty(PropertyKey.FLUID_PIPE)
                 && !fluidPipeType.tagPrefix.isIgnored(material);
     }
-    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType) {
-        var entry = REGISTRATE.block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p, fluidPipeType, material))
+    private static void registerFluidPipeBlock(Material material, FluidPipeType fluidPipeType, GTRegistrate registrate) {
+        var entry = registrate.block("%s_%s_fluid_pipe".formatted(material.getName(), fluidPipeType.name), p -> new FluidPipeBlock(p, fluidPipeType, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
                     if (doMetalPipe(material)) {
@@ -386,23 +322,26 @@ public class GTBlocks {
 
     // Item Pipe Blocks
     private static void generateItemPipeBlocks() {
-        GTCEu.LOGGER.info("Generating Item Pipe Blocks...");
+        GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks...");
         for (var itemPipeType : ItemPipeType.values()) {
-            for (Material material : GTRegistries.MATERIALS) {
-                if (allowItemPipeBlock(material, itemPipeType)) {
-                    registerItemPipeBlock(material, itemPipeType);
+            for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+                GTRegistrate registrate = registry.getRegistrate();
+                for (Material material : registry.getAllMaterials()) {
+                    if (allowItemPipeBlock(material, itemPipeType)) {
+                        registerItemPipeBlock(material, itemPipeType, registrate);
+                    }
                 }
             }
         }
         ITEM_PIPE_BLOCKS = ITEM_PIPE_BLOCKS_BUILDER.build();
-        GTCEu.LOGGER.info("Generating Item Pipe Blocks... Complete!");
+        GTCEu.LOGGER.debug("Generating GTCEu Item Pipe Blocks... Complete!");
     }
     private static boolean allowItemPipeBlock(Material material, ItemPipeType itemPipeType) {
         return material.hasProperty(PropertyKey.ITEM_PIPE)
                 && !itemPipeType.getTagPrefix().isIgnored(material);
     }
-    private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType) {
-        var entry = REGISTRATE.block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name), p -> new ItemPipeBlock(p, itemPipeType, material))
+    private static void registerItemPipeBlock(Material material, ItemPipeType itemPipeType, GTRegistrate registrate) {
+        var entry = registrate.block("%s_%s_item_pipe".formatted(material.getName(), itemPipeType.name), p -> new ItemPipeBlock(p, itemPipeType, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> {
                     if (doMetalPipe(material)) {
@@ -426,11 +365,11 @@ public class GTBlocks {
 
     // Laser Pipe Blocks
     private static void generateLaserPipeBlocks() {
-        GTCEu.LOGGER.info("Generating Laser Pipe Blocks...");
+        GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks...");
         for (int i = 0; i < LaserPipeType.values().length; ++i) {
             registerLaserPipeBlock(i);
         }
-        GTCEu.LOGGER.info("Generating Laser Pipe Blocks... Complete!");
+        GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks... Complete!");
     }
     private static void registerLaserPipeBlock(int slot) {
         var type = LaserPipeType.values()[slot];
@@ -449,8 +388,6 @@ public class GTBlocks {
                 .register();
         LASER_PIPES[slot] = entry;
     }
-
-
 
 
 
@@ -728,7 +665,7 @@ public class GTBlocks {
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(RendererBlockItem::new)
                 .model(NonNullBiConsumer.noop());
-        if (!GTCEu.isHighTier() && tier > GTValues.UHV) {
+        if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
             entry.tab(() -> null);
         }
         return entry.build().register();
@@ -749,7 +686,7 @@ public class GTBlocks {
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
                 .item(RendererBlockItem::new)
                 .model(NonNullBiConsumer.noop());
-        if (!GTCEu.isHighTier() && tier > GTValues.UHV) {
+        if (!GTCEuAPI.isHighTier() && tier > GTValues.UHV) {
             entry.tab(null);
         }
         return entry.build().register();
@@ -981,9 +918,10 @@ public class GTBlocks {
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
         return builder -> {
             builder.onRegister(block -> {
+                Supplier<Block> blockSupplier = SupplierMemoizer.memoizeBlockSupplier(() -> block);
                 UnificationEntry entry = new UnificationEntry(tagPrefix, mat);
-                GTItems.toUnify.put(entry, block);
-                ChemicalHelper.registerUnificationItems(entry, block);
+                GTItems.toUnify.put(entry, blockSupplier);
+                ChemicalHelper.registerUnificationItems(entry, blockSupplier);
             });
             return builder;
         };
@@ -1002,8 +940,6 @@ public class GTBlocks {
         // Procedural Blocks
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
         generateMaterialBlocks();   // Compressed Blocks
-        generateFrameBlocks();      // Frame Blocks
-        generateRawOreBlocks();     // Raw Ore Blocks
         generateOreBlocks();        // Ore Blocks
         generateOreIndicators();    // Ore Indicators
         MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.build();
@@ -1028,5 +964,31 @@ public class GTBlocks {
 
     public static boolean doMetalPipe(Material material) {
         return GTValues.FOOLS.get() && material.hasProperty(PropertyKey.INGOT) && !material.hasProperty(PropertyKey.POLYMER) && !material.hasProperty(PropertyKey.WOOD);
+    }
+
+    /**
+     * kinda nasty block property copy function because one doesn't exist.
+     * @param props the props to copy
+     * @return a shallow copy of the block properties like {@link BlockBehaviour.Properties#copy(BlockBehaviour)} does
+     */
+    public static BlockBehaviour.Properties copy(BlockBehaviour.Properties props, BlockBehaviour.Properties newProps) {
+        if (props == null) {
+            return newProps;
+        }
+        newProps.destroyTime(((BlockPropertiesAccessor)props).getDestroyTime());
+        newProps.explosionResistance(((BlockPropertiesAccessor)props).getExplosionResistance());
+        if (!((BlockPropertiesAccessor)props).isHasCollision()) newProps.noCollission();
+        if (((BlockPropertiesAccessor)props).isIsRandomlyTicking()) newProps.randomTicks();
+        newProps.lightLevel(((BlockPropertiesAccessor)props).getLightEmission());
+        ((BlockPropertiesAccessor) newProps).setMaterialColor(((BlockPropertiesAccessor)props).getMaterialColor());
+        newProps.sound(((BlockPropertiesAccessor)props).getSoundType());
+        newProps.friction(((BlockPropertiesAccessor)props).getFriction());
+        newProps.speedFactor(((BlockPropertiesAccessor)props).getSpeedFactor());
+        if (((BlockPropertiesAccessor)props).isDynamicShape()) newProps.dynamicShape();
+        if (!((BlockPropertiesAccessor)props).isCanOcclude()) newProps.noOcclusion();
+        if (((BlockPropertiesAccessor)props).isIsAir()) newProps.air();
+        if (((BlockPropertiesAccessor)props).isRequiresCorrectToolForDrops()) newProps.requiresCorrectToolForDrops();
+        newProps.emissiveRendering(((BlockPropertiesAccessor)props).getEmissiveRendering());
+        return newProps;
     }
 }

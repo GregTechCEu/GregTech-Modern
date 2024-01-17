@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
@@ -15,13 +16,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -306,27 +307,26 @@ public class GTMaterials {
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, GTMaterials.Basalt);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, GTMaterials.Concrete);
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
-      
-        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
-        if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MATERIALS.getRegistryName());
-        }
 
-        for (Material material : GTRegistries.MATERIALS) {
-            if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {
-                addAlloyBlastProperty(material);
-            }
-        }
-        // Alloy Blast Overriding
-        AlloyBlastProperty property = NiobiumNitride.getProperty(PropertyKey.ALLOY_BLAST);
-        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(1, 11, -1));
+        block.modifyMaterialAmount(Amethyst, 4);
+        block.modifyMaterialAmount(Glowstone, 4);
+        block.modifyMaterialAmount(NetherQuartz, 4);
+        block.modifyMaterialAmount(CertusQuartz, 4);
+        block.modifyMaterialAmount(Brick, 4);
+        block.modifyMaterialAmount(Clay, 4);
 
-        property = IndiumTinBariumTitaniumCuprate.getProperty(PropertyKey.ALLOY_BLAST);
-        property.setRecipeProducer(new CustomAlloyBlastRecipeProducer(-1, -1, 16));
+        block.modifyMaterialAmount(Concrete, 1);
+        block.modifyMaterialAmount(Glass, 1);
+        block.modifyMaterialAmount(Ice, 1);
+        block.modifyMaterialAmount(Obsidian, 1);
+
+        rod.modifyMaterialAmount(Blaze, 4);
+        rod.modifyMaterialAmount(Bone, 5);
     }
 
+    @Nullable
     public static Material get(String name) {
-        return GTRegistries.MATERIALS.get(name);
+        return GTCEuAPI.materialManager.getMaterial(name);
     }
 
     private static void excludeAllGems(Material material, ItemLike... items) {
@@ -339,29 +339,6 @@ public class GTMaterials {
         gemFlawed.setIgnored(material);
         gemFlawless.setIgnored(material);
         gemExquisite.setIgnored(material);
-    }
-
-    public static void addAlloyBlastProperty(@Nonnull Material material) {
-        final List<MaterialStack> components = material.getMaterialComponents();
-        // ignore materials which are not alloys
-        if (components.size() < 2) return;
-
-        BlastProperty blastProperty = material.getProperty(PropertyKey.BLAST);
-        if (blastProperty == null) return;
-
-        if (!material.hasProperty(PropertyKey.FLUID)) return;
-
-        // if there are more than 2 fluid-only components in the material, do not generate a hot fluid
-        if (components.stream().filter(GTMaterials::isMaterialStackFluidOnly).limit(3).count() > 2) {
-            return;
-        }
-
-        material.setProperty(PropertyKey.ALLOY_BLAST, new AlloyBlastProperty(material.getBlastTemperature()));
-        material.getProperty(PropertyKey.FLUID).getStorage().enqueueRegistration(FluidStorageKeys.MOLTEN, new FluidBuilder().state(FluidState.MOLTEN));
-    }
-
-    private static boolean isMaterialStackFluidOnly(@Nonnull MaterialStack ms) {
-        return !ms.material().hasProperty(PropertyKey.DUST) && ms.material().hasProperty(PropertyKey.FLUID);
     }
 
     public static final List<MaterialFlag> STD_METAL = new ArrayList<>();
@@ -378,7 +355,7 @@ public class GTMaterials {
         EXT2_METAL.addAll(Arrays.asList(GENERATE_LONG_ROD, GENERATE_BOLT_SCREW));
     }
 
-    public static final MarkerMaterial NULL = new MarkerMaterial("null");
+    public static final MarkerMaterial NULL = new MarkerMaterial(GTCEu.id("null"));
 
     /**
      * Direct Elements

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.registry;
 
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
@@ -13,8 +14,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
-import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.Registry;
@@ -40,14 +41,11 @@ import static net.minecraft.core.Registry.RECIPE_TYPE_REGISTRY;
  * @implNote ElementRegistry
  */
 public final class GTRegistries {
-    public static final GTRegistrate REGISTRATE = GTRegistrate.create(GTCEu.MOD_ID);
-
-    public static final GTRegistry.RL<GTRegistry<?, ?>> REGISTRIES = new GTRegistry.RL<>(GTCEu.id("root"));
-
     // GT Registry
     public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));
 
-    public static final GTRegistry.String<Material> MATERIALS = new GTRegistry.String<>(GTCEu.id("material"));
+    @Deprecated(forRemoval = true, since = "1.0.21")
+    public static final GTRegistry.String<Material> MATERIALS = GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID);
 
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));

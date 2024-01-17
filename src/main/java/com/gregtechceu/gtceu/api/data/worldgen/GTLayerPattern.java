@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
@@ -72,7 +73,7 @@ public class GTLayerPattern {
 
 	public static class Layer {
 		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTRegistries.MATERIALS.codec()))
+				Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()))
 						.fieldOf("targets")
 						.forGetter(layer -> layer.targets),
 				Codec.intRange(0, Integer.MAX_VALUE)

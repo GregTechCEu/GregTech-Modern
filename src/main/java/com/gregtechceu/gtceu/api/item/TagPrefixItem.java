@@ -37,7 +37,7 @@ public class TagPrefixItem extends Item {
     public final TagPrefix tagPrefix;
     public final Material material;
 
-    protected TagPrefixItem(Properties properties, TagPrefix tagPrefix, Material material) {
+    public TagPrefixItem(Properties properties, TagPrefix tagPrefix, Material material) {
         super(properties);
         this.tagPrefix = tagPrefix;
         this.material = material;
@@ -46,12 +46,8 @@ public class TagPrefixItem extends Item {
         }
     }
 
-    public static TagPrefixItem create(Item.Properties properties, TagPrefix tagPrefix, Material material) {
-        return new TagPrefixItem(properties, tagPrefix, material);
-    }
-
     @Override
-    public int getBurnTime(ItemStack itemStack, @org.jetbrains.annotations.Nullable RecipeType<?> recipeType) {
+    public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
         return getItemBurnTime();
     }
 

@@ -103,7 +103,6 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
             case LIQUID -> true;
             case GAS -> gasProof;
             case PLASMA -> plasmaProof;
-            case MOLTEN -> true;
         };
     }
 

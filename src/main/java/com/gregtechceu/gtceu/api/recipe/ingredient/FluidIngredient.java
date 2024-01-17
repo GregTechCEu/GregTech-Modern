@@ -4,18 +4,17 @@ import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import lombok.Getter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.TagParser;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -162,7 +161,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
         JsonObject jsonObject = GsonHelper.convertToJsonObject(json, "ingredient");
         long amount = GsonHelper.getAsLong(jsonObject, "amount", 0);
-        CompoundTag nbt = jsonObject.has("nbt") ? getNBT(jsonObject.get("nbt")) : null;
+        CompoundTag nbt = jsonObject.has("nbt") ? CraftingHelper.getNBT(jsonObject.get("nbt")) : null;
         if (GsonHelper.isObjectNode(jsonObject, "value")) {
             return FluidIngredient.fromValues(Stream.of(FluidIngredient.valueFromJson(GsonHelper.getAsJsonObject(jsonObject, "value"))), amount, nbt);
         } else if (GsonHelper.isArrayNode(jsonObject, "value")) {
@@ -189,18 +188,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
             return new FluidIngredient.TagValue(tagKey);
         }
         throw new JsonParseException("A fluid ingredient entry needs either a tag or a fluid");
-    }
-
-    public static CompoundTag getNBT(JsonElement element) {
-        try {
-            if (element.isJsonObject())
-                return TagParser.parseTag(GSON.toJson(element));
-            else
-                return TagParser.parseTag(GsonHelper.convertToString(element, "nbt"));
-        }
-        catch (CommandSyntaxException e) {
-            throw new JsonSyntaxException("Invalid NBT Entry: " + e);
-        }
     }
 
     public static interface Value {

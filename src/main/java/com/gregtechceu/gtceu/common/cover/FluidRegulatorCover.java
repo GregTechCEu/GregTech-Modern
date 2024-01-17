@@ -179,7 +179,7 @@ public class FluidRegulatorCover extends PumpCover {
             return globalTransferSizeMillibuckets;
 
         FluidFilter filter = filterHandler.getFilter();
-        return (filter.isBlackList() ? globalTransferSizeMillibuckets : filter.testFluidAmount(fluidStack)) * MILLIBUCKET_SIZE;
+        return (filter.supportsAmounts() ? filter.testFluidAmount(fluidStack) : globalTransferSizeMillibuckets) * MILLIBUCKET_SIZE;
     }
 
     ///////////////////////////

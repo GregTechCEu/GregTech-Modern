@@ -1,0 +1,80 @@
+{
+  "loader": "forge:composite",
+  "textures": {
+
+  },
+  "children": {
+    "base_stone": {
+      "render_type": "solid"
+    },
+    "ore_texture": {
+      "parent": "block/block",
+      "textures": {
+        "particle": "#layer0"
+      },
+      "render_type": "translucent",
+      "elements": [
+        {
+          "from": [0,  0,  0 ],
+          "to":   [16, 16, 16],
+          "faces": {
+            "down":  { "texture": "#layer0", "cullface": "down", "tintindex": 0 },
+            "up":    { "texture": "#layer0", "cullface": "up", "tintindex": 0 },
+            "north": { "texture": "#layer0", "cullface": "north", "tintindex": 0 },
+            "south": { "texture": "#layer0", "cullface": "south", "tintindex": 0 },
+            "west":  { "texture": "#layer0", "cullface": "west", "tintindex": 0 },
+            "east":  { "texture": "#layer0", "cullface": "east", "tintindex": 0 }
+          }
+        },
+        {
+          "from": [0,  0,  0 ],
+          "to":   [16, 16, 16],
+          "faces": {
+            "down":  { "texture": "#layer1", "cullface": "down", "tintindex": 1 },
+            "up":    { "texture": "#layer1", "cullface": "up", "tintindex": 1 },
+            "north": { "texture": "#layer1", "cullface": "north", "tintindex": 1 },
+            "south": { "texture": "#layer1", "cullface": "south", "tintindex": 1 },
+            "west":  { "texture": "#layer1", "cullface": "west", "tintindex": 1 },
+            "east":  { "texture": "#layer1", "cullface": "east", "tintindex": 1 }
+          }
+        }
+      ]
+    }
+  },
+  "item_render_order": [
+    "base_stone",
+    "ore_texture"
+  ],
+  "display": {
+    "gui": {
+      "rotation": [ 30, 225, 0 ],
+      "translation": [ 0, 0, 0],
+      "scale":[ 0.625, 0.625, 0.625 ]
+    },
+    "ground": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 3, 0],
+      "scale":[ 0.25, 0.25, 0.25 ]
+    },
+    "fixed": {
+      "rotation": [ 0, 0, 0 ],
+      "translation": [ 0, 0, 0],
+      "scale":[ 0.5, 0.5, 0.5 ]
+    },
+    "thirdperson_righthand": {
+      "rotation": [ 75, 45, 0 ],
+      "translation": [ 0, 2.5, 0],
+      "scale": [ 0.375, 0.375, 0.375 ]
+    },
+    "firstperson_righthand": {
+      "rotation": [ 0, 45, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.40, 0.40, 0.40 ]
+    },
+    "firstperson_lefthand": {
+      "rotation": [ 0, 225, 0 ],
+      "translation": [ 0, 0, 0 ],
+      "scale": [ 0.40, 0.40, 0.40 ]
+    }
+  }
+}

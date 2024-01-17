@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -83,7 +84,7 @@ public class WireRecipeHandler {
                 .save(provider);
 
         if (!material.hasFlag(NO_WORKING) && material.hasFlag(GENERATE_PLATE)) {
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_wire_single", material),
+            VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_wire_single", material.getName()),
                     ChemicalHelper.get(wireGtSingle, material), "Xx",
                     'X', new UnificationEntry(plate, material));
         }
@@ -164,7 +165,7 @@ public class WireRecipeHandler {
         for (int i = 1; i <= insulationAmount; i++) {
             ingredients[i] = ChemicalHelper.get(plate, Rubber);
         }
-        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_cable_%d", material, cableAmount),
+        VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_cable_%d", material.getName(), cableAmount),
                 ChemicalHelper.get(cablePrefix, material),
                 ingredients
         );

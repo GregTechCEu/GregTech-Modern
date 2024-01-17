@@ -13,7 +13,7 @@ public class GTEmiRecipeHandler implements StandardRecipeHandler<ModularUIContai
     @Override
     public List<Slot> getInputSources(ModularUIContainer handler) {
         return handler.getModularUI().getSlotMap().values().stream()
-                .filter(e -> e.getIngredientIO() == IngredientIO.INPUT || e.isPlayerContainer)
+                .filter(e -> e.getIngredientIO() == IngredientIO.INPUT || e.isPlayerContainer || e.isPlayerHotBar)
                 .map(SlotWidget::getHandle)
                 .toList();
     }

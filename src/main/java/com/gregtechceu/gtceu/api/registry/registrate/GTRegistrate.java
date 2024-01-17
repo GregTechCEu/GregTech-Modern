@@ -29,6 +29,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.function.TriFunction;
 
@@ -36,6 +37,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Locale;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
@@ -49,6 +51,8 @@ import java.util.stream.Stream;
 @MethodsReturnNonnullByDefault
 public class GTRegistrate extends Registrate {
 
+    private final AtomicBoolean registered = new AtomicBoolean(false);
+
     protected GTRegistrate(String modId) {
         super(modId);
     }
@@ -60,6 +64,14 @@ public class GTRegistrate extends Registrate {
 
     public void registerRegistrate() {
         registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
+    }
+
+    @Override
+    public Registrate registerEventListeners(IEventBus bus) {
+        if (!registered.getAndSet(true)) {
+            return super.registerEventListeners(bus);
+        }
+        return this;
     }
 
     public IGTFluidBuilder createFluid(String name, String langKey, Material material, ResourceLocation stillTexture, ResourceLocation flowingTexture) {
@@ -108,7 +120,7 @@ public class GTRegistrate extends Registrate {
 
     @Override
     public <T extends Item> @Nonnull ItemBuilder<T, Registrate> item(String name, NonNullFunction<Item.Properties, T> factory) {
-        return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("/.", "_")));
+        return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("\\.", "_")));
     }
 
 }

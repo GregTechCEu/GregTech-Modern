@@ -42,7 +42,6 @@ public class PropertyFluidFilter implements IPropertyFluidFilter {
             case LIQUID -> true;
             case GAS -> gasProof;
             case PLASMA -> plasmaProof;
-            case MOLTEN -> true;
         };
     }
 

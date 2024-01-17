@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -24,7 +25,7 @@ public class GTOreProcessingEmiCategory extends ModularUIEmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (Material mat : GTRegistries.MATERIALS) {
+        for (Material mat : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (mat.hasProperty(ORE)) {
                 registry.addRecipe(new GTEmiOreProcessing(mat));
             }

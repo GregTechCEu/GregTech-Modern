@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -135,7 +136,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             PUMP.appendIngredients(Stream.of(new Object[][]{
                     {9, GTItems.ELECTRIC_PUMP_UHV.asStack()},
                     {10, GTItems.ELECTRIC_PUMP_UEV.asStack()},
@@ -351,7 +352,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             HULL.appendIngredients(Stream.of(new Object[][]{
                     {10, GTMachines.HULL[10].asStack()},
                     {11, GTMachines.HULL[11].asStack()},
@@ -376,7 +377,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             CASING.appendIngredients(Stream.of(new Object[][]{
                     {10, GTBlocks.MACHINE_CASING_UEV.asStack()},
                     {11, GTBlocks.MACHINE_CASING_UIV.asStack()},
@@ -479,7 +480,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             MOTOR.appendIngredients(Stream.of(new Object[][]{
                     { 9, GTItems.ELECTRIC_MOTOR_UHV.asStack()},
                     {10, GTItems.ELECTRIC_MOTOR_UEV.asStack()},
@@ -516,7 +517,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             SENSOR.appendIngredients(Stream.of(new Object[][]{
                     { 9, GTItems.SENSOR_UHV.asStack()},
                     {10, GTItems.SENSOR_UEV.asStack()},
@@ -572,7 +573,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             PISTON.appendIngredients(Stream.of(new Object[][]{
                     { 9, GTItems.ELECTRIC_PISTON_UHV.asStack()},
                     {10, GTItems.ELECTRIC_PISTON_UEV.asStack()},
@@ -608,7 +609,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             CONVEYOR.appendIngredients(Stream.of(new Object[][]{
                     { 9, GTItems.CONVEYOR_MODULE_UHV.asStack()},
                     {10, GTItems.CONVEYOR_MODULE_UEV.asStack()},
@@ -631,7 +632,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             ROBOT_ARM.appendIngredients(Stream.of(new Object[][]{
                     { 9, GTItems.ROBOT_ARM_UHV.asStack()},
                     {10, GTItems.ROBOT_ARM_UEV.asStack()},
@@ -726,7 +727,7 @@ public class CraftingComponent {
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEu.isHighTier()) {
+        if (GTCEuAPI.isHighTier()) {
             FIELD_GENERATOR.appendIngredients(Stream.of(new Object[][]{
                     { 9, GTItems.FIELD_GENERATOR_UHV.asStack()},
                     {10, GTItems.FIELD_GENERATOR_UEV.asStack()},
