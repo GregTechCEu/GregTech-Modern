@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.events;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import dev.latvian.mods.kubejs.event.StartupEventJS;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import dev.latvian.mods.kubejs.util.UtilsJS;
@@ -10,9 +10,9 @@ import dev.latvian.mods.kubejs.util.UtilsJS;
 import java.util.stream.Stream;
 
 public class GTRegistryEventJS<K, V> extends StartupEventJS {
-    private final GTRegistryObjectBuilderTypes<K, V> registry;
+    private final GTRegistryInfo<K, V> registry;
 
-    public GTRegistryEventJS(GTRegistryObjectBuilderTypes<K, V> r) {
+    public GTRegistryEventJS(GTRegistryInfo<K, V> r) {
         registry = r;
     }
 

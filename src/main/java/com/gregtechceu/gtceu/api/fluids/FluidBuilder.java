@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -259,7 +259,7 @@ public class FluidBuilder {
         return this;
     }
 
-    public @NotNull Supplier<? extends Fluid> build(@NotNull String modid, Material material, FluidStorageKey key) {
+    public @NotNull Supplier<? extends Fluid> build(@NotNull String modid, Material material, FluidStorageKey key, GTRegistrate registrate) {
         determineName(material, key);
         determineTextures(material, key, modid);
 
@@ -272,7 +272,7 @@ public class FluidBuilder {
         determineDensity();
         determineLuminosity(material);
         determineViscosity(material);
-        IGTFluidBuilder builder = GTRegistries.REGISTRATE.createFluid(name, this.translationKey != null ? this.translationKey : key.getTranslationKeyFor(material), material, this.still, this.flowing)
+        IGTFluidBuilder builder = registrate.createFluid(name, this.translationKey != null ? this.translationKey : key.getTranslationKeyFor(material), material, this.still, this.flowing)
                 .temperature(this.temperature)
                 .density(this.density)
                 .luminance(this.luminosity)
@@ -335,14 +335,12 @@ public class FluidBuilder {
                     }
                     case GAS -> ROOM_TEMPERATURE;
                     case PLASMA -> BASE_PLASMA_TEMPERATURE;
-                    case MOLTEN -> SOLID_LIQUID_TEMPERATURE;
                 };
             } else {
                 temperature = property.getBlastTemperature() + switch (state) {
                     case LIQUID -> LIQUID_TEMPERATURE_OFFSET;
                     case GAS -> GAS_TEMPERATURE_OFFSET;
                     case PLASMA -> BASE_PLASMA_TEMPERATURE;
-                    case MOLTEN -> SOLID_LIQUID_TEMPERATURE;
                 };
             }
         }
@@ -361,7 +359,6 @@ public class FluidBuilder {
             case LIQUID -> DEFAULT_LIQUID_DENSITY;
             case GAS -> DEFAULT_GAS_DENSITY;
             case PLASMA -> DEFAULT_PLASMA_DENSITY;
-            case MOLTEN -> DEFAULT_MOLTEN_DENSITY;
         };
     }
 
@@ -394,7 +391,6 @@ public class FluidBuilder {
             }
             case GAS -> DEFAULT_GAS_VISCOSITY;
             case PLASMA -> DEFAULT_PLASMA_VISCOSITY;
-            case MOLTEN -> DEFAULT_MOLTEN_VISCOSITY;
         };
     }
 }

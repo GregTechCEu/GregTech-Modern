@@ -87,28 +87,28 @@ public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
         return this;
     }
 
-    public TagPrefixBuilder defaultTagPath(TagPrefix.LoaderType loader, String path) {
-        base.defaultTagPath(loader, path);
+    public TagPrefixBuilder defaultTagPath(String path) {
+        base.defaultTagPath(path);
         return this;
     }
 
-    public TagPrefixBuilder prefixTagPath(TagPrefix.LoaderType loader, String path) {
-        base.prefixTagPath(loader, path);
+    public TagPrefixBuilder prefixTagPath(String path) {
+        base.prefixTagPath(path);
         return this;
     }
 
-    public TagPrefixBuilder prefixOnlyTagPath(TagPrefix.LoaderType loader, String path) {
-        base.prefixOnlyTagPath(loader, path);
+    public TagPrefixBuilder prefixOnlyTagPath(String path) {
+        base.prefixOnlyTagPath(path);
         return this;
     }
 
-    public TagPrefixBuilder unformattedTagPath(TagPrefix.LoaderType loader, String path) {
-        base.unformattedTagPath(loader, path);
+    public TagPrefixBuilder unformattedTagPath(String path) {
+        base.unformattedTagPath(path);
         return this;
     }
 
-    public TagPrefixBuilder customTagPath(TagPrefix.LoaderType loader, String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        base.customTagPath(loader, path, formatter);
+    public TagPrefixBuilder customTagPath(String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
+        base.customTagPath(path, formatter);
         return this;
     }
 

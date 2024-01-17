@@ -12,8 +12,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FABRIC;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.LoaderType.FORGE;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.hasOreProperty;
 
 @Accessors(fluent = true, chain = true)
 public class KJSTagPrefix extends TagPrefix {
@@ -24,46 +23,45 @@ public class KJSTagPrefix extends TagPrefix {
 
     public static KJSTagPrefix oreTagPrefix(String name) {
         return new KJSTagPrefix(name)
-            .prefixTagPath(FORGE, "ores/%s/%s")
-            .defaultTagPath(FORGE, "ores/%s")
-            .prefixOnlyTagPath(FORGE, "ores_in_ground/%s")
-            .unformattedTagPath(FORGE, "ores")
-            .prefixTagPath(FABRIC, "%s_%s_ores")
-            .defaultTagPath(FABRIC, "%s_ores")
-            .prefixOnlyTagPath(FABRIC, "%s_ores_in_ground")
-            .unformattedTagPath(FABRIC, "ores")
+            .prefixTagPath( "ores/%s/%s")
+            .defaultTagPath( "ores/%s")
+            .prefixOnlyTagPath( "ores_in_ground/%s")
+            .unformattedTagPath( "ores")
+            .materialIconType(MaterialIconType.ore)
+            .unificationEnabled(true)
+            .generationCondition(hasOreProperty)
             .materialIconType(MaterialIconType.ore)
             .unificationEnabled(true)
             .generationCondition(hasOreProperty);
     }
 
     @Override
-    public KJSTagPrefix defaultTagPath(LoaderType loader, String path) {
-        loader.apply(this, TagType.withDefaultFormatter(path));
+    public KJSTagPrefix defaultTagPath(String path) {
+        this.tags.add(TagType.withDefaultFormatter(path));
         return this;
     }
 
     @Override
-    public KJSTagPrefix prefixTagPath(LoaderType loader, String path) {
-        loader.apply(this, TagType.withPrefixFormatter(path));
+    public KJSTagPrefix prefixTagPath(String path) {
+        this.tags.add(TagType.withPrefixFormatter(path));
         return this;
     }
 
     @Override
-    public KJSTagPrefix prefixOnlyTagPath(LoaderType loader, String path) {
-        loader.apply(this, TagType.withPrefixOnlyFormatter(path));
+    public KJSTagPrefix prefixOnlyTagPath(String path) {
+        this.tags.add(TagType.withPrefixOnlyFormatter(path));
         return this;
     }
 
     @Override
-    public KJSTagPrefix unformattedTagPath(LoaderType loader, String path) {
-        loader.apply(this, TagType.withNoFormatter(path));
+    public KJSTagPrefix unformattedTagPath(String path) {
+        this.tags.add(TagType.withNoFormatter(path));
         return this;
     }
 
     @Override
-    public KJSTagPrefix customTagPath(LoaderType loader, String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
-        loader.apply(this, TagType.withCustomFormatter(path, formatter));
+    public KJSTagPrefix customTagPath(String path, BiFunction<TagPrefix, Material, TagKey<Item>> formatter) {
+        this.tags.add(TagType.withCustomFormatter(path, formatter));
         return this;
     }
 

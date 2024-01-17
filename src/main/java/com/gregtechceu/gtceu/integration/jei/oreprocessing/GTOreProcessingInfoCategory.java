@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.jei.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -32,7 +33,7 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
     }
 
     public static void registerRecipes(IRecipeRegistration registry) {
-        registry.addRecipes(RECIPE_TYPE, GTRegistries.MATERIALS.values().stream()
+        registry.addRecipes(RECIPE_TYPE, GTCEuAPI.materialManager.getRegisteredMaterials().stream()
                 .filter((material) -> material.hasProperty(PropertyKey.ORE))
                 .map(GTOreProcessingInfoWrapper::new)
                 .toList());
@@ -47,7 +48,6 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
         registration.addRecipeCatalyst(ELECTROMAGNETIC_SEPARATOR[GTValues.LV].asStack(), RECIPE_TYPE);
         registration.addRecipeCatalyst(SIFTER[GTValues.LV].asStack(), RECIPE_TYPE);
     }
-
 
     @Override
     @Nonnull

@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.*;
 
@@ -14,6 +16,8 @@ public final class GTRecipeConditions {
     private GTRecipeConditions() {}
 
     public static void init() {
+        GTRegistries.RECIPE_CONDITIONS.unfreeze();
+
         GTRegistries.RECIPE_CONDITIONS.register(BiomeCondition.INSTANCE.getType(), BiomeCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(DimensionCondition.INSTANCE.getType(), DimensionCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(PositionYCondition.INSTANCE.getType(), PositionYCondition.class);
@@ -25,5 +29,8 @@ public final class GTRecipeConditions {
         if (GTCEu.isCreateLoaded()) {
             GTRegistries.RECIPE_CONDITIONS.register(RPMCondition.INSTANCE.getType(), RPMCondition.class);
         }
+
+        AddonFinder.getAddons().forEach(IGTAddon::registerRecipeConditions);
+        GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 }

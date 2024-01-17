@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import appeng.api.networking.pathing.ChannelMode;
 import appeng.core.AEConfig;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
@@ -54,7 +55,7 @@ import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMac
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryObjectBuilderTypes;
+import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -91,7 +92,7 @@ import java.util.stream.Stream;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
 import static com.gregtechceu.gtceu.api.pattern.util.RelativeDirection.*;
-import static com.gregtechceu.gtceu.api.registry.GTRegistries.REGISTRATE;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
@@ -106,11 +107,11 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
  * @implNote GTMachines
  */
 public class GTMachines {
-    public final static int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEu.isHighTier() ? MAX : UHV);
-    public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEu.isHighTier() ? OpV : UV);
+    public final static int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? MAX : UHV);
+    public final static int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? OpV : UV);
     public final static int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
-    public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEu.isHighTier() ? OpV : UHV);
-    public final static int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEu.isHighTier() ? MAX : UHV);
+    public final static int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
+    public final static int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
     public static final Int2LongFunction hvCappedTankSizeFunction = tier -> (tier <= GTValues.LV ? 8: tier == GTValues.MV ? 12 : 16) * FluidHelper.getBucket();
@@ -122,6 +123,7 @@ public class GTMachines {
 
     static {
         REGISTRATE.creativeModeTab(() -> MACHINE);
+        GTRegistries.MACHINES.unfreeze();
     }
     //////////////////////////////////////
     //******     Steam Machine    ******//
@@ -1938,7 +1940,7 @@ public class GTMachines {
     public static MachineDefinition registerCrate(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
 
-        return REGISTRATE.machine(material + "_crate", holder -> new CrateMachine(holder, material, capacity))
+        return REGISTRATE.machine(material.getName() + "_crate", holder -> new CrateMachine(holder, material, capacity))
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", capacity))
@@ -1951,7 +1953,7 @@ public class GTMachines {
 
     public static MachineDefinition registerDrum(Material material, int capacity, String lang) {
         boolean wooden = material.hasProperty(PropertyKey.WOOD);
-        var definition = REGISTRATE.machine(material + "_drum", MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
+        var definition = REGISTRATE.machine(material.getName() + "_drum", MachineDefinition::createDefinition, holder -> new DrumMachine(holder, material, capacity), MetaMachineBlock::new, DrumMachineItem::create, MetaMachineBlockEntity::createBlockEntity)
                 .langValue(lang)
                 .rotationState(RotationState.NONE)
                 .renderer(() -> new MachineRenderer(GTCEu.id("block/machine/" + (wooden ? "wooden" : "metal") + "_drum")))
@@ -2033,8 +2035,9 @@ public class GTMachines {
                     MV, HV, EV);
         }
         if (GTCEu.isKubeJSLoaded()) {
-            GTRegistryObjectBuilderTypes.registerFor(GTRegistries.MACHINES.getRegistryName());
+            GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
+        GTRegistries.MACHINES.freeze();
     }
 
     public static MachineDefinition get(String name) {

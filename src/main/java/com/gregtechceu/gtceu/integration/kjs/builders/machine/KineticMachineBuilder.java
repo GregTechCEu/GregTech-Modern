@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
@@ -15,6 +14,7 @@ import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -40,7 +40,7 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
     private final Object[] passedArguments;
 
     public KineticMachineBuilder(String name, boolean isSource, int tier, Object... args) {
-        super(GTRegistries.REGISTRATE, name, (id) -> new KineticMachineDefinition(id, isSource, GTValues.V[tier]), (holder) -> new SimpleKineticElectricWorkableMachine(holder, tier, GTMachines.defaultTankSizeFunction, args), KineticMachineBlock::new, MetaMachineItem::new, KineticMachineBlockEntity::create);
+        super(GTRegistration.REGISTRATE, name, (id) -> new KineticMachineDefinition(id, isSource, GTValues.V[tier]), (holder) -> new SimpleKineticElectricWorkableMachine(holder, tier, GTMachines.defaultTankSizeFunction, args), KineticMachineBlock::new, MetaMachineItem::new, KineticMachineBlockEntity::create);
         this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
         this.passedArguments = args;
     }

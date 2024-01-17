@@ -41,7 +41,9 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
+        GTRegistries.ORE_VEINS.unfreeze();
         GTRegistries.ORE_VEINS.registry().clear();
+
         GTOres.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
         if (GTCEu.isKubeJSLoaded()) {
@@ -79,6 +81,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         }
 
         GTOres.updateLargestVeinSize();
+        GTRegistries.ORE_VEINS.freeze();
     }
 
     public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {

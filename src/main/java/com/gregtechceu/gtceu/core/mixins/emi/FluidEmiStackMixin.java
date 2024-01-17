@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.forge.core.mixins.emi;
+package com.gregtechceu.gtceu.core.mixins.emi;
 
 import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.client.TooltipsHandler;

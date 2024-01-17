@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.indicators;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
@@ -45,7 +46,7 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(BlockState.CODEC, GTRegistries.MATERIALS.codec()).fieldOf("block").forGetter(ext -> ext.block),
+            Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
             FloatProvider.codec(0.0f, 1.0f).fieldOf("density").forGetter(ext -> ext.density),
             StringRepresentable.fromEnum(IndicatorPlacement::values).fieldOf("placement").forGetter(ext -> ext.placement)
