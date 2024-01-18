@@ -17,7 +17,8 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         // Minecraft Version
-        def minecraftVersion = "1.20.1"
+        def minecraftVersionOld = "1.20.1"
+        def minecraftVersion = "1.20.4"
 
         // Mod Dependencies Versions
         // Common
@@ -28,13 +29,13 @@ dependencyResolutionManagement {
         def kjsVersion = "2001.6.4-build.120"
         def auVersion = "1.20.1-0.6.0"
 
-        // Forge
-        def forgeVersion = "47.1.3"
+        // NeoForge
+        def forgeVersion = "20.4.47-beta"
         def registrateForgeVersion = "MC1.20-1.3.3"
         def createForgeVersion = "0.5.1.d-9"
         def flywheelForgeVersion = "0.6.9-5"
         def topForgeVersion = "1.20.1-10.0.1-3"
-        def jadeForgeVersion = "11.6.3"
+        def jadeForgeVersion = "13.2.2"
         def worldStripperForgeFile = "4578579"
 
         // Libs
@@ -46,18 +47,18 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.3-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def configurationVersion = "2.2.0"
-        def ldLibVersion = "1.0.25.m"
+        def configurationVersion = "2.2.2"
+        def ldLibVersion = "1.0.22."
         def mixinextrasVersion = "0.2.0"
         def shimmerVersion = "0.2.2"
 
         forge {
             version("forgeShortVersion", forgeVersion)
-            def minecraftForge = version("minecratfForge", "${minecraftVersion}-${forgeVersion}")
-            library("minecraftForge", "net.minecraftforge", "forge").versionRef(minecraftForge)
+            def minecraftForge = version("neoForge", "${forgeVersion}")
+            library("neoForge", "net.neoforged", "neoforge").versionRef(minecraftForge)
 
             def ldLib = version("ldlib", ldLibVersion)
-            library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-forge-${minecraftVersion}").versionRef(ldLib)
+            library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-neoforge-${minecraftVersion}").versionRef(ldLib)
 
             def shimmer = version("shimmer", "${minecraftVersion}-${shimmerVersion}")
             library("shimmer-forge", "com.lowdragmc.shimmer", "Shimmer-forge").versionRef(shimmer)
@@ -72,9 +73,9 @@ dependencyResolutionManagement {
             library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersion}").versionRef(flywheel)
 
             def jei = version("jei", jeiVersion)
-            library("jei-common-api", "mezz.jei", "jei-${minecraftVersion}-common-api").versionRef(jei)
-            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersion}-forge-api").versionRef(jei)
-            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersion}-forge").versionRef(jei)
+            library("jei-common-api", "mezz.jei", "jei-${minecraftVersionOld}-common-api").versionRef(jei)
+            library("jei-forge-api", "mezz.jei", "jei-${minecraftVersionOld}-forge-api").versionRef(jei)
+            library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersionOld}-forge").versionRef(jei)
 
             def rei = version("rei", reiVersion)
             library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-forge").versionRef(rei)
@@ -97,7 +98,7 @@ dependencyResolutionManagement {
             library("mixinextras-forge", "io.github.llamalad7", "mixinextras-forge").versionRef(mixinextras)
 
             def configuration = version("configuration", configurationVersion)
-            library("configuration", "dev.toma.configuration", "configuration-forge-1.20.1").versionRef(configuration)
+            library("configuration", "dev.toma.configuration", "configuration-forge-1.20.4").versionRef(configuration)
 
             def worldStripper = version("worldStripper", worldStripperForgeFile)
             library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)

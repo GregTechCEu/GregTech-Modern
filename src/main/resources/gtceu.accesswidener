@@ -1,0 +1,28 @@
+accessWidener   v2  named
+
+accessible field net/minecraft/world/level/levelgen/placement/HeightRangePlacement height Lnet/minecraft/world/level/levelgen/heightproviders/HeightProvider;
+accessible field net/minecraft/world/level/levelgen/heightproviders/UniformHeight minInclusive Lnet/minecraft/world/level/levelgen/VerticalAnchor;
+accessible field net/minecraft/world/level/levelgen/heightproviders/UniformHeight maxInclusive Lnet/minecraft/world/level/levelgen/VerticalAnchor;
+
+accessible method net/minecraft/data/loot/BlockLootSubProvider createSingleItemTable (Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/storage/loot/providers/number/NumberProvider;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
+accessible method net/minecraft/data/loot/BlockLootSubProvider applyExplosionDecay (Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/storage/loot/functions/FunctionUserBuilder;)Lnet/minecraft/world/level/storage/loot/functions/FunctionUserBuilder;
+accessible method net/minecraft/data/loot/BlockLootSubProvider createSilkTouchDispatchTable (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Builder;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
+accessible method net/minecraft/data/loot/BlockLootSubProvider createLeavesDrops (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/block/Block;[F)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
+accessible field net/minecraft/data/loot/BlockLootSubProvider HAS_NO_SILK_TOUCH Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;
+
+accessible method net/minecraft/data/models/BlockModelGenerators createFacingDispatch ()Lnet/minecraft/data/models/blockstates/PropertyDispatch;
+accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;
+
+extendable method net/minecraft/server/packs/resources/SimplePreparableReloadListener reload (Lnet/minecraft/server/packs/resources/PreparableReloadListener$PreparationBarrier;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;Lnet/minecraft/util/profiling/ProfilerFiller;Ljava/util/concurrent/Executor;Ljava/util/concurrent/Executor;)Ljava/util/concurrent/CompletableFuture;
+
+accessible field net/minecraft/world/item/HoeItem TILLABLES Ljava/util/Map;
+accessible field net/minecraft/world/item/ShovelItem FLATTENABLES Ljava/util/Map;
+accessible field net/minecraft/world/item/AxeItem STRIPPABLES Ljava/util/Map;
+accessible field net/minecraft/world/item/Item BASE_ATTACK_DAMAGE_UUID Ljava/util/UUID;
+accessible field net/minecraft/world/item/Item BASE_ATTACK_SPEED_UUID Ljava/util/UUID;
+accessible method net/minecraft/world/entity/LivingEntity breakItem (Lnet/minecraft/world/item/ItemStack;)V
+accessible method net/minecraft/world/item/context/UseOnContext getHitResult ()Lnet/minecraft/world/phys/BlockHitResult;
+
+accessible field net/minecraft/world/item/crafting/ShapedRecipe result Lnet/minecraft/world/item/ItemStack;
+
+accessible method net/minecraft/world/level/block/Block popExperience (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;I)V
