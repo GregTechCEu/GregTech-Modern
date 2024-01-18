@@ -12,11 +12,12 @@ import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ForgeBiomeModifiers;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 public class GTBiomeModifiers {
+    public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
 
     public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS,
             GTCEu.id("rubber_tree"));
@@ -30,8 +31,8 @@ public class GTBiomeModifiers {
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
 
         HolderSet<Biome> biomes = biomeLookup.getOrThrow(CustomTags.HAS_RUBBER_TREE);
-        Holder<PlacedFeature> rubberTree = placedFeatureRegistry.getOrThrow(GTPlacements.RUBBER_CHECKED);
-        ctx.register(RUBBER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+        Holder<PlacedFeature> featureHolder = placedFeatureRegistry.getOrThrow(GTPlacements.RUBBER_CHECKED);
+        ctx.register(RUBBER, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes,
                 HolderSet.direct(rubberTree),
                 GenerationStep.Decoration.VEGETAL_DECORATION));

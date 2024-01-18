@@ -15,7 +15,7 @@ tasks.withType(ProcessResources).configureEach {
             minecraft_version   : libs.versions.minecraft.get(),
             forge_version       : forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
             mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
-            mod_authors         : mod_authors, mod_description: mod_description, mod_url: mod_url
+            mod_description     : mod_description, mod_url: mod_url
     ]
     inputs.properties replaceProperties
 

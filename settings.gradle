@@ -23,9 +23,9 @@ dependencyResolutionManagement {
         // Mod Dependencies Versions
         // Common
         def jeiVersion = "15.2.0.27"
-        def reiVersion = "12.1.725"
-        def emiVersion = "1.0.30"
-        def ae2Version = "15.0.18"
+        def reiVersion = "12.0.684"
+        def emiVersion = "1.1.0"
+        def ae2Version = "17.0.6"
         def kjsVersion = "2001.6.4-build.120"
         def auVersion = "1.20.1-0.6.0"
 
@@ -48,7 +48,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.2"
-        def ldLibVersion = "1.0.22."
+        def ldLibVersion = "1.0.22.a"
         def mixinextrasVersion = "0.2.0"
         def shimmerVersion = "0.2.2"
 
@@ -60,17 +60,17 @@ dependencyResolutionManagement {
             def ldLib = version("ldlib", ldLibVersion)
             library("ldlib-forge", "com.lowdragmc.ldlib", "ldlib-neoforge-${minecraftVersion}").versionRef(ldLib)
 
-            def shimmer = version("shimmer", "${minecraftVersion}-${shimmerVersion}")
+            def shimmer = version("shimmer", "${minecraftVersionOld}-${shimmerVersion}")
             library("shimmer-forge", "com.lowdragmc.shimmer", "Shimmer-forge").versionRef(shimmer)
 
             def registrate = version("registrate", registrateForgeVersion)
             library("registrate", "com.tterrag.registrate", "Registrate").versionRef(registrate)
 
             def createForge = version("createForge", createForgeVersion)
-            library("createForge", "com.simibubi.create", "create-${minecraftVersion}").versionRef(createForge)
+            library("createForge", "com.simibubi.create", "create-${minecraftVersionOld}").versionRef(createForge)
 
             def flywheel = version("flywheel", flywheelForgeVersion)
-            library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersion}").versionRef(flywheel)
+            library("flywheel", "com.jozufozu.flywheel", "flywheel-forge-${minecraftVersionOld}").versionRef(flywheel)
 
             def jei = version("jei", jeiVersion)
             library("jei-common-api", "mezz.jei", "jei-${minecraftVersionOld}-common-api").versionRef(jei)
