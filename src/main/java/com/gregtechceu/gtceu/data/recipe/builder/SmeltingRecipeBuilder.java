@@ -119,7 +119,7 @@ public class SmeltingRecipeBuilder {
         json.addProperty("cookingtime", cookingTime);
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput consumer) {
         consumer.accept(new FinishedRecipe() {
 
             @Override

@@ -36,7 +36,7 @@ import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
 
 public class MetaTileEntityLoader {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         CraftingComponent.initializeComponents();
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "casing_ulv", GTBlocks.MACHINE_CASING_ULV.asStack(), "PPP",
@@ -1076,8 +1076,7 @@ public class MetaTileEntityLoader {
     // - CraftingComponent.Component
     // - UnificationEntry
     // - TagKey<?>
-    public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData,
-                                             MachineDefinition[] machines, Object... recipe) {
+    public static void registerMachineRecipe(RecipeOutput provider, boolean withUnificationData, MachineDefinition[] machines, Object... recipe) {
         for (MachineDefinition machine : machines) {
 
             // Needed to skip certain tiers if not enabled.
@@ -1093,8 +1092,7 @@ public class MetaTileEntityLoader {
         }
     }
 
-    public static void registerMachineRecipe(Consumer<FinishedRecipe> provider, MachineDefinition[] machines,
-                                             Object... recipe) {
+    public static void registerMachineRecipe(RecipeOutput provider, MachineDefinition[] machines, Object... recipe) {
         registerMachineRecipe(provider, true, machines, recipe);
     }
 

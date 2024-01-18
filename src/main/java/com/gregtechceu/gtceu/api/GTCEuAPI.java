@@ -15,11 +15,8 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.block.Block;
-import net.minecraftforge.eventbus.api.GenericEvent;
-import net.minecraftforge.fml.event.IModBusEvent;
-
-import lombok.Getter;
+import net.neoforged.bus.api.GenericEvent;
+import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;

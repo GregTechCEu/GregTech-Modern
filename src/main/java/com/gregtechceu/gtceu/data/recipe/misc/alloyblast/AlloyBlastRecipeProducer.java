@@ -38,8 +38,7 @@ public class AlloyBlastRecipeProducer {
      * @param material the material to generate for
      * @param property the blast property of the material
      */
-    public void produce(@NotNull Material material, @NotNull BlastProperty property,
-                        Consumer<FinishedRecipe> provider) {
+    public void produce(@Nonnull Material material, @Nonnull BlastProperty property, RecipeOutput provider) {
         // do not generate for disabled materials
         if (material.hasFlag(MaterialFlags.DISABLE_ALLOY_BLAST)) return;
 
@@ -125,9 +124,8 @@ public class AlloyBlastRecipeProducer {
      * @param componentAmount the amount of different components in the material
      * @param builder         the builder to continue
      */
-    protected void buildRecipes(@NotNull BlastProperty property, @NotNull Fluid molten, int outputAmount,
-                                int componentAmount,
-                                @NotNull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
+    protected void buildRecipes(@Nonnull BlastProperty property, @Nonnull Fluid molten, int outputAmount, int componentAmount,
+                                @Nonnull GTRecipeBuilder builder, RecipeOutput provider) {
         // add the fluid output with the correct amount
         builder.outputFluids(FluidStack.create(molten, (long) GTValues.L * outputAmount));
 
@@ -175,8 +173,8 @@ public class AlloyBlastRecipeProducer {
      * @param temperature the temperature of the material
      */
     @SuppressWarnings("MethodMayBeStatic")
-    protected void addFreezerRecipes(@NotNull Material material, @NotNull Fluid molten, int temperature,
-                                     Consumer<FinishedRecipe> provider) {
+    protected void addFreezerRecipes(@Nonnull Material material, @Nonnull Fluid molten, int temperature, RecipeOutput provider) {
+
         // build the freezer recipe
         GTRecipeBuilder freezerBuilder = GTRecipeTypes.VACUUM_RECIPES.recipeBuilder(material.getName())
                 .inputFluids(FluidStack.create(molten, GTValues.L))

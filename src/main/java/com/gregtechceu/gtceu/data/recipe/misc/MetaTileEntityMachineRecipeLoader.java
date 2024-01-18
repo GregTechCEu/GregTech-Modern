@@ -26,7 +26,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECI
 
 public class MetaTileEntityMachineRecipeLoader {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         registerLaserRecipes(provider);
 
         // Energy Output Hatches
@@ -798,7 +798,8 @@ public class MetaTileEntityMachineRecipeLoader {
     }
 
     // TODO clean this up with a CraftingComponent rework
-    private static void registerLaserRecipes(Consumer<FinishedRecipe> provider) {
+    private static void registerLaserRecipes(RecipeOutput provider) {
+
         // 256A Laser Target Hatches
         ASSEMBLER_RECIPES.recipeBuilder("iv_256a_laser_target_hatch")
                 .inputItems(HULL[IV])

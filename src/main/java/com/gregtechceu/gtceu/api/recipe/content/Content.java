@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import lombok.AllArgsConstructor;

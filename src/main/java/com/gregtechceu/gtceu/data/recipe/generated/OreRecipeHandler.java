@@ -33,10 +33,10 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class OreRecipeHandler {
     // Make sure to update OreByProduct jei page with any byproduct changes made here!
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        for (TagPrefix ore : ORES.keySet()) {
-            if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
-                ore.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processOre);
+    public static void init(RecipeOutput provider) {
+        if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
+            for (TagPrefix ore : ORES.keySet()) {
+                ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
             }
         }
         ore.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processOreForgeHammer);
@@ -50,8 +50,8 @@ public class OreRecipeHandler {
         dustPure.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processPureDust);
     }
 
-    private static void processMetalSmelting(TagPrefix crushedPrefix, Material material, OreProperty property,
-                                             Consumer<FinishedRecipe> provider) {
+
+    private static void processMetalSmelting(TagPrefix crushedPrefix, Material material, OreProperty property, RecipeOutput provider) {
         Material smeltingResult = property.getDirectSmeltResult() != null ? property.getDirectSmeltResult() : material;
 
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
@@ -66,29 +66,7 @@ public class OreRecipeHandler {
         }
     }
 
-    public static void processOreForgeHammer(TagPrefix orePrefix, Material material, OreProperty property,
-                                             Consumer<FinishedRecipe> provider) {
-        ItemStack crushedStack = ChemicalHelper.get(crushed, material);
-        int amountOfCrushedOre = property.getOreMultiplier();
-        int oreTypeMultiplier = TagPrefix.ORES.get(orePrefix).isDoubleDrops() ? 2 : 1;
-        crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
-
-        String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
-        GTRecipeBuilder builder = FORGE_HAMMER_RECIPES
-                .recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_raw_ore")
-                .inputItems(orePrefix, material)
-                .duration(10).EUt(16);
-        if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
-            builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier,
-                    ChemicalHelper.get(gem, material, crushedStack.getCount())));
-        } else {
-            builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, crushedStack));
-        }
-        builder.save(provider);
-    }
-
-    public static void processOre(TagPrefix orePrefix, Material material, OreProperty property,
-                                  Consumer<FinishedRecipe> provider) {
+    public static void processOre(TagPrefix orePrefix, Material material, OreProperty property, RecipeOutput provider) {
         Material byproductMaterial = GTUtil.selectItemInList(0, material, property.getOreByProducts(), Material.class);
         ItemStack ingotStack;
         ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
@@ -96,6 +74,58 @@ public class OreRecipeHandler {
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material :
                 property.getDirectSmeltResult();
         ItemStack crushedStack = ChemicalHelper.get(crushed, material);
+
+        if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
+            ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);
+        } else if (smeltingMaterial.hasProperty(PropertyKey.GEM)) {
+            ingotStack = ChemicalHelper.get(gem, smeltingMaterial);
+        } else {
+            ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
+        }
+        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isNether() ? 2 : 1;
+        ingotStack.setCount(ingotStack.getCount() * oreMultiplier);
+
+        String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
+        if (!crushedStack.isEmpty()) {
+            GTRecipeBuilder builder = FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_raw_ore")
+                    .inputItems(orePrefix, material)
+                    .duration(10).EUt(16);
+            if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
+                builder.outputItems(GTUtil.copyAmount(oreMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
+            } else {
+                builder.outputItems(GTUtil.copyAmount(oreMultiplier, crushedStack));
+            }
+            builder.save(provider);
+
+            builder = MACERATOR_RECIPES.recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_raw_ore")
+                    .inputItems(orePrefix, material)
+                    .outputItems(GTUtil.copyAmount(2 * oreMultiplier, crushedStack))
+                    .chancedOutput(byproductStack, 1400, 850)
+                    .EUt(2)
+                    .duration(400);
+
+            Supplier<Material> outputDustMat = ORES.get(orePrefix).material();
+            if (outputDustMat != null) {
+                builder.outputItems(dust, outputDustMat.get());
+            }
+
+            builder.save(provider);
+        }
+
+        //do not try to add smelting recipes for materials which require blast furnace
+        if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
+            float xp = Math.round(((1 + oreMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+            VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
+                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+        }
+    }
+
+    public static void processRawOre(TagPrefix orePrefix, Material material, OreProperty property, RecipeOutput provider) {
+        ItemStack crushedStack = ChemicalHelper.get(crushed, material);
+        ItemStack ingotStack;
+        Material smeltingMaterial = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
         int amountOfCrushedOre = property.getOreMultiplier();
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);
@@ -229,8 +259,7 @@ public class OreRecipeHandler {
                 .duration(300).EUt(2).save(provider);
     }
 
-    public static void processCrushedOre(TagPrefix crushedPrefix, Material material, OreProperty property,
-                                         Consumer<FinishedRecipe> provider) {
+    public static void processCrushedOre(TagPrefix crushedPrefix, Material material, OreProperty property, RecipeOutput provider) {
         ItemStack impureDustStack = ChemicalHelper.get(dustImpure, material);
         Material byproductMaterial = GTUtil.selectItemInList(0, material, property.getOreByProducts(), Material.class);
 
@@ -309,8 +338,7 @@ public class OreRecipeHandler {
         processMetalSmelting(crushedPrefix, material, property, provider);
     }
 
-    public static void processCrushedCentrifuged(TagPrefix centrifugedPrefix, Material material, OreProperty property,
-                                                 Consumer<FinishedRecipe> provider) {
+    public static void processCrushedCentrifuged(TagPrefix centrifugedPrefix, Material material, OreProperty property, RecipeOutput provider) {
         ItemStack dustStack = ChemicalHelper.get(dust, material);
         ItemStack byproductStack = ChemicalHelper.get(dust, GTUtil.selectItemInList(2,
                 material, property.getOreByProducts(), Material.class), 1);
@@ -335,8 +363,7 @@ public class OreRecipeHandler {
         processMetalSmelting(centrifugedPrefix, material, property, provider);
     }
 
-    public static void processCrushedPurified(TagPrefix purifiedPrefix, Material material, OreProperty property,
-                                              Consumer<FinishedRecipe> provider) {
+    public static void processCrushedPurified(TagPrefix purifiedPrefix, Material material, OreProperty property, RecipeOutput provider) {
         ItemStack crushedCentrifugedStack = ChemicalHelper.get(crushedRefined, material);
         ItemStack dustStack = ChemicalHelper.get(dustPure, material);
         Material byproductMaterial = GTUtil.selectItemInList(
@@ -414,8 +441,7 @@ public class OreRecipeHandler {
         processMetalSmelting(purifiedPrefix, material, property, provider);
     }
 
-    public static void processDirtyDust(TagPrefix dustPrefix, Material material, OreProperty property,
-                                        Consumer<FinishedRecipe> provider) {
+    public static void processDirtyDust(TagPrefix dustPrefix, Material material, OreProperty property, RecipeOutput provider) {
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
         Material byproduct = GTUtil.selectItemInList(
@@ -446,8 +472,7 @@ public class OreRecipeHandler {
         processMetalSmelting(dustPrefix, material, property, provider);
     }
 
-    public static void processPureDust(TagPrefix purePrefix, Material material, OreProperty property,
-                                       Consumer<FinishedRecipe> provider) {
+    public static void processPureDust(TagPrefix purePrefix, Material material, OreProperty property, RecipeOutput provider) {
         Material byproductMaterial = GTUtil.selectItemInList(
                 1, material, property.getOreByProducts(), Material.class);
         ItemStack dustStack = ChemicalHelper.get(dust, material);

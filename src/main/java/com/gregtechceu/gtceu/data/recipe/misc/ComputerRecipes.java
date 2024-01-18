@@ -20,25 +20,7 @@ import static com.gregtechceu.gtceu.common.data.machines.GTResearchMachines.*;
 
 public class ComputerRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        ASSEMBLER_RECIPES.recipeBuilder("data_access_hatch")
-                .inputItems(ITEM_IMPORT_BUS[EV])
-                .inputItems(TOOL_DATA_STICK, 4)
-                .inputItems(CustomTags.EV_CIRCUITS, 4)
-                .outputItems(DATA_ACCESS_HATCH)
-                .inputFluids(Polytetrafluoroethylene.getFluid(L * 2))
-                .cleanroom(CleanroomType.CLEANROOM)
-                .duration(200).EUt(VA[EV]).save(provider);
-
-        ASSEMBLY_LINE_RECIPES.recipeBuilder("advanced_data_access_hatch")
-                .inputItems(ITEM_IMPORT_BUS[LuV])
-                .inputItems(TOOL_DATA_ORB, 4)
-                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
-                .outputItems(ADVANCED_DATA_ACCESS_HATCH)
-                .inputFluids(SolderingAlloy.getFluid(L * 4))
-                .inputFluids(Polybenzimidazole.getFluid(L * 4))
-                .stationResearch(b -> b.researchStack(DATA_BANK.asStack()).CWUt(4))
-                .duration(400).EUt(6000).save(provider);
+    public static void init(RecipeOutput provider) {
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)

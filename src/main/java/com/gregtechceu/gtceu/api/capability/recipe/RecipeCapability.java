@@ -1,17 +1,11 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
@@ -25,9 +19,8 @@ import java.util.*;
 /**
  * Used to detect whether a machine has a certain capability.
  */
-public abstract class RecipeCapability<T> {
-
-    public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
+public class RecipeCapability<T> {
+    public static final Codec<Pair<RecipeCapability<?>, List<Content>>> CODEC =
 
     public final String name;
     public final int color;

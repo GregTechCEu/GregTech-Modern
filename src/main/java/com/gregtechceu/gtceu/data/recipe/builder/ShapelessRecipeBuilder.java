@@ -121,7 +121,7 @@ public class ShapelessRecipeBuilder {
         }
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput consumer) {
         consumer.accept(new FinishedRecipe() {
 
             @Override

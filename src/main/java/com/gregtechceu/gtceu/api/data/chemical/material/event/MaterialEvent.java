@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.event;
 
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.fml.event.IModBusEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
 
 /**
  * Event to register and modify materials in

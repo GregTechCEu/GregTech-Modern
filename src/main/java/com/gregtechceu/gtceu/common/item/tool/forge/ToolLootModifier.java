@@ -11,10 +11,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.loot.IGlobalLootModifier;
-
-import com.mojang.serialization.Codec;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.neoforged.neoforge.common.loot.IGlobalLootModifier;
 import org.jetbrains.annotations.NotNull;
 
 public class ToolLootModifier implements IGlobalLootModifier {

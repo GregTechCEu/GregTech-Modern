@@ -20,7 +20,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ReactorRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
+
         CHEMICAL_RECIPES.recipeBuilder("raw_rubber_from_air")
                 .circuitMeta(1)
                 .inputFluids(Isoprene.getFluid(144))

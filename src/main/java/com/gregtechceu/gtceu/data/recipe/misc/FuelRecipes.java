@@ -21,7 +21,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class FuelRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
+
         // TODO this all needs to be cleaned up, but this will make it somewhat work for now
         // do these first because for some reason vanilla fuels are not set up yet at this phase?
         Set<Item> addedItems = new HashSet<>();

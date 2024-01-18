@@ -17,7 +17,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class GrowthMediumRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
+
         // Bio Chaff
         MACERATOR_RECIPES.recipeBuilder("bio_chaff").EUt(4).duration(200)
                 .inputItems(PLANT_BALL, 2)

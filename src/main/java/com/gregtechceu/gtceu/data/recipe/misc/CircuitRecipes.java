@@ -21,14 +21,15 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class CircuitRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         waferRecipes(provider);
         componentRecipes(provider);
         boardRecipes(provider);
         circuitRecipes(provider);
     }
 
-    private static void waferRecipes(Consumer<FinishedRecipe> provider) {
+    private static void waferRecipes(RecipeOutput provider) {
+
         // Boules
         BLAST_RECIPES.recipeBuilder("silicon_boule")
                 .inputItems(dust, Silicon, 32)
@@ -302,7 +303,8 @@ public class CircuitRecipes {
                 /* .cleanroom(CleanroomType.CLEANROOM) */.save(provider);
     }
 
-    private static void componentRecipes(Consumer<FinishedRecipe> provider) {
+    private static void componentRecipes(RecipeOutput provider) {
+
         // Vacuum Tube
         VanillaRecipeHelper.addShapedRecipe(provider, "vacuum_tube", VACUUM_TUBE.asStack(),
                 "PTP", "WWW",
@@ -763,7 +765,8 @@ public class CircuitRecipes {
                 .duration(480).EUt(VA[IV]).save(provider);
     }
 
-    private static void boardRecipes(Consumer<FinishedRecipe> provider) {
+    private static void boardRecipes(RecipeOutput provider) {
+
         // Coated Board
         VanillaRecipeHelper.addShapedRecipe(provider, "coated_board", COATED_BOARD.asStack(3),
                 "RRR", "PPP", "RRR",
@@ -996,8 +999,7 @@ public class CircuitRecipes {
                 .save(provider);
     }
 
-    private static void circuitRecipes(Consumer<FinishedRecipe> provider) {
-        int outputAmount = ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 1 : 2;
+    private static void circuitRecipes(RecipeOutput provider) {
 
         // T1: Electronic ==============================================================================================
 

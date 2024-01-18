@@ -10,9 +10,11 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.DistExecutor;
-import net.minecraftforge.fml.common.Mod;
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.DistExecutor;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,10 +25,14 @@ public class GTCEu {
     public static final String NAME = "GregTechCEu";
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
 
-    public GTCEu() {
+    public GTCEu(IEventBus modBus) {
         GTCEu.init();
         GTCEuAPI.instance = this;
-        DistExecutor.unsafeRunForDist(() -> ClientProxy::new, () -> CommonProxy::new);
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            new ClientProxy(modBus);
+        } else {
+            new CommonProxy(modBus);
+        }
     }
 
     public static void init() {

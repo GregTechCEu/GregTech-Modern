@@ -55,13 +55,10 @@ public class WireRecipeHandler {
 
     private static final TagPrefix[] wireSizes = { wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex };
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
-        // Wiremill: Ingot -> 1x, 2x, 4x, 8x, 16x, Fine
-        // Wiremill: 1x Wire -> Fine
-        // Extruder: Ingot -> 1x Wire
-        // Wire Cutter: Plate -> 1x Wire
-        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
+    public static void init(RecipeOutput provider) {
+
+        // Generate 1x Wire creation recipes (Wiremill, Extruder, Wire Cutters)
+        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireSingle(tagPrefix, material, property, provider));
 
         // Generate Cable Covering Recipes
         wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
@@ -71,10 +68,9 @@ public class WireRecipeHandler {
         wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
     }
 
-    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property,
-                                    Consumer<FinishedRecipe> provider) {
-        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot :
-                material.hasProperty(PropertyKey.GEM) ? gem : dust;
+
+    public static void processWireSingle(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
+        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot : material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_wire")
                 .inputItems(prefix, material)
@@ -120,8 +116,8 @@ public class WireRecipeHandler {
         }
     }
 
-    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property,
-                                             Consumer<FinishedRecipe> provider) {
+    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
+
         // Superconductors have no Cables, so exit early
         if (property.isSuperconductor()) return;
 
@@ -191,8 +187,7 @@ public class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix,
-                                             int cableAmount, Consumer<FinishedRecipe> provider) {
+    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix, int cableAmount, RecipeOutput provider) {
         int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new UnificationEntry(wirePrefix, material);

@@ -9,10 +9,12 @@ import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.registries.DeferredRegister;
-import net.minecraftforge.registries.RegistryObject;
+import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 /**
  * @author KilaBash
@@ -24,13 +26,9 @@ public class GTFeatures {
     public static final ResourceLocation NEW_ORE_VEIN_TOGGLE = GTCEu.id("vein_toggle");
     public static final ResourceLocation NEW_ORE_VEIN_RIDGED = GTCEu.id("vein_ridged");
 
-    public static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(Registries.FEATURE,
-            GTCEu.MOD_ID);
-
-    public static final RegistryObject<StoneBlobFeature> STONE_BLOB = FEATURE_REGISTER.register("stone_blob",
-            StoneBlobFeature::new);
-    public static final RegistryObject<FluidSproutFeature> FLUID_SPROUT = FEATURE_REGISTER.register("fluid_sprout",
-            FluidSproutFeature::new);
+    public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE_REGISTER = DeferredRegister.create(Registries.CONFIGURED_FEATURE, GTCEu.MOD_ID);
+    public static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registries.PLACED_FEATURE, GTCEu.MOD_ID);
+    public static final DeferredRegister<BiomeModifier> BIOME_MODIFIER_REGISTER = DeferredRegister.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.MOD_ID);
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time

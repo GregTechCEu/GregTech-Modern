@@ -26,7 +26,6 @@ import java.util.List;
 // @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class AlloyBlastPropertyAddition {
 
-    @SubscribeEvent
     public static void addAlloyBlastProperties(PostMaterialEvent event) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (!material.hasFlag(MaterialFlags.DISABLE_ALLOY_PROPERTY)) {

@@ -14,6 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 
@@ -33,8 +34,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
-
+public class GTRecipe implements Recipe<Container> {
     public final GTRecipeType recipeType;
     @Getter
     public final ResourceLocation id;

@@ -26,7 +26,8 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class MiscRecipeLoader {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
+
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
                 "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B',

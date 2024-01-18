@@ -12,16 +12,9 @@ import com.gregtechceu.gtceu.utils.input.KeyBind;
 
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
-
-import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
-import net.minecraft.client.renderer.blockentity.SignRenderer;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.EntityRenderersEvent;
-import net.minecraftforge.client.event.RegisterGuiOverlaysEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.IEventBus;
 
 /**
  * @author KilaBash
@@ -30,9 +23,8 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
  */
 @OnlyIn(Dist.CLIENT)
 public class ClientProxy extends CommonProxy {
-
-    public ClientProxy() {
-        super();
+    public ClientProxy(IEventBus modBus) {
+        super(modBus);
         init();
     }
 

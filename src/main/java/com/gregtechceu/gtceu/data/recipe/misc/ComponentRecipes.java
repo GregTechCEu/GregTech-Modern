@@ -22,33 +22,15 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECI
 
 public class ComponentRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
-        // Motors
-        // Start--------------------------------------------------------------------------------------------------
-        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_lv_steel", ELECTRIC_MOTOR_LV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Tin), 'W',
-                new UnificationEntry(wireGtSingle, Copper), 'R', new UnificationEntry(rod, Steel), 'M',
-                new UnificationEntry(rod, SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_lv_iron", ELECTRIC_MOTOR_LV.asStack(),
-                "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Tin), 'W',
-                new UnificationEntry(wireGtSingle, Copper), 'R', new UnificationEntry(rod, Iron), 'M',
-                new UnificationEntry(rod, IronMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_mv", ELECTRIC_MOTOR_MV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Copper), 'W',
-                new UnificationEntry(wireGtDouble, Cupronickel), 'R', new UnificationEntry(rod, Aluminium), 'M',
-                new UnificationEntry(rod, SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_hv", ELECTRIC_MOTOR_HV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Silver), 'W',
-                new UnificationEntry(wireGtDouble, Electrum), 'R', new UnificationEntry(rod, StainlessSteel), 'M',
-                new UnificationEntry(rod, SteelMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_ev", ELECTRIC_MOTOR_EV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Aluminium), 'W',
-                new UnificationEntry(wireGtDouble, Kanthal), 'R', new UnificationEntry(rod, Titanium), 'M',
-                new UnificationEntry(rod, NeodymiumMagnetic));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_iv", ELECTRIC_MOTOR_IV.asStack(), "CWR",
-                "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Tungsten), 'W',
-                new UnificationEntry(wireGtDouble, Graphene), 'R', new UnificationEntry(rod, TungstenSteel), 'M',
-                new UnificationEntry(rod, NeodymiumMagnetic));
+    public static void init(RecipeOutput provider) {
+
+        //Motors Start--------------------------------------------------------------------------------------------------
+        VanillaRecipeHelper.addShapedRecipe(provider, "electric_motor_lv_steel", ELECTRIC_MOTOR_LV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Tin), 'W', new UnificationEntry(wireGtSingle, Copper), 'R', new UnificationEntry(rod, Steel), 'M', new UnificationEntry(rod, SteelMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_lv_iron", ELECTRIC_MOTOR_LV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Tin), 'W', new UnificationEntry(wireGtSingle, Copper), 'R', new UnificationEntry(rod, Iron), 'M', new UnificationEntry(rod, IronMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_mv", ELECTRIC_MOTOR_MV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtSingle, Copper), 'W', new UnificationEntry(wireGtDouble, Cupronickel), 'R', new UnificationEntry(rod, Aluminium), 'M', new UnificationEntry(rod, SteelMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_hv", ELECTRIC_MOTOR_HV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Silver), 'W', new UnificationEntry(wireGtDouble, Electrum), 'R', new UnificationEntry(rod, StainlessSteel), 'M', new UnificationEntry(rod, SteelMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_ev", ELECTRIC_MOTOR_EV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Aluminium), 'W', new UnificationEntry(wireGtDouble, Kanthal), 'R', new UnificationEntry(rod, Titanium), 'M', new UnificationEntry(rod, NeodymiumMagnetic));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "electric_motor_iv", ELECTRIC_MOTOR_IV.asStack(), "CWR", "WMW", "RWC", 'C', new UnificationEntry(cableGtDouble, Tungsten), 'W', new UnificationEntry(wireGtDouble, Graphene), 'R', new UnificationEntry(rod, TungstenSteel), 'M', new UnificationEntry(rod, NeodymiumMagnetic));
 
         ASSEMBLER_RECIPES.recipeBuilder("electric_motor_lv_iron")
                 .inputItems(cableGtSingle, Tin, 2)

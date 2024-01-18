@@ -17,9 +17,10 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -29,6 +30,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
+import org.jetbrains.annotations.NotNull;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -239,10 +242,10 @@ public class Material implements Comparable<Material> {
     /**
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
-     * @see #getFluid(FluidStorageKey, long)
+     * @see #getFluid(FluidStorageKey, int)
      */
-    public FluidStack getFluid(long amount) {
-        return FluidStack.create(getFluid(), amount);
+    public FluidStack getFluid(int amount) {
+        return new FluidStack(getFluid(), amount);
     }
 
     /**
@@ -251,8 +254,8 @@ public class Material implements Comparable<Material> {
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
      */
-    public FluidStack getFluid(@NotNull FluidStorageKey key, long amount) {
-        return FluidStack.create(getFluid(key), amount);
+    public FluidStack getFluid(@Nonnull FluidStorageKey key, int amount) {
+        return new FluidStack(getFluid(key), amount);
     }
 
     /**
@@ -318,9 +321,9 @@ public class Material implements Comparable<Material> {
         return prop == null ? null : prop.getFluid();
     }
 
-    public FluidStack getHotFluid(long amount) {
+    public FluidStack getHotFluid(int amount) {
         AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
-        return prop == null ? null : FluidStack.create(prop.getFluid(), amount);
+        return prop == null ? null : new FluidStack(prop.getFluid(), amount);
     }
 
     public Item getBucket() {

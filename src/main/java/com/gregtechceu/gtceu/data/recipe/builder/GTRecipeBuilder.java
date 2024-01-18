@@ -22,12 +22,11 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
@@ -39,13 +38,7 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -88,10 +81,7 @@ public class GTRecipeBuilder {
     @Setter
     public boolean isFuel = false;
     @Setter
-    public BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onSave;
-    @Getter
-    private final Collection<ResearchRecipeEntry> researchRecipeEntries = new ArrayList<>();
-    private boolean generatingRecipes = true;
+    public BiConsumer<GTRecipeBuilder, RecipeOutput> onSave;
 
     public GTRecipeBuilder(ResourceLocation id, GTRecipeType recipeType) {
         this.id = id;
@@ -763,50 +753,15 @@ public class GTRecipeBuilder {
         return jsonObject;
     }
 
-    public FinishedRecipe build() {
-        return new FinishedRecipe() {
-
-            @Override
-            public void serializeRecipeData(JsonObject pJson) {
-                toJson(pJson);
-            }
-
-            @Override
-            public ResourceLocation getId() {
-                return new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath());
-            }
-
-            @Override
-            public RecipeSerializer<?> getType() {
-                return GTRecipeSerializer.SERIALIZER;
-            }
-
-            @Nullable
-            @Override
-            public JsonObject serializeAdvancement() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getAdvancementId() {
-                return null;
-            }
-        };
+    public GTRecipe build() {
+        return new GTRecipe(this.recipeType, this.id, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, this.data, this.duration, this.isFuel);
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput consumer) {
         if (onSave != null) {
             onSave.accept(this, consumer);
         }
-        ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny()
-                .map(ResearchCondition.class::cast).orElse(null);
-        if (condition != null) {
-            for (ResearchData.ResearchEntry entry : condition.data) {
-                this.recipeType.addDataStickEntry(entry.getResearchId(), buildRawRecipe());
-            }
-        }
-        consumer.accept(build());
+        consumer.accept(this.id, build(), null);
     }
 
     public GTRecipe buildRawRecipe() {
