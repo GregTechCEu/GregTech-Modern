@@ -59,5 +59,12 @@ public class SupplierMemoizer {
         MemoizedBlockSupplier(Supplier<T> delegate) {
             super(delegate);
         }
+
+        @Override
+        public String toString() {
+            return "SupplierMemoizer.memoizeBlockSupplier("
+                + (initialized ? "<supplier that returned " + value + ">" : delegate)
+                + ")";
+        }
     }
 }
