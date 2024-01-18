@@ -13,14 +13,14 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraftforge.common.world.BiomeModifier;
-import net.minecraftforge.common.world.ForgeBiomeModifiers;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.neoforge.common.world.BiomeModifier;
+import net.neoforged.neoforge.common.world.BiomeModifiers;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.concurrent.CompletableFuture;
 
 public class GTBiomeModifiers {
-    public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
+    public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
 
 
     public static void bootstrap(BootstapContext<BiomeModifier> ctx, CompletableFuture<HolderLookup.Provider> provider) {
@@ -36,7 +36,7 @@ public class GTBiomeModifiers {
 
         HolderSet<Biome> biomes = biomeLookup.getOrThrow(CustomTags.HAS_RUBBER_TREE);
         Holder<PlacedFeature> featureHolder = placedFeatureRegistry.getOrThrow(GTPlacements.RUBBER_CHECKED);
-        ctx.register(RUBBER, new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+        ctx.register(RUBBER, new BiomeModifiers.AddFeaturesBiomeModifier(
                 biomes,
                 HolderSet.direct(featureHolder),
                 GenerationStep.Decoration.VEGETAL_DECORATION
