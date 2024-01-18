@@ -43,14 +43,14 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Override
     public TagPrefix register() {
         validate(this.id,
-            errorIfNull(stateSupplier, "state supplier"),
-            warnDefaultIfNull(materialSupplier, "material supplier", "Using GTMaterials.Stone as a default",
-                () -> materialSupplier = () -> GTMaterials.Stone
-            ),
-            onlySetDefault(templateProperties,
-                () -> GTBlocks.copy(((BlockBehaviourAccessor) stateSupplier.get().getBlock()).getBlockProperties(), BlockBehaviour.Properties.of())
-            ),
-            errorIfNull(baseModelLocation, "base model")
+            errorIfNull(stateSupplier, "stateSupplier"),
+            warnDefaultIfNull(materialSupplier, "materialSupplier", "Using GTMaterials.Stone as a default", () -> {
+                materialSupplier = () -> GTMaterials.Stone;
+            }),
+            onlySetDefault(templateProperties, () -> {
+                templateProperties = () -> GTBlocks.copy(((BlockBehaviourAccessor) stateSupplier.get().getBlock()).getBlockProperties(), BlockBehaviour.Properties.of());
+            }),
+            errorIfNull(baseModelLocation, "baseModelLocation")
         );
 
         return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation, isNether, isSand);
