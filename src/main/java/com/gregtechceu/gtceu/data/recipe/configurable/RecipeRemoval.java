@@ -291,11 +291,11 @@ public class RecipeRemoval {
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_concrete_powder", colorMaterial)));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_terracotta", colorMaterial)));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass", colorMaterial)));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_concrete_powder", colorMaterial.getName())));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_terracotta", colorMaterial.getName())));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass", colorMaterial.getName())));
             if (colorMaterial != MarkerMaterials.Color.White) {
-                registry.accept(new ResourceLocation(String.format("minecraft:%s_wool", colorMaterial)));
+                registry.accept(new ResourceLocation(String.format("minecraft:%s_wool", colorMaterial.getName())));
             }
         }
         registry.accept(new ResourceLocation("minecraft:dark_prismarine"));
