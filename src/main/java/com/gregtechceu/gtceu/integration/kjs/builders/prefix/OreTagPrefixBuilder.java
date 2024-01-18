@@ -44,9 +44,6 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     public TagPrefix register() {
         validate(this.id,
             errorIfNull(stateSupplier, "stateSupplier"),
-            warnDefaultIfNull(materialSupplier, "materialSupplier", "Using GTMaterials.Stone as a default", () -> {
-                materialSupplier = () -> GTMaterials.Stone;
-            }),
             onlySetDefault(templateProperties, () -> {
                 templateProperties = () -> GTBlocks.copy(((BlockBehaviourAccessor) stateSupplier.get().getBlock()).getBlockProperties(), BlockBehaviour.Properties.of());
             }),
