@@ -14,7 +14,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_BATH_RECI
 
 public class ChemicalBathRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("paper_from_wood_dust")
                 .inputItems(dust, Wood)

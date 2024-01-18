@@ -15,7 +15,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ChemistryRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         AcidRecipes.init(provider);
         BrewingRecipes.init(provider);

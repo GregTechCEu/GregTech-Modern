@@ -1,7 +1,10 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -13,6 +16,7 @@ import java.util.Locale;
  * Used to detect whether a machine has a certain capability.
  */
 public class RecipeCapability<T> {
+    public static final Codec<Pair<RecipeCapability<?>, List<Content>>> CODEC =
 
     public final String name;
     public final int color;

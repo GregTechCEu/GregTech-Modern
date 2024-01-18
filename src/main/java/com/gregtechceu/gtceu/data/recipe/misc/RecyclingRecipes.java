@@ -42,7 +42,7 @@ public class RecyclingRecipes {
     // TODO - (to remember) Do NOT calculate any material component lists for circuits, they are simply totally lost
     // TODO - Work on durations and EUt's
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         for (Entry<ItemStack, ItemMaterialInfo> entry : ChemicalHelper.getAllItemInfos()) {
             ItemStack itemStack = entry.getKey();
             ItemMaterialInfo materialInfo = entry.getValue();
@@ -51,7 +51,7 @@ public class RecyclingRecipes {
         }
     }
 
-    public static void registerRecyclingRecipes(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> components, boolean ignoreArcSmelting, @Nullable TagPrefix prefix) {
+    public static void registerRecyclingRecipes(RecipeOutput provider, ItemStack input, List<MaterialStack> components, boolean ignoreArcSmelting, @Nullable TagPrefix prefix) {
 
         // Gather the valid Materials for use in recycling recipes.
         // - Filter out Materials that cannot create a Dust
@@ -99,7 +99,7 @@ public class RecyclingRecipes {
         registerArcRecycling(provider, input, components, prefix);
     }
 
-    private static void registerMaceratorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
+    private static void registerMaceratorRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
         // Finalize the output list.
         List<ItemStack> outputs = finalizeOutputs(
                 materials,
@@ -130,7 +130,7 @@ public class RecyclingRecipes {
         builder.save(provider);
     }
 
-    private static void registerExtractorRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, int multiplier, @Nullable TagPrefix prefix) {
+    private static void registerExtractorRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials, int multiplier, @Nullable TagPrefix prefix) {
 
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
@@ -209,7 +209,7 @@ public class RecyclingRecipes {
         extractorBuilder.save(provider);
     }
 
-    private static void registerArcRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, @Nullable TagPrefix prefix) {
+    private static void registerArcRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials, @Nullable TagPrefix prefix) {
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
         if (entry != null) {

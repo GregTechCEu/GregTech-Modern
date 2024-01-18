@@ -8,9 +8,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,14 +24,14 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTROLYZER_RECIP
 
 public class DecompositionRecipeHandler {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         for (var material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             var prefix = material.hasProperty(PropertyKey.DUST) ? dust : null;
             processDecomposition(prefix, material, provider);
         }
     }
 
-    private static void processDecomposition(TagPrefix decomposePrefix, Material material, Consumer<FinishedRecipe> provider) {
+    private static void processDecomposition(TagPrefix decomposePrefix, Material material, RecipeOutput provider) {
         if (material.getMaterialComponents().isEmpty() ||
                 (!material.hasFlag(DECOMPOSITION_BY_ELECTROLYZING) &&
                         !material.hasFlag(DECOMPOSITION_BY_CENTRIFUGING)) ||

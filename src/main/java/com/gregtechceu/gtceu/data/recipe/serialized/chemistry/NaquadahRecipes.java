@@ -24,7 +24,7 @@ public class NaquadahRecipes {
     // |> 0.25 Gallium
     // |> 0.25 Barium
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         // FLUOROANTIMONIC ACID
 

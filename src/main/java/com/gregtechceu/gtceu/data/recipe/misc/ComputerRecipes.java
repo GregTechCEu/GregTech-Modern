@@ -17,7 +17,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ComputerRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)

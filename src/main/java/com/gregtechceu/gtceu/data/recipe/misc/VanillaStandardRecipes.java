@@ -20,7 +20,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class VanillaStandardRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         compressingRecipes(provider);
         glassRecipes(provider);
         smashingRecipes(provider);
@@ -37,7 +37,7 @@ public class VanillaStandardRecipes {
     /**
      * + Adds compression recipes for vanilla items
      */
-    private static void compressingRecipes(Consumer<FinishedRecipe> provider) {
+    private static void compressingRecipes(RecipeOutput provider) {
         COMPRESSOR_RECIPES.recipeBuilder("stone_from_dust").duration(300).EUt(2)
                 .inputItems(plate, Stone, 9)
                 .outputItems(new ItemStack(Blocks.STONE))
@@ -103,7 +103,7 @@ public class VanillaStandardRecipes {
      * + Adds steam age manual glass recipes
      * - Removes some glass related recipes based on configs
      */
-    private static void glassRecipes(Consumer<FinishedRecipe> provider) {
+    private static void glassRecipes(RecipeOutput provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "glass_dust_hammer", ChemicalHelper.get(dust, Glass), "hG", 'G', new ItemStack(Blocks.GLASS));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "quartz_sand", ChemicalHelper.get(dust, QuartzSand), "S", "m", 'S', new ItemStack(Blocks.SAND));
@@ -191,7 +191,7 @@ public class VanillaStandardRecipes {
     /**
      * Adds smashing related recipes for vanilla blocks and items
      */
-    private static void smashingRecipes(Consumer<FinishedRecipe> provider) {
+    private static void smashingRecipes(RecipeOutput provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "cobblestone_hammer", new ItemStack(Blocks.COBBLESTONE), "h", "C", 'C', new ItemStack(Blocks.STONE));
         VanillaRecipeHelper.addShapedRecipe(provider, "cobbled_deepslate_hammer", new ItemStack(Blocks.COBBLED_DEEPSLATE), "h", "C", 'C', new ItemStack(Blocks.DEEPSLATE));
 
@@ -315,7 +315,7 @@ public class VanillaStandardRecipes {
     /**
      * + Adds new recipes for wood related items and blocks
      */
-    private static void woodRecipes(Consumer<FinishedRecipe> provider) {
+    private static void woodRecipes(RecipeOutput provider) {
         MACERATOR_RECIPES.recipeBuilder("macerate_logs")
                 .inputItems(ItemTags.LOGS)
                 .outputItems(dust, Wood, 6)
@@ -510,7 +510,7 @@ public class VanillaStandardRecipes {
     /**
      * + Adds cutting recipes for vanilla blocks
      */
-    private static void cuttingRecipes(Consumer<FinishedRecipe> provider) {
+    private static void cuttingRecipes(RecipeOutput provider) {
         CUTTER_RECIPES.recipeBuilder("snow_layer")
                 .inputItems(new ItemStack(Blocks.SNOW_BLOCK))
                 .outputItems(new ItemStack(Blocks.SNOW, 12))
@@ -520,7 +520,7 @@ public class VanillaStandardRecipes {
     /**
      * + Adds dying and cleaning recipes for vanilla blocks
      */
-    private static void dyingCleaningRecipes(Consumer<FinishedRecipe> provider) {
+    private static void dyingCleaningRecipes(RecipeOutput provider) {
         /*
         for (int i = 0; i < 16; i++) {
             MIXER_RECIPES.recipeBuilder().duration(200).EUt(VA[ULV])
@@ -631,7 +631,7 @@ public class VanillaStandardRecipes {
     /**
      * + Adds more redstone related recipes
      */
-    private static void redstoneRecipes(Consumer<FinishedRecipe> provider) {
+    private static void redstoneRecipes(RecipeOutput provider) {
         ASSEMBLER_RECIPES.recipeBuilder("sticky_piston_resin")
                 .inputItems(STICKY_RESIN)
                 .inputItems(new ItemStack(Blocks.PISTON))
@@ -701,7 +701,7 @@ public class VanillaStandardRecipes {
      * + Adds metal related recipes
      * + Adds horse armor and chainmail recipes
      */
-    private static void metalRecipes(Consumer<FinishedRecipe> provider) {
+    private static void metalRecipes(RecipeOutput provider) {
         BENDER_RECIPES.recipeBuilder("bucket")
                 .circuitMeta(12)
                 .inputItems(plate, Iron, 3)
@@ -782,7 +782,7 @@ public class VanillaStandardRecipes {
      * Adds alternative gunpowder recipes
      * Adds polished stone variant autoclave recipes
      */
-    private static void miscRecipes(Consumer<FinishedRecipe> provider) {
+    private static void miscRecipes(RecipeOutput provider) {
         ASSEMBLER_RECIPES.recipeBuilder("book_from_leather")
                 .inputItems(new ItemStack(Items.PAPER, 3))
                 .inputItems(new ItemStack(Items.LEATHER))
@@ -1010,7 +1010,7 @@ public class VanillaStandardRecipes {
     /**
      * Adds various mixer recipes for vanilla items and blocks
      */
-    private static void mixingRecipes(Consumer<FinishedRecipe> provider) {
+    private static void mixingRecipes(RecipeOutput provider) {
         MIXER_RECIPES.recipeBuilder("fire_charge")
                 .inputItems(dust, Coal)
                 .inputItems(dust, Gunpowder)
@@ -1031,7 +1031,7 @@ public class VanillaStandardRecipes {
                 .duration(100).EUt(4).save(provider);
     }
 
-    private static void dyeRecipes(Consumer<FinishedRecipe> provider) {
+    private static void dyeRecipes(RecipeOutput provider) {
 
         EXTRACTOR_RECIPES.recipeBuilder("poppy_dye")
                 .inputItems(new ItemStack(Blocks.POPPY))

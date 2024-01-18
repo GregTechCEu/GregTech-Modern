@@ -34,7 +34,7 @@ public class WireCombiningHandler {
             cableGtHex, wireGtHex
     );
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         // Generate Wire Packer/Unpacker recipes
         wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireCompression(tagPrefix, material, property, provider));
@@ -50,7 +50,7 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
+    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
         int wireIndex = ArrayUtils.indexOf(WIRE_DOUBLING_ORDER, wirePrefix);
 
         if (wireIndex < WIRE_DOUBLING_ORDER.length - 1) {
@@ -76,7 +76,7 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
+    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property, RecipeOutput provider) {
         for (int startTier = 0; startTier < 4; startTier++) {
             for (int i = 1; i < 5 - startTier; i++) {
                 PACKER_RECIPES.recipeBuilder("pack_" + material.getName() + "_wires_" + i + "_" + startTier)
@@ -96,7 +96,7 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
+    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property, RecipeOutput provider) {
         PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.name)
                 .inputItems(prefix, material)
                 .outputItems(cableToWireMap.get(prefix), material)

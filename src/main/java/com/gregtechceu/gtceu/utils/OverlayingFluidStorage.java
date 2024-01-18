@@ -1,15 +1,14 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import lombok.RequiredArgsConstructor;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
-public class OverlayingFluidStorage implements IFluidStorage {
-    private final IFluidTransfer transfer;
+public class OverlayingFluidStorage implements IFluidHandler {
+    private final IFluidHandler transfer;
     private final int tank;
 
     @Override
@@ -63,16 +62,5 @@ public class OverlayingFluidStorage implements IFluidStorage {
     @Override
     public boolean supportsDrain(int tank) {
         return transfer.supportsDrain(this.tank);
-    }
-
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return transfer.createSnapshot();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
-        transfer.restoreFromSnapshot(snapshot);
     }
 }

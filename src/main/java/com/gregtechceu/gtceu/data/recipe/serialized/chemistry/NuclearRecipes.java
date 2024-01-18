@@ -11,7 +11,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class NuclearRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         CHEMICAL_RECIPES.recipeBuilder("uranium_hexafluoride").duration(200).EUt(VA[LV])
                 .inputItems(dust, Uraninite, 3)

@@ -21,13 +21,13 @@ public class PolarizingRecipeHandler {
             rod, rodLong, plate, ingot, plateDense, rotor,
             bolt, screw, wireFine, foil, ring};
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         for (TagPrefix orePrefix : POLARIZING_PREFIXES) {
             orePrefix.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPolarizing(tagPrefix, material, property, provider));
         }
     }
 
-    public static void processPolarizing(TagPrefix polarizingPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processPolarizing(TagPrefix polarizingPrefix, Material material, IngotProperty property, RecipeOutput provider) {
         Material magneticMaterial = property.getMagneticMaterial();
 
         if (magneticMaterial != null && polarizingPrefix.doGenerateItem(magneticMaterial)) {

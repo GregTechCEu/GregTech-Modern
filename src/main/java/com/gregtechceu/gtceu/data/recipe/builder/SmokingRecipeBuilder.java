@@ -115,7 +115,7 @@ public class SmokingRecipeBuilder {
         json.addProperty("cookingtime", cookingTime);
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput consumer) {
         consumer.accept(new FinishedRecipe() {
             @Override
             public void serializeRecipeData(JsonObject pJson) {

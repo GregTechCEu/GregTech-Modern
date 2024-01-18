@@ -28,10 +28,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Rect;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -48,18 +44,18 @@ import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.item.crafting.SmeltingRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
@@ -210,9 +206,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public List<GTRecipe> searchFuelRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies() || !isFuelRecipeType()) return Collections.emptyList();
         List<GTRecipe> matches = new ArrayList<>();
-        for (GTRecipe recipe : recipeManager.getAllRecipesFor(this)) {
-            if (recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
-                matches.add(recipe);
+        for (net.minecraft.world.item.crafting.RecipeHolder<GTRecipe> recipe : recipeManager.getAllRecipesFor(this)) {
+            if (recipe.value().isFuel && recipe.value().matchRecipe(holder).isSuccess() && recipe.value().matchTickRecipe(holder).isSuccess()) {
+                matches.add(recipe.value());
             }
         }
         return matches;
@@ -221,6 +217,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public List<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return Collections.emptyList();
         List<GTRecipe> matches = recipeManager.getAllRecipesFor(this).parallelStream()
+                .map(net.minecraft.world.item.crafting.RecipeHolder::value)
                 .filter(recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess())
                 .collect(Collectors.toList());
         for (List<GTRecipe> recipes : proxyRecipes.values()) {
@@ -278,7 +275,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return recipeBuilder.copyFrom(builder);
     }
 
-    public GTRecipeType onRecipeBuild(BiConsumer<GTRecipeBuilder, Consumer<FinishedRecipe>> onBuild) {
+    public GTRecipeType onRecipeBuild(BiConsumer<GTRecipeBuilder, RecipeOutput> onBuild) {
         recipeBuilder.onSave(onBuild);
         return this;
     }
@@ -302,7 +299,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
                     var resource = resourceManager.getResourceOrThrow(new ResourceLocation(registryName.getNamespace(), "ui/recipe_type/%s.rtui".formatted(registryName.getPath())));
                     try (InputStream inputStream = resource.open()){
                         try (DataInputStream dataInputStream = new DataInputStream(inputStream);){
-                            this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.UNLIMITED);
+                            this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.unlimitedHeap());
                         }
                     }
                 } catch (Exception e) {
@@ -328,20 +325,20 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return new Size(176, (dataInfos.size() + maxTooltips) * 10 + 5 + createEditableUITemplate(false, false).createDefault().getSize().height);
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
+    public record RecipeHolder(DoubleSupplier progressSupplier, IItemHandlerModifiable importItems, IItemHandlerModifiable exportItems, IFluidHandler importFluids, IFluidHandler exportFluids, boolean isSteam, boolean isHighPressure) {};
 
     /**
      * Auto layout UI template for recipes.
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable importItems, IItemHandlerModifiable exportItems, IFluidHandler importFluids, IFluidHandler exportFluids, boolean isSteam, boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
         template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, isSteam, isHighPressure));
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable importItems, IItemHandlerModifiable exportItems, IFluidHandler importFluids, IFluidHandler exportFluids) {
         return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, false, false);
     }
 

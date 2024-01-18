@@ -14,7 +14,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PYROLYSE_RECIPES;
 
 public class WoodMachineRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         registerPyrolyseOvenRecipes(provider);
     }
 
@@ -98,7 +98,7 @@ public class WoodMachineRecipes {
     }
      */
 
-    private static void registerPyrolyseOvenRecipes(Consumer<FinishedRecipe> provider) {
+    private static void registerPyrolyseOvenRecipes(RecipeOutput provider) {
         // Logs ================================================
 
         // Charcoal Byproducts

@@ -18,7 +18,6 @@ import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import lombok.Getter;
 import lombok.Setter;
@@ -29,6 +28,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -225,10 +225,10 @@ public class Material implements Comparable<Material> {
     /**
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
-     * @see #getFluid(FluidStorageKey, long)
+     * @see #getFluid(FluidStorageKey, int)
      */
-    public FluidStack getFluid(long amount) {
-        return FluidStack.create(getFluid(), amount);
+    public FluidStack getFluid(int amount) {
+        return new FluidStack(getFluid(), amount);
     }
 
     /**
@@ -237,8 +237,8 @@ public class Material implements Comparable<Material> {
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
      */
-    public FluidStack getFluid(@Nonnull FluidStorageKey key, long amount) {
-        return FluidStack.create(getFluid(key), amount);
+    public FluidStack getFluid(@Nonnull FluidStorageKey key, int amount) {
+        return new FluidStack(getFluid(key), amount);
     }
 
     public MaterialToolTier getToolTier() {
@@ -253,9 +253,9 @@ public class Material implements Comparable<Material> {
         return prop == null ? null : prop.getFluid();
     }
 
-    public FluidStack getHotFluid(long amount) {
+    public FluidStack getHotFluid(int amount) {
         AlloyBlastProperty prop = properties.getProperty(PropertyKey.ALLOY_BLAST);
-        return prop == null ? null : FluidStack.create(prop.getFluid(), amount);
+        return prop == null ? null : new FluidStack(prop.getFluid(), amount);
     }
 
     public Item getBucket() {

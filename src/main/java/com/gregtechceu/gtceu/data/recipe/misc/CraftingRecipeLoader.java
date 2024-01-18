@@ -22,7 +22,7 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class CraftingRecipeLoader {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         // todo facades
         //registerFacadeRecipe(provider, Iron, 4);
 
@@ -168,7 +168,7 @@ public class CraftingRecipeLoader {
         SpecialRecipeBuilder.special(FacadeCoverRecipe.SERIALIZER).save(provider, "gtceu:crafting/facade_cover");
     }
 
-    //private static void registerFacadeRecipe(Consumer<FinishedRecipe> provider, Material material, int facadeAmount) {
+    //private static void registerFacadeRecipe(RecipeOutput provider, Material material, int facadeAmount) {
     //    OreIngredient ingredient = new OreIngredient(new UnificationEntry(plate, material).toString());
     //    ForgeRegistries.RECIPES.register(new FacadeRecipe(null, ingredient, facadeAmount).setRegistryName("facade_" + material));
     //}

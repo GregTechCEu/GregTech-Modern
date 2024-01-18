@@ -18,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
@@ -37,7 +38,7 @@ import java.util.function.Supplier;
 @SuppressWarnings({"ConstantValue", "rawtypes", "unchecked"})
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
+public class GTRecipe implements Recipe<Container> {
     public final GTRecipeType recipeType;
     public final ResourceLocation id;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
@@ -93,11 +94,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             copied.duration = modifier.apply(this.duration).intValue();
         }
         return copied;
-    }
-
-    @Override
-    public @NotNull ResourceLocation getId() {
-        return id;
     }
 
     @Override

@@ -18,13 +18,13 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class BatteryRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         standardBatteries(provider);
         gemBatteries(provider);
         batteryBlocks(provider);
     }
 
-    private static void standardBatteries(Consumer<FinishedRecipe> provider) {
+    private static void standardBatteries(RecipeOutput provider) {
 
         // Tantalum Battery (since it doesn't fit elsewhere)
         ASSEMBLER_RECIPES.recipeBuilder("tantalum_capacitor")
@@ -239,7 +239,7 @@ public class BatteryRecipes {
         EXTRACTOR_RECIPES.recipeBuilder("unpackage_uv_naquadria_battery").inputItems(BATTERY_UV_NAQUADRIA).outputItems(BATTERY_HULL_LARGE_NAQUADRIA).save(provider);
     }
 
-    private static void gemBatteries(Consumer<FinishedRecipe> provider) {
+    private static void gemBatteries(RecipeOutput provider) {
 
         // Energy Crystal
         MIXER_RECIPES.recipeBuilder("energium_dust")
@@ -411,7 +411,7 @@ public class BatteryRecipes {
                 .EUt(300000).duration(2000).save(provider);
     }
 
-    private static void batteryBlocks(Consumer<FinishedRecipe> provider) {
+    private static void batteryBlocks(RecipeOutput provider) {
 
         // Empty Tier I
         ASSEMBLER_RECIPES.recipeBuilder("empty_tier_1_battery")

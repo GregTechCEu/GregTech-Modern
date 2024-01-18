@@ -13,7 +13,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 
 public class AssemblerRecipeLoader {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         // Gearbox-like
         ASSEMBLER_RECIPES.recipeBuilder("bronze_gearbox_casing")

@@ -284,7 +284,7 @@ public class ConfigHolder {
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
-         * Use {@link GTCEu#isHighTier()} instead.
+         * Use {@link GTCEuAPI#isHighTier()} instead.
          */
         @Configurable
         @Configurable.Comment({"If High Tier (>UV-tier) GT content should be registered.",

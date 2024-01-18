@@ -151,7 +151,7 @@ public class ShapedRecipeBuilder extends Builder<Ingredient, ShapedRecipeBuilder
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
-    public void save(Consumer<FinishedRecipe> consumer) {
+    public void save(RecipeOutput consumer) {
         consumer.accept(new FinishedRecipe() {
             @Override
             public void serializeRecipeData(JsonObject pJson) {

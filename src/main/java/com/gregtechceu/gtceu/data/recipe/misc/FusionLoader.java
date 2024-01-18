@@ -11,7 +11,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.FUSION_RECIPES;
 
 public class FusionLoader {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         FUSION_RECIPES.recipeBuilder("deuterium_and_tritium_to_helium_plasma")
                 .inputFluids(GTMaterials.Deuterium.getFluid(125))

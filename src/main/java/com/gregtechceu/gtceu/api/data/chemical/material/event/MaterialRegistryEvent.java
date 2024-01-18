@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.event;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
-import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
-import net.minecraftforge.eventbus.api.Event;
-import net.minecraftforge.eventbus.api.GenericEvent;
-import net.minecraftforge.fml.event.IModBusEvent;
+import net.neoforged.bus.api.Event;
+import net.neoforged.fml.event.IModBusEvent;
 
 /**
  * Event to add a material registry in.

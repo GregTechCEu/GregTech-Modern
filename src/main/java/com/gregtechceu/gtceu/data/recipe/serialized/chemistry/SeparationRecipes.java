@@ -19,7 +19,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class SeparationRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         // Centrifuge
         CENTRIFUGE_RECIPES.recipeBuilder("refinery_gas_separation")

@@ -40,7 +40,7 @@ public class MaterialRecipeHandler {
             gemChipped, gemFlawed, gem, gemFlawless, gemExquisite) :
             Arrays.asList(gem, gemFlawless, gemExquisite);
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         ingot.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processIngot(tagPrefix, material, property, provider));
         nugget.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processNugget(tagPrefix, material, property, provider));
 
@@ -56,7 +56,7 @@ public class MaterialRecipeHandler {
         }
     }
 
-    public static void processDust(TagPrefix dustPrefix, Material mat, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processDust(TagPrefix dustPrefix, Material mat, DustProperty property, RecipeOutput provider) {
         String id = "%s_%s_".formatted(FormattingUtil.toLowerCaseUnder(dustPrefix.name), mat.getName().toLowerCase(Locale.ROOT));
         ItemStack dustStack = ChemicalHelper.get(dustPrefix, mat);
         OreProperty oreProperty = mat.hasProperty(PropertyKey.ORE) ? mat.getProperty(PropertyKey.ORE): null;
@@ -156,7 +156,7 @@ public class MaterialRecipeHandler {
         }
     }
 
-    private static void processEBFRecipe(Material material, BlastProperty property, ItemStack output, Consumer<FinishedRecipe> provider) {
+    private static void processEBFRecipe(Material material, BlastProperty property, ItemStack output, RecipeOutput provider) {
         int blastTemp = property.getBlastTemperature();
         BlastProperty.GasTier gasTier = property.getGasTier();
         int duration = property.getDurationOverride();
@@ -213,7 +213,7 @@ public class MaterialRecipeHandler {
         }
     }
 
-    public static void processSmallDust(TagPrefix orePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processSmallDust(TagPrefix orePrefix, Material material, DustProperty property, RecipeOutput provider) {
         ItemStack smallDustStack = ChemicalHelper.get(orePrefix, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
@@ -235,7 +235,7 @@ public class MaterialRecipeHandler {
                 .save(provider);
     }
 
-    public static void processTinyDust(TagPrefix orePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processTinyDust(TagPrefix orePrefix, Material material, DustProperty property, RecipeOutput provider) {
         ItemStack tinyDustStack = ChemicalHelper.get(orePrefix, material);
         ItemStack dustStack = ChemicalHelper.get(dust, material);
 
@@ -257,7 +257,7 @@ public class MaterialRecipeHandler {
                 .save(provider);
     }
 
-    public static void processIngot(TagPrefix ingotPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processIngot(TagPrefix ingotPrefix, Material material, IngotProperty property, RecipeOutput provider) {
         if (material.hasFlag(MORTAR_GRINDABLE)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("mortar_grind_%s", material.getName()),
                     ChemicalHelper.get(dust, material), "X", "m", 'X', new UnificationEntry(ingotPrefix, material));
@@ -367,7 +367,7 @@ public class MaterialRecipeHandler {
 
     }
 
-    public static void processGemConversion(TagPrefix gemPrefix, Material material, GemProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processGemConversion(TagPrefix gemPrefix, Material material, GemProperty property, RecipeOutput provider) {
         long materialAmount = gemPrefix.getMaterialAmount(material);
         ItemStack crushedStack = ChemicalHelper.getDust(material, materialAmount);
 
@@ -399,7 +399,7 @@ public class MaterialRecipeHandler {
         }
     }
 
-    public static void processNugget(TagPrefix orePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processNugget(TagPrefix orePrefix, Material material, DustProperty property, RecipeOutput provider) {
         ItemStack nuggetStack = ChemicalHelper.get(orePrefix, material);
         if (material.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, material);
@@ -444,7 +444,7 @@ public class MaterialRecipeHandler {
         }
     }
 
-    public static void processFrame(TagPrefix framePrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processFrame(TagPrefix framePrefix, Material material, DustProperty property, RecipeOutput provider) {
         if (material.hasFlag(GENERATE_FRAME)) {
             boolean isWoodenFrame = material.hasProperty(PropertyKey.WOOD);
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("frame_%s", material.getName()),
@@ -461,7 +461,7 @@ public class MaterialRecipeHandler {
         }
     }
 
-    public static void processBlock(TagPrefix blockPrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processBlock(TagPrefix blockPrefix, Material material, DustProperty property, RecipeOutput provider) {
         ItemStack blockStack = ChemicalHelper.get(blockPrefix, material);
         long materialAmount = blockPrefix.getMaterialAmount(material);
         if (material.hasFluid()) {

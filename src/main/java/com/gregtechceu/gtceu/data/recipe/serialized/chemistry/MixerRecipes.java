@@ -14,7 +14,7 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
 
 public class MixerRecipes {
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         MIXER_RECIPES.recipeBuilder("nitration_mixture")
                 .inputFluids(NitricAcid.getFluid(1000))

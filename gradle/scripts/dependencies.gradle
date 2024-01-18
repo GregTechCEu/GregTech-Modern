@@ -2,15 +2,15 @@ dependencies {
     implementation forge.neoForge
 
     // LDLib
-    implementation(forge.ldlib.forge) { transitive = false }
-    jarJar(forge.ldlib.forge)
+    implementation(forge.ldlib.neoforge) { transitive = false }
+    jarJar(forge.ldlib.neoforge)
 
     // Registrate
     implementation("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
     jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
 
     // Create and its dependencies
-    implementation("com.simibubi.create:create-${libs.versions.minecraft.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    implementation("com.simibubi.create:create-${libs.versions.minecraftOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
     implementation forge.flywheel
 
     // JEI
@@ -24,7 +24,7 @@ dependencies {
     implementation forge.rei.forge
 
     // EMI
-    compileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
+    compileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
     compileOnly forge.emi
 
     // TOP
@@ -47,9 +47,9 @@ dependencies {
     jarJar(forge.configuration)
 
     // Shimmer
-    implementation(forge.shimmer.forge) { transitive = false }
-    implementation("maven.modrinth:embeddium:0.2.10+mc1.20.1")
-    implementation("maven.modrinth:oculus:1.20.1-1.6.9")
+    compileOnly(forge.shimmer.forge) { transitive = false }
+    compileOnly("maven.modrinth:embeddium:0.2.10+mc1.20.1")
+    compileOnly("maven.modrinth:oculus:1.20.1-1.6.9")
 
     // Runtime only testing mods
     //runtimeOnly(forge.worldStripper)

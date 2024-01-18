@@ -32,7 +32,7 @@ public class RecyclingRecipeHandler {
 
     private static final List<TagPrefix> IGNORE_ARC_SMELTING = Arrays.asList(ingot, gem, nugget);
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         //registers universal maceration recipes for specified ore prefixes
         for (TagPrefix orePrefix : TagPrefix.values()) {
             if (CRUSHING_PREFIXES.stream().anyMatch(object -> {
@@ -45,7 +45,7 @@ public class RecyclingRecipeHandler {
         }
     }
 
-    public static void processCrushing(TagPrefix thingPrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processCrushing(TagPrefix thingPrefix, Material material, DustProperty property, RecipeOutput provider) {
         ArrayList<MaterialStack> materialStacks = new ArrayList<>();
         materialStacks.add(new MaterialStack(material, thingPrefix.getMaterialAmount(material)));
         materialStacks.addAll(thingPrefix.secondaryMaterials());

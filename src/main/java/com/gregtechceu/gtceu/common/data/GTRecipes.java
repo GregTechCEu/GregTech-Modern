@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.data.recipe.configurable.RecipeRemoval;
 import com.gregtechceu.gtceu.data.recipe.generated.*;
 import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.function.Consumer;
@@ -24,7 +24,7 @@ public class GTRecipes {
      * This should also be used for recipes that need
      * to respond to a config option in ConfigHolder.
      */
-    public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
+    public static void recipeAddition(RecipeOutput consumer) {
         // Decomposition info loading
         MaterialInfoLoader.init();
 

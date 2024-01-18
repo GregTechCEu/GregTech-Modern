@@ -51,7 +51,7 @@ public class WireRecipeHandler {
             cableGtHex, 5
     );
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
 
         // Generate 1x Wire creation recipes (Wiremill, Extruder, Wire Cutters)
         wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireSingle(tagPrefix, material, property, provider));
@@ -65,7 +65,7 @@ public class WireRecipeHandler {
     }
 
 
-    public static void processWireSingle(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
+    public static void processWireSingle(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
         TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot : material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_wire")
@@ -90,7 +90,7 @@ public class WireRecipeHandler {
         }
     }
 
-    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
+    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
 
         // Superconductors have no Cables, so exit early
         if (property.isSuperconductor()) return;
@@ -158,7 +158,7 @@ public class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix, int cableAmount, Consumer<FinishedRecipe> provider) {
+    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix, int cableAmount, RecipeOutput provider) {
         int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new UnificationEntry(wirePrefix, material);

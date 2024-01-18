@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -16,7 +15,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
@@ -27,43 +25,37 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
-import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
-import dev.latvian.mods.kubejs.script.ScriptType;
-import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModList;
-import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.neoforged.bus.api.IEventBus;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.ModLoader;
+import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
+import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
+import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
+import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 public class CommonProxy {
     private static final Object LOCK = new Object();
     private static boolean isKubeJSSetup = false;
 
-    public CommonProxy() {
+    public CommonProxy(IEventBus modBus) {
         // used for forge events (ClientProxy + CommonProxy)
-        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
-        eventBus.register(this);
-        eventBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
+        modBus.register(this);
+        modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
 
-        GTRegistries.init(eventBus);
-        GTFeatures.init(eventBus);
+        GTRegistries.init(modBus);
+        GTFeatures.init(modBus);
         // init common features
         if (GTCEu.isKubeJSLoaded()) {
             synchronized (LOCK) {
@@ -72,7 +64,7 @@ public class CommonProxy {
                 }
             }
         }
-        CommonProxy.init();
+        CommonProxy.init(modBus);
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
     }
 
@@ -86,7 +78,7 @@ public class CommonProxy {
         }
     }
 
-    public static void init() {
+    public static void init(final IEventBus modBus) {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         ConfigHolder.init();
         GTCEuAPI.initializeHighTier();
@@ -131,7 +123,7 @@ public class CommonProxy {
                     .filter(FMLModContainer.class::isInstance)
                     .map(FMLModContainer.class::cast)
                     .map(FMLModContainer::getEventBus)
-                    .orElse(FMLJavaModLoadingContext.get().getModEventBus()));
+                    .orElse(modBus));
         });
 
         GregTechDatagen.init();
@@ -160,7 +152,6 @@ public class CommonProxy {
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
         ModLoader.get().postEvent(materialEvent);
-        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
@@ -188,7 +179,6 @@ public class CommonProxy {
         e.enqueueWork(() -> {
 
         });
-        CraftingHelper.register(SizedIngredient.TYPE, SizedIngredient.SERIALIZER);
     }
 
     @SubscribeEvent
@@ -203,7 +193,7 @@ public class CommonProxy {
 
     @SubscribeEvent
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        GTCapability.register(event);
+        //GTCapability.register(event);
     }
 
     public static final class KJSEventWrapper {

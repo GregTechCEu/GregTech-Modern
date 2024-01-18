@@ -51,7 +51,7 @@ public class ToolRecipeHandler {
     public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
     public static Map<Integer, ItemEntry<? extends Item>> powerUnitItems = new HashMap<>();
 
-    public static void init(Consumer<FinishedRecipe> provider) {
+    public static void init(RecipeOutput provider) {
         initializeGTItems();
         TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processTool(tagPrefix, material, property, provider));
         TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processElectricTool(tagPrefix, material, property, provider));
@@ -103,7 +103,7 @@ public class ToolRecipeHandler {
         //ForgeRegistries.RECIPES.register(new ToolHeadReplaceRecipe().setRegistryName(new ResourceLocation(MODID, "replacetoolhead")));
     }
 
-    public static void registerPowerUnitRecipes(Consumer<FinishedRecipe> provider) {
+    public static void registerPowerUnitRecipes(RecipeOutput provider) {
 
         for (int tier : powerUnitItems.keySet()) {
             List<ItemEntry<? extends Item>> tieredBatteryItems = batteryItems.get(tier);
@@ -128,7 +128,7 @@ public class ToolRecipeHandler {
 
     }
 
-    private static void processTool(TagPrefix prefix, Material material, ToolProperty property, Consumer<FinishedRecipe> provider) {
+    private static void processTool(TagPrefix prefix, Material material, ToolProperty property, RecipeOutput provider) {
         ItemStack stick = new ItemStack(Items.STICK);
         UnificationEntry plate = new UnificationEntry(TagPrefix.plate, material);
         UnificationEntry ingot = new UnificationEntry(material.hasProperty(PropertyKey.GEM) ? TagPrefix.gem : TagPrefix.ingot, material);
@@ -234,7 +234,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    private static void processElectricTool(TagPrefix prefix, Material material, ToolProperty property, Consumer<FinishedRecipe> provider) {
+    private static void processElectricTool(TagPrefix prefix, Material material, ToolProperty property, RecipeOutput provider) {
         final int voltageMultiplier = material.getBlastTemperature() > 2800 ? GTValues.VA[GTValues.LV] : GTValues.VA[GTValues.ULV];
         TagPrefix toolPrefix;
 
@@ -306,7 +306,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, IGTTool[] toolItems, Consumer<FinishedRecipe> provider) {
+    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, IGTTool[] toolItems, RecipeOutput provider) {
         for (IGTTool toolItem : toolItems) {
             int tier = toolItem.getElectricTier();
             ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
@@ -323,7 +323,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+    public static void addToolRecipe(RecipeOutput provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
         if (mirrored) { // todo mirrored
@@ -335,7 +335,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addDyeableToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+    public static void addDyeableToolRecipe(RecipeOutput provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
         for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
@@ -352,14 +352,14 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void registerCustomToolRecipes(Consumer<FinishedRecipe> provider) {
+    public static void registerCustomToolRecipes(RecipeOutput provider) {
         registerFlintToolRecipes(provider);
         registerMortarRecipes(provider);
         registerSoftToolRecipes(provider);
         registerElectricRecipes(provider);
     }
 
-    private static void registerFlintToolRecipes(Consumer<FinishedRecipe> provider) {
+    private static void registerFlintToolRecipes(RecipeOutput provider) {
         final UnificationEntry flint = new UnificationEntry(TagPrefix.gem, GTMaterials.Flint);
         final ItemStack stick = new ItemStack(Items.STICK);
 
@@ -399,7 +399,7 @@ public class ToolRecipeHandler {
                 'S', stick);
     }
 
-    private static void registerMortarRecipes(Consumer<FinishedRecipe> provider) {
+    private static void registerMortarRecipes(RecipeOutput provider) {
         for (Material material : new Material[]{
                 GTMaterials.Bronze, GTMaterials.Iron, GTMaterials.Invar, GTMaterials.Steel,
                 GTMaterials.DamascusSteel, GTMaterials.CobaltBrass, GTMaterials.WroughtIron }) {
@@ -411,7 +411,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    private static void registerSoftToolRecipes(Consumer<FinishedRecipe> provider) {
+    private static void registerSoftToolRecipes(RecipeOutput provider) {
         final Material[] softMaterials = new Material[]{
                 GTMaterials.Wood, GTMaterials.Rubber, GTMaterials.Polyethylene,
                 GTMaterials.Polytetrafluoroethylene, GTMaterials.Polybenzimidazole
@@ -445,7 +445,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    private static void registerElectricRecipes(Consumer<FinishedRecipe> provider) {
+    private static void registerElectricRecipes(RecipeOutput provider) {
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LV)) {
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "prospector_lv_" + batteryItem.getId().getPath(),
