@@ -1,18 +1,20 @@
 publishing {
     publications {
         mavenForge(MavenPublication) {
-            artifact(remapJar) {
+            artifact(shadowJar) {
                 artifactId = archivesBaseName
-                builtBy remapJar
+                builtBy shadowJar
             }
-            artifact(remapSourcesJar) {
+            artifact(sourcesJar) {
                 artifactId = archivesBaseName
-                builtBy remapSourcesJar
+                builtBy sourcesJar
             }
-            artifact(remapSlimJar) {
+            /*
+            artifact(slimJar) {
                 artifactId = archivesBaseName
-                builtBy remapSlimJar
+                builtBy slimJar
             }
+            */
         }
     }
 

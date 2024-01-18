@@ -125,6 +125,13 @@ public interface IGTAddon {
     }
 
     /**
+     * Use {@link GTOres#create(ResourceLocation, Consumer)} to register the veins.
+     */
+    default void registerOreVeins() {
+
+    }
+
+    /**
      * Register Material -> Casing block mappings here
      */
     default void collectMaterialCasings(MaterialCasingCollectionEvent event) {

@@ -9,21 +9,17 @@ def mod_name = getConfig("mod_name")
 def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
 
-processResources {
-    // set up properties for filling into metadata
-    var properties = [
-            "version": version,
-            "mod_id": mod_id,
-            "forge_version": forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
-            "minecraft_version": libs.versions.minecraft.get(),
-            "mod_license": mod_license,
-            "mod_name": mod_name,
-            "mod_description": mod_description,
-            "mod_url": mod_url
+tasks.withType(ProcessResources).configureEach {
+    var replaceProperties = [
+            version             : version,
+            minecraft_version   : libs.versions.minecraft.get(),
+            forge_version       : forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
+            mod_id              : mod_id, mod_name: mod_name, mod_license: mod_license, mod_version: mod_version,
+            mod_authors         : mod_authors, mod_description: mod_description, mod_url: mod_url
     ]
-    inputs.properties(properties)
+    inputs.properties replaceProperties
 
-    filesMatching("META-INF/mods.toml") {
-        expand properties
+    filesMatching(['META-INF/mods.toml']) {
+        expand replaceProperties + [project: project]
     }
 }
