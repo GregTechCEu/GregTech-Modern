@@ -73,7 +73,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     @Override
     public void initStartup() {
         super.initStartup();
-        CommonProxy.onKubeJSSetup();
     }
 
     @Override

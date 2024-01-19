@@ -54,7 +54,7 @@ public class BlockRotatingBehavior implements IToolBehavior {
             return InteractionResult.FAIL;
         }
 
-        if (!player.isCrouching()) {
+        if (!player.isShiftKeyDown()) {
             // Special cases for vanilla blocks where the default rotation behavior is less than ideal
             ICustomRotationBehavior behavior = CustomBlockRotations.getCustomRotation(b);
             if (behavior != null) {

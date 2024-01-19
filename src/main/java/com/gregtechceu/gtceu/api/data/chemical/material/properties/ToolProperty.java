@@ -174,7 +174,18 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SCYTHE,
                     KNIFE,
                     BUTCHERY_KNIFE,
-//                    PLUNGER
+//                    PLUNGER,
+                    DRILL_LV,
+                    DRILL_MV,
+                    DRILL_HV,
+                    DRILL_EV,
+                    DRILL_IV,
+                    CHAINSAW_LV,
+                    WRENCH_LV,
+                    WRENCH_HV,
+                    WRENCH_IV,
+                    BUZZSAW,
+                    SCREWDRIVER_LV,
             });
         }
 

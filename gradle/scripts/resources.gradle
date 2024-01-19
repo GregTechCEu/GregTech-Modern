@@ -15,6 +15,7 @@ processResources {
             "version": version,
             "mod_id": mod_id,
             "forge_version": forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
+            "kjs_version": forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
             "minecraft_version": libs.versions.minecraft.get(),
             "mod_license": mod_license,
             "mod_name": mod_name,
