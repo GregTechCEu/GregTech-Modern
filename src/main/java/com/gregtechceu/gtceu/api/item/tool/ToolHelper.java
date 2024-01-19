@@ -43,6 +43,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -62,6 +63,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
@@ -675,10 +677,9 @@ public class ToolHelper {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
-            /*
-            if (state.getBlock() instanceof IShearable shearable) {
+            if (state.getBlock() instanceof IForgeShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
-                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool));
+                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
                     boolean relocateMinedBlocks = getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
@@ -701,7 +702,6 @@ public class ToolHelper {
                     return tool.isEmpty() ? 0 : 1;
                 }
             }
-            */
         }
         return -1;
     }
