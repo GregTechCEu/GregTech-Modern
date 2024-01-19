@@ -71,7 +71,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
         var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
-        if (electricItem != null && electricItem.canProvideChargeExternally() && player.isCrouching()) {
+        if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
                 String locale = "metaitem.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");

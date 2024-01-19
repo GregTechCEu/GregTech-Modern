@@ -1534,11 +1534,31 @@ public class GTItems {
     public static ItemEntry<ComponentItem> BIO_CHAFF = REGISTRATE.item("bio_chaff", ComponentItem::create).onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(200)).register();
     public static ItemEntry<Item> ENERGIUM_DUST = REGISTRATE.item("energium_dust", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<Item> POWER_UNIT_LV;
-    public static ItemEntry<Item> POWER_UNIT_MV;
-    public static ItemEntry<Item> POWER_UNIT_HV;
-    public static ItemEntry<Item> POWER_UNIT_EV;
-    public static ItemEntry<Item> POWER_UNIT_IV;
+    public static ItemEntry<ComponentItem> POWER_UNIT_LV = REGISTRATE.item("lv_power_unit", ComponentItem::create)
+        .lang("LV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .onRegister(attach(ElectricStats.createElectricItem(100000L, GTValues.LV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_MV = REGISTRATE.item("mv_power_unit", ComponentItem::create)
+        .lang("MV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .onRegister(attach(ElectricStats.createElectricItem(400000L, GTValues.MV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_HV = REGISTRATE.item("hv_power_unit", ComponentItem::create)
+        .lang("HV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .onRegister(attach(ElectricStats.createElectricItem(1600000L, GTValues.HV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_EV = REGISTRATE.item("ev_power_unit", ComponentItem::create)
+        .lang("EV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .onRegister(attach(ElectricStats.createElectricItem(6400000L, GTValues.EV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_IV = REGISTRATE.item("iv_power_unit", ComponentItem::create)
+        .lang("IV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
+        .register();
 
     public static ItemEntry<Item> NANO_SABER;
     public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("prospector.lv", ComponentItem::create)
