@@ -184,7 +184,7 @@ public class GTBlocks {
                     }
                     return oreType.stoneType().get().getBlock();
                 })
-                .properties(properties -> GTBlocks.copy(oreType.template(), properties).noLootTable())
+                .properties(properties -> GTBlocks.copy(oreType.template().get(), properties).noLootTable())
                 .transform(unificationBlock(oreTag, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
