@@ -1580,8 +1580,16 @@ public class GTItems {
     public static ItemEntry<Item> TRICORDER_SCANNER;
     public static ItemEntry<Item> DEBUG_SCANNER;
 
-    public static ItemEntry<Item> ITEM_MAGNET_LV;
-    public static ItemEntry<Item> ITEM_MAGNET_HV;
+    public static ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_magnet", ComponentItem::create)
+        .lang("LV Magnet")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
+        .register();
+    public static ItemEntry<ComponentItem> ITEM_MAGNET_HV = REGISTRATE.item("hv_magnet", ComponentItem::create)
+        .lang("LV Magnet")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
+        .register();
 
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;

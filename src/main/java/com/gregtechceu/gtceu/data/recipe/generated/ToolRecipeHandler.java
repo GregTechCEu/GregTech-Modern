@@ -455,14 +455,13 @@ public class ToolRecipeHandler {
                     'C', CustomTags.LV_CIRCUITS,
                     'B', batteryItem.asStack());
 
-            // todo magnets
-//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "magnet_lv_" + batteryItem.getId().getPath(),
-//                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
-//                    "MwM", "MBM", "CPC",
-//                    'M', new UnificationEntry(rod, GTMaterials.SteelMagnetic),
-//                    'P', new UnificationEntry(plate, GTMaterials.Steel),
-//                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin),
-//                    'B', batteryItem.asStack());
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "lv_magnet_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
+                    "MwM", "MBM", "CPC",
+                    'M', new UnificationEntry(rod, GTMaterials.SteelMagnetic),
+                    'P', new UnificationEntry(plate, GTMaterials.Steel),
+                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin),
+                    'B', batteryItem.asStack());
         }
 
         // todo tricoder
@@ -490,14 +489,13 @@ public class ToolRecipeHandler {
                     'C', CustomTags.HV_CIRCUITS,
                     'B', batteryItem.asStack());
 
-            // todo magnets
-//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "magnet_hv_" + batteryItem.getId().getPath(),
-//                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
-//                    "MwM", "MBM", "CPC",
-//                    'M', new UnificationEntry(rod, GTMaterials.NeodymiumMagnetic),
-//                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
-//                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold),
-//                    'B', batteryItem.asStack());
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "hv_magnet_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
+                    "MwM", "MBM", "CPC",
+                    'M', new UnificationEntry(rod, GTMaterials.NeodymiumMagnetic),
+                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
+                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold),
+                    'B', batteryItem.asStack());
         }
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {
