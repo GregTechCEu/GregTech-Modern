@@ -382,7 +382,7 @@ public class ToolHelper {
             // natural to mine, but avoid exploits like mining Obsidian quickly by instead targeting Stone.
             return false;
         }
-        return stack.getItem().isCorrectToolForDrops(state);
+        return stack.getItem().isCorrectToolForDrops(stack, state);
     }
 
     /**
