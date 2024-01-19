@@ -296,9 +296,9 @@ public class GTMaterials {
         rawOre.setIgnored(Gold, Items.RAW_GOLD);
         rawOre.setIgnored(Iron, Items.RAW_IRON);
         rawOre.setIgnored(Copper, Items.RAW_COPPER);
-        rawOreBlock.setIgnored(Gold, Items.RAW_GOLD_BLOCK);
-        rawOreBlock.setIgnored(Iron, Items.RAW_IRON_BLOCK);
-        rawOreBlock.setIgnored(Copper, Items.RAW_COPPER_BLOCK);
+        rawOreBlock.setIgnored(Gold, Blocks.RAW_GOLD_BLOCK);
+        rawOreBlock.setIgnored(Iron, Blocks.RAW_IRON_BLOCK);
+        rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
 
         // TODO GT stone types, move out of this file
         //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.Deepslate);

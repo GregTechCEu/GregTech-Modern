@@ -48,15 +48,15 @@ public class ChemicalHelper {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Set<Map.Entry<Supplier<ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = new HashSet<>();
+    public static final Set<Map.Entry<Supplier<? extends ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = new HashSet<>();
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY_COLLECTED = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, UnificationEntry> TAG_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a fluid to a material */
     public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
-    public static final Map<UnificationEntry, ArrayList<Supplier<ItemLike>>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
-    public static final Map<UnificationEntry, ArrayList<Supplier<Block>>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Supplier<? extends ItemLike>>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Supplier<? extends Block>>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
     public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectLinkedOpenHashMap<>();
 
@@ -71,10 +71,9 @@ public class ChemicalHelper {
     @SafeVarargs
     public static void registerUnificationItems(UnificationEntry unificationEntry, Supplier<? extends ItemLike>... items) {
         UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                .addAll(Arrays.stream(items).map(supplier -> (Supplier<ItemLike>) supplier::get).toList());
+                .addAll(Arrays.asList(items));
         for (Supplier<? extends ItemLike> item : items) {
-            Supplier<ItemLike> memoized = SupplierMemoizer.memoize(item::get);
-            ITEM_UNIFICATION_ENTRY.add(Map.entry(memoized, unificationEntry));
+            ITEM_UNIFICATION_ENTRY.add(Map.entry(item, unificationEntry));
             if (item instanceof Block block) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                         .add(() -> block);
@@ -88,11 +87,14 @@ public class ChemicalHelper {
                 }
             } else if (item instanceof SupplierMemoizer.MemoizedBlockSupplier<? extends Block> supplier) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                    .add(supplier::get);
+                    .add(supplier);
             }
         }
         if (TagPrefix.ORES.containsKey(unificationEntry.tagPrefix) && !ORES_INVERSE.containsValue(unificationEntry.tagPrefix)) {
             ORES_INVERSE.put(TagPrefix.ORES.get(unificationEntry.tagPrefix).stoneType(), unificationEntry.tagPrefix);
+        }
+        for (TagKey<Item> tag : unificationEntry.tagPrefix.getAllItemTags(unificationEntry.material)) {
+            TAG_UNIFICATION_ENTRY.putIfAbsent(tag, unificationEntry);
         }
     }
 
@@ -255,7 +257,7 @@ public class ChemicalHelper {
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
         return UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> {
-            var items = new ArrayList<Supplier<ItemLike>>();
+            var items = new ArrayList<Supplier<? extends ItemLike>>();
             for (TagKey<Item> tag : getTags(entry.tagPrefix, entry.material)) {
                 for (Holder<Item> itemHolder : BuiltInRegistries.ITEM.getTagOrEmpty(tag)) {
                     items.add(itemHolder::value);
@@ -287,7 +289,7 @@ public class ChemicalHelper {
 
     public static List<Block> getBlocks(UnificationEntry unificationEntry) {
         return UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> {
-            var blocks = new ArrayList<Supplier<Block>>();
+            var blocks = new ArrayList<Supplier<? extends Block>>();
             for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
                 for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
                     blocks.add(itemHolder::value);
