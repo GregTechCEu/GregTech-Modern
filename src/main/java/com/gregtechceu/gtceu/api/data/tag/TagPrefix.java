@@ -664,7 +664,7 @@ public class TagPrefix {
         public static final Predicate<Material> hasRotorProperty = mat -> mat.hasProperty(PropertyKey.ROTOR);
     }
 
-    public record OreType(Supplier<BlockState> stoneType, Supplier<Material> material, BlockBehaviour.Properties template, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {}
+    public record OreType(Supplier<BlockState> stoneType, Supplier<Material> material, Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {}
 
     @Getter
     public final String name;
@@ -761,6 +761,10 @@ public class TagPrefix {
     }
 
     public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, BlockBehaviour.Properties properties, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {
+        return registerOre(stoneType, material, () -> properties, baseModelLocation, isNether, isSand);
+    }
+
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, Supplier<BlockBehaviour.Properties> properties, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {
         ORES.put(this, new OreType(stoneType, material, properties, baseModelLocation, isNether, isSand));
         return this;
     }
