@@ -201,7 +201,7 @@ public class ToolHelper {
                     if (electricItem != null) {
                         electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&
-                                random.nextInt(100) > ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
+                                random.nextInt(100) >= ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
                             return;
                         }
                     } else {

@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
@@ -107,7 +108,7 @@ public class ToolRecipeHandler {
                     ItemStack batteryStack = batteryItem.asStack();
                     long maxCharge = GTCapabilityHelper.getElectricItem(batteryStack).getMaxCharge();
                     ItemStack powerUnitStack = ToolItemHelper.getMaxChargeOverrideStack(powerUnitItems.get(tier).get(), maxCharge);
-                    String recipeName = String.format("%s_%s", powerUnitItems.get(tier).get().getDescriptionId(powerUnitStack), batteryItem.get().getDescriptionId());
+                    String recipeName = String.format("%s_%s", BuiltInRegistries.ITEM.getKey(powerUnitItems.get(tier).get()).getPath(), BuiltInRegistries.ITEM.getKey(batteryItem.get()).getPath());
 
                     VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, recipeName,
                             Ingredient.of(batteryStack), powerUnitStack,
@@ -303,6 +304,8 @@ public class ToolRecipeHandler {
 
     public static void addElectricToolRecipe(TagPrefix toolHead, Material material, GTToolType[] toolItems, Consumer<FinishedRecipe> provider) {
         for (GTToolType toolType : toolItems) {
+            if (!material.getProperty(PropertyKey.TOOL).hasType(toolType)) continue;
+
             int tier = toolType.electricTier;
             ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);

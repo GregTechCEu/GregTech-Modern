@@ -863,7 +863,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
         return new CombinedCapabilityProvider(providers);
     }
 
-    static boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
+    default boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (stack.getItem() instanceof IGTTool gtTool) {
             if (TierSortingRegistry.isTierSorted(gtTool.getTier())) {
                 return TierSortingRegistry.isCorrectTierForDrops(gtTool.getTier(), state) && gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));

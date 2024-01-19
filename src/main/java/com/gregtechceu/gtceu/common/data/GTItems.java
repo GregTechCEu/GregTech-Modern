@@ -177,7 +177,7 @@ public class GTItems {
 
                     for (GTToolType toolType : GTToolType.getTypes().values()) {
                         if (property.hasType(toolType)) {
-                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
+                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate.item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
                                 .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
