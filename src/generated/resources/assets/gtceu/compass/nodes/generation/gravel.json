@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/gravel",
   "position": [
-    -100,
-    100
+    -200,
+    50
   ],
   "pre_nodes": [
     "gtceu:generation/ore"

@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_wrench"
+    "res": "gtceu:hv_aluminium_drill"
   },
   "items": [
-    "#forge:tools/wrenches"
+    "#forge:tools/drills"
   ],
-  "page": "gtceu:tools/wrench",
+  "page": "gtceu:tools/hv_drill",
   "position": [
-    -200,
-    150
+    -300,
+    50
   ],
   "section": "gtceu:tools"
 }

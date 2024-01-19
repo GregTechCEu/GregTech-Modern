@@ -1,14 +1,14 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_wrench"
+    "res": "gtceu:iv_aluminium_wrench"
   },
   "items": [
     "#forge:tools/wrenches"
   ],
-  "page": "gtceu:tools/wrench",
+  "page": "gtceu:tools/iv_wrench",
   "position": [
-    -200,
+    -300,
     150
   ],
   "section": "gtceu:tools"
