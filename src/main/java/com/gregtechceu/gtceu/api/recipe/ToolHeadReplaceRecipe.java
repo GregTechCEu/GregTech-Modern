@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolHeadReplaceRecipe extends CustomRecipe {
-    public static SimpleCraftingRecipeSerializer<ToolHeadReplaceRecipe> SERIALIZER = null;
+    public static SimpleCraftingRecipeSerializer<ToolHeadReplaceRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ToolHeadReplaceRecipe::new);
 
     private static final Map<TagPrefix, GTToolType[]> TOOL_HEAD_TO_TOOL_MAP = new HashMap<>();
 
@@ -119,9 +119,6 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
 
     @Override
     public RecipeSerializer<?> getSerializer() {
-        if (SERIALIZER == null) {
-            SERIALIZER = new SimpleCraftingRecipeSerializer<>(ToolHeadReplaceRecipe::new);
-        }
         return SERIALIZER;
     }
 }
