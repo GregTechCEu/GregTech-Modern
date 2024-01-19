@@ -1586,12 +1586,12 @@ public class GTItems {
     public static ItemEntry<Item> DEBUG_SCANNER;
 
     public static ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_item_magnet", ComponentItem::create)
-        .lang("LV Magnet")
+        .lang("LV Item Magnet")
         .properties(p -> p.stacksTo(1))
         .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
         .register();
     public static ItemEntry<ComponentItem> ITEM_MAGNET_HV = REGISTRATE.item("hv_item_magnet", ComponentItem::create)
-        .lang("LV Magnet")
+        .lang("HV Item Magnet")
         .properties(p -> p.stacksTo(1))
         .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
         .register();
