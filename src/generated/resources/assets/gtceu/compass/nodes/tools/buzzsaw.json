@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_wrench"
+    "res": "gtceu:aluminium_buzzsaw"
   },
   "items": [
-    "#forge:tools/wrenches"
+    "#forge:tools/saws"
   ],
-  "page": "gtceu:tools/wrench",
+  "page": "gtceu:tools/buzzsaw",
   "position": [
     -200,
-    150
+    50
   ],
   "section": "gtceu:tools"
 }

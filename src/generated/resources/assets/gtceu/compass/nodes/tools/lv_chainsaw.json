@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_wrench"
+    "res": "gtceu:lv_aluminium_chainsaw"
   },
   "items": [
-    "#forge:tools/wrenches"
+    "#minecraft:axes"
   ],
-  "page": "gtceu:tools/wrench",
+  "page": "gtceu:tools/lv_chainsaw",
   "position": [
-    -200,
-    150
+    -100,
+    0
   ],
   "section": "gtceu:tools"
 }

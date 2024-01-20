@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_hoe"
+    "res": "gtceu:lv_aluminium_screwdriver"
   },
   "items": [
-    "#minecraft:hoes"
+    "#forge:tools/screwdrivers"
   ],
-  "page": "gtceu:tools/hoe",
+  "page": "gtceu:tools/lv_screwdriver",
   "position": [
     -150,
-    200
+    150
   ],
   "section": "gtceu:tools"
 }

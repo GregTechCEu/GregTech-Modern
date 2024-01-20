@@ -43,7 +43,6 @@
     "create.RotationPropagatorMixin",
     "emi.EmiRecipeHandlerMixin",
     "emi.FluidEmiStackMixin",
-    "kjs.KubeJSMixin",
     "kjs.RecipeEventJSMixin",
     "rei.InputSlotCrafterMixin",
     "rei.RecipeFinderMixin",

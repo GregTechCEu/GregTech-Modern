@@ -73,7 +73,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     @Override
     public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
-        if (player.isCrouching() && modes.length > 1) {
+        if (player.isShiftKeyDown() && modes.length > 1) {
             if (!level.isClientSide) {
                 setNextMode(heldItem);
                 var mode = getMode(heldItem);

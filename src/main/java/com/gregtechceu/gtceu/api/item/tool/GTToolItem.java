@@ -231,6 +231,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return IGTTool.definition$isCorrectToolForDrops(stack, state);
+        return this.definition$isCorrectToolForDrops(stack, state);
     }
 }

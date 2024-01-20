@@ -177,7 +177,7 @@ public class GTItems {
 
                     for (GTToolType toolType : GTToolType.getTypes().values()) {
                         if (property.hasType(toolType)) {
-                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate.item("%s_%s".formatted(tier.material.getName().toLowerCase(Locale.ROOT), toolType.name), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
+                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate.item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
                                 .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
@@ -1555,11 +1555,36 @@ public class GTItems {
     public static ItemEntry<ComponentItem> BIO_CHAFF = REGISTRATE.item("bio_chaff", ComponentItem::create).onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(200)).register();
     public static ItemEntry<Item> ENERGIUM_DUST = REGISTRATE.item("energium_dust", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<Item> POWER_UNIT_LV;
-    public static ItemEntry<Item> POWER_UNIT_MV;
-    public static ItemEntry<Item> POWER_UNIT_HV;
-    public static ItemEntry<Item> POWER_UNIT_EV;
-    public static ItemEntry<Item> POWER_UNIT_IV;
+    public static ItemEntry<ComponentItem> POWER_UNIT_LV = REGISTRATE.item("lv_power_unit", ComponentItem::create)
+        .lang("LV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_lv")))
+        .onRegister(attach(ElectricStats.createElectricItem(100000L, GTValues.LV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_MV = REGISTRATE.item("mv_power_unit", ComponentItem::create)
+        .lang("MV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_mv")))
+        .onRegister(attach(ElectricStats.createElectricItem(400000L, GTValues.MV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_HV = REGISTRATE.item("hv_power_unit", ComponentItem::create)
+        .lang("HV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_hv")))
+        .onRegister(attach(ElectricStats.createElectricItem(1600000L, GTValues.HV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_EV = REGISTRATE.item("ev_power_unit", ComponentItem::create)
+        .lang("EV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_ev")))
+        .onRegister(attach(ElectricStats.createElectricItem(6400000L, GTValues.EV)))
+        .register();
+    public static ItemEntry<ComponentItem> POWER_UNIT_IV = REGISTRATE.item("iv_power_unit", ComponentItem::create)
+        .lang("IV Power Unit")
+        .properties(p -> p.stacksTo(8))
+        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_iv")))
+        .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
+        .register();
 
     public static ItemEntry<Item> NANO_SABER;
     public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("prospector.lv", ComponentItem::create)
@@ -1581,8 +1606,16 @@ public class GTItems {
     public static ItemEntry<Item> TRICORDER_SCANNER;
     public static ItemEntry<Item> DEBUG_SCANNER;
 
-    public static ItemEntry<Item> ITEM_MAGNET_LV;
-    public static ItemEntry<Item> ITEM_MAGNET_HV;
+    public static ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_item_magnet", ComponentItem::create)
+        .lang("LV Item Magnet")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
+        .register();
+    public static ItemEntry<ComponentItem> ITEM_MAGNET_HV = REGISTRATE.item("hv_item_magnet", ComponentItem::create)
+        .lang("HV Item Magnet")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
+        .register();
 
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;
