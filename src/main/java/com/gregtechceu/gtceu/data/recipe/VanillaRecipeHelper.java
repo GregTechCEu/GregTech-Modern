@@ -85,7 +85,7 @@ public class VanillaRecipeHelper {
      * @see VanillaRecipeHelper#addShapedRecipe(Consumer, String, ItemStack, Object...)
      */
     public static void addShapedNBTClearingRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack result, Object... recipe) {
-        addShapedRecipe(provider, false, regName, result, recipe);
+        addStrictShapedRecipe(provider, regName, result, recipe);
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
