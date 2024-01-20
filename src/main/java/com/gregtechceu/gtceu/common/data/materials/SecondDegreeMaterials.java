@@ -297,7 +297,7 @@ public class SecondDegreeMaterials {
                 .color(0xaaada3).secondaryColor(0x5e3320).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR)
                 .components(Copper, 6, Tin, 2, Lead, 1)
-                .fluidPipeProperties(1456, 32, true)
+                .fluidPipeProperties(1456, 40, true)
                 .buildAndRegister();
 
         BorosilicateGlass = new Material.Builder(GTCEu.id("borosilicate_glass"))

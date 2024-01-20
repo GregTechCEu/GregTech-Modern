@@ -87,7 +87,6 @@ import java.util.function.Supplier;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 import static net.minecraftforge.client.model.generators.ModelProvider.BLOCK_FOLDER;
 
 /**
@@ -136,9 +135,9 @@ public class GTBlocks {
                             MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
                                 .block(tagPrefix.idPattern().formatted(material.getName()), properties -> new MaterialBlock(properties, tagPrefix, material))
                                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                                .properties(BlockBehaviour.Properties::noLootTable)
+                                .properties(p -> tagPrefix.blockProperties().properties().apply(p).noLootTable())
                                 .transform(unificationBlock(tagPrefix, material))
-                                .addLayer(tagPrefix.blockRenderType())
+                                .addLayer(tagPrefix.blockProperties().renderType())
                                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -186,7 +185,7 @@ public class GTBlocks {
                     properties -> new OreBlock(properties, oreTag, material, true))
                 .initialProperties(() -> {
                     if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                        return Blocks.STONE;
+                        return Blocks.IRON_ORE;
                     }
                     return oreType.stoneType().get().getBlock();
                 })

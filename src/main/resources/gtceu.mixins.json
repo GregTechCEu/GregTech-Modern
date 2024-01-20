@@ -31,7 +31,6 @@
     "RecipeManagerInvoker",
     "RecipeManagerMixin",
     "RepairItemRecipeMixin",
-    "ResultSlotMixin",
     "ServerChunkProviderMixin",
     "ServerPlayerGameModeMixin",
     "ShapedRecipeAccessor",

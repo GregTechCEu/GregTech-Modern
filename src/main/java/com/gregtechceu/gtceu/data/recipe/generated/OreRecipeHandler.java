@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -28,15 +29,11 @@ public class OreRecipeHandler {
     // Make sure to update OreByProduct jei page with any byproduct changes made here!
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-            for (TagPrefix ore : ORES.keySet()) {
+
+        for (TagPrefix ore : ORES.keySet()) {
+            if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
                 ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
             }
-        } else {
-            ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreDeepslate.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreEndstone.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
-            oreNetherrack.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
         }
 
         rawOre.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processRawOre(tagPrefix, material, property, provider));
@@ -77,7 +74,7 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isNether() ? 2 : 1;
+        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isDoubleDrops() ? 2 : 1;
         ingotStack.setCount(ingotStack.getCount() * oreMultiplier);
 
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
@@ -129,8 +126,6 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        ingotStack.setCount(ingotStack.getCount() * property.getOreMultiplier());
-        crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 
         if (!crushedStack.isEmpty()) {
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + orePrefix.name + "_" + material.getName() + "_to_crushed_ore")
@@ -213,25 +208,25 @@ public class OreRecipeHandler {
                 .inputItems(crushedPrefix, material)
                 .inputFluids(Water.getFluid(1000))
                 .circuitMeta(1)
-                .outputItems(crushedPurifiedOre,
-                        ChemicalHelper.get(dustTiny, byproductMaterial, 3),
-                        ChemicalHelper.get(dust, Stone))
+                .outputItems(crushedPurifiedOre)
+                .chancedOutput(TagPrefix.dust, byproductMaterial, 3333, 0)
+                .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
         ORE_WASHER_RECIPES.recipeBuilder("wash_" + material.getName() + "_crushed_ore_to_purified_ore_distilled")
                 .inputItems(crushedPrefix, material)
                 .inputFluids(DistilledWater.getFluid(100))
-                .outputItems(crushedPurifiedOre,
-                        ChemicalHelper.get(dustTiny, byproductMaterial, 3),
-                        ChemicalHelper.get(dust, Stone))
+                .outputItems(crushedPurifiedOre)
+                .chancedOutput(TagPrefix.dust, byproductMaterial, 3333, 0)
+                .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .duration(200)
                 .save(provider);
 
         THERMAL_CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_" + material.getName() + "_crushed_ore_to_refined_ore")
                 .inputItems(crushedPrefix, material)
-                .outputItems(crushedCentrifugedOre,
-                        ChemicalHelper.get(dustTiny, GTUtil.selectItemInList(1, material, property.getOreByProducts(), Material.class), property.getByProductMultiplier() * 3),
-                        ChemicalHelper.get(dust, Stone))
+                .outputItems(crushedCentrifugedOre)
+                .chancedOutput(TagPrefix.dust, property.getOreByProduct(1, material), property.getByProductMultiplier(), 3333, 0)
+                .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
         if (property.getWashedIn().getKey() != null) {
@@ -305,7 +300,8 @@ public class OreRecipeHandler {
         if (!crushedCentrifugedStack.isEmpty()) {
             THERMAL_CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_" + material.getName() + "_purified_ore_to_refined_ore")
                     .inputItems(purifiedPrefix, material)
-                    .outputItems(crushedCentrifugedStack, ChemicalHelper.get(dustTiny, byproductMaterial, 3))
+                    .outputItems(crushedCentrifugedStack)
+                    .chancedOutput(TagPrefix.dust, byproductMaterial, 3333, 0)
                     .save(provider);
         }
 
@@ -363,7 +359,7 @@ public class OreRecipeHandler {
                 .duration((int) (material.getMass() * 4)).EUt(24);
 
         if (byproduct.hasProperty(PropertyKey.DUST)) {
-            builder.outputItems(ChemicalHelper.get(dustTiny, byproduct));
+            builder.chancedOutput(TagPrefix.dust, byproduct, 1111, 0);
         } else {
             builder.outputFluids(byproduct.getFluid(L / 9));
         }
@@ -388,24 +384,24 @@ public class OreRecipeHandler {
 
         if (property.getSeparatedInto() != null && !property.getSeparatedInto().isEmpty()) {
             List<Material> separatedMaterial = property.getSeparatedInto();
-            ItemStack separatedStack1 = ChemicalHelper.get(dustSmall, separatedMaterial.get(0));
             TagPrefix prefix = (separatedMaterial.get(separatedMaterial.size() - 1).getBlastTemperature() == 0 && separatedMaterial.get(separatedMaterial.size() - 1).hasProperty(PropertyKey.INGOT))
-                    ? nugget : dustSmall;
+                    ? nugget : dust;
 
             ItemStack separatedStack2 = ChemicalHelper.get(prefix, separatedMaterial.get(separatedMaterial.size() - 1), prefix == nugget ? 2 : 1);
 
             ELECTROMAGNETIC_SEPARATOR_RECIPES.recipeBuilder("separate_" + material.getName() + "_pure_dust_to_dust")
                     .inputItems(purePrefix, material)
                     .outputItems(dustStack)
-                    .chancedOutput(separatedStack1, 4000, 850)
-                    .chancedOutput(separatedStack2, 2000, 600)
+                    .chancedOutput(TagPrefix.dust, separatedMaterial.get(0), 1000, 250)
+                    .chancedOutput(separatedStack2, prefix == TagPrefix.dust ? 500 : 2000, prefix == TagPrefix.dust ? 150 : 600)
                     .duration(200).EUt(24)
                     .save(provider);
         }
 
         CENTRIFUGE_RECIPES.recipeBuilder("centrifuge_" + material.getName() + "_pure_dust_to_dust")
                 .inputItems(purePrefix, material)
-                .outputItems(dustStack, ChemicalHelper.get(dustTiny, byproductMaterial))
+                .outputItems(dustStack)
+                .chancedOutput(TagPrefix.dust, byproductMaterial, 1111, 0)
                 .duration(100)
                 .EUt(5)
                 .save(provider);

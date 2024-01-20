@@ -170,19 +170,20 @@ public class MixinHelpers {
     public static void generateGTDynamicLoot(ImmutableMap.Builder<ResourceLocation, LootTable> lootTables) {
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
+                final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
                     ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
-                    if ((prefix != TagPrefix.oreNetherrack && prefix != TagPrefix.oreEndstone) && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = TagPrefix.ORES.get(prefix).isNether() ? TagPrefix.ORES.get(prefix).stoneType().get().is(CustomTags.ENDSTONE_ORE_REPLACEABLES) ? TagPrefix.oreEndstone : TagPrefix.oreNetherrack : TagPrefix.ore;
+                    if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
+                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
                         block = ChemicalHelper.getBlock(orePrefix, material);
                     }
 
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
-                    int oreMultiplier = TagPrefix.ORES.get(prefix).isNether() ? 2 : 1;
+                    int oreMultiplier = type.isDoubleDrops() ? 2 : 1;
 
                     LootTable.Builder builder = BlockLoot.createSilkTouchDispatchTable(block,
                         BlockLoot.applyExplosionDecay(block,
@@ -190,7 +191,7 @@ public class MixinHelpers {
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))));
                     //.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for balance reasons. (for now, until we can think of a better solution.)
 
-                    Supplier<Material> outputDustMat = TagPrefix.ORES.get(prefix).material();
+                    Supplier<Material> outputDustMat = type.material();
                     if (outputDustMat != null) {
                         builder.withPool(LootPool.lootPool().add(
                             LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.dust, outputDustMat.get()).getItem())

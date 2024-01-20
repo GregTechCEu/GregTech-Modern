@@ -1,0 +1,68 @@
+{
+  "values": [
+    {
+      "id": "minecraft:white_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:orange_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:magenta_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:light_blue_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:yellow_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:lime_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:pink_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:gray_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:light_gray_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:cyan_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:purple_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:blue_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:brown_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:green_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:red_concrete_powder",
+      "required": false
+    },
+    {
+      "id": "minecraft:black_concrete_powder",
+      "required": false
+    }
+  ]
+}
