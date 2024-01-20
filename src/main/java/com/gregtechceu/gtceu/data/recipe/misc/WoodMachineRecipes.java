@@ -275,21 +275,21 @@ public class WoodMachineRecipes {
         // COAL TAR ============================================
         PYROLYSE_RECIPES.recipeBuilder("charcoal_to_coal_tar").circuitMeta(8)
                 .inputItems(new ItemStack(Items.CHARCOAL, 32))
-                .outputItems(dustSmall, Ash, 2)
+                .chancedOutput(dust, Ash, 5000, 0)
                 .outputFluids(CoalTar.getFluid(1000))
                 .duration(640).EUt(64)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coal_to_coal_tar").circuitMeta(8)
                 .inputItems(new ItemStack(Items.COAL, 12))
-                .outputItems(dustSmall, DarkAsh, 2)
+                .chancedOutput(dust, DarkAsh, 5000, 0)
                 .outputFluids(CoalTar.getFluid(3000))
                 .duration(320).EUt(96)
                 .save(provider);
 
         PYROLYSE_RECIPES.recipeBuilder("coke_to_coal_tar").circuitMeta(8)
                 .inputItems(gem, Coke, 8)
-                .outputItems(dustSmall, Ash, 3)
+                .chancedOutput(dust, Ash, 7500, 0)
                 .outputFluids(CoalTar.getFluid(4000))
                 .duration(320).EUt(96)
                 .save(provider);

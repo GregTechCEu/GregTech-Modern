@@ -192,8 +192,8 @@ public class MachineRecipeLoader {
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust").inputItems(ingot, Iron).inputItems(dust, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem").inputItems(ingot, Iron).inputItems(gem, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust").inputItems(ingot, Iron).inputItems(dust, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem").inputItems(ingot, Iron).inputItems(gem, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(1500).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust").inputItems(ingot, Iron).inputItems(dust, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(1500).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem").inputItems(ingot, Iron).inputItems(gem, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(1500).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust").inputItems(ingot, Iron).inputItems(dust, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(1500).save(provider);
 
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block").inputItems(block, Iron).inputItems(block, Coal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(16200).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block").inputItems(block, Iron).inputItems(block, Charcoal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(16200).save(provider);
@@ -203,8 +203,8 @@ public class MachineRecipeLoader {
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem_wrought").inputItems(ingot, WroughtIron).inputItems(gem, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem_wrought").inputItems(ingot, WroughtIron).inputItems(gem, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(600).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(600).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem_wrought").inputItems(ingot, WroughtIron).inputItems(gem, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(600).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(600).save(provider);
 
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block_wrought").inputItems(block, WroughtIron).inputItems(block, Coal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(7200).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block_wrought").inputItems(block, WroughtIron).inputItems(block, Charcoal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(7200).save(provider);
@@ -680,15 +680,15 @@ public class MachineRecipeLoader {
     }
 
     private static void registerBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
-        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_dust").duration(400).EUt(100).inputItems(dust, Ruby).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_gem").duration(320).EUt(100).inputItems(gem, Ruby).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_dust").duration(400).EUt(100).inputItems(dust, GreenSapphire).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_gem").duration(320).EUt(100).inputItems(gem, GreenSapphire).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_dust").duration(400).EUt(100).inputItems(dust, Ruby).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_gem").duration(320).EUt(100).inputItems(gem, Ruby).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_dust").duration(400).EUt(100).inputItems(dust, GreenSapphire).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_gem").duration(320).EUt(100).inputItems(gem, GreenSapphire).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_dust").duration(400).EUt(100).inputItems(dust, Sapphire).outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_gem").duration(320).EUt(100).inputItems(gem, Sapphire).outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("titanium_from_tetrachloride").duration(800).EUt(VA[HV]).inputItems(dust, Magnesium, 2).inputFluids(TitaniumTetrachloride.getFluid(1000)).outputItems(ingotHot, Titanium).outputItems(dust, MagnesiumChloride, 6).blastFurnaceTemp(Titanium.getBlastTemperature() + 200).save(provider);
-        BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(ingot, Iron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).outputItems(dustTiny, Ash).blastFurnaceTemp(1000).save(provider);
-        BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(ingot, WroughtIron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).outputItems(dustTiny, Ash).blastFurnaceTemp(1000).save(provider);
+        BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(ingot, Iron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1000).save(provider);
+        BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(ingot, WroughtIron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1000).save(provider);
 
         BLAST_RECIPES.recipeBuilder("rutile_from_ilmenite")
                 .inputItems(dust, Ilmenite, 10)
@@ -753,7 +753,7 @@ public class MachineRecipeLoader {
                 .inputItems(dust, SiliconDioxide, 3)
                 .inputItems(dust, Carbon, 2)
                 .outputItems(ingotHot, Silicon)
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonMonoxide.getFluid(2000))
                 .save(provider);
     }
@@ -763,7 +763,7 @@ public class MachineRecipeLoader {
                 .inputItems(dust, inputMaterial)
                 .inputFluids(Oxygen.getFluid(3000))
                 .outputItems(dust, outputMaterial)
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(SulfurDioxide.getFluid(sulfurDioxideAmount))
                 .save(provider);
     }
@@ -822,7 +822,7 @@ public class MachineRecipeLoader {
         MACERATOR_RECIPES.recipeBuilder("macerate_end_stone")
                 .inputItems(new ItemStack(Blocks.END_STONE))
                 .outputItems(dust, Endstone)
-                .chancedOutput(dustTiny, Tungstate, 1200, 280)
+                .chancedOutput(dust, Tungstate, 130, 30)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -838,7 +838,7 @@ public class MachineRecipeLoader {
         //    MACERATOR_RECIPES.recipeBuilder()
         //            .inputItems(stone, Soapstone)
         //            .outputItems(dustImpure, Talc)
-        //            .chancedOutput(dustTiny, Chromite, 1000, 280)
+        //            .chancedOutput(dust, Chromite, 111, 30)
         //            .duration(150).EUt(2)
         //            .save(provider);
 
@@ -874,41 +874,43 @@ public class MachineRecipeLoader {
 //        MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
 //                .inputItems(block, GraniteRed)
 //                .outputItems(dust, GraniteRed)
-//                .chancedOutput(dustSmall, Uranium238, 100, 40)
+//                .chancedOutput(dust, Uranium238, 10, 5)
 //                .duration(150).EUt(2)
 //                .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
                 .outputItems(dust, Andesite)
-                .chancedOutput(dustSmall, Stone, 100, 40)
+                .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
                 .inputItems(Blocks.DIORITE.asItem())
                 .outputItems(dust, Diorite)
-                .chancedOutput(dustSmall, Stone, 100, 40)
+                .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
-                .chancedOutput(dustSmall, Stone, 100, 40)
+                .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         // TODO add other foods
         MACERATOR_RECIPES.recipeBuilder("macerate_pork_chop")
                 .inputItems(new ItemStack(Items.PORKCHOP))
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_fish")
                 .inputItems(ItemTags.FISHES)
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
@@ -920,13 +922,15 @@ public class MachineRecipeLoader {
 
         MACERATOR_RECIPES.recipeBuilder("macerate_steak")
                 .inputItems(new ItemStack(Items.BEEF))
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_rabbit")
                 .inputItems(new ItemStack(Items.RABBIT))
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
