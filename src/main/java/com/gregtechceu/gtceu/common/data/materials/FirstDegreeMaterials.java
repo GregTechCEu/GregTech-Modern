@@ -595,7 +595,7 @@ public class FirstDegreeMaterials {
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(14).build())
                 .rotorStats(6.0f, 3.0f, 512)
-                .fluidPipeProperties(1855, 75, true)
+                .fluidPipeProperties(1855, 50, true)
                 .cableProperties(GTValues.V[EV], 2, 2)
                 .blastTemp(1000, null, GTValues.VA[MV], 800) // no gas tier for steel
                 .buildAndRegister();
