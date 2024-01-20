@@ -163,8 +163,20 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     }
 
     @Override
+    public int getOverclockTier() {
+        MachineDefinition machineDefinition = getMachineDefinition();
+        int machineTier = machineDefinition == null ? getDefinition().getTier() : Math.min(getDefinition().getTier(), machineDefinition.getTier());
+        return Math.min(machineTier, GTUtil.getTierByVoltage(getMaxVoltage()));
+    }
+
+    @Override
+    public int getMinOverclockTier() {
+        return getOverclockTier();
+    }
+
+    @Override
     public int getMaxOverclockTier() {
-        return Math.min(getDefinition().getTier(), GTUtil.getTierByVoltage(getMaxVoltage()));
+        return getOverclockTier();
     }
 
     @Override
@@ -183,7 +195,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             // apply parallel first
             recipe = GTRecipeModifiers.accurateParallel(machine, recipe, Math.min(limit, getMachineLimit(machine.getDefinition().getTier())), false).getA();
             // apply overclock later
-            recipe = RecipeHelper.applyOverclock(OverclockingLogic.PERFECT_OVERCLOCK, recipe, processingArray.getOverclockVoltage());
+            recipe = RecipeHelper.applyOverclock(OverclockingLogic.NON_PERFECT_OVERCLOCK, recipe, processingArray.getOverclockVoltage());
             return recipe;
         }
         return null;
