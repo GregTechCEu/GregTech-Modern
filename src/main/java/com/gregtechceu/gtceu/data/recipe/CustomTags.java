@@ -61,7 +61,7 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createBlockTag("needs_wood_tool");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createBlockTag("needs_gold_tool");
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createBlockTag("needs_netherite_tool");
-    public static final TagKey<Block> NEEDS_NAQ_ALLOY_TOOL = TagUtil.createBlockTag("needs_naquadah_alloy_tool");
+    public static final TagKey<Block> NEEDS_DURANIUM_TOOL = TagUtil.createBlockTag("needs_duranium_tool");
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createBlockTag("needs_neutronium_tool");
 
     @SuppressWarnings("unchecked")
@@ -71,7 +71,7 @@ public class CustomTags {
             BlockTags.NEEDS_IRON_TOOL,
             BlockTags.NEEDS_DIAMOND_TOOL,
             NEEDS_NETHERITE_TOOL,
-            NEEDS_NAQ_ALLOY_TOOL,
+            NEEDS_DURANIUM_TOOL,
             NEEDS_NEUTRONIUM_TOOL,
     };
 

@@ -155,6 +155,7 @@ public class LangHandler {
         provider.add("gtceu.tool.class.rolling_pin", "Rolling Pin");
         provider.add("gtceu.tool.class.plunger", "Plunger");
         provider.add("gtceu.tool.class.shears", "Shears");
+        provider.add("gtceu.tool.class.drill", "Drill");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
@@ -231,7 +232,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.tooltip.mining_speed", "%s §dMining Speed");
         provider.add("item.gtceu.tool.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("item.gtceu.tool.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
-        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dUltimet", "§9Duranium", "§cNeutronium");
+        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dNetherite", "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");

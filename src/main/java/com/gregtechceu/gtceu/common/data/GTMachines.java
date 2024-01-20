@@ -382,7 +382,7 @@ public class GTMachines {
     public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("infinite_energy", CreativeEnergyContainerMachine::new)
             .rotationState(RotationState.NONE)
             .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2"),
+                    Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
                     Component.translatable("gtceu.creative_tooltip.3"))
             .compassNodeSelf()
             .register();
@@ -1585,7 +1585,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.active_transformer.tooltip.1"),
                     Component.translatable("gtceu.machine.active_transformer.tooltip.2")
                             .append(Component.translatable("gtceu.machine.active_transformer.tooltip.3")
-                                    .withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+                                    .withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent()))))
             .pattern((definition) -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
                     .aisle("XXX", "XCX", "XXX")
@@ -1607,7 +1607,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.power_substation.tooltip.2", PowerSubstationMachine.MAX_BATTERY_LAYERS),
                     Component.translatable("gtceu.machine.power_substation.tooltip.3"),
                     Component.translatable("gtceu.machine.power_substation.tooltip.4", PowerSubstationMachine.PASSIVE_DRAIN_MAX_PER_STORAGE / 1000),
-                    Component.translatable("gtceu.machine.power_substation.tooltip.5").append(Component.translatable("gtceu.machine.power_substation.tooltip.6").withStyle(TooltipHelper.RAINBOW_SLOW.getCurrent())))
+                    Component.translatable("gtceu.machine.power_substation.tooltip.5").append(Component.translatable("gtceu.machine.power_substation.tooltip.6").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent()))))
             .appearanceBlock(CASING_PALLADIUM_SUBSTATION)
             .pattern(definition -> FactoryBlockPattern.start(RIGHT, BACK, UP)
                     .aisle("XXSXX", "XXXXX", "XXXXX", "XXXXX", "XXXXX")
