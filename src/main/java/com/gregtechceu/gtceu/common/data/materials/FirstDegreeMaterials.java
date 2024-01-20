@@ -376,7 +376,7 @@ public class FirstDegreeMaterials {
         Obsidian = new Material.Builder(GTCEu.id("obsidian"))
                 .dust(3)
                 .color(0x3b2754).secondaryColor(0x000001).iconSet(SHINY)
-                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE)
+                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE, GENERATE_DENSE)
                 .components(Magnesium, 1, Iron, 1, Silicon, 2, Oxygen, 4)
                 .buildAndRegister();
 

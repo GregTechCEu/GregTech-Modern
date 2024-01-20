@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -427,10 +428,19 @@ public class MaterialInfoLoader {
                     new MaterialStack(GTMaterials.Obsidian, M * 3),
                     new MaterialStack(GTMaterials.Glass, M * 4)));
 
-            ChemicalHelper.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 4), new MaterialStack(GTMaterials.Obsidian, M * 3), new MaterialStack(GTMaterials.Paper, M * 9)));
+            ChemicalHelper.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Diamond, M * 4),
+                new MaterialStack(GTMaterials.Obsidian, M * 3),
+                new MaterialStack(GTMaterials.Paper, M * 9)));
+
+            ChemicalHelper.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Wood, M * 8), // chest
+                new MaterialStack(GTMaterials.Obsidian, M * 9 * 6), // 6 dense plates
+                new MaterialStack(GTMaterials.EnderEye, M)));
         } else {
             ChemicalHelper.registerMaterialInfo(Blocks.BEACON, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherStar, M), new MaterialStack(GTMaterials.Obsidian, M * 3), new MaterialStack(GTMaterials.Glass, M * 5)));
             ChemicalHelper.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 2), new MaterialStack(GTMaterials.Obsidian, M * 4), new MaterialStack(GTMaterials.Paper, M * 3)));
+            ChemicalHelper.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(new MaterialStack(GTMaterials.EnderEye, M), new MaterialStack(GTMaterials.Obsidian, M * 8)));
         }
 
         ChemicalHelper.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(new MaterialStack(GTMaterials.EnderEye, M), new MaterialStack(GTMaterials.Obsidian, M * 8)));

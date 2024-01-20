@@ -51,7 +51,7 @@ public class ConfigHolder {
         @Configurable.Comment({"Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.", "Default: false"})
         public boolean harderRods = false; // default false
         @Configurable
-        @Configurable.Comment({"Whether to make crafting recipes for Bricks, Firebricks, and Coke Bricks harder.", "Default: false"})
+        @Configurable.Comment({"Whether to make crafting recipes for Bricks, Firebricks, Nether Bricks, and Coke Bricks harder.", "Default: false"})
         public boolean harderBrickRecipes = false; // default false
         @Configurable
         @Configurable.Comment({"Whether to nerf Wood crafting to 2 Planks from 1 Log, and 2 Sticks from 2 Planks.", "Default: false"})

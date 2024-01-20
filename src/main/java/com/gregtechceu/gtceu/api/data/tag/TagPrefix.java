@@ -338,7 +338,7 @@ public class TagPrefix {
             .materialIconType(MaterialIconType.plateDense)
             .unificationEnabled(true)
             .generateItem(true)
-            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_DENSE) && !mat.hasFlag(MaterialFlags.NO_SMASHING));
+            .generationCondition(mat -> mat.hasFlag(MaterialFlags.GENERATE_DENSE));
 
     // 2 Plates combined in one Item
     public static final TagPrefix plateDouble = new TagPrefix("doublePlate")
@@ -595,6 +595,10 @@ public class TagPrefix {
             .generateBlock(true)
             .generationCondition(material -> material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK))
             .unificationEnabled(true);
+
+    public static final TagPrefix plank = new TagPrefix("plank")
+        .defaultTagPath("planks/%s")
+        .unformattedTagPath("planks");
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
