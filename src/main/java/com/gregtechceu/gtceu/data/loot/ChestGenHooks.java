@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.data.loot;
 
 import com.google.common.base.Preconditions;
-import com.google.common.collect.Lists;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSerializationContext;
@@ -9,15 +8,13 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.storage.loot.IntRange;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -88,7 +85,7 @@ public final class ChestGenHooks {
     public static void addItem(@NotNull ResourceLocation lootTable, @NotNull ItemStack stack, int minAmount,
                                int maxAmount, int weight) {
         RandomWeightLootFunction lootFunction = new RandomWeightLootFunction(stack, minAmount, maxAmount);
-        String modid = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(stack.getItem())).getNamespace();
+        String modid = Objects.requireNonNull(Registry.ITEM.getKey(stack.getItem())).getNamespace();
         String entryName = createEntryName(stack, modid, weight, lootFunction);
         GTLootEntryItem itemEntry = new GTLootEntryItem(stack, weight, lootFunction, entryName);
         lootEntryItems.computeIfAbsent(lootTable, $ -> new ArrayList<>()).add(itemEntry);
@@ -126,7 +123,7 @@ public final class ChestGenHooks {
     }
 
     public static class RandomWeightLootFunction extends LootItemConditionalFunction implements LootItemFunction {
-        public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(new Serializer()));
+        public static final LootItemFunctionType TYPE = GTRegistries.register(Registry.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(new Serializer()));
 
         private final ItemStack stack;
         private final int minAmount;
