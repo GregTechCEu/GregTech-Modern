@@ -243,12 +243,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE)) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK)) {
             if (recolorBlockNoState(CONCRETE_MAP, this.color, world, pos)) {
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER)) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK)) {
             if (recolorBlockNoState(CONCRETE_POWDER_MAP, this.color, world, pos)) {
                 return true;
             }
@@ -347,11 +347,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             world.setBlock(pos, Blocks.WHITE_CARPET.defaultBlockState(), 3);
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE) && block != Blocks.WHITE_CONCRETE) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK) && block != Blocks.WHITE_CONCRETE) {
             world.setBlock(pos, Blocks.WHITE_CONCRETE.defaultBlockState(), 3);
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER) && block != Blocks.WHITE_CONCRETE_POWDER) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK) && block != Blocks.WHITE_CONCRETE_POWDER) {
             world.setBlock(pos, Blocks.WHITE_CONCRETE_POWDER.defaultBlockState(), 3);
             return true;
         }

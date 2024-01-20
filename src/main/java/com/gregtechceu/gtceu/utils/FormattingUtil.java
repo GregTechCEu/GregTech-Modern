@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.google.common.base.CaseFormat;
+import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
@@ -13,6 +14,8 @@ import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Locale;
 import java.util.stream.Collectors;
+
+import static net.minecraft.ChatFormatting.YELLOW;
 
 /**
  * @author KilaBash
@@ -156,6 +159,10 @@ public class FormattingUtil {
     @Nonnull
     public static String formatNumber2Places(float number) {
         return TWO_PLACES_FORMAT.format(number);
+    }
+
+    public static Component formatPercentage2Places(String langKey, float percentage) {
+        return Component.translatable(langKey, formatNumber2Places(percentage)).withStyle(YELLOW);
     }
 
     public static void combineComponents(MutableComponent c1, Component c2) {

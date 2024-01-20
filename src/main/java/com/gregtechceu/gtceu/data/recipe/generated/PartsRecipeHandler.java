@@ -298,22 +298,24 @@ public class PartsRecipeHandler {
         }
     }
 
-    public static void processPlateDense(TagPrefix TagPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processPlateDense(TagPrefix tagPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_dense_plate")
                 .inputItems(plate, material, 9)
                 .circuitMeta(9)
-                .outputItems(TagPrefix, material)
+                .outputItems(tagPrefix, material)
                 .duration((int) Math.max(material.getMass() * 9L, 1L))
                 .EUt(96)
                 .save(provider);
 
-        BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_dense_plate")
+        if (material.hasProperty(PropertyKey.INGOT)) {
+            BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_ingot_to_dense_plate")
                 .inputItems(ingot, material, 9)
                 .circuitMeta(9)
-                .outputItems(TagPrefix, material)
+                .outputItems(tagPrefix, material)
                 .duration((int) Math.max(material.getMass() * 9L, 1L))
                 .EUt(96)
                 .save(provider);
+        }
     }
 
     public static void processRing(TagPrefix ringPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {

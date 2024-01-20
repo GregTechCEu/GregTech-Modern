@@ -277,37 +277,51 @@ public class Material implements Comparable<Material> {
     }
 
     public void setMaterialRGB(int materialRGB) {
-        materialInfo.color = materialRGB;
+        materialInfo.colors[0] = materialRGB;
     }
 
     public int getLayerARGB(int layerIndex) {
-        return switch (layerIndex) {
-            case 0, -101 -> this.getMaterialARGB();
-            case 1, -111 -> {
-                if (this.getMaterialSecondaryARGB() != -1) {
-                    yield this.getMaterialSecondaryARGB();
-                } else {
-                    yield this.getMaterialARGB();
-                }
-            }
-            default -> -1;
-        };
+        // get 2nd digit as positive if emissive layer
+        if (layerIndex < -100) {
+            layerIndex = (Math.abs(layerIndex) % 100) / 10;
+        }
+        int layerColor = getMaterialARGB(layerIndex);
+        if (layerColor != -1 || layerIndex == 0) return layerColor;
+        else return getMaterialARGB(0);
     }
 
     public int getMaterialARGB() {
-        return materialInfo.color | 0xff000000;
+        return materialInfo.colors[0] | 0xff000000;
     }
 
     public int getMaterialSecondaryARGB() {
-        return materialInfo.secondaryColor | 0xff000000;
+        return materialInfo.colors[1] | 0xff000000;
+    }
+
+    /**
+     * Gets a specific color layer in ARGB.
+     * @param index the index of the layer [0,10). will crash if you pass values > 10.
+     * @return Gets a specific color layer.
+     */
+    public int getMaterialARGB(int index) {
+        return materialInfo.colors[index] | 0xff000000;
     }
 
     public int getMaterialRGB() {
-        return materialInfo.color;
+        return materialInfo.colors[0];
+    }
+
+    /**
+     * Gets a specific color layer.
+     * @param index the index of the layer [0,10). will crash if you pass values > 10.
+     * @return Gets a specific color layer.
+     */
+    public int getMaterialRGB(int index) {
+        return materialInfo.colors[index];
     }
 
     public int getMaterialSecondaryRGB() {
-        return materialInfo.secondaryColor;
+        return materialInfo.colors[1];
     }
 
     public boolean hasFluidColor() {
@@ -775,7 +789,7 @@ public class Material implements Comparable<Material> {
          * @param hasFluidColor Whether the fluid should be colored or not.
          */
         public Builder color(int color, boolean hasFluidColor) {
-            this.materialInfo.color = color;
+            this.materialInfo.colors[0] = color;
             this.materialInfo.hasFluidColor = hasFluidColor;
             return this;
         }
@@ -788,7 +802,7 @@ public class Material implements Comparable<Material> {
          * @param color         The RGB-formatted Color.
          */
         public Builder secondaryColor(int color) {
-            this.materialInfo.secondaryColor = color;
+            this.materialInfo.colors[1] = color;
             return this;
         }
 
@@ -1059,21 +1073,13 @@ public class Material implements Comparable<Material> {
         private final ResourceLocation resourceLocation;
 
         /**
-         * The color of this Material.
+         * The colors of this Material.
+         * if any past index 0 are -1, they aren't used.
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
         @Getter @Setter
-        private int color = -1;
-
-        /**
-         * The secondary color of this Material.
-         * If this is default, then it's not used.
-         * <p>
-         * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
-         */
-        @Getter @Setter
-        private int secondaryColor = -1;
+        private int[] colors = new int[10];
 
         /**
          * The color of this Material.
@@ -1113,6 +1119,7 @@ public class Material implements Comparable<Material> {
             if (!FormattingUtil.toLowerCaseUnderscore(FormattingUtil.lowerUnderscoreToUpperCamel(name)).equals(name))
                 throw new IllegalStateException("Cannot add materials with names like 'materialnumber'! Use 'material_number' instead.");
             this.resourceLocation = resourceLocation;
+            Arrays.fill(colors, -1);
         }
 
         private void verifyInfo(MaterialProperties p, boolean averageRGB) {
@@ -1128,9 +1135,9 @@ public class Material implements Comparable<Material> {
             }
 
             // Verify MaterialRGB
-            if (color == -1) {
+            if (colors[0] == -1) {
                 if (!averageRGB || componentList.isEmpty())
-                    color = 0xFFFFFF;
+                    colors[0] = 0xFFFFFF;
                 else {
                     long colorTemp = 0;
                     int divisor = 0;
@@ -1138,7 +1145,7 @@ public class Material implements Comparable<Material> {
                         colorTemp += stack.material().getMaterialARGB() * stack.amount();
                         divisor += stack.amount();
                     }
-                    color = (int) (colorTemp / divisor);
+                    colors[0] = (int) (colorTemp / divisor);
                 }
             }
         }

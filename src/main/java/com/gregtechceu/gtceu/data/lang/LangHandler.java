@@ -908,7 +908,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.duration", "Duration: %,.2f secs");
         provider.add("gtceu.recipe.amperage", "Amperage: %,d");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
-        provider.add("gtceu.recipe.chance", "Chance: %s%% +%s%%/tier");
+        provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
         provider.add("gtceu.recipe.temperature", "Temperature: %,dK");
         provider.add("gtceu.recipe.temperature_and_coil", "Temp.: %,dK (%s)");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
@@ -1222,8 +1222,8 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
-        provider.add("gtceu.gui.content.tier_boost", "§eTier Chance: +%s/tier§r");
+        provider.add("gtceu.gui.content.chance_1", "Chance: %s%%");
+        provider.add("gtceu.gui.content.tier_boost", "Tier Chance: +%s%%/tier");
 
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
         provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");

@@ -55,6 +55,8 @@ public class CommonProxy {
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
+        ConfigHolder.init();
+        GTCEuAPI.initializeHighTier();
 
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
@@ -64,8 +66,6 @@ public class CommonProxy {
 
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
-        ConfigHolder.init();
-        GTCEuAPI.initializeHighTier();
         GTRegistries.COMPASS_NODES.unfreeze();
 
         UIFactory.register(MachineUIFactory.INSTANCE);
@@ -126,7 +126,6 @@ public class CommonProxy {
 
         // First, register CEu Materials
         managerInternal.unfreezeRegistries();
-        MaterialEvent materialEvent = new MaterialEvent();
         GTCEu.LOGGER.info("Registering GTCEu Materials");
         GTMaterials.init();
         MaterialRegistryManager.getInstance()
@@ -135,8 +134,8 @@ public class CommonProxy {
 
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
+        MaterialEvent materialEvent = new MaterialEvent();
         ModLoader.get().postEvent(materialEvent);
-        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
@@ -189,9 +188,7 @@ public class CommonProxy {
         }
 
         public static void materialModification() {
-            if (GTCEuStartupEvents.MATERIAL_MODIFICATION.hasListeners()) {
-                GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
-            }
+            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
         }
     }
 }

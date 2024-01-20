@@ -9,11 +9,15 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -132,7 +136,7 @@ public class RecipeAddition {
     }
 
     private static void hardWoodRecipes(Consumer<FinishedRecipe> provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "ladder", new ItemStack(Blocks.LADDER, 2), "SrS", "SRS", "ShS", 'S', new ItemStack(Items.STICK), 'R', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "ladder", new ItemStack(Blocks.LADDER, 2), "SrS", "SRS", "ShS", 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'R', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood));
 
 
         VanillaRecipeHelper.addShapedRecipe(provider, "oak_door", new ItemStack(Items.OAK_DOOR), "PTd", "PRS", "PPs",
@@ -296,57 +300,57 @@ public class RecipeAddition {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "oak_trapdoor", new ItemStack(Blocks.OAK_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.OAK_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "spruce_trapdoor", new ItemStack(Blocks.SPRUCE_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.SPRUCE_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "birch_trapdoor", new ItemStack(Blocks.BIRCH_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.BIRCH_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "jungle_trapdoor", new ItemStack(Blocks.JUNGLE_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.JUNGLE_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "acacia_trapdoor", new ItemStack(Blocks.ACACIA_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.ACACIA_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_trapdoor", new ItemStack(Blocks.DARK_OAK_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.DARK_OAK_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_trapdoor", new ItemStack(Blocks.MANGROVE_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.MANGROVE_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "crimson_trapdoor", new ItemStack(Blocks.CRIMSON_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.CRIMSON_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "warped_trapdoor", new ItemStack(Blocks.WARPED_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.WARPED_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_trapdoor", new ItemStack(Blocks.BAMBOO_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.BAMBOO_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "cherry_trapdoor", new ItemStack(Blocks.CHERRY_TRAPDOOR), "SRS", "RRR", "SRS",
                 'S', new ItemStack(Blocks.CHERRY_SLAB),
-                'R', new ItemStack(Items.STICK)
+                'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
 
         VanillaRecipeHelper.addShapedRecipe(provider, "bowl", new ItemStack(Items.BOWL), "k", "X", 'X', ItemTags.PLANKS);
@@ -366,41 +370,41 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_raft", new ItemStack(Items.BAMBOO_RAFT), "PHP", "PkP", "SSS", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new ItemStack(Blocks.BAMBOO_SLAB), 'H', new ItemStack(Items.WOODEN_SHOVEL));
         VanillaRecipeHelper.addShapedRecipe(provider, "cherry_boat", new ItemStack(Items.CHERRY_BOAT), "PHP", "PkP", "SSS", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new ItemStack(Blocks.CHERRY_SLAB), 'H', new ItemStack(Items.WOODEN_SHOVEL));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "oak_fence", new ItemStack(Blocks.OAK_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.OAK_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_fence", new ItemStack(Blocks.SPRUCE_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.SPRUCE_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "birch_fence", new ItemStack(Blocks.BIRCH_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.BIRCH_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_fence", new ItemStack(Blocks.JUNGLE_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.JUNGLE_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_fence", new ItemStack(Blocks.ACACIA_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.ACACIA_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_fence", new ItemStack(Blocks.DARK_OAK_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.DARK_OAK_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_fence", new ItemStack(Blocks.MANGROVE_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.MANGROVE_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_fence", new ItemStack(Blocks.CRIMSON_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.CRIMSON_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "warped_fence", new ItemStack(Blocks.WARPED_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.WARPED_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_fence", new ItemStack(Blocks.BAMBOO_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new ItemStack(Items.STICK));
-        VanillaRecipeHelper.addShapedRecipe(provider, "cherry_fence", new ItemStack(Blocks.CHERRY_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new ItemStack(Items.STICK));
+        VanillaRecipeHelper.addShapedRecipe(provider, "oak_fence", new ItemStack(Blocks.OAK_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.OAK_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_fence", new ItemStack(Blocks.SPRUCE_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.SPRUCE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "birch_fence", new ItemStack(Blocks.BIRCH_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.BIRCH_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_fence", new ItemStack(Blocks.JUNGLE_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.JUNGLE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_fence", new ItemStack(Blocks.ACACIA_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.ACACIA_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_fence", new ItemStack(Blocks.DARK_OAK_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.DARK_OAK_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_fence", new ItemStack(Blocks.MANGROVE_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.MANGROVE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_fence", new ItemStack(Blocks.CRIMSON_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.CRIMSON_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "warped_fence", new ItemStack(Blocks.WARPED_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.WARPED_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_fence", new ItemStack(Blocks.BAMBOO_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cherry_fence", new ItemStack(Blocks.CHERRY_FENCE), "PSP", "PSP", "PSP", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "oak_fence_gate", new ItemStack(Blocks.OAK_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.OAK_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_fence_gate", new ItemStack(Blocks.SPRUCE_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.SPRUCE_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "birch_fence_gate", new ItemStack(Blocks.BIRCH_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.BIRCH_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_fence_gate", new ItemStack(Blocks.JUNGLE_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.JUNGLE_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_fence_gate", new ItemStack(Blocks.ACACIA_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.ACACIA_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_fence_gate", new ItemStack(Blocks.DARK_OAK_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.DARK_OAK_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_fence_gate", new ItemStack(Blocks.MANGROVE_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.MANGROVE_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_fence_gate", new ItemStack(Blocks.CRIMSON_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.CRIMSON_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "warped_fence_gate", new ItemStack(Blocks.WARPED_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.WARPED_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_fence_gate", new ItemStack(Blocks.BAMBOO_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
-        VanillaRecipeHelper.addShapedRecipe(provider, "cherry_fence_gate", new ItemStack(Blocks.CHERRY_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new ItemStack(Items.STICK), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "oak_fence_gate", new ItemStack(Blocks.OAK_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.OAK_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_fence_gate", new ItemStack(Blocks.SPRUCE_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.SPRUCE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "birch_fence_gate", new ItemStack(Blocks.BIRCH_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.BIRCH_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_fence_gate", new ItemStack(Blocks.JUNGLE_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.JUNGLE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_fence_gate", new ItemStack(Blocks.ACACIA_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.ACACIA_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_fence_gate", new ItemStack(Blocks.DARK_OAK_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.DARK_OAK_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_fence_gate", new ItemStack(Blocks.MANGROVE_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.MANGROVE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_fence_gate", new ItemStack(Blocks.CRIMSON_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.CRIMSON_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "warped_fence_gate", new ItemStack(Blocks.WARPED_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.WARPED_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_fence_gate", new ItemStack(Blocks.BAMBOO_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cherry_fence_gate", new ItemStack(Blocks.CHERRY_FENCE_GATE), "F F", "SPS", "SPS", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'F', new ItemStack(Items.FLINT));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "oak_fence_gate_screws", new ItemStack(Blocks.OAK_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.OAK_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_fence_gate_screws", new ItemStack(Blocks.SPRUCE_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.SPRUCE_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "birch_fence_gate_screws", new ItemStack(Blocks.BIRCH_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.BIRCH_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_fence_gate_screws", new ItemStack(Blocks.JUNGLE_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.JUNGLE_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_fence_gate_screws", new ItemStack(Blocks.ACACIA_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.ACACIA_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_fence_gate_screws", new ItemStack(Blocks.DARK_OAK_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.DARK_OAK_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_fence_gate_screws", new ItemStack(Blocks.MANGROVE_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.MANGROVE_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_fence_gate_screws", new ItemStack(Blocks.CRIMSON_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.CRIMSON_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "warped_fence_gate_screws", new ItemStack(Blocks.WARPED_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.WARPED_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_fence_gate_screws", new ItemStack(Blocks.BAMBOO_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, "cherry_fence_gate_screws", new ItemStack(Blocks.CHERRY_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new ItemStack(Items.STICK), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "oak_fence_gate_screws", new ItemStack(Blocks.OAK_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.OAK_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_fence_gate_screws", new ItemStack(Blocks.SPRUCE_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.SPRUCE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "birch_fence_gate_screws", new ItemStack(Blocks.BIRCH_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.BIRCH_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_fence_gate_screws", new ItemStack(Blocks.JUNGLE_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.JUNGLE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_fence_gate_screws", new ItemStack(Blocks.ACACIA_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.ACACIA_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_fence_gate_screws", new ItemStack(Blocks.DARK_OAK_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.DARK_OAK_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_fence_gate_screws", new ItemStack(Blocks.MANGROVE_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.MANGROVE_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_fence_gate_screws", new ItemStack(Blocks.CRIMSON_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.CRIMSON_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "warped_fence_gate_screws", new ItemStack(Blocks.WARPED_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.WARPED_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_fence_gate_screws", new ItemStack(Blocks.BAMBOO_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.BAMBOO_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cherry_fence_gate_screws", new ItemStack(Blocks.CHERRY_FENCE_GATE, 2), "IdI", "SPS", "SPS", 'P', new ItemStack(Blocks.CHERRY_PLANKS), 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'I', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
     }
 
     private static void hardIronRecipes(Consumer<FinishedRecipe> provider) {
@@ -728,7 +732,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "lever", new ItemStack(Blocks.LEVER), "B", "S",
                     'B', new ItemStack(Blocks.STONE_BUTTON),
-                    'S', new ItemStack(Items.STICK)
+                    'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "daylight_detector", new ItemStack(Blocks.DAYLIGHT_DETECTOR), "GGG", "PPP", "SRS",
@@ -760,7 +764,7 @@ public class RecipeAddition {
 
             VanillaRecipeHelper.addShapedRecipe(provider, "tripwire_hook", new ItemStack(Blocks.TRIPWIRE_HOOK), "IRI", "SRS", " S ",
                     'I', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
-                    'R', new ItemStack(Items.STICK),
+                    'R', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood),
                     'S', new ItemStack(Items.STRING)
             );
 
@@ -829,7 +833,7 @@ public class RecipeAddition {
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel),
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.RedAlloy),
                     'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
-                    'W', new ItemStack(Items.STICK),
+                    'W', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood),
                     'G', new UnificationEntry(TagPrefix.rod, GTMaterials.Gold)
             );
 
@@ -837,25 +841,25 @@ public class RecipeAddition {
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'P', new ItemStack(Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE),
                     'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
-                    'W', new ItemStack(Items.STICK)
+                    'W', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "rail", new ItemStack(Blocks.RAIL, 8), "ShS", "IWI", "IdI",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
-                    'W', new ItemStack(Items.STICK)
+                    'W', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
             );
 
             VanillaRecipeHelper.addShapedRecipe(provider, "activator_rail", new ItemStack(Blocks.ACTIVATOR_RAIL, 6), "SPS", "IWI", "IdI",
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'P', new ItemStack(Blocks.REDSTONE_TORCH),
                     'I', new UnificationEntry(TagPrefix.rod, GTMaterials.Iron),
-                    'W', new ItemStack(Items.STICK)
+                    'W', Tags.Items.RODS_WOODEN
             );
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "redstone_torch", new ItemStack(Blocks.REDSTONE_TORCH), "R", "T",
+            VanillaRecipeHelper.addShapedRecipe(provider, "§rch", new ItemStack(Blocks.REDSTONE_TORCH), "R", "T",
                     'R', new UnificationEntry(TagPrefix.dust, GTMaterials.Redstone),
-                    'T', new ItemStack(Items.STICK)
+                    'T', new ItemStack(Blocks.TORCH)
             );
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "piston_bronze", new ItemStack(Blocks.PISTON, 1), "WWW", "CBC", "CRC",
@@ -1012,7 +1016,7 @@ public class RecipeAddition {
                     'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron),
                     'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
-                    'T', new ItemStack(Items.STICK)
+                    'T', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
             );
 
 
@@ -1068,6 +1072,21 @@ public class RecipeAddition {
         }
     }
 
+    /**
+     * Replaces Vanilla Beacon Recipe
+     * Replaces Vanilla Jack-o-lantern Recipe
+     * Replaces Vanilla Book Recipe
+     * Replaces Vanilla Brewing Stand Recipe
+     * Replaces Vanilla Enchantment Table recipe
+     * Replaces Vanilla Jukebox recipe
+     * Replaces Vanilla Note Block recipe
+     * Replaces Vanilla Furnace recipe
+     * Replaces Vanilla Flower Pot recipe
+     * Replaces Vanilla Armor Stand recipe
+     * Replaces Vanilla Trapped Chest recipe
+     * Replaces Vanilla Ender Chest recipe
+     * Replaces Vanilla Bed recipes
+     */
     private static void hardMiscRecipes(Consumer<FinishedRecipe> provider) {
         if (ConfigHolder.INSTANCE.recipes.hardMiscRecipes) {
             VanillaRecipeHelper.addShapedRecipe(provider, "beacon", new ItemStack(Blocks.BEACON), "GLG", "GSG", "OOO",
@@ -1177,14 +1196,14 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "item_frame", new ItemStack(Items.ITEM_FRAME), "SRS", "TLT", "TTT",
                     'S', new ItemStack(Items.STRING),
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
-                    'T', new ItemStack(Items.STICK),
+                    'T', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood),
                     'L', new ItemStack(Items.LEATHER));
 
 
             VanillaRecipeHelper.addShapedRecipe(provider, "painting", new ItemStack(Items.PAINTING), "SRS", "TCT", "TTT",
                     'S', new ItemStack(Items.STRING),
                     'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
-                    'T', new ItemStack(Items.STICK),
+                    'T', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood),
                     'C', ItemTags.WOOL_CARPETS);
 
 
@@ -1192,6 +1211,38 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "furnace_minecart", new ItemStack(Items.FURNACE_MINECART), "hIw", " M ", " d ", 'I', new ItemStack(Blocks.FURNACE), 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "tnt_minecart", new ItemStack(Items.TNT_MINECART), "hIw", " M ", " d ", 'I', new ItemStack(Blocks.TNT), 'M', new ItemStack(Items.MINECART));
             VanillaRecipeHelper.addShapedRecipe(provider, "hopper_minecart", new ItemStack(Items.HOPPER_MINECART), "hIw", " M ", " d ", 'I', new ItemStack(Blocks.HOPPER), 'M', new ItemStack(Items.MINECART));
+
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "flower_pot", new ItemStack(Items.FLOWER_POT), "BfB", " B ",
+                'B', new ItemStack(Items.BRICK));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "armor_stand", new ItemStack(Items.ARMOR_STAND), "BSB", "hSs", "IPI",
+                'B', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood),
+                'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood),
+                'I', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron),
+                'P', new ItemStack(Blocks.STONE_PRESSURE_PLATE));
+            ASSEMBLER_RECIPES.recipeBuilder("armor_stand")
+                .inputItems(Blocks.STONE_PRESSURE_PLATE.asItem())
+                .inputItems(TagPrefix.plate, GTMaterials.Iron, 2)
+                .inputItems(TagPrefix.rod, GTMaterials.Wood, 2)
+                .outputItems(Items.ARMOR_STAND)
+                .duration(100).EUt(VA[ULV]).save(provider);
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "trapped_chest", new ItemStack(Blocks.TRAPPED_CHEST), " H ", "SCS", " d ",
+                'H', new ItemStack(Blocks.TRIPWIRE_HOOK),
+                'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
+                'C', new ItemStack(Blocks.CHEST));
+
+            ASSEMBLER_RECIPES.recipeBuilder("ender_chest")
+                .inputItems(CustomTags.TAG_WOODEN_CHESTS)
+                .inputItems(TagPrefix.plateDense, GTMaterials.Obsidian, 6)
+                .inputItems(TagPrefix.plate, GTMaterials.EnderEye)
+                .outputItems(Blocks.ENDER_CHEST.asItem())
+                .duration(200).EUt(VA[MV]).save(provider);
+
+            for (DyeColor color : DyeColor.values()) {
+                addBedRecipe(provider, color);
+            }
 
         } else {
             ASSEMBLER_RECIPES.recipeBuilder("crafting_table").duration(80).EUt(6).circuitMeta(4).inputItems(ItemTags.PLANKS, 4).outputItems(new ItemStack(Blocks.CRAFTING_TABLE)).save(provider);
@@ -1203,6 +1254,14 @@ public class RecipeAddition {
             ASSEMBLER_RECIPES.recipeBuilder("observer_certus_quartz").duration(100).EUt(VA[LV]).inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 6).inputItems(dust, Redstone, 2).inputItems(plate, CertusQuartz).outputItems(new ItemStack(Blocks.OBSERVER)).save(provider);
             ASSEMBLER_RECIPES.recipeBuilder("observer_quartzite").duration(100).EUt(VA[LV]).inputItems(ItemTags.STONE_CRAFTING_MATERIALS, 6).inputItems(dust, Redstone, 2).inputItems(plate, Quartzite).outputItems(new ItemStack(Blocks.OBSERVER)).save(provider);
         }
+    }
+
+    private static void addBedRecipe(Consumer<FinishedRecipe> provider, DyeColor color) {
+        String colorName = color.getName();
+        VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed", new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_bed"))), "WWW", "PPP", "FrF",
+            'W', BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_carpet")),
+            'P', new UnificationEntry(TagPrefix.plank, GTMaterials.Wood),
+            'F', ItemTags.WOODEN_FENCES);
     }
 
     private static void hardGlassRecipes(Consumer<FinishedRecipe> provider) {
@@ -1225,6 +1284,13 @@ public class RecipeAddition {
                 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel)
         );
 
+        ASSEMBLER_RECIPES.recipeBuilder("iron_door")
+                .inputItems(TagPrefix.plate, GTMaterials.Iron, 4)
+                .inputItems(new ItemStack(Blocks.IRON_BARS))
+                .inputFluids(GTMaterials.Steel.getFluid(L / 9))
+                .outputItems(new ItemStack(Items.IRON_DOOR))
+                .duration(400).EUt(VA[ULV]).save(provider);
+
         VanillaRecipeHelper.addShapedRecipe(provider, "anvil", new ItemStack(Blocks.ANVIL), "BBB", "SBS", "PBP",
                 'B', new UnificationEntry(TagPrefix.block, GTMaterials.Iron),
                 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
@@ -1237,9 +1303,13 @@ public class RecipeAddition {
                 'T', ItemTags.WOODEN_TRAPDOORS
         );
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "minecart", new ItemStack(Items.MINECART), "RhR", "PwP", "RPR",
-                'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
-                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron)
+        VanillaRecipeHelper.addShapedRecipe(provider, "minecart_iron", new ItemStack(Items.MINECART), " h ", "PwP", "WPW",
+            'W', GTItems.IRON_MINECART_WHEELS.asStack(),
+            'P', new UnificationEntry(plate, Iron)
+        );
+        VanillaRecipeHelper.addShapedRecipe(provider, "minecart_steel", new ItemStack(Items.MINECART), " h ", "PwP", "WPW",
+            'W', GTItems.STEEL_MINECART_WHEELS.asStack(),
+            'P', new UnificationEntry(plate, Steel)
         );
     }
 
@@ -1258,12 +1328,22 @@ public class RecipeAddition {
     }
 
     private static void removeVanillaBlockRecipes(Consumer<FinishedRecipe> provider) {
+        VanillaRecipeHelper.addShapedRecipe(provider, "sandstone_slab_saw", new ItemStack(Blocks.SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "smooth_sandstone_slab_saw", new ItemStack(Blocks.SMOOTH_SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.SMOOTH_SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cobblestone_slab_saw", new ItemStack(Blocks.COBBLESTONE_SLAB), "sS", 'S', new ItemStack(Blocks.COBBLESTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "brick_slab_saw", new ItemStack(Blocks.BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "stone_brick_slab_saw", new ItemStack(Blocks.STONE_BRICK_SLAB), "sS", 'S', ItemTags.STONE_BRICKS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "nether_brick_slab_saw", new ItemStack(Blocks.NETHER_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.NETHER_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "quartz_slab_saw", new ItemStack(Blocks.QUARTZ_SLAB), "sS", 'S', new ItemStack(Blocks.QUARTZ_BLOCK));
+        VanillaRecipeHelper.addShapedRecipe(provider, "smooth_quartz_slab_saw", new ItemStack(Blocks.SMOOTH_QUARTZ_SLAB), "sS", 'S', new ItemStack(Blocks.SMOOTH_QUARTZ));
+        VanillaRecipeHelper.addShapedRecipe(provider, "red_sandstone_slab_saw", new ItemStack(Blocks.RED_SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.RED_SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "purpur_slab_saw", new ItemStack(Blocks.PURPUR_SLAB), "sS", 'S', new ItemStack(Blocks.PURPUR_BLOCK));
     }
 
     private static void createShovelRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output, Material material) {
         VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "hPf", " S ", " S ",
                 'P', new UnificationEntry(TagPrefix.plate, material),
-                'S', new ItemStack(Items.STICK)
+                'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
     }
 
@@ -1271,7 +1351,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PII", "hSf", " S ",
                 'P', new UnificationEntry(TagPrefix.plate, material),
                 'I', new UnificationEntry(material.equals(GTMaterials.Diamond) ? TagPrefix.gem : TagPrefix.ingot, material),
-                'S', new ItemStack(Items.STICK)
+                'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
     }
 
@@ -1279,14 +1359,14 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PIf", "PS ", "hS ",
                 'P', new UnificationEntry(TagPrefix.plate, material),
                 'I', new UnificationEntry(material.equals(GTMaterials.Diamond) ? TagPrefix.gem : TagPrefix.ingot, material),
-                'S', new ItemStack(Items.STICK)
+                'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
     }
 
     private static void createSwordRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack output, Material material) {
         VanillaRecipeHelper.addShapedRecipe(provider, regName, output, " P ", "hPf", " S ",
                 'P', new UnificationEntry(TagPrefix.plate, material),
-                'S', new ItemStack(Items.STICK)
+                'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
     }
 
@@ -1294,7 +1374,7 @@ public class RecipeAddition {
         VanillaRecipeHelper.addShapedRecipe(provider, regName, output, "PIf", "hS ", " S ",
                 'P', new UnificationEntry(TagPrefix.plate, material),
                 'I', new UnificationEntry(material.equals(GTMaterials.Diamond) ? TagPrefix.gem : TagPrefix.ingot, material),
-                'S', new ItemStack(Items.STICK)
+                'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood)
         );
     }
 
