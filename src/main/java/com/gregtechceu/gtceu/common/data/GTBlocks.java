@@ -179,7 +179,7 @@ public class GTBlocks {
                     properties -> new OreBlock(properties, oreTag, material, true))
                 .initialProperties(() -> {
                     if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                        return Blocks.STONE;
+                        return Blocks.IRON_ORE;
                     }
                     return oreType.stoneType().get().getBlock();
                 })

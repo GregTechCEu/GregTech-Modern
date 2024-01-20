@@ -30,6 +30,8 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     public transient boolean doubleDrops = false;
     @Setter
     public transient boolean isSand = false;
+    @Setter
+    public transient boolean shouldDropAsItem = false;
 
     public OreTagPrefixBuilder(ResourceLocation id, Object... args) {
         super(id, args);
@@ -50,6 +52,6 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
             errorIfNull(baseModelLocation, "baseModelLocation")
         );
 
-        return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation, doubleDrops, isSand);
+        return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation, doubleDrops, isSand, shouldDropAsItem);
     }
 }

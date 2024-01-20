@@ -28,8 +28,11 @@ public class OreRecipeHandler {
     // Make sure to update OreByProduct jei page with any byproduct changes made here!
 
     public static void init(Consumer<FinishedRecipe> provider) {
+
         for (TagPrefix ore : ORES.keySet()) {
-            ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+            if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
+                ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+            }
         }
 
         rawOre.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processRawOre(tagPrefix, material, property, provider));
