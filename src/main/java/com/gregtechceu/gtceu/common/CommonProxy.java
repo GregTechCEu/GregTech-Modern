@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
+import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -62,6 +63,7 @@ public class CommonProxy {
         GTFeatures.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
+        String str = ChestGenHooks.RandomWeightLootFunction.TYPE.toString(); // init type.
     }
 
     public static void init() {

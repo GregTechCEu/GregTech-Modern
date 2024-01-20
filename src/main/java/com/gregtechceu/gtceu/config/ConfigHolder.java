@@ -166,6 +166,13 @@ public class ConfigHolder {
         public boolean sandOresFall = false;
 
         @Configurable
+        @Configurable.Comment({ "Whether to increase number of rolls for dungeon chests. Increases dungeon loot drastically.", "Default: true", "WARNING: Currently unimplemented." })
+        public boolean increaseDungeonLoot = true;
+        @Configurable
+        @Configurable.Comment({ "Allow GregTech to add additional GregTech Items as loot in various structures.", "Default: true" })
+        public boolean addLoot = true;
+
+        @Configurable
         public OreVeinConfigs oreVeins = new OreVeinConfigs();
 
         public static class OreVeinConfigs {
@@ -331,6 +338,9 @@ public class ConfigHolder {
     }
 
     public static class DeveloperConfigs {
+        @Configurable
+        @Configurable.Comment({"Debug general events? (will print placed veins to server's debug.log)", "Default: false"})
+        public boolean debug = false;
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen = false;

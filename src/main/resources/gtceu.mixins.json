@@ -24,6 +24,7 @@
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootDataManagerMixin",
+    "LootPoolAccessor",
     "MinecraftServerMixin",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
