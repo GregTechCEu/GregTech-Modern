@@ -89,6 +89,8 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
         this.powerOutput = new EnergyContainerList(powerOutput);
         this.powerInput = new EnergyContainerList(powerInput);
+
+        converterSubscription.updateSubscription();
     }
 
     @Override
