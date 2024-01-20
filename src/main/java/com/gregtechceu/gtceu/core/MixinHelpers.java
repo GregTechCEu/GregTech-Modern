@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
+import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -256,7 +257,9 @@ public class MixinHelpers {
         long startTime = System.currentTimeMillis();
         ChemicalHelper.reinitializeUnification();
         GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-        GTCEu.LOGGER.info("GregTech Recipe loading took {}ms", System.currentTimeMillis() - startTime);
+        // Initialize dungeon loot additions
+        DungeonLootLoader.init();
+        GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
         // Load the data
         packResources.add(new GTDynamicDataPack("gtceu:dynamic_data", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
