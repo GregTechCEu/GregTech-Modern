@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
@@ -738,7 +740,7 @@ public class MachineRecipeLoader {
                 .outputFluids(SulfurDioxide.getFluid(1000))
                 .save(provider);
 
-        BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(2273)
+        BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, Chalcopyrite)
                 .inputItems(dust, SiliconDioxide)
                 .inputFluids(Oxygen.getFluid(3000))
@@ -795,8 +797,7 @@ public class MachineRecipeLoader {
                 .outputItems(dust, RawRubber, 2)
                 .save(provider);
 
-        // todo tag stuff
-        //COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_sapling").duration(300).EUt(2).inputItems("treeSapling", 8).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_sapling").duration(300).EUt(2).inputItems(ItemTags.SAPLINGS).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_wheat").duration(300).EUt(2).inputItems(new ItemStack(Items.WHEAT, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_potato").duration(300).EUt(2).inputItems(new ItemStack(Items.POTATO, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_carrot").duration(300).EUt(2).inputItems(new ItemStack(Items.CARROT, 8)).outputItems(PLANT_BALL).save(provider);
@@ -905,12 +906,11 @@ public class MachineRecipeLoader {
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
-        // TODO all fish
-        //MACERATOR_RECIPES.recipeBuilder("macerate_fish")
-        //        .inputItems(new ItemStack(Items.FISH, 1, GTValues.W))
-        //        .outputItems(dustSmall, Meat, 6)
-        //        .outputItems(dustTiny, Bone)
-        //        .duration(102).EUt(2).save(provider);
+        MACERATOR_RECIPES.recipeBuilder("macerate_fish")
+                .inputItems(ItemTags.FISHES)
+                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dustTiny, Bone)
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_chicken")
                 .inputItems(new ItemStack(Items.CHICKEN))
@@ -938,7 +938,6 @@ public class MachineRecipeLoader {
     }
 
     private static void registerFluidRecipes(Consumer<FinishedRecipe> provider) {
-
         FLUID_HEATER_RECIPES.recipeBuilder("heat_ice_to_water").duration(32).EUt(4)
                 .inputFluids(Ice.getFluid(L))
                 .circuitMeta(1)
@@ -1006,44 +1005,44 @@ public class MachineRecipeLoader {
     }
      */
 
-    // TODO NBT removal recipes
     private static void registerNBTRemoval(Consumer<FinishedRecipe> provider) {
-        /*
-        for (MetaTileEntityQuantumChest chest : MetaTileEntities.QUANTUM_CHEST)
-            if (chest != null) {
-                ModHandler.addShapelessNBTClearingRecipe("quantum_chest_nbt_" + chest.getTier() + chest.getMetaName(), chest, chest);
-            }
 
-        for (MetaTileEntityQuantumTank tank : MetaTileEntities.QUANTUM_TANK)
-            if (tank != null) {
-                ModHandler.addShapelessNBTClearingRecipe("quantum_tank_nbt_" + tank.getTier() + tank.getMetaName(), tank, tank);
+        for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
+            if (chest != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(), chest.asStack(), chest.asStack());
             }
+        }
+
+        for (MachineDefinition tank : GTMachines.QUANTUM_TANK) {
+            if (tank != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_tank_nbt_" + tank.getTier(), tank.asStack(), tank.asStack());
+            }
+        }
 
         //Drums
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_wood", MetaTileEntities.WOODEN_DRUM, MetaTileEntities.WOODEN_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_bronze", MetaTileEntities.BRONZE_DRUM, MetaTileEntities.BRONZE_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_steel", MetaTileEntities.STEEL_DRUM, MetaTileEntities.STEEL_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_aluminium", MetaTileEntities.ALUMINIUM_DRUM, MetaTileEntities.ALUMINIUM_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_stainless_steel", MetaTileEntities.STAINLESS_STEEL_DRUM, MetaTileEntities.STAINLESS_STEEL_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_gold", MetaTileEntities.GOLD_DRUM, MetaTileEntities.GOLD_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_titanium", MetaTileEntities.TITANIUM_DRUM, MetaTileEntities.TITANIUM_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_tungstensteel", MetaTileEntities.TUNGSTENSTEEL_DRUM, MetaTileEntities.TUNGSTENSTEEL_DRUM);
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_wood", GTMachines.WOODEN_DRUM.asStack(), GTMachines.WOODEN_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_bronze", GTMachines.BRONZE_DRUM.asStack(), GTMachines.BRONZE_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_steel", GTMachines.STEEL_DRUM.asStack(), GTMachines.STEEL_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_aluminium", GTMachines.ALUMINIUM_DRUM.asStack(), GTMachines.ALUMINIUM_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_stainless_steel", GTMachines.STAINLESS_STEEL_DRUM.asStack(), GTMachines.STAINLESS_STEEL_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_gold", GTMachines.GOLD_DRUM.asStack(), GTMachines.GOLD_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_titanium", GTMachines.TITANIUM_DRUM.asStack(), GTMachines.TITANIUM_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_tungstensteel", GTMachines.TUNGSTENSTEEL_DRUM.asStack(), GTMachines.TUNGSTENSTEEL_DRUM.asStack());
 
         // Cells
-        ModHandler.addShapedNBTClearingRecipe("cell_nbt_regular", FLUID_CELL, " C", "  ", 'C', FLUID_CELL);
-        ModHandler.addShapedNBTClearingRecipe("cell_nbt_universal", FLUID_CELL_UNIVERSAL, " C", "  ", 'C', FLUID_CELL_UNIVERSAL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_steel", FLUID_CELL_LARGE_STEEL, FLUID_CELL_LARGE_STEEL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_aluminium", FLUID_CELL_LARGE_ALUMINIUM, FLUID_CELL_LARGE_ALUMINIUM);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_stainless_steel", FLUID_CELL_LARGE_STAINLESS_STEEL, FLUID_CELL_LARGE_STAINLESS_STEEL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_titanium", FLUID_CELL_LARGE_TITANIUM, FLUID_CELL_LARGE_TITANIUM);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_tungstensteel", FLUID_CELL_LARGE_TUNGSTEN_STEEL, FLUID_CELL_LARGE_TUNGSTEN_STEEL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_vial_nbt", FLUID_CELL_GLASS_VIAL, FLUID_CELL_GLASS_VIAL);
+        VanillaRecipeHelper.addShapedNBTClearingRecipe(provider, "cell_nbt_regular", FLUID_CELL.asStack(), " C", "  ", 'C', FLUID_CELL.asStack());
+        VanillaRecipeHelper.addShapedNBTClearingRecipe(provider, "cell_nbt_universal", FLUID_CELL_UNIVERSAL.asStack(), " C", "  ", 'C', FLUID_CELL_UNIVERSAL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_steel", FLUID_CELL_LARGE_STEEL.asStack(), FLUID_CELL_LARGE_STEEL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_aluminium", FLUID_CELL_LARGE_ALUMINIUM.asStack(), FLUID_CELL_LARGE_ALUMINIUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_stainless_steel", FLUID_CELL_LARGE_STAINLESS_STEEL.asStack(), FLUID_CELL_LARGE_STAINLESS_STEEL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_titanium", FLUID_CELL_LARGE_TITANIUM.asStack(), FLUID_CELL_LARGE_TITANIUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_tungstensteel", FLUID_CELL_LARGE_TUNGSTEN_STEEL.asStack(), FLUID_CELL_LARGE_TUNGSTEN_STEEL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_vial_nbt", FLUID_CELL_GLASS_VIAL.asStack(), FLUID_CELL_GLASS_VIAL.asStack());
 
 
         //Jetpacks
         // TODO armor
         //ModHandler.addShapelessRecipe("fluid_jetpack_clear", SEMIFLUID_JETPACK, SEMIFLUID_JETPACK);
-        */
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {
