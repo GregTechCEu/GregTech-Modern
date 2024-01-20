@@ -2,7 +2,10 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -772,11 +775,13 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.IRON_TRAPDOOR))
                 .duration(100).EUt(16).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("iron_door")
-                .inputItems(plate, Iron, 6)
+        if (!ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) {
+            ASSEMBLER_RECIPES.recipeBuilder("iron_door")
+                .inputItems(TagPrefix.plate, GTMaterials.Iron, 6)
                 .circuitMeta(6)
-                .outputItems(new ItemStack(Items.IRON_DOOR))
+                .outputItems(new ItemStack(Items.IRON_DOOR, 3))
                 .duration(100).EUt(16).save(provider);
+        }
     }
 
     /**

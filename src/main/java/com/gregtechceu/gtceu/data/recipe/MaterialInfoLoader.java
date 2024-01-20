@@ -244,12 +244,14 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
 
 
-        if (ConfigHolder.INSTANCE.recipes.hardIronRecipes)
+        if (ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) {
             ChemicalHelper.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Iron, (37 * M) / 9), // dust tiny
-                    new MaterialStack(GTMaterials.Steel, M / 9))); // dust tiny
-        else
+                new MaterialStack(GTMaterials.Iron, M * 4 + (M * 3 / 16)), // 4 iron plates + 1 iron bars
+                new MaterialStack(GTMaterials.Steel, M / 9))); // tiny steel dust
+        }
+        else {
             ChemicalHelper.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 2)));
+        }
 
         ChemicalHelper.registerMaterialInfo(Blocks.OAK_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
         ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust

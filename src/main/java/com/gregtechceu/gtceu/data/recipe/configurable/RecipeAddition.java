@@ -1284,6 +1284,13 @@ public class RecipeAddition {
                 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel)
         );
 
+        ASSEMBLER_RECIPES.recipeBuilder("iron_door")
+                .inputItems(TagPrefix.plate, GTMaterials.Iron, 4)
+                .inputItems(new ItemStack(Blocks.IRON_BARS))
+                .inputFluids(GTMaterials.Steel.getFluid(L / 9))
+                .outputItems(new ItemStack(Items.IRON_DOOR))
+                .duration(400).EUt(VA[ULV]).save(provider);
+
         VanillaRecipeHelper.addShapedRecipe(provider, "anvil", new ItemStack(Blocks.ANVIL), "BBB", "SBS", "PBP",
                 'B', new UnificationEntry(TagPrefix.block, GTMaterials.Iron),
                 'S', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron),
