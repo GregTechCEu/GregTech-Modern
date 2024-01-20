@@ -81,6 +81,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
@@ -683,8 +684,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // valid tools
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
-                getToolClasses(stack).stream()
-                        .map(s -> Component.translatable("gtceu.tool.class." + s.name))
+                getToolClassNames(stack).stream()
+                        .filter(s -> I18n.exists("gtceu.tool.class." + s))
+                        .map(s -> Component.translatable("gtceu.tool.class." + s))
                         .collect(Component::empty, FormattingUtil::combineComponents, FormattingUtil::combineComponents)
         ));
 
@@ -837,6 +839,10 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     }
 
     Set<GTToolType> getToolClasses(ItemStack stack);
+
+    default Set<String> getToolClassNames(ItemStack stack) {
+        return getToolClasses(stack).stream().flatMap(type -> type.toolClassNames.stream()).collect(Collectors.toSet());
+    }
 
     @Nullable
     default ICapabilityProvider definition$initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
