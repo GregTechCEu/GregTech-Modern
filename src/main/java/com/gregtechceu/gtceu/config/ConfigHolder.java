@@ -155,10 +155,6 @@ public class ConfigHolder {
         public float rubberTreeSpawnChance = 0.5f;
 
         @Configurable
-        @Configurable.Comment({"Should all Stone Types drop unique Ore Item Blocks?", "Default: false (meaning only Stone, Netherrack, and Endstone)"})
-        public boolean allUniqueStoneTypes = false;
-
-        @Configurable
         @Configurable.Comment({"Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.", "Default: false (no falling ores)"})
         public boolean sandOresFall = false;
 

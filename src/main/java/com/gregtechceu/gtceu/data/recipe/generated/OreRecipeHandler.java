@@ -122,8 +122,6 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        ingotStack.setCount(ingotStack.getCount() * property.getOreMultiplier());
-        crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 
         if (!crushedStack.isEmpty()) {
             GTRecipeBuilder builder = FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + orePrefix.name + "_" + material.getName() + "_to_crushed_ore")
