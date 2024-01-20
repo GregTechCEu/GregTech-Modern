@@ -55,6 +55,8 @@ public class CommonProxy {
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
+        ConfigHolder.init();
+        GTCEuAPI.initializeHighTier();
 
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
@@ -64,8 +66,6 @@ public class CommonProxy {
 
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
-        ConfigHolder.init();
-        GTCEuAPI.initializeHighTier();
         GTRegistries.COMPASS_NODES.unfreeze();
 
         UIFactory.register(MachineUIFactory.INSTANCE);

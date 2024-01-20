@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -16,7 +17,9 @@ public class ConfigHolder {
     public static ConfigHolder INSTANCE;
 
     public static void init() {
-        INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        if (INSTANCE == null) {
+            INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        }
     }
 
     @Configurable
@@ -280,7 +283,7 @@ public class ConfigHolder {
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
-         * Use {@link GTCEu#isHighTier()} instead.
+         * Use {@link GTCEuAPI#isHighTier()} instead.
          */
         @Configurable
         @Configurable.Comment({"If High Tier (>UV-tier) GT content should be registered.",
