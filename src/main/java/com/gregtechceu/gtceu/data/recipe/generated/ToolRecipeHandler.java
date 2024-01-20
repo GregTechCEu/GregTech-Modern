@@ -11,9 +11,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.recipe.ToolHeadReplaceRecipe;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -23,7 +23,7 @@ import com.gregtechceu.gtceu.utils.ToolItemHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -45,7 +45,6 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
 public class ToolRecipeHandler {
 
-    // todo electric tools
     public static Map<Integer, ItemEntry<? extends Item>> motorItems = new HashMap<>();
     public static Map<Integer, Material> baseMaterials = new HashMap<>();
     public static Map<Integer, List<ItemEntry<? extends Item>>> batteryItems = new HashMap<>();
@@ -88,23 +87,20 @@ public class ToolRecipeHandler {
         batteryItems.put(GTValues.ZPM, ImmutableList.of(GTItems.BATTERY_ZPM_NAQUADRIA, GTItems.ENERGY_MODULE));
         batteryItems.put(GTValues.UV, ImmutableList.of(GTItems.BATTERY_UV_NAQUADRIA, GTItems.ENERGY_CLUSTER));
 
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, ToolItems.DRILL_LV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, ToolItems.DRILL_MV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, ToolItems.DRILL_HV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, ToolItems.DRILL_EV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, ToolItems.DRILL_IV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadChainsaw, ToolItems.CHAINSAW_LV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, ToolItems.WRENCH_LV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, ToolItems.WRENCH_HV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, ToolItems.WRENCH_IV);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadBuzzSaw, ToolItems.BUZZSAW);
-        //ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, ToolItems.SCREWDRIVER_LV);
-
-        //ForgeRegistries.RECIPES.register(new ToolHeadReplaceRecipe().setRegistryName(new ResourceLocation(MODID, "replacetoolhead")));
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_MV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_HV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_EV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadDrill, GTToolType.DRILL_IV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadChainsaw, GTToolType.CHAINSAW_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_LV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_HV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadWrench, GTToolType.WRENCH_IV);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadBuzzSaw, GTToolType.BUZZSAW);
+        ToolHeadReplaceRecipe.setToolHeadForTool(toolHeadScrewdriver, GTToolType.SCREWDRIVER_LV);
     }
 
     public static void registerPowerUnitRecipes(Consumer<FinishedRecipe> provider) {
-
         for (int tier : powerUnitItems.keySet()) {
             List<ItemEntry<? extends Item>> tieredBatteryItems = batteryItems.get(tier);
             for (ItemEntry<? extends Item> batteryItem : tieredBatteryItems) {
@@ -112,7 +108,7 @@ public class ToolRecipeHandler {
                     ItemStack batteryStack = batteryItem.asStack();
                     long maxCharge = GTCapabilityHelper.getElectricItem(batteryStack).getMaxCharge();
                     ItemStack powerUnitStack = ToolItemHelper.getMaxChargeOverrideStack(powerUnitItems.get(tier).get(), maxCharge);
-                    String recipeName = String.format("%s_%s", powerUnitItems.get(tier).get().getDescriptionId(powerUnitStack), batteryItem.get().getDescriptionId());
+                    String recipeName = String.format("%s_%s", BuiltInRegistries.ITEM.getKey(powerUnitItems.get(tier).get()).getPath(), BuiltInRegistries.ITEM.getKey(batteryItem.get()).getPath());
 
                     VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, recipeName,
                             Ingredient.of(batteryStack), powerUnitStack,
@@ -251,7 +247,7 @@ public class ToolRecipeHandler {
                     'X', plate,
                     'S', steelPlate);
 
-//            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.DRILL_LV, ToolItems.DRILL_MV, ToolItems.DRILL_HV, ToolItems.DRILL_EV, ToolItems.DRILL_IV});
+            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.DRILL_LV, GTToolType.DRILL_MV, GTToolType.DRILL_HV, GTToolType.DRILL_EV, GTToolType.DRILL_IV}, provider);
 
             // chainsaw
             toolPrefix = TagPrefix.toolHeadChainsaw;
@@ -262,11 +258,11 @@ public class ToolRecipeHandler {
                     'S', steelPlate,
                     'R', steelRing);
 
-//            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.CHAINSAW_LV});
+            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.CHAINSAW_LV}, provider);
 
             // wrench
             toolPrefix = TagPrefix.toolHeadWrench;
-//            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.WRENCH_LV, ToolItems.WRENCH_HV, ToolItems.WRENCH_IV});
+            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.WRENCH_LV, GTToolType.WRENCH_HV, GTToolType.WRENCH_IV}, provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("wrench_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
@@ -277,7 +273,7 @@ public class ToolRecipeHandler {
 
             // buzzsaw
             toolPrefix = TagPrefix.toolHeadBuzzSaw;
-//            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.BUZZSAW});
+            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.BUZZSAW}, provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("buzzsaw_blade_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
@@ -297,7 +293,7 @@ public class ToolRecipeHandler {
         // screwdriver
         if (material.hasFlag(GENERATE_LONG_ROD)) {
             toolPrefix = TagPrefix.toolHeadScrewdriver;
-//            addElectricToolRecipe(toolPrefix, material, new IGTTool[]{ToolItems.SCREWDRIVER_LV});
+            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.SCREWDRIVER_LV}, provider);
 
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
@@ -306,15 +302,17 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, IGTTool[] toolItems, Consumer<FinishedRecipe> provider) {
-        for (IGTTool toolItem : toolItems) {
-            int tier = toolItem.getElectricTier();
+    public static void addElectricToolRecipe(TagPrefix toolHead, Material material, GTToolType[] toolItems, Consumer<FinishedRecipe> provider) {
+        for (GTToolType toolType : toolItems) {
+            if (!material.getProperty(PropertyKey.TOOL).hasType(toolType)) continue;
+
+            int tier = toolType.electricTier;
             ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
             IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);
-            ItemStack tool = toolItem.get(0, powerUnit.getMaxCharge());
+            ItemStack tool = GTItems.TOOL_ITEMS.get(material, toolType).get().get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,
-                    String.format("%s_%s", BuiltInRegistries.ITEM.getKey(toolItem.asItem()).getPath(), material.getName()),
+                    String.format("%s_%s", material.getName(), toolType.name),
                     Ingredient.of(powerUnitStack),
                     tool,
                     "wHd", " U ",
@@ -357,6 +355,8 @@ public class ToolRecipeHandler {
         registerMortarRecipes(provider);
         registerSoftToolRecipes(provider);
         registerElectricRecipes(provider);
+
+        SpecialRecipeBuilder.special(ToolHeadReplaceRecipe.SERIALIZER).save(provider, "gtceu:crafting/replace_tool_head");
     }
 
     private static void registerFlintToolRecipes(Consumer<FinishedRecipe> provider) {
@@ -458,14 +458,13 @@ public class ToolRecipeHandler {
                     'C', CustomTags.LV_CIRCUITS,
                     'B', batteryItem.asStack());
 
-            // todo magnets
-//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "magnet_lv_" + batteryItem.getId().getPath(),
-//                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
-//                    "MwM", "MBM", "CPC",
-//                    'M', new UnificationEntry(rod, GTMaterials.SteelMagnetic),
-//                    'P', new UnificationEntry(plate, GTMaterials.Steel),
-//                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin),
-//                    'B', batteryItem.asStack());
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "lv_magnet_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_LV.asStack(),
+                    "MwM", "MBM", "CPC",
+                    'M', new UnificationEntry(rod, GTMaterials.SteelMagnetic),
+                    'P', new UnificationEntry(plate, GTMaterials.Steel),
+                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Tin),
+                    'B', batteryItem.asStack());
         }
 
         // todo tricoder
@@ -493,14 +492,13 @@ public class ToolRecipeHandler {
                     'C', CustomTags.HV_CIRCUITS,
                     'B', batteryItem.asStack());
 
-            // todo magnets
-//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "magnet_hv_" + batteryItem.getId().getPath(),
-//                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
-//                    "MwM", "MBM", "CPC",
-//                    'M', new UnificationEntry(rod, GTMaterials.NeodymiumMagnetic),
-//                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
-//                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold),
-//                    'B', batteryItem.asStack());
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "hv_magnet_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem), GTItems.ITEM_MAGNET_HV.asStack(),
+                    "MwM", "MBM", "CPC",
+                    'M', new UnificationEntry(rod, GTMaterials.NeodymiumMagnetic),
+                    'P', new UnificationEntry(plate, GTMaterials.StainlessSteel),
+                    'C', new UnificationEntry(cableGtSingle, GTMaterials.Gold),
+                    'B', batteryItem.asStack());
         }
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(LuV)) {

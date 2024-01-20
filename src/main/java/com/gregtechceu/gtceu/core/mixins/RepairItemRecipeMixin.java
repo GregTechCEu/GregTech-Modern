@@ -71,9 +71,9 @@ public abstract class RepairItemRecipeMixin extends CustomRecipe {
                                @Local(ordinal = 2) LocalRef<ItemStack> itemstack2,
                                @Local(ordinal = 3) int i1,
                                @Local(ordinal = 0) Map<Enchantment, Integer> map) {
-        if (itemstack3.getItem() instanceof IGTTool tool && i1 == 0) {
-            // if the item is completely repaired, then the item from IGTTool is returned
+        if (itemstack3.getItem() instanceof IGTTool tool) {
             itemstack2.set(tool.get());
+            itemstack2.get().setDamageValue(i1);
 
             // apply curse enchantments properly
             if (!map.isEmpty()) {

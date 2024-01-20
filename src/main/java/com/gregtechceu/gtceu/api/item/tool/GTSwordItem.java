@@ -68,7 +68,7 @@ public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return IGTTool.definition$isCorrectToolForDrops(stack, state);
+        return this.definition$isCorrectToolForDrops(stack, state);
     }
 
     @Override

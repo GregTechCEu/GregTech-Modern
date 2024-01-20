@@ -69,6 +69,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -200,7 +201,7 @@ public class ToolHelper {
                     if (electricItem != null) {
                         electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&
-                                random.nextInt(100) > ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
+                                random.nextInt(100) >= ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
                             return;
                         }
                     } else {
@@ -381,7 +382,7 @@ public class ToolHelper {
             // natural to mine, but avoid exploits like mining Obsidian quickly by instead targeting Stone.
             return false;
         }
-        return stack.getItem().isCorrectToolForDrops(state);
+        return stack.getItem().isCorrectToolForDrops(stack, state);
     }
 
     /**
@@ -704,6 +705,14 @@ public class ToolHelper {
         }
         return -1;
     }
+
+
+    // Suppliers for broken tool stacks
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_LV = () -> GTItems.POWER_UNIT_LV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_MV = () -> GTItems.POWER_UNIT_MV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_HV = () -> GTItems.POWER_UNIT_HV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_EV = () -> GTItems.POWER_UNIT_EV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get().getDefaultInstance();
 
     /**
      * @param state the BlockState of the block

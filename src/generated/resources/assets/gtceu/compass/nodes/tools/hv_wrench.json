@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:hv_aluminium_wrench"
+  },
+  "items": [
+    "#forge:tools/wrenches"
+  ],
+  "page": "gtceu:tools/hv_wrench",
+  "position": [
+    -300,
+    200
+  ],
+  "section": "gtceu:tools"
+}
