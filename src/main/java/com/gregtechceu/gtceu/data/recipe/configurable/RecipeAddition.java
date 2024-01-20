@@ -1237,9 +1237,13 @@ public class RecipeAddition {
                 'T', ItemTags.WOODEN_TRAPDOORS
         );
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "minecart", new ItemStack(Items.MINECART), "RhR", "PwP", "RPR",
-                'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
-                'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron)
+        VanillaRecipeHelper.addShapedRecipe(provider, "minecart_iron", new ItemStack(Items.MINECART), " h ", "PwP", "WPW",
+            'W', GTItems.IRON_MINECART_WHEELS.asStack(),
+            'P', new UnificationEntry(plate, Iron)
+        );
+        VanillaRecipeHelper.addShapedRecipe(provider, "minecart_steel", new ItemStack(Items.MINECART), " h ", "PwP", "WPW",
+            'W', GTItems.STEEL_MINECART_WHEELS.asStack(),
+            'P', new UnificationEntry(plate, Steel)
         );
     }
 

@@ -379,11 +379,11 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Items.ENCHANTED_GOLDEN_APPLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 72))); // block
         ChemicalHelper.registerMaterialInfo(Items.GOLDEN_APPLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 8))); // ingot
 
-        ChemicalHelper.registerMaterialInfo(Items.MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4)));
-        ChemicalHelper.registerMaterialInfo(Items.CHEST_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4), new MaterialStack(GTMaterials.Wood, M * 8)));
-        ChemicalHelper.registerMaterialInfo(Items.FURNACE_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4), new MaterialStack(GTMaterials.Stone, M * 8)));
-        ChemicalHelper.registerMaterialInfo(Items.TNT_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4)));
-        ChemicalHelper.registerMaterialInfo(Items.HOPPER_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 9), new MaterialStack(GTMaterials.Wood, M * 8)));
+        ChemicalHelper.registerMaterialInfo(Items.MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.CHEST_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5), new MaterialStack(GTMaterials.Wood, M * 8)));
+        ChemicalHelper.registerMaterialInfo(Items.FURNACE_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5), new MaterialStack(GTMaterials.Stone, M * 8)));
+        ChemicalHelper.registerMaterialInfo(Items.TNT_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.HOPPER_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 10), new MaterialStack(GTMaterials.Wood, M * 8)));
 
         ChemicalHelper.registerMaterialInfo(Items.CAULDRON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 7)));
         ChemicalHelper.registerMaterialInfo(Blocks.IRON_BARS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 3 / 16))); // todo is this accurate
