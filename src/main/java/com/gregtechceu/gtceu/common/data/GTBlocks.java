@@ -83,7 +83,6 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
 /**
  * @author KilaBash
@@ -130,9 +129,9 @@ public class GTBlocks {
                             MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
                                 .block(tagPrefix.idPattern().formatted(material.getName()), properties -> new MaterialBlock(properties, tagPrefix, material))
                                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                                .properties(BlockBehaviour.Properties::noLootTable)
+                                .properties(p -> tagPrefix.blockProperties().properties().apply(p).noLootTable())
                                 .transform(unificationBlock(tagPrefix, material))
-                                .addLayer(tagPrefix.blockRenderType())
+                                .addLayer(tagPrefix.blockProperties().renderType())
                                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())

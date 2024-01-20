@@ -77,7 +77,7 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isNether() ? 2 : 1;
+        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isDoubleDrops() ? 2 : 1;
         ingotStack.setCount(ingotStack.getCount() * oreMultiplier);
 
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";

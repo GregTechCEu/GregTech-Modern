@@ -52,10 +52,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
 
@@ -617,6 +614,7 @@ public class TagPrefix {
             .miningToolTag(GTToolType.WRENCH.harvestTags.get(0))
             .unificationEnabled(true)
             .generateBlock(true)
+            .blockProperties(() -> RenderType::translucent, p -> p.noOcclusion())
             .generationCondition(material -> material.hasProperty(PropertyKey.DUST) && material.hasFlag(MaterialFlags.GENERATE_FRAME));
 
     // Pipes
@@ -664,7 +662,8 @@ public class TagPrefix {
         public static final Predicate<Material> hasRotorProperty = mat -> mat.hasProperty(PropertyKey.ROTOR);
     }
 
-    public record OreType(Supplier<BlockState> stoneType, Supplier<Material> material, Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {}
+    public record OreType(Supplier<BlockState> stoneType, Supplier<Material> material, Supplier<BlockBehaviour.Properties> template, ResourceLocation baseModelLocation, boolean isDoubleDrops, boolean isSand) {}
+    public record BlockProperties(Supplier<Supplier<RenderType>> renderType, UnaryOperator<BlockBehaviour.Properties> properties) {}
 
     @Getter
     public final String name;
@@ -688,7 +687,7 @@ public class TagPrefix {
     @Setter
     private boolean generateBlock;
     @Getter @Setter
-    private Supplier<Supplier<RenderType>> blockRenderType = () -> RenderType::translucent;
+    private BlockProperties blockProperties = new BlockProperties(() -> RenderType::translucent, UnaryOperator.identity());
 
     @Getter
     @Setter
@@ -752,16 +751,16 @@ public class TagPrefix {
         return registerOre(stoneType, material, properties, baseModelLocation, false);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, BlockBehaviour.Properties properties, ResourceLocation baseModelLocation, boolean isNether) {
-        return registerOre(stoneType, material, properties, baseModelLocation, isNether, false);
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, BlockBehaviour.Properties properties, ResourceLocation baseModelLocation, boolean doubleDrops) {
+        return registerOre(stoneType, material, properties, baseModelLocation, doubleDrops, false);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, BlockBehaviour.Properties properties, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {
-        return registerOre(stoneType, material, () -> properties, baseModelLocation, isNether, isSand);
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, BlockBehaviour.Properties properties, ResourceLocation baseModelLocation, boolean doubleDrops, boolean isSand) {
+        return registerOre(stoneType, material, () -> properties, baseModelLocation, doubleDrops, isSand);
     }
 
-    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, Supplier<BlockBehaviour.Properties> properties, ResourceLocation baseModelLocation, boolean isNether, boolean isSand) {
-        ORES.put(this, new OreType(stoneType, material, properties, baseModelLocation, isNether, isSand));
+    public TagPrefix registerOre(Supplier<BlockState> stoneType, Supplier<Material> material, Supplier<BlockBehaviour.Properties> properties, ResourceLocation baseModelLocation, boolean doubleDrops, boolean isSand) {
+        ORES.put(this, new OreType(stoneType, material, properties, baseModelLocation, doubleDrops, isSand));
         return this;
     }
 
@@ -793,6 +792,10 @@ public class TagPrefix {
     public TagPrefix miningToolTag(TagKey<Block> tag) {
         this.miningToolTag.add(tag);
         return this;
+    }
+
+    public TagPrefix blockProperties(Supplier<Supplier<RenderType>> renderType, UnaryOperator<BlockBehaviour.Properties> properties) {
+        return this.blockProperties(new BlockProperties(renderType, properties));
     }
 
     public long getMaterialAmount(@Nullable Material material) {

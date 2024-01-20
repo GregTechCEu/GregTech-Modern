@@ -27,7 +27,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
     @Setter
     public transient Supplier<BlockBehaviour.Properties> templateProperties;
     @Setter
-    public transient boolean isNether = false;
+    public transient boolean doubleDrops = false;
     @Setter
     public transient boolean isSand = false;
 
@@ -50,6 +50,6 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
             errorIfNull(baseModelLocation, "baseModelLocation")
         );
 
-        return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation, isNether, isSand);
+        return value = base.registerOre(stateSupplier, materialSupplier, templateProperties, baseModelLocation, doubleDrops, isSand);
     }
 }

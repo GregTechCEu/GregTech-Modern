@@ -171,14 +171,14 @@ public class MixinHelpers {
                     Block block = blockEntry.get();
 
                     if ((prefix != TagPrefix.oreNetherrack && prefix != TagPrefix.oreEndstone) && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = TagPrefix.ORES.get(prefix).isNether() ? TagPrefix.ORES.get(prefix).stoneType().get().is(CustomTags.ENDSTONE_ORE_REPLACEABLES) ? TagPrefix.oreEndstone : TagPrefix.oreNetherrack : TagPrefix.ore;
+                        TagPrefix orePrefix = TagPrefix.ORES.get(prefix).isDoubleDrops() ? TagPrefix.ORES.get(prefix).stoneType().get().is(CustomTags.ENDSTONE_ORE_REPLACEABLES) ? TagPrefix.oreEndstone : TagPrefix.oreNetherrack : TagPrefix.ore;
                         block = ChemicalHelper.getBlock(orePrefix, material);
                     }
 
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
-                    int oreMultiplier = TagPrefix.ORES.get(prefix).isNether() ? 2 : 1;
+                    int oreMultiplier = TagPrefix.ORES.get(prefix).isDoubleDrops() ? 2 : 1;
 
                     LootTable.Builder builder = BlockLootSubProvider.createSilkTouchDispatchTable(block,
                         new VanillaBlockLoot().applyExplosionDecay(block,
