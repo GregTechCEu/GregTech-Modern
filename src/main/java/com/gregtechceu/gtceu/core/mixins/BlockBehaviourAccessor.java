@@ -7,6 +7,9 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(BlockBehaviour.class)
 public interface BlockBehaviourAccessor {
+    @Accessor("properties")
+    BlockBehaviour.Properties getBlockProperties();
+
     @Accessor
     void setDrops(ResourceLocation location);
 }

@@ -73,6 +73,9 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "component_grinder_diamond", COMPONENT_GRINDER_DIAMOND.asStack(), "XSX", "SDS", "XSX", 'X', new UnificationEntry(dust, Diamond), 'S', new UnificationEntry(plateDouble, Steel), 'D', new UnificationEntry(gem, Diamond));
         VanillaRecipeHelper.addShapedRecipe(provider, "component_grinder_tungsten", COMPONENT_GRINDER_TUNGSTEN.asStack(), "WSW", "SDS", "WSW", 'W', new UnificationEntry(plate, Tungsten), 'S', new UnificationEntry(plateDouble, VanadiumSteel), 'D', new UnificationEntry(gem, Diamond));
 
+        VanillaRecipeHelper.addShapedRecipe(provider, "minecart_wheels_iron", IRON_MINECART_WHEELS.asStack(), " h ", "RSR", " w ", 'R', new UnificationEntry(ring, Iron), 'S', new UnificationEntry(rod, Iron));
+        VanillaRecipeHelper.addShapedRecipe(provider, "minecart_wheels_steel", STEEL_MINECART_WHEELS.asStack(), " h ", "RSR", " w ", 'R', new UnificationEntry(ring, Steel), 'S', new UnificationEntry(rod, Steel));
+
         // todo nanosaber
         //VanillaRecipeHelper.addShapedRecipe(provider, "nano_saber", NANO_SABER.asStack(), "PIC", "PIC", "XEX", 'P', new UnificationEntry(plate, Platinum), 'I', new UnificationEntry(plate, Ruridit), 'C', CARBON_FIBER_PLATE.asStack(), 'X', new UnificationEntry(circuit, Tier.EV), 'E', ENERGIUM_CRYSTAL.asStack());
 

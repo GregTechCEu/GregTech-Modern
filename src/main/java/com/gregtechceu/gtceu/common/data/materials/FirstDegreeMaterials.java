@@ -376,7 +376,7 @@ public class FirstDegreeMaterials {
         Obsidian = new Material.Builder(GTCEu.id("obsidian"))
                 .dust(3)
                 .color(0x3b2754).secondaryColor(0x000001).iconSet(SHINY)
-                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE)
+                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE, GENERATE_DENSE)
                 .components(Magnesium, 1, Iron, 1, Silicon, 2, Oxygen, 4)
                 .buildAndRegister();
 
@@ -595,7 +595,7 @@ public class FirstDegreeMaterials {
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(14).build())
                 .rotorStats(6.0f, 3.0f, 512)
-                .fluidPipeProperties(1855, 75, true)
+                .fluidPipeProperties(1855, 50, true)
                 .cableProperties(GTValues.V[EV], 2, 2)
                 .blastTemp(1000, null, GTValues.VA[MV], 800) // no gas tier for steel
                 .buildAndRegister();

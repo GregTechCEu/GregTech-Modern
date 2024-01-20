@@ -10,6 +10,7 @@ accessible method net/minecraft/data/loot/BlockLoot applyExplosionDecay (Lnet/mi
 accessible method net/minecraft/data/loot/BlockLoot applyExplosionCondition (Lnet/minecraft/world/level/ItemLike;Lnet/minecraft/world/level/storage/loot/predicates/ConditionUserBuilder;)Lnet/minecraft/world/level/storage/loot/predicates/ConditionUserBuilder;
 accessible method net/minecraft/data/loot/BlockLoot createSilkTouchDispatchTable (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/world/level/storage/loot/entries/LootPoolEntryContainer$Builder;)Lnet/minecraft/world/level/storage/loot/LootTable$Builder;
 accessible field net/minecraft/data/loot/BlockLoot HAS_NO_SILK_TOUCH Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition$Builder;
+accessible method net/minecraft/world/level/storage/loot/entries/LootItem <init> (Lnet/minecraft/world/item/Item;II[Lnet/minecraft/world/level/storage/loot/predicates/LootItemCondition;[Lnet/minecraft/world/level/storage/loot/functions/LootItemFunction;)V
 
 accessible method net/minecraft/data/models/BlockModelGenerators createFacingDispatch ()Lnet/minecraft/data/models/blockstates/PropertyDispatch;
 accessible method net/minecraft/data/models/BlockModelGenerators createSimpleBlock (Lnet/minecraft/world/level/block/Block;Lnet/minecraft/resources/ResourceLocation;)Lnet/minecraft/data/models/blockstates/MultiVariantGenerator;

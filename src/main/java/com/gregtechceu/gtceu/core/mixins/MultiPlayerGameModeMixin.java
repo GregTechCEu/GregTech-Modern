@@ -51,7 +51,7 @@ public class MultiPlayerGameModeMixin {
                 minecraft.level == null ||
                 !ToolHelper.hasBehaviorsTag(mainHandItem) ||
                 ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() ||
-                minecraft.player.isCrouching() ||
+                minecraft.player.isShiftKeyDown() ||
                 !mainHandItem.isCorrectToolForDrops(minecraft.level.getBlockState(pos))
         ) return;
 

@@ -155,6 +155,7 @@ public class LangHandler {
         provider.add("gtceu.tool.class.rolling_pin", "Rolling Pin");
         provider.add("gtceu.tool.class.plunger", "Plunger");
         provider.add("gtceu.tool.class.shears", "Shears");
+        provider.add("gtceu.tool.class.drill", "Drill");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
@@ -199,28 +200,28 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.scythe", "%s Scythe");
         provider.add("item.gtceu.tool.scythe.tooltip", "§8Because a Scythe doesn't make Sense");
         replace(provider, "item.gtceu.tool.rolling_pin", "%s Rolling Pin");
-        replace(provider, "item.gtceu.tool.drill_lv", "%s Drill (LV)");
-        replace(provider, "item.gtceu.tool.drill_mv", "%s Drill (MV)");
-        replace(provider, "item.gtceu.tool.drill_hv", "%s Drill (HV)");
-        replace(provider, "item.gtceu.tool.drill_ev", "%s Drill (EV)");
-        replace(provider, "item.gtceu.tool.drill_iv", "%s Drill (IV)");
+        replace(provider, "item.gtceu.tool.lv_drill", "%s Drill (LV)");
+        replace(provider, "item.gtceu.tool.mv_drill", "%s Drill (MV)");
+        replace(provider, "item.gtceu.tool.hv_drill", "%s Drill (HV)");
+        replace(provider, "item.gtceu.tool.ev_drill", "%s Drill (EV)");
+        replace(provider, "item.gtceu.tool.iv_drill", "%s Drill (IV)");
         replace(provider, "item.gtceu.tool.mining_hammer", "%s Mining Hammer");
         provider.add("item.gtceu.tool.mining_hammer.tooltip", "§8Mines a large area at once (unless you're crouching)");
         replace(provider, "item.gtceu.tool.spade", "%s Spade");
         provider.add("item.gtceu.tool.spade.tooltip", "§8Mines a large area at once (unless you're crouching)");
-        replace(provider, "item.gtceu.tool.chainsaw_lv", "%s Chainsaw (LV)");
-        replace(provider, "item.gtceu.tool.chainsaw_mv", "%s Chainsaw (MV)");
-        replace(provider, "item.gtceu.tool.chainsaw_hv", "%s Chainsaw (HV)");
-        replace(provider, "item.gtceu.tool.wrench_lv", "%s Wrench (LV)");
-        provider.add("item.gtceu.tool.wrench_lv.tooltip", "§8Hold left click to dismantle Machines");
-        replace(provider, "item.gtceu.tool.wrench_hv", "%s Wrench (HV)");
-        provider.add("item.gtceu.tool.wrench_hv.tooltip", "§8Hold left click to dismantle Machines");
-        replace(provider, "item.gtceu.tool.wrench_iv", "%s Wrench (IV)");
-        provider.add("item.gtceu.tool.wrench_iv.tooltip", "§8Hold left click to dismantle Machines");
+        replace(provider, "item.gtceu.tool.lv_chainsaw", "%s Chainsaw (LV)");
+        replace(provider, "item.gtceu.tool.mv_chainsaw", "%s Chainsaw (MV)");
+        replace(provider, "item.gtceu.tool.hv_chainsaw", "%s Chainsaw (HV)");
+        replace(provider, "item.gtceu.tool.lv_wrench", "%s Wrench (LV)");
+        provider.add("item.gtceu.tool.lv_wrench.tooltip", "§8Hold left click to dismantle Machines");
+        replace(provider, "item.gtceu.tool.hv_wrench", "%s Wrench (HV)");
+        provider.add("item.gtceu.tool.hv_wrench.tooltip", "§8Hold left click to dismantle Machines");
+        replace(provider, "item.gtceu.tool.iv_wrench", "%s Wrench (IV)");
+        provider.add("item.gtceu.tool.iv_wrench.tooltip", "§8Hold left click to dismantle Machines");
         replace(provider, "item.gtceu.tool.buzzsaw", "%s Buzzsaw (LV)");
         provider.add("item.gtceu.tool.buzzsaw.tooltip", "§8Not suitable for harvesting Blocks");
-        replace(provider, "item.gtceu.tool.screwdriver_lv", "%s Screwdriver (LV)");
-        provider.add("item.gtceu.tool.screwdriver_lv.tooltip", "§8Adjusts Covers and Machines");
+        replace(provider, "item.gtceu.tool.lv_screwdriver", "%s Screwdriver (LV)");
+        provider.add("item.gtceu.tool.lv_screwdriver.tooltip", "§8Adjusts Covers and Machines");
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
@@ -231,7 +232,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.tooltip.mining_speed", "%s §dMining Speed");
         provider.add("item.gtceu.tool.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("item.gtceu.tool.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
-        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dUltimet", "§9Duranium", "§cNeutronium");
+        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dNetherite", "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
         provider.add("item.gtceu.tool.aoe.rows", "Rows");
@@ -780,9 +781,9 @@ public class LangHandler {
         provider.add("gtceu.machine.central_monitor.tooltip", "But can it run Doom?");
         provider.add("gtceu.machine.processing_array.tooltip", "When a few Machines just doesn't cut it");
         provider.add("gtceu.machine.advanced_processing_array.tooltip", "Parallelize the World");
-        provider.add("gtceu.machine.fluid_drilling_rig.mv.tooltip", "Oil Extraction Pump");
-        provider.add("gtceu.machine.fluid_drilling_rig.hv.tooltip", "Does not perform Fracking");
-        provider.add("gtceu.machine.fluid_drilling_rig.ev.tooltip", "Well Drainer");
+        provider.add("gtceu.machine.mv_fluid_drilling_rig.tooltip", "Oil Extraction Pump");
+        provider.add("gtceu.machine.hv_fluid_drilling_rig.tooltip", "Does not perform Fracking");
+        provider.add("gtceu.machine.ev_fluid_drilling_rig.tooltip", "Well Drainer");
         provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
         provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
         provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Maps: %s");
@@ -920,7 +921,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.duration", "Duration: %,.2f secs");
         provider.add("gtceu.recipe.amperage", "Amperage: %,d");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
-        provider.add("gtceu.recipe.chance", "Chance: %s%% +%s%%/tier");
+        provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
         provider.add("gtceu.recipe.temperature", "Temperature: %,dK");
         provider.add("gtceu.recipe.temperature_and_coil", "Temp.: %,dK (%s)");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
@@ -1234,8 +1235,8 @@ public class LangHandler {
 
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
-        provider.add("gtceu.gui.content.chance_1", "§eChance: %s§r");
-        provider.add("gtceu.gui.content.tier_boost", "§eTier Chance: +%s/tier§r");
+        provider.add("gtceu.gui.content.chance_1", "Chance: %s%%");
+        provider.add("gtceu.gui.content.tier_boost", "Tier Chance: +%s%%/tier");
 
         provider.add("gtceu.gui.content.per_tick", "§aConsumed/Produced Per Tick§r");
         provider.add("gtceu.gui.content.tips.per_tick_short", "§a/tick§r");

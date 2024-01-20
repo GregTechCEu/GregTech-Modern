@@ -114,6 +114,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
+
+        combinedInventory.recomputeEnabledState();
     }
 
     @Override

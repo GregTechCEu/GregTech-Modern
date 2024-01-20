@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:hv_aluminium_drill"
+  },
+  "items": [
+    "#forge:tools/drills"
+  ],
+  "page": "gtceu:tools/hv_drill",
+  "position": [
+    -300,
+    50
+  ],
+  "section": "gtceu:tools"
+}

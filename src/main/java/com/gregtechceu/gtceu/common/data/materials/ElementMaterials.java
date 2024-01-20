@@ -409,7 +409,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
                 .element(GTElements.Pb)
                 .cableProperties(GTValues.V[0], 2, 2)
-                .fluidPipeProperties(1200, 8, true)
+                .fluidPipeProperties(1200, 32, true)
                 .buildAndRegister();
 
         Lithium = new Material.Builder(GTCEu.id("lithium"))

@@ -1,5 +1,5 @@
 {
-  "parent": "item/handheld",
+  "parent": "gtceu:item/handheld_buzz",
   "textures": {
     "layer0": "gtceu:item/tools/handle_buzzsaw",
     "layer1": "gtceu:item/tools/buzzsaw_tool",

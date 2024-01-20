@@ -71,6 +71,11 @@ import java.util.Optional;
 public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
+    public void initStartup() {
+        super.initStartup();
+    }
+
+    @Override
     public void init() {
         super.init();
         GTRegistryInfo.ELEMENT.addType("basic", ElementBuilder.class, ElementBuilder::new, true);

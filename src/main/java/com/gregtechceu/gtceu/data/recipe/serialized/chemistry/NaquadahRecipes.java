@@ -91,7 +91,7 @@ public class NaquadahRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("enriched_naquadah_waste_separation").EUt(VA[HV]).duration(300)
                 .inputFluids(EnrichedNaquadahWaste.getFluid(2000))
-                .outputItems(dustSmall, BariumSulfide, 2)
+                .chancedOutput(dust, BariumSulfide, 5000, 0)
                 .outputFluids(SulfuricAcid.getFluid(500))
                 .outputFluids(EnrichedNaquadahSolution.getFluid(250))
                 .outputFluids(NaquadriaSolution.getFluid(100))
@@ -129,7 +129,7 @@ public class NaquadahRecipes {
 
         DISTILLATION_RECIPES.recipeBuilder("naquadria_waste_separation").EUt(VA[HV]).duration(300)
                 .inputFluids(NaquadriaWaste.getFluid(2000))
-                .outputItems(dustSmall, GalliumSulfide, 2)
+                .chancedOutput(dust, GalliumSulfide, 5000, 0)
                 .outputFluids(SulfuricAcid.getFluid(500))
                 .outputFluids(NaquadriaSolution.getFluid(250))
                 .outputFluids(EnrichedNaquadahSolution.getFluid(100))
