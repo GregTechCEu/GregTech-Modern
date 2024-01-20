@@ -11,6 +11,7 @@ Version: 1.1.1
 - added minecart wheels
 - rebalanced some early-game fluid pipes
 - improved Russian and Chinese translations
+- added chest loot
 
 ### FIXES:
 
