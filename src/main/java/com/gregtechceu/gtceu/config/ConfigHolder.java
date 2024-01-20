@@ -42,8 +42,8 @@ public class ConfigHolder {
     public static class RecipeConfigs {
         @Configurable
         @Configurable.Comment({"Whether to generate Flawed and Chipped Gems for materials and recipes involving them.",
-                "Useful for mods like TerraFirmaCraft.", "Default: true"})
-        public boolean generateLowQualityGems = true; // default true
+                "Useful for mods like TerraFirmaCraft.", "Default: false"})
+        public boolean generateLowQualityGems = false; // default false
         @Configurable
         @Configurable.Comment({"Whether to remove Block/Ingot compression and decompression in the Crafting Table.", "Default: true"})
         public boolean disableManualCompression = true; // default true

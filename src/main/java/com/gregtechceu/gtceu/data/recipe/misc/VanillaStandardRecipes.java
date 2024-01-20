@@ -576,7 +576,7 @@ public class VanillaStandardRecipes {
                         .save(provider);
             }
 
-            CUTTER_RECIPES.recipeBuilder("cut_ " + dyeName + "_wool_to_carpet").duration(20).EUt(VA[ULV])
+            CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_wool_to_carpet").duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_wool")), 1))
                     .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_carpet")), 2))
                     .save(provider);

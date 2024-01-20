@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -111,9 +112,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.2f", chance * 100) + "%"));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.2f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()) {
@@ -133,10 +134,10 @@ public class GTRecipeWidget extends WidgetGroup {
                     var chance = content.chance;
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
-                                Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.2f", chance * 100) + "%"));
+                                Component.translatable("gtceu.gui.content.chance_0") : 
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.2f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()) {
@@ -157,9 +158,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()) {
@@ -180,9 +181,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()) {

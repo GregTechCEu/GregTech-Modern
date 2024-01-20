@@ -59,7 +59,7 @@ public class Content {
         graphics.pose().pushPose();
         graphics.pose().translate(0, 0, 400);
         graphics.pose().scale(0.5f, 0.5f, 1);
-        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_0_short") : String.format("%.1f", chance * 100) + "%";
+        String s = chance == 0 ? LocalizationUtils.format("gtceu.gui.content.chance_0_short") : String.format("%.2f", chance * 100) + "%";
         int color = chance == 0 ? 0xff0000 : 0xFFFF00;
         Font fontRenderer = Minecraft.getInstance().font;
         graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 23), (int) ((y + (height / 3f) + 6) * 2 - height), color, true);
