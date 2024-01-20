@@ -111,7 +111,9 @@ public class GTOreByProductWidget extends WidgetGroup {
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i), ITEM_INPUT_LOCATIONS.get(i + 1))
-                .setIngredientIO(IngredientIO.INPUT).setHoverTooltips(recipeWrapper.getTooltip(i / 2)).setBackground((IGuiTexture) null));
+                .setCanTakeItems(false).setCanPutItems(false)
+                .setIngredientIO(IngredientIO.INPUT)
+                .setHoverTooltips(recipeWrapper.getTooltip(i / 2)).setBackground((IGuiTexture) null));
         }
 
         List<List<ItemStack>> itemOutputs = recipeWrapper.itemOutputs;
@@ -131,7 +133,9 @@ public class GTOreByProductWidget extends WidgetGroup {
             }
 
             itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i), ITEM_OUTPUT_LOCATIONS.get(i + 1))
-                .setIngredientIO(IngredientIO.OUTPUT).setOverlay(overlay).setXEIChance(xeiChance).setHoverTooltips(recipeWrapper.getTooltip(slotIndex + itemInputs.size())).setBackground((IGuiTexture) null));
+                .setCanTakeItems(false).setCanPutItems(false)
+                .setIngredientIO(IngredientIO.OUTPUT).setOverlay(overlay).setXEIChance(xeiChance)
+                .setHoverTooltips(recipeWrapper.getTooltip(slotIndex + itemInputs.size())).setBackground((IGuiTexture) null));
             itemOutputExists.add(true);
         }
 
@@ -141,7 +145,7 @@ public class GTOreByProductWidget extends WidgetGroup {
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             if (!fluidInputs.get(slotIndex).isEmpty()) {
-                fluidStackGroup.addWidget(new TankWidget(new FluidStorage(fluidInputsHandler.getFluidInTank(slotIndex)), FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), true, true)
+                fluidStackGroup.addWidget(new TankWidget(new FluidStorage(fluidInputsHandler.getFluidInTank(slotIndex)), FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
                     .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT));
             }
         }
