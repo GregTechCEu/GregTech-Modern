@@ -3877,7 +3877,7 @@
     "item.gtceu.tool.harvest_level.1": "§7Камень",
     "item.gtceu.tool.harvest_level.2": "§aЖелезо",
     "item.gtceu.tool.harvest_level.3": "§bАлмаз",
-    "item.gtceu.tool.harvest_level.4": "§dУльтимет",
+    "item.gtceu.tool.harvest_level.4": "§dНезерит",
     "item.gtceu.tool.harvest_level.5": "§9Дураний",
     "item.gtceu.tool.harvest_level.6": "§cНейтроний",
     "item.gtceu.tool.hoe": "Мотыга (%s)",
@@ -6447,5 +6447,6 @@
     "item.gtceu.tool.hv_chainsaw": "Электропила (%s §6HV§r)",
     "item.gtceu.tool.hv_drill": "Бур (%s §6HV§r)",
     "item.gtceu.tool.hv_wrench.tooltip": "§8Удерживайте левую кнопку, чтобы демонтировать механизм",
-    "item.gtceu.tool.lv_screwdriver.tooltip": "§8Настраивает улучшения и механизмы"
+    "item.gtceu.tool.lv_screwdriver.tooltip": "§8Настраивает улучшения и механизмы",
+    "gtceu.tool.class.drill": "Бур"
 }
