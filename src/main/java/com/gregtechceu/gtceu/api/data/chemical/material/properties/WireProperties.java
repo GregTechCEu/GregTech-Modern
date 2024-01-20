@@ -2,12 +2,22 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.Objects;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FOIL;
 
 public class WireProperties implements IMaterialProperty<WireProperties> {
+    public static final Codec<WireProperties> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        ExtraCodecs.POSITIVE_INT.fieldOf("voltage").forGetter(val -> val.voltage),
+        ExtraCodecs.POSITIVE_INT.fieldOf("amperage").forGetter(val -> val.amperage),
+        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("loss_per_block").forGetter(val -> val.lossPerBlock),
+        Codec.BOOL.optionalFieldOf("is_superconductor", false).forGetter(val -> val.isSuperconductor),
+        ExtraCodecs.NON_NEGATIVE_INT.optionalFieldOf("superconductor_critical_temperature", 0).forGetter(val -> val.superconductorCriticalTemperature)
+    ).apply(instance, WireProperties::new));
 
     private int voltage;
     private int amperage;

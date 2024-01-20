@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.fluids.store;
 
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.mojang.serialization.Codec;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
 import net.minecraft.world.level.material.Fluid;
 
@@ -13,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.function.Supplier;
 
 public interface FluidStorage {
+    public static final Codec<FluidStorage> CODEC = Codec.unboundedMap(FluidStorageKey.CODEC, )
 
     @AllArgsConstructor
     public static class FluidEntry {

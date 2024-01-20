@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.mojang.serialization.Codec;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
@@ -47,6 +48,8 @@ import java.util.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 public class Material implements Comparable<Material> {
+
+    public static final Codec<Material> CODEC = ResourceLocation.CODEC.xmap(rl -> GTCEuAPI.materialManager.getRegistry(rl.getNamespace()).get(rl.getPath()), Material::getResourceLocation);
 
     /**
      * Basic Info of this Material.
@@ -527,8 +530,11 @@ public class Material implements Comparable<Material> {
     @RemapPrefixForJS("kjs$")
     public static class Builder extends BuilderBase<Material> {
 
+        @Getter
         private final MaterialInfo materialInfo;
+        @Getter
         private final MaterialProperties properties;
+        @Getter
         private final MaterialFlags flags;
 
         /*
@@ -1245,7 +1251,7 @@ public class Material implements Comparable<Material> {
      * Holds the basic info for a Material, like the name, color, id, etc..
      */
     @Accessors(chain = true)
-    private static class MaterialInfo {
+    public static class MaterialInfo {
 
         /**
          * The modid and unlocalized name of this Material.

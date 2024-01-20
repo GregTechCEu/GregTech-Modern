@@ -1,12 +1,22 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import org.jetbrains.annotations.Nullable;
 
+@NoArgsConstructor
+@AllArgsConstructor
 public class IngotProperty implements IMaterialProperty<IngotProperty> {
+    public static final Codec<IngotProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Material.CODEC.optionalFieldOf("smelt_into", null).forGetter(val -> val.smeltingInto),
+        Material.CODEC.optionalFieldOf("arc_smelt_into", null).forGetter(val -> val.arcSmeltingInto),
+        Material.CODEC.optionalFieldOf("macerate_into", null).forGetter(val -> val.macerateInto),
+        Material.CODEC.optionalFieldOf("magnetic_material", null).forGetter(val -> val.magneticMaterial)
+    ).apply(instance, IngotProperty::new));
+
 
     /**
      * Specifies a material into which this material parts turn when heated

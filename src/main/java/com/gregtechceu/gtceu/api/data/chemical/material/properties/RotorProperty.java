@@ -1,9 +1,17 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import lombok.Getter;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import net.minecraft.util.ExtraCodecs;
+
 import org.jetbrains.annotations.NotNull;
 
 public class RotorProperty implements IMaterialProperty<RotorProperty> {
+    public static final Codec<RotorProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        ExtraCodecs.POSITIVE_FLOAT.fieldOf("speed").forGetter(val -> val.speed),
+        ExtraCodecs.POSITIVE_FLOAT.fieldOf("damage").forGetter(val -> val.damage),
+        ExtraCodecs.POSITIVE_INT.fieldOf("damage").forGetter(val -> val.durability)
+    ).apply(instance, RotorProperty::new));
 
     /**
      * Power of rotors made from this Material.

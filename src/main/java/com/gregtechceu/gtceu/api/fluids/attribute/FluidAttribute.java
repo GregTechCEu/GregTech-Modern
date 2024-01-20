@@ -1,13 +1,19 @@
 package com.gregtechceu.gtceu.api.fluids.attribute;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Consumer;
 
 public final class FluidAttribute {
+
+    public static final Codec<FluidAttribute> CODEC = ResourceLocation.CODEC.xmap(FluidAttribute.VALUES::get, FluidAttribute::getResourceLocation);
+    private static final Map<ResourceLocation, FluidAttribute> VALUES = new HashMap<>();
 
     private final ResourceLocation resourceLocation;
     private final Consumer<Consumer<Component>> fluidTooltip;
@@ -21,6 +27,7 @@ public final class FluidAttribute {
         this.fluidTooltip = fluidTooltip;
         this.containerTooltip = containerTooltip;
         this.hashCode = resourceLocation.hashCode();
+        VALUES.put(resourceLocation, this);
     }
 
     public @NotNull ResourceLocation getResourceLocation() {

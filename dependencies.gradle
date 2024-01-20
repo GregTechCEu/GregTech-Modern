@@ -65,11 +65,16 @@ dependencies {
     modImplementation(forge.javd) { transitive = false }
     modRuntimeOnly("curse.maven:trenzalore-870210:4848244")
 
+    // FTB teams
     modCompileOnly(forge.ftbteams)
     modCompileOnly(forge.ftblibrary)
 
+    // Argonauts
     modCompileOnly(forge.argonauts)
     modCompileOnly(forge.resourceful)
+
+    // Json Things
+    modImplementation(forge.jsonThings)
 
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)

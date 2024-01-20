@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 
+import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -16,7 +17,7 @@ import java.util.Map;
 import java.util.function.Function;
 
 public final class FluidStorageKey {
-
+    public static final Codec<FluidStorageKey> CODEC = ResourceLocation.CODEC.xmap(FluidStorageKey.keys::get, FluidStorageKey::getResourceLocation);
     private static final Map<ResourceLocation, FluidStorageKey> keys = new Object2ObjectOpenHashMap<>();
 
     @Getter
@@ -95,3 +96,4 @@ public final class FluidStorageKey {
         return "FluidStorageKey{" + resourceLocation + '}';
     }
 }
+
