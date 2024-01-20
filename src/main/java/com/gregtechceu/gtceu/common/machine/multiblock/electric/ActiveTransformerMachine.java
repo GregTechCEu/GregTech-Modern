@@ -35,11 +35,12 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         super(holder);
         this.powerOutput = new EnergyContainerList(new ArrayList<>());
         this.powerInput = new EnergyContainerList(new ArrayList<>());
+
         this.converterSubscription = new ConditionalSubscriptionHandler(this, this::convertEnergyTick, this::isSubscriptionActive);
     }
 
     public void convertEnergyTick() {
-        getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
+        getRecipeLogic().setStatus(isSubscriptionActive() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.IDLE);
         if (isWorkingEnabled()) {
             long canDrain = powerInput.getEnergyStored();
             long totalDrained = powerOutput.changeEnergy(canDrain);
@@ -48,17 +49,16 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         converterSubscription.updateSubscription();
     }
 
+    @SuppressWarnings("RedundantIfStatement") // It is cleaner to have the final return true separate.
     protected boolean isSubscriptionActive() {
-        if (powerInput != null && powerInput.getEnergyStored() > 0)
-            return true;
+        if (!isFormed()) return false;
 
-        if (powerOutput == null)
-            return false;
+        if (powerInput == null || powerInput.getEnergyStored() <= 0) return false;
+        if (powerOutput == null) return false;
+        if (powerOutput.getEnergyStored() >= powerOutput.getEnergyCapacity()) return false;
 
-        if (powerOutput.getEnergyStored() <= 0)
-            return false;
+        return true;
 
-        return powerOutput.getEnergyStored() < powerOutput.getEnergyCapacity();
     }
 
     @Override
@@ -124,6 +124,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
         this.powerOutput = new EnergyContainerList(new ArrayList<>());
         this.powerInput = new EnergyContainerList(new ArrayList<>());
         getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
+        converterSubscription.unsubscribe();
     }
 
     public static TraceabilityPredicate getHatchPredicates() {
