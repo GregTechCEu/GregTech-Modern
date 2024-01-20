@@ -747,8 +747,8 @@ public class MachineRecipeLoader {
                 .outputFluids(SulfurDioxide.getFluid(2000))
                 .save(provider);
 
-        BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(1200)
-                .inputItems(dust, SiliconDioxide)
+        BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(2273)
+                .inputItems(dust, SiliconDioxide, 3)
                 .inputItems(dust, Carbon, 2)
                 .outputItems(ingotHot, Silicon)
                 .outputItems(dustTiny, Ash)
