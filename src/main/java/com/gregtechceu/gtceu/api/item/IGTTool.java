@@ -904,7 +904,15 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                         }
                         yield -1;
                     }
-                    default -> material.getLayerARGB(index);
+                    case 1, -111 -> material.getMaterialARGB();
+                    case 2, -121 -> {
+                        if (material.getMaterialSecondaryARGB() != -1) {
+                            yield material.getMaterialSecondaryARGB();
+                        } else {
+                            yield material.getMaterialARGB();
+                        }
+                    }
+                    default -> -1;
                 };
             }
             return -1;
