@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
@@ -35,6 +35,7 @@ import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
+import net.minecraft.core.Registry;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
@@ -46,6 +47,7 @@ import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.registries.RegisterEvent;
 
 public class CommonProxy {
     public CommonProxy() {
@@ -63,7 +65,6 @@ public class CommonProxy {
         GTFeatures.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
-        String str = ChestGenHooks.RandomWeightLootFunction.TYPE.toString(); // init type.
     }
 
     public static void init() {
@@ -150,6 +151,12 @@ public class CommonProxy {
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         managerInternal.freezeRegistries();
         /* End Material Registration */
+    }
+
+    @SubscribeEvent
+    public void register(RegisterEvent event) {
+        if (event.getRegistryKey().equals(Registry.LOOT_FUNCTION_TYPE.key()))
+            ChestGenHooks.RandomWeightLootFunction.init();
     }
 
     @SubscribeEvent
