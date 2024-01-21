@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.Blocks;
 
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -97,6 +99,7 @@ public class RecipeRemoval {
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:brick"));
         registry.accept(new ResourceLocation("minecraft:bricks"));
+        registry.accept(new ResourceLocation("minecraft:nether_brick"));
     }
 
     private static void nerfWoodCrafting(Consumer<ResourceLocation> registry) {
@@ -238,6 +241,17 @@ public class RecipeRemoval {
         }
     }
 
+    /**
+     * - Removes Vanilla Golden Apple Recipe
+     * - Removes Vanilla Ender Eye Recipe
+     * - Removes Vanilla Glistering Melon Recipe
+     * - Removes Vanilla Golden Carrot Recipe
+     * - Removes Vanilla Magma Cream Recipe
+     * - Removes Vanilla Polished Stone Variant Recipes
+     * - Removes Vanilla Brick Smelting Recipe
+     * - Removes Vanilla Fermented Spider Eye recipe
+     * - Removes Vanilla Fire Charge recipe
+     */
     private static void hardMiscRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:beacon"));
         registry.accept(new ResourceLocation("minecraft:jack_o_lantern"));
@@ -253,7 +267,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:note_block"));
         registry.accept(new ResourceLocation("minecraft:furnace"));
         registry.accept(new ResourceLocation("minecraft:crafting_table"));
-        //ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.STONEBRICK));
         registry.accept(new ResourceLocation("minecraft:polished_granite"));
         registry.accept(new ResourceLocation("minecraft:polished_diorite"));
         registry.accept(new ResourceLocation("minecraft:polished_andesite"));
@@ -265,6 +278,15 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:furnace_minecart"));
         registry.accept(new ResourceLocation("minecraft:tnt_minecart"));
         registry.accept(new ResourceLocation("minecraft:hopper_minecart"));
+        registry.accept(new ResourceLocation("minecraft:flower_pot"));
+        registry.accept(new ResourceLocation("minecraft:armor_stand"));
+        registry.accept(new ResourceLocation("minecraft:trapped_chest"));
+        registry.accept(new ResourceLocation("minecraft:ender_chest"));
+        for (DyeColor color : DyeColor.values()) {
+            registry.accept(new ResourceLocation(color.getName() + "_bed"));
+        }
+        registry.accept(new ResourceLocation("minecraft:fermented_spider_eye"));
+        registry.accept(new ResourceLocation("minecraft:fire_charge"));
     }
 
     private static void hardGlassRecipes(Consumer<ResourceLocation> registry) {
@@ -328,10 +350,11 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:polished_granite"));
         registry.accept(new ResourceLocation("minecraft:coarse_dirt"));
         registry.accept(new ResourceLocation("minecraft:smooth_sandstone"));
-        registry.accept(new ResourceLocation("minecraft_chiseled_sandstone"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_sandstone"));
         registry.accept(new ResourceLocation("minecraft:chiseled_quartz_block"));
-        registry.accept(new ResourceLocation("minecraft:stonebrick"));
-        registry.accept(new ResourceLocation("minecraft:chiseled_stonebrick"));
+        registry.accept(new ResourceLocation("minecraft:stone_bricks"));
+        registry.accept(new ResourceLocation("minecraft:stone_bricks_from_stonecutting"));
+        registry.accept(new ResourceLocation("minecraft:chiseled_stone_bricks"));
         registry.accept(new ResourceLocation("minecraft:purpur_pillar"));
         registry.accept(new ResourceLocation("minecraft:end_bricks"));
         registry.accept(new ResourceLocation("minecraft:red_nether_brick"));
@@ -340,5 +363,17 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone"));
         registry.accept(new ResourceLocation("minecraft:bookshelf"));
         registry.accept(new ResourceLocation("minecraft:pillar_quartz_block"));
+        registry.accept(new ResourceLocation("minecraft:sea_lantern"));
+
+        // Slab replacement
+        registry.accept(new ResourceLocation("minecraft:stone_slab"));;
+        registry.accept(new ResourceLocation("minecraft:sandstone_slab"));;
+        registry.accept(new ResourceLocation("minecraft:cobblestone_slab"));;
+        registry.accept(new ResourceLocation("minecraft:brick_slab"));;
+        registry.accept(new ResourceLocation("minecraft:stone_brick_slab"));;
+        registry.accept(new ResourceLocation("minecraft:nether_brick_slab"));;
+        registry.accept(new ResourceLocation("minecraft:quartz_slab"));;
+        registry.accept(new ResourceLocation("minecraft:red_sandstone_slab"));;
+        registry.accept(new ResourceLocation("minecraft:purpur_slab"));;
     }
 }

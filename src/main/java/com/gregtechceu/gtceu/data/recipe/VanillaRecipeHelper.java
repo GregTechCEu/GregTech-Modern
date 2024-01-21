@@ -8,10 +8,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
-import com.tterrag.registrate.util.entry.ItemEntry;
 import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
@@ -23,6 +21,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
@@ -79,6 +78,14 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, ItemStack input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+    }
+    /**
+     * Adds a shaped recipe which clears the nbt of the outputs
+     *
+     * @see VanillaRecipeHelper#addShapedRecipe(Consumer, String, ItemStack, Object...)
+     */
+    public static void addShapedNBTClearingRecipe(Consumer<FinishedRecipe> provider, String regName, ItemStack result, Object... recipe) {
+        addStrictShapedRecipe(provider, regName, result, recipe);
     }
 
     public static void addShapedRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -255,6 +262,16 @@ public class VanillaRecipeHelper {
 
     public static void addShapedEnergyTransferRecipe(Consumer<FinishedRecipe> provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull String regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge, GTCEu.id(regName), chargeIngredient, result, recipe);
+    }
+
+    /**
+     * Adds a shapeless recipe which clears the nbt of the outputs
+     *
+     * @see VanillaRecipeHelper#addShapelessRecipe(Consumer, String, ItemStack, Object...)
+     */
+    public static void addShapelessNBTClearingRecipe(Consumer<FinishedRecipe> provider, @NotNull String regName, @NotNull ItemStack result,
+                                                     @NotNull Object... recipe) {
+        addShapelessRecipe(provider, regName, result, recipe);
     }
 
     public static void addShapelessRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {

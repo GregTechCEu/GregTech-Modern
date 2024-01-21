@@ -57,6 +57,10 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     @Override
     public void setDistinct(boolean distinct) {
         handlers.stream().forEach(handler -> handler.setDistinct(distinct));
-        this.enabled = distinct;
+        recomputeEnabledState();
+    }
+
+    public void recomputeEnabledState() {
+        this.enabled = isDistinct();
     }
 }

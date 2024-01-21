@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -243,12 +244,14 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.CHERRY_PLANKS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M)));
 
 
-        if (ConfigHolder.INSTANCE.recipes.hardIronRecipes)
+        if (ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) {
             ChemicalHelper.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(
-                    new MaterialStack(GTMaterials.Iron, (37 * M) / 9), // dust tiny
-                    new MaterialStack(GTMaterials.Steel, M / 9))); // dust tiny
-        else
+                new MaterialStack(GTMaterials.Iron, M * 4 + (M * 3 / 16)), // 4 iron plates + 1 iron bars
+                new MaterialStack(GTMaterials.Steel, M / 9))); // tiny steel dust
+        }
+        else {
             ChemicalHelper.registerMaterialInfo(Items.IRON_DOOR, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 2)));
+        }
 
         ChemicalHelper.registerMaterialInfo(Blocks.OAK_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
         ChemicalHelper.registerMaterialInfo(Blocks.BIRCH_FENCE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Wood, M))); // dust
@@ -379,11 +382,11 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Items.ENCHANTED_GOLDEN_APPLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 72))); // block
         ChemicalHelper.registerMaterialInfo(Items.GOLDEN_APPLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, M * 8))); // ingot
 
-        ChemicalHelper.registerMaterialInfo(Items.MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4)));
-        ChemicalHelper.registerMaterialInfo(Items.CHEST_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4), new MaterialStack(GTMaterials.Wood, M * 8)));
-        ChemicalHelper.registerMaterialInfo(Items.FURNACE_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4), new MaterialStack(GTMaterials.Stone, M * 8)));
-        ChemicalHelper.registerMaterialInfo(Items.TNT_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 4)));
-        ChemicalHelper.registerMaterialInfo(Items.HOPPER_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 9), new MaterialStack(GTMaterials.Wood, M * 8)));
+        ChemicalHelper.registerMaterialInfo(Items.MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.CHEST_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5), new MaterialStack(GTMaterials.Wood, M * 8)));
+        ChemicalHelper.registerMaterialInfo(Items.FURNACE_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5), new MaterialStack(GTMaterials.Stone, M * 8)));
+        ChemicalHelper.registerMaterialInfo(Items.TNT_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 5)));
+        ChemicalHelper.registerMaterialInfo(Items.HOPPER_MINECART, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 10), new MaterialStack(GTMaterials.Wood, M * 8)));
 
         ChemicalHelper.registerMaterialInfo(Items.CAULDRON, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 7)));
         ChemicalHelper.registerMaterialInfo(Blocks.IRON_BARS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, M * 3 / 16))); // todo is this accurate
@@ -427,10 +430,19 @@ public class MaterialInfoLoader {
                     new MaterialStack(GTMaterials.Obsidian, M * 3),
                     new MaterialStack(GTMaterials.Glass, M * 4)));
 
-            ChemicalHelper.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 4), new MaterialStack(GTMaterials.Obsidian, M * 3), new MaterialStack(GTMaterials.Paper, M * 9)));
+            ChemicalHelper.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Diamond, M * 4),
+                new MaterialStack(GTMaterials.Obsidian, M * 3),
+                new MaterialStack(GTMaterials.Paper, M * 9)));
+
+            ChemicalHelper.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(
+                new MaterialStack(GTMaterials.Wood, M * 8), // chest
+                new MaterialStack(GTMaterials.Obsidian, M * 9 * 6), // 6 dense plates
+                new MaterialStack(GTMaterials.EnderEye, M)));
         } else {
             ChemicalHelper.registerMaterialInfo(Blocks.BEACON, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherStar, M), new MaterialStack(GTMaterials.Obsidian, M * 3), new MaterialStack(GTMaterials.Glass, M * 5)));
             ChemicalHelper.registerMaterialInfo(Blocks.ENCHANTING_TABLE, new ItemMaterialInfo(new MaterialStack(GTMaterials.Diamond, M * 2), new MaterialStack(GTMaterials.Obsidian, M * 4), new MaterialStack(GTMaterials.Paper, M * 3)));
+            ChemicalHelper.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(new MaterialStack(GTMaterials.EnderEye, M), new MaterialStack(GTMaterials.Obsidian, M * 8)));
         }
 
         ChemicalHelper.registerMaterialInfo(Blocks.ENDER_CHEST, new ItemMaterialInfo(new MaterialStack(GTMaterials.EnderEye, M), new MaterialStack(GTMaterials.Obsidian, M * 8)));

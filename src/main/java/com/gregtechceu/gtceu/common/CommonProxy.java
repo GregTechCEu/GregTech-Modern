@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
+import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
@@ -34,17 +35,22 @@ import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoader;
+import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
+import net.minecraftforge.registries.ForgeDeferredRegistriesSetup;
+import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegisterEvent;
 
 public class CommonProxy {
     public CommonProxy() {
@@ -55,6 +61,8 @@ public class CommonProxy {
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
+        ConfigHolder.init();
+        GTCEuAPI.initializeHighTier();
 
         GTRegistries.init(eventBus);
         GTFeatures.init(eventBus);
@@ -64,8 +72,6 @@ public class CommonProxy {
 
     public static void init() {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
-        ConfigHolder.init();
-        GTCEuAPI.initializeHighTier();
         GTRegistries.COMPASS_NODES.unfreeze();
 
         UIFactory.register(MachineUIFactory.INSTANCE);
@@ -126,7 +132,6 @@ public class CommonProxy {
 
         // First, register CEu Materials
         managerInternal.unfreezeRegistries();
-        MaterialEvent materialEvent = new MaterialEvent();
         GTCEu.LOGGER.info("Registering GTCEu Materials");
         GTMaterials.init();
         MaterialRegistryManager.getInstance()
@@ -135,8 +140,8 @@ public class CommonProxy {
 
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
+        MaterialEvent materialEvent = new MaterialEvent();
         ModLoader.get().postEvent(materialEvent);
-        AddonFinder.getAddons().forEach(IGTAddon::registerMaterials);
         if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
@@ -152,6 +157,12 @@ public class CommonProxy {
         // Freeze Material Registry before processing Items, Blocks, and Fluids
         managerInternal.freezeRegistries();
         /* End Material Registration */
+    }
+
+    @SubscribeEvent
+    public void register(RegisterEvent event) {
+        if (event.getRegistryKey().equals(BuiltInRegistries.LOOT_FUNCTION_TYPE.key()))
+            ChestGenHooks.RandomWeightLootFunction.init();
     }
 
     @SubscribeEvent
@@ -189,9 +200,7 @@ public class CommonProxy {
         }
 
         public static void materialModification() {
-            if (GTCEuStartupEvents.MATERIAL_MODIFICATION.hasListeners()) {
-                GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
-            }
+            GTCEuStartupEvents.MATERIAL_MODIFICATION.post(new MaterialModificationEventJS());
         }
     }
 }

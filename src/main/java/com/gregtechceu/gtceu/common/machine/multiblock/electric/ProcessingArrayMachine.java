@@ -31,6 +31,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
+import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
@@ -41,6 +42,7 @@ import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -163,8 +165,20 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     }
 
     @Override
+    public int getOverclockTier() {
+        MachineDefinition machineDefinition = getMachineDefinition();
+        int machineTier = machineDefinition == null ? getDefinition().getTier() : Math.min(getDefinition().getTier(), machineDefinition.getTier());
+        return Math.min(machineTier, GTUtil.getTierByVoltage(getMaxVoltage()));
+    }
+
+    @Override
+    public int getMinOverclockTier() {
+        return getOverclockTier();
+    }
+
+    @Override
     public int getMaxOverclockTier() {
-        return Math.min(getDefinition().getTier(), GTUtil.getTierByVoltage(getMaxVoltage()));
+        return getOverclockTier();
     }
 
     @Override
@@ -179,11 +193,19 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
                 return null;
             }
 
-            var limit = processingArray.machineStorage.storage.getStackInSlot(0).getCount();
+            var parallelLimit = processingArray.machineStorage.storage.getStackInSlot(0).getCount();
+
             // apply parallel first
-            recipe = GTRecipeModifiers.accurateParallel(machine, recipe, Math.min(limit, getMachineLimit(machine.getDefinition().getTier())), false).getA();
-            // apply overclock later
-            recipe = RecipeHelper.applyOverclock(OverclockingLogic.PERFECT_OVERCLOCK, recipe, processingArray.getOverclockVoltage());
+            var parallel = Objects.requireNonNull(GTRecipeModifiers.accurateParallel(
+                machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())), false
+            ));
+            int parallelCount = parallel.getB();
+            recipe = parallel.getA();
+
+            // apply overclock afterwards
+            long maxVoltage = processingArray.getOverclockVoltage() * parallelCount;
+            recipe = RecipeHelper.applyOverclock(OverclockingLogic.NON_PERFECT_OVERCLOCK, recipe, maxVoltage);
+
             return recipe;
         }
         return null;

@@ -33,7 +33,7 @@ public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTO
 
     public GTOreProcessingDisplayCategory() {
         this.icon = IGui2Renderer.toDrawable(new ItemStackTexture(Blocks.IRON_ORE.asItem()));
-        this.size = new Size(186,174);
+        this.size = new Size(176,166);
     }
 
     @Override

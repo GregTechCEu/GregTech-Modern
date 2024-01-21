@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.BlockBehaviourAccessor;
+import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -163,30 +164,33 @@ public class MixinHelpers {
         });
     }
 
+    private static final VanillaBlockLoot BLOCK_LOOT = new VanillaBlockLoot();
+
     public static void generateGTDynamicLoot(Map<ResourceLocation, LootTable> lootTables) {
         GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> {
             if (TagPrefix.ORES.containsKey(prefix)) {
+                final TagPrefix.OreType type = TagPrefix.ORES.get(prefix);
                 map.forEach((material, blockEntry) -> {
                     ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
                     Block block = blockEntry.get();
 
-                    if ((prefix != TagPrefix.oreNetherrack && prefix != TagPrefix.oreEndstone) && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
-                        TagPrefix orePrefix = TagPrefix.ORES.get(prefix).isNether() ? TagPrefix.ORES.get(prefix).stoneType().get().is(CustomTags.ENDSTONE_ORE_REPLACEABLES) ? TagPrefix.oreEndstone : TagPrefix.oreNetherrack : TagPrefix.ore;
+                    if (!type.shouldDropAsItem() && !ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes) {
+                        TagPrefix orePrefix = type.isDoubleDrops() ? TagPrefix.oreNetherrack : TagPrefix.ore;
                         block = ChemicalHelper.getBlock(orePrefix, material);
                     }
 
                     ItemStack dropItem = ChemicalHelper.get(TagPrefix.rawOre, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.gem, material);
                     if (dropItem.isEmpty()) dropItem = ChemicalHelper.get(TagPrefix.dust, material);
-                    int oreMultiplier = TagPrefix.ORES.get(prefix).isNether() ? 2 : 1;
+                    int oreMultiplier = type.isDoubleDrops() ? 2 : 1;
 
                     LootTable.Builder builder = BlockLootSubProvider.createSilkTouchDispatchTable(block,
-                        new VanillaBlockLoot().applyExplosionDecay(block,
+                        BLOCK_LOOT.applyExplosionDecay(block,
                             LootItem.lootTableItem(dropItem.getItem())
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))));
                     //.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for balance reasons. (for now, until we can think of a better solution.)
 
-                    Supplier<Material> outputDustMat = TagPrefix.ORES.get(prefix).material();
+                    Supplier<Material> outputDustMat = type.material();
                     if (outputDustMat != null) {
                         builder.withPool(LootPool.lootPool().add(
                             LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.dust, outputDustMat.get()).getItem())
@@ -214,7 +218,7 @@ public class MixinHelpers {
         });
         GTBlocks.SURFACE_ROCK_BLOCKS.forEach((material, blockEntry) -> {
             ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
-            LootTable.Builder builder = new VanillaBlockLoot().createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(), UniformGenerator.between(3, 5))
+            LootTable.Builder builder = BLOCK_LOOT.createSingleItemTable(ChemicalHelper.get(TagPrefix.dustTiny, material).getItem(), UniformGenerator.between(3, 5))
                 .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE));
             lootTables.put(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());
             ((BlockBehaviourAccessor) blockEntry.get()).setDrops(lootTableId);
@@ -224,7 +228,7 @@ public class MixinHelpers {
             ResourceLocation id = machine.getId();
             ResourceLocation lootTableId = new ResourceLocation(id.getNamespace(), "blocks/" + id.getPath());
             ((BlockBehaviourAccessor)block).setDrops(lootTableId);
-            lootTables.put(lootTableId, new VanillaBlockLoot().createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
+            lootTables.put(lootTableId, BLOCK_LOOT.createSingleItemTable(block).setParamSet(LootContextParamSets.BLOCK).build());
         });
     }
 
@@ -232,7 +236,7 @@ public class MixinHelpers {
         map.forEach((material, blockEntry) -> {
             ResourceLocation lootTableId = new ResourceLocation(blockEntry.getId().getNamespace(), "blocks/" + blockEntry.getId().getPath());
             ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
-            lootTables.put(lootTableId, new VanillaBlockLoot().createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());
+            lootTables.put(lootTableId, BLOCK_LOOT.createSingleItemTable(blockEntry.get()).setParamSet(LootContextParamSets.BLOCK).build());
         });
     }
 
@@ -256,7 +260,9 @@ public class MixinHelpers {
         long startTime = System.currentTimeMillis();
         ChemicalHelper.reinitializeUnification();
         GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-        GTCEu.LOGGER.info("GregTech Recipe loading took {}ms", System.currentTimeMillis() - startTime);
+        // Initialize dungeon loot additions
+        DungeonLootLoader.init();
+        GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
 
         // Load the data
         packResources.add(new GTDynamicDataPack("gtceu:dynamic_data", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));

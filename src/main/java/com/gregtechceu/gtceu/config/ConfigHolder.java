@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -16,7 +17,9 @@ public class ConfigHolder {
     public static ConfigHolder INSTANCE;
 
     public static void init() {
-        INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        if (INSTANCE == null) {
+            INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        }
     }
 
     @Configurable
@@ -39,8 +42,8 @@ public class ConfigHolder {
     public static class RecipeConfigs {
         @Configurable
         @Configurable.Comment({"Whether to generate Flawed and Chipped Gems for materials and recipes involving them.",
-                "Useful for mods like TerraFirmaCraft.", "Default: true"})
-        public boolean generateLowQualityGems = true; // default true
+                "Useful for mods like TerraFirmaCraft.", "Default: false"})
+        public boolean generateLowQualityGems = false; // default false
         @Configurable
         @Configurable.Comment({"Whether to remove Block/Ingot compression and decompression in the Crafting Table.", "Default: true"})
         public boolean disableManualCompression = true; // default true
@@ -48,7 +51,7 @@ public class ConfigHolder {
         @Configurable.Comment({"Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.", "Default: false"})
         public boolean harderRods = false; // default false
         @Configurable
-        @Configurable.Comment({"Whether to make crafting recipes for Bricks, Firebricks, and Coke Bricks harder.", "Default: false"})
+        @Configurable.Comment({"Whether to make crafting recipes for Bricks, Firebricks, Nether Bricks, and Coke Bricks harder.", "Default: false"})
         public boolean harderBrickRecipes = false; // default false
         @Configurable
         @Configurable.Comment({"Whether to nerf Wood crafting to 2 Planks from 1 Log, and 2 Sticks from 2 Planks.", "Default: false"})
@@ -161,6 +164,13 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Should Sand-like ores fall?", "This includes gravel, sand, and red sand ores.", "Default: false (no falling ores)"})
         public boolean sandOresFall = false;
+
+        @Configurable
+        @Configurable.Comment({ "Whether to increase number of rolls for dungeon chests. Increases dungeon loot drastically.", "Default: true", "WARNING: Currently unimplemented." })
+        public boolean increaseDungeonLoot = true;
+        @Configurable
+        @Configurable.Comment({ "Allow GregTech to add additional GregTech Items as loot in various structures.", "Default: true" })
+        public boolean addLoot = true;
 
         @Configurable
         public OreVeinConfigs oreVeins = new OreVeinConfigs();
@@ -284,7 +294,7 @@ public class ConfigHolder {
 
         /**
          * <strong>Addons mods should not reference this config directly.</strong>
-         * Use {@link GTCEu#isHighTier()} instead.
+         * Use {@link GTCEuAPI#isHighTier()} instead.
          */
         @Configurable
         @Configurable.Comment({"If High Tier (>UV-tier) GT content should be registered.",
@@ -328,6 +338,9 @@ public class ConfigHolder {
     }
 
     public static class DeveloperConfigs {
+        @Configurable
+        @Configurable.Comment({"Debug general events? (will print placed veins to server's debug.log)", "Default: false"})
+        public boolean debug = false;
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen = false;

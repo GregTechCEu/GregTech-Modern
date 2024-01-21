@@ -2,19 +2,18 @@ package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.integration.GTOreProcessingWidget;
+import com.gregtechceu.gtceu.integration.GTOreByProductWidget;
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
-import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 
-public class GTEmiOreProcessing extends ModularEmiRecipe<WidgetGroup> {
+public class GTEmiOreProcessing extends ModularEmiRecipe<GTOreByProductWidget> {
     final Material material;
 
     public GTEmiOreProcessing(Material material) {
-        super(() -> new GTOreProcessingWidget(material));
+        super(() -> new GTOreByProductWidget(material));
         this.material = material;
     }
 
@@ -25,7 +24,7 @@ public class GTEmiOreProcessing extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return GTCEu.id(material.getName());
+        return material.getResourceLocation();
     }
 
     @Override

@@ -18,6 +18,8 @@ public class CustomTags {
     public static final TagKey<Item> GLASS_BLOCKS = TagUtil.createItemTag("glass");
     public static final TagKey<Item> GLASS_PANES = TagUtil.createItemTag("glass_panes");
     public static final TagKey<Item> SEEDS = TagUtil.createItemTag("seeds");
+    public static final TagKey<Item> CONCRETE_ITEM = TagUtil.createItemTag("concrete");
+    public static final TagKey<Item> CONCRETE_POWDER_ITEM = TagUtil.createItemTag("concrete_powder");
 
     // Added Gregtech tags
     public static final TagKey<Item> TRANSISTORS = TagUtil.createModItemTag("transistors");
@@ -75,8 +77,8 @@ public class CustomTags {
     };
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
-    public static final TagKey<Block> CONCRETE = TagUtil.createBlockTag("concrete");
-    public static final TagKey<Block> CONCRETE_POWDER = TagUtil.createBlockTag("concrete_powder");
+    public static final TagKey<Block> CONCRETE_BLOCK = TagUtil.createBlockTag("concrete");
+    public static final TagKey<Block> CONCRETE_POWDER_BLOCK = TagUtil.createBlockTag("concrete_powder");
     public static final TagKey<Block> GLASS_BLOCKS_BLOCK = TagUtil.createBlockTag("glass");
     public static final TagKey<Block> GLASS_PANES_BLOCK = TagUtil.createBlockTag("glass_panes");
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));

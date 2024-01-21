@@ -2,13 +2,22 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import java.util.function.Consumer;
 
@@ -521,68 +530,67 @@ public class VanillaStandardRecipes {
      * + Adds dying and cleaning recipes for vanilla blocks
      */
     private static void dyingCleaningRecipes(Consumer<FinishedRecipe> provider) {
-        /*
-        for (int i = 0; i < 16; i++) {
-            MIXER_RECIPES.recipeBuilder().duration(200).EUt(VA[ULV])
-                    .inputItems(new ItemStack(Blocks.SAND, 4))
-                    .inputItems(new ItemStack(Blocks.GRAVEL, 4))
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L))
-                    .outputItems(new ItemStack(Blocks.CONCRETE_POWDER, 8, i))
+        for (DyeColor color : DyeColor.values()) {
+            String dyeName = color.getName();
+            MIXER_RECIPES.recipeBuilder(dyeName + "_concrete_powder").duration(200).EUt(VA[ULV])
+                    .inputItems(Tags.Items.SAND, 4)
+                    .inputItems(Tags.Items.GRAVEL, 4)
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete_powder")), 8))
                     .save(provider);
 
-            CHEMICAL_BATH_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
-                    .inputItems(new ItemStack(Blocks.CONCRETE_POWDER, 1, i))
+            CHEMICAL_BATH_RECIPES.recipeBuilder(dyeName + "_concrete").duration(20).EUt(VA[ULV])
+                    .inputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete_powder"))))
                     .inputFluids(Water.getFluid(1000))
-                    .outputItems(new ItemStack(Blocks.CONCRETE, 1, i))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete"))))
                     .save(provider);
 
-            if(i != 0) {
-                CHEMICAL_BATH_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
-                        .inputItems(new ItemStack(Blocks.CONCRETE))
-                        .inputFluids(CHEMICAL_DYES[i].getFluid(L / 8))
-                        .outputItems(new ItemStack(Blocks.CONCRETE, 1, i))
+            if(color != DyeColor.WHITE) {
+                CHEMICAL_BATH_RECIPES.recipeBuilder("dye_concrete_to_" + dyeName).duration(20).EUt(VA[ULV])
+                        .inputItems(CustomTags.CONCRETE_ITEM)
+                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                        .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete"))))
                         .save(provider);
             }
 
-            CHEMICAL_BATH_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
-                    .inputItems(new ItemStack(Blocks.HARDENED_CLAY))
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L / 8))
-                    .outputItems(new ItemStack(Blocks.STAINED_HARDENED_CLAY, 1, i))
+            CHEMICAL_BATH_RECIPES.recipeBuilder("dye_terracotta_to_" + dyeName).duration(20).EUt(VA[ULV])
+                    .inputItems(new ItemStack(Blocks.TERRACOTTA))
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_terracotta"))))
                     .save(provider);
 
-            CHEMICAL_BATH_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
+            CHEMICAL_BATH_RECIPES.recipeBuilder("dye_glass_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.GLASS))
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L / 8))
-                    .outputItems(new ItemStack(Blocks.STAINED_GLASS, 1, i))
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass"))))
                     .save(provider);
 
-            CHEMICAL_BATH_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
+            CHEMICAL_BATH_RECIPES.recipeBuilder("dye_glass_pane_to_" + dyeName).duration(20).EUt(VA[ULV])
                     .inputItems(new ItemStack(Blocks.GLASS_PANE))
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L / 8))
-                    .outputItems(new ItemStack(Blocks.STAINED_GLASS_PANE, 1, i))
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L / 8))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_stained_glass_pane"))))
                     .save(provider);
 
-            if(i != 0) {
-                CHEMICAL_BATH_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
-                        .inputItems(new ItemStack(Blocks.WOOL))
-                        .inputFluids(CHEMICAL_DYES[i].getFluid(L))
-                        .outputItems(new ItemStack(Blocks.WOOL, 1, i))
+            if(color != DyeColor.WHITE) {
+                CHEMICAL_BATH_RECIPES.recipeBuilder("dye_wool_to_" + dyeName).duration(20).EUt(VA[ULV])
+                        .inputItems(new ItemStack(Blocks.WHITE_WOOL))
+                        .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                        .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_wool"))))
                         .save(provider);
             }
 
-            CUTTER_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
-                    .inputItems(new ItemStack(Blocks.WOOL, 2, i))
-                    .outputItems(new ItemStack(Blocks.CARPET, 3, i))
+            CUTTER_RECIPES.recipeBuilder("cut_" + dyeName + "_wool_to_carpet").duration(20).EUt(VA[ULV])
+                    .inputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_wool")), 1))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_carpet")), 2))
                     .save(provider);
 
-            ASSEMBLER_RECIPES.recipeBuilder().duration(20).EUt(VA[ULV])
+            ASSEMBLER_RECIPES.recipeBuilder(dyeName + "_banner").duration(20).EUt(VA[ULV])
                     .circuitMeta(6)
                     .inputItems(new ItemStack(Items.STICK))
-                    .inputItems(new ItemStack(Blocks.WOOL, 6, i))
-                    .outputItems(new ItemStack(Items.BANNER, 1, 16 - 1 - i))
+                    .inputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_wool")), 6))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_banner"))))
                     .save(provider);
         }
-         */
 
         // todo new tags to avoid white -> white recipe?
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_wool")
@@ -597,29 +605,29 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.WHITE_CARPET))
                 .duration(400).EUt(2).save(provider);
 
-        //CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_terracotta")
-        //        .inputItems(Blocks.STAINED_HARDENED_CLAY, 1, true)
-        //        .inputFluids(Chlorine.getFluid(50))
-        //        .outputItems(Blocks.HARDENED_CLAY)
-        //        .duration(400).EUt(2).save(provider);
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_terracotta")
+                .inputItems(ItemTags.TERRACOTTA)
+                .inputFluids(Chlorine.getFluid(50))
+                .outputItems(Items.TERRACOTTA)
+                .duration(400).EUt(2).save(provider);
 
-        //CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_stained_glass")
-        //        .inputItems(Blocks.STAINED_GLASS, 1, true)
-        //        .inputFluids(Chlorine.getFluid(50))
-        //        .outputItems(Blocks.GLASS)
-        //        .duration(400).EUt(2).save(provider);
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_stained_glass")
+                .inputItems(Tags.Items.STAINED_GLASS)
+                .inputFluids(Chlorine.getFluid(50))
+                .outputItems(Items.GLASS)
+                .duration(400).EUt(2).save(provider);
 
-        //CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_stained_glass_pane")
-        //        .inputItems(Blocks.STAINED_GLASS_PANE, 1, true)
-        //        .inputFluids(Chlorine.getFluid(20))
-        //        .outputItems(Blocks.GLASS_PANE)
-        //        .duration(400).EUt(2).save(provider);
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_stained_glass_pane")
+                .inputItems(Tags.Items.STAINED_GLASS_PANES)
+                .inputFluids(Chlorine.getFluid(20))
+                .outputItems(Items.GLASS_PANE)
+                .duration(400).EUt(2).save(provider);
 
-        //CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_concrete")
-        //        .inputItems(Blocks.CONCRETE, 1, true)
-        //        .inputFluids(Chlorine.getFluid(20))
-        //        .outputItems(Blocks.CONCRETE)
-        //        .duration(400).EUt(2).save(provider);
+        CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_concrete")
+                .inputItems(CustomTags.CONCRETE_ITEM)
+                .inputFluids(Chlorine.getFluid(20))
+                .outputItems(Items.WHITE_CONCRETE)
+                .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("sticky_piston_to_piston")
                 .inputItems(new ItemStack(Blocks.STICKY_PISTON))
@@ -767,11 +775,13 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Blocks.IRON_TRAPDOOR))
                 .duration(100).EUt(16).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("iron_door")
-                .inputItems(plate, Iron, 6)
+        if (!ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) {
+            ASSEMBLER_RECIPES.recipeBuilder("iron_door")
+                .inputItems(TagPrefix.plate, GTMaterials.Iron, 6)
                 .circuitMeta(6)
-                .outputItems(new ItemStack(Items.IRON_DOOR))
+                .outputItems(new ItemStack(Items.IRON_DOOR, 3))
                 .duration(100).EUt(16).save(provider);
+        }
     }
 
     /**
@@ -873,8 +883,6 @@ public class VanillaStandardRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("nether_brick_fence").duration(100).EUt(4).circuitMeta(3).inputItems(new ItemStack(Blocks.NETHER_BRICKS)).outputItems(new ItemStack(Blocks.NETHER_BRICK_FENCE)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("ender_chest").duration(100).EUt(4).inputItems(new ItemStack(Blocks.OBSIDIAN, 8)).inputItems(new ItemStack(Items.ENDER_EYE)).outputItems(new ItemStack(Blocks.ENDER_CHEST)).save(provider);
-
         ASSEMBLER_RECIPES.recipeBuilder("end_rod").duration(100).EUt(4).inputItems(new ItemStack(Items.POPPED_CHORUS_FRUIT)).inputItems(new ItemStack(Items.BLAZE_ROD)).outputItems(new ItemStack(Blocks.END_ROD, 4)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV]).inputItems(CustomTags.TAG_WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2)).outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
@@ -882,12 +890,19 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER)).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
 
-        // todo signs
-        //ASSEMBLER_RECIPES.recipeBuilder().duration(100).EUt(4).inputItems(CommonTags.TAG_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(CommonTags.TAG_SIGNS, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("oak_sign").duration(100).EUt(4).inputItems(Items.OAK_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.OAK_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("spruce_sign").duration(100).EUt(4).inputItems(Items.SPRUCE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.SPRUCE_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("birch_sign").duration(100).EUt(4).inputItems(Items.BIRCH_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.BIRCH_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("jungle_sign").duration(100).EUt(4).inputItems(Items.JUNGLE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.JUNGLE_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("acacia_sign").duration(100).EUt(4).inputItems(Items.ACACIA_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.ACACIA_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cherry_sign").duration(100).EUt(4).inputItems(Items.CHERRY_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.CHERRY_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_sign").duration(100).EUt(4).inputItems(Items.DARK_OAK_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.DARK_OAK_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("mangrove_sign").duration(100).EUt(4).inputItems(Items.MANGROVE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.MANGROVE_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bamboo_sign").duration(100).EUt(4).inputItems(Items.BAMBOO_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.BAMBOO_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("crimson_sign").duration(100).EUt(4).inputItems(Items.CRIMSON_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.CRIMSON_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("warped_sign").duration(100).EUt(4).inputItems(Items.WARPED_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.WARPED_SIGN, 3).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("flower_pot").duration(10).EUt(2).inputItems(new ItemStack(Items.BRICK, 3)).outputItems(new ItemStack(Items.FLOWER_POT)).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("armor_stand").duration(30).EUt(VA[ULV]).inputItems(new ItemStack(Blocks.STONE_SLAB)).inputItems(new ItemStack(Items.STICK, 6)).outputItems(new ItemStack(Items.ARMOR_STAND)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("end_crystal").duration(30).EUt(16).inputItems(new ItemStack(Items.GHAST_TEAR)).inputItems(new ItemStack(Items.ENDER_EYE)).outputItems(new ItemStack(Items.END_CRYSTAL)).inputFluids(Glass.getFluid(L * 7)).save(provider);
 
@@ -1005,6 +1020,9 @@ public class VanillaStandardRecipes {
                 .inputItems(Items.MUD)
                 .outputItems(Items.CLAY)
                 .duration(40).EUt(VA[LV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("ender_chest").duration(100).EUt(4).inputItems(new ItemStack(Blocks.OBSIDIAN, 8)).inputItems(new ItemStack(Items.ENDER_EYE)).outputItems(new ItemStack(Blocks.ENDER_CHEST)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("armor_stand").duration(30).EUt(VA[ULV]).inputItems(new ItemStack(Blocks.SMOOTH_STONE_SLAB, 1)).inputItems(new ItemStack(Items.STICK, 6)).outputItems(new ItemStack(Items.ARMOR_STAND)).save(provider);
     }
 
     /**
