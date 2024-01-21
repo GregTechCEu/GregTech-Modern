@@ -24,3 +24,4 @@ Version: 1.1.1
 - fixed config initializing twice in certain situations
 - removed extra outputs from macerating raw ores (the multiplier is already applied while mining)
 - added missing hard recipes when their respective config options are enabled
+- added missing muffler hatch to the cracker's multiblock preview
