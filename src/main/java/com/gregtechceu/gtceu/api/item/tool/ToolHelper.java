@@ -277,8 +277,9 @@ public class ToolHelper {
         int remainingUses = maximumDurability - currentDurability;
         Set<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
+            int blocksBroken = 0;
             for (BlockPos pos : harvestableBlocks) {
-                if (!breakBlockRoutine(player, stack, pos)) {
+                if (!breakBlockRoutine(player, stack, pos, blocksBroken++ == 0)) {
                     return true;
                 }
 
@@ -435,7 +436,7 @@ public class ToolHelper {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
+    public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
         // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
         if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
             return false;
@@ -454,10 +455,10 @@ public class ToolHelper {
             } else if (player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer())) {
                 return false;
             } else if (player.isCreative()) {
-                return removeBlockRoutine(state, world, player, pos);
+                return removeBlockRoutine(state, world, player, pos, playSound);
             } else {
                 world.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-                boolean successful = removeBlockRoutine(state, world, player, pos);
+                boolean successful = removeBlockRoutine(state, world, player, pos, playSound);
 
                 ItemStack copiedTool = tool.copy();
                 boolean canHarvest = player.hasCorrectToolForDrops(state);
@@ -499,11 +500,15 @@ public class ToolHelper {
         return itemstack.onBlockStartBreak(pos, player);
     }
 
-    public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos) {
+    public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos, boolean playSound) {
         state = state == null ? world.getBlockState(pos) : state;
         state.getBlock().playerWillDestroy(world, pos, state, player);
 
-        boolean successful = world.destroyBlock(pos, false);
+        boolean successful = world.removeBlock(pos, false);
+
+        if (playSound)
+            world.levelEvent(2001, pos, Block.getId(state));
+
         if (successful) {
             state.getBlock().destroy(world, pos, state);
         }
