@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.common.blockentity;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeData;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FacingPos;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
@@ -30,7 +31,7 @@ import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeData> {
+public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeProperties> {
     protected WeakReference<ItemPipeNet> currentItemPipeNet = new WeakReference<>(null);
 
     @Getter
@@ -79,7 +80,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeD
         if (net == null) {
             return;
         }
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : GTUtil.DIRECTIONS) {
             handlers.put(facing, new ItemNetHandler(net, this, facing));
         }
         defaultHandler = new ItemNetHandler(net, this, null);

@@ -166,7 +166,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     /**
      * @return If the pipe this is placed on and a pipe on the other side should be able to connect
      */
-    public boolean blockPipePassThrough() {
+    public boolean canPipePassThrough() {
         return true;
     }
 

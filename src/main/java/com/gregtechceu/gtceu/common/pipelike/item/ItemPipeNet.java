@@ -1,17 +1,12 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
-import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
+import com.gregtechceu.gtceu.api.pipenet.Node;
+import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.utils.FacingPos;
-import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import it.unimi.dsi.fastutil.longs.Long2IntMap;
-import it.unimi.dsi.fastutil.longs.Long2IntOpenHashMap;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,11 +18,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import java.util.*;
 import java.util.function.Predicate;
 
-public class ItemPipeNet extends PipeNet<ItemPipeData> {
+public class ItemPipeNet extends PipeNet<ItemPipeProperties> {
 
     private final Map<BlockPos, List<Inventory>> NET_DATA = new HashMap<>();
 
-    public ItemPipeNet(LevelPipeNet<ItemPipeData, ? extends PipeNet<ItemPipeData>> world) {
+    public ItemPipeNet(LevelPipeNet<ItemPipeProperties, ? extends PipeNet<ItemPipeProperties>> world) {
         super(world);
     }
 
@@ -56,22 +51,21 @@ public class ItemPipeNet extends PipeNet<ItemPipeData> {
     }
 
     @Override
-    protected void transferNodeData(Map<BlockPos, Node<ItemPipeData>> transferredNodes, PipeNet<ItemPipeData> parentNet) {
+    protected void transferNodeData(Map<BlockPos, Node<ItemPipeProperties>> transferredNodes, PipeNet<ItemPipeProperties> parentNet) {
         super.transferNodeData(transferredNodes, parentNet);
         NET_DATA.clear();
         ((ItemPipeNet) parentNet).NET_DATA.clear();
     }
 
     @Override
-    protected void writeNodeData(ItemPipeData nodeData, CompoundTag tagCompound) {
-        tagCompound.putInt("Resistance", nodeData.properties.getPriority());
-        tagCompound.putFloat("Rate", nodeData.properties.getTransferRate());
-        tagCompound.putByte("Connections", nodeData.connections);
+    protected void writeNodeData(ItemPipeProperties nodeData, CompoundTag tagCompound) {
+        tagCompound.putInt("Resistance", nodeData.getPriority());
+        tagCompound.putFloat("Rate", nodeData.getTransferRate());
     }
 
     @Override
-    protected ItemPipeData readNodeData(CompoundTag tagCompound) {
-        return new ItemPipeData(new ItemPipeProperties(tagCompound.getInt("Range"), tagCompound.getFloat("Rate")), tagCompound.getByte("Connections"));
+    protected ItemPipeProperties readNodeData(CompoundTag tagCompound) {
+        return new ItemPipeProperties(tagCompound.getInt("Range"), tagCompound.getFloat("Rate"));
     }
 
     //////////////////////////////////////

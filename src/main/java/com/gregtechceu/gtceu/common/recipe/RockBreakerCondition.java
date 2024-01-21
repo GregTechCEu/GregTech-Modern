@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.recipe;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -35,7 +36,7 @@ public class RockBreakerCondition extends RecipeCondition {
         boolean hasFluidA = false, hasFluidB = false;
         var level = recipeLogic.machine.self().getLevel();
         var pos = recipeLogic.machine.self().getPos();
-        for (Direction side : Direction.values()) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             if (side.getAxis() != Direction.Axis.Y) {
                 var fluid = level.getFluidState(pos.relative(side));
                 if (fluid.getType() == fluidA) hasFluidA = true;

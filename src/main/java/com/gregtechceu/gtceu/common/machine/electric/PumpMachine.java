@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -195,7 +196,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
 
         if (shouldCheckNeighbours) {
             int maxPumpRange = getMaxPumpRange();
-            for (var facing : Direction.values()) {
+            for (var facing : GTUtil.DIRECTIONS) {
                 BlockPos offsetPos = checkPos.relative(facing);
                 if (offsetPos.distSqr(pumpHeadPos) > maxPumpRange * maxPumpRange)
                     continue; //do not add blocks outside bounds

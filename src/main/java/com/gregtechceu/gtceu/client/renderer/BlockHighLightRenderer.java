@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
@@ -56,7 +57,7 @@ public class BlockHighLightRenderer {
             ItemStack held = player.getMainHandItem();
             BlockPos blockPos = target.getBlockPos();
 
-            Set<GTToolType> toolType = held.getItem() instanceof IGTTool toolItem ? toolItem.getToolClasses(held) : null;
+            Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight

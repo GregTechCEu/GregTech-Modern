@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -51,7 +52,7 @@ public class LongDistancePipeBlock extends Block {
     public List<LongDistanceNetwork> findNetworks(Level level, BlockPos pos) {
         List<LongDistanceNetwork> networks = new ArrayList<>();
         BlockPos.MutableBlockPos offsetPos = new BlockPos.MutableBlockPos();
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : GTUtil.DIRECTIONS) {
             offsetPos.set(pos).move(facing);
             LongDistanceNetwork network = LongDistanceNetwork.get(level, offsetPos);
             if (network != null && pipeType == network.getPipeType()) {

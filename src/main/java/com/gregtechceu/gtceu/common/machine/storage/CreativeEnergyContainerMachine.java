@@ -81,7 +81,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
         ampsReceived = 0;
         if (!active || !source || voltage <= 0 || amps <= 0) return;
         int ampsUsed = 0;
-        for (var facing : Direction.values()) {
+        for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
             IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing), opposite);
             // Try to get laser capability
