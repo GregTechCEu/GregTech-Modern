@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
@@ -129,7 +130,9 @@ public final class ChestGenHooks {
         public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(new Serializer()));
 
         private final ItemStack stack;
+        @Getter
         private final int minAmount;
+        @Getter
         private final int maxAmount;
 
         public RandomWeightLootFunction(@NotNull ItemStack stack, int minAmount, int maxAmount) {
@@ -140,12 +143,8 @@ public final class ChestGenHooks {
             this.maxAmount = maxAmount;
         }
 
-        public int getMinAmount() {
-            return minAmount;
-        }
-
-        public int getMaxAmount() {
-            return maxAmount;
+        public static void init() {
+            // Do nothing here. This just ensures that TYPE is being set immediately when called.
         }
 
         @Override
