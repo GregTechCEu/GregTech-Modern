@@ -371,8 +371,8 @@ public class SecondDegreeMaterials {
                 .color(0xc7c7c7).secondaryColor(0x212121).iconSet(FLINT)
                 .flags(NO_SMASHING, MORTAR_GRINDABLE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 1)
-                .toolStats(ToolProperty.Builder.of(0.0F, 1.0F, 64, 1)
-                        .types(GTToolType.MORTAR, GTToolType.KNIFE)
+                .toolStats(ToolProperty.Builder.of(1.5F, 1.0F, 64, 2)
+                        .types(GTToolType.MORTAR, GTToolType.KNIFE, GTToolType.AXE, GTToolType.PICKAXE, GTToolType.HOE, GTToolType.SWORD, GTToolType.SHOVEL)
                         .enchantability(5).ignoreCraftingTools()
                         .enchantment(Enchantments.FIRE_ASPECT, 2).build())
                 .buildAndRegister();
