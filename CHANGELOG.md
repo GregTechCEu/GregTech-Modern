@@ -12,6 +12,7 @@ Version: 1.1.1
 - rebalanced some early-game fluid pipes
 - improved Russian and Chinese translations
 - added chest loot
+- added flint tools
 
 ### FIXES:
 
