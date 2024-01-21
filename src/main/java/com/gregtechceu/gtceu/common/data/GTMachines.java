@@ -1118,7 +1118,7 @@ public class GTMachines {
                 var builder = MultiblockShapeInfo.builder()
                     .aisle("FCICD", "HCSCH", "HCMCH")
                     .aisle("ECHCH", "H###H", "HCHCH")
-                    .aisle("ECHCH", "HCHCH", "HCHCH")
+                    .aisle("ECHCH", "HCXCH", "HCHCH")
                     .where('S', definition, Direction.NORTH)
                     .where('H', CASING_STAINLESS_CLEAN.getDefaultState()) 
                     .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.WEST)
@@ -1126,6 +1126,7 @@ public class GTMachines {
                     .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
                     .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
                     .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('X', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
                     .where('#', Blocks.AIR.defaultBlockState());
                 ALL_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
