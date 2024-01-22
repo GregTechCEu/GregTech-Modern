@@ -143,6 +143,7 @@ public class LangHandler {
         provider.add("gtceu.tool.class.plunger", "Plunger");
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
+        provider.add("gtceu.tool.class.brick_form", "Brick Form");
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
@@ -212,6 +213,7 @@ public class LangHandler {
         replace(provider, "item.gtceu.tool.plunger", "%s Plunger");
         provider.add("item.gtceu.tool.plunger.tooltip", "§8Removes Fluids from Machines");
         replace(provider, "item.gtceu.tool.shears", "%s Shears");
+        replace(provider, "item.gtceu.tool.brick_form", "%s Brick Form");
         provider.add("item.gtceu.tool.tooltip.crafting_uses", "%s §aCrafting Uses");
         provider.add("item.gtceu.tool.tooltip.general_uses", "%s §bDurability");
         provider.add("item.gtceu.tool.tooltip.attack_damage", "%s §cAttack Damage");

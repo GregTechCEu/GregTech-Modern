@@ -434,7 +434,7 @@ public class UnknownCompositionMaterials {
                 .wood()
                 .color(0xc29f6d).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
+                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.BRICK_FORM).build())
                 .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR, GENERATE_FRAME)
                 .buildAndRegister();
 

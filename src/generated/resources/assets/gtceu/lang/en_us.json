@@ -3200,6 +3200,7 @@
   "gtceu.tool.class.sword": "Sword",
   "gtceu.tool.class.wire_cutter": "Wire Cutter",
   "gtceu.tool.class.wrench": "Wrench",
+  "gtceu.tool.class.brick_form": "Brick Form",
   "gtceu.tool_action.crowbar": "§8Use Crowbar to remove Covers",
   "gtceu.tool_action.hammer": "§8Use Hard Hammer to muffle Sounds",
   "gtceu.tool_action.screwdriver.access_covers": "§8Use Screwdriver to access Covers",

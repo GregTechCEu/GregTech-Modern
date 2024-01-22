@@ -51,7 +51,7 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "plank_to_wooden_shape", WOODEN_FORM_EMPTY.asStack(), "   ", " X ", "s  ", 'X', ItemTags.PLANKS);
         VanillaRecipeHelper.addShapedRecipe(provider, "wooden_shape_brick", WOODEN_FORM_BRICK.asStack(), "k ", " X", 'X', WOODEN_FORM_EMPTY.asStack());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "compressed_coke_clay", COMPRESSED_COKE_CLAY.asStack(3), "XXX", "SYS", "SSS", 'Y', WOODEN_FORM_BRICK.asStack(), 'X', new ItemStack(Items.CLAY_BALL), 'S', ItemTags.SAND);
+        VanillaRecipeHelper.addShapedRecipe(provider, "compressed_coke_clay", COMPRESSED_COKE_CLAY.asStack(3), "XXX", "SbS", "SSS", 'X', new ItemStack(Items.CLAY_BALL), 'S', ItemTags.SAND);
         VanillaRecipeHelper.addShapelessRecipe(provider, "fireclay_dust", ChemicalHelper.get(dust, Fireclay, 2), new UnificationEntry(dust, Brick), new UnificationEntry(dust, Clay));
         VanillaRecipeHelper.addSmeltingRecipe(provider, "coke_oven_brick", COMPRESSED_COKE_CLAY.asStack(), COKE_OVEN_BRICK.asStack(), 0.3f);
         VanillaRecipeHelper.addSmeltingRecipe(provider, "fireclay_brick", COMPRESSED_FIRECLAY.asStack(), FIRECLAY_BRICK.asStack(), 0.3f);

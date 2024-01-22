@@ -94,7 +94,10 @@ public class RecipeAddition {
                     'G', new UnificationEntry(dust, Gypsum),
                     'C', new ItemStack(Concrete.getBucket()));
 
-            VanillaRecipeHelper.addShapelessRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(), WOODEN_FORM_BRICK.asStack(), new ItemStack(Items.CLAY_BALL));
+            VanillaRecipeHelper.addShapedRecipe(provider, "compressed_clay", COMPRESSED_CLAY.asStack(),
+                "Ab", 'A', new ItemStack(Items.CLAY_BALL));
+            VanillaRecipeHelper.addShapedRecipe(provider, "compressed_clay_8", COMPRESSED_CLAY.asStack(8),
+                "AAA", "AbA", "AAA", 'A', new ItemStack(Items.CLAY_BALL));
             VanillaRecipeHelper.addSmeltingRecipe(provider, "brick_from_compressed_clay", COMPRESSED_CLAY.asStack(), new ItemStack(Items.BRICK), 0.3f);
         } else {
             VanillaRecipeHelper.addShapedRecipe(provider, "casing_primitive_bricks", GTBlocks.CASING_PRIMITIVE_BRICKS.asStack(),

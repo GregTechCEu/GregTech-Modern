@@ -203,7 +203,7 @@ public class GTToolType {
     public static final GTToolType SHEARS = GTToolType.builder("shears")
             .toolTag(TagUtil.createItemTag("tools/shears", false))
             .harvestTag(TagUtil.createBlockTag("mineable/shears", false))
-            .toolStats(b -> b)
+            .toolStats(b -> b.cannotAttack())
             .build();
     public static final GTToolType DRILL_LV = GTToolType.builder("lv_drill")
         .idFormat("lv_%s_drill")
@@ -355,6 +355,12 @@ public class GTToolType {
         .sound(GTSoundEntries.CHAINSAW_TOOL)
         .electric(GTValues.IV)
         .toolClassNames(GTToolType.SCREWDRIVER)
+        .build();
+
+    public static final GTToolType BRICK_FORM = GTToolType.builder("brick_form")
+        .toolTag(TagUtil.createItemTag("tools/brick_form", false))
+        .toolStats(b -> b.cannotAttack())
+        .symbol('b')
         .build();
 
 
