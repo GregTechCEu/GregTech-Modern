@@ -118,7 +118,7 @@
   "page": "gtceu:generation/crimsite",
   "position": [
     -200,
-    150
+    200
   ],
   "pre_nodes": [
     "gtceu:generation/ore"

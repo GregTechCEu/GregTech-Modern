@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/limestone",
   "position": [
-    -250,
-    100
+    -200,
+    50
   ],
   "pre_nodes": [
     "gtceu:generation/ore"
