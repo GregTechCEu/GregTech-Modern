@@ -644,39 +644,6 @@ public class MachineRecipeLoader {
                 .inputItems(ring, Platinum, 4)
                 .outputItems(FLUID_CELL_LARGE_TUNGSTEN_STEEL)
                 .duration(200).EUt(VA[HV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_mv")
-                .inputItems(HULL[MV])
-                .inputItems(frameGt, Steel, 4)
-                .inputItems(CustomTags.MV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_MV, 4)
-                .inputItems(ELECTRIC_PUMP_MV, 4)
-                .inputItems(gear, VanadiumSteel, 4)
-                .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[MV])
-                .duration(400).EUt(VA[MV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_ev")
-                .inputItems(HULL[EV])
-                .inputItems(frameGt, Titanium, 4)
-                .inputItems(CustomTags.EV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_EV, 4)
-                .inputItems(ELECTRIC_PUMP_EV, 4)
-                .inputItems(gear, TungstenCarbide, 4)
-                .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[HV])
-                .duration(400).EUt(VA[EV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_luv")
-                .inputItems(HULL[LuV])
-                .inputItems(frameGt, TungstenSteel, 4)
-                .inputItems(CustomTags.LuV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_LuV, 4)
-                .inputItems(ELECTRIC_PUMP_LuV, 4)
-                .inputItems(gear, Osmiridium, 4)
-                .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[EV])
-                .duration(400).EUt(VA[LuV]).save(provider);
     }
 
     private static void registerBlastFurnaceRecipes(Consumer<FinishedRecipe> provider) {
