@@ -737,7 +737,6 @@ public class TagPrefix {
 
     public static TagPrefix oreTagPrefix(String name, TagKey<Block> miningToolTag) {
         return new TagPrefix(name)
-            .prefixTagPath("ores/%s/%s")
             .defaultTagPath("ores/%s")
             .prefixOnlyTagPath("ores_in_ground/%s")
             .unformattedTagPath("ores")
