@@ -308,7 +308,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
                 var coverable = pipeNode.getCoverContainer();
                 var held = player.getMainHandItem();
-                if (GTToolType.WIRE_CUTTER.itemTags.stream().anyMatch(held::is) || GTToolType.WRENCH.itemTags.stream().anyMatch(held::is) ||
+                Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
+                BlockEntity tile = pLevel.getBlockEntity(pPos);
+                if (tile instanceof PipeBlockEntity<?,?> pipeTile) {
+                    types = Set.of(pipeTile.getPipeTuneTool());
+                }
+
+                if (types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is)) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
                     return Shapes.block();

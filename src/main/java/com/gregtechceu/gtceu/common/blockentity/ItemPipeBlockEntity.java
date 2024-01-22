@@ -57,6 +57,11 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         return new ItemPipeBlockEntity(type, pos, blockState);
     }
 
+
+    public long getLevelTime() {
+        return hasLevel() ? getLevel().getGameTime() : 0L;
+    }
+
     public static void onBlockEntityRegister(BlockEntityType<ItemPipeBlockEntity> itemPipeBlockEntityBlockEntityType) {
     }
 
@@ -146,7 +151,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
      * if it was in a ticking TileEntity
      */
     private void updateTransferredState() {
-        long currentTime = getLevel().getGameTime();
+        long currentTime = getLevelTime();
         long dif = currentTime - this.timer;
         if (dif >= 20 || dif < 0) {
             this.transferredItems = 0;

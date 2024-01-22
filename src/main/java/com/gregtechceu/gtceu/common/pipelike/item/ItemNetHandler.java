@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.misc.RateCounter;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
@@ -38,9 +37,7 @@ public class ItemNetHandler implements IItemTransfer {
     @Getter
     private final Direction facing;
     private final Map<FacingPos, Integer> simulatedTransfersGlobalRoundRobin = new HashMap<>();
-
-    private final RateCounter simulatedCounter = new RateCounter(this::getLevelTime, 20);
-    private final RateCounter transferredCounter = new RateCounter(this::getLevelTime, 20);
+    private int simulatedTransfers = 0;
 
     private final ItemStackTransfer testHandler = new ItemStackTransfer(1);
 
@@ -64,9 +61,7 @@ public class ItemNetHandler implements IItemTransfer {
     }
 
     private void copyTransferred() {
-        simulatedCounter.clear();
-        simulatedCounter.addUsed(transferredCounter.getUsedSum());
-
+        simulatedTransfers = pipe.getTransferredItems();
         simulatedTransfersGlobalRoundRobin.clear();
         simulatedTransfersGlobalRoundRobin.putAll(pipe.getTransferred());
     }
@@ -407,15 +402,17 @@ public class ItemNetHandler implements IItemTransfer {
 
     private int checkTransferable(float rate, int amount, boolean simulate) {
         int max = (int) ((rate * 64) + 0.5);
-        RateCounter rateCounter = simulate ? simulatedCounter : transferredCounter;
-
-        return Math.max(0, Math.min(max - (int) rateCounter.getUsedSum(), amount));
+        if (simulate)
+            return Math.max(0, Math.min(max - simulatedTransfers, amount));
+        else
+            return Math.max(0, Math.min(max - pipe.getTransferredItems(), amount));
     }
 
     private void transfer(boolean simulate, int amount) {
-        RateCounter rateCounter = simulate ? simulatedCounter : transferredCounter;
-
-        rateCounter.addUsed(amount);
+        if (simulate)
+            simulatedTransfers += amount;
+        else
+            pipe.addTransferredItems(amount);
     }
 
     @Override

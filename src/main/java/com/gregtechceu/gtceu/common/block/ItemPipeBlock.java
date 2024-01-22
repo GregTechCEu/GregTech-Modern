@@ -80,7 +80,7 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
 
     @Override
     public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
-                                         BlockEntity tile) {
+                                         @Nullable BlockEntity tile) {
         return tile != null &&
             tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
     }

@@ -362,7 +362,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return Pair.of(null, InteractionResult.PASS);
     }
 
-    protected GTToolType getPipeTuneTool() {
+    public GTToolType getPipeTuneTool() {
         return GTToolType.WRENCH;
     }
 

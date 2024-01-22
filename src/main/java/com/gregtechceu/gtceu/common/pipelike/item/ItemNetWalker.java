@@ -26,6 +26,9 @@ import java.util.function.Predicate;
 public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipeProperties, ItemPipeNet> {
 
     public static List<ItemRoutePath> createNetData(ItemPipeNet pipeNet, BlockPos sourcePipe, Direction sourceFacing) {
+        if (!(pipeNet.getLevel().getBlockEntity(sourcePipe) instanceof ItemPipeBlockEntity)) {
+            return null;
+        }
         try {
             ItemNetWalker walker = new ItemNetWalker(pipeNet, sourcePipe, 1, new ArrayList<>(), null);
             walker.sourcePipe = sourcePipe;
@@ -89,8 +92,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
 
     @Override
     protected void checkNeighbour(ItemPipeBlockEntity pipeTile, BlockPos pipePos, Direction faceToNeighbour, @Nullable BlockEntity neighbourTile) {
-        if (neighbourTile == null ||
-            (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
+        if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
         LazyOptional<IItemHandler> handler = neighbourTile.getCapability(ForgeCapabilities.ITEM_HANDLER, faceToNeighbour.getOpposite());

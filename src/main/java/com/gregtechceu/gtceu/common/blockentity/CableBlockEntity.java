@@ -287,7 +287,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    protected GTToolType getPipeTuneTool() {
+    public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
     }
 }
