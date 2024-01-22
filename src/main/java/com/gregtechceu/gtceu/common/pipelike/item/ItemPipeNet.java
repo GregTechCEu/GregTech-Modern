@@ -20,21 +20,21 @@ import java.util.function.Predicate;
 
 public class ItemPipeNet extends PipeNet<ItemPipeProperties> {
 
-    private final Map<BlockPos, List<Inventory>> NET_DATA = new HashMap<>();
+    private final Map<BlockPos, List<ItemRoutePath>> NET_DATA = new HashMap<>();
 
     public ItemPipeNet(LevelPipeNet<ItemPipeProperties, ? extends PipeNet<ItemPipeProperties>> world) {
         super(world);
     }
 
-    public List<Inventory> getNetData(BlockPos pipePos) {
-        List<Inventory> data = NET_DATA.get(pipePos);
+    public List<ItemRoutePath> getNetData(BlockPos pipePos, Direction facing) {
+        List<ItemRoutePath> data = NET_DATA.get(pipePos);
         if (data == null) {
-            data = ItemNetWalker.createNetData(this, pipePos);
+            data = ItemNetWalker.createNetData(this, pipePos, facing);
             if (data == null) {
                 // walker failed, don't cache so it tries again on next insertion
                 return Collections.emptyList();
             }
-            data.sort(Comparator.comparingInt(inv -> inv.properties.getPriority()));
+            data.sort(Comparator.comparingInt(inv -> inv.getProperties().getPriority()));
             NET_DATA.put(pipePos, data);
         }
         return data;
@@ -66,54 +66,5 @@ public class ItemPipeNet extends PipeNet<ItemPipeProperties> {
     @Override
     protected ItemPipeProperties readNodeData(CompoundTag tagCompound) {
         return new ItemPipeProperties(tagCompound.getInt("Range"), tagCompound.getFloat("Rate"));
-    }
-
-    //////////////////////////////////////
-    //*******     Pipe Status    *******//
-    //////////////////////////////////////
-
-    public static class Inventory {
-        @Getter
-        private final BlockPos pipePos;
-        @Getter
-        private final Direction faceToHandler;
-        @Getter
-        private final int distance;
-        @Getter
-        private final ItemPipeProperties properties;
-        @Getter
-        private final List<Predicate<ItemStack>> filters;
-
-        public Inventory(BlockPos pipePos, Direction facing, int distance, ItemPipeProperties properties, List<Predicate<ItemStack>> filters) {
-            this.pipePos = pipePos;
-            this.faceToHandler = facing;
-            this.distance = distance;
-            this.properties = properties;
-            this.filters = filters;
-        }
-
-        public boolean matchesFilters(ItemStack stack) {
-            for (Predicate<ItemStack> filter : filters) {
-                if (!filter.test(stack)) {
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        public BlockPos getHandlerPos() {
-            return pipePos.relative(faceToHandler);
-        }
-
-        public IItemTransfer getHandler(Level world) {
-            BlockEntity tile = world.getBlockEntity(getHandlerPos());
-            if (tile != null)
-                return ItemTransferHelper.getItemTransfer(world, getHandlerPos(), faceToHandler.getOpposite());
-            return null;
-        }
-
-        public FacingPos toFacingPos() {
-            return new FacingPos(this.getPipePos(), this.faceToHandler);
-        }
     }
 }

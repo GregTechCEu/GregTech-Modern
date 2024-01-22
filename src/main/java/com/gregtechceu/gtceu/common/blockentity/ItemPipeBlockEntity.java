@@ -10,9 +10,12 @@ import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.forge.ItemTransferHelperImpl;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -23,6 +26,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,12 +38,19 @@ import java.util.Map;
 public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeProperties> {
     protected WeakReference<ItemPipeNet> currentItemPipeNet = new WeakReference<>(null);
 
+
     @Getter
-    protected final EnumMap<Direction, ItemNetHandler> handlers = new EnumMap<>(Direction.class);
+    private final EnumMap<Direction, ItemNetHandler> handlers = new EnumMap<>(Direction.class);
     @Getter
-    private final Map<FacingPos, Integer> transferred = new HashMap<>();
+    private final Object2IntMap<FacingPos> transferred = new Object2IntOpenHashMap<>();
     @Getter
-    protected ItemNetHandler defaultHandler;
+    private ItemNetHandler defaultHandler;
+    // the ItemNetHandler can only be created on the server so we have a empty placeholder for the client
+    private final IItemTransfer clientCapability = new ItemStackTransfer(0);
+
+    private int transferredItems = 0;
+    private long timer = 0;
+
 
     public ItemPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -49,7 +60,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         return new ItemPipeBlockEntity(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<ItemPipeBlockEntity> cableBlockEntityBlockEntityType) {
+    public static void onBlockEntityRegister(BlockEntityType<ItemPipeBlockEntity> itemPipeBlockEntityBlockEntityType) {
     }
 
     @Override
@@ -123,6 +134,43 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
 
     public void resetTransferred() {
         transferred.clear();
+    }
+
+    /**
+     * every time the transferred variable is accessed this method should be called
+     * if 20 ticks passed since the last access it will reset it
+     * this method is equal to
+     * @code {
+     *  if (++time % 20 == 0) {
+     *      this.transferredItems = 0;
+     *  }
+     * }
+     * <p/>
+     * if it was in a ticking TileEntity
+     */
+    private void updateTransferredState() {
+        long currentTime = getLevel().getGameTime();
+        long dif = currentTime - this.timer;
+        if (dif >= 20 || dif < 0) {
+            this.transferredItems = 0;
+            this.timer = currentTime;
+        }
+    }
+
+    public void addTransferredItems(int amount) {
+        updateTransferredState();
+        this.transferredItems += amount;
+    }
+
+    public int getTransferredItems() {
+        updateTransferredState();
+        return this.transferredItems;
+    }
+
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        this.handlers.clear();
     }
 
     public IItemTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
