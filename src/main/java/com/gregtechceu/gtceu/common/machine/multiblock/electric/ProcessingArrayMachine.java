@@ -189,11 +189,16 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
         if (machine instanceof ProcessingArrayMachine processingArray && processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > processingArray.getTier()) {
+            if (RecipeHelper.getRecipeEUtTier(recipe) > processingArray.getTier())
                 return null;
-            }
 
-            var parallelLimit = processingArray.machineStorage.storage.getStackInSlot(0).getCount();
+            int parallelLimit = Math.min(
+                processingArray.machineStorage.storage.getStackInSlot(0).getCount(),
+                (int) (processingArray.getMaxVoltage() / RecipeHelper.getInputEUt(recipe))
+            );
+
+            if (parallelLimit <= 0)
+                return null;
 
             // apply parallel first
             var parallel = Objects.requireNonNull(GTRecipeModifiers.accurateParallel(
@@ -202,8 +207,8 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             int parallelCount = parallel.getB();
             recipe = parallel.getA();
 
-            // apply overclock afterwards
-            long maxVoltage = processingArray.getOverclockVoltage() * parallelCount;
+            // apply overclock afterward
+            long maxVoltage = Math.min(processingArray.getOverclockVoltage() * parallelCount, processingArray.getMaxVoltage());
             recipe = RecipeHelper.applyOverclock(OverclockingLogic.NON_PERFECT_OVERCLOCK, recipe, maxVoltage);
 
             return recipe;
