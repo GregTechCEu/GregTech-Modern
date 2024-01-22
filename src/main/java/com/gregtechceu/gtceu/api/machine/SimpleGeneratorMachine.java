@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
@@ -100,7 +101,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     //////////////////////////////////////
 
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("generator", path, () -> {
-        var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var template =  recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
         var energyBar = createEnergyBar().createDefault();
         var group = new WidgetGroup(0, 0,
                 Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
@@ -115,8 +116,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleGeneratorMachine generatorMachine) {
-            generatorMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeType.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
+            generatorMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeTypeUI.RecipeHolder(generatorMachine.recipeLogic::getProgressPercent,
                             generatorMachine.importItems.storage,
                             generatorMachine.exportItems.storage,
                             generatorMachine.importFluids,

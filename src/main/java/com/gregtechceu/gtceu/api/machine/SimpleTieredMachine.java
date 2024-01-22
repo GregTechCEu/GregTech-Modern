@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -350,7 +351,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("simple", path, () -> {
-        var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var template =  recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
         var energyBar = createEnergyBar().createDefault();
         var batterySlot = createBatterySlot().createDefault();
         var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
@@ -370,8 +371,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleTieredMachine tieredMachine) {
-            tieredMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+            tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
                             tieredMachine.importItems.storage,
                             tieredMachine.exportItems.storage,
                             tieredMachine.importFluids,

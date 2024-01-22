@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -213,8 +214,8 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return group;
     }, (template, machine) -> {
         if (machine instanceof MinerMachine minerMachine) {
-            minerMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeType.RecipeHolder(minerMachine.recipeLogic::getProgressPercent,
+            minerMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeTypeUI.RecipeHolder(minerMachine.recipeLogic::getProgressPercent,
                             minerMachine.importItems.storage,
                             minerMachine.exportItems.storage,
                             new FluidTransferList(minerMachine.importFluids.storages),

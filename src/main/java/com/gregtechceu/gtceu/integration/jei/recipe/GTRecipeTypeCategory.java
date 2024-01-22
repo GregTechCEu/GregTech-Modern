@@ -36,7 +36,7 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     public GTRecipeTypeCategory(IJeiHelpers helpers, GTRecipeType recipeType) {
         this.recipeType = recipeType;
         IGuiHelper guiHelper = helpers.getGuiHelper();
-        var size = recipeType.getJEISize();
+        var size = recipeType.getRecipeUI().getJEISize();
         this.background = guiHelper.createBlankDrawable(size.width, size.height);
         if (recipeType.getIconSupplier() != null) {
             icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
