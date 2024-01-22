@@ -860,7 +860,7 @@ public class RecipeAddition {
                     'W', Tags.Items.RODS_WOODEN
             );
 
-            VanillaRecipeHelper.addShapedRecipe(provider, "§rch", new ItemStack(Blocks.REDSTONE_TORCH), "R", "T",
+            VanillaRecipeHelper.addShapedRecipe(provider, "redstone_torch", new ItemStack(Blocks.REDSTONE_TORCH), "R", "T",
                     'R', new UnificationEntry(TagPrefix.dust, GTMaterials.Redstone),
                     'T', new ItemStack(Blocks.TORCH)
             );
