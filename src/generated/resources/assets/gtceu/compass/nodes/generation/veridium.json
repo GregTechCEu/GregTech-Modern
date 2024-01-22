@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/veridium",
   "position": [
-    -100,
-    100
+    -150,
+    50
   ],
   "pre_nodes": [
     "gtceu:generation/ore"
