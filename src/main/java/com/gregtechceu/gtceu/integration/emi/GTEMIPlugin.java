@@ -36,7 +36,9 @@ public class GTEMIPlugin implements EmiPlugin {
         registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
+                if (gtRecipeType.getRecipeUI().isJEIVisible()) {
+                    registry.addCategory(GTRecipeTypeEmiCategory.CATEGORIES.apply(gtRecipeType));
+                }
             }
         }
         registry.addRecipeHandler(null, new GTEmiRecipeHandler());

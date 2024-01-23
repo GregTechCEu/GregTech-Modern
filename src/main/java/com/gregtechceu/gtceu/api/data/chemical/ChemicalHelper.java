@@ -33,6 +33,7 @@ import net.minecraftforge.registries.RegistryObject;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -46,19 +47,19 @@ import static com.gregtechceu.gtceu.api.GTValues.M;
 public class ChemicalHelper {
 
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
-    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new ConcurrentHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
     public static final Set<Map.Entry<Supplier<? extends ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = new HashSet<>();
-    public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY_COLLECTED = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY_COLLECTED = new ConcurrentHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, UnificationEntry> TAG_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
     /** Mapping of a fluid to a material */
-    public static final Map<Fluid, Material> FLUID_MATERIAL = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<Fluid, Material> FLUID_MATERIAL = new ConcurrentHashMap<>();
     /** Mapping of all items that represent a "prefix, material" pair */
-    public static final Map<UnificationEntry, ArrayList<Supplier<? extends ItemLike>>> UNIFICATION_ENTRY_ITEM = new Object2ObjectLinkedOpenHashMap<>();
-    public static final Map<UnificationEntry, ArrayList<Supplier<? extends Block>>> UNIFICATION_ENTRY_BLOCK = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Supplier<? extends ItemLike>>> UNIFICATION_ENTRY_ITEM = new ConcurrentHashMap<>();
+    public static final Map<UnificationEntry, ArrayList<Supplier<? extends Block>>> UNIFICATION_ENTRY_BLOCK = new ConcurrentHashMap<>();
     /** Mapping of stone type blockState to "prefix, material" */
-    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new Object2ObjectLinkedOpenHashMap<>();
+    public static final Map<Supplier<BlockState>, TagPrefix> ORES_INVERSE = new ConcurrentHashMap<>();
 
     public static void registerMaterialInfo(ItemLike item, ItemMaterialInfo materialInfo) {
         ITEM_MATERIAL_INFO.put(item, materialInfo);

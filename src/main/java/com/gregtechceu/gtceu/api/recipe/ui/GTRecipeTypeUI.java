@@ -72,7 +72,9 @@ public class GTRecipeTypeUI {
     @Getter
     protected int maxTooltips = 3;
 
-    private boolean isJEIVisible = true;
+    @Getter
+    @Setter
+    private boolean JEIVisible = true;
 
     private CompoundTag customUICache;
 
@@ -121,7 +123,8 @@ public class GTRecipeTypeUI {
     }
 
     public Size getJEISize() {
-        return new Size(176, (recipeType.getDataInfos().size() + recipeType.getMaxTooltips()) * 10 + 5 + createEditableUITemplate(false, false).createDefault().getSize().height);
+        Size size = createEditableUITemplate(false, false).createDefault().getSize();
+        return new Size(size.width, (recipeType.getDataInfos().size() + recipeType.getMaxTooltips()) * 10 + 5 + size.height);
     }
 
     public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
@@ -145,13 +148,6 @@ public class GTRecipeTypeUI {
      * Auto layout UI template for recipes.
      */
     public IEditableUI<WidgetGroup, RecipeHolder> createEditableUITemplate(final boolean isSteam, final boolean isHighPressure) {
-        int y = 0;
-        if (recipeType.getMaxInputs(ItemRecipeCapability.CAP) >= 6 || recipeType.getMaxInputs(FluidRecipeCapability.CAP) >= 6 ||
-            recipeType.getMaxOutputs(ItemRecipeCapability.CAP) >= 6 || recipeType.getMaxOutputs(FluidRecipeCapability.CAP) >= 6) {
-            y = 9; // Minecraft's FontRenderer FONT_HEIGHT value
-        }
-        final int yOffset = y;
-
         return new IEditableUI.Normal<>(() -> {
             var isCustomUI = !isSteam && hasCustomUI();
             if (isCustomUI) {
@@ -162,14 +158,14 @@ public class GTRecipeTypeUI {
                 return group;
             }
 
-            WidgetGroup inputs = addInventorySlotGroup(false, isSteam, isHighPressure, yOffset);
-            WidgetGroup outputs = addInventorySlotGroup(true, isSteam, isHighPressure, yOffset);
+            WidgetGroup inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
+            WidgetGroup outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
             WidgetGroup group = new WidgetGroup(new Position(0, 0));
 
             group.addWidget(inputs);
             group.addWidget(outputs);
 
-            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 78, 23 + yOffset, 20, 20, progressBarTexture);
+            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 58, 23, 20, 20, progressBarTexture);
             progressWidget.setId("progress");
             group.addWidget(progressWidget);
 
@@ -179,6 +175,7 @@ public class GTRecipeTypeUI {
                 .setFillDirection(steamMoveType)
                 : progressBarTexture);
 
+            group.setSize(new Size(Math.max(group.getSize().width, 106), group.getSize().height));
             return group;
         }, (template, recipeHolder) -> {
             var isJEI = recipeHolder.progressSupplier == ProgressWidget.JEIProgress;
@@ -248,7 +245,7 @@ public class GTRecipeTypeUI {
         });
     }
 
-    protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure, int yOffset) {
+    protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
         var itemCountOriginal = isOutputs ? recipeType.getMaxOutputs(ItemRecipeCapability.CAP) : recipeType.getMaxInputs(ItemRecipeCapability.CAP);
         var fluidCountOriginal = isOutputs ? recipeType.getMaxOutputs(FluidRecipeCapability.CAP) : recipeType.getMaxInputs(FluidRecipeCapability.CAP);
         int itemCount = itemCountOriginal;
@@ -263,38 +260,38 @@ public class GTRecipeTypeUI {
         int[] inputSlotGrid = determineSlotsGrid(itemCount);
         int itemSlotsToLeft = inputSlotGrid[0];
         int itemSlotsToDown = inputSlotGrid[1];
-        int startInputsX = isOutputs ? 106 : 70 - itemSlotsToLeft * 18;
-        int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18) + yOffset;
+        int startInputsX = isOutputs ? 86 : 54 - itemSlotsToLeft * 18;
+        int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18);
         boolean wasGroup = itemCountOriginal + fluidCountOriginal == 12;
         if (wasGroup) startInputsY -= 9;
         else if (itemCountOriginal >= 6 && fluidCountOriginal >= 2 && !isOutputs) startInputsY -= 9;
 
-        WidgetGroup group = new WidgetGroup(new Position(0, 0));
+        WidgetGroup group = new WidgetGroup(new Position(startInputsX, startInputsY));
 
         int count = invertFluids ? fluidCountOriginal : itemCountOriginal;
         for (int i = 0; i < itemSlotsToDown; i++) {
             for (int j = 0; j < itemSlotsToLeft; j++) {
                 int slotIndex = i * itemSlotsToLeft + j;
                 if (slotIndex >= itemCount) break;
-                int x = startInputsX + 18 * j;
-                int y = startInputsY + 18 * i;
+                int x = 18 * j;
+                int y = 18 * i;
                 addSlot(group, x, y, slotIndex, count, invertFluids, isOutputs, isSteam, isHighPressure);
             }
         }
-        if (wasGroup) startInputsY += 2;
+        int offset = wasGroup ? 2 : 0;
         if (fluidCount > 0 || invertFluids) {
             count = invertFluids ? itemCountOriginal : fluidCountOriginal;
             if (itemSlotsToDown >= fluidCount && itemSlotsToLeft < 3) {
-                int startSpecX = isOutputs ? startInputsX + itemSlotsToLeft * 18 : startInputsX - 18;
+                int startSpecX = isOutputs ? itemSlotsToLeft * 18 : -18;
                 for (int i = 0; i < fluidCount; i++) {
-                    int y = startInputsY + 18 * i;
+                    int y = offset + 18 * i;
                     addSlot(group, startSpecX, y, i, count, !invertFluids, isOutputs, isSteam, isHighPressure);
                 }
             } else {
-                int startSpecY = startInputsY + itemSlotsToDown * 18;
+                int startSpecY = itemSlotsToDown * 18;
                 for (int i = 0; i < fluidCount; i++) {
-                    int x = isOutputs ? startInputsX + 18 * (i % 3) :
-                        startInputsX + itemSlotsToLeft * 18 - 18 - 18 * (i % 3);
+                    int x = isOutputs ? 18 * (i % 3) :
+                        itemSlotsToLeft * 18 - 18 - 18 * (i % 3);
                     int y = startSpecY + (i / 3) * 18;
                     addSlot(group, x, y, i, count, !invertFluids, isOutputs, isSteam, isHighPressure);
                 }

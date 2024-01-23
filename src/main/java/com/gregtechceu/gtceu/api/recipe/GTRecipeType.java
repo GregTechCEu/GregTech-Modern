@@ -76,9 +76,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected int maxTooltips = 3;
     @Setter
-    @Nullable
-    protected BiConsumer<GTRecipe, WidgetGroup> uiBuilder;
-    @Setter
     @Getter
     protected boolean isFuelRecipeType;
     @Getter
@@ -139,6 +136,11 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public GTRecipeType setSteamProgressBar(SteamTexture progressBar, ProgressTexture.FillDirection moveType) {
         this.recipeUI.setSteamProgressBarTexture(progressBar);
         this.recipeUI.setSteamMoveType(moveType);
+        return this;
+    }
+
+    public GTRecipeType setUiBuilder(BiConsumer<GTRecipe, WidgetGroup> uiBuilder) {
+        this.recipeUI.setUiBuilder(uiBuilder);
         return this;
     }
 
@@ -236,10 +238,6 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         recipeBuilder.onSave(onBuild);
         return this;
     }
-
-    //////////////////////////////////////
-    //***********     UI    ************//
-    //////////////////////////////////////
 
     public GTRecipe toGTrecipe(ResourceLocation id, Recipe<?> recipe) {
         var builder = recipeBuilder(id);

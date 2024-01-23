@@ -94,7 +94,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 .collect(Collectors.toList());
         while (outputFluids.size() < recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)) outputFluids.add(null);
 
-        var group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress,
+        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress,
                 new CycleItemStackHandler(inputStacks),
                 new CycleItemStackHandler(outputStacks),
                 new CycleFluidStorage(inputFluids),
@@ -193,7 +193,6 @@ public class GTRecipeWidget extends WidgetGroup {
             }
         });
         var size = group.getSize();
-        group.setSelfPosition(new Position((176 - size.width) / 2, 0));
         addWidget(group);
 
         int yOffset = 5 + size.height;
@@ -207,9 +206,9 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (EUt > 0) {
             addWidget(new LabelWidget(3, yOffset += 10,
-                    LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
-            addWidget(new LabelWidget(3, yOffset += 10,
                     LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
+            addWidget(new LabelWidget(3, yOffset += 10,
+                LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
         }
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
