@@ -101,7 +101,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     //////////////////////////////////////
 
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("generator", path, () -> {
-        var template =  recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
+        var template =  recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
         var energyBar = createEnergyBar().createDefault();
         var group = new WidgetGroup(0, 0,
                 Math.max(energyBar.getSize().width + template.getSize().width + 4 + 8, 172),
