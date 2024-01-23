@@ -164,15 +164,12 @@ public class GTRecipeTypeUI {
 
             WidgetGroup inputs = addInventorySlotGroup(false, isSteam, isHighPressure, yOffset);
             WidgetGroup outputs = addInventorySlotGroup(true, isSteam, isHighPressure, yOffset);
-            WidgetGroup group = new WidgetGroup(0, 0, inputs.getSize().width + outputs.getSize().width + 40, Math.max(inputs.getSize().height, outputs.getSize().height));
-            Size size = group.getSize();
+            WidgetGroup group = new WidgetGroup(new Position(0, 0));
 
-            //inputs.addSelfPosition(0, (size.height - inputs.getSize().height) / 2);
-            //outputs.addSelfPosition(inputs.getSize().width + 40, (size.height - outputs.getSize().height) / 2);
             group.addWidget(inputs);
             group.addWidget(outputs);
 
-            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, inputs.getSize().width + 10, size.height / 2 - 10, 20, 20, progressBarTexture);
+            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 78, 23 + yOffset, 20, 20, progressBarTexture);
             progressWidget.setId("progress");
             group.addWidget(progressWidget);
 
@@ -266,16 +263,15 @@ public class GTRecipeTypeUI {
         int[] inputSlotGrid = determineSlotsGrid(itemCount);
         int itemSlotsToLeft = inputSlotGrid[0];
         int itemSlotsToDown = inputSlotGrid[1];
-        int startInputsX = isOutputs ? 96 : 64 - itemSlotsToLeft * 18;
-        int startInputsY = 24 - (int) (itemSlotsToDown / 2.0 * 18) + yOffset;
+        int startInputsX = isOutputs ? 106 : 70 - itemSlotsToLeft * 18;
+        int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18) + yOffset;
         boolean wasGroup = itemCountOriginal + fluidCountOriginal == 12;
         if (wasGroup) startInputsY -= 9;
         else if (itemCountOriginal >= 6 && fluidCountOriginal >= 2 && !isOutputs) startInputsY -= 9;
 
-        var sum = itemCount + fluidCount;
-        WidgetGroup group = new WidgetGroup(0, 0, Math.min(sum, 3) * 18 + 8, ((sum + 2) / 3) * 18 + 8);
+        WidgetGroup group = new WidgetGroup(new Position(0, 0));
 
-        int count = invertFluids ? fluidCount : itemCount;
+        int count = invertFluids ? fluidCountOriginal : itemCountOriginal;
         for (int i = 0; i < itemSlotsToDown; i++) {
             for (int j = 0; j < itemSlotsToLeft; j++) {
                 int slotIndex = i * itemSlotsToLeft + j;
@@ -287,7 +283,7 @@ public class GTRecipeTypeUI {
         }
         if (wasGroup) startInputsY += 2;
         if (fluidCount > 0 || invertFluids) {
-            count = invertFluids ? itemCount : fluidCount;
+            count = invertFluids ? itemCountOriginal : fluidCountOriginal;
             if (itemSlotsToDown >= fluidCount && itemSlotsToLeft < 3) {
                 int startSpecX = isOutputs ? startInputsX + itemSlotsToLeft * 18 : startInputsX - 18;
                 for (int i = 0; i < fluidCount; i++) {
