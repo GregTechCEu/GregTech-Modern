@@ -30,9 +30,9 @@ public class GTOreByProductWidget extends WidgetGroup {
         70, 80,     // macerator (centrifuged -> dust)
         114, 48,    // macerator (crushed purified -> purified)
         133, 71,    // centrifuge (purified -> dust)
-        3, 123,     // cauldron / simple washer (crushed)
-        41, 145,    // cauldron (impure)
-        102, 145,   // cauldron (purified)
+        3, 118,     // cauldron / simple washer (crushed)
+        41, 140,    // cauldron (impure)
+        102, 140,   // cauldron (purified)
         24, 48,     // chem bath
         155, 71,    // electro separator
         101, 25     // sifter
@@ -56,12 +56,12 @@ public class GTOreByProductWidget extends WidgetGroup {
         155, 47,    // byproduct
         133, 92,    // purified -> dust
         133, 110,   // byproduct
-        3, 105,     // crushed cauldron
-        3, 145,     // -> purified crushed
-        23, 145,    // impure cauldron
-        63, 145,    // -> dust
-        84, 145,    // purified cauldron
-        124, 145,   // -> dust
+        3, 100,     // crushed cauldron
+        3, 140,     // -> purified crushed
+        23, 140,    // impure cauldron
+        63, 140,    // -> dust
+        84, 140,    // purified cauldron
+        124, 140,   // -> dust
         64, 48,     // crushed -> crushed purified (chem bath)
         82, 48,     // byproduct
         155, 92,    // purified -> dust (electro separator)
@@ -82,7 +82,8 @@ public class GTOreByProductWidget extends WidgetGroup {
     public GTOreByProductWidget(Material material) {
         super(0, 0, 176, 166);
         setClientSideWidget();
-        setRecipe(new GTOreByProduct(material));
+        setRecipe(new
+            GTOreByProduct(material));
     }
 
     public void setRecipe(GTOreByProduct recipeWrapper) {
