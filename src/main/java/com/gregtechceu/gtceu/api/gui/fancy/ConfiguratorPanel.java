@@ -45,8 +45,8 @@ public class ConfiguratorPanel extends WidgetGroup {
     @Setter
     protected IGuiTexture texture = GuiTextures.BACKGROUND;
 
-    public ConfiguratorPanel() {
-        super(-(24 + 2), 2, 24, 0);
+    public ConfiguratorPanel(int x, int y) {
+        super(x, y, 24, 0);
     }
 
     public void clear() {
@@ -159,6 +159,10 @@ public class ConfiguratorPanel extends WidgetGroup {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
+    public Tab createTab(IFancyConfigurator configurator) {
+        return new Tab(configurator);
+    }
+
     public class Tab extends WidgetGroup {
         private final IFancyConfigurator configurator;
         private final ButtonWidget button;
@@ -195,7 +199,7 @@ public class ConfiguratorPanel extends WidgetGroup {
                 this.view.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
                 this.view.addWidget(widget);
                 this.view.addWidget(new ImageWidget(border + 5, border, widget.getSize().width - getTabSize() - 5, getTabSize() - border,
-                        new TextTexture(configurator.getTitle())
+                        new TextTexture(configurator.getTitle().getString())
                                 .setType(TextTexture.TextType.LEFT_HIDE)
                                 .setWidth(widget.getSize().width - getTabSize())));
                 this.addWidget(button);
@@ -252,8 +256,8 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         private void onClick(ClickData clickData) {
-            if (configurator instanceof IFancyConfiguratorButton fancyBUTTON) {
-                fancyBUTTON.onClick(clickData);
+            if (configurator instanceof IFancyConfiguratorButton fancyButton) {
+                fancyButton.onClick(clickData);
             } else {
                 if (expanded == this) {
                     collapseTab();

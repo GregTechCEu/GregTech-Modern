@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.widget.CoverContainerConfigurator;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -17,6 +19,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -38,7 +41,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfigurator {
+public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProvider {
 
     Level getLevel();
 
@@ -264,17 +267,17 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
     //////////////////////////////////////
 
     @Override
-    default String getTitle() {
-        return "gtceu.gui.cover_setting.title";
+    default Component getTitle() {
+        return Component.translatable("gtceu.gui.cover_setting.title");
     }
 
     @Override
-    default IGuiTexture getIcon() {
+    default IGuiTexture getTabIcon() {
         return GuiTextures.TOOL_COVER_SETTINGS;
     }
 
     @Override
-    default Widget createConfigurator() {
-        return new CoverContainerConfigurator(this);
+    default Widget createMainPage(FancyMachineUIWidget widget) {
+        return new CoverContainerConfigurator(this, widget.getConfiguratorPanel());
     }
 }

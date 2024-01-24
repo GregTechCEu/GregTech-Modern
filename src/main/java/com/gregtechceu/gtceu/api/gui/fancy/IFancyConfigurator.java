@@ -16,14 +16,14 @@ import java.util.function.Consumer;
  */
 public interface IFancyConfigurator {
 
-    String getTitle();
+    Component getTitle();
 
     IGuiTexture getIcon();
 
     Widget createConfigurator();
 
     default List<Component> getTooltips() {
-        return List.of(Component.translatable(getTitle()));
+        return List.of(getTitle());
     }
 
     default void detectAndSendChange(BiConsumer<Integer, Consumer<FriendlyByteBuf>> sender) {

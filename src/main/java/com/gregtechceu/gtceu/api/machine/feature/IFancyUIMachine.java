@@ -43,7 +43,7 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
      * We should not override this method in general, and use {@link IFancyUIMachine#createUIWidget()} instead,
      */
     @Override
-    default Widget createMainPage() {
+    default Widget createMainPage(FancyMachineUIWidget widget) {
         var editableUI = self().getDefinition().getEditableUI();
         if (editableUI != null) {
             var template = editableUI.createCustomUI();
@@ -96,6 +96,19 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     }
 
     @Override
+    default void attachSideTabs(TabsWidget sideTabs) {
+        sideTabs.setMainTab(this);
+
+        if (this instanceof IRecipeLogicMachine rLMachine && rLMachine.getRecipeTypes().length > 1) {
+            sideTabs.attachSubTab(new MachineModeFancyConfigurator(rLMachine));
+        }
+        sideTabs.attachSubTab(self().getCoverContainer());
+        if (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid) {
+            sideTabs.attachSubTab(new AutoOutputFancyConfigurator(self()));
+        }
+    }
+
+    @Override
     default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
         if (this instanceof IControllable controllable) {
             configuratorPanel.attachConfigurators(new IFancyConfiguratorButton.Toggle(
@@ -105,13 +118,6 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
                     .setTooltipsSupplier(pressed -> List.of(
                             Component.translatable(pressed ? "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled")
                     )));
-        }
-        if (this instanceof IRecipeLogicMachine rLMachine && rLMachine.getRecipeTypes().length > 1) {
-            configuratorPanel.attachConfigurators(new MachineModeFancyConfigurator(rLMachine));
-        }
-        configuratorPanel.attachConfigurators(self().getCoverContainer());
-        if (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid) {
-            configuratorPanel.attachConfigurators(new AutoOutputFancyConfigurator(self()));
         }
         if (this instanceof IOverclockMachine overclockMachine) {
             configuratorPanel.attachConfigurators(new OverclockFancyConfigurator(overclockMachine));
@@ -129,5 +135,10 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
         var list = new ArrayList<Component>();
         list.add(Component.translatable(self().getDefinition().getDescriptionId()));
         return list;
+    }
+
+    @Override
+    default Component getTitle() {
+        return Component.translatable(self().getDefinition().getDescriptionId());
     }
 }

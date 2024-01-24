@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
@@ -14,14 +16,12 @@ import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 
 /**
  * @author Rundas/Screret
  * @implNote MachineModeFancyConfigurator
  */
-public class MachineModeFancyConfigurator implements IFancyConfigurator {
+public class MachineModeFancyConfigurator implements IFancyUIProvider {
     protected IRecipeLogicMachine machine;
 
     public MachineModeFancyConfigurator(IRecipeLogicMachine machine) {
@@ -29,40 +29,18 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
     }
 
     @Override
-    public String getTitle() {
-        return "gtceu.gui.machinemode.title";
+    public Component getTitle() {
+        return Component.translatable("gtceu.gui.machinemode.title");
     }
 
     @Override
-    public IGuiTexture getIcon() {
-        return new ResourceTexture("gtceu:textures/item/lv_robot_arm.png");
+    public IGuiTexture getTabIcon() {
+        return new ItemStackTexture(GTItems.ROBOT_ARM_LV.get());
     }
 
     @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
-        buffer.writeVarInt(machine.getActiveRecipeType());
-    }
-
-    @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
-        machine.setActiveRecipeType(buffer.readVarInt());
-    }
-
-    @Override
-    public void detectAndSendChange(BiConsumer<Integer, Consumer<FriendlyByteBuf>> sender) {
-        sender.accept(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
-    }
-
-    @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
-        if (id == 0) {
-            machine.setActiveRecipeType(buffer.readVarInt());
-        }
-    }
-
-    @Override
-    public Widget createConfigurator() {
-        var group = new WidgetGroup(0, 0, 140, 20 * machine.getRecipeTypes().length + 4);
+    public Widget createMainPage(FancyMachineUIWidget widget) {
+        var group = new MachineModeConfigurator(0, 0, 140, 20 * machine.getRecipeTypes().length + 4);
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         for (int i = 0; i < machine.getRecipeTypes().length; i++) {
             int finalI = i;
@@ -76,9 +54,37 @@ public class MachineModeFancyConfigurator implements IFancyConfigurator {
     }
 
     @Override
-    public List<Component> getTooltips() {
+    public List<Component> getTabTooltips() {
         List<Component> tooltip = new ArrayList<>();
         tooltip.add(Component.literal("Change active Machine Mode"));
         return tooltip;
+    }
+
+    public class MachineModeConfigurator extends WidgetGroup {
+        public MachineModeConfigurator(int x, int y, int width, int height) {
+            super(x, y, width, height);
+        }
+
+        @Override
+        public void writeInitialData(FriendlyByteBuf buffer) {
+            buffer.writeVarInt(machine.getActiveRecipeType());
+        }
+
+        @Override
+        public void readInitialData(FriendlyByteBuf buffer) {
+            machine.setActiveRecipeType(buffer.readVarInt());
+        }
+
+        @Override
+        public void detectAndSendChanges() {
+            this.writeUpdateInfo(0, buf -> buf.writeVarInt(machine.getActiveRecipeType()));
+        }
+
+        @Override
+        public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+            if (id == 0) {
+                machine.setActiveRecipeType(buffer.readVarInt());
+            }
+        }
     }
 }

@@ -36,6 +36,7 @@ public class TabsWidget extends Widget {
     protected IFancyUIProvider selectedTab;
     @Setter
     protected IGuiTexture leftButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)), leftButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().setColor(0xffaaaaaa).scale(0.7f));
+    @Setter
     protected IGuiTexture rightButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)), rightButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().setColor(0xffaaaaaa).scale(0.7f));
     @Setter
     protected IGuiTexture tabTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png").getSubTexture(1 / 3f, 0, 1 / 3f, 0.5f);
@@ -53,7 +54,11 @@ public class TabsWidget extends Widget {
     protected BiConsumer<IFancyUIProvider, IFancyUIProvider> onTabSwitch;
 
     public TabsWidget(Consumer<IFancyUIProvider> onTabClick) {
-        super(0, -21, 200, 24);
+        this(onTabClick, 0, -20, 200, 24);
+    }
+
+    public TabsWidget(Consumer<IFancyUIProvider> onTabClick, int x, int y, int width, int height) {
+        super(x, y, width, height);
         this.subTabs = new ArrayList<>();
         this.onTabClick = onTabClick;
     }
@@ -81,7 +86,7 @@ public class TabsWidget extends Widget {
             var old = selectedTab;
             if (index < 0) {
                 selectedTab = mainTab;
-            } else if (index < subTabs.size()){
+            } else if (index < subTabs.size()) {
                 selectedTab = subTabs.get(index);
             } else {
                 return;
