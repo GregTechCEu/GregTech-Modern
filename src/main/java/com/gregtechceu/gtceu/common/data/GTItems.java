@@ -151,29 +151,12 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
-        HashMultimap<Integer, Tuple<ResourceLocation, Tier>> tiers = HashMultimap.create();
-        for (Tier tier : Tiers.values()) {
-            tiers.put(tier.getLevel(), new Tuple<>(getTierName(tier), tier));
-        }
-
         for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
             GTRegistrate registrate = registry.getRegistrate();
-
-            for (Material material : registry.getAllMaterials()) {
-                if (material.hasProperty(PropertyKey.TOOL)) {
-                    var tier = material.getToolTier();
-                    tiers.put(tier.getLevel(), new Tuple<>(material.getResourceLocation(), tier));
-                }
-            }
-
             for (Material material : registry.getAllMaterials()) {
                 if (material.hasProperty(PropertyKey.TOOL)) {
                     var property = material.getProperty(PropertyKey.TOOL);
                     var tier = material.getToolTier();
-
-                    List<ResourceLocation> lower = tiers.values().stream().filter(low -> low.getB().getLevel() == tier.getLevel() - 1).map(Tuple::getA).toList();
-                    List<ResourceLocation> higher = tiers.values().stream().filter(high -> high.getB().getLevel() == tier.getLevel() + 1).map(Tuple::getA).toList();
-                    registerToolTier(tier, material.getResourceLocation(), lower, higher);
 
                     for (GTToolType toolType : GTToolType.getTypes().values()) {
                         if (property.hasType(toolType)) {

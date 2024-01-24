@@ -75,11 +75,6 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
     }
 
     @Override
-    public MaterialToolTier getTier() {
-        return (MaterialToolTier) super.getTier();
-    }
-
-    @Override
     public boolean hasCraftingRemainingItem() {
         return super.hasCraftingRemainingItem();
     }
@@ -101,7 +96,7 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
 
     @Override
     public Component getDescription() {
-        return Component.translatable(toolType.getUnlocalizedName(), getTier().material.getLocalizedName());
+        return Component.translatable(toolType.getUnlocalizedName(), material.getLocalizedName());
     }
 
     @Override
@@ -172,7 +167,8 @@ public class GTShovelItem extends ShovelItem implements IItemUseFirst, IGTTool {
         return definition$isValidRepairItem(stack, repairCandidate);
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return definition$getDefaultAttributeModifiers(slot, stack);
     }
 
