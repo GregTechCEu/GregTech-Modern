@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -34,8 +36,8 @@ import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererBlockBuilder;
@@ -150,6 +152,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTFluidStorageKeys", FluidStorageKeys.class);
         event.add("GTFluidState", FluidState.class);
         event.add("PropertyKey", PropertyKey.class);
+        event.add("ToolProperty", ToolProperty.class);
         event.add("CleanroomType", CleanroomType.class);
         event.add("ChemicalHelper", ChemicalHelper.class);
 
@@ -165,6 +168,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("PartAbility", PartAbility.class);
         event.add("GuiTextures", GuiTextures.class);
         event.add("GTCEu", GTCEu.class);
+        event.add("GTCEuAPI", GTCEuAPI.class);
+        event.add("GTMaterialRegistry", MaterialRegistryManager.getInstance());
 
         // MaterialColor stuff, for TagPrefix
         event.add("SoundType", SoundType.class);
@@ -176,7 +181,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         event.add("GTRecipeModifiers", GTRecipeModifiers.class);
         event.add("OverclockingLogic", OverclockingLogic.class);
         event.add("GTWorldGenLayers", WorldGenLayers.class);
-        // ....TODO add global refs. for convenience, ppl do not need to import the java package themselves.
     }
 
     @Override
