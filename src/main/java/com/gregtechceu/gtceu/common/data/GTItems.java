@@ -151,14 +151,14 @@ public class GTItems {
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
 
-        for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
-            GTRegistrate registrate = registry.getRegistrate();
-            for (Material material : registry.getAllMaterials()) {
-                if (material.hasProperty(PropertyKey.TOOL)) {
-                    var property = material.getProperty(PropertyKey.TOOL);
-                    var tier = material.getToolTier();
+        for (GTToolType toolType : GTToolType.getTypes().values()) {
+            for (MaterialRegistry registry : GTCEuAPI.materialManager.getRegistries()) {
+                GTRegistrate registrate = registry.getRegistrate();
+                for (Material material : registry.getAllMaterials()) {
+                    if (material.hasProperty(PropertyKey.TOOL)) {
+                        var property = material.getProperty(PropertyKey.TOOL);
+                        var tier = material.getToolTier();
 
-                    for (GTToolType toolType : GTToolType.getTypes().values()) {
                         if (property.hasType(toolType)) {
                             TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate.item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
                                 .properties(p -> p.craftRemainder(Items.AIR))
