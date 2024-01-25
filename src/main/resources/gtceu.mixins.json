@@ -14,6 +14,7 @@
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
+    "AbstractRegistrateAccessor",
     "BlockBehaviourAccessor",
     "BlockPropertiesAccessor",
     "ChunkGeneratorMixin",
