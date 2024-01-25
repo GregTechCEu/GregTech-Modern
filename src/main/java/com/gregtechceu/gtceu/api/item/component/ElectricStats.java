@@ -28,7 +28,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IDurabilityBar, IComponentCapability {
+public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IComponentCapability {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -184,17 +184,5 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     public static ElectricStats createBattery(long maxCharge, int tier, boolean rechargeable) {
         return ElectricStats.create(maxCharge, tier, rechargeable, true);
-    }
-
-    @Override
-    public float getDurabilityForDisplay(ItemStack stack) {
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
-        return electricItem == null ? 1f : electricItem.getCharge() * 1f / electricItem.getMaxCharge();
-    }
-
-    @Override
-    public boolean isBarVisible(ItemStack stack) {
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
-        return electricItem != null && electricItem.getCharge() < electricItem.getMaxCharge();
     }
 }
