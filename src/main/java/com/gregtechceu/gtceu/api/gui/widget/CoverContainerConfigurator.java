@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
@@ -44,7 +45,7 @@ public class CoverContainerConfigurator extends WidgetGroup {
     @Nullable
     protected CoverBehavior coverBehavior;
     @Nullable
-    protected ConfiguratorPanel.Tab coverConfigurator;
+    protected ConfiguratorPanel.FloatingTab coverConfigurator;
     private boolean needUpdate;
 
     public CoverContainerConfigurator(ICoverable coverable, ConfiguratorPanel panel) {
@@ -171,13 +172,17 @@ public class CoverContainerConfigurator extends WidgetGroup {
     }
 
     protected void updateCoverConfigurator() {
+        if (side == null || coverBehavior == null || !(coverable.getCoverAtSide(side) instanceof IUICover)) return;
         if (this.coverConfigurator != null) {
             this.panel.collapseTab();
+            this.coverConfigurator.collapseTo(18, 30);
+            this.panel.removeWidget(this.coverConfigurator);
             this.coverConfigurator = null;
         }
-        CoverConfigurator configurator = new CoverConfigurator(this.coverable, this.transfer, this.panel);
-        this.coverConfigurator = this.panel.createTab(configurator);
-        coverConfigurator.setGui(this.gui);
+        CoverConfigurator configurator = new CoverConfigurator(this.coverable, this.transfer, this.panel, this.sceneWidget, this.slotWidget, this.side, this.coverBehavior);
+        this.coverConfigurator = this.panel.createFloatingTab(configurator);
+        this.coverConfigurator.setGui(this.gui);
+        this.panel.addWidget(this.coverConfigurator);
         this.panel.expandTab(this.coverConfigurator);
     }
 }

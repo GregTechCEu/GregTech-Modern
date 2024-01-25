@@ -88,6 +88,9 @@ public class ConfiguratorPanel extends WidgetGroup {
             for (int i = 0; i < tabs.size(); i++) {
                 tabs.get(i).collapseTo(0, i * (getTabSize() + 2));
             }
+            if (expanded instanceof FloatingTab) {
+                expanded.collapseTo(0, 0);
+            }
         }
         expanded = null;
     }
@@ -159,8 +162,8 @@ public class ConfiguratorPanel extends WidgetGroup {
         return super.mouseClicked(mouseX, mouseY, button);
     }
 
-    public Tab createTab(IFancyConfigurator configurator) {
-        return new Tab(configurator);
+    public FloatingTab createFloatingTab(IFancyConfigurator configurator) {
+        return new FloatingTab(configurator);
     }
 
     public class Tab extends WidgetGroup {
@@ -297,7 +300,7 @@ public class ConfiguratorPanel extends WidgetGroup {
                     }));
         }
 
-        private void collapseTo(int x, int y) {
+        protected void collapseTo(int x, int y) {
             if (view != null) {
                 view.setVisible(false);
                 view.setActive(false);
@@ -383,6 +386,19 @@ public class ConfiguratorPanel extends WidgetGroup {
         @OnlyIn(Dist.CLIENT)
         public boolean mouseMoved(double mouseX, double mouseY) {
             return super.mouseMoved(mouseX, mouseY) || isMouseOverElement(mouseX, mouseY);
+        }
+    }
+
+    public class FloatingTab extends Tab {
+
+        public FloatingTab(IFancyConfigurator configurator) {
+            super(configurator);
+        }
+
+        @Override
+        public void collapseTo(int x, int y) {
+            super.collapseTo(x, y);
+            ConfiguratorPanel.this.removeWidget(this);
         }
     }
 }

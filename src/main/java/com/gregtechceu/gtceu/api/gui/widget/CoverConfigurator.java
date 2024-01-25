@@ -15,30 +15,24 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+import lombok.AllArgsConstructor;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 
 import javax.annotation.Nullable;
 
+@AllArgsConstructor
 public class CoverConfigurator implements IFancyConfigurator {
     protected final ICoverable coverable;
     protected final IItemTransfer transfer;
     protected final ConfiguratorPanel panel;
-    protected SceneWidget sceneWidget;
-    protected SlotWidget slotWidget;
-    protected ImageWidget background;
+    protected final SceneWidget sceneWidget;
+    protected final SlotWidget slotWidget;
     // runtime
     @Nullable
-    protected Direction side;
+    protected final Direction side;
     @Nullable
-    protected CoverBehavior coverBehavior;
-
-    public CoverConfigurator(ICoverable coverable, IItemTransfer transfer, ConfiguratorPanel panel) {
-        this.coverable = coverable;
-        this.transfer = transfer;
-        this.panel = panel;
-    }
-
+    protected final CoverBehavior coverBehavior;
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.gui.cover_setting.title");
@@ -56,18 +50,12 @@ public class CoverConfigurator implements IFancyConfigurator {
             if (coverable.getCoverAtSide(side) instanceof IUICover iuiCover) {
                 Widget coverConfigurator = iuiCover.createUIWidget();
                 coverConfigurator.setBackground(GuiTextures.BACKGROUND);
-                coverConfigurator.setSelfPosition(new Position(4, 80 - 4));
+                coverConfigurator.setSelfPosition(new Position(4, -4));
                 group.addWidgetAnima(coverConfigurator, new Transform()
                     .offset(-coverConfigurator.getSize().width / 2, -coverConfigurator.getSize().height / 2)
                     .scale(0)
                     .duration(300));
-                sceneWidget.animation(new Animation()
-                    .duration(300)
-                    .size(new Size(Math.max(120, coverConfigurator.getSize().width + 8) - 8, 80 - 8)));
                 group.setSize(new Size(Math.max(120, coverConfigurator.getSize().width + 8), Math.max(80, 80 + coverConfigurator.getSize().height)));
-                background.animation(new Animation()
-                    .duration(300)
-                    .size(group.getSize()));
             }
         }
         return group;
