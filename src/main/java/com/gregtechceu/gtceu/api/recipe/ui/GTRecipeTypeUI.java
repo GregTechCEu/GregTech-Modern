@@ -60,7 +60,7 @@ public class GTRecipeTypeUI {
 
     @Getter
     @Setter
-    private ProgressTexture progressBarTexture = new ProgressTexture();
+    private ProgressTexture progressBarTexture = new ProgressTexture(GuiTextures.PROGRESS_BAR_ARROW.getSubTexture(0, 0, 1, 0.5), GuiTextures.PROGRESS_BAR_ARROW.getSubTexture(0, 0.5, 1, 0.5));
     @Setter
     private SteamTexture steamProgressBarTexture = null;
     @Setter
@@ -124,7 +124,7 @@ public class GTRecipeTypeUI {
 
     public Size getJEISize() {
         Size size = createEditableUITemplate(false, false).createDefault().getSize();
-        return new Size(144, getPropertyHeightShift() + 5 + size.height);
+        return new Size(size.width, getPropertyHeightShift() + 5 + size.height);
     }
 
     public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
@@ -165,7 +165,7 @@ public class GTRecipeTypeUI {
             group.addWidget(inputs);
             group.addWidget(outputs);
 
-            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 58, 23, 20, 20, progressBarTexture);
+            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 78, 23, 20, 20, progressBarTexture);
             progressWidget.setId("progress");
             group.addWidget(progressWidget);
 
@@ -175,7 +175,7 @@ public class GTRecipeTypeUI {
                 .setFillDirection(steamMoveType)
                 : progressBarTexture);
 
-            group.setSize(new Size(Math.max(group.getSize().width, 140), group.getSize().height));
+            group.setSize(new Size(Math.max(group.getSize().width, 176), group.getSize().height));
             return group;
         }, (template, recipeHolder) -> {
             var isJEI = recipeHolder.progressSupplier == ProgressWidget.JEIProgress;
@@ -260,7 +260,7 @@ public class GTRecipeTypeUI {
         int[] inputSlotGrid = determineSlotsGrid(itemCount);
         int itemSlotsToLeft = inputSlotGrid[0];
         int itemSlotsToDown = inputSlotGrid[1];
-        int startInputsX = isOutputs ? 86 : 50 - itemSlotsToLeft * 18;
+        int startInputsX = isOutputs ? 106 : 70 - itemSlotsToLeft * 18;
         int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18);
         boolean wasGroup = itemCountOriginal + fluidCountOriginal == 12;
         if (wasGroup) startInputsY -= 9;
