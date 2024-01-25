@@ -124,7 +124,7 @@ public class GTRecipeTypeUI {
 
     public Size getJEISize() {
         Size size = createEditableUITemplate(false, false).createDefault().getSize();
-        return new Size(size.width, (recipeType.getDataInfos().size() + recipeType.getMaxTooltips()) * 10 + 5 + size.height);
+        return new Size(144, getPropertyHeightShift() + 5 + size.height);
     }
 
     public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
@@ -175,7 +175,7 @@ public class GTRecipeTypeUI {
                 .setFillDirection(steamMoveType)
                 : progressBarTexture);
 
-            group.setSize(new Size(Math.max(group.getSize().width, 106), group.getSize().height));
+            group.setSize(new Size(Math.max(group.getSize().width, 140), group.getSize().height));
             return group;
         }, (template, recipeHolder) -> {
             var isJEI = recipeHolder.progressSupplier == ProgressWidget.JEIProgress;
@@ -260,7 +260,7 @@ public class GTRecipeTypeUI {
         int[] inputSlotGrid = determineSlotsGrid(itemCount);
         int itemSlotsToLeft = inputSlotGrid[0];
         int itemSlotsToDown = inputSlotGrid[1];
-        int startInputsX = isOutputs ? 86 : 54 - itemSlotsToLeft * 18;
+        int startInputsX = isOutputs ? 86 : 50 - itemSlotsToLeft * 18;
         int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18);
         boolean wasGroup = itemCountOriginal + fluidCountOriginal == 12;
         if (wasGroup) startInputsY -= 9;
@@ -355,6 +355,14 @@ public class GTRecipeTypeUI {
             return new GuiTextureGroup(base, slotOverlays.get(overlayKey));
         }
         return base;
+    }
+
+    /**
+     * @return the height used to determine size of background texture in JEI
+     */
+    public int getPropertyHeightShift() {
+        int maxPropertyCount = recipeType.getMaxTooltips() + recipeType.getDataInfos().size();
+        return maxPropertyCount * 10; // GTRecipeWrapper#LINE_HEIGHT
     }
 
     public void appendJEIUI(GTRecipe recipe, WidgetGroup widgetGroup) {
