@@ -36,7 +36,6 @@
     "RecipeManagerMixin",
     "RepairItemRecipeMixin",
     "ServerChunkProviderMixin",
-    "ServerPlayerGameModeMixin",
     "ShapedRecipeAccessor",
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
