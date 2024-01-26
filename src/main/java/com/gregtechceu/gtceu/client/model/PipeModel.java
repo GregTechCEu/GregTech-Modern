@@ -28,7 +28,6 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.border.Border;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -57,12 +56,10 @@ public class PipeModel {
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY_DL = GTCEu.id("block/pipe/blocked/pipe_blocked_dl");
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY_DR = GTCEu.id("block/pipe/blocked/pipe_blocked_dr");
     public static final ResourceLocation PIPE_BLOCKED_OVERLAY_LR = GTCEu.id("block/pipe/blocked/pipe_blocked_lr");
-    private static final EnumMap<Direction, EnumMap<Border, Direction>> FACE_BORDER_MAP = new EnumMap<>(
-        Direction.class);
+    private static final EnumMap<Direction, EnumMap<Border, Direction>> FACE_BORDER_MAP = new EnumMap<>(Direction.class);
     private static final Int2ObjectMap<TextureAtlasSprite> RESTRICTOR_MAP = new Int2ObjectOpenHashMap<>();
     private static boolean isRestrictorInitialized;
 
-    @SuppressWarnings("unused")
     public static void initializeRestrictor(Function<ResourceLocation, TextureAtlasSprite> atlas) {
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_UP), Border.TOP);
         addRestrictor(atlas.apply(PIPE_BLOCKED_OVERLAY_DOWN), Border.BOTTOM);
@@ -136,15 +133,11 @@ public class PipeModel {
         var shapes = new ArrayList<VoxelShape>(7);
         shapes.add(Shapes.create(coreCube));
         for (Direction side : GTUtil.DIRECTIONS) {
-            if (isConnected(connections, side)) {
+            if (PipeBlockEntity.isConnected(connections, side)) {
                 shapes.add(Shapes.create(sideCubes.get(side)));
             }
         }
         return shapes.stream().reduce(Shapes.empty(), Shapes::or);
-    }
-
-    public boolean isConnected(int connections, Direction side) {
-        return (connections >> side.ordinal() & 1) == 1;
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -182,7 +175,7 @@ public class PipeModel {
                 return quads;
             }
 
-            if (isConnected(connections, side)) { // side connected
+            if (PipeBlockEntity.isConnected(connections, side)) { // side connected
                 List<BakedQuad> quads = new ArrayList<>();
                 quads.add(FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV().tintIndex(1).bake());
                 if (secondaryEndSprite != null) {
@@ -193,25 +186,14 @@ public class PipeModel {
                 }
                 if (sideOverlaySprite != null) {
                     for (Direction face : GTUtil.DIRECTIONS) {
-                        if (face != side && face != side.getOpposite()) {
+                        if (face.getAxis() != side.getAxis()) {
                             quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(2).bake());
                         }
                     }
                 }
-                int borderMask = 0;
-                if (blockedConnections != 0) {
-                    for (Border border : Border.VALUES) {
-                        Direction borderSide = getSideAtBorder(side, border);
-                        if (PipeBlockEntity.isFaceBlocked(blockedConnections, borderSide) &&
-                            PipeBlockEntity.isConnected(connections, borderSide)) {
-                            // only render when the side is blocked *and* connected
-                            borderMask |= border.mask;
-                        }
-                    }
-                }
-                TextureAtlasSprite blockedOverlay = RESTRICTOR_MAP.get(borderMask);
-                if (blockedOverlay != null) {
-                    quads.add(FaceQuad.builder(side, blockedOverlay).cube(sideCubes.get(side).minmax(coreCube).inflate(0.002)).cubeUV().bake());
+                int borderMask = computeBorderMask(blockedConnections, connections, side);
+                if (borderMask != 0) {
+                    quads.add(FaceQuad.builder(side, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(side).inflate(0.002)).cubeUV().bake());
                 }
                 return quads;
             }
@@ -223,7 +205,7 @@ public class PipeModel {
         if (thickness < 1) { // non full block
             // render core cube
             for (Direction face : GTUtil.DIRECTIONS) {
-                if (!isConnected(connections, face)) {
+                if (!PipeBlockEntity.isConnected(connections, face)) {
                     quads.add(FaceQuad.builder(face, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                     if (secondarySideSprite != null) {
                         quads.add(FaceQuad.builder(face, secondarySideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
@@ -232,19 +214,7 @@ public class PipeModel {
                 // render each connected side
                 for (Direction facing : GTUtil.DIRECTIONS) {
                     if (facing.getAxis() != face.getAxis()) {
-                        if (isConnected(connections, facing)) {
-                            int borderMask = 0;
-                            if (blockedConnections != 0) {
-                                for (Border border : Border.VALUES) {
-                                    Direction borderSide = getSideAtBorder(face, border);
-                                    if (PipeBlockEntity.isFaceBlocked(blockedConnections, borderSide) &&
-                                        PipeBlockEntity.isConnected(connections, borderSide)) {
-                                        // only render when the side is blocked *and* connected
-                                        borderMask |= border.mask;
-                                    }
-                                }
-                            }
-
+                        if (PipeBlockEntity.isConnected(connections, facing)) {
                             quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
                             if (secondarySideSprite != null) {
                                 quads.add(FaceQuad.builder(face, secondarySideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
@@ -252,9 +222,10 @@ public class PipeModel {
                             if (sideOverlaySprite != null) {
                                 quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(2).bake());
                             }
-                            TextureAtlasSprite blockedOverlay = RESTRICTOR_MAP.get(borderMask);
-                            if (blockedOverlay != null) {
-                                quads.add(FaceQuad.builder(face, blockedOverlay).cube(sideCubes.get(facing).minmax(coreCube).inflate(0.002)).rotation(BlockModelRotation.X180_Y180).cubeUV().bake());
+
+                            int borderMask = computeBorderMask(blockedConnections, connections, face);
+                            if (borderMask != 0) {
+                                quads.add(FaceQuad.builder(face, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(facing).inflate(0.002)).cubeUV().bake());
                             }
                         }
                     }
@@ -299,8 +270,7 @@ public class PipeModel {
         endOverlaySprite = null;
     }
 
-    private static EnumMap<Border, Direction> borderMap(Direction topSide, Direction bottomSide, Direction leftSide,
-                                                         Direction rightSide) {
+    private static EnumMap<Border, Direction> borderMap(Direction topSide, Direction bottomSide, Direction leftSide, Direction rightSide) {
         EnumMap<Border, Direction> sideMap = new EnumMap<>(Border.class);
         sideMap.put(Border.TOP, topSide);
         sideMap.put(Border.BOTTOM, bottomSide);
@@ -319,6 +289,21 @@ public class PipeModel {
 
     protected static Direction getSideAtBorder(Direction side, Border border) {
         return FACE_BORDER_MAP.get(side).get(border);
+    }
+
+    protected static int computeBorderMask(int blockedConnections, int connections, Direction side) {
+        int borderMask = 0;
+        if (blockedConnections != 0) {
+            for (Border border : Border.VALUES) {
+                Direction borderSide = getSideAtBorder(side, border);
+                if (PipeBlockEntity.isFaceBlocked(blockedConnections, borderSide) &&
+                    PipeBlockEntity.isConnected(connections, borderSide)) {
+                    // only render when the side is blocked *and* connected
+                    borderMask |= border.mask;
+                }
+            }
+        }
+        return borderMask;
     }
 
     public enum Border {
