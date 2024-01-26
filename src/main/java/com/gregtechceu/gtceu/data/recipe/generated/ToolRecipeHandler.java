@@ -223,7 +223,6 @@ public class ToolRecipeHandler {
                     'S', rod,
                     'W', stick);
 
-            // D is inferred as the dye key
             addDyeableToolRecipe(provider, material, GTToolType.CROWBAR, true,
                     "hDS", "DSD", "SDf",
                     'S', rod);
@@ -240,65 +239,76 @@ public class ToolRecipeHandler {
             final UnificationEntry steelRing = new UnificationEntry(TagPrefix.ring, GTMaterials.Steel);
 
             // drill
-            toolPrefix = TagPrefix.toolHeadDrill;
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("drill_head_%s", material.getName()),
+            if (property.hasType(GTToolType.DRILL_LV)) {
+                toolPrefix = TagPrefix.toolHeadDrill;
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("drill_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "XSX", "XSX", "ShS",
                     'X', plate,
                     'S', steelPlate);
 
-            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.DRILL_LV, GTToolType.DRILL_MV, GTToolType.DRILL_HV, GTToolType.DRILL_EV, GTToolType.DRILL_IV}, provider);
+                addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.DRILL_LV, GTToolType.DRILL_MV, GTToolType.DRILL_HV, GTToolType.DRILL_EV, GTToolType.DRILL_IV}, provider);
+            }
+
 
             // chainsaw
-            toolPrefix = TagPrefix.toolHeadChainsaw;
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("chainsaw_head_%s", material.getName()),
+            if (property.hasType(GTToolType.CHAINSAW_LV)) {
+                toolPrefix = TagPrefix.toolHeadChainsaw;
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("chainsaw_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "SRS", "XhX", "SRS",
                     'X', plate,
                     'S', steelPlate,
                     'R', steelRing);
 
-            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.CHAINSAW_LV}, provider);
+                addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.CHAINSAW_LV}, provider);
+            }
 
             // wrench
-            toolPrefix = TagPrefix.toolHeadWrench;
-            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.WRENCH_LV, GTToolType.WRENCH_HV, GTToolType.WRENCH_IV}, provider);
+            if (property.hasType(GTToolType.WRENCH_LV)) {
+                toolPrefix = TagPrefix.toolHeadWrench;
+                addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.WRENCH_LV, GTToolType.WRENCH_HV, GTToolType.WRENCH_IV}, provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("wrench_head_%s", material.getName()),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("wrench_head_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "hXW", "XRX", "WXd",
                     'X', plate,
                     'R', steelRing,
                     'W', new UnificationEntry(TagPrefix.screw, GTMaterials.Steel));
+            }
 
             // buzzsaw
-            toolPrefix = TagPrefix.toolHeadBuzzSaw;
-            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.BUZZSAW}, provider);
+            if (property.hasType(GTToolType.BUZZSAW)) {
+                toolPrefix = TagPrefix.toolHeadBuzzSaw;
+                addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.BUZZSAW}, provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("buzzsaw_blade_%s", material.getName()),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("buzzsaw_blade_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "sXh", "X X", "fXx",
                     'X', plate);
 
-            if (material.hasFlag(GENERATE_GEAR)) {
-                GTRecipeTypes.LATHE_RECIPES.recipeBuilder("buzzsaw_gear_" + material.getName())
+                if (material.hasFlag(GENERATE_GEAR)) {
+                    GTRecipeTypes.LATHE_RECIPES.recipeBuilder("buzzsaw_gear_" + material.getName())
                         .inputItems(TagPrefix.gear, material)
                         .outputItems(toolPrefix, material)
                         .duration((int) material.getMass() * 4)
                         .EUt(8L * voltageMultiplier)
                         .save(provider);
+                }
             }
         }
 
         // screwdriver
-        if (material.hasFlag(GENERATE_LONG_ROD)) {
-            toolPrefix = TagPrefix.toolHeadScrewdriver;
-            addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.SCREWDRIVER_LV}, provider);
+        if (property.hasType(GTToolType.SCREWDRIVER_LV)) {
+            if (material.hasFlag(GENERATE_LONG_ROD)) {
+                toolPrefix = TagPrefix.toolHeadScrewdriver;
+                addElectricToolRecipe(toolPrefix, material, new GTToolType[]{GTToolType.SCREWDRIVER_LV}, provider);
 
-            VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
+                VanillaRecipeHelper.addShapedRecipe(provider, String.format("screwdriver_tip_%s", material.getName()),
                     ChemicalHelper.get(toolPrefix, material),
                     "fR", " h",
                     'R', new UnificationEntry(TagPrefix.rodLong, material));
+            }
         }
     }
 
@@ -333,6 +343,9 @@ public class ToolRecipeHandler {
         }
     }
 
+    /**
+     * {@code D} is inferred as the dye key
+     */
     public static void addDyeableToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;

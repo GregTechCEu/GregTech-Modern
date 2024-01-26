@@ -6,6 +6,8 @@
   "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
   "client": [
     "BlockModelMixin",
+    "GuiGraphicsAccessor",
+    "GuiGraphicsMixin",
     "LevelRendererMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
@@ -13,6 +15,7 @@
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
+    "AbstractRegistrateAccessor",
     "BlockBehaviourAccessor",
     "BlockPropertiesAccessor",
     "ChunkGeneratorMixin",
@@ -43,11 +46,11 @@
     "create.RotationPropagatorMixin",
     "emi.EmiRecipeHandlerMixin",
     "emi.FluidEmiStackMixin",
+    "jei.FluidHelperMixin",
     "kjs.RecipeEventJSMixin",
     "rei.InputSlotCrafterMixin",
     "rei.RecipeFinderMixin",
-    "top.ConfigMixin",
-    "jei.FluidHelperMixin"
+    "top.ConfigMixin"
   ],
   "injectors": {
     "defaultRequire": 1,

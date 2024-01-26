@@ -499,6 +499,9 @@ public class GTToolType {
         }
 
         public GTToolType build() {
+            if (toolClassNames.isEmpty()) {
+                toolClassNames.add(name);
+            }
             if (this.symbol == null) {
                 return get();
             }

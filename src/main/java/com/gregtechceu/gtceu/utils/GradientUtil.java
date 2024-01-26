@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.utils;
 
 
+import net.minecraft.util.FastColor;
 import net.minecraft.util.Tuple;
+import org.apache.commons.lang3.tuple.Pair;
 
 public class GradientUtil {
 
@@ -68,7 +70,7 @@ public class GradientUtil {
         return a << 24 | r << 16 | g << 8 | b;
     }
 
-    public static Tuple<float[], float[]> getGradient(int rgb, int luminanceDifference) {
+    public static Pair<Integer, Integer> getGradient(int rgb, int luminanceDifference) {
         float[] hsl = RGBtoHSL(rgb);
         float[] upshade = new float[3];
         float[] downshade = new float[3];
@@ -78,9 +80,9 @@ public class GradientUtil {
         if (upshade[2] > 100.0F) upshade[2] = 100.0F;
         downshade[2] = downshade[2] - luminanceDifference;
         if (downshade[2] < 0.0F) downshade[2] = 0.0F;
-        float[] upshadeRgb = toRGB(upshade);
-        float[] downshadeRgb = toRGB(downshade);
-        return new Tuple<>(downshadeRgb, upshadeRgb);
+        int upshadeRgb = toRGB(upshade);
+        int downshadeRgb = toRGB(downshade);
+        return Pair.of(downshadeRgb, upshadeRgb);
     }
 
     public static float[] RGBtoHSL(int rgbColor) {
@@ -122,11 +124,11 @@ public class GradientUtil {
         return new float[] {h, s * 100, l * 100};
     }
 
-    public static float[] toRGB(float[] hsv) {
+    public static int toRGB(float[] hsv) {
         return toRGB(hsv[0], hsv[1], hsv[2]);
     }
 
-    public static float[] toRGB(float h, float s, float l) {
+    public static int toRGB(float h, float s, float l) {
         // Formula needs all values between 0 - 1
         h = h % 360.0F;
         h /= 360.0F;
@@ -142,15 +144,11 @@ public class GradientUtil {
 
         float p = 2 * l - q;
 
-        float r = Math.max(0, hueToRGB(p, q, h + (1.0F / 3.0F)));
-        float g = Math.max(0, hueToRGB(p, q, h));
-        float b = Math.max(0, hueToRGB(p, q, h - (1.0F / 3.0F)));
+        int r = (int) (Math.max(0, hueToRGB(p, q, h + (1.0F / 3.0F))) * 255);
+        int g = (int) (Math.max(0, hueToRGB(p, q, h)) * 255);
+        int b = (int) (Math.max(0, hueToRGB(p, q, h - (1.0F / 3.0F))) * 255);
 
-        r = Math.min(r, 1.0F);
-        g = Math.min(g, 1.0F);
-        b = Math.min(b, 1.0F);
-
-        return new float[]{r, g, b};
+        return FastColor.ARGB32.color(255, r, g, b);
     }
 
     private static float hueToRGB(float p, float q, float h) {

@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
@@ -90,7 +92,7 @@ public class OreRecipeHandler {
             builder.save(provider);
 
             builder = MACERATOR_RECIPES.recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_raw_ore")
-                    .inputItems(orePrefix, material)
+                    .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])))
                     .outputItems(GTUtil.copyAmount(2 * oreMultiplier, crushedStack))
                     .chancedOutput(byproductStack, 1400, 850)
                     .EUt(2)
