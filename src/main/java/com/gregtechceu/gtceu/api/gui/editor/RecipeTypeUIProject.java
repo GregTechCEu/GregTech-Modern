@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.editor;
 
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -107,10 +109,10 @@ public class RecipeTypeUIProject extends UIProject {
             } else {
                 menu.remove("ldlib.gui.editor.menu.save");
                 menu.leaf(Icons.SAVE, "ldlib.gui.editor.menu.save", () -> {
-                    var path = new File(LDLib.location, "assets/%s/ui/recipe_type".formatted(recipeType.registryName.getNamespace()));
+                    var path = new File(LDLib.getLDLibDir(), "assets/%s/ui/recipe_type".formatted(recipeType.registryName.getNamespace()));
                     path.mkdirs();
                     saveProject(new File(path, recipeType.registryName.getPath() + "." + this.getRegisterUI().name()));
-                    recipeType.reloadCustomUI();
+                    recipeType.getRecipeUI().reloadCustomUI();
                 });
             }
         } else if (name.equals("template_tab")) {
@@ -128,11 +130,11 @@ public class RecipeTypeUIProject extends UIProject {
                     }
                     m.leaf(icon, recipeType.registryName.toLanguageKey(), () -> {
                         root.clearAllWidgets();
-                        if (recipeType.hasCustomUI()) {
-                            var nbt = recipeType.getCustomUI();
+                        if (recipeType.getRecipeUI().hasCustomUI()) {
+                            var nbt = recipeType.getRecipeUI().getCustomUI();
                             IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false);
                         } else {
-                            var widget = recipeType.createEditableUITemplate(false, false).createDefault();
+                            var widget = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
                             root.setSize(widget.getSize());
                             for (Widget children : widget.widgets) {
                                 root.addWidget(children);

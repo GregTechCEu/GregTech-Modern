@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.custom.PlayerInventoryWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -20,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 public class FancyMachineUIWidget extends WidgetGroup {
     protected final IFancyUIProvider fancyUIProvider;
     protected final TabsWidget tabsWidget;
+    protected final VerticalTabsWidget sideTabsWidget;
     protected final WidgetGroup pageContainer;
     protected final ConfiguratorPanel configuratorPanel;
     protected final TooltipsPanel tooltipsPanel;
@@ -38,8 +39,13 @@ public class FancyMachineUIWidget extends WidgetGroup {
             playerInventory = null;
         }
         addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
+        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, 200));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
-        addWidget(this.configuratorPanel = new ConfiguratorPanel());
+        addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), 102));
+
+        this.sideTabsWidget.setTabTexture(new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png").getSubTexture(0, 1 / 3f, 0.5f, 1 / 3f));
+        this.sideTabsWidget.setTabHoverTexture(new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png").getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
+        this.sideTabsWidget.setTabPressedTexture(new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png").getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
     }
 
     @Override
@@ -50,10 +56,11 @@ public class FancyMachineUIWidget extends WidgetGroup {
         }
         setupFancyUI(this.fancyUIProvider);
         this.fancyUIProvider.setupTabs(tabsWidget);
+        this.fancyUIProvider.attachSideTabs(sideTabsWidget);
     }
 
     public void setupFancyUI(IFancyUIProvider fancyUI) {
-        var mainPage = fancyUI.createMainPage();
+        var mainPage = fancyUI.createMainPage(this);
 
         // clear up
         this.pageContainer.clearAllWidgets();
@@ -67,6 +74,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
             getGui().setSize(getSize().width, getSize().height);
         }
         this.tabsWidget.setSize(new Size(size.width, 24));
+        this.sideTabsWidget.setSize(new Size(24, size.height));
         this.pageContainer.setBackground(GuiTextures.BACKGROUND);
         this.pageContainer.setSize(size);
         this.tooltipsPanel.setSelfPosition(new Position(size.width + 2, 2));

@@ -7,6 +7,7 @@
   "client": [
     "BlockModelMixin",
     "GuiGraphicsAccessor",
+    "GuiGraphicsMixin",
     "LevelRendererMixin",
     "MinecraftMixin",
     "ModelManagerMixin",
@@ -14,6 +15,7 @@
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
+    "AbstractRegistrateAccessor",
     "BlockBehaviourAccessor",
     "BlockPropertiesAccessor",
     "ChunkGeneratorMixin",

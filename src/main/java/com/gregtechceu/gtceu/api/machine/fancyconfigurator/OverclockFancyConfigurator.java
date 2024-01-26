@@ -37,8 +37,8 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
     }
 
     @Override
-    public String getTitle() {
-        return "gtceu.gui.overclock.title";
+    public Component getTitle() {
+        return Component.translatable("gtceu.gui.overclock.title");
     }
 
     @Override
@@ -176,6 +176,6 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
 
     @Override
     public List<Component> getTooltips() {
-        return List.of(Component.translatable(getTitle()), Component.translatable("gtceu.gui.overclock.range", GTValues.VNF[overclockMachine.getMinOverclockTier()], GTValues.VNF[overclockMachine.getMaxOverclockTier()]));
+        return List.of(getTitle(), Component.translatable("gtceu.gui.overclock.range", GTValues.VNF[overclockMachine.getMinOverclockTier()], GTValues.VNF[overclockMachine.getMaxOverclockTier()]));
     }
 }

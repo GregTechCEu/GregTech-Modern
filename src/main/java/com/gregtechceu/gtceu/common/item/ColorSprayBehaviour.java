@@ -23,7 +23,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Tuple;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +39,7 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -129,7 +130,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private final Supplier<ItemStack> empty;
     private final DyeColor color;
     public final int totalUses;
-    private final Tuple<float[], float[]> durabilityBarColors;
+    private final Pair<Integer, Integer> durabilityBarColors;
 
 
     public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
@@ -143,28 +144,36 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public float getDurabilityForDisplay(ItemStack stack) {
-        return (float) getUsesLeft(stack) / totalUses;
+    public int getDurabilityForDisplay(ItemStack stack) {
+        return getUsesLeft(stack) / totalUses;
+    }
+
+    @Override
+    public int getMaxDurability(ItemStack stack) {
+        return totalUses;
     }
 
     @Override
     public int getBarColor(ItemStack stack) {
         float f = Math.max(0.0F, getDurabilityForDisplay(stack));
-        return mixColors(f, durabilityBarColors.getA(), durabilityBarColors.getB());
+        return mixColors(f, durabilityBarColors.getLeft(), durabilityBarColors.getRight());
     }
 
-    private static int mixColors(float ratio, float[]... colors) {
-        float r = 0, g = 0, b = 0;
+    @Nullable
+    @Override
+    public Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
+        return durabilityBarColors;
+    }
+
+    private static int mixColors(float ratio, int... colors) {
+        int r = 0, g = 0, b = 0;
         ratio = ratio * (1.0f / colors.length);
-        for (float[] color : colors) {
-            r += color[0] * ratio;
-            g += color[1] * ratio;
-            b += color[2] * ratio;
+        for (int color : colors) {
+            r += FastColor.ARGB32.red(color) * ratio;
+            g += FastColor.ARGB32.green(color) * ratio;
+            b += FastColor.ARGB32.blue(color) * ratio;
         }
-        //noinspection PointlessBitwiseExpression
-        return ((int)(r * 255) & 0xFF) << 16 |
-                ((int)(g * 255) & 0xFF) << 8 |
-                ((int)(b * 255) & 0xFF) << 0;
+        return FastColor.ARGB32.color(255, r, g, b);
     }
 
     @Override

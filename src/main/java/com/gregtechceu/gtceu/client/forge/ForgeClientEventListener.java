@@ -11,6 +11,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
@@ -29,7 +30,7 @@ import java.util.List;
 public class ForgeClientEventListener {
 
     @SubscribeEvent
-    public static void registerItemStackCapabilities(RenderHighlightEvent.Block event) {
+    public static void onBlockHighlightEvent(RenderHighlightEvent.Block event) {
         BlockHighLightRenderer.renderBlockHighLight(event.getPoseStack(), event.getCamera(), event.getTarget(), event.getMultiBufferSource(), event.getPartialTick());
     }
 

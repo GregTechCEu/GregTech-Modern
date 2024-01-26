@@ -1260,7 +1260,7 @@ public class RecipeAddition {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed", new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_bed"))), "WWW", "PPP", "FrF",
             'W', BuiltInRegistries.ITEM.get(new ResourceLocation(colorName + "_carpet")),
-            'P', new UnificationEntry(TagPrefix.plank, GTMaterials.Wood),
+            'P', TagPrefix.plank,
             'F', ItemTags.WOODEN_FENCES);
     }
 

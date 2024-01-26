@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -30,6 +31,7 @@ import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
+import com.lowdragmc.lowdraglib.utils.Size;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
@@ -190,36 +192,22 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     //***********     GUI    ***********//
     //////////////////////////////////////
 
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, inventorySize)-> new EditableMachineUI("misc", path, () -> {
-        var template =  createTemplate(inventorySize).createDefault();
-        var energyBar = createEnergyBar().createDefault();
-        var batterySlot = createBatterySlot().createDefault();
-        var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-        batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-        energyGroup.addWidget(energyBar);
-        energyGroup.addWidget(batterySlot);
-        var group = new WidgetGroup(0, 0,
-                Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-        var size = group.getSize();
-        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
+        WidgetGroup template = createTemplate(inventorySize).createDefault();
+        SlotWidget batterySlot = createBatterySlot().createDefault();
+        batterySlot.setSelfPosition(new Position(79, 62));
+        WidgetGroup group = new WidgetGroup(0, 0, Math.max(template.getSize().width + 12, 172), template.getSize().height + 8);
+        group.addWidget(batterySlot);
+        Size size = group.getSize();
 
         template.setSelfPosition(new Position(
-                (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
+                (size.width - 4 - template.getSize().width) / 2 + 4,
                 (size.height - template.getSize().height) / 2));
 
-        group.addWidget(energyGroup);
         group.addWidget(template);
         return group;
     }, (template, machine) -> {
         if (machine instanceof MinerMachine minerMachine) {
-            minerMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeType.RecipeHolder(minerMachine.recipeLogic::getProgressPercent,
-                            minerMachine.importItems.storage,
-                            minerMachine.exportItems.storage,
-                            new FluidTransferList(minerMachine.importFluids.storages),
-                            new FluidTransferList(minerMachine.exportFluids.storages),
-                            false, false));
             createTemplate(inventorySize).setupUI(template, minerMachine);
             createEnergyBar().setupUI(template, minerMachine);
             createBatterySlot().setupUI(template, minerMachine);
@@ -227,7 +215,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     }));
 
     protected static EditableUI<WidgetGroup, MinerMachine> createTemplate(int inventorySize) {
-        return new EditableUI<>("energy_container", WidgetGroup.class, () -> {
+        return new EditableUI<>("miner", WidgetGroup.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
             int width = rowSize * 18 + 120;
             int height = Math.max(rowSize * 18, 80);

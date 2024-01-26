@@ -42,7 +42,9 @@ public class GTREIPlugin implements REIClientPlugin {
         registry.add(new GTBedrockFluidDisplayCategory());
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                registry.add(new GTRecipeTypeDisplayCategory(gtRecipeType));
+                if (gtRecipeType.getRecipeUI().isJEIVisible()) {
+                    registry.add(new GTRecipeTypeDisplayCategory(gtRecipeType));
+                }
             }
         }
         // workstations
