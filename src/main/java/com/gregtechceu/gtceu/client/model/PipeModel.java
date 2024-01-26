@@ -15,7 +15,6 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -84,16 +83,16 @@ public class PipeModel {
         FACE_BORDER_MAP.put(Direction.UP,
             borderMap(Direction.NORTH, Direction.SOUTH, Direction.WEST, Direction.EAST));
         FACE_BORDER_MAP.put(Direction.NORTH,
-            borderMap(Direction.UP, Direction.DOWN, Direction.EAST, Direction.WEST));
+            borderMap(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST));
         FACE_BORDER_MAP.put(Direction.SOUTH,
-            borderMap(Direction.UP, Direction.DOWN, Direction.WEST, Direction.EAST));
+            borderMap(Direction.DOWN, Direction.UP, Direction.WEST, Direction.EAST));
         FACE_BORDER_MAP.put(Direction.WEST,
-            borderMap(Direction.UP, Direction.DOWN, Direction.NORTH, Direction.SOUTH));
+            borderMap(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH));
         FACE_BORDER_MAP.put(Direction.EAST,
-            borderMap(Direction.UP, Direction.DOWN, Direction.SOUTH, Direction.NORTH));
+            borderMap(Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH));
     }
     
-    public final static int ITEM_CONNECTIONS = 0b1100;
+    public final static int ITEM_CONNECTIONS = 0b001100;
     public final float thickness;
     public final AABB coreCube;
     public final Map<Direction, AABB> sideCubes;
@@ -105,7 +104,7 @@ public class PipeModel {
     public ResourceLocation sideOverlayTexture, endOverlayTexture;
 
     @OnlyIn(Dist.CLIENT)
-    TextureAtlasSprite sideSprite, endSprite, secondarySideSprite, secondaryEndSprite, sideOverlaySprite, endOverlaySprite, blockedSprite;
+    TextureAtlasSprite sideSprite, endSprite, secondarySideSprite, secondaryEndSprite, sideOverlaySprite, endOverlaySprite;
 
     public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture, @Nullable Supplier<@Nullable ResourceLocation> secondarySideTexture, @Nullable Supplier<@Nullable ResourceLocation> secondaryEndTexture) {
         this.sideTexture = sideTexture;
@@ -193,7 +192,7 @@ public class PipeModel {
                 }
                 int borderMask = computeBorderMask(blockedConnections, connections, side);
                 if (borderMask != 0) {
-                    quads.add(FaceQuad.builder(side, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(side).inflate(0.002)).cubeUV().bake());
+                    quads.add(FaceQuad.builder(side, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(side)).cubeUV().bake());
                 }
                 return quads;
             }
@@ -222,10 +221,9 @@ public class PipeModel {
                             if (sideOverlaySprite != null) {
                                 quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(2).bake());
                             }
-
                             int borderMask = computeBorderMask(blockedConnections, connections, face);
                             if (borderMask != 0) {
-                                quads.add(FaceQuad.builder(face, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(facing).inflate(0.002)).cubeUV().bake());
+                                quads.add(FaceQuad.builder(face, RESTRICTOR_MAP.get(borderMask)).cube(sideCubes.get(facing)).cubeUV().bake());
                             }
                         }
                     }

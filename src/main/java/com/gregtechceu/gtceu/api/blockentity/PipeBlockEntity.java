@@ -389,11 +389,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public static boolean isFaceBlocked(int blockedConnections, Direction side) {
-        return (blockedConnections & (1 << side.ordinal())) != 0;
+        return (blockedConnections & (1 << side.ordinal())) > 0;
     }
 
     public static boolean isConnected(int connections, Direction side) {
-        return (connections & (1 << side.ordinal())) != 0;
+        return (connections & (1 << side.ordinal())) > 0;
     }
 
 }
