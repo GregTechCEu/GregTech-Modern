@@ -26,14 +26,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
-import java.util.HashMap;
-import java.util.Map;
 
 public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeProperties> {
     protected WeakReference<ItemPipeNet> currentItemPipeNet = new WeakReference<>(null);
@@ -72,7 +69,7 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
 
             ensureHandlersInitialized();
             checkNetwork();
-            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, true))));
+            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, false))));
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
@@ -180,6 +177,6 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
         if (!useCoverCapability || side == null) return handler;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemTransferCap(side, handler) : handler;
+        return cover != null ? cover.getItemTransferCap(handler) : handler;
     }
 }

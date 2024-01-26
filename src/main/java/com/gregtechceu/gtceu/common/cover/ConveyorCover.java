@@ -46,7 +46,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -99,7 +98,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected @Nullable IItemTransfer getOwnItemTransfer() {
-        return coverHolder.getItemTransferCap(attachedSide, false);
+        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
     }
 
     protected @Nullable IItemTransfer getAdjacentItemTransfer() {
@@ -451,11 +450,18 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     //***    CAPABILITY OVERRIDE    ***//
     /////////////////////////////////////
 
-    private final Map<Direction, IItemTransfer> itemTransferWrappers = new EnumMap<>(Direction.class);
+    private CoverableItemTransferWrapper itemHandlerWrapper;
 
+    @Nullable
     @Override
-    public IItemTransfer getItemTransferCap(Direction side, IItemTransfer defaultValue) {
-        return itemTransferWrappers.computeIfAbsent(side, s -> new CoverableItemTransferWrapper(defaultValue));
+    public IItemTransfer getItemTransferCap(@Nullable IItemTransfer defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+        if (itemHandlerWrapper == null || itemHandlerWrapper.delegate != defaultValue) {
+            this.itemHandlerWrapper = new CoverableItemTransferWrapper(defaultValue);
+        }
+        return itemHandlerWrapper;
     }
 
     private class CoverableItemTransferWrapper extends ItemTransferDelegate {

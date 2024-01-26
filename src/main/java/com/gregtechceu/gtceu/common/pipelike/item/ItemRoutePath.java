@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
@@ -51,7 +50,7 @@ public class ItemRoutePath implements IRoutePath<IItemTransfer> {
 
     @Override
     public @Nullable IItemTransfer getHandler(Level world) {
-        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos(), getTargetFacing());
+        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
     }
 
     public boolean matchesFilters(ItemStack stack) {

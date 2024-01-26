@@ -65,6 +65,6 @@ public class ItemPipeNet extends PipeNet<ItemPipeProperties> {
 
     @Override
     protected ItemPipeProperties readNodeData(CompoundTag tagCompound) {
-        return new ItemPipeProperties(tagCompound.getInt("Range"), tagCompound.getFloat("Rate"));
+        return new ItemPipeProperties(tagCompound.getInt("Resistance"), tagCompound.getFloat("Rate"));
     }
 }

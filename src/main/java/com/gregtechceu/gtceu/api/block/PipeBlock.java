@@ -311,7 +311,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 if (GTToolType.WIRE_CUTTER.itemTags.stream().anyMatch(held::is) || GTToolType.WRENCH.itemTags.stream().anyMatch(held::is) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
-                    return Shapes.or(Shapes.block(), shape);
+                    return Shapes.block();
                 }
             }
             return shape;

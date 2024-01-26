@@ -39,6 +39,6 @@ public class EnergyRoutePath implements IRoutePath<IEnergyContainer> {
 
     @Nullable
     public IEnergyContainer getHandler(Level world) {
-        return GTCapabilityHelper.getEnergyContainer(world, getHandlerPos(), targetFacing.getOpposite());
+        return GTCapabilityHelper.getEnergyContainer(world, getHandlerPos().relative(targetFacing), targetFacing.getOpposite());
     }
 }

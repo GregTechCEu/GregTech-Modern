@@ -309,13 +309,12 @@ public class ItemNetHandler implements IItemTransfer {
         if (allowed == 0 || !routePath.matchesFilters(stack)) {
             return stack;
         }
-        CoverBehavior pipeCover = routePath.getTargetPipe().getCoverContainer()
-            .getCoverAtSide(routePath.getTargetFacing());
+        CoverBehavior pipeCover = routePath.getTargetPipe().getCoverContainer().getCoverAtSide(routePath.getTargetFacing());
         CoverBehavior tileCover = getCoverOnNeighbour(routePath.getTargetPipe().getPipePos(), routePath.getTargetFacing());
 
         if (pipeCover != null) {
             testHandler.setStackInSlot(0, stack.copy());
-            IItemTransfer itemHandler = pipeCover.getItemTransferCap(pipeCover.attachedSide, testHandler);
+            IItemTransfer itemHandler = pipeCover.getItemTransferCap(testHandler);
             if (itemHandler == null || (itemHandler != testHandler &&
                 (allowed = itemHandler.extractItem(0, allowed, true).getCount()) <= 0)) {
                 testHandler.setStackInSlot(0, ItemStack.EMPTY);
@@ -350,15 +349,6 @@ public class ItemNetHandler implements IItemTransfer {
         ItemStack remainder = stack.copy();
         remainder.setCount(r + (stack.getCount() - toInsert.getCount()));
         return remainder;
-    }
-
-    public CoverBehavior getCoverOnPipe(BlockPos pos, Direction handlerFacing) {
-        BlockEntity tile = pipe.getLevel().getBlockEntity(pos);
-        if (tile instanceof ItemPipeBlockEntity blockEntity) {
-            ICoverable coverable = blockEntity.getCoverContainer();
-            return coverable.getCoverAtSide(handlerFacing);
-        }
-        return null;
     }
 
     public CoverBehavior getCoverOnNeighbour(BlockPos pos, Direction handlerFacing) {

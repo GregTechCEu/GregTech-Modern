@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -27,6 +28,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
     public static List<ItemRoutePath> createNetData(ItemPipeNet pipeNet, BlockPos sourcePipe, Direction sourceFacing) {
         try {
             ItemNetWalker walker = new ItemNetWalker(pipeNet, sourcePipe, 1, new ArrayList<>(), null);
+            walker.sourcePipe = sourcePipe;
             walker.facingToHandler = sourceFacing;
             walker.traversePipeNet();
             return walker.inventories;
@@ -91,8 +93,8 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
             (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
-        IItemHandler handler = neighbourTile.getCapability(ForgeCapabilities.ITEM_HANDLER, faceToNeighbour.getOpposite()).resolve().orElse(null);
-        if (handler != null) {
+        LazyOptional<IItemHandler> handler = neighbourTile.getCapability(ForgeCapabilities.ITEM_HANDLER, faceToNeighbour.getOpposite());
+        if (handler.isPresent()) {
             List<Predicate<ItemStack>> filters = new ArrayList<>(this.filters);
             List<Predicate<ItemStack>> moreFilters = nextFilters.get(faceToNeighbour);
             if (moreFilters != null && !moreFilters.isEmpty()) {
