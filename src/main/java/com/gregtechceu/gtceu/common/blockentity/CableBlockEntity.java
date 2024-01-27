@@ -14,6 +14,9 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -41,6 +44,8 @@ import java.util.EnumMap;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties> {
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CableBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
+
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
     private static final int meltTemp = 3000;
@@ -52,6 +57,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     private EnergyNetHandler defaultHandler;
     private int heatQueue;
     @Getter
+    @Persisted @DescSynced
     private int temperature = getDefaultTemp();
     private TickableSubscription heatSubs;
 
@@ -148,8 +154,14 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (!level.isClientSide) {
             setTemperature(temperature);
             if (temperature > getDefaultTemp()) {
-                level.getServer().tell(new TickTask(0, this::update));
+                subscribeHeat();
             }
+        }
+    }
+
+    private void subscribeHeat() {
+        if (this.heatSubs == null) {
+            this.heatSubs = subscribeServerTick(this::update);
         }
     }
 
@@ -216,7 +228,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public void applyHeat(int amount) {
         heatQueue += amount;
         if (!level.isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
-            this.heatSubs = this.subscribeServerTick(this::update);
+            subscribeHeat();
         }
     }
 
@@ -258,6 +270,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int temp = temperature;
         setTemperature(getDefaultTemp());
         int index = getPipeType().insulationLevel;
+
         CableBlock newBlock = GTBlocks.CABLE_BLOCKS.get(Insulation.values()[index].tagPrefix, getPipeBlock().material).get();
         level.setBlockAndUpdate(worldPosition, newBlock.defaultBlockState());
         CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(worldPosition);
@@ -268,9 +281,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
                 }
             }
             newCable.setTemperature(temp);
-            if (newCable.heatSubs == null) {
-                newCable.heatSubs = newCable.subscribeServerTick(newCable::update);
-            }
+            newCable.subscribeHeat();
+            newCable.setChanged();
         }
     }
 
@@ -311,5 +323,10 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     @Override
     public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 }

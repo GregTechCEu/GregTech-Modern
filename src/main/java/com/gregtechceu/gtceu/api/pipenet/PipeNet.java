@@ -150,9 +150,6 @@ public abstract class PipeNet<NodeDataType> implements ITagSerializable<Compound
         BlockPos offsetPos = nodePos.relative(facing);
         PipeNet<NodeDataType> pipeNetAtOffset = worldData.getNetFromPos(offsetPos);
         if (pipeNetAtOffset == null) {
-            onNodeConnectionsUpdate();
-            onPipeConnectionsUpdate();
-            worldData.setDirty();
             return;
         }
         //if we are on that side of node too
@@ -191,7 +188,6 @@ public abstract class PipeNet<NodeDataType> implements ITagSerializable<Compound
             }
         }
         onNodeConnectionsUpdate();
-        onPipeConnectionsUpdate();
         worldData.setDirty();
     }
 

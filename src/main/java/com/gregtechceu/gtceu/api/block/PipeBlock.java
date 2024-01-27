@@ -30,10 +30,7 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelAccessor;
+import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.EntityBlock;
@@ -189,14 +186,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        super.onPlace(state, level, pos, oldState, isMoving);
-        if (!oldState.is(state.getBlock()) && level instanceof ServerLevel serverLevel) {
-            var net = getWorldPipeNet(serverLevel);
-            if (net.getNetFromPos(pos) == null) {
-                net.addNode(pos, createProperties(defaultBlockState(), null), Node.DEFAULT_MARK, Node.ALL_CLOSED, true);
-            }
-        }
-
         level.scheduleTick(pos, this, 1);
     }
 

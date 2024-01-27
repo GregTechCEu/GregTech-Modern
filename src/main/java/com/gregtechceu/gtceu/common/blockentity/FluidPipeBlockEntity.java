@@ -455,7 +455,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
 
     @Override
     public void loadCustomPersistedData(CompoundTag nbt) {
-        super.readCustomSyncData(nbt);
+        super.loadCustomPersistedData(nbt);
         ListTag list = nbt.getList("Fluids", Tag.TAG_COMPOUND);
         createTanksList();
         for (int i = 0; i < list.size(); i++) {

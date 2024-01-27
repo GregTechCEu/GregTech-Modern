@@ -90,6 +90,7 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
         T pipeNet = getNetFromPos(nodePos);
         if (pipeNet != null) {
             pipeNet.updateBlockedConnections(nodePos, side, isBlocked);
+            pipeNet.onPipeConnectionsUpdate();
         }
     }
 

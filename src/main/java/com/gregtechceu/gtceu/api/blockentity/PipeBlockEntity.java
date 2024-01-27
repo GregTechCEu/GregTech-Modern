@@ -311,7 +311,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(getPipeTuneTool())) {
-            if (player.isShiftKeyDown()) {
+            if (player.isShiftKeyDown() && this.canHaveBlockedFaces()) {
                 return getPipeTexture(isBlocked(side));
             } else {
                 return getPipeTexture(isConnected(side));
