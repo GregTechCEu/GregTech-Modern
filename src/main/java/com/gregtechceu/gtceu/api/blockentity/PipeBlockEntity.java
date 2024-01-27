@@ -201,7 +201,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 iter.remove();
             }
         }
-        if (serverTicks.isEmpty() && waitingToAdd.isEmpty()) {
+        if (serverTicks.isEmpty() && waitingToAdd.isEmpty() && !this.isRemoved()) {
             getLevel().setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, false));
         }
     }

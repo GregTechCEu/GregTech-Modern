@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -108,8 +109,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
 
     protected abstract PipeModel getPipeModel();
 
-    public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos,
-                                       IPipeNode<PipeType, NodeDataType> pipeTile) {
+    public void updateActiveNodeStatus(@NotNull Level worldIn, BlockPos pos, IPipeNode<PipeType, NodeDataType> pipeTile) {
         if (worldIn.isClientSide) return;
 
         PipeNet<NodeDataType> pipeNet = getWorldPipeNet((ServerLevel) worldIn).getNetFromPos(pos);
@@ -167,8 +167,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     @Override
     public void setPlacedBy(Level level, BlockPos pos, BlockState state, @Nullable LivingEntity placer, ItemStack stack) {
         super.setPlacedBy(level, pos, state, placer, stack);
-
-
         IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
         if (pipeTile != null) {
             // Color pipes/cables on place if holding spray can in off-hand
@@ -247,18 +245,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             onActiveModeChange(level, pos, isActiveNode, true);
         }
     }
-
-    /*
-    @Override
-    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
-        if (level instanceof ServerLevel serverLevel) {
-            PipeNet<NodeDataType> net = getWorldPipeNet(serverLevel).getNetFromPos(pos);
-            if (net != null) {
-                net.onNeighbourUpdate(neighbor);
-            }
-        }
-    }
-    */
 
     @Override
     public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {

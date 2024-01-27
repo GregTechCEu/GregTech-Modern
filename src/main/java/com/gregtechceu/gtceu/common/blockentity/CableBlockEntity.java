@@ -24,6 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -241,7 +242,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (temperature >= meltTemp) {
             // cable melted
             level.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
-            unsubscribeHeat();
             return false;
         }
 
@@ -253,7 +253,6 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1) {
             // insulation melted
             uninsulate();
-            unsubscribeHeat();
             return false;
         }
 
@@ -270,26 +269,27 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int temp = temperature;
         setTemperature(getDefaultTemp());
         int index = getPipeType().insulationLevel;
-
         CableBlock newBlock = GTBlocks.CABLE_BLOCKS.get(Insulation.values()[index].tagPrefix, getPipeBlock().material).get();
-        level.setBlockAndUpdate(worldPosition, newBlock.defaultBlockState());
-        CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(worldPosition);
+        level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
+        CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());
         if (newCable != null) { // should never be null
+            newCable.setTemperature(temp);
+            newCable.subscribeHeat();
             for (Direction facing : GTUtil.DIRECTIONS) {
                 if (isConnected(facing)) {
                     newCable.setConnection(facing, true, true);
                 }
             }
-            newCable.setTemperature(temp);
-            newCable.subscribeHeat();
             newCable.setChanged();
+            // force a block rerender
+            level.getServer().execute(() -> level.sendBlockUpdated(getBlockPos(), getBlockState(), newCable.getBlockState(), Block.UPDATE_ALL_IMMEDIATE));
         }
     }
 
     public void setTemperature(int temperature) {
         this.temperature = temperature;
         level.getLightEngine().checkBlock(worldPosition);
-        if (level.isClientSide) {
+        if (!level.isClientSide) {
             var facing = Direction.UP;
             float xPos = facing.getStepX() * 0.76F + worldPosition.getX() + 0.25F;
             float yPos = facing.getStepY() * 0.76F + worldPosition.getY() + 0.25F;
@@ -300,11 +300,12 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             float xSpd = (float) Math.sin(temp) * 0.1F;
             float zSpd = (float) Math.cos(temp) * 0.1F;
 
-            level.addParticle(ParticleTypes.SMOKE,
+            ((ServerLevel)level).sendParticles(ParticleTypes.SMOKE,
                 xPos + GTValues.RNG.nextFloat() * 0.5F,
                 yPos + GTValues.RNG.nextFloat() * 0.5F,
                 zPos + GTValues.RNG.nextFloat() * 0.5F,
-                xSpd, ySpd, zSpd);
+                0,
+                xSpd, ySpd, zSpd, 1);
         }
     }
 
