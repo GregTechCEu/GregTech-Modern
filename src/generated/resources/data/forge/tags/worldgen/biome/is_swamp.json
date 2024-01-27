@@ -1,12 +1,6 @@
 {
   "values": [
-    {
-      "id": "minecraft:swamp",
-      "required": false
-    },
-    {
-      "id": "minecraft:mangrove_swamp",
-      "required": false
-    }
+    "minecraft:swamp",
+    "minecraft:mangrove_swamp"
   ]
 }
