@@ -33,6 +33,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
@@ -188,12 +189,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 }
             }
 
-            FluidStack drainable = pipeTank.drain(maxFluid, false);
-            if (drainable == null || drainable.getAmount() <= 0) {
+            FluidStack drainable = pipeTank.drain(maxFluid, true);
+            if (drainable.isEmpty() || drainable.getAmount() <= 0) {
                 continue;
             }
 
-            long filled = Math.min(fluidHandler.fill(maxFluid, false), drainable.getAmount());
+            long filled = Math.min(fluidHandler.fill(maxFluid, true), drainable.getAmount());
 
             if (filled > 0) {
                 tanks.add(new FluidTransaction(fluidHandler, pipeTank, filled));
@@ -211,7 +212,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         // Now distribute
         for (FluidTransaction transaction : tanks) {
             if (availableCapacity > maxAmount) {
-                transaction.amount = (int) Math.floor(transaction.amount * maxAmount / availableCapacity); // Distribute fluids based on percentage available space at destination
+                transaction.amount = Mth.floor(transaction.amount * maxAmount / availableCapacity); // Distribute fluids based on percentage available space at destination
             }
             if (transaction.amount == 0) {
                 if (tank.getFluidAmount() <= 0) break; // If there is no more stored fluid, stop transferring to prevent
@@ -224,9 +225,9 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             FluidStack toInsert = fluid.copy();
             toInsert.setAmount(transaction.amount);
 
-            long inserted = transaction.target.fill(toInsert, true);
+            long inserted = transaction.target.fill(toInsert, false);
             if (inserted > 0) {
-                transaction.pipeTank.drain(inserted, true);
+                transaction.pipeTank.drain(inserted, false);
             }
         }
     }
