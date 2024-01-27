@@ -33,12 +33,8 @@ public class EnergyRoutePath implements IRoutePath<IEnergyContainer> {
         this.maxLoss = maxLoss;
     }
 
-    public BlockPos getHandlerPos() {
-        return targetPipePos.relative(targetFacing);
-    }
-
     @Nullable
     public IEnergyContainer getHandler(Level world) {
-        return GTCapabilityHelper.getEnergyContainer(world, getHandlerPos().relative(targetFacing), targetFacing.getOpposite());
+        return GTCapabilityHelper.getEnergyContainer(world, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
     }
 }
