@@ -112,7 +112,7 @@ public class EnergyNetHandler implements IEnergyContainer {
     private void burnCable(ServerLevel serverLevel, BlockPos pos) {
         serverLevel.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
         if (!getNet().getLevel().isClientSide) {
-            ((ServerLevel) getNet().getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE,
+            getNet().getLevel().sendParticles(ParticleTypes.LARGE_SMOKE,
                 pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
                 5 + getNet().getLevel().random.nextInt(3), 0.0, 0.0, 0.0, 0.1);
         }

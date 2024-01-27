@@ -8,17 +8,18 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.TaskHandler;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -52,7 +53,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     private int heatQueue;
     @Getter
     private int temperature = getDefaultTemp();
-    private boolean isTicking = false;
+    private TickableSubscription heatSubs;
 
     public CableBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
@@ -136,6 +137,24 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         defaultHandler = new EnergyNetHandler(net, this, null);
     }
 
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (!level.isClientSide) {
+            setTemperature(temperature);
+            if (temperature > getDefaultTemp()) {
+                level.getServer().tell(new TickTask(0, this::update));
+            }
+        }
+    }
+
+    private void unsubscribeHeat() {
+        if (this.heatSubs != null) {
+            this.unsubscribe(this.heatSubs);
+            this.heatSubs = null;
+        }
+    }
+
     public CableBlock getPipeBlock() {
         return (CableBlock) super.getPipeBlock();
     }
@@ -191,9 +210,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     public void applyHeat(int amount) {
         heatQueue += amount;
-        if (!level.isClientSide && !isTicking && temperature + heatQueue > getDefaultTemp()) {
-            TaskHandler.enqueueServerTask((ServerLevel) level, this::update, 0);
-            isTicking = true;
+        if (!level.isClientSide && heatSubs == null && temperature + heatQueue > getDefaultTemp()) {
+            this.heatSubs = this.subscribeServerTick(this::update);
         }
     }
 
@@ -206,19 +224,19 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (temperature >= meltTemp) {
             // cable melted
             level.setBlockAndUpdate(worldPosition, Blocks.FIRE.defaultBlockState());
-            isTicking = false;
+            unsubscribeHeat();
             return false;
         }
 
         if (temperature <= getDefaultTemp()) {
-            isTicking = false;
+            unsubscribeHeat();
             return false;
         }
 
         if (getPipeType().insulationLevel >= 0 && temperature >= 1500 && GTValues.RNG.nextFloat() < 0.1) {
             // insulation melted
             uninsulate();
-            isTicking = false;
+            unsubscribeHeat();
             return false;
         }
 
@@ -235,7 +253,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int temp = temperature;
         setTemperature(getDefaultTemp());
         int index = getPipeType().insulationLevel;
-        CableBlock newBlock = GTBlocks.CABLE_BLOCKS.get(getPipeType().tagPrefix, getPipeBlock().material).get();
+        CableBlock newBlock = GTBlocks.CABLE_BLOCKS.get(Insulation.values()[index].tagPrefix, getPipeBlock().material).get();
         level.setBlockAndUpdate(worldPosition, newBlock.defaultBlockState());
         CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(worldPosition);
         if (newCable != null) { // should never be null
@@ -245,9 +263,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
                 }
             }
             newCable.setTemperature(temp);
-            if (!newCable.isTicking) {
-                TaskHandler.enqueueServerTask((ServerLevel) level, newCable::update, 0);
-                newCable.isTicking = true;
+            if (newCable.heatSubs == null) {
+                newCable.heatSubs = newCable.subscribeServerTick(newCable::update);
             }
         }
     }
