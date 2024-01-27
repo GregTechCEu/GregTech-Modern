@@ -18,8 +18,10 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -117,9 +119,9 @@ public class CompassNode {
 
     public static class CompassNodeProvider implements DataProvider {
         private final PackOutput output;
-        private final Predicate<ResourceLocation> existingHelper;
+        private final ExistingFileHelper existingHelper;
 
-        public CompassNodeProvider(PackOutput output, Predicate<ResourceLocation> existingHelper) {
+        public CompassNodeProvider(PackOutput output, ExistingFileHelper existingHelper) {
             this.output = output;
             this.existingHelper = existingHelper;
         }
@@ -170,7 +172,7 @@ public class CompassNode {
         private CompletableFuture<?> genNodeData(Path path, CachedOutput cache, CompassNode node) {
             if (node.position == null) return CompletableFuture.completedFuture(null);
             var resourcePath = "compass/nodes/" + node.nodeID.getPath() + ".json";
-            if (existingHelper.test(GTCEu.id(resourcePath))) return CompletableFuture.completedFuture(null);
+            if (existingHelper.exists(GTCEu.id(resourcePath), PackType.CLIENT_RESOURCES)) return CompletableFuture.completedFuture(null);
 
             JsonObject json = new JsonObject();
             json.addProperty("section", node.sectionID.toString());

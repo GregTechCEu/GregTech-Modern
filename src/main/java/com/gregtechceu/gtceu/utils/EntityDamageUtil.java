@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -13,11 +15,10 @@ import net.minecraft.world.entity.animal.SnowGolem;
 import net.minecraft.world.entity.boss.wither.WitherBoss;
 import net.minecraft.world.entity.monster.*;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.enchantment.Enchantments;
 import org.jetbrains.annotations.NotNull;
 
 public class EntityDamageUtil {
-
-    private static final int FROST_WALKER_ID = 9;
 
     /**
      * @param entity      the entity to damage
@@ -51,8 +52,7 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // fire/lava mobs cannot be burned
-        if (entity instanceof Blaze || entity instanceof MagmaCube ||
-                entity instanceof WitherSkeleton || entity instanceof WitherBoss)
+        if (entity.getType().is(CustomTags.HEAT_IMMUNE))
             return;
         // fire resistance entities cannot be burned
         if (entity.getEffect(MobEffects.FIRE_RESISTANCE) != null) return;
@@ -72,18 +72,15 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // snow/frost mobs cannot be chilled
-        if (entity instanceof SnowGolem || entity instanceof PolarBear || entity instanceof Stray)
+        if (entity.getType().is(EntityTypeTags.FREEZE_IMMUNE_ENTITY_TYPES))
             return;
         // frost walker entities cannot be chilled
         ItemStack stack = entity.getItemBySlot(EquipmentSlot.FEET);
         // check for empty in order to force damage to be applied if armor breaks
         if (!stack.isEmpty()) {
-            for (Tag base : stack.getEnchantmentTags()) {
-                CompoundTag compound = (CompoundTag) base;
-                if (compound.getShort("id") == FROST_WALKER_ID) {
-                    stack.hurtAndBreak(1, entity, ent -> ent.broadcastBreakEvent(EquipmentSlot.FEET));
-                    return;
-                }
+            if (stack.getEnchantmentLevel(Enchantments.FROST_WALKER) > 0) {
+                stack.hurtAndBreak(1, entity, ent -> ent.broadcastBreakEvent(EquipmentSlot.FEET));
+                return;
             }
         }
 
