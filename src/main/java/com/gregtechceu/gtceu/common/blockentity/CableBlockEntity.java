@@ -126,6 +126,11 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return handlers.getOrDefault(side, defaultHandler);
     }
 
+    @Override
+    public boolean canHaveBlockedFaces() {
+        return false;
+    }
+
     private void initHandlers() {
         EnergyNet net = getEnergyNet();
         if (net == null) {

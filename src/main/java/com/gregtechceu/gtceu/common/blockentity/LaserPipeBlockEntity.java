@@ -74,6 +74,11 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
         return super.getCapability(cap, side);
     }
 
+    @Override
+    public boolean canHaveBlockedFaces() {
+        return false;
+    }
+
     public void initHandlers() {
         LaserPipeNet net = getLaserPipeNet();
         if (net == null) return;
