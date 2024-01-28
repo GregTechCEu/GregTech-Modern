@@ -291,6 +291,17 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         getPipeBlock().updateActiveNodeStatus(getLevel(), getBlockPos(), this);
     }
 
+    @Override
+    public boolean triggerEvent(int id, int para) {
+        if (id == 1) { // chunk re render
+            if (level != null && level.isClientSide) {
+                scheduleRenderUpdate();
+            }
+            return true;
+        }
+        return false;
+    }
+
 
     //////////////////////////////////////
     //*******     Interaction    *******//

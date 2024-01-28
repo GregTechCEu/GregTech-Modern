@@ -282,7 +282,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             }
             newCable.setChanged();
             // force a block rerender
-            level.getServer().execute(() -> level.sendBlockUpdated(getBlockPos(), getBlockState(), newCable.getBlockState(), Block.UPDATE_ALL_IMMEDIATE));
+            newCable.scheduleRenderUpdate();
         }
     }
 
