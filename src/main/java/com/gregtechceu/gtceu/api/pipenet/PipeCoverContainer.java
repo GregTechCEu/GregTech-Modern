@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
 import com.gregtechceu.gtceu.api.transfer.item.NoOpItemTransfer;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -161,7 +162,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     @Override
     public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         if (pipeTile instanceof FluidPipeBlockEntity fluidPipe) {
-            return fluidPipe.getHandler(side, useCoverCapability);
+            return fluidPipe.getTankList(side);
         } else {
             return NoOpFluidTransfer.INSTANCE;
         }
@@ -209,7 +210,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
     @SuppressWarnings("unused")
     private CoverBehavior deserializeCoverUid(CompoundTag uid) {
         var definitionId = new ResourceLocation(uid.getString("id"));
-        var side = Direction.values()[uid.getInt("side")];
+        var side = GTUtil.DIRECTIONS[uid.getInt("side")];
         var definition = GTRegistries.COVERS.get(definitionId);
         if (definition != null) {
             return definition.createCoverBehavior(this, side);

@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
-import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;

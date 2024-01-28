@@ -22,6 +22,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
+import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -130,6 +131,7 @@ public class CommonProxy {
 
         WorldGenLayers.registerAll();
         GTFeatures.init();
+        CustomBlockRotations.init();
     }
 
     private static void initMaterials() {

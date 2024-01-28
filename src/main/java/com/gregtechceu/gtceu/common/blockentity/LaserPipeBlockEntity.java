@@ -5,10 +5,9 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserNetHandler;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeNet;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
-import com.gregtechceu.gtceu.common.pipelike.laser.LevelLaserPipeNet;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.common.pipelike.laser.*;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -17,6 +16,7 @@ import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
@@ -27,7 +27,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 
-public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPipeNet.LaserData> {
+public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPipeProperties> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LaserPipeBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -74,10 +74,15 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
         return super.getCapability(cap, side);
     }
 
+    @Override
+    public boolean canHaveBlockedFaces() {
+        return false;
+    }
+
     public void initHandlers() {
         LaserPipeNet net = getLaserPipeNet();
         if (net == null) return;
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : GTUtil.DIRECTIONS) {
             handlers.put(facing, new LaserNetHandler(net, this, facing));
         }
         defaultHandler = new LaserNetHandler(net, this, null);
@@ -116,29 +121,28 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
      * @param duration how long the pipe should be active for
      */
     public void setActive(boolean active, int duration) {
-        boolean stateChanged = false;
-        if (this.active && !active) {
-            this.active = false;
-            stateChanged = true;
-        } else if (!this.active && active) {
-            this.active = true;
-            stateChanged = true;
-            activeDuration = duration;
-            TaskHandler.enqueueServerTask((ServerLevel) getLevel(), () -> {
-                if (++this.ticksActive % activeDuration == 0) {
-                    this.ticksActive = 0;
-                    setActive(false, -1);
-                }
-            }, 0);
-        } else if (this.active) {
-            this.ticksActive = 0;
-            this.activeDuration = duration;
-        }
-
-        if (stateChanged) {
+        if (this.active != active) {
+            this.active = active;
             notifyBlockUpdate();
             setChanged();
+            if (active && duration != this.activeDuration) {
+                TaskHandler.enqueueServerTask((ServerLevel) getLevel(), this::queueDisconnect, 0);
+            }
         }
+
+        this.activeDuration = duration;
+        if (duration > 0 && active) {
+            this.ticksActive = 0;
+        }
+    }
+
+    public boolean queueDisconnect() {
+        if (++this.ticksActive % activeDuration == 0) {
+            this.ticksActive = 0;
+            setActive(false, -1);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -153,7 +157,29 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     }
 
     @Override
-    protected GTToolType getPipeTuneTool() {
+    public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
+        if (!getLevel().isClientSide && connected && !fromNeighbor) {
+            int connections = getConnections();
+            // block connection if any side other than the requested side and its opposite side are already connected.
+            connections &= ~(1 << side.ordinal());
+            connections &= ~(1 << side.getOpposite().ordinal());
+            if (connections != 0) return;
+
+            // check the same for the targeted pipe
+            BlockEntity tile = getLevel().getBlockEntity(getBlockPos().relative(side));
+            if (tile instanceof IPipeNode<?, ?> pipeTile &&
+                pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
+                connections = pipeTile.getConnections();
+                connections &= ~(1 << side.ordinal());
+                connections &= ~(1 << side.getOpposite().ordinal());
+                if (connections != 0) return;
+            }
+        }
+        super.setConnection(side, connected, fromNeighbor);
+    }
+
+    @Override
+    public GTToolType getPipeTuneTool() {
         return GTToolType.WIRE_CUTTER;
     }
 

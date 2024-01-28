@@ -1,21 +1,25 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
+import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.llamalad7.mixinextras.lib.apache.commons.ArrayUtils;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNetWalker;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.NotNull;
-import oshi.util.tuples.Pair;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EnergyNetWalker extends PipeNetWalker<CableData, EnergyNet> {
+public class EnergyNetWalker extends PipeNetWalker<CableBlockEntity, WireProperties, EnergyNet> {
 
     @Nullable
-    public static List<CableRoutePath> createNetData(EnergyNet pipeNet, BlockPos sourcePipe) {
+    public static List<EnergyRoutePath> createNetData(EnergyNet pipeNet, BlockPos sourcePipe) {
         try {
             EnergyNetWalker walker = new EnergyNetWalker(pipeNet, sourcePipe, 1, new ArrayList<>());
             walker.traversePipeNet();
@@ -26,36 +30,46 @@ public class EnergyNetWalker extends PipeNetWalker<CableData, EnergyNet> {
         return null;
     }
 
-    private final List<CableRoutePath> routes;
-    private List<Pair<BlockPos, CableData>> pipes = new ArrayList<>();
+    private final List<EnergyRoutePath> routes;
+    private CableBlockEntity[] pipes = {};
     private int loss;
 
-    public EnergyNetWalker(EnergyNet pipeNet, BlockPos sourcePipe, int walkedBlocks, List<CableRoutePath> routes) {
+    public EnergyNetWalker(EnergyNet pipeNet, BlockPos sourcePipe, int walkedBlocks, List<EnergyRoutePath> routes) {
         super(pipeNet, sourcePipe, walkedBlocks);
         this.routes = routes;
     }
 
     @NotNull
     @Override
-    protected PipeNetWalker<CableData, EnergyNet> createSubWalker(EnergyNet pipeNet, BlockPos nextPos, int walkedBlocks) {
+    protected PipeNetWalker<CableBlockEntity, WireProperties, EnergyNet> createSubWalker(EnergyNet pipeNet, Direction facingToNextPos, BlockPos nextPos, int walkedBlocks) {
         EnergyNetWalker walker = new EnergyNetWalker(pipeNet, nextPos, walkedBlocks, routes);
         walker.loss = loss;
-        walker.pipes = new ArrayList<>(pipes);
+        walker.pipes = pipes;
         return walker;
     }
 
     @Override
-    protected boolean checkPipe(Node<CableData> pipeNode, BlockPos pos) {
-        pipes.add(new Pair<>(pos.immutable(), pipeNode.data));
-        loss += pipeNode.data.properties().getLossPerBlock();
-        return true;
+    protected void checkPipe(CableBlockEntity pipeTile, BlockPos pos) {
+        pipes = ArrayUtils.add(pipes, pipeTile);
+        loss += pipeTile.getNodeData().getLossPerBlock();
     }
 
     @Override
-    protected void checkNeighbour(Node<CableData> pipeNode, BlockPos pipePos, Direction faceToNeighbour) {
-        if (pipeNode.data.canAttachTo(faceToNeighbour)) {
-            routes.add(new CableRoutePath(pipePos.immutable(), faceToNeighbour, pipes.toArray(Pair[]::new), getWalkedBlocks(), loss));
+    protected void checkNeighbour(CableBlockEntity pipeTile, BlockPos pipePos, Direction faceToNeighbour, @Nullable BlockEntity neighbourTile) {
+        // assert that the last added pipe is the current pipe
+        if (pipeTile != pipes[pipes.length - 1])
+            throw new IllegalStateException(
+                "The current pipe is not the last added pipe. Something went seriously wrong!");
+        if (neighbourTile != null) {
+            IEnergyContainer container = neighbourTile.getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, faceToNeighbour.getOpposite()).resolve().orElse(null);
+            if (container != null) {
+                routes.add(new EnergyRoutePath(pipePos.immutable(), faceToNeighbour, pipes, getWalkedBlocks(), loss));
+            }
         }
     }
 
+    @Override
+    protected Class<CableBlockEntity> getBasePipeClass() {
+        return CableBlockEntity.class;
+    }
 }

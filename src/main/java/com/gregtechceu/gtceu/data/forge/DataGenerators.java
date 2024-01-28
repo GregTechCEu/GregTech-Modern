@@ -23,7 +23,9 @@ public class DataGenerators {
             generator.addProvider(true, new CompassSection.CompassSectionProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             generator.addProvider(true, new CompassNode.CompassNodeProvider(generator, rl -> event.getExistingFileHelper().exists(rl, PackType.CLIENT_RESOURCES)));
             // biome
-            generator.addProvider(true, new BiomeTagsProviderImpl(generator, event.getExistingFileHelper()));
+            generator.addProvider(true, new BiomeTagsProvider(generator, event.getExistingFileHelper()));
+            // entity type
+            generator.addProvider(true, new EntityTypeTagLoader(generator, event.getExistingFileHelper()));
         }
     }
 }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectMap;
@@ -101,7 +102,7 @@ public class LongDistanceNetwork {
         // find amount of neighbour networks
         List<BlockPos> neighbours = new ArrayList<>();
         BlockPos.MutableBlockPos offsetPos = new BlockPos.MutableBlockPos();
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : GTUtil.DIRECTIONS) {
             offsetPos.set(pos).move(facing);
             LongDistanceNetwork network = world.getNetwork(offsetPos);
             if (network == this) {

@@ -9,8 +9,4 @@ import javax.annotation.Nonnull;
 @NoArgsConstructor
 public class LaserPipeProperties {
     public static final LaserPipeProperties INSTANCE = new LaserPipeProperties();
-
-    public LaserPipeProperties(LaserPipeProperties other) {
-
-    }
 }

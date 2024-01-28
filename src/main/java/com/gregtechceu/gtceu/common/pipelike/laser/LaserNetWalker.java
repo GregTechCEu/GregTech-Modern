@@ -1,49 +1,51 @@
 package com.gregtechceu.gtceu.common.pipelike.laser;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNetWalker;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
+import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class LaserNetWalker extends PipeNetWalker<LaserPipeNet.LaserData, LaserPipeNet> {
+public class LaserNetWalker extends PipeNetWalker<LaserPipeBlockEntity, LaserPipeProperties, LaserPipeNet> {
+
+    public static final LaserRoutePath FAILED_MARKER = new LaserRoutePath(null, null, 0);
 
     @Nullable
-    public static LaserPipeNet.LaserData createNetData(LaserPipeNet world, BlockPos sourcePipe, Direction faceToSourceHandler) {
+    public static LaserRoutePath createNetData(LaserPipeNet world, BlockPos sourcePipe, Direction faceToSourceHandler) {
         try {
-            LaserNetWalker walker = new LaserNetWalker(world, sourcePipe, 1, null, null);
+            LaserNetWalker walker = new LaserNetWalker(world, sourcePipe, 1);
             walker.sourcePipe = sourcePipe;
             walker.facingToHandler = faceToSourceHandler;
             walker.axis = faceToSourceHandler.getAxis();
             walker.traversePipeNet();
-            return walker.laserData;
+            return walker.routePath;
         } catch (Exception e) {
-            GTCEu.LOGGER.error("error while create net data for LaserPipeNet", e);
+            return FAILED_MARKER;
         }
-        return null;
     }
 
-    private LaserPipeProperties minProperties;
-    private LaserPipeNet.LaserData laserData;
+    private static final Direction[] X_AXIS_FACINGS = { Direction.WEST, Direction.EAST };
+    private static final Direction[] Y_AXIS_FACINGS = { Direction.UP, Direction.DOWN };
+    private static final Direction[] Z_AXIS_FACINGS = { Direction.NORTH, Direction.SOUTH };
+
+    private LaserRoutePath routePath;
     private BlockPos sourcePipe;
     private Direction facingToHandler;
     private Direction.Axis axis;
 
-    protected LaserNetWalker(LaserPipeNet world, BlockPos sourcePipe, int distance, LaserPipeNet.LaserData laserData, LaserPipeProperties properties) {
+    protected LaserNetWalker(LaserPipeNet world, BlockPos sourcePipe, int distance) {
         super(world, sourcePipe, distance);
-        this.laserData = laserData;
-        this.minProperties = properties;
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    protected LaserNetWalker createSubWalker(LaserPipeNet world, BlockPos nextPos, int walkedBlocks) {
-        LaserNetWalker walker = new LaserNetWalker(world, nextPos, walkedBlocks, laserData, minProperties);
+    protected PipeNetWalker<LaserPipeBlockEntity, LaserPipeProperties, LaserPipeNet> createSubWalker(LaserPipeNet net, Direction direction, BlockPos nextPos, int walkedBlocks) {
+        LaserNetWalker walker = new LaserNetWalker(net, nextPos, walkedBlocks);
         walker.facingToHandler = facingToHandler;
         walker.sourcePipe = sourcePipe;
         walker.axis = axis;
@@ -51,22 +53,35 @@ public class LaserNetWalker extends PipeNetWalker<LaserPipeNet.LaserData, LaserP
     }
 
     @Override
-    protected boolean checkPipe(Node<LaserPipeNet.LaserData> pipeTile, BlockPos pos) {
-        LaserPipeProperties pipeProperties = pipeTile.data.getProperties();
-        if (minProperties == null) {
-            minProperties = pipeProperties;
-        } else {
-            minProperties = new LaserPipeProperties(pipeProperties);
-        }
-        return true;
+    protected Class<LaserPipeBlockEntity> getBasePipeClass() {
+        return LaserPipeBlockEntity.class;
     }
 
     @Override
-    protected void checkNeighbour(Node<LaserPipeNet.LaserData> pipeNode, BlockPos pipePos, Direction faceToNeighbour) {
-        if (pipeNode.data.canAttachTo(faceToNeighbour) && laserData == null && (!sourcePipe.equals(pipePos) && faceToNeighbour != facingToHandler)) {
-            ILaserContainer handler = GTCapabilityHelper.getLaser(getLevel(), pipePos, faceToNeighbour.getOpposite());
+    protected void checkPipe(LaserPipeBlockEntity pipeTile, BlockPos pos) {
+
+    }
+
+    @Override
+    protected Direction[] getSurroundingPipeSides() {
+        return switch (axis) {
+            case X -> X_AXIS_FACINGS;
+            case Y -> Y_AXIS_FACINGS;
+            case Z -> Z_AXIS_FACINGS;
+        };
+    }
+
+    @Override
+    protected void checkNeighbour(LaserPipeBlockEntity pipeNode, BlockPos pipePos, Direction faceToNeighbour, @org.jetbrains.annotations.Nullable BlockEntity neighbourTile) {
+        if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
+            return;
+        }
+
+        if (((LaserNetWalker) root).routePath == null) {
+            ILaserContainer handler = neighbourTile.getCapability(GTCapability.CAPABILITY_LASER, faceToNeighbour.getOpposite()).resolve().orElse(null);
             if (handler != null) {
-                laserData = new LaserPipeNet.LaserData(new BlockPos(pipePos), faceToNeighbour, getWalkedBlocks(), LaserPipeProperties.INSTANCE, (byte) 0);
+                ((LaserNetWalker) root).routePath = new LaserRoutePath(pipePos.immutable(), faceToNeighbour, getWalkedBlocks());
+                stop();
             }
         }
     }

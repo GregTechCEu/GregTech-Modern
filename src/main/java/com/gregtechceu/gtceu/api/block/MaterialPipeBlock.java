@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.pipenet.IAttachData;
-import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
-import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.api.pipenet.*;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.lowdragmc.lowdraglib.pipelike.LevelPipeNet;
-import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -29,7 +25,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType extends IAttachData, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends PipeBlock<PipeType, NodeDataType, WorldPipeNetType> {
+public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeType<NodeDataType> & IMaterialPipeType<NodeDataType>, NodeDataType, WorldPipeNetType extends LevelPipeNet<NodeDataType, ? extends PipeNet<NodeDataType>>> extends PipeBlock<PipeType, NodeDataType, WorldPipeNetType> {
 
     public final Material material;
     public final PipeBlockRenderer renderer;
@@ -68,6 +64,18 @@ public abstract class MaterialPipeBlock<PipeType extends Enum<PipeType> & IPipeT
     public final NodeDataType createRawData(BlockState pState, @Nullable ItemStack pStack) {
         return createMaterialData();
     }
+
+    @Override
+    public NodeDataType createProperties(IPipeNode<PipeType, NodeDataType> pipeTile) {
+        PipeType pipeType = pipeTile.getPipeType();
+        Material material = ((MaterialPipeBlock<PipeType, NodeDataType, WorldPipeNetType>) pipeTile.getPipeBlock()).material;
+        if (pipeType == null || material == null) {
+            return getFallbackType();
+        }
+        return createProperties(pipeType, material);
+    }
+
+    protected abstract NodeDataType createProperties(PipeType pipeType, Material material);
 
     @Override
     public @Nullable PipeBlockRenderer getRenderer(BlockState state) {

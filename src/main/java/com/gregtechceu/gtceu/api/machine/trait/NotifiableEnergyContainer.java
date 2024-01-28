@@ -108,7 +108,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         long outputAmperes = Math.min(getEnergyStored() / outputVoltage, getOutputAmperage());
         if (outputAmperes == 0) return;
         long amperesUsed = 0;
-        for (Direction side : Direction.values()) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             if (!outputsEnergy(side)) continue;
             var oppositeSide = side.getOpposite();
             var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(), machine.getPos().relative(side), oppositeSide);

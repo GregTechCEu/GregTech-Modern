@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
@@ -35,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
 
-public class GTSwordItem extends SwordItem implements IItemUseFirst, IGTTool {
+public class GTSwordItem extends SwordItem implements IGTTool {
 
     @Getter
     private final GTToolType toolType;

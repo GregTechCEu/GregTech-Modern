@@ -270,6 +270,10 @@ public class ConfigHolder {
         @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
         public boolean enableMaintenance = true;
         @Configurable
+        @Configurable.Comment({ "Whether to use GT6-style pipe and cable connections, meaning they will not auto-connect " +
+            "unless placed directly onto another pipe or cable.", "Default: true" })
+        public boolean gt6StylePipesCables = true;
+        @Configurable
         @Configurable.Comment({"Whether the machine's circuit slot need to be inserted a real circuit."})
         public boolean ghostCircuit = true;
         @Configurable
