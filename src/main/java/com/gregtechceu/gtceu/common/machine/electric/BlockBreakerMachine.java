@@ -406,7 +406,10 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     //////////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
+        if (toolTypes.contains(GTToolType.WRENCH) ||
+            toolTypes.contains(GTToolType.WRENCH_LV) ||
+            toolTypes.contains(GTToolType.WRENCH_HV) ||
+            toolTypes.contains(GTToolType.WRENCH_IV)) {
             if (!player.isCrouching()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;

@@ -25,7 +25,9 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.EnumMap;
+import java.util.List;
 
 public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPipeNet.LaserData> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LaserPipeBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
@@ -153,8 +155,8 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     }
 
     @Override
-    protected GTToolType getPipeTuneTool() {
-        return GTToolType.WIRE_CUTTER;
+    protected List<GTToolType> getPipeTuneTool() {
+        return Arrays.asList(GTToolType.WIRE_CUTTER);
     }
 
     @Override

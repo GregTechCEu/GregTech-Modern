@@ -47,6 +47,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
 
@@ -230,7 +231,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     //////////////////////////////////////
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
-        if (toolTypes.contains(getPipeTuneTool()) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
+        if (getPipeTuneTool().stream().anyMatch(toolTypes::contains) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, held, toolTypes)) return true;
         }
@@ -243,7 +244,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
-        if (toolTypes.contains(getPipeTuneTool())) {
+        if (getPipeTuneTool().stream().anyMatch(toolTypes::contains)) {
             return getPipeTexture(isBlocked(side));
         }
         var cover = coverContainer.getCoverAtSide(side);
@@ -274,7 +275,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
             }
-        } else if (toolTypes.contains(getPipeTuneTool())) {
+        } else if (getPipeTuneTool().stream().anyMatch(toolTypes::contains)) {
             setBlocked(gridSide, !isBlocked(gridSide));
             // try to connect to the next node.
             if (!isBlocked(gridSide)) {
@@ -283,7 +284,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                     node.setBlocked(gridSide.getOpposite(), false);
                 }
             }
-            return Pair.of(getPipeTuneTool(), InteractionResult.CONSUME);
+            return Pair.of(getPipeTuneTool().get(0), InteractionResult.CONSUME);
         } else if (toolTypes.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
@@ -296,8 +297,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return Pair.of(null, InteractionResult.PASS);
     }
 
-    protected GTToolType getPipeTuneTool() {
-        return GTToolType.WRENCH;
+    protected List<GTToolType> getPipeTuneTool() {
+        return Arrays.asList(GTToolType.WRENCH, GTToolType.WRENCH_LV, GTToolType.WRENCH_HV, GTToolType.WRENCH_IV);
     }
 
     @Override

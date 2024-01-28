@@ -289,7 +289,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and animations will be played
      */
     @Override
-    public final Pair<GTToolType, InteractionResult> onToolClick(Set<@NotNull GTToolType> toolType, ItemStack itemStack, UseOnContext context) {
+    public final Pair<GTToolType, InteractionResult> onToolClick(Set<@NotNull GTToolType> toolTypes, ItemStack itemStack, UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
         if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
@@ -301,17 +301,20 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (gridSide == null) gridSide = hitResult.getDirection();
 
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
-        if (toolType.contains(GTToolType.SCREWDRIVER)) {
+        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SCREWDRIVER, coverBehavior.onScrewdriverClick(playerIn, hand, hitResult));
             } else return Pair.of(GTToolType.SCREWDRIVER, onScrewdriverClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.SOFT_MALLET)) {
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
             } else return Pair.of(GTToolType.SOFT_MALLET, onSoftMalletClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.WRENCH)) {
+        } else if (toolTypes.contains(GTToolType.WRENCH) ||
+            toolTypes.contains(GTToolType.WRENCH_LV) ||
+            toolTypes.contains(GTToolType.WRENCH_HV) ||
+            toolTypes.contains(GTToolType.WRENCH_IV)) {
             return Pair.of(GTToolType.WRENCH, onWrenchClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.CROWBAR)) {
+        } else if (toolTypes.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
                     getCoverContainer().removeCover(gridSide, playerIn);
@@ -319,7 +322,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                 return Pair.of(GTToolType.CROWBAR, InteractionResult.CONSUME);
             }
             return Pair.of(GTToolType.CROWBAR, onCrowbarClick(playerIn, hand, gridSide, hitResult));
-        } else if (toolType.contains(GTToolType.HARD_HAMMER)) {
+        } else if (toolTypes.contains(GTToolType.HARD_HAMMER)) {
             return Pair.of(GTToolType.HARD_HAMMER, onHardHammerClick(playerIn, hand, gridSide, hitResult));
         }
         return Pair.of(null, InteractionResult.PASS);
@@ -403,7 +406,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
-        if (toolTypes.contains(GTToolType.WRENCH) || toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
+        if (toolTypes.contains(GTToolType.WRENCH) ||
+            toolTypes.contains(GTToolType.WRENCH_LV) ||
+            toolTypes.contains(GTToolType.WRENCH_HV) ||
+            toolTypes.contains(GTToolType.WRENCH_IV) ||
+            toolTypes.contains(GTToolType.SCREWDRIVER)) return true;
         if (toolTypes.contains(GTToolType.HARD_HAMMER) && this instanceof IMufflableMachine) return true;
         for (CoverBehavior cover : coverContainer.getCovers()) {
             if (cover.shouldRenderGrid(player, held, toolTypes)) return true;
@@ -413,7 +420,10 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
-        if (toolTypes.contains(GTToolType.WRENCH)) {
+        if (toolTypes.contains(GTToolType.WRENCH) ||
+            toolTypes.contains(GTToolType.WRENCH_LV) ||
+            toolTypes.contains(GTToolType.WRENCH_HV) ||
+            toolTypes.contains(GTToolType.WRENCH_IV)) {
             if (player.isCrouching()) {
                 if (isFacingValid(side)) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;

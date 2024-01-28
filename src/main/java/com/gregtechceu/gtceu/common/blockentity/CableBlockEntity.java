@@ -25,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -108,7 +110,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, CableData> {
     }
 
     @Override
-    protected GTToolType getPipeTuneTool() {
-        return GTToolType.WIRE_CUTTER;
+    protected List<GTToolType> getPipeTuneTool() {
+        return Arrays.asList(GTToolType.WIRE_CUTTER);
     }
 }
