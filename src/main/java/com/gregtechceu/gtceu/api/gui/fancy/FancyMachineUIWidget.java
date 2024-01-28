@@ -30,19 +30,19 @@ public class FancyMachineUIWidget extends WidgetGroup {
     @Setter
     protected int border = 4;
 
-    public FancyMachineUIWidget(IFancyUIProvider fancyUIProvider) {
-        super(0, 0, 176, 166);
+    public FancyMachineUIWidget(IFancyUIProvider fancyUIProvider, int width, int height) {
+        super(0, 0, width, height);
         this.fancyUIProvider = fancyUIProvider;
-        addWidget(this.pageContainer = new WidgetGroup(0, 0, 200, 100));
+        addWidget(this.pageContainer = new WidgetGroup(0, 0, width, height));
         if (fancyUIProvider.hasPlayerInventory()) {
             addWidget(this.playerInventory = new PlayerInventoryWidget());
-            this.playerInventory.setSelfPosition(new Position(2, 80));
+            this.playerInventory.setSelfPosition(new Position(2, height - 86));
             this.playerInventory.setBackground((IGuiTexture) null);
         } else {
             playerInventory = null;
         }
         addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
-        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, 200));
+        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
         addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), 102));
 
