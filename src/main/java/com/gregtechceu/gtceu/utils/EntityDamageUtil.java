@@ -100,7 +100,8 @@ public class EntityDamageUtil {
         if (damage <= 0) return;
         if (!entity.isAlive()) return;
         // skeletons cannot breathe in the toxins
-        if (entity instanceof AbstractSkeleton) return;
+        if (entity.getType().is(CustomTags.CHEMICAL_IMMUNE))
+            return;
 
         entity.hurt(GTDamageTypes.CHEMICAL.source(entity.level()), damage);
         entity.addEffect(new MobEffectInstance(MobEffects.POISON, damage * 100, 1));
