@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.custom.PlayerInventoryWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -29,23 +30,23 @@ public class FancyMachineUIWidget extends WidgetGroup {
     @Setter
     protected int border = 4;
 
-    public FancyMachineUIWidget(IFancyUIProvider fancyUIProvider) {
-        super(0, 0, 200, 100 + (fancyUIProvider.hasPlayerInventory() ? 90 : 0));
+    public FancyMachineUIWidget(IFancyUIProvider fancyUIProvider, int width, int height) {
+        super(0, 0, width, height);
         this.fancyUIProvider = fancyUIProvider;
-        addWidget(this.pageContainer = new WidgetGroup(0, 0, 200, 100));
+        addWidget(this.pageContainer = new WidgetGroup(0, 0, width, height));
         if (fancyUIProvider.hasPlayerInventory()) {
             addWidget(this.playerInventory = new PlayerInventoryWidget());
+            this.playerInventory.setSelfPosition(new Position(2, height - 86));
+            this.playerInventory.setBackground((IGuiTexture) null);
         } else {
             playerInventory = null;
         }
         addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
-        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, 200));
+        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
         addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), 102));
 
-        this.sideTabsWidget.setTabTexture(new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png").getSubTexture(0, 1 / 3f, 0.5f, 1 / 3f));
-        this.sideTabsWidget.setTabHoverTexture(new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png").getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
-        this.sideTabsWidget.setTabPressedTexture(new ResourceTexture("gtceu:textures/gui/tab/tabs_left.png").getSubTexture(0.5f, 1 / 3f, 0.5f, 1 / 3f));
+        setBackground(GuiTextures.BACKGROUND.copy().setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
     }
 
     @Override
@@ -69,18 +70,13 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
         // layout
         var size = new Size(Math.max(172, mainPage.getSize().width + border * 2), Math.max(86, mainPage.getSize().height + border * 2));
-        setSize(new Size(size.width, size.height + (playerInventory == null ? 0 : playerInventory.getSize().height + 4)));
         if (LDLib.isRemote() && getGui() != null) {
             getGui().setSize(getSize().width, getSize().height);
         }
         this.tabsWidget.setSize(new Size(size.width, 24));
         this.sideTabsWidget.setSize(new Size(24, size.height));
-        this.pageContainer.setBackground(GuiTextures.BACKGROUND);
         this.pageContainer.setSize(size);
         this.tooltipsPanel.setSelfPosition(new Position(size.width + 2, 2));
-        if (this.playerInventory != null) {
-            this.playerInventory.setSelfPosition(new Position((size.width - playerInventory.getSize().width) / 2, size.height + 4));
-        }
 
         // setup
         this.pageContainer.addWidget(mainPage);

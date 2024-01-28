@@ -172,13 +172,13 @@ public class CoverContainerConfigurator extends WidgetGroup {
     }
 
     protected void updateCoverConfigurator() {
-        if (side == null || coverBehavior == null || !(coverable.getCoverAtSide(side) instanceof IUICover)) return;
         if (this.coverConfigurator != null) {
             this.panel.collapseTab();
             this.coverConfigurator.collapseTo(18, 30);
             this.panel.removeWidget(this.coverConfigurator);
             this.coverConfigurator = null;
         }
+        if (side == null || coverBehavior == null || !(coverable.getCoverAtSide(side) instanceof IUICover)) return;
         CoverConfigurator configurator = new CoverConfigurator(this.coverable, this.transfer, this.panel, this.sceneWidget, this.slotWidget, this.side, this.coverBehavior);
         this.coverConfigurator = this.panel.createFloatingTab(configurator);
         this.coverConfigurator.setGui(this.gui);

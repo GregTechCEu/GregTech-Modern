@@ -36,7 +36,7 @@ import java.util.List;
 public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
     @Override
     default ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(200, 214, this, entityPlayer).widget(new FancyMachineUIWidget(this));
+        return new ModularUI(176, 166, this, entityPlayer).widget(new FancyMachineUIWidget(this, 176, 166));
     }
 
     /**
