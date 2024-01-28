@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.model.ModelUtil;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
@@ -83,7 +84,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
 
                 var cube = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
 
-                for (Direction side : Direction.values()) {
+                for (Direction side : GTUtil.DIRECTIONS) {
                     if (side != Direction.NORTH) {
                         quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
                         quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());

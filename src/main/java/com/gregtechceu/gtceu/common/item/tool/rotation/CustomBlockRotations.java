@@ -75,14 +75,14 @@ public class CustomBlockRotations {
 
     private enum CustomRotations {
 
-        // BlockDirectional
+        // DirectionalBlock
         PISTON(Blocks.PISTON, BLOCK_DIRECTIONAL_BEHAVIOR),
         STICKY_PISTON(Blocks.STICKY_PISTON, BLOCK_DIRECTIONAL_BEHAVIOR),
         DROPPER(Blocks.DROPPER, BLOCK_DIRECTIONAL_BEHAVIOR),
         DISPENSER(Blocks.DISPENSER, BLOCK_DIRECTIONAL_BEHAVIOR),
         OBSERVER(Blocks.OBSERVER, BLOCK_DIRECTIONAL_BEHAVIOR),
 
-        // BlockHorizontal
+        // HorizontalDirectionalBlock
         FURNACE(Blocks.FURNACE, BLOCK_HORIZONTAL_BEHAVIOR),
         PUMPKIN(Blocks.PUMPKIN, BLOCK_HORIZONTAL_BEHAVIOR),
         LIT_PUMPKIN(Blocks.JACK_O_LANTERN, BLOCK_HORIZONTAL_BEHAVIOR),

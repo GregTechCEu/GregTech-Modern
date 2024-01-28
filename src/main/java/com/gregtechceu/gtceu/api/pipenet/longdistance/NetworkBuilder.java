@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -73,7 +74,7 @@ public class NetworkBuilder implements Runnable {
         while (!currentPoints.isEmpty()) {
             // get and remove the first stored branch
             BlockPos current = currentPoints.pollFirst();
-            for (Direction facing : Direction.values()) {
+            for (Direction facing : GTUtil.DIRECTIONS) {
                 pos.set(current).move(facing);
                 if (walked.contains(pos)) {
                     continue;

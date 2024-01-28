@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.client.model.PipeModel;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
-public enum ItemPipeType implements IMaterialPipeType<ItemPipeData> {
+public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
     SMALL("small", 0.375f, TagPrefix.pipeSmallItem, 0.5f, 1.5f),
     NORMAL("normal", 0.5f, TagPrefix.pipeNormalItem, 1f, 1f),
     LARGE("large", 0.75f, TagPrefix.pipeLargeItem, 2f, 0.75f),
@@ -54,10 +54,8 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeData> {
     }
 
     @Override
-    public ItemPipeData modifyProperties(ItemPipeData baseProperties) {
-        return new ItemPipeData(
-                new ItemPipeProperties((int) ((baseProperties.properties.getPriority() * resistanceMultiplier) + 0.5), baseProperties.properties.getTransferRate() * rateMultiplier),
-                baseProperties.connections);
+    public ItemPipeProperties modifyProperties(ItemPipeProperties baseProperties) {
+        return new ItemPipeProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5), baseProperties.getTransferRate() * rateMultiplier);
     }
 
     @Override

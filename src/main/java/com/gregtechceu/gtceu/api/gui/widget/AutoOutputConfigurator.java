@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -109,7 +110,7 @@ public class AutoOutputConfigurator extends WidgetGroup {
     @OnlyIn(Dist.CLIENT)
     public void renderBlockOverLay(WorldSceneRenderer renderer) {
         sceneWidget.renderBlockOverLay(renderer);
-        for (Direction face : Direction.values()) {
+        for (Direction face : GTUtil.DIRECTIONS) {
             var blockFace = new BlockPosFace(machine.getPos(), face);
             if (machine instanceof IAutoOutputItem autoOutputItem && autoOutputItem.getOutputFacingItems() == face) {
                 sceneWidget.drawFacingBorder(new PoseStack(), blockFace, autoOutputItem.isAutoOutputItems() ? 0xffff6e0f : 0x8fff6e0f, 1);

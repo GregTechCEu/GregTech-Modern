@@ -40,12 +40,12 @@ public class LaserNetHandler implements ILaserContainer {
             return null;
         }
 
-        LaserPipeNet.LaserData data = net.getNetData(pipe.getPipePos(), facing);
+        LaserRoutePath data = net.getNetData(pipe.getPipePos(), facing);
         if (data == null) {
             return null;
         }
 
-        return data.getHandler(world);
+        return data.getHandler(net.getLevel());
     }
 
     @Override

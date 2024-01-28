@@ -120,7 +120,6 @@ public class OreRecipeHandler {
         ItemStack crushedStack = ChemicalHelper.get(crushed, material);
         ItemStack ingotStack;
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
-        int amountOfCrushedOre = property.getOreMultiplier();
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);
         } else if (smeltingMaterial.hasProperty(PropertyKey.GEM)) {
@@ -134,9 +133,9 @@ public class OreRecipeHandler {
                     .inputItems(orePrefix, material)
                     .duration(10).EUt(16);
             if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
-                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre, ChemicalHelper.get(gem, material, crushedStack.getCount())));
+                builder.outputItems(ChemicalHelper.get(gem, material, crushedStack.getCount()));
             } else {
-                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre, crushedStack));
+                builder.outputItems(crushedStack.copy());
             }
             builder.save(provider);
 

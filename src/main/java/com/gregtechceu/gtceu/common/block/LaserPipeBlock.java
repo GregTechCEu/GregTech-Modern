@@ -3,39 +3,40 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
+import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LevelLaserPipeNet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
-import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.StateDefinition;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
+@ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserData, LevelLaserPipeNet> {
+public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeProperties, LevelLaserPipeNet> {
 
     public final PipeBlockRenderer renderer;
     public final PipeModel model;
+    private final LaserPipeProperties properties;
 
     public LaserPipeBlock(Properties properties, LaserPipeType type) {
         super(properties, type);
+        this.properties = LaserPipeProperties.INSTANCE;
         this.model = new PipeModel(LaserPipeType.NORMAL.getThickness(), () -> GTCEu.id("block/pipe/pipe_laser_side"), () -> GTCEu.id("block/pipe/pipe_laser_in"), null, null);
         this.renderer = new PipeBlockRenderer(this.model);
     }
@@ -56,18 +57,25 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserD
     }
 
     @Override
-    public BlockEntityType<? extends PipeBlockEntity<LaserPipeType, LaserPipeNet.LaserData>> getBlockEntityType() {
+    public BlockEntityType<? extends PipeBlockEntity<LaserPipeType, LaserPipeProperties>> getBlockEntityType() {
         return GTBlockEntities.LASER_PIPE.get();
     }
 
     @Override
-    public LaserPipeNet.LaserData createRawData(BlockState pState, @Nullable ItemStack pStack) {
-        return new LaserPipeNet.LaserData(BlockPos.ZERO, Direction.NORTH, 0, LaserPipeProperties.INSTANCE, (byte) 0);
+    public LaserPipeProperties createRawData(BlockState pState, @Nullable ItemStack pStack) {
+        return LaserPipeProperties.INSTANCE;
     }
 
     @Override
-    public LaserPipeNet.LaserData getFallbackType() {
-        return new LaserPipeNet.LaserData(BlockPos.ZERO, Direction.NORTH, 0, LaserPipeProperties.INSTANCE, (byte) 0);
+    public LaserPipeProperties createProperties(IPipeNode<LaserPipeType, LaserPipeProperties> pipeTile) {
+        LaserPipeType pipeType = pipeTile.getPipeType();
+        if (pipeType == null) return getFallbackType();
+        return this.pipeType.modifyProperties(properties);
+    }
+
+    @Override
+    public LaserPipeProperties getFallbackType() {
+        return LaserPipeProperties.INSTANCE;
     }
 
     @Override
@@ -78,5 +86,16 @@ public class LaserPipeBlock extends PipeBlock<LaserPipeType, LaserPipeNet.LaserD
     @Override
     protected PipeModel getPipeModel() {
         return model;
+    }
+
+    @Override
+    public boolean canPipesConnect(IPipeNode<LaserPipeType, LaserPipeProperties> selfTile, Direction side,
+                                   IPipeNode<LaserPipeType, LaserPipeProperties> sideTile) {
+        return selfTile instanceof LaserPipeBlockEntity && sideTile instanceof LaserPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(IPipeNode<LaserPipeType, LaserPipeProperties> selfTile, Direction side, @Nullable BlockEntity tile) {
+        return tile != null && tile.getCapability(GTCapability.CAPABILITY_LASER, side.getOpposite()).isPresent();
     }
 }

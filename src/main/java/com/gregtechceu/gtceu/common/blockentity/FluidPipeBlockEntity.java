@@ -1,100 +1,96 @@
 package com.gregtechceu.gtceu.common.blockentity;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
-import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
-import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeData;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeNet;
+import com.gregtechceu.gtceu.api.fluids.FluidConstants;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.common.cover.PumpCover;
+import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
-import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeNetRoutePath;
+import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
+import com.gregtechceu.gtceu.utils.EntityDamageUtil;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import lombok.Setter;
-import lombok.val;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleOptions;
+import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
 import net.minecraftforge.fluids.capability.IFluidHandler;
-import net.minecraftforge.fluids.capability.templates.EmptyFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import oshi.util.tuples.Pair;
 
-import javax.annotation.ParametersAreNonnullByDefault;
-import java.lang.ref.WeakReference;
-import java.util.*;
-import java.util.function.Predicate;
+import java.util.ArrayList;
+import java.util.EnumMap;
+import java.util.List;
 
-/**
- * @author KilaBash
- * @date 2023/3/1
- * @implNote CableBlockEntity
- */
-@ParametersAreNonnullByDefault
-@MethodsReturnNonnullByDefault
-public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeData> {
-    protected WeakReference<FluidPipeNet> currentFluidPipeNet = new WeakReference<>(null);
+public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties> {
+    public static final int FREQUENCY = 5;
+
+    public byte lastReceivedFrom = 0, oldLastReceivedFrom = 0;
+    private PipeTankList pipeTankList;
+    private final EnumMap<Direction, PipeTankList> tankLists = new EnumMap<>(Direction.class);
+    private FluidStorage[] fluidTanks;
+    private long timer = 0L;
+    private final int offset = GTValues.RNG.nextInt(20);
+
+    private TickableSubscription updateSubs;
 
     public FluidPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
     }
 
-    public static FluidPipeBlockEntity create(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
-        return new FluidPipeBlockEntity(type, pos, blockState);
+    public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> fluidPipeBlockEntityBlockEntityType) {
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<FluidPipeBlockEntity> cableBlockEntityBlockEntityType) {
+    public long getOffsetTimer() {
+        return timer + offset;
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER) {
-            var handler = getFluidHandler(side);
-            if (handler != null) {
-                return ForgeCapabilities.FLUID_HANDLER.orEmpty(cap, LazyOptional.of(() -> handler));
-            }
-        } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
-            return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
-        } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
-            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(cap, LazyOptional.of(() -> this));
+    public void onLoad() {
+        super.onLoad();
+        if (updateSubs == null) {
+            updateSubs = this.subscribeServerTick(this::update);
         }
-        return super.getCapability(cap, side);
     }
 
-    @Nullable
-    public IFluidHandler getFluidHandler(@Nullable Direction side) {
-        if (side != null && isBlocked(side)) return null;
-        if (isRemote()) { // for rendering? other mods may need it.
-            return EmptyFluidHandler.INSTANCE;
+    @Override
+    public void onChunkUnloaded() {
+        super.onChunkUnloaded();
+        if (updateSubs != null) {
+            this.unsubscribe(updateSubs);
+            updateSubs = null;
         }
-        var net = getFluidPipeNet();
-        if (net != null) {
-            return new FluidPipeBlockEntity.FluidPipeHandler(net, this, side);
-        }
-        return null;
-    }
-
-    public static IFluidTransfer getNetHandler(FluidPipeBlockEntity pipe, @Nullable Direction side) {
-        IFluidHandler handler = pipe.getFluidHandler(side);
-
-        return handler == null ? NoOpFluidTransfer.INSTANCE : FluidTransferHelperImpl.toFluidTransfer(handler);
     }
 
     @Override
@@ -108,177 +104,409 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         return false;
     }
 
-    @Nullable
-    public FluidPipeNet getFluidPipeNet() {
-        if (level instanceof ServerLevel serverLevel && getBlockState().getBlock() instanceof FluidPipeBlock fluidPipeBlock) {
-            FluidPipeNet currentFluidPipeNet = this.currentFluidPipeNet.get();
-            if (currentFluidPipeNet != null && currentFluidPipeNet.isValid() && currentFluidPipeNet.containsNode(getBlockPos()))
-                return currentFluidPipeNet; //return current net if it is still valid
-            currentFluidPipeNet = fluidPipeBlock.getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
-            if (currentFluidPipeNet != null) {
-                this.currentFluidPipeNet = new WeakReference<>(currentFluidPipeNet);
-            }
+    @NotNull
+    @Override
+    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
+        if (capability == ForgeCapabilities.FLUID_HANDLER) {
+            PipeTankList tankList = getTankList(facing);
+            if (tankList == null)
+                return LazyOptional.empty();
+            return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(tankList)));
+        } else if (capability == GTCapability.CAPABILITY_COVERABLE) {
+            return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverContainer));
+        } else if (capability == GTCapability.CAPABILITY_TOOLABLE) {
+            return GTCapability.CAPABILITY_TOOLABLE.orEmpty(capability, LazyOptional.of(() -> this));
         }
-        return this.currentFluidPipeNet.get();
+        return super.getCapability(capability, facing);
     }
 
-    public IFluidTransfer getHandler(@Nullable Direction side, boolean useCoverCapability) {
-        IFluidTransfer handler = getNetHandler(this, side);
-        if (!useCoverCapability || side == null) return handler;
-
-        CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getFluidTransferCap(side, handler) : handler;
+    public long getCapacityPerTank() {
+        return getNodeData().getThroughput() * 20;
     }
 
-    class FluidPipeHandler implements IFluidHandler {
-
-        private final FluidPipeNet net;
-        private final FluidPipeBlockEntity pipe;
-        private final List<PipeNetRoutePath> paths;
-        @Nullable
-        private final Direction side;
-        @Setter
-        private Predicate<FluidStack> filter = fluid -> true;
-
-        public FluidPipeHandler(FluidPipeNet net, FluidPipeBlockEntity pipe, @Nullable Direction side) {
-            this.net = Objects.requireNonNull(net);
-            this.pipe = Objects.requireNonNull(pipe);
-            this.paths = net.getNetData(pipe.getPipePos());
-            this.side = side;
-            if (side != null) {
-                if (getCoverContainer().getCoverAtSide(side) instanceof FluidFilterCover cover) {
-                    filter = f -> cover.getFluidFilter().test(FluidHelperImpl.toFluidStack(f));
-                }
+    public void update() {
+        timer++;
+        if (!level.isClientSide && getOffsetTimer() % FREQUENCY == 0) {
+            lastReceivedFrom &= 63;
+            if (lastReceivedFrom == 63) {
+                lastReceivedFrom = 0;
             }
-        }
 
-        @Override
-        public int getTanks() {
-            FluidPipeProperties properties = net.getNodeAt(pipe.getPipePos()).data.properties();
-            return properties.getChannels();
-        }
-
-        @NotNull
-        @Override
-        public FluidStack getFluidInTank(int tank) {
-            Fluid fluid = net.getFluid(pipe.getPipePos(), tank);
-
-            if (fluid == null)
-                return FluidStack.EMPTY;
-
-            return new FluidStack(fluid, (int) net.getLastSecondTotalThroughput(pipe.getPipePos(), tank));
-        }
-
-        @Override
-        public int getTankCapacity(int tank) {
-            FluidPipeProperties properties = net.getNodeAt(pipe.getPipePos()).data.properties();
-
-            if (tank < 0 || tank > properties.getChannels())
-                return 0;
-
-            long pipeThroughput = properties.getPlatformThroughput();
-            return (int) (20 * pipeThroughput);
-            // return (int) ((20 * pipeThroughput) - net.getLastSecondTotalThroughput(pipe.getPipePos(), 0));
-        }
-
-        @Override
-        public @NotNull FluidStack drain(FluidStack fluidStack, FluidAction fluidAction) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public @NotNull FluidStack drain(int i, FluidAction fluidAction) {
-            return FluidStack.EMPTY;
-        }
-
-        @Override
-        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
-            return filter.test(stack);
-        }
-
-        /**
-         * check path. how much fluid can be transferred.
-         * @return amount
-         */
-        private int checkPathAvailable(FluidStack stack, PipeNetRoutePath routePath, Map<BlockPos, Set<Fluid>> simulateChannelUsed, Object2LongMap<BlockPos> simulateThroughputUsed) {
-            if (stack.isEmpty()) return 0;
-            var amount = stack.getAmount();
-            for (Pair<BlockPos, FluidPipeData> node : routePath.getPath()) {
-                var properties = node.getB().properties();
-                var pos = node.getA();
-                if (!properties.test(FluidHelperImpl.toFluidStack(stack))) {
-                    return 0;
-                }
-
-                var maxChannel = properties.getChannels() - 1;
-
-                var channel = net.getChannel(pos, stack.getFluid());
-                var simulateChannels = simulateChannelUsed.getOrDefault(pos, Collections.emptySet());
-                if ((channel == -1 || channel > maxChannel) && !simulateChannels.contains(stack.getFluid())) {
-                    channel = net.useChannel(pos, stack.getFluid());
-                    if (channel == -1 || channel > maxChannel) {
-                        return 0;
-                    }
-                }
-
-                long platformThroughputPerSecond = 20 * properties.getPlatformThroughput();
-                var left = platformThroughputPerSecond - net.getLastSecondTotalThroughput(pos, channel) - simulateThroughputUsed.getOrDefault(pos, 0);
-                amount = (int) Math.min(amount, left);
-                if (amount <= 0) return 0;
-            }
-            return amount;
-        }
-
-        @Override
-        public int fill(FluidStack resource, FluidAction fluidAction) {
-            if (resource.isEmpty() || !filter.test(resource)) return 0;
-            var left = resource.copy();
-            Map<BlockPos, Set<Fluid>> simulateChannelUsed = new HashMap<>();
-            Object2LongMap<BlockPos> simulateThroughputUsed = new Object2LongOpenHashMap<>();
-            for (PipeNetRoutePath path : paths) {
-                if (Objects.equals(pipe.getPipePos(), path.getPipePos()) && (side == path.getFaceToHandler() || side == null)) {
-                    //Do not insert into source handler
+            boolean shouldDistribute = (oldLastReceivedFrom == lastReceivedFrom);
+            int tanks = getNodeData().getChannels();
+            for (int i = 0, j = GTValues.RNG.nextInt(tanks); i < tanks; i++) {
+                int index = (i + j) % tanks;
+                FluidStorage tank = getFluidTanks()[index];
+                FluidStack fluid = tank.getFluid();
+                if (fluid.isEmpty())
+                    continue;
+                if (fluid.getAmount() <= 0) {
+                    tank.setFluid(FluidStack.empty());
                     continue;
                 }
 
-                val blockEntity = pipe.getPipeLevel().getBlockEntity(path.getHandlerPos());
-                if (blockEntity != null) {
-                    var handler = blockEntity.getCapability(ForgeCapabilities.FLUID_HANDLER, path.getFaceToHandler().getOpposite()).resolve().orElse(null);
-                    if (handler != null) {
-                        var coverable = GTCapabilityHelper.getCoverable(net.getLevel(), path.getPipePos(), null);
-                        if (coverable != null) {
-                            if (coverable.getCoverAtSide(path.getFaceToHandler()) instanceof FluidFilterCover cover && !cover.getFluidFilter().test(FluidHelperImpl.toFluidStack(resource))) {
-                                return 0;
-                            }
-                        }
-                        var accepted = checkPathAvailable(left, path, simulateChannelUsed, simulateThroughputUsed);
-                        if (accepted <= 0) continue;
-                        var copied = left.copy();
-                        copied.setAmount(accepted);
-                        var filled = handler.fill(copied, fluidAction);
-                        if (filled > 0) { // occupy capacity + channel
-                            for (Pair<BlockPos, FluidPipeData> node : path.getPath()) {
-                                var pos = node.getA();
-                                if (fluidAction.simulate()) {
-                                    simulateThroughputUsed.put(pos, simulateThroughputUsed.getOrDefault(pos, 0) + filled);
-                                    simulateChannelUsed.computeIfAbsent(pos, p -> new HashSet<>()).add(resource.getFluid());
-                                } else {
-                                    int channel = net.getChannel(pos, resource.getFluid());
-                                    if (channel != -1)
-                                        net.useThroughput(pos, channel, filled);
-                                }
-                            }
-
-                        }
-                        left.shrink(filled);
-                        if (left.isEmpty()) {
-                            break;
-                        }
-                    }
+                if (shouldDistribute) {
+                    distributeFluid(index, tank, fluid);
+                    lastReceivedFrom = 0;
                 }
             }
-            return resource.getAmount() - left.getAmount();
+            oldLastReceivedFrom = lastReceivedFrom;
+        }
+    }
+
+    private void distributeFluid(int channel, FluidStorage tank, FluidStack fluid) {
+        // Tank, From, Amount to receive
+        List<FluidTransaction> tanks = new ArrayList<>();
+        long amount = fluid.getAmount();
+
+        FluidStack maxFluid = fluid.copy();
+        double availableCapacity = 0;
+
+        for (byte i = 0, j = (byte) GTValues.RNG.nextInt(6); i < 6; i++) {
+            // Get a list of tanks accepting fluids, and what side they're on
+            byte side = (byte) ((i + j) % 6);
+            Direction facing = GTUtil.DIRECTIONS[side];
+
+            if (!isConnected(facing) || (lastReceivedFrom & (1 << side)) != 0) {
+                continue;
+            }
+
+            BlockEntity neighbor = getNeighbor(facing);
+            if (neighbor == null) continue;
+            IFluidHandler handler = neighbor.getCapability(ForgeCapabilities.FLUID_HANDLER, facing.getOpposite()).resolve().orElse(null);
+            IFluidTransfer fluidHandler = handler == null ? null : FluidTransferHelperImpl.toFluidTransfer(handler);
+            if (fluidHandler == null) continue;
+
+            IFluidTransfer pipeTank = tank;
+            CoverBehavior cover = getCoverContainer().getCoverAtSide(facing);
+
+            // pipeTank should only be determined by the cover attached to the actual pipe
+            if (cover != null) {
+                pipeTank = cover.getFluidTransferCap(pipeTank);
+                // Shutter covers return null capability when active, so check here to prevent NPE
+                if (pipeTank == null || checkForPumpCover(cover)) continue;
+            } else {
+                ICoverable coverable = neighbor.getCapability(GTCapability.CAPABILITY_COVERABLE, facing.getOpposite()).resolve().orElse(null);
+                if (coverable != null) {
+                    cover = coverable.getCoverAtSide(facing.getOpposite());
+                    if (checkForPumpCover(cover)) continue;
+                }
+            }
+
+            FluidStack drainable = pipeTank.drain(maxFluid, true);
+            if (drainable.isEmpty() || drainable.getAmount() <= 0) {
+                continue;
+            }
+
+            long filled = Math.min(fluidHandler.fill(maxFluid, true), drainable.getAmount());
+
+            if (filled > 0) {
+                tanks.add(new FluidTransaction(fluidHandler, pipeTank, filled));
+                availableCapacity += filled;
+            }
+            maxFluid.setAmount(amount); // Because some mods do actually modify input fluid stack
         }
 
+        if (availableCapacity <= 0)
+            return;
+
+        // How much of this fluid is available for distribution?
+        final double maxAmount = Math.min(getCapacityPerTank() / 2, fluid.getAmount());
+
+        // Now distribute
+        for (FluidTransaction transaction : tanks) {
+            if (availableCapacity > maxAmount) {
+                transaction.amount = Mth.floor(transaction.amount * maxAmount / availableCapacity); // Distribute fluids based on percentage available space at destination
+            }
+            if (transaction.amount == 0) {
+                if (tank.getFluidAmount() <= 0) break; // If there is no more stored fluid, stop transferring to prevent
+                // dupes
+                transaction.amount = 1; // If the percent is not enough to give at least 1L, try to give 1L
+            } else if (transaction.amount < 0) {
+                continue;
+            }
+
+            FluidStack toInsert = fluid.copy();
+            toInsert.setAmount(transaction.amount);
+
+            long inserted = transaction.target.fill(toInsert, false);
+            if (inserted > 0) {
+                transaction.pipeTank.drain(inserted, false);
+            }
+        }
+    }
+
+    private boolean checkForPumpCover(@Nullable CoverBehavior cover) {
+        if (cover instanceof PumpCover coverPump) {
+            long pipeThroughput = getNodeData().getThroughput() * 20;
+            if (coverPump.getCurrentMilliBucketsPerTick() > pipeThroughput) {
+                coverPump.setTransferRate(pipeThroughput);
+            }
+            return coverPump.getManualIOMode() == ManualIOMode.DISABLED;
+        }
+        return false;
+    }
+
+    public void checkAndDestroy(@NotNull FluidStack stack) {
+        Fluid fluid = stack.getFluid();
+        FluidPipeProperties prop = getNodeData();
+
+        net.minecraftforge.fluids.FluidStack forgeStack = FluidHelperImpl.toFluidStack(stack);
+        boolean burning = prop.getMaxFluidTemperature() < fluid.getFluidType().getTemperature(forgeStack);
+        boolean leaking = !prop.isGasProof() && fluid.getFluidType().getDensity(forgeStack) < 0;
+        boolean shattering = !prop.isCryoProof() && fluid.getFluidType().getTemperature() < FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
+        boolean corroding = false;
+        boolean melting = false;
+
+        if (fluid instanceof GTFluid attributedFluid) {
+            FluidState state = attributedFluid.getState();
+            if (!prop.canContain(state)) {
+                leaking = state == FluidState.GAS;
+                melting = state == FluidState.PLASMA;
+            }
+
+            // carrying plasmas which are too hot when plasma proof does not burn pipes
+            if (burning && state == FluidState.PLASMA && prop.canContain(FluidState.PLASMA)) {
+                burning = false;
+            }
+
+            for (FluidAttribute attribute : attributedFluid.getAttributes()) {
+                if (!prop.canContain(attribute)) {
+                    // corrodes if the pipe can't handle the attribute, even if it's not an acid
+                    corroding = true;
+                }
+            }
+        }
+
+        if (burning || leaking || corroding || shattering || melting) {
+            destroyPipe(stack, burning, leaking, corroding, shattering, melting);
+        }
+    }
+
+    public void destroyPipe(FluidStack stack, boolean isBurning, boolean isLeaking, boolean isCorroding,
+                            boolean isShattering, boolean isMelting) {
+        // prevent the sound from spamming when filled from anything not a pipe
+        if (getOffsetTimer() % 10 == 0) {
+            level.playSound(null, this.getPipePos(), SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1.0F, 1.0F);
+        }
+
+        if (isLeaking) {
+            FluidPipeBlockEntity.spawnParticles(level, worldPosition, Direction.UP, ParticleTypes.SMOKE,
+                7 + GTValues.RNG.nextInt(2));
+
+            // voids 10%
+            stack.setAmount(Math.max(0, stack.getAmount() * 9 / 10));
+
+            // apply heat damage in area surrounding the pipe
+            if (getOffsetTimer() % 20 == 0) {
+                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
+                    new AABB(getPipePos()).inflate(2));
+                for (LivingEntity entityLivingBase : entities) {
+                    EntityDamageUtil.applyTemperatureDamage(entityLivingBase, stack.getFluid().getFluidType().getTemperature(FluidHelperImpl.toFluidStack(stack)),
+                        2.0F, 10);
+                }
+            }
+
+            // chance to do a small explosion
+            if (GTValues.RNG.nextInt(isBurning ? 3 : 7) == 0) {
+                this.doExplosion(1.0f + GTValues.RNG.nextFloat());
+            }
+        }
+
+        if (isCorroding) {
+            FluidPipeBlockEntity.spawnParticles(getPipeLevel(), getPipePos(), Direction.UP, ParticleTypes.CRIT,
+                3 + GTValues.RNG.nextInt(2));
+
+            // voids 25%
+            stack.setAmount(Math.max(0, stack.getAmount() * 3 / 4));
+
+            // apply chemical damage in area surrounding the pipe
+            if (getOffsetTimer() % 20 == 0) {
+                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
+                    new AABB(getPipePos()).inflate(1));
+                for (LivingEntity entityLivingBase : entities) {
+                    EntityDamageUtil.applyChemicalDamage(entityLivingBase, 2);
+                }
+            }
+
+            // 1/10 chance to void everything and destroy the pipe
+            if (GTValues.RNG.nextInt(10) == 0) {
+                stack.setAmount(0);
+                level.removeBlock(getPipePos(), false);
+            }
+        }
+
+        if (isBurning || isMelting) {
+            FluidPipeBlockEntity.spawnParticles(level, getBlockPos(), Direction.UP, ParticleTypes.FLAME,
+                (isMelting ? 7 : 3) + GTValues.RNG.nextInt(2));
+
+            // voids 75%
+            stack.setAmount(Math.max(0, stack.getAmount() / 4));
+
+            // 1/4 chance to burn everything around it
+            if (GTValues.RNG.nextInt(4) == 0) {
+                FluidPipeBlockEntity.setNeighboursToFire(level, getBlockPos());
+            }
+
+            // apply heat damage in area surrounding the pipe
+            if (isMelting && getOffsetTimer() % 20 == 0) {
+                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
+                    new AABB(getPipePos()).inflate(2));
+                for (LivingEntity entityLivingBase : entities) {
+                    EntityDamageUtil.applyTemperatureDamage(entityLivingBase, stack.getFluid().getFluidType().getTemperature(FluidHelperImpl.toFluidStack(stack)),
+                        2.0F, 10);
+                }
+            }
+
+            // 1/10 chance to void everything and burn the pipe
+            if (GTValues.RNG.nextInt(10) == 0) {
+                stack.setAmount(0);
+                level.setBlockAndUpdate(getBlockPos(), Blocks.FIRE.defaultBlockState());
+            }
+        }
+
+        if (isShattering) {
+            FluidPipeBlockEntity.spawnParticles(level, getBlockPos(), Direction.UP, ParticleTypes.CLOUD,
+                3 + GTValues.RNG.nextInt(2));
+
+            // voids 75%
+            stack.setAmount(Math.max(0, stack.getAmount() / 4));
+
+            // apply frost damage in area surrounding the pipe
+            if (getOffsetTimer() % 20 == 0) {
+                List<LivingEntity> entities = getPipeLevel().getEntitiesOfClass(LivingEntity.class,
+                    new AABB(getPipePos()).inflate(2));
+                for (LivingEntity entityLivingBase : entities) {
+                    EntityDamageUtil.applyTemperatureDamage(entityLivingBase, stack.getFluid().getFluidType().getTemperature(FluidHelperImpl.toFluidStack(stack)),
+                        2.0F, 10);
+                }
+            }
+
+            // 1/10 chance to void everything and freeze the pipe
+            if (GTValues.RNG.nextInt(10) == 0) {
+                stack.setAmount(0);
+                level.removeBlock(getBlockPos(), false);
+            }
+        }
+    }
+
+    public void receivedFrom(Direction facing) {
+        if (facing != null) {
+            lastReceivedFrom |= (1 << facing.ordinal());
+        }
+    }
+
+    public FluidStack getContainedFluid(int channel) {
+        if (channel < 0 || channel >= getFluidTanks().length) return null;
+        return getFluidTanks()[channel].getFluid();
+    }
+
+    private void createTanksList() {
+        fluidTanks = new FluidStorage[getNodeData().getChannels()];
+        for (int i = 0; i < getNodeData().getChannels(); i++) {
+            fluidTanks[i] = new FluidStorage(getCapacityPerTank());
+        }
+        pipeTankList = new PipeTankList(this, null, fluidTanks);
+        for (Direction facing : GTUtil.DIRECTIONS) {
+            tankLists.put(facing, new PipeTankList(this, facing, fluidTanks));
+        }
+    }
+
+    public PipeTankList getTankList() {
+        if (pipeTankList == null || fluidTanks == null) {
+            createTanksList();
+        }
+        return pipeTankList;
+    }
+
+    public PipeTankList getTankList(Direction facing) {
+        if (tankLists.isEmpty() || fluidTanks == null) {
+            createTanksList();
+        }
+        return tankLists.getOrDefault(facing, pipeTankList);
+    }
+
+    public FluidStorage[] getFluidTanks() {
+        if (pipeTankList == null || fluidTanks == null) {
+            createTanksList();
+        }
+        return fluidTanks;
+    }
+
+    public FluidStack[] getContainedFluids() {
+        FluidStack[] fluids = new FluidStack[getFluidTanks().length];
+        for (int i = 0; i < fluids.length; i++) {
+            fluids[i] = fluidTanks[i].getFluid();
+        }
+        return fluids;
+    }
+
+    @Override
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+        super.saveCustomPersistedData(tag, forDrop);
+        ListTag list = new ListTag();
+        for (int i = 0; i < getFluidTanks().length; i++) {
+            FluidStack stack1 = getContainedFluid(i);
+            CompoundTag fluidTag = new CompoundTag();
+            if (stack1 == null || stack1.getAmount() <= 0)
+                fluidTag.putBoolean("isNull", true);
+            else
+                stack1.saveToTag(fluidTag);
+            list.add(fluidTag);
+        }
+        tag.put("Fluids", list);
+    }
+
+    @Override
+    public void loadCustomPersistedData(CompoundTag nbt) {
+        super.loadCustomPersistedData(nbt);
+        ListTag list = nbt.getList("Fluids", Tag.TAG_COMPOUND);
+        createTanksList();
+        for (int i = 0; i < list.size(); i++) {
+            CompoundTag tag = list.getCompound(i);
+            if (!tag.getBoolean("isNull")) {
+                fluidTanks[i].setFluid(FluidStack.loadFromTag(tag));
+            }
+        }
+    }
+
+    public static void spawnParticles(Level worldIn, BlockPos pos, Direction direction, ParticleOptions particleType,
+                                      int particleCount) {
+        if (worldIn instanceof ServerLevel serverLevel) {
+            serverLevel.sendParticles(particleType,
+                pos.getX() + 0.5,
+                pos.getY() + 0.5,
+                pos.getZ() + 0.5,
+                particleCount,
+                direction.getStepX() * 0.2 + GTValues.RNG.nextDouble() * 0.1,
+                direction.getStepY() * 0.2 + GTValues.RNG.nextDouble() * 0.1,
+                direction.getStepZ() * 0.2 + GTValues.RNG.nextDouble() * 0.1,
+                0.1);
+        }
+    }
+
+    public static void setNeighboursToFire(Level world, BlockPos selfPos) {
+        for (Direction side : GTUtil.DIRECTIONS) {
+            if (!GTValues.RNG.nextBoolean()) continue;
+            BlockPos blockPos = selfPos.relative(side);
+            BlockState blockState = world.getBlockState(blockPos);
+            if (world.isEmptyBlock(blockPos) ||
+                blockState.isFlammable(world, blockPos, side.getOpposite())) {
+                world.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
+            }
+        }
+    }
+
+    private static class FluidTransaction {
+
+        public final IFluidTransfer target;
+        public final IFluidTransfer pipeTank;
+        public long amount;
+
+        private FluidTransaction(IFluidTransfer target, IFluidTransfer pipeTank, long amount) {
+            this.target = target;
+            this.pipeTank = pipeTank;
+            this.amount = amount;
+        }
     }
 }

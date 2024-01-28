@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.pattern;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.ActiveBlock;
 import com.gregtechceu.gtceu.api.pattern.error.PatternError;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -105,7 +106,7 @@ public class MultiblockState {
             this.blockState = this.world.getBlockState(this.pos);
         }
         if (this.blockState == null) {
-            System.out.printf("error");
+            GTCEu.LOGGER.error("could not get BlockState at " + this.pos + " in MultiblockState");
         }
         return this.blockState;
     }

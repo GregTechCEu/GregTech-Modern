@@ -27,6 +27,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
+import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
 import javax.annotation.Nonnull;
@@ -46,6 +47,8 @@ import java.util.Map.Entry;
  * @implNote GTUtil
  */
 public class GTUtil {
+
+    public static final Direction[] DIRECTIONS = Direction.values();
 
     @Nullable
     public static Direction determineWrenchingSide(Direction facing, float x, float y, float z) {
@@ -99,6 +102,34 @@ public class GTUtil {
         }
         return null;
     }
+
+    /**
+     * Calculates on which side the neighbor is relative to the main pos.
+     *
+     * @param main     main pos
+     * @param neighbor neighbor pos
+     * @return position of neighbor relative to main or null the neighbor pos is not a neighbor
+     */
+    @Nullable
+    public static Direction getFacingToNeighbor(@NotNull BlockPos main, @NotNull BlockPos neighbor) {
+        int difX = neighbor.getX() - main.getX();
+        int difY = neighbor.getY() - main.getY();
+        int difZ = neighbor.getZ() - main.getZ();
+        if (difX != 0) {
+            if (difY != 0 || difZ != 0 || (difX != 1 && difX != -1)) return null;
+            return difX > 0 ? Direction.EAST : Direction.WEST;
+        }
+        if (difY != 0) {
+            if (difZ != 0 || (difY != 1 && difY != -1)) return null;
+            return difY > 0 ? Direction.UP : Direction.DOWN;
+        }
+        if (difZ != 0) {
+            if (difZ != 1 && difZ != -1) return null;
+            return difZ > 0 ? Direction.SOUTH : Direction.NORTH;
+        }
+        return null;
+    }
+
 
     public static float getExplosionPower(long voltage) {
         return getTierByVoltage(voltage) + 1;

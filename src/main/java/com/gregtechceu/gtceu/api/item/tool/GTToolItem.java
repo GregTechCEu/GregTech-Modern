@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
@@ -42,7 +41,7 @@ import java.util.Set;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
+public class GTToolItem extends DiggerItem implements IGTTool {
 
     @Getter
     protected final GTToolType toolType;
