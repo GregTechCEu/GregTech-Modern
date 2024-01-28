@@ -316,7 +316,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     public ResourceTexture getPipeTexture(boolean isBlock) {
-        return isBlock? GuiTextures.TOOL_PIPE_CONNECT : GuiTextures.TOOL_PIPE_BLOCK;
+        return isBlock ? GuiTextures.TOOL_PIPE_CONNECT : GuiTextures.TOOL_PIPE_BLOCK;
     }
 
     @Override

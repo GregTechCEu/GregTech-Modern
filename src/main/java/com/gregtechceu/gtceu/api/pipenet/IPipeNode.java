@@ -141,7 +141,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         if (level != null) {
             var state = level.getBlockState(pos);
             if (level.isClientSide) {
-                level.sendBlockUpdated(pos, state, state, 1 << 3);
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
             } else {
                 level.blockEvent(pos, state.getBlock(), 1, 0);
             }

@@ -162,8 +162,8 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
     }
 
     default boolean hasAnyCover() {
-        for(Direction facing : GTUtil.DIRECTIONS)
-            if(getCoverAtSide(facing) != null)
+        for (Direction facing : GTUtil.DIRECTIONS)
+            if (getCoverAtSide(facing) != null)
                 return true;
         return false;
     }
