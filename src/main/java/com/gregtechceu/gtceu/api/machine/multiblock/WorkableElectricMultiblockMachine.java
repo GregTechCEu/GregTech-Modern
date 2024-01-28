@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -121,21 +122,19 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 170 + 8, 129 + 8);
-        var container = new WidgetGroup(4, 4, 170, 129);
-        container.addWidget(new DraggableScrollableWidgetGroup(4, 4, 162, 121).setBackground(getScreenTexture())
+        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
                         .setMaxWidthLimit(150)
                         .clickHandler(this::handleDisplayClick)));
-        container.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        group.addWidget(container);
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        return IFancyUIMachine.super.createUI(entityPlayer);
+        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
     }
 
     @Override
