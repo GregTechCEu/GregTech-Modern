@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.PipeBlock;
+import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -12,8 +13,8 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -37,13 +38,25 @@ public class PipeBlockItem extends BlockItem {
     @Override
     @SuppressWarnings({"rawtypes", "unchecked"})
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
-        boolean superVal = super.placeBlock(context, state);
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
         Direction side = context.getClickedFace();
+
+        var realPos = pos.relative(side.getOpposite());
+        var baseNode = getBlock().getPipeTile(level, realPos);
+        if (baseNode != null) {
+            var sideAttach = ICoverable.traceCoverSide(new BlockHitResult(context.getClickLocation(), side, realPos, false));
+            if (sideAttach != null && context.getLevel().isEmptyBlock(realPos.relative(sideAttach))) {
+                pos = realPos.relative(sideAttach);
+                side = sideAttach;
+                context = new BlockPlaceContext(level, context.getPlayer(), context.getHand(), context.getItemInHand(), new BlockHitResult(context.getClickLocation(), sideAttach, realPos, false));
+            }
+        }
+
+        boolean superVal = super.placeBlock(context, state);
         if (superVal && !level.isClientSide) {
-            IPipeNode selfTile = (IPipeNode) level.getBlockEntity(pos);
-            if (selfTile == null) return superVal;
+            IPipeNode selfTile = getBlock().getPipeTile(level, pos);
+            if (selfTile == null) return true;
             if (selfTile.getPipeBlock().canConnect(selfTile, side.getOpposite())) {
                 selfTile.setConnection(side.getOpposite(), true, false);
             }
