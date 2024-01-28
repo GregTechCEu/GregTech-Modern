@@ -66,7 +66,7 @@ public class CompassSection {
         private final DataGenerator generator;
         private final ExistingFileHelper existingHelper;
 
-        public CompassSectionProvider(PackOutput output, ExistingFileHelper existingHelper) {
+        public CompassSectionProvider(DataGenerator generator, ExistingFileHelper existingHelper) {
             this.generator = generator;
             this.existingHelper = existingHelper;
         }

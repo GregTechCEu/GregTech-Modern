@@ -95,6 +95,6 @@ public class CustomTags {
 
     public static final TagKey<Fluid> STEAM = TagUtil.createFluidTag("steam");
 
-    public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "heat_immune");
-    public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "chemical_immune");
+    public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registry.ENTITY_TYPE, "heat_immune");
+    public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registry.ENTITY_TYPE, "chemical_immune");
 }

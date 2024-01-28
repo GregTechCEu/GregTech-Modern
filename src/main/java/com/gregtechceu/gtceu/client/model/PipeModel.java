@@ -266,6 +266,22 @@ public class PipeModel {
         sideSprite = null;
         endSprite = null;
         endOverlaySprite = null;
+
+        register.accept(PIPE_BLOCKED_OVERLAY);
+        register.accept(PIPE_BLOCKED_OVERLAY_UP);
+        register.accept(PIPE_BLOCKED_OVERLAY_DOWN);
+        register.accept(PIPE_BLOCKED_OVERLAY_LEFT);
+        register.accept(PIPE_BLOCKED_OVERLAY_RIGHT);
+        register.accept(PIPE_BLOCKED_OVERLAY_NU);
+        register.accept(PIPE_BLOCKED_OVERLAY_ND);
+        register.accept(PIPE_BLOCKED_OVERLAY_NL);
+        register.accept(PIPE_BLOCKED_OVERLAY_NR);
+        register.accept(PIPE_BLOCKED_OVERLAY_UD);
+        register.accept(PIPE_BLOCKED_OVERLAY_UL);
+        register.accept(PIPE_BLOCKED_OVERLAY_UR);
+        register.accept(PIPE_BLOCKED_OVERLAY_DL);
+        register.accept(PIPE_BLOCKED_OVERLAY_DR);
+        register.accept(PIPE_BLOCKED_OVERLAY_LR);
     }
 
     private static EnumMap<Border, Direction> borderMap(Direction topSide, Direction bottomSide, Direction leftSide, Direction rightSide) {

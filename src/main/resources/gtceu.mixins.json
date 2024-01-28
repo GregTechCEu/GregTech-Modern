@@ -6,8 +6,7 @@
   "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
   "client": [
     "BlockModelMixin",
-    "GuiGraphicsAccessor",
-    "GuiGraphicsMixin",
+    "ItemRendererMixin",
     "LevelRendererMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",

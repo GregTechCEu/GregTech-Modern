@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
@@ -26,15 +26,15 @@ public class VerticalTabsWidget extends TabsWidget {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        drawBackgroundTexture(graphics, mouseX, mouseY);
+    public void drawInBackground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+        drawBackgroundTexture(poseStack, mouseX, mouseY);
         var position = getPosition();
         var size = getSize();
         var hoveredTab = getHoveredTab(mouseX, mouseY);
         // main tab
-        drawTab(mainTab, graphics, mouseX, mouseY, position.x, position.y + 8, 24, 24, hoveredTab);
+        drawTab(mainTab, poseStack, mouseX, mouseY, position.x, position.y + 8, 24, 24, hoveredTab);
         for (int i = subTabs.size() - 1; i >= 0; i--) {
-            drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x, position.y + size.height - 8 - 24 * (subTabs.size() - i), 24, 24, hoveredTab);
+            drawTab(subTabs.get(i), poseStack, mouseX, mouseY, position.x, position.y + size.height - 8 - 24 * (subTabs.size() - i), 24, 24, hoveredTab);
         }
     }
 

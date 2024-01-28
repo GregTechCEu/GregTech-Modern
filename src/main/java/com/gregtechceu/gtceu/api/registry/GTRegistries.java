@@ -62,7 +62,7 @@ public final class GTRegistries {
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
 
-        if (registryKey == RECIPE_TYPE_REGISTRY) {
+        if (registryKey == Registry.RECIPE_TYPE_REGISTRY) {
             ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
         } else if (registryKey == Registry.RECIPE_SERIALIZER_REGISTRY) {
             ForgeRegistries.RECIPE_SERIALIZERS.register(name, (RecipeSerializer<?>) value);

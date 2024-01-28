@@ -7,11 +7,11 @@ import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.cable.CableData;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
@@ -117,7 +117,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
                 double amperage = cable.getAverageAmperage();
                 if (voltage > 0L && amperage > 0L) {
                     float damageAmount = (float) ((GTUtil.getTierByVoltage(voltage) + 1) * amperage * 4);
-                    entityLiving.hurt(GTDamageTypes.ELECTRIC.source(level), damageAmount);
+                    entityLiving.hurt(DamageSources.getElectricDamage(), damageAmount);
                     if (entityLiving instanceof ServerPlayer) {
                         // TODO advancments
                         //AdvancementTriggers.ELECTROCUTION_DEATH.trigger((EntityPlayerMP) entityLiving);

@@ -46,7 +46,7 @@ public class ShutterCover extends CoverBehavior implements IControllable {
     @Override
     public InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
         this.workingEnabled = !this.workingEnabled;
-        if (!playerIn.level().isClientSide) {
+        if (!playerIn.getLevel().isClientSide) {
             playerIn.sendSystemMessage(Component.translatable(isWorkingEnabled() ?
                     "cover.shutter.message.enabled" : "cover.shutter.message.disabled"));
         }

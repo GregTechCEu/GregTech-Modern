@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.tags.EntityTypeTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -57,7 +58,7 @@ public class EntityDamageUtil {
         // fire resistance entities cannot be burned
         if (entity.getEffect(MobEffects.FIRE_RESISTANCE) != null) return;
 
-        entity.hurt(GTDamageTypes.HEAT.source(entity.level()), damage);
+        entity.hurt(DamageSources.getHeatDamage(), damage);
         //TODO advancements
         //if (entity instanceof ServerPlayer serverPlayer)
         //    AdvancementTriggers.HEAT_DEATH.trigger(serverPlayer);
@@ -84,7 +85,7 @@ public class EntityDamageUtil {
             }
         }
 
-        entity.hurt(entity.damageSources().freeze(), damage);
+        entity.hurt(DamageSource.FREEZE, damage);
         // TODO advancements
         //if (entity instanceof ServerPlayer) {
         //    AdvancementTriggers.COLD_DEATH.trigger((EntityPlayerMP) entity);
@@ -103,7 +104,7 @@ public class EntityDamageUtil {
         if (entity.getType().is(CustomTags.CHEMICAL_IMMUNE))
             return;
 
-        entity.hurt(GTDamageTypes.CHEMICAL.source(entity.level()), damage);
+        entity.hurt(DamageSources.getChemicalDamage(), damage);
         entity.addEffect(new MobEffectInstance(MobEffects.POISON, damage * 100, 1));
         // TODO advancements
         //if (entity instanceof ServerPlayer) AdvancementTriggers.CHEMICAL_DEATH.trigger((EntityPlayerMP) entity);
