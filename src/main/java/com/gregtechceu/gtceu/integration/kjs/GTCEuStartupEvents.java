@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
+import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import dev.latvian.mods.kubejs.event.EventGroup;
 import dev.latvian.mods.kubejs.event.EventHandler;
 import dev.latvian.mods.kubejs.event.Extra;
@@ -22,6 +23,6 @@ public interface GTCEuStartupEvents {
     }
 
     EventHandler REGISTRY = GROUP.startup("registry", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
-    EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> GTRegistryEventJS.class).extra(REGISTRY_EXTRA);
+    EventHandler MATERIAL_MODIFICATION = GROUP.startup("materialModification", () -> MaterialModificationEventJS.class);
 
 }
