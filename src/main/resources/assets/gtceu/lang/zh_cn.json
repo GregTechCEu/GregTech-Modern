@@ -598,7 +598,7 @@
     "block.gtceu.lv_transformer_1a":"低压变压器（§7LV§r）",
     "block.gtceu.lv_transformer_2a":"低压进阶变压器（§7LV§r）",
     "block.gtceu.lv_transformer_4a":"低压高流变压器（§7LV§r）",
-    "block.gtceu.lv_wiremill":"基础线材轧机§",
+    "block.gtceu.lv_wiremill":"基础线材轧机§r",
     "block.gtceu.maintenance_hatch":"维护仓",
     "block.gtceu.max_16a_energy_converter":"16安§c§lMAX§r能量转换器",
     "block.gtceu.max_1a_energy_converter":"1安§c§lMAX§r能量转换器",
