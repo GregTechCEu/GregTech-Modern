@@ -1698,7 +1698,7 @@ public class GTMachines {
                             .overlayTieredHullRenderer(model)
                             .abilities(abilities)
                             .compassNode("fluid_hatch")
-                            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"));
+                            .tooltips(Component.translatable("gtceu.machine." + model + ".tooltip"));
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));

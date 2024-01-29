@@ -41,7 +41,6 @@ public class DataGenerators {
         if (event.includeServer()) {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
-            generator.addProvider(true, new EntityTypeTagLoader(packOutput, registries, existingFileHelper));
             generator.addProvider(true, new DatapackBuiltinEntriesProvider(
                 packOutput, registries, new RegistrySetBuilder()
                 .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
