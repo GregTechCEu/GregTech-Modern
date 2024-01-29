@@ -33,8 +33,8 @@ public class VerticalTabsWidget extends TabsWidget {
         var hoveredTab = getHoveredTab(mouseX, mouseY);
         // main tab
         drawTab(mainTab, graphics, mouseX, mouseY, position.x, position.y + 8, 24, 24, hoveredTab);
-        for (int i = subTabs.size() - 1; i >= 0; i--) {
-            drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x, position.y + size.height - 8 - 24 * (subTabs.size() - i), 24, 24, hoveredTab);
+        for (int i = 0; i < subTabs.size(); ++i) {
+            drawTab(subTabs.get(i), graphics, mouseX, mouseY, position.x, position.y + 8 + 24 * (i + 1), 24, 24, hoveredTab);
         }
     }
 
@@ -49,9 +49,9 @@ public class VerticalTabsWidget extends TabsWidget {
                 return mainTab;
             }
             // others
-            int i = (position.y + size.height - 8 - (int)mouseY) / 24;
-            if (i < subTabs.size()) {
-                return subTabs.get(subTabs.size() - 1 - i);
+            int i = ((int)mouseY - position.y - 24 - 8) / 24;
+            if (i >= 0 && i < subTabs.size()) {
+                return subTabs.get(i);
             }
         }
         return null;
