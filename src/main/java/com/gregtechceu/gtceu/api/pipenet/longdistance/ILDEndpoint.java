@@ -1,39 +1,41 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 
-public interface ILDEndpoint {
+public interface ILDEndpoint extends ILDNetworkPart{
 
     /**
      * @return the current type of this endpoint (input, output or none)
      */
-    Type getType();
+    @NotNull
+    IO getIoType();
 
     /**
-     * @param type new active type
+     * @param ioType new active type
      */
-    void setType(Type type);
+    void setIoType(IO ioType);
 
     /**
      * @return true if this endpoint is considered a network input
      */
     default boolean isInput() {
-        return getType() == Type.INPUT;
+        return getIoType() == IO.IN;
     }
 
     /**
      * @return true if this endpoint is considered a network output
      */
     default boolean isOutput() {
-        return getType() == Type.OUTPUT;
+        return getIoType() == IO.OUT;
     }
 
     /**
@@ -50,16 +52,20 @@ public interface ILDEndpoint {
     /**
      * @return the front facing, usually the input face
      */
+    @NotNull
     Direction getFrontFacing();
 
     /**
      * @return the output facing
      */
+    @NotNull
     Direction getOutputFacing();
 
     /**
      * @return the ld pipe type for this endpoint
      */
+    @Override
+    @NotNull
     LongDistancePipeType getPipeType();
 
     /**
@@ -67,18 +73,16 @@ public interface ILDEndpoint {
      */
     BlockPos getPos();
 
+    Level getLevel();
+
+    boolean isInValid();
+
+    @Nullable
     static ILDEndpoint tryGet(LevelAccessor world, BlockPos pos) {
         BlockEntity te = world.getBlockEntity(pos);
-        if (te instanceof IMachineBlockEntity iMachineBlock) {
-            MetaMachine mte = iMachineBlock.getMetaMachine();
-            if (mte instanceof ILDEndpoint) {
-                return (ILDEndpoint) mte;
-            }
+        if (te instanceof IMachineBlockEntity gte && gte.getMetaMachine() instanceof ILDEndpoint endpoint) {
+            return endpoint;
         }
         return null;
-    }
-
-    enum Type {
-        NONE, INPUT, OUTPUT
     }
 }

@@ -24,6 +24,7 @@ import javax.annotation.Nullable;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 public class LongDistanceNetwork {
@@ -54,16 +55,9 @@ public class LongDistanceNetwork {
      * For this it will start a new thread to keep the main thread free.
      */
     protected void recalculateNetwork(Collection<BlockPos> starts) {
-        // remove the every pipe from the network
-        for (BlockPos pos : this.longDistancePipeBlocks) {
-            this.world.removeNetwork(pos);
-        }
-        invalidateEndpoints();
-        this.endpoints.clear();
-        this.longDistancePipeBlocks.clear();
+        invalidateNetwork(true);
         // start a new thread where all given starting points are being walked
-        Thread thread = new Thread(new NetworkBuilder(world, this, starts));
-        thread.start();
+        new NetworkBuilder(world, this, starts).start();
     }
 
     /**
@@ -71,17 +65,13 @@ public class LongDistanceNetwork {
      */
     protected void setData(Collection<BlockPos> pipes, List<ILDEndpoint> endpoints) {
         invalidateEndpoints();
-        boolean wasEmpty = this.longDistancePipeBlocks.isEmpty();
         this.longDistancePipeBlocks.clear();
         this.longDistancePipeBlocks.addAll(pipes);
         this.endpoints.clear();
         this.endpoints.addAll(endpoints);
         if (this.longDistancePipeBlocks.isEmpty()) {
-            invalidateNetwork();
+            invalidateNetwork(false);
             return;
-        }
-        if (wasEmpty) {
-            this.world.networkList.add(this);
         }
         for (BlockPos pos : this.longDistancePipeBlocks) {
             this.world.putNetwork(pos, this);
@@ -96,7 +86,7 @@ public class LongDistanceNetwork {
         this.longDistancePipeBlocks.remove(pos);
         this.world.removeNetwork(pos);
         if (this.longDistancePipeBlocks.isEmpty()) {
-            invalidateNetwork();
+            invalidateNetwork(false);
             return;
         }
         // find amount of neighbour networks
@@ -171,20 +161,25 @@ public class LongDistanceNetwork {
         for (ILDEndpoint endpoint1 : this.endpoints) {
             endpoint1.invalidateLink();
         }
-        network.invalidateNetwork();
+        network.invalidateNetwork(false);
     }
 
     /**
      * invalidate this network
      */
-    protected void invalidateNetwork() {
+    protected void invalidateNetwork(boolean removeFromWorld) {
+        if (removeFromWorld) {
+            for (BlockPos pos : this.longDistancePipeBlocks) {
+                this.world.removeNetwork(pos);
+            }
+        }
         this.longDistancePipeBlocks.clear();
         this.world.networkList.remove(this);
         invalidateEndpoints();
         this.endpoints.clear();
     }
 
-    protected void invalidateEndpoints() {
+    public void invalidateEndpoints() {
         this.activeInputIndex = -1;
         this.activeOutputIndex = -1;
         for (ILDEndpoint endpoint : this.endpoints) {
@@ -203,7 +198,16 @@ public class LongDistanceNetwork {
         // return null for invalid network configurations
         if (!isValid() || (!endpoint.isInput() && !endpoint.isOutput())) return null;
 
+        // check if endpoint really exists in this network
+        int thisIndex = this.endpoints.indexOf(endpoint);
+        if (thisIndex < 0) {
+            // endpoint not found in this network, something is wrong, recalculate network
+            recalculateNetwork(Collections.singleton(endpoint.getPos()));
+            return null;
+        }
+
         if (isIOIndexInvalid()) {
+            // current endpoint indexes are invalid
             invalidateEndpoints();
         } else if (this.activeInputIndex >= 0) {
             // there is an active input and output endpoint
@@ -230,9 +234,6 @@ public class LongDistanceNetwork {
         int otherIndex = find(endpoint);
         if (otherIndex >= 0) {
             // found other endpoint
-            int thisIndex = this.endpoints.indexOf(endpoint);
-            if (thisIndex < 0)
-                throw new IllegalStateException("Tried to get endpoint that is not part of this network. Something is seriously wrong!");
             ILDEndpoint other = this.endpoints.get(otherIndex);
             // set active endpoints
             this.activeOutputIndex = endpoint.isOutput() ? thisIndex : otherIndex;
@@ -245,10 +246,15 @@ public class LongDistanceNetwork {
     private int find(ILDEndpoint endpoint) {
         for (int i = 0; i < this.endpoints.size(); i++) {
             ILDEndpoint other = this.endpoints.get(i);
+            if (other.isInValid()) {
+                other.invalidateLink();
+                this.endpoints.remove(i--);
+                continue;
+            }
             if (endpoint != other &&
-                    (other.isOutput() || other.isInput()) &&
-                    other.isInput() != endpoint.isInput() &&
-                    this.pipeType.satisfiesMinLength(endpoint, other)) {
+                (other.isOutput() || other.isInput()) &&
+                other.isInput() != endpoint.isInput() &&
+                this.pipeType.satisfiesMinLength(endpoint, other)) {
                 // found valid endpoint with minimum distance
                 return i;
             }
@@ -321,7 +327,7 @@ public class LongDistanceNetwork {
 
         public static WorldData get(LevelAccessor level) {
             if (level instanceof ServerLevel serverLevel) {
-                return serverLevel.getDataStorage().computeIfAbsent(WorldData::load, () -> WorldData.create(serverLevel), "gtceu_long_dist_pipe");
+                return serverLevel.getDataStorage().computeIfAbsent((tag) -> WorldData.load(tag, serverLevel), () -> WorldData.create(serverLevel), "gtceu_long_dist_pipe");
             }
             return null;
         }
@@ -379,7 +385,7 @@ public class LongDistanceNetwork {
             this.setDirty();
         }
 
-        public static WorldData load(@NotNull CompoundTag nbtTagCompound) {
+        public static WorldData load(@NotNull CompoundTag nbtTagCompound, ServerLevel level) {
             WorldData data = new WorldData();
             data.networks.clear();
             data.networkList.clear();
@@ -405,6 +411,7 @@ public class LongDistanceNetwork {
                     }
                 }
             }
+            data.setWorldAndInit(level);
             return data;
         }
 

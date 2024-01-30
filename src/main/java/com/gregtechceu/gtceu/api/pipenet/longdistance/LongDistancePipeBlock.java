@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.LivingEntity;
@@ -10,6 +11,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -17,8 +19,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 @ParametersAreNonnullByDefault
-public class LongDistancePipeBlock extends Block {
+public class LongDistancePipeBlock extends Block implements ILDNetworkPart {
 
+    @Getter
     private final LongDistancePipeType pipeType;
 
     public LongDistancePipeBlock(BlockBehaviour.Properties properties, LongDistancePipeType pipeType) {
