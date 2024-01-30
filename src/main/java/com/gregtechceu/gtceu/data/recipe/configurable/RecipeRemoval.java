@@ -210,8 +210,6 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:crimson_button"));
         registry.accept(new ResourceLocation("minecraft:warped_button"));
         registry.accept(new ResourceLocation("minecraft:mangrove_button"));
-        registry.accept(new ResourceLocation("minecraft:cherry_button"));
-        registry.accept(new ResourceLocation("minecraft:bamboo_button"));
     }
 
     private static void hardToolArmorRecipes(Consumer<ResourceLocation> registry) {
