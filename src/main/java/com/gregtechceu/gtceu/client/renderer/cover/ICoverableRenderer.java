@@ -40,7 +40,7 @@ public interface ICoverableRenderer extends IRenderer {
                 var quads = new LinkedList<BakedQuad>();
                 var modelState = ModelFactory.getRotation(coverable.getFrontFacing());
                 var modelFacing = side == null ? null : ModelFactory.modelFacing(side, coverable.getFrontFacing());
-                renderCovers(quads, side, rand, coverable, modelFacing, modelState);
+                renderCovers(quads, side, rand, coverable, modelFacing, pos, level, modelState);
                 return quads;
             }
         }
@@ -48,7 +48,7 @@ public interface ICoverableRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @Nonnull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
+    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @Nonnull ICoverable coverable, @Nullable Direction modelFacing, BlockPos pos, BlockAndTintGetter level, ModelState modelState) {
         var thickness = coverable.getCoverPlateThickness();
         for (Direction face : GTUtil.DIRECTIONS) {
             var cover = coverable.getCoverAtSide(face);
@@ -70,7 +70,7 @@ public interface ICoverableRenderer extends IRenderer {
                         quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side"))).cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);
+                cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, pos, level, modelState);
             }
         }
     }

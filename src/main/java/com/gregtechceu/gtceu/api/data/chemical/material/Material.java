@@ -997,12 +997,6 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder fluidBurnTime(int burnTime) {
-            //properties.ensureSet(PropertyKey.FLUID);
-            //properties.getProperty(PropertyKey.FLUID).setBurnTime(burnTime);
-            return this;
-        }
-
         public Builder washedIn(Material m) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setWashedIn(m);

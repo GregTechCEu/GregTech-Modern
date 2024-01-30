@@ -773,10 +773,10 @@ public class LangHandler {
         provider.add("gtceu.machine.ev_fluid_drilling_rig.tooltip", "Well Drainer");
         provider.add("gtceu.machine.cleanroom.tooltip", "Keeping those pesky particles out");
         provider.add("gtceu.machine.charcoal_pile.tooltip", "Underground fuel bakery");
-        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Maps: %s");
-        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Maps: %s, %s");
-        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Maps: %s, %s, %s");
-        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Maps: %s, %s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_1.tooltip", "Available Recipe Types: %s");
+        provider.add("gtceu.machine.available_recipe_map_2.tooltip", "Available Recipe Types: %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_3.tooltip", "Available Recipe Types: %s, %s, %s");
+        provider.add("gtceu.machine.available_recipe_map_4.tooltip", "Available Recipe Types: %s, %s, %s, %s");
 
         multiLang(provider, "gtceu.machine.power_substation.tooltip",
                 "The heart of a centralized power grid",
@@ -1219,6 +1219,7 @@ public class LangHandler {
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
 
         provider.add("gtceu.gui.machinemode.title", "Active Machine Mode");
+        provider.add("gtceu.gui.machinemode", "Active Machine Mode: %s");
 
         provider.add("gtceu.gui.content.chance_0", "§cNot Consumed§r");
         provider.add("gtceu.gui.content.chance_0_short", "§cNC§r");
