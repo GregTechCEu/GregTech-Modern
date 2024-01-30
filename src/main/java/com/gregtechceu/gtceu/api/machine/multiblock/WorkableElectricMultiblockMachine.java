@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+import com.gregtechceu.gtceu.api.capability.IParallelHatch;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.player.Player;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author KilaBash
@@ -90,14 +92,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 //                textList.add(buttonText);
 //            }
 
-//            textList.add(Component.translatable("gtceu.multiblock.multiple_recipemaps.header")
-//                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-//                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
-
-            textList.add(Component.translatable(getRecipeType().registryName.toLanguageKey())
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("gtceu.gui.machinemode.title")))));
+            textList.add(Component.translatable("gtceu.gui.machinemode", Component.translatable(getRecipeType().registryName.toLanguageKey()))
+                    .withStyle(ChatFormatting.AQUA));
 
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
@@ -105,9 +101,13 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             } else if (isActive()) {
                 textList.add(Component.translatable("gtceu.multiblock.running"));
                 int currentProgress = (int) (recipeLogic.getProgressPercent() * 100);
-//                if (this.recipeMapWorkable.getParallelLimit() != 1) {
-//                    textList.add(Component.translatable("gtceu.multiblock.parallel", this.recipeMapWorkable.getParallelLimit()));
-//                }
+                Optional<IParallelHatch> optional = this.getParts().stream().filter(IParallelHatch.class::isInstance).map(IParallelHatch.class::cast).findAny();
+                if (optional.isPresent()) {
+                    IParallelHatch parallelHatch = optional.get();
+                    if (parallelHatch.getCurrentParallel() != 1) {
+                        textList.add(Component.translatable("gtceu.multiblock.parallel", parallelHatch.getCurrentParallel()));
+                    }
+                }
                 textList.add(Component.translatable("gtceu.multiblock.progress", currentProgress));
             } else {
                 textList.add(Component.translatable("gtceu.multiblock.idling"));
