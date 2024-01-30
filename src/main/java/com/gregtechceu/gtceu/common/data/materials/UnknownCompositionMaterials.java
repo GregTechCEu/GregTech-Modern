@@ -47,7 +47,7 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         Creosote = new Material.Builder(GTCEu.id("creosote"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill()).fluidBurnTime(6400).color(0x804000)
+                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill().burnTime(6400)).color(0x804000)
                 .flags(STICKY).buildAndRegister();
 
         Diesel = new Material.Builder(GTCEu.id("diesel"))

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
@@ -193,14 +194,22 @@ public class MixinHelpers {
                     //.apply(ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE)))); //disable fortune for balance reasons. (for now, until we can think of a better solution.)
 
                     Supplier<Material> outputDustMat = type.material();
-                    if (outputDustMat != null) {
-                        builder.withPool(LootPool.lootPool().add(
-                            LootItem.lootTableItem(ChemicalHelper.get(TagPrefix.dust, outputDustMat.get()).getItem())
+                    LootPool.Builder pool = LootPool.lootPool();
+                    boolean isEmpty = true;
+                    for (MaterialStack secondaryMaterial : prefix.secondaryMaterials()) {
+                        if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
+                            ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
+                            pool.add(LootItem.lootTableItem(dustStack.getItem())
                                 .when(BlockLoot.HAS_NO_SILK_TOUCH)
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(0, 1)))
                                 .apply(ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE))
                                 .apply(LimitCount.limitCount(IntRange.range(0, 2)))
-                                .apply(ApplyExplosionDecay.explosionDecay())));
+                                .apply(ApplyExplosionDecay.explosionDecay()));
+                            isEmpty = false;
+                        }
+                    }
+                    if (!isEmpty) {
+                        builder.withPool(pool);
                     }
                     lootTables.put(lootTableId, builder.setParamSet(LootContextParamSets.BLOCK).build());
                     ((BlockBehaviourAccessor)blockEntry.get()).setDrops(lootTableId);
