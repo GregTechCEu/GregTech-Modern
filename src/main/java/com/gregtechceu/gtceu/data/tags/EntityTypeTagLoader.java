@@ -1,23 +1,31 @@
 package com.gregtechceu.gtceu.data.tags;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import net.minecraft.data.DataGenerator;
-import net.minecraft.data.tags.EntityTypeTagsProvider;
+import com.tterrag.registrate.providers.RegistrateTagsProvider;
+import net.minecraft.core.Registry;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import org.jetbrains.annotations.Nullable;
 
-public class EntityTypeTagLoader extends EntityTypeTagsProvider {
+public class EntityTypeTagLoader {
 
-    public EntityTypeTagLoader(DataGenerator arg, @Nullable ExistingFileHelper existingFileHelper) {
-        super(arg, GTCEu.MOD_ID, existingFileHelper);
+    public static void init(RegistrateTagsProvider<EntityType<?>> provider) {
+        create(provider, CustomTags.HEAT_IMMUNE, EntityType.BLAZE, EntityType.MAGMA_CUBE, EntityType.WITHER_SKELETON, EntityType.WITHER);
+        create(provider, CustomTags.CHEMICAL_IMMUNE, EntityType.SKELETON, EntityType.STRAY);
     }
 
-    @Override
-    public void addTags() {
-        tag(CustomTags.HEAT_IMMUNE).add(EntityType.BLAZE, EntityType.MAGMA_CUBE, EntityType.WITHER_SKELETON, EntityType.WITHER);
-        tag(CustomTags.CHEMICAL_IMMUNE).add(EntityType.SKELETON, EntityType.STRAY);
+    public static void create(RegistrateTagsProvider<EntityType<?>> provider, TagKey<EntityType<?>> tagKey, EntityType<?>... rls) {
+        var builder = provider.tag(tagKey);
+        for (EntityType<?> entityType : rls) {
+            builder.add(Registry.ENTITY_TYPE.getResourceKey(entityType).get());
+        }
+    }
+
+    public static void create(RegistrateTagsProvider<EntityType<?>> provider, TagKey<EntityType<?>> tagKey, ResourceLocation... rls) {
+        var builder = provider.tag(tagKey);
+        for (ResourceLocation rl : rls) {
+            builder.addOptional(rl);
+        }
     }
 
 }
