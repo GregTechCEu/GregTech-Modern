@@ -20,7 +20,7 @@ public class OrganicChemistryMaterials {
     public static void register() {
         SiliconeRubber = new Material.Builder(GTCEu.id("silicone_rubber"))
                 .polymer()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(900))
+                .liquid(new FluidBuilder().temperature(900))
                 .color(0xF0F0F0).secondaryColor(0xE8E8E0)
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1, Silicon, 1)
@@ -49,7 +49,7 @@ public class OrganicChemistryMaterials {
 
         StyreneButadieneRubber = new Material.Builder(GTCEu.id("styrene_butadiene_rubber"))
                 .polymer()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1000))
+                .liquid(new FluidBuilder().temperature(1000))
                 .color(0x34312b).secondaryColor(0x110B09)
                 .flags(GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 20, Hydrogen, 26)
@@ -65,7 +65,7 @@ public class OrganicChemistryMaterials {
 
         ReinforcedEpoxyResin = new Material.Builder(GTCEu.id("reinforced_epoxy_resin"))
                 .polymer()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
+                .liquid(new FluidBuilder().temperature(600))
                 .color(0x9ecaad).secondaryColor(0xb1b2a1).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 6, Hydrogen, 4, Oxygen, 1)
@@ -73,7 +73,7 @@ public class OrganicChemistryMaterials {
 
         PolyvinylChloride = new Material.Builder(GTCEu.id("polyvinyl_chloride"))
                 .polymer()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(373))
+                .liquid(new FluidBuilder().temperature(373))
                 .color(0xFF9955).secondaryColor(0x6ca5bf)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
@@ -82,21 +82,21 @@ public class OrganicChemistryMaterials {
 
         PolyphenyleneSulfide = new Material.Builder(GTCEu.id("polyphenylene_sulfide"))
                 .polymer()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(500))
+                .liquid(new FluidBuilder().temperature(500))
                 .color(0x30302e).secondaryColor(0x071d26)
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 4, Sulfur, 1)
                 .buildAndRegister();
 
         GlycerylTrinitrate = new Material.Builder(GTCEu.id("glyceryl_trinitrate"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().customStill())
                 .flags(FLAMMABLE, EXPLOSIVE)
                 .components(Carbon, 3, Hydrogen, 5, Nitrogen, 3, Oxygen, 9)
                 .buildAndRegister();
 
         Polybenzimidazole = new Material.Builder(GTCEu.id("polybenzimidazole"))
                 .polymer()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1450))
+                .liquid(new FluidBuilder().temperature(1450))
                 .color(0x464441).secondaryColor(0x382e1b)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_FOIL)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
@@ -113,7 +113,7 @@ public class OrganicChemistryMaterials {
 
         Polyethylene = new Material.Builder(GTCEu.id("polyethylene"))
                 .polymer(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(408))
+                .liquid(new FluidBuilder().temperature(408))
                 .color(0xC8C8C8)
                 .flags(GENERATE_FOIL)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
@@ -123,7 +123,7 @@ public class OrganicChemistryMaterials {
 
         Epoxy = new Material.Builder(GTCEu.id("epoxy"))
                 .polymer(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
+                .liquid(new FluidBuilder().temperature(400))
                 .color(0xf6fabd).secondaryColor(0xC88C14).iconSet(ROUGH)
                 .appendFlags(STD_METAL)
                 .components(Carbon, 21, Hydrogen, 25, Chlorine, 1, Oxygen, 5)
@@ -131,7 +131,7 @@ public class OrganicChemistryMaterials {
 
         Polycaprolactam = new Material.Builder(GTCEu.id("polycaprolactam"))
                 .polymer(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(493))
+                .liquid(new FluidBuilder().temperature(493))
                 .color(0xf3f2e9).secondaryColor(0xe0e0dc)
                 .appendFlags(STD_METAL, GENERATE_FOIL)
                 .components(Carbon, 6, Hydrogen, 11, Nitrogen, 1, Oxygen, 1)
@@ -139,7 +139,7 @@ public class OrganicChemistryMaterials {
 
         Polytetrafluoroethylene = new Material.Builder(GTCEu.id("polytetrafluoroethylene"))
                 .polymer(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(600))
+                .liquid(new FluidBuilder().temperature(600))
                 .color(0xFFFFFF).secondaryColor(0x919187)
                 .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
@@ -155,14 +155,14 @@ public class OrganicChemistryMaterials {
                 .buildAndRegister();
 
         Methane = new Material.Builder(GTCEu.id("methane"))
-                .fluid(FluidStorageKeys.GAS, new FluidBuilder()
+                .gas(new FluidBuilder()
                 .translation("gtceu.fluid.gas_generic"))
                 .color(0xFF0078)
                 .components(Carbon, 1, Hydrogen, 4)
                 .buildAndRegister();
 
         Epichlorohydrin = new Material.Builder(GTCEu.id("epichlorohydrin"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().customStill())
                 .color(0x712400)
                 .components(Carbon, 3, Hydrogen, 5, Chlorine, 1, Oxygen, 1)
                 .buildAndRegister();
@@ -330,7 +330,7 @@ public class OrganicChemistryMaterials {
                 .buildAndRegister();
 
         AceticAcid = new Material.Builder(GTCEu.id("acetic_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xC8B4A0)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 4, Oxygen, 2)
@@ -391,13 +391,13 @@ public class OrganicChemistryMaterials {
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .buildAndRegister();
 
         Toluene = new Material.Builder(GTCEu.id("toluene"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 7, Hydrogen, 8)
                 .buildAndRegister();
@@ -410,7 +410,7 @@ public class OrganicChemistryMaterials {
                 .buildAndRegister();
 
         PhthalicAcid = new Material.Builder(GTCEu.id("phthalic_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xD1D1D1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 6, Oxygen, 4)
@@ -484,7 +484,7 @@ public class OrganicChemistryMaterials {
 
         Rubber = new Material.Builder(GTCEu.id("rubber"))
                 .polymer(0)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(400))
+                .liquid(new FluidBuilder().temperature(400))
                 .color(0x353529).secondaryColor(0x080808)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
