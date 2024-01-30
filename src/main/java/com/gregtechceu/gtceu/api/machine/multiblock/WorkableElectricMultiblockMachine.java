@@ -90,14 +90,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 //                textList.add(buttonText);
 //            }
 
-//            textList.add(Component.translatable("gtceu.multiblock.multiple_recipemaps.header")
-//                    .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-//                            Component.translatable("gtceu.multiblock.multiple_recipemaps.tooltip")))));
-
-            textList.add(Component.translatable(getRecipeType().registryName.toLanguageKey())
-                    .setStyle(Style.EMPTY.withColor(ChatFormatting.AQUA)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                    Component.translatable("gtceu.gui.machinemode.title")))));
+            textList.add(Component.translatable("gtceu.gui.machinemode", Component.translatable(getRecipeType().registryName.toLanguageKey()))
+                    .withStyle(ChatFormatting.AQUA));
 
             if (!isWorkingEnabled()) {
                 textList.add(Component.translatable("gtceu.multiblock.work_paused"));
