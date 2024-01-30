@@ -4,18 +4,15 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
-import com.lowdragmc.lowdraglib.gui.animation.Animation;
-import com.lowdragmc.lowdraglib.gui.animation.Transform;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.renderer.RenderType;
@@ -38,6 +35,7 @@ import java.util.List;
 public class CoverContainerConfigurator extends WidgetGroup {
     protected final ICoverable coverable;
     protected final ItemStackTransfer transfer;
+    protected final ConfiguratorPanel panel;
     protected SceneWidget sceneWidget;
     protected SlotWidget slotWidget;
     protected ImageWidget background;
@@ -47,12 +45,13 @@ public class CoverContainerConfigurator extends WidgetGroup {
     @Nullable
     protected CoverBehavior coverBehavior;
     @Nullable
-    protected Widget coverConfigurator;
+    protected ConfiguratorPanel.FloatingTab coverConfigurator;
     private boolean needUpdate;
 
-    public CoverContainerConfigurator(ICoverable coverable) {
+    public CoverContainerConfigurator(ICoverable coverable, ConfiguratorPanel panel) {
         super(0, 0, 120, 80);
         this.coverable = coverable;
+        this.panel = panel;
         this.transfer = new ItemStackTransfer() {
             @Override
             public int getSlotLimit(int slot) {
@@ -173,37 +172,17 @@ public class CoverContainerConfigurator extends WidgetGroup {
     }
 
     protected void updateCoverConfigurator() {
-        if (coverConfigurator != null) {
-            removeWidgetAnima(coverConfigurator, new Transform()
-                    .offset(-coverConfigurator.getSize().width / 2, -coverConfigurator.getSize().height / 2)
-                    .scale(0)
-                    .duration(300));
-            coverConfigurator = null;
-            sceneWidget.animation(new Animation()
-                    .duration(300)
-                    .size(new Size(120 - 8, 80 - 8)));
-            setSize(new Size(120, 80));
-            background.animation(new Animation()
-                    .duration(300)
-                    .size(getSize()));
+        if (this.coverConfigurator != null) {
+            this.panel.collapseTab();
+            this.coverConfigurator.collapseTo(18, 30);
+            this.panel.removeWidget(this.coverConfigurator);
+            this.coverConfigurator = null;
         }
-        if (side != null) {
-            if (coverable.getCoverAtSide(side) instanceof IUICover iuiCover) {
-                coverConfigurator = iuiCover.createUIWidget();
-                coverConfigurator.setBackground(GuiTextures.BACKGROUND);
-                coverConfigurator.setSelfPosition(new Position(4, 80 - 4));
-                addWidgetAnima(coverConfigurator, new Transform()
-                        .offset(-coverConfigurator.getSize().width / 2, -coverConfigurator.getSize().height / 2)
-                        .scale(0)
-                        .duration(300));
-                sceneWidget.animation(new Animation()
-                        .duration(300)
-                        .size(new Size(Math.max(120, coverConfigurator.getSize().width + 8) - 8, 80 - 8)));
-                setSize(new Size(Math.max(120, coverConfigurator.getSize().width + 8), Math.max(80, 80 + coverConfigurator.getSize().height)));
-                background.animation(new Animation()
-                        .duration(300)
-                        .size(getSize()));
-            }
-        }
+        if (side == null || coverBehavior == null || !(coverable.getCoverAtSide(side) instanceof IUICover)) return;
+        CoverConfigurator configurator = new CoverConfigurator(this.coverable, this.transfer, this.panel, this.sceneWidget, this.slotWidget, this.side, this.coverBehavior);
+        this.coverConfigurator = this.panel.createFloatingTab(configurator);
+        this.coverConfigurator.setGui(this.gui);
+        this.panel.addWidget(this.coverConfigurator);
+        this.panel.expandTab(this.coverConfigurator);
     }
 }

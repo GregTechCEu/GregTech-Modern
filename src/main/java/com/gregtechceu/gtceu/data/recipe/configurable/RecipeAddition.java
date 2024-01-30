@@ -633,6 +633,12 @@ public class RecipeAddition {
             VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_button", new ItemStack(Blocks.MANGROVE_BUTTON, 6), "sP",
                     'P', new ItemStack(Blocks.MANGROVE_PRESSURE_PLATE));
 
+            VanillaRecipeHelper.addShapedRecipe(provider, "cherry_button", new ItemStack(Blocks.CHERRY_BUTTON, 6), "sP",
+                'P', new ItemStack(Blocks.CHERRY_PRESSURE_PLATE));
+
+            VanillaRecipeHelper.addShapedRecipe(provider, "bamboo_button", new ItemStack(Blocks.BAMBOO_BUTTON, 6), "sP",
+                'P', new ItemStack(Blocks.BAMBOO_PRESSURE_PLATE));
+
             GTRecipeTypes.CUTTER_RECIPES.recipeBuilder("stone_button")
                     .inputItems(new ItemStack(Blocks.STONE_PRESSURE_PLATE))
                     .outputItems(new ItemStack(Blocks.STONE_BUTTON, 12))
@@ -1213,7 +1219,7 @@ public class RecipeAddition {
         String colorName = color.getName();
         VanillaRecipeHelper.addShapedRecipe(provider, colorName + "_bed", new ItemStack(Registry.ITEM.get(new ResourceLocation(colorName + "_bed"))), "WWW", "PPP", "FrF",
             'W', Registry.ITEM.get(new ResourceLocation(colorName + "_carpet")),
-            'P', new UnificationEntry(TagPrefix.plank, GTMaterials.Wood),
+            'P', ItemTags.PLANKS,
             'F', ItemTags.WOODEN_FENCES);
     }
 

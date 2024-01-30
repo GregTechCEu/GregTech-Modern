@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -242,12 +241,21 @@ public class GTMachines {
             })
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .workableTieredHullRenderer(GTCEu.id("block/machines/macerator"))
-            .tooltips(explosion())
             .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, GTRecipeTypes.MACERATOR_RECIPES, defaultTankSizeFunction.apply(tier), true))
             .compassNode("macerator")
             .register(), ELECTRIC_TIERS);
     public final static MachineDefinition[] GAS_COLLECTOR = registerSimpleMachines("gas_collector", GTRecipeTypes.GAS_COLLECTOR_RECIPES, largeTankSizeFunction);
-    public final static MachineDefinition[] ROCK_CRUSHER = registerSimpleMachines("rock_crusher", GTRecipeTypes.ROCK_BREAKER_RECIPES);
+    public final static MachineDefinition[] ROCK_CRUSHER = registerTieredMachines("rock_crusher", RockCrusherMachine::new, (tier, builder) -> builder
+        .langValue("%s Rock Crusher %s".formatted(VLVH[tier], VLVT[tier]))
+        .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("rock_crusher"), GTRecipeTypes.ROCK_BREAKER_RECIPES))
+        .rotationState(RotationState.NON_Y_AXIS)
+        .recipeType(GTRecipeTypes.ROCK_BREAKER_RECIPES)
+        .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+        .workableTieredHullRenderer(GTCEu.id("block/machines/rock_crusher"))
+        .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, GTRecipeTypes.ROCK_BREAKER_RECIPES, defaultTankSizeFunction.apply(tier), true))
+        .tooltips(explosion())
+        .compassNode("rock_crusher")
+        .register(), ELECTRIC_TIERS);
 
     //////////////////////////////////////
     //****     Simple Generator     ****//
@@ -892,9 +900,9 @@ public class GTMachines {
             .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_heatproof"),
                     GTCEu.id("block/multiblock/electric_blast_furnace"), false)
-            .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.1",
+            .tooltips(Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.1"),
                     Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.2"),
-                    Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.3")))
+                    Component.translatable("gtceu.machine.electric_blast_furnace.tooltip.3"))
             .additionalDisplay((controller, components) -> {
                 if (controller instanceof CoilWorkableElectricMultiblockMachine coilMachine && controller.isFormed()) {
                     components.add(Component.translatable("gtceu.multiblock.blast_furnace.max_temperature",
@@ -1698,7 +1706,7 @@ public class GTMachines {
                             .overlayTieredHullRenderer(model)
                             .abilities(abilities)
                             .compassNode("fluid_hatch")
-                            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.import.tooltip"));
+                            .tooltips(Component.translatable("gtceu.machine." + model + ".tooltip"));
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
@@ -1718,7 +1726,6 @@ public class GTMachines {
                         .itemColor((itemStack, index) -> index == 2 ? GTValues.VC[tier + 1] : index == 3 ? GTValues.VC[tier] : index == 1 ? Long.decode(ConfigHolder.INSTANCE.client.defaultPaintingColor).intValue() : -1)
                         .renderer(() -> new TransformerRenderer(tier, baseAmp))
                         .langValue("%s %sTransformer".formatted(VOLTAGE_NAMES[tier], langName))
-                        .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.machine.transformer.description"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_tool_usage"),
                                 Component.translatable("gtceu.machine.transformer.tooltip_transform_down", baseAmp, GTValues.V[tier + 1], GTValues.VNF[tier + 1], baseAmp * 4, GTValues.V[tier], GTValues.VNF[tier]),
@@ -1740,7 +1747,6 @@ public class GTMachines {
                 .recipeType(recipeType)
                 .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + name))
-                .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), true))
                 .compassNode(name)
                 .register(), tiers);
@@ -1767,7 +1773,6 @@ public class GTMachines {
                 .addOutputLimit(ItemRecipeCapability.CAP, 0)
                 .addOutputLimit(FluidRecipeCapability.CAP, 0)
                 .renderer(() -> new SimpleGeneratorMachineRenderer(tier, GTCEu.id("block/generators/" + name)))
-                .tooltips(explosion())
                 .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), false))
                 .compassNode(name)
                 .register(), tiers);
@@ -1789,7 +1794,6 @@ public class GTMachines {
                         .rotationState(RotationState.ALL)
                         .renderer(() -> new BatteryBufferRenderer(tier, batterySlotSize))
                         .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], batterySlotSize, "x Battery Buffer"))
-                        .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", batterySlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till", batterySlotSize * BatteryBufferMachine.AMPS_PER_BATTERY),
@@ -1806,7 +1810,6 @@ public class GTMachines {
                         .rotationState(RotationState.NON_Y_AXIS)
                         .renderer(() -> new ChargerRenderer(tier))
                         .langValue("%s %s%s".formatted(VOLTAGE_NAMES[tier], itemSlotSize, "x Turbo Charger"))
-                        .tooltips(explosion())
                         .tooltips(Component.translatable("gtceu.universal.tooltip.item_storage_capacity", itemSlotSize),
                                 Component.translatable("gtceu.universal.tooltip.voltage_in_out", GTValues.V[tier], GTValues.VNF[tier]),
                                 Component.translatable("gtceu.universal.tooltip.amperage_in_till", itemSlotSize * ChargerMachine.AMPS_PER_ITEM))

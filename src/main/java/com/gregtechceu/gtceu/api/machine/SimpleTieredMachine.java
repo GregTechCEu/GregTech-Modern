@@ -7,18 +7,22 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.GhostCircuitSlotWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
-import com.lowdragmc.lowdraglib.gui.texture.*;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -35,7 +39,6 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -349,36 +352,33 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType)-> new EditableMachineUI("simple", path, () -> {
-        var template =  recipeType.createEditableUITemplate(false, false).createDefault().setBackground(GuiTextures.BACKGROUND_INVERSE);
-        var energyBar = createEnergyBar().createDefault();
-        var batterySlot = createBatterySlot().createDefault();
-        var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-        batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-        energyGroup.addWidget(energyBar);
-        energyGroup.addWidget(batterySlot);
-        var group = new WidgetGroup(0, 0,
-                Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-        var size = group.getSize();
-        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
-        template.setSelfPosition(new Position(
-                (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
-                (size.height - template.getSize().height) / 2));
-        group.addWidget(energyGroup);
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
+        WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+        SlotWidget batterySlot = createBatterySlot().createDefault();
+        batterySlot.setSelfPosition(new Position(79, 56));
+        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width + 12, template.getSize().height + 8);
+        group.addWidget(batterySlot);
         group.addWidget(template);
+
+        // TODO fix this.
+//        if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
+//            SlotWidget circuitSlot = createCircuitConfigurator().createDefault();
+//            circuitSlot.setSelfPosition(new Position(120, 62));
+//            group.addWidget(circuitSlot);
+//        }
+
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleTieredMachine tieredMachine) {
-            tieredMachine.getRecipeType().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeType.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+            tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
                             tieredMachine.importItems.storage,
                             tieredMachine.exportItems.storage,
                             tieredMachine.importFluids,
                             tieredMachine.exportFluids,
                             false, false));
-            createEnergyBar().setupUI(template, tieredMachine);
             createBatterySlot().setupUI(template, tieredMachine);
+//            createCircuitConfigurator().setupUI(template, tieredMachine);
         }
     }));
 
@@ -394,7 +394,23 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(Component[]::new));
+        });
+    }
+
+    /**
+     * Create an energy bar widget.
+     */
+    protected static EditableUI<GhostCircuitSlotWidget, SimpleTieredMachine> createCircuitConfigurator() {
+        return new EditableUI<>("circuit_configurator", GhostCircuitSlotWidget.class, () -> {
+            var slotWidget = new GhostCircuitSlotWidget();
+            slotWidget.setBackground(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY);
+            return slotWidget;
+        }, (slotWidget, machine) -> {
+            slotWidget.setCircuitInventory(machine.circuitInventory);
+            slotWidget.setCanPutItems(false);
+            slotWidget.setCanTakeItems(false);
+            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
         });
     }
 

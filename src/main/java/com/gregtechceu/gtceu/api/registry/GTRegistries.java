@@ -33,7 +33,6 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 
-import static net.minecraft.core.Registry.RECIPE_TYPE_REGISTRY;
 
 /**
  * @author KilaBash
@@ -43,9 +42,6 @@ import static net.minecraft.core.Registry.RECIPE_TYPE_REGISTRY;
 public final class GTRegistries {
     // GT Registry
     public static final GTRegistry.String<Element> ELEMENTS = new GTRegistry.String<>(GTCEu.id("element"));
-
-    @Deprecated(forRemoval = true, since = "1.0.21")
-    public static final GTRegistry.String<Material> MATERIALS = GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID);
 
     public static final GTRegistry.RL<GTRecipeType> RECIPE_TYPES = new GTRegistry.RL<>(GTCEu.id("recipe_type"));
     public static final GTRegistry.RL<CoverDefinition> COVERS = new GTRegistry.RL<>(GTCEu.id("cover"));
@@ -66,7 +62,7 @@ public final class GTRegistries {
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
         ResourceKey<?> registryKey = registry.key();
 
-        if (registryKey == RECIPE_TYPE_REGISTRY) {
+        if (registryKey == Registry.RECIPE_TYPE_REGISTRY) {
             ForgeRegistries.RECIPE_TYPES.register(name, (RecipeType<?>) value);
         } else if (registryKey == Registry.RECIPE_SERIALIZER_REGISTRY) {
             ForgeRegistries.RECIPE_SERIALIZERS.register(name, (RecipeSerializer<?>) value);

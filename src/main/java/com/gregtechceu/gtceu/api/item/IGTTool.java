@@ -15,7 +15,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
@@ -49,6 +48,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -66,6 +66,7 @@ import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -95,8 +96,6 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     boolean isElectric();
 
     int getElectricTier();
-
-    Tier getTier();
 
     IGTToolDefinition getToolStats();
 
@@ -877,18 +876,19 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
     default boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {
         if (stack.getItem() instanceof IGTTool gtTool) {
-            if (TierSortingRegistry.isTierSorted(gtTool.getTier())) {
-                return TierSortingRegistry.isCorrectTierForDrops(gtTool.getTier(), state) && gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
-            } else {
-                int i = gtTool.getTier().getLevel();
-                if (i < 3 && state.is(BlockTags.NEEDS_DIAMOND_TOOL)) {
-                    return false;
-                } else if (i < 2 && state.is(BlockTags.NEEDS_IRON_TOOL)) {
-                    return false;
-                } else {
-                    return i < 1 && state.is(BlockTags.NEEDS_STONE_TOOL) ? false : gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
-                }
+            boolean isCorrectToolType = gtTool.getToolClasses(stack).stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is));
+            if (!isCorrectToolType) {
+                return false;
             }
+
+            final int totalLevel = gtTool.getTotalHarvestLevel(stack);
+            List<Tier> tiers = TierSortingRegistry.getSortedTiers().stream()
+                .filter(tier -> tier.getLevel() == totalLevel)
+                .toList();
+            Tier tier = !tiers.isEmpty() ? tiers.get(tiers.size() - 1) : null;
+
+            if (tier == null) return false;
+            return TierSortingRegistry.isCorrectTierForDrops(tier, state);
         }
         return stack.getItem().isCorrectToolForDrops(state);
     }

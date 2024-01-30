@@ -27,7 +27,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
     void onClick(ClickData clickData);
 
     @Override
-    default String getTitle() {
+    default Component getTitle() {
         throw new NotImplementedException();
     }
 

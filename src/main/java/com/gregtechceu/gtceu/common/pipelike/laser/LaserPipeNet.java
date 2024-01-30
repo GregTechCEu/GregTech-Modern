@@ -3,32 +3,30 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNet;
+import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.NbtUtils;
 import net.minecraft.world.level.Level;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Map;
 
-public class LaserPipeNet extends PipeNet<LaserPipeNet.LaserData> {
+public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
 
-    private final Map<BlockPos, LaserData> netData = new Object2ObjectOpenHashMap<>();
+    private final Map<BlockPos, LaserRoutePath> netData = new Object2ObjectOpenHashMap<>();
 
     public LaserPipeNet(LevelLaserPipeNet world) {
         super(world);
     }
 
     @Nullable
-    public LaserData getNetData(BlockPos pipePos, Direction facing) {
-        LaserData data = netData.get(pipePos);
+    public LaserRoutePath getNetData(BlockPos pipePos, Direction facing) {
+        LaserRoutePath data = netData.get(pipePos);
         if (data == null) {
             data = LaserNetWalker.createNetData(this, pipePos, facing);
             if (data == null) {
@@ -52,26 +50,12 @@ public class LaserPipeNet extends PipeNet<LaserPipeNet.LaserData> {
     }
 
     @Override
-    protected void transferNodeData(Map<BlockPos, Node<LaserData>> transferredNodes, PipeNet<LaserData> parentNet) {
-        super.transferNodeData(transferredNodes, parentNet);
-        netData.clear();
-        ((LaserPipeNet) parentNet).netData.clear();
+    protected void writeNodeData(LaserPipeProperties laserPipeProperties, CompoundTag compoundTag) {
     }
 
     @Override
-    protected void writeNodeData(LaserData nodeData, CompoundTag tagCompound) {
-        tagCompound.put("pipePos", NbtUtils.writeBlockPos(nodeData.getPipePos()));
-        tagCompound.putByte("faceToHandler", (byte) nodeData.faceToHandler.ordinal());
-        tagCompound.putInt("distance", nodeData.distance);
-        tagCompound.putByte("connections", nodeData.connections);
-    }
-
-    @Override
-    protected LaserData readNodeData(CompoundTag tagCompound) {
-        BlockPos pipePos = NbtUtils.readBlockPos(tagCompound.getCompound("pipePos"));
-        Direction direction = Direction.values()[tagCompound.getByte("faceToHandler")];
-        int distance = tagCompound.getInt("distance");
-        return new LaserData(pipePos, direction, distance, LaserPipeProperties.INSTANCE, tagCompound.getByte("connections"));
+    protected LaserPipeProperties readNodeData(CompoundTag tagCompound) {
+        return LaserPipeProperties.INSTANCE;
     }
 
     @AllArgsConstructor

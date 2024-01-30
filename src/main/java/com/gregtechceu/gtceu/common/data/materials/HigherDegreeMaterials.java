@@ -95,7 +95,7 @@ public class HigherDegreeMaterials {
 
         RedAlloy = new Material.Builder(GTCEu.id("red_alloy"))
                 .ingot(0)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1400))
+                .liquid(new FluidBuilder().temperature(1400))
                 .color(0xc55252).secondaryColor(0xC80000).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Copper, 1, Redstone, 4)
@@ -167,7 +167,7 @@ public class HigherDegreeMaterials {
 
         BlueAlloy = new Material.Builder(GTCEu.id("blue_alloy"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1400))
+                .liquid(new FluidBuilder().temperature(1400))
                 .color(0x64B4FF).iconSet(METALLIC)
                 .flags(GENERATE_PLATE, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION)
                 .components(Electrotine, 4, Silver, 1)

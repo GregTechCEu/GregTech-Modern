@@ -166,7 +166,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     /**
      * @return If the pipe this is placed on and a pipe on the other side should be able to connect
      */
-    public boolean blockPipePassThrough() {
+    public boolean canPipePassThrough() {
         return true;
     }
 
@@ -208,11 +208,13 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
 
     // TODO possibly refactor this in the future, using some sort of cross-platform capability-like system
 
-    public IItemTransfer getItemTransferCap(Direction side, IItemTransfer defaultValue) {
+    @org.jetbrains.annotations.Nullable
+    public IItemTransfer getItemTransferCap(IItemTransfer defaultValue) {
         return defaultValue;
     }
 
-    public IFluidTransfer getFluidTransferCap(Direction side, IFluidTransfer defaultValue) {
+    @org.jetbrains.annotations.Nullable
+    public IFluidTransfer getFluidTransferCap(IFluidTransfer defaultValue) {
         return defaultValue;
     }
 }

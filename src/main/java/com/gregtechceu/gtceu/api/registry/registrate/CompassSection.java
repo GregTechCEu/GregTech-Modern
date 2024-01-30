@@ -14,6 +14,8 @@ import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.DataProvider;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraftforge.common.data.ExistingFileHelper;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -62,9 +64,9 @@ public class CompassSection {
 
     public static class CompassSectionProvider implements DataProvider {
         private final DataGenerator generator;
-        private final Predicate<ResourceLocation> existingHelper;
+        private final ExistingFileHelper existingHelper;
 
-        public CompassSectionProvider(DataGenerator generator, Predicate<ResourceLocation> existingHelper) {
+        public CompassSectionProvider(DataGenerator generator, ExistingFileHelper existingHelper) {
             this.generator = generator;
             this.existingHelper = existingHelper;
         }
@@ -85,7 +87,7 @@ public class CompassSection {
             try {
                 for (var section : GTRegistries.COMPASS_SECTIONS) {
                     var resourcePath = "compass/sections/" + section.sectionID.getPath() + ".json";
-                    if (existingHelper.test(GTCEu.id(resourcePath))) {
+                    if (existingHelper.exists(GTCEu.id(resourcePath), PackType.CLIENT_RESOURCES)) {
                         continue;
                     }
                     JsonObject json = new JsonObject();

@@ -39,7 +39,7 @@ public class GTFluids {
 
     public static void handleNonMaterialFluids(@Nonnull Material material, @Nonnull Fluid fluid) {
         var property = material.getProperty(PropertyKey.FLUID);
-        property.getStorage().store(FluidStorageKeys.LIQUID, fluid);
+        property.getStorage().store(FluidStorageKeys.LIQUID, () -> fluid);
         // TODO TOOLTIPS
 //        List<String> tooltip = new ArrayList<>();
 //        if (!material.getChemicalFormula().isEmpty()) {

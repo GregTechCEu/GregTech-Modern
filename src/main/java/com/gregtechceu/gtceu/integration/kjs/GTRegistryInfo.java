@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import com.gregtechceu.gtceu.integration.kjs.events.GTRegistryEventJS;
 import dev.latvian.mods.kubejs.DevProperties;
@@ -42,7 +43,7 @@ public class GTRegistryInfo<K, V> {
     public static final List<BuilderBase<?>> ALL_BUILDERS = new ArrayList<>();
 
     public static final GTRegistryInfo<String, Element> ELEMENT = add(GTRegistries.ELEMENTS, Element.class);
-    public static final GTRegistryInfo<String, Material> MATERIAL = add(GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID), Material.class);
+    public static final GTRegistryInfo<String, Material> MATERIAL = add(MaterialRegistryManager.getInstance().getRegistry(GTCEu.MOD_ID), Material.class);
     public static final GTRegistryInfo<ResourceLocation, GTRecipeType> RECIPE_TYPE = add(GTRegistries.RECIPE_TYPES, GTRecipeType.class);
     public static final GTRegistryInfo<ResourceLocation, MachineDefinition> MACHINE = add(GTRegistries.MACHINES, MachineDefinition.class);
     public static final GTRegistryInfo<String, MaterialIconSet> MATERIAL_ICON_SET = add(GTCEu.id("material_icon_set"), () -> MaterialIconSet.ICON_SETS, MaterialIconSet.class);

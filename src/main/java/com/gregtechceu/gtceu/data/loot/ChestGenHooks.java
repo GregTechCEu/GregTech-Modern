@@ -39,6 +39,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Consumer;
 
 public final class ChestGenHooks {
 
@@ -117,6 +118,10 @@ public final class ChestGenHooks {
             this.entryName = entryName;
         }
 
+        public void createItemStack(Consumer<ItemStack> stackConsumer, LootContext lootContext) {
+            stackConsumer.accept(this.stack.copy());
+        }
+
         @Override
         public @NotNull String toString() {
             return "GTLootEntryItem{name=" + entryName + ", stack=" + stack.toString() + '}';
@@ -151,8 +156,10 @@ public final class ChestGenHooks {
 
         @Override
         protected ItemStack run(ItemStack itemStack, LootContext context) {
-            itemStack.setDamageValue(itemStack.getDamageValue());
-            CompoundTag tagCompound = itemStack.getTag();
+            if (stack.getDamageValue() != 0) {
+                itemStack.setDamageValue(stack.getDamageValue());
+            }
+            CompoundTag tagCompound = stack.getTag();
             if (tagCompound != null) {
                 itemStack.setTag(tagCompound.copy());
             }
@@ -162,7 +169,7 @@ public final class ChestGenHooks {
                 return itemStack;
             }
 
-            int count = Math.min(minAmount + context.getRandom().nextInt(maxAmount - minAmount + 1), itemStack.getMaxStackSize());
+            int count = Math.min(minAmount + context.getRandom().nextInt(maxAmount - minAmount + 1), stack.getMaxStackSize());
             itemStack.setCount(count);
             return itemStack;
         }

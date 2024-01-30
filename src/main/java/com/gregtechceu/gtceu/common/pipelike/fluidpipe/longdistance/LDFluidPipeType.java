@@ -15,16 +15,6 @@ public class LDFluidPipeType extends LongDistancePipeType {
     }
 
     @Override
-    public boolean isValidBlock(BlockState blockState) {
-        return GTBlocks.LD_FLUID_PIPE.is(blockState.getBlock());
-    }
-
-    @Override
-    public boolean isValidEndpoint(ILDEndpoint endpoint) {
-        return endpoint instanceof LDFluidEndpointMachine;
-    }
-
-    @Override
     public int getMinLength() {
         return ConfigHolder.INSTANCE.machines.ldFluidPipeMinDistance;
     }

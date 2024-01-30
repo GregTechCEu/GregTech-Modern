@@ -42,7 +42,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst {
+public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider {
 
     protected int burnTime = -1;
 
@@ -233,6 +233,16 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
             }
         }
         return super.getCraftingRemainingItem(itemStack);
+    }
+
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IRecipeRemainder recipeRemainder) {
+                return recipeRemainder.getRecipeRemained(stack) != ItemStack.EMPTY;
+            }
+        }
+        return super.hasCraftingRemainingItem(stack);
     }
 
     public <T> LazyOptional<T> getCapability(@Nonnull final ItemStack itemStack, @Nonnull final Capability<T> cap) {

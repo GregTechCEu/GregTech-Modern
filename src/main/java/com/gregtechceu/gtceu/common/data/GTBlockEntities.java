@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
+import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
@@ -24,7 +24,7 @@ public class GTBlockEntities {
 
     @SuppressWarnings("unchecked")
     public static final BlockEntityEntry<FluidPipeBlockEntity> FLUID_PIPE = REGISTRATE
-            .blockEntity("fluid_pipe", FluidPipeBlockEntity::create)
+            .blockEntity("fluid_pipe", FluidPipeBlockEntity::new)
             .onRegister(FluidPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.FLUID_PIPE_BLOCKS.values().toArray(BlockEntry[]::new))
             .register();

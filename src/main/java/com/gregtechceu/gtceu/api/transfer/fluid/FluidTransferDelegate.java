@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class FluidTransferDelegate implements IFluidTransfer {
-    protected IFluidTransfer delegate;
+    public IFluidTransfer delegate;
 
     public FluidTransferDelegate(IFluidTransfer delegate) {
         this.delegate = delegate;

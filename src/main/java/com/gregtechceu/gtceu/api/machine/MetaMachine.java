@@ -581,7 +581,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (!useCoverCapability || side == null) return transferList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getItemTransferCap(side, transferList) : transferList;
+        return cover != null ? cover.getItemTransferCap(transferList) : transferList;
     }
 
     @Nullable
@@ -603,7 +603,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (!useCoverCapability || side == null) return transferList;
 
         CoverBehavior cover = getCoverContainer().getCoverAtSide(side);
-        return cover != null ? cover.getFluidTransferCap(side, transferList) : transferList;
+        return cover != null ? cover.getFluidTransferCap(transferList) : transferList;
     }
 
     //////////////////////////////////////

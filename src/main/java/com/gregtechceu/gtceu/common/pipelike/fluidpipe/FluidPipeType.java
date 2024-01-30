@@ -12,7 +12,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
-public enum FluidPipeType implements IMaterialPipeType<FluidPipeData> {
+public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
 
     TINY("tiny", 0.25f, 1, pipeTinyFluid),
     SMALL("small", 0.375f, 2, pipeSmallFluid),
@@ -49,17 +49,16 @@ public enum FluidPipeType implements IMaterialPipeType<FluidPipeData> {
     }
 
     @Override
-    public FluidPipeData modifyProperties(FluidPipeData fluidPipeData) {
-        var baseProperties = fluidPipeData.properties;
-        return new FluidPipeData(new FluidPipeProperties(
-                baseProperties.getMaxFluidTemperature(),
-                baseProperties.getThroughput() * capacityMultiplier,
-                baseProperties.isGasProof(),
-                baseProperties.isAcidProof(),
-                baseProperties.isCryoProof(),
-                baseProperties.isPlasmaProof(),
+    public FluidPipeProperties modifyProperties(FluidPipeProperties fluidPipeData) {
+        return new FluidPipeProperties(
+                fluidPipeData.getMaxFluidTemperature(),
+                fluidPipeData.getThroughput() * capacityMultiplier,
+                fluidPipeData.isGasProof(),
+                fluidPipeData.isAcidProof(),
+                fluidPipeData.isCryoProof(),
+                fluidPipeData.isPlasmaProof(),
                 channels
-        ), fluidPipeData.connections);
+        );
     }
 
     @Override

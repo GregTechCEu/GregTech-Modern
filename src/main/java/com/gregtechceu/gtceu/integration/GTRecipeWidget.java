@@ -48,7 +48,7 @@ import java.util.stream.Stream;
  */
 public class GTRecipeWidget extends WidgetGroup {
     public GTRecipeWidget(GTRecipe recipe) {
-        super(0, 0, recipe.recipeType.getJEISize().width, recipe.recipeType.getJEISize().height);
+        super(0, 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
         setClientSideWidget();
         List<Content> inputStackContents = new ArrayList<>();
         inputStackContents.addAll(recipe.getInputContents(ItemRecipeCapability.CAP));
@@ -94,7 +94,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 .collect(Collectors.toList());
         while (outputFluids.size() < recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)) outputFluids.add(null);
 
-        var group = recipe.recipeType.createUITemplate(ProgressWidget.JEIProgress,
+        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress,
                 new CycleItemStackHandler(inputStacks),
                 new CycleItemStackHandler(outputStacks),
                 new CycleFluidStorage(inputFluids),
@@ -193,7 +193,6 @@ public class GTRecipeWidget extends WidgetGroup {
             }
         });
         var size = group.getSize();
-        group.setSelfPosition(new Position((176 - size.width) / 2, 0));
         addWidget(group);
 
         int yOffset = 5 + size.height;
@@ -207,9 +206,9 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (EUt > 0) {
             addWidget(new LabelWidget(3, yOffset += 10,
-                    LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
-            addWidget(new LabelWidget(3, yOffset += 10,
                     LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
+            addWidget(new LabelWidget(3, yOffset += 10,
+                LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
         }
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
@@ -218,7 +217,7 @@ public class GTRecipeWidget extends WidgetGroup {
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
             addWidget(new LabelWidget(3, yOffset += 10, dataInfo.apply(recipe.data)));
         }
-        recipe.recipeType.appendJEIUI(recipe, this);
+        recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
 
         // add recipe id getter
         addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {

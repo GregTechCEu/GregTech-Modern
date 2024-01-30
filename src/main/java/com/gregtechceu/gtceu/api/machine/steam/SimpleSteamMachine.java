@@ -155,7 +155,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        var group = getRecipeType().createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, IFluidTransfer.EMPTY, IFluidTransfer.EMPTY, true, isHighPressure);
+        var group = getRecipeType().getRecipeUI().createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, IFluidTransfer.EMPTY, IFluidTransfer.EMPTY, true, isHighPressure);
         Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4, 32);
         group.setSelfPosition(pos);
         return new ModularUI(176, 166, this, entityPlayer)
