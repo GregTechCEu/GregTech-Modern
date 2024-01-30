@@ -13,6 +13,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
 import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
@@ -25,6 +27,7 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
 
+@Accessors(fluent = true, chain = true)
 public class FluidBuilder {
 
     private static final int INFER_TEMPERATURE = -1;
@@ -33,15 +36,19 @@ public class FluidBuilder {
     private static final int INFER_LUMINOSITY = -1;
     private static final int INFER_VISCOSITY = -1;
 
+    @Setter
     private String name = null;
-    private String translationKey = null;
+    @Setter
+    private String translation = null;
 
     private final Collection<FluidAttribute> attributes = new ArrayList<>();
 
+    @Setter
     private FluidState state = FluidState.LIQUID;
     private int temperature = INFER_TEMPERATURE;
     private int color = INFER_COLOR;
     private boolean isColorEnabled = true;
+    @Setter
     private int density = INFER_DENSITY;
     private int luminosity = INFER_LUMINOSITY;
     private int viscosity = INFER_VISCOSITY;
@@ -59,33 +66,6 @@ public class FluidBuilder {
     private boolean hasBucket = true;
 
     public FluidBuilder() {}
-
-    /**
-     * @param name the name of the fluid
-     * @return this
-     */
-    public @NotNull FluidBuilder name(@NotNull String name) {
-        this.name = name;
-        return this;
-    }
-
-    /**
-     * @param translationKey the translation key of the fluid
-     * @return this
-     */
-    public @NotNull FluidBuilder translation(@NotNull String translationKey) {
-        this.translationKey = translationKey;
-        return this;
-    }
-
-    /**
-     * @param state the fluid's state of matter
-     * @return this
-     */
-    public @NotNull FluidBuilder state(@NotNull FluidState state) {
-        this.state = state;
-        return this;
-    }
 
     /**
      * @param temperature the temperature of the fluid in Kelvin
@@ -123,18 +103,10 @@ public class FluidBuilder {
     }
 
     /**
-     * @param mcDensity the density in MC's units
-     * @return this
-     */
-    public @NotNull FluidBuilder density(int mcDensity) {
-        this.density = mcDensity;
-        return this;
-    }
-
-    /**
      * @param density the density in g/cm^3
      * @return this
      */
+    @Tolerate
     public @NotNull FluidBuilder density(double density) {
         return density(convertToMCDensity(density));
     }
@@ -272,7 +244,7 @@ public class FluidBuilder {
         determineDensity();
         determineLuminosity(material);
         determineViscosity(material);
-        IGTFluidBuilder builder = registrate.createFluid(name, this.translationKey != null ? this.translationKey : key.getTranslationKeyFor(material), material, this.still, this.flowing)
+        IGTFluidBuilder builder = registrate.createFluid(name, this.translation != null ? this.translation : key.getTranslationKeyFor(material), material, this.still, this.flowing)
                 .temperature(this.temperature)
                 .density(this.density)
                 .luminance(this.luminosity)
