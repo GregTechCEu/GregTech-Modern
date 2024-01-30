@@ -239,6 +239,14 @@ public class FluidBuilder {
             throw new IllegalStateException("Could not determine fluid name");
         }
 
+        if (state == null) {
+            if (key != null && key.getDefaultFluidState() != null) {
+                state = key.getDefaultFluidState();
+            } else {
+                state = FluidState.LIQUID; // default fallback
+            }
+        }
+
         determineTemperature(material);
         determineColor(material);
         determineDensity();
@@ -306,7 +314,12 @@ public class FluidBuilder {
                         yield ROOM_TEMPERATURE;
                     }
                     case GAS -> ROOM_TEMPERATURE;
-                    case PLASMA -> BASE_PLASMA_TEMPERATURE;
+                    case PLASMA -> {
+                        if (material.hasFluid() && material.getFluid() != null) {
+                            yield BASE_PLASMA_TEMPERATURE + material.getFluid().getFluidType().getTemperature();
+                        }
+                        yield BASE_PLASMA_TEMPERATURE;
+                    }
                 };
             } else {
                 temperature = property.getBlastTemperature() + switch (state) {
