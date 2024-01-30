@@ -15,16 +15,6 @@ public class LDItemPipeType extends LongDistancePipeType {
     }
 
     @Override
-    public boolean isValidBlock(BlockState blockState) {
-        return GTBlocks.LD_ITEM_PIPE.is(blockState.getBlock());
-    }
-
-    @Override
-    public boolean isValidEndpoint(ILDEndpoint endpoint) {
-        return endpoint instanceof LDItemEndpointMachine;
-    }
-
-    @Override
     public int getMinLength() {
         return ConfigHolder.INSTANCE.machines.ldItemPipeMinDistance;
     }
