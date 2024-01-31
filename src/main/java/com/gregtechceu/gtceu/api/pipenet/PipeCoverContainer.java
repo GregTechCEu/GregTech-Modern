@@ -6,9 +6,8 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
-import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
-import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.gregtechceu.gtceu.api.transfer.fluid.NoOpFluidTransfer;
 import com.gregtechceu.gtceu.api.transfer.item.NoOpItemTransfer;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
@@ -19,6 +18,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
@@ -39,7 +39,7 @@ public class PipeCoverContainer implements ICoverable, IEnhancedManaged {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeCoverContainer.class);
     @Getter
-    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     private final IPipeNode<?, ?> pipeTile;
 
     @DescSynced
