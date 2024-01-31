@@ -58,7 +58,7 @@ public class MultiblockInWorldPreviewRenderer {
     @Nullable
     private static TrackedDummyWorld LEVEL = null;
     @Nullable
-    private static Thread TREAD = null;
+    private static Thread THREAD = null;
     @Nullable
     private static Set<BlockPos> BLOCK_ENTITIES;
     private final static AtomicInteger LEFT_TICK = new AtomicInteger(-1);
@@ -318,10 +318,13 @@ public class MultiblockInWorldPreviewRenderer {
 
 
     private static void prepareBuffers(TrackedDummyWorld level, Collection<BlockPos> renderedBlocks, int duration) {
+        if (THREAD != null) {
+            THREAD.interrupt();
+        }
         CACHE_STATE.set(CacheState.COMPILING);
         // call it to init the buffers
         getBUFFERS();
-        TREAD = new Thread(() -> {
+        THREAD = new Thread(() -> {
             var dispatcher = Minecraft.getInstance().getBlockRenderer();
             ModelBlockRenderer.enableCaching();
             PoseStack poseStack = new PoseStack();
@@ -365,10 +368,10 @@ public class MultiblockInWorldPreviewRenderer {
                 return;
             BLOCK_ENTITIES = poses;
             CACHE_STATE.set(CacheState.COMPILED);
-            TREAD = null;
+            THREAD = null;
             LEFT_TICK.set(duration);
         });
-        TREAD.start();
+        THREAD.start();
     }
 
     private static void renderBlocks(TrackedDummyWorld level, PoseStack poseStack, BlockRenderDispatcher dispatcher, RenderType layer, WorldSceneRenderer.VertexConsumerWrapper wrapperBuffer, Collection<BlockPos> renderedBlocks) {
