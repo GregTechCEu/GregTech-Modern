@@ -347,6 +347,10 @@ public class ConfigHolder {
         @Configurable.Comment({"Use VBO cache for multiblock preview.", "Disable it if you have issues with rendering multiblocks.", "Default: true"})
         @Configurable.Gui.ColorValue
         public boolean useVBO = true;
+        @Configurable
+        @Configurable.Comment({"Duration of the multiblock in-world preview (s)", "Default: 10"})
+        @Configurable.Range(min = 1, max = 999)
+        public int inWorldPreviewDuration = 10;
     }
 
     public static class DeveloperConfigs {

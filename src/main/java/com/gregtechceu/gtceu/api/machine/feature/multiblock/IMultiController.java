@@ -1,12 +1,20 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
+import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -18,7 +26,7 @@ import java.util.concurrent.locks.Lock;
  * @date 2023/3/3
  * @implNote IControllerComponent
  */
-public interface IMultiController extends IMachineFeature {
+public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     @Override
     default MultiblockControllerMachine self() {
@@ -152,5 +160,19 @@ public interface IMultiController extends IMachineFeature {
             return self().getDefinition().getPartAppearance().apply(this, part, side);
         }
         return null;
+    }
+
+    /**
+     * Show the preview of structure.
+     */
+    @Override
+    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+        if (!self().isFormed() && player.isCrouching() && player.getItemInHand(hand).isEmpty()) {
+            if (world.isClientSide()) {
+                MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(), self().getDefinition().getMatchingShapes().get(0), ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return IInteractedMachine.super.onUse(state, world, pos, player, hand, hit);
     }
 }
