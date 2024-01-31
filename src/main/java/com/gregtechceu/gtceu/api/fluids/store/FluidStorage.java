@@ -86,7 +86,7 @@ public final class FluidStorage {
             .sorted(Comparator.comparingInt(e -> -e.getKey().getRegistrationPriority()))
             .forEach(entry -> {
                 Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material, entry.getKey(), registrate);
-                if (!storeNoOverwrites(entry.getKey(), fluid)) {
+                if (!storeNoOverwrites(entry.getKey(), fluid, entry.getValue())) {
                     GTCEu.LOGGER.error("{} already has an associated fluid for material {}", entry.getKey(), material);
                 }
             });
@@ -113,11 +113,11 @@ public final class FluidStorage {
      * @param fluid the fluid to associate with the key
      * @return if the associations were successfully updated
      */
-    public boolean storeNoOverwrites(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid) {
+    public boolean storeNoOverwrites(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
             return false;
         }
-        store(key, fluid);
+        store(key, fluid, builder);
         return true;
     }
 
@@ -126,10 +126,14 @@ public final class FluidStorage {
      * @param fluid the fluid to associate with the key
      * @throws IllegalArgumentException if a key is already associated with another fluid
      */
-    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid) {
+    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
             throw new IllegalArgumentException(key + " already has an associated fluid");
         }
-        map.put(key, new FluidEntry(fluid, null, null));
+        if (builder != null) {
+            map.put(key, new FluidEntry(fluid, builder.still(), builder.flowing()));
+        } else {
+            map.put(key, new FluidEntry(fluid, null, null));
+        }
     }
 }
