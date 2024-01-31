@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -68,7 +69,7 @@ public class OreRecipeHandler {
         if (byproductStack.isEmpty()) byproductStack = ChemicalHelper.get(dust, byproductMaterial);
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
         ItemStack crushedStack = ChemicalHelper.get(crushed, material);
-
+        int amountOfCrushedOre = property.getOreMultiplier();
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);
         } else if (smeltingMaterial.hasProperty(PropertyKey.GEM)) {
@@ -76,8 +77,9 @@ public class OreRecipeHandler {
         } else {
             ingotStack = ChemicalHelper.get(dust, smeltingMaterial);
         }
-        int oreMultiplier = TagPrefix.ORES.get(orePrefix).isDoubleDrops() ? 2 : 1;
-        ingotStack.setCount(ingotStack.getCount() * oreMultiplier);
+        int oreTypeMultiplier = TagPrefix.ORES.get(orePrefix).isDoubleDrops() ? 2 : 1;
+        ingotStack.setCount(ingotStack.getCount() * property.getOreMultiplier() * oreTypeMultiplier);
+        crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
 
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
         if (!crushedStack.isEmpty()) {
@@ -85,22 +87,24 @@ public class OreRecipeHandler {
                     .inputItems(orePrefix, material)
                     .duration(10).EUt(16);
             if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
-                builder.outputItems(GTUtil.copyAmount(oreMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
+                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
             } else {
-                builder.outputItems(GTUtil.copyAmount(oreMultiplier, crushedStack));
+                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, crushedStack));
             }
             builder.save(provider);
 
             builder = MACERATOR_RECIPES.recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_raw_ore")
                     .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])))
-                    .outputItems(GTUtil.copyAmount(2 * oreMultiplier, crushedStack))
+                    .outputItems(GTUtil.copyAmount(amountOfCrushedOre * 2 * oreTypeMultiplier, crushedStack))
                     .chancedOutput(byproductStack, 1400, 850)
                     .EUt(2)
                     .duration(400);
 
-            Supplier<Material> outputDustMat = ORES.get(orePrefix).material();
-            if (outputDustMat != null) {
-                builder.outputItems(dust, outputDustMat.get());
+            for (MaterialStack secondaryMaterial : orePrefix.secondaryMaterials()) {
+                if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
+                    ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
+                    builder.chancedOutput(dustStack, 6700, 800);
+                }
             }
 
             builder.save(provider);
@@ -108,7 +112,7 @@ public class OreRecipeHandler {
 
         //do not try to add smelting recipes for materials which require blast furnace
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
-            float xp = Math.round(((1 + oreMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
+            float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
                     ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
@@ -120,7 +124,6 @@ public class OreRecipeHandler {
         ItemStack crushedStack = ChemicalHelper.get(crushed, material);
         ItemStack ingotStack;
         Material smeltingMaterial = property.getDirectSmeltResult() == null ? material : property.getDirectSmeltResult();
-        int amountOfCrushedOre = property.getOreMultiplier();
         if (smeltingMaterial.hasProperty(PropertyKey.INGOT)) {
             ingotStack = ChemicalHelper.get(ingot, smeltingMaterial);
         } else if (smeltingMaterial.hasProperty(PropertyKey.GEM)) {
@@ -134,9 +137,9 @@ public class OreRecipeHandler {
                     .inputItems(orePrefix, material)
                     .duration(10).EUt(16);
             if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
-                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre, ChemicalHelper.get(gem, material, crushedStack.getCount())));
+                builder.outputItems(ChemicalHelper.get(gem, material, crushedStack.getCount()));
             } else {
-                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre, crushedStack));
+                builder.outputItems(crushedStack.copy());
             }
             builder.save(provider);
 

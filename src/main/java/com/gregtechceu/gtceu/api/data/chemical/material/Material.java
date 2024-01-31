@@ -536,6 +536,28 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * Add a liquid for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder liquid() {
+            return fluid(FluidStorageKeys.LIQUID, FluidState.LIQUID);
+        }
+
+        /**
+         * Add a liquid for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder liquid(@NotNull FluidBuilder builder) {
+            return fluid(FluidStorageKeys.LIQUID, builder.state(FluidState.LIQUID));
+        }
+
+        public Builder liquid(int temp) {
+            return liquid(new FluidBuilder().temperature(temp));
+        }
+
+        /**
          * Add a plasma for this material.
          * @see #fluid(FluidStorageKey, FluidState)
          */
@@ -544,11 +566,37 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * Add a plasma for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder plasma(@NotNull FluidBuilder builder) {
+            return fluid(FluidStorageKeys.PLASMA, builder.state(FluidState.PLASMA));
+        }
+
+        public Builder plasma(int temp) {
+            return plasma(new FluidBuilder().temperature(temp));
+        }
+
+        /**
          * Add a gas for this material.
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder gas() {
             return fluid(FluidStorageKeys.GAS, FluidState.GAS);
+        }
+
+        /**
+         * Add a gas for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder gas(@NotNull FluidBuilder builder) {
+            return fluid(FluidStorageKeys.GAS, builder.state(FluidState.GAS));
+        }
+
+        public Builder gas(int temp) {
+            return gas(new FluidBuilder().temperature(temp));
         }
 
         /**
@@ -946,12 +994,6 @@ public class Material implements Comparable<Material> {
 
         public Builder ore(int oreMultiplier, int byproductMultiplier, boolean emissive) {
             properties.setProperty(PropertyKey.ORE, new OreProperty(oreMultiplier, byproductMultiplier, emissive));
-            return this;
-        }
-
-        public Builder fluidBurnTime(int burnTime) {
-            //properties.ensureSet(PropertyKey.FLUID);
-            //properties.getProperty(PropertyKey.FLUID).setBurnTime(burnTime);
             return this;
         }
 

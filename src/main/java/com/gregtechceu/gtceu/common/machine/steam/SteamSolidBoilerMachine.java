@@ -16,6 +16,8 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -46,16 +48,21 @@ public class SteamSolidBoilerMachine extends SteamBoilerMachine implements IMach
 
     public SteamSolidBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
-        this.fuelHandler = createFuelHandler(args).setFilter(itemStack -> FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> {
-            if (isRemote())  return true;
-            return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
-                var list = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
-                if (!list.isEmpty()) {
-                    return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content).getItems()).map(ItemStack::getItem).anyMatch(i -> i == item);
-                }
+        this.fuelHandler = createFuelHandler(args).setFilter(itemStack -> {
+            if (FluidTransferHelper.getFluidContained(itemStack) != null) {
                 return false;
+            }
+            return FUEL_CACHE.computeIfAbsent(itemStack.getItem(), item -> {
+                if (isRemote()) return true;
+                return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
+                    var list = recipe.inputs.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList());
+                    if (!list.isEmpty()) {
+                        return Arrays.stream(ItemRecipeCapability.CAP.of(list.get(0).content).getItems()).map(ItemStack::getItem).anyMatch(i -> i == item);
+                    }
+                    return false;
+                });
             });
-        }));
+        });
         this.ashHandler = createAshHandler(args);
     }
 

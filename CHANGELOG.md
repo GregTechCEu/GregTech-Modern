@@ -1,10 +1,6 @@
 # ChangeLog
 
-Version: 1.1.1.a
+Version: 1.1.2.a
 
 ### FIXES:
-
-- fixed the processing array overclocking past its maximum input energy
-- fixed a crash when hard redstone recipes are enabled
-- removed duplicate fluid drilling rig recipes
-- fixed the ore prospector showing aluminium for most ores
+- fixed crash when opening a GUI with many slots

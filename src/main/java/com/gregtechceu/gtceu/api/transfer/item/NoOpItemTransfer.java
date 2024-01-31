@@ -30,7 +30,7 @@ public class NoOpItemTransfer implements IItemTransfer {
     @NotNull
     @Override
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-        return ItemStack.EMPTY;
+        return stack;
     }
 
     @NotNull

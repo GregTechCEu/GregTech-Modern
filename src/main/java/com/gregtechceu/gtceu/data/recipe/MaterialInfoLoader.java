@@ -304,9 +304,9 @@ public class MaterialInfoLoader {
         ChemicalHelper.registerMaterialInfo(Blocks.SANDSTONE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
         ChemicalHelper.registerMaterialInfo(Blocks.RED_SANDSTONE_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
         ChemicalHelper.registerMaterialInfo(Blocks.STONE_BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, (3 * M) / 2))); // dust small
-        ChemicalHelper.registerMaterialInfo(Blocks.QUARTZ_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 6))); // dust
-        ChemicalHelper.registerMaterialInfo(Blocks.BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 6))); // dust
-        ChemicalHelper.registerMaterialInfo(Blocks.NETHER_BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 6))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.QUARTZ_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.NetherQuartz, M * 4))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Brick, M * 4))); // dust
+        ChemicalHelper.registerMaterialInfo(Blocks.NETHER_BRICK_STAIRS, new ItemMaterialInfo(new MaterialStack(GTMaterials.Netherrack, M * 4))); // dust
 
         ChemicalHelper.registerMaterialInfo(Blocks.STONE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));
         ChemicalHelper.registerMaterialInfo(Blocks.SANDSTONE_SLAB, new ItemMaterialInfo(new MaterialStack(GTMaterials.Stone, M / 2)));

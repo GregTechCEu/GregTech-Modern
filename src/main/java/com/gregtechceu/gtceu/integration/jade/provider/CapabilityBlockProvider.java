@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
+import com.gregtechceu.gtceu.utils.GTUtil;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -65,7 +66,7 @@ public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvi
             capData.put("null", tag);
         }
 
-        for (Direction value : Direction.values()) {
+        for (Direction value : GTUtil.DIRECTIONS) {
             capability = getCapability(blockAccessor.getLevel(), blockAccessor.getPosition(), value);
             if (capability != null && allowDisplaying(capability)) {
                 var tag = new CompoundTag();

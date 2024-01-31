@@ -1,34 +1,36 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 public class EnergyNetHandler implements IEnergyContainer {
 
-    private final EnergyNet net;
+    private EnergyNet net;
+    private boolean transfer;
     private final CableBlockEntity cable;
-    private final List<CableRoutePath> paths;
+    private final Direction facing;
 
-    public EnergyNetHandler(EnergyNet net, CableBlockEntity cable) {
+    public EnergyNetHandler(EnergyNet net, CableBlockEntity cable, Direction facing) {
         this.net = Objects.requireNonNull(net);
         this.cable = Objects.requireNonNull(cable);
-        this.paths = net.getNetData(cable.getPipePos());
+        this.facing = facing;
     }
 
     public EnergyNet getNet() {
         return net;
+    }
+
+    public void updateNetwork(EnergyNet net) {
+        this.net = net;
     }
 
     @Override
@@ -38,80 +40,92 @@ public class EnergyNetHandler implements IEnergyContainer {
 
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
+        if (transfer) return 0;
+        if (side == null) {
+            if (facing == null) return 0;
+            side = facing;
+        }
+
         long amperesUsed = 0L;
-        Set<BlockPos> burnedCables = new HashSet<>();
-        for (CableRoutePath path : paths) {
-            if (path.getMaxLoss() >= voltage)
-                continue;
-            if (Objects.equals(cable.getPipePos(), path.getPipePos()) && side == path.getFaceToHandler()) {
-                //Do not insert into source handler
+        for (EnergyRoutePath path : net.getNetData(cable.getPipePos())) {
+            if (path.getMaxLoss() >= voltage) {
+                // Will lose all the energy with this path, so don't use it
                 continue;
             }
-            IEnergyContainer dest = path.getHandler(cable.getPipeLevel());
-            Direction facing = path.getFaceToHandler().getOpposite();
-            if (dest == null || !dest.inputsEnergy(facing) || dest.getEnergyCanBeInserted() <= 0) continue;
-            long v = voltage - path.getMaxLoss();
-            if (v <= 0)
+
+            if (cable.getPipePos().equals(path.getTargetPipePos()) && side == path.getTargetFacing()) {
+                // Do not insert into source handler
                 continue;
+            }
 
-            for (var pair : path.getPath()) {
-                var cable = pair.getB().properties();
-                if (cable.getVoltage() < voltage) {
-                    int heat = (int) (Math.log(GTUtil.getTierByVoltage(voltage) - GTUtil.getTierByVoltage(cable.getVoltage())) * 45 + 36.5);
+            IEnergyContainer dest = path.getHandler(getNet().getLevel());
+            if (dest == null) continue;
 
-                    if (net.applyHeat(pair.getA(), heat)) {
+            Direction facing = path.getTargetFacing().getOpposite();
+            if (!dest.inputsEnergy(facing) || dest.getEnergyCanBeInserted() <= 0) continue;
+
+            long pathVoltage = voltage - path.getMaxLoss();
+            boolean cableBroken = false;
+            for (CableBlockEntity cable : path.getPath()) {
+                if (cable.getMaxVoltage() < voltage) {
+                    int heat = (int) (Math.log(
+                        GTUtil.getTierByVoltage(voltage) - GTUtil.getTierByVoltage(cable.getMaxVoltage())) *
+                        45 + 36.5);
+                    cable.applyHeat(heat);
+
+                    cableBroken = cable.isInValid();
+                    if (cableBroken) {
                         // a cable burned away (or insulation melted)
-                        // recompute net data
-                        burnedCables.add(pair.getA());
+                        break;
                     }
 
-                    v = Math.min(cable.getVoltage(), v); // limit transfer to cables max and void rest
+                    // limit transfer to cables max and void rest
+                    pathVoltage = Math.min(cable.getMaxVoltage(), pathVoltage);
                 }
             }
 
-            if (!burnedCables.isEmpty()) {
-                break;
-            }
+            if (cableBroken) continue;
 
-            long amps = dest.acceptEnergyFromNetwork(facing, v, amperage - amperesUsed);
-            if(amps == 0)
-                continue;
+            transfer = true;
+            long amps = dest.acceptEnergyFromNetwork(facing, pathVoltage, amperage - amperesUsed);
+            transfer = false;
+            if (amps == 0) continue;
+
             amperesUsed += amps;
-
             long voltageTraveled = voltage;
-            for (var pair : path.getPath()) {
-                var cable = pair.getB().properties();
-                voltageTraveled -= cable.getLossPerBlock();
-                if (voltageTraveled <= 0)
-                    break;
-                if (net.incrementAmperage(pair.getA(), amps, cable.getAmperage())) {
-                    // a cable burned away (or insulation melted)
-                    // recompute net data
-                    burnedCables.add(pair.getA());
+            for (CableBlockEntity cable : path.getPath()) {
+                voltageTraveled -= cable.getNodeData().getLossPerBlock();
+                if (voltageTraveled <= 0) break;
+
+                if (!cable.isInValid()) {
+                    cable.incrementAmperage(amps, voltageTraveled);
                 }
             }
 
-            if (!burnedCables.isEmpty() || amperage == amperesUsed)
-                break;
+            if (amperage == amperesUsed) break;
         }
-        for (BlockPos pos : burnedCables) {
-            burnCable(net.getLevel(), pos);
-        }
+
+        net.addEnergyFluxPerSec(amperesUsed * voltage);
         return amperesUsed;
     }
 
     private void burnCable(ServerLevel serverLevel, BlockPos pos) {
         serverLevel.setBlockAndUpdate(pos, Blocks.FIRE.defaultBlockState());
+        if (!getNet().getLevel().isClientSide) {
+            getNet().getLevel().sendParticles(ParticleTypes.LARGE_SMOKE,
+                pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5,
+                5 + getNet().getLevel().random.nextInt(3), 0.0, 0.0, 0.0, 0.1);
+        }
     }
 
     @Override
     public long getInputAmperage() {
-        return cable.getNodeData().properties.getAmperage();
+        return cable.getNodeData().getAmperage();
     }
 
     @Override
     public long getInputVoltage() {
-        return cable.getNodeData().properties.getVoltage();
+        return cable.getNodeData().getVoltage();
     }
 
     @Override

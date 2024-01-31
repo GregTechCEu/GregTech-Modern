@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
+import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -48,11 +50,17 @@ public class RobotArmCover extends ConveyorCover {
     }
 
     @Override
-    protected int doTransferItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
+    protected int doTransferItems(IItemTransfer itemHandler, IItemTransfer myItemHandler, int maxTransferAmount) {
+        if (io == IO.OUT && itemHandler instanceof ItemNetHandler && transferMode == TransferMode.KEEP_EXACT) {
+            return 0;
+        }
+        if (io == IO.IN && myItemHandler instanceof ItemNetHandler && transferMode == TransferMode.KEEP_EXACT) {
+            return 0;
+        }
         return switch (transferMode) {
-            case TRANSFER_ANY -> moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
-            case TRANSFER_EXACT -> doTransferExact(sourceInventory, targetInventory, maxTransferAmount);
-            case KEEP_EXACT -> doKeepExact(sourceInventory, targetInventory, maxTransferAmount);
+            case TRANSFER_ANY -> moveInventoryItems(itemHandler, myItemHandler, maxTransferAmount);
+            case TRANSFER_EXACT -> doTransferExact(itemHandler, myItemHandler, maxTransferAmount);
+            case KEEP_EXACT -> doKeepExact(itemHandler, myItemHandler, maxTransferAmount);
         };
     }
 
@@ -125,6 +133,18 @@ public class RobotArmCover extends ConveyorCover {
 
         ItemFilter filter = filterHandler.getFilter();
         return filter.supportsAmounts() ? filter.testItemCount(itemStack) : globalTransferLimit;
+    }
+
+    public int getBuffer() {
+        return itemsTransferBuffered;
+    }
+
+    public void buffer(int amount) {
+        itemsTransferBuffered += amount;
+    }
+
+    public void clearBuffer() {
+        itemsTransferBuffered = 0;
     }
 
 

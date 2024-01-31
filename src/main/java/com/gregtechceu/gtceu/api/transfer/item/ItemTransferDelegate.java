@@ -13,7 +13,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class ItemTransferDelegate implements IItemTransfer {
-    protected IItemTransfer delegate;
+    public IItemTransfer delegate;
 
     public ItemTransferDelegate(IItemTransfer delegate) {
         this.delegate = delegate;

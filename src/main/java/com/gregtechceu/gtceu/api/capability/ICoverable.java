@@ -126,12 +126,21 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
         return true;
     }
 
+    /**
+     * Drop all attached covers on the ground
+     */
+    default void dropAllCovers() {
+        for (Direction side : GTUtil.DIRECTIONS) {
+            removeCover(side, null);
+        }
+    }
+
     default boolean removeCover(Direction side, @Nullable Player player) {
         return removeCover(true, side, player);
     }
 
     default List<CoverBehavior> getCovers() {
-        return Arrays.stream(Direction.values()).map(this::getCoverAtSide).filter(Objects::nonNull).collect(Collectors.toList());
+        return Arrays.stream(GTUtil.DIRECTIONS).map(this::getCoverAtSide).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     default void onLoad() {
@@ -153,8 +162,8 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
     }
 
     default boolean hasAnyCover() {
-        for(Direction facing : Direction.values())
-            if(getCoverAtSide(facing) != null)
+        for (Direction facing : GTUtil.DIRECTIONS)
+            if (getCoverAtSide(facing) != null)
                 return true;
         return false;
     }
@@ -171,7 +180,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
         double plateThickness = getCoverPlateThickness();
         List<VoxelShape> shapes = new ArrayList<>();
         if (plateThickness > 0.0) {
-            for (Direction side : Direction.values()) {
+            for (Direction side : GTUtil.DIRECTIONS) {
                 if (getCoverAtSide(side) != null) {
                     var coverBox = getCoverPlateBox(side, plateThickness);
                     shapes.add(coverBox);
@@ -242,7 +251,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
     }
 
     static boolean canPlaceCover(CoverDefinition coverDef, ICoverable coverable) {
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : GTUtil.DIRECTIONS) {
             if (coverable.canPlaceCoverOnSide(coverDef, facing)) {
                 var cover = coverDef.createCoverBehavior(coverable, facing);
                 if (cover.canAttach()) {

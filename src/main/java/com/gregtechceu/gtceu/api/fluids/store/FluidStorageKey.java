@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.fluids.store;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.fluids.FluidState;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
@@ -24,15 +25,22 @@ public final class FluidStorageKey {
     private final UnaryOperator<String> registryNameOperator;
     private final Function<Material, String> translationKeyFunction;
     private final int hashCode;
+    @Getter
+    private final FluidState defaultFluidState;
+    @Getter
+    private final int registrationPriority;
 
     public FluidStorageKey(@NotNull ResourceLocation resourceLocation, @NotNull MaterialIconType iconType,
                            @NotNull UnaryOperator<@NotNull String> registryNameOperator,
-                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction) {
+                           @NotNull Function<@NotNull Material, @NotNull String> translationKeyFunction,
+                           @Nullable FluidState defaultFluidState, int registrationPriority) {
         this.resourceLocation = resourceLocation;
         this.iconType = iconType;
         this.registryNameOperator = registryNameOperator;
         this.translationKeyFunction = translationKeyFunction;
         this.hashCode = resourceLocation.hashCode();
+        this.defaultFluidState = defaultFluidState;
+        this.registrationPriority = registrationPriority;
         if (keys.containsKey(resourceLocation)) {
             throw new IllegalArgumentException("Cannot create duplicate keys");
         }

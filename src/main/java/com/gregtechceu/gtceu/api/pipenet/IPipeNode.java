@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.api.pipenet;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.IPaintable;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
+import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.pipelike.Node;
-import com.lowdragmc.lowdraglib.pipelike.PipeNet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import javax.annotation.Nullable;
 
-public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType extends IAttachData> extends ITickSubscription, IPaintable {
+public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType> extends ITickSubscription, IPaintable {
 
     long getOffsetTimer();
 
@@ -30,7 +30,9 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
      * If tube is set to block connection from the specific side
      * @param side face
      */
-    boolean isBlocked(Direction side);
+    default boolean isBlocked(Direction side) {
+        return PipeBlockEntity.isFaceBlocked(getBlockedConnections(), side);
+    }
 
     /**
      * Unsafe!!! to set internal connections.
@@ -65,44 +67,17 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
      * @param side face
      */
     default boolean isConnected(Direction side) {
-        return !isBlocked(side);
+        return PipeBlockEntity.isConnected(getConnections(), side);
     }
 
-    /**
-     * should be called when neighbours / inner changed or the first time placing this pipe.
-     */
-    default void updateConnections() {
-        var net = getPipeNet();
-        if (net != null) {
-            var pos = getPipePos();
-            net.onNeighbourUpdate(pos);
-            var data = getNodeData();
-            var dataDirty = false;
-            if (data == null) {
-                LDLib.LOGGER.warn("data shouldn't be null here, did you add pipe without placement?");
-                net.getWorldData().addNode(pos, getPipeType().modifyProperties(getPipeBlock().getFallbackType()), Node.DEFAULT_MARK, Node.ALL_CLOSED, true);
-                data = getNodeData();
-                if (data == null) {
-                    throw new IllegalStateException("data shouldn't be null here!");
-                }
-            }
+    void setConnection(Direction side, boolean connected, boolean fromNeighbor);
 
-            for (Direction side : Direction.values()) {
-                if (!isBlocked(side)) {
-                    if (!net.containsNode(pos.relative(side))){
-                        var canAttach = canAttachTo(side);
-                        if (data.setAttached(side, canAttach)) {
-                            dataDirty = true;
-                        }
-                    }
-                }
-            }
-
-            if (dataDirty) {
-                net.updateNodeData(pos, data);
-            }
-        }
+    // if a face is blocked it will still render as connected, but it won't be able to receive stuff from that direction
+    default boolean canHaveBlockedFaces() {
+        return true;
     }
+
+    int getBlockedConnections();
 
     default BlockEntity self() {
         return (BlockEntity) this;
@@ -158,12 +133,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         return null;
     }
 
-    default void notifyBlockUpdate() {
-        var level = getPipeLevel();
-        if (level != null) {
-            level.updateNeighborsAt(getPipePos(), level.getBlockState(getPipePos()).getBlock());
-        }
-    }
+    void notifyBlockUpdate();
 
     default void scheduleRenderUpdate() {
         var pos = getPipePos();
@@ -171,7 +141,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         if (level != null) {
             var state = level.getBlockState(pos);
             if (level.isClientSide) {
-                level.sendBlockUpdated(pos, state, state, 1 << 3);
+                level.sendBlockUpdated(pos, state, state, Block.UPDATE_IMMEDIATE);
             } else {
                 level.blockEvent(pos, state.getBlock(), 1, 0);
             }
@@ -182,13 +152,6 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     }
 
-    default void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        if (!isRemote()) {
-            updateConnections();
-        }
-        getCoverContainer().onNeighborChanged(block, fromPos, isMoving);
-    }
-
     default void scheduleNeighborShapeUpdate() {
         Level level = getPipeLevel();
         BlockPos pos = getPipePos();
@@ -197,6 +160,10 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
             return;
 
         level.getBlockState(pos).updateNeighbourShapes(level, pos, Block.UPDATE_ALL);
+    }
+
+    default BlockEntity getNeighbor(Direction direction) {
+        return getPipeLevel().getBlockEntity(getPipePos().relative(direction));
     }
 
     @Override
