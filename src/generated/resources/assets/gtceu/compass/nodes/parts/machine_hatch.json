@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:pump_hatch"
+    "res": "gtceu:machine_hatch"
   },
   "items": [
-    "gtceu:pump_hatch"
+    "gtceu:machine_hatch"
   ],
-  "page": "gtceu:parts/pump_hatch",
+  "page": "gtceu:parts/machine_hatch",
   "position": [
-    -200,
-    50
+    -250,
+    150
   ],
   "section": "gtceu:parts"
 }
