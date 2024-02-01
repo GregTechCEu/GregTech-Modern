@@ -30,6 +30,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -124,11 +125,6 @@ public class GTAxeItem extends AxeItem implements IGTTool {
     @Override
     public boolean playSoundOnBlockDestroy() {
         return toolType.playSoundOnBlockDestroy;
-    }
-
-    @Override
-    public Set<GTToolType> getToolClasses(ItemStack stack) {
-        return Set.of(this.toolType);
     }
 
     @Override

@@ -33,8 +33,10 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
@@ -46,6 +48,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -347,6 +350,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
 
+        GTToolType toolType;
         // Prioritize covers where they apply (Screwdriver, Soft Mallet)
         if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (coverBehavior != null) {
@@ -356,7 +360,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             if (coverBehavior != null) {
                 return Pair.of(GTToolType.SOFT_MALLET, coverBehavior.onSoftMalletClick(playerIn, hand, hitResult));
             }
-        } else if (toolTypes.contains(getPipeTuneTool())) {
+        } else if ((toolType = toolTypes.stream().filter(type -> type.itemTags.stream().anyMatch(tag -> getPipeTuneTool().contains(tag))).findFirst().orElse(null)) != null) {
             if (playerIn.isShiftKeyDown() && this.canHaveBlockedFaces()) {
                 boolean isBlocked = this.isBlocked(gridSide);
                 this.setBlocked(gridSide, !isBlocked);
@@ -364,7 +368,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 boolean isOpen = this.isConnected(gridSide);
                 this.setConnection(gridSide, !isOpen, false);
             }
-            return Pair.of(getPipeTuneTool(), InteractionResult.CONSUME);
+            return Pair.of(toolType, InteractionResult.CONSUME);
         } else if (toolTypes.contains(GTToolType.CROWBAR)) {
             if (coverBehavior != null) {
                 if (!isRemote()) {
@@ -377,8 +381,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return Pair.of(null, InteractionResult.PASS);
     }
 
-    public GTToolType getPipeTuneTool() {
-        return GTToolType.WRENCH;
+    public Collection<TagKey<Item>> getPipeTuneTool() {
+        return GTToolType.WRENCH.itemTags;
     }
 
     @Override
