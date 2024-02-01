@@ -690,7 +690,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 Material material = getToolMaterial(stack);
 
                 Collection<Component> repairItems = new ArrayList<>();
-                if (!ModHandler.isMaterialWood(material)) {
+                if (!VanillaRecipeHelper.isMaterialWood(material)) {
                     if (material.hasProperty(PropertyKey.INGOT)) {
                         repairItems.add(TagPrefix.ingot.getLocalizedName(material));
                     } else if (material.hasProperty(PropertyKey.GEM)) {
