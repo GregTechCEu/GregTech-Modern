@@ -24,8 +24,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -37,7 +35,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
-import java.util.Collection;
 import java.util.EnumMap;
 
 /**
@@ -327,8 +324,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     }
 
     @Override
-    public Collection<TagKey<Item>> getPipeTuneTool() {
-        return GTToolType.WIRE_CUTTER.itemTags;
+    public GTToolType getPipeTuneTool() {
+        return GTToolType.WIRE_CUTTER;
     }
 
     @Override

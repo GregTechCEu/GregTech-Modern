@@ -21,7 +21,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -29,7 +28,6 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
@@ -55,11 +53,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -282,13 +277,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             if (context instanceof EntityCollisionContext entityCtx && entityCtx.getEntity() instanceof Player player) {
                 var coverable = pipeNode.getCoverContainer();
                 var held = player.getMainHandItem();
-                Set<TagKey<Item>> types = Stream.concat(GTToolType.WIRE_CUTTER.itemTags.stream(), GTToolType.WRENCH.itemTags.stream()).collect(Collectors.toSet());
+                Set<GTToolType> types = Set.of(GTToolType.WIRE_CUTTER, GTToolType.WRENCH);
                 BlockEntity tile = pLevel.getBlockEntity(pPos);
                 if (tile instanceof PipeBlockEntity<?,?> pipeTile) {
-                    types = new HashSet<>(pipeTile.getPipeTuneTool());
+                    types = Set.of(pipeTile.getPipeTuneTool());
                 }
 
-                if (types.stream().anyMatch(held::is) ||
+                if (types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is)) ||
                         CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                         (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
                     return Shapes.block();
