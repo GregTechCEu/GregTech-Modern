@@ -803,6 +803,15 @@ public class GTMachines {
                     .register(),
             HV, EV, IV, LuV, ZPM, UV);
 
+    public static final MachineDefinition MACHINE_HATCH = REGISTRATE.machine("machine_hatch", MachineHatchPartMachine::new)
+            .tier(IV)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.MACHINE_HATCH)
+            .tooltips(Component.translatable("gtceu.universal.disabled"))
+            .overlayTieredHullRenderer("machine_hatch")
+            .compassNodeSelf()
+            .register();
+
     public static final MachineDefinition[] LASER_INPUT_HATCH_256 = registerLaserHatch(IO.IN, 256, PartAbility.INPUT_LASER);
     public static final MachineDefinition[] LASER_OUTPUT_HATCH_256 = registerLaserHatch(IO.OUT, 256, PartAbility.OUTPUT_LASER);
     public static final MachineDefinition[] LASER_INPUT_HATCH_1024 = registerLaserHatch(IO.IN, 1024, PartAbility.INPUT_LASER);
@@ -1561,26 +1570,25 @@ public class GTMachines {
                     .recipeType(DUMMY_RECIPES)
                     .recipeModifier(ProcessingArrayMachine::recipeModifier, true)
                     .pattern(definition -> FactoryBlockPattern.start()
-                            .aisle("XXX", "CCC", "XXX")
-                            .aisle("XXX", "C#C", "XXX")
-                            .aisle("XSX", "CCC", "XXX")
+                            .aisle("XXX", "XXX", "XXX")
+                            .aisle("XXX", "X#X", "XXX")
+                            .aisle("XXX", "XSX", "XXX")
                             .where('S', Predicates.controller(blocks(definition.getBlock())))
-                            .where('X', blocks(ProcessingArrayMachine.getCasingState(tier)).setMinGlobalLimited(4)
-                                    .or(Predicates.abilities(PartAbility.IMPORT_ITEMS))
-                                    .or(Predicates.abilities(PartAbility.EXPORT_ITEMS))
-                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS))
-                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
-                                    .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
-                                    .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY))
+                            .where('X', blocks(ProcessingArrayMachine.getCasingState(tier))
+                                    .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(4).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.MACHINE_HATCH).setExactLimit(1))
                                     .or(Predicates.autoAbilities(true, false, false)))
-                            .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
                             .build())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.parallel", ProcessingArrayMachine.getMachineLimit(tier)))
-                    .renderer(() -> new ProcessingArrayMachineRenderer(tier == IV ?
+                    .workableCasingRenderer(tier == IV ?
                             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
                             GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
-                            GTCEu.id("block/multiblock/processing_array")))
+                            GTCEu.id("block/multiblock/processing_array"))
                     .compassSections(GTCompassSections.TIER[IV])
                     .compassNode("processing_array")
                     .register(),
