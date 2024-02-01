@@ -902,6 +902,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.produces_fluid", "§eProduces: §f%d L/t");
         provider.add("gtceu.universal.tooltip.terrain_resist", "This Machine will not explode when exposed to the Elements");
         provider.add("gtceu.universal.tooltip.requires_redstone", "§4Requires Redstone power");
+        provider.add("gtceu.universal.tooltip.deprecated", "§5WARNING: DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r");
         provider.add("gtceu.recipe.total", "Total: %,d EU");
         provider.add("gtceu.recipe.eu", "Usage: %,d EU/t (%s§r)");
         provider.add("gtceu.recipe.eu_inverted", "Generation: %,d EU/t");

@@ -1,14 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.*;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -31,7 +27,6 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
 import net.minecraftforge.common.Tags;
-import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -39,9 +34,11 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-
 
 /**
  * @author KilaBash
@@ -396,30 +393,6 @@ public class GTUtil {
                 return fluidHandler.drain(Integer.MAX_VALUE, false);
         }
         return null;
-    }
-
-    /**
-     * Checks whether a machine is not a multiblock and has a recipemap not present in a blacklist
-     *
-     * @param machineStack the ItemStack containing the machine to check the validity of
-     * @return whether the machine is valid or not
-     */
-    public static boolean isMachineValidForMachineHatch(ItemStack machineStack, GTRecipeType[] recipeTypeBlacklist) {
-        if (machineStack == null || machineStack.isEmpty()) {
-            return false;
-        }
-
-        if (machineStack.getItem() instanceof MetaMachineItem metaMachineItem) {
-            MachineDefinition definition = metaMachineItem.getDefinition();
-            IMachineBlockEntity be = MetaMachineBlockEntity.createBlockEntity(definition.getBlockEntityType(), BlockPos.ZERO, definition.defaultBlockState());
-            MetaMachine machine = be.getMetaMachine();
-            if (machine instanceof WorkableTieredMachine && !(machine instanceof SimpleGeneratorMachine)) {
-                GTRecipeType[] recipeTypes = definition.getRecipeTypes();
-                return recipeTypes != null && recipeTypes.length > 0 && Arrays.stream(recipeTypes).noneMatch(recipeType -> ArrayUtils.contains(recipeTypeBlacklist, recipeType));
-            }
-        }
-
-        return false;
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {

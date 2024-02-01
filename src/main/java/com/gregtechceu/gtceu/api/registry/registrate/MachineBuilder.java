@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
