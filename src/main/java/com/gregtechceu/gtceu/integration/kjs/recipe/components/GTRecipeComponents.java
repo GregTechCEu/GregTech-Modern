@@ -218,6 +218,9 @@ public class GTRecipeComponents {
     public static final CapabilityMapComponent OUT = new CapabilityMapComponent(true);
     public static final CapabilityMapComponent TICK_OUT = new CapabilityMapComponent(true);
 
+    /**
+     * First in pair is in, second is out
+     */
     public static final Map<RecipeCapability<?>, Pair<ContentJS<?>, ContentJS<?>>> VALID_CAPS = new IdentityHashMap<>();
 
     static {
