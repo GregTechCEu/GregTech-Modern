@@ -85,10 +85,12 @@ public final class FluidStorage {
         toRegister.entrySet().stream()
             .sorted(Comparator.comparingInt(e -> -e.getKey().getRegistrationPriority()))
             .forEach(entry -> {
-                Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material, entry.getKey(), registrate);
-                if (!storeNoOverwrites(entry.getKey(), fluid, entry.getValue())) {
-                    GTCEu.LOGGER.error("{} already has an associated fluid for material {}", entry.getKey(), material);
+                if (map.containsKey(entry.getKey())) {
+                    GTCEu.LOGGER.warn("{} already has an associated fluid for material {}", entry.getKey(), material);
+                    return;
                 }
+                Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material, entry.getKey(), registrate);
+                store(entry.getKey(), fluid, entry.getValue());
             });
         toRegister = null;
         registered = true;
