@@ -16,7 +16,7 @@ public class IgnoreEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
-    public List<Long> getStuff() {
+    public List<Object> getContents() {
         return List.of(Long.MAX_VALUE);
     }
 

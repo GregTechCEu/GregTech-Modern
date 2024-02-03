@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.datafixers.util.Either;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
@@ -55,24 +54,23 @@ public class GTRecipeLookup {
             int size = 0;
             for (IRecipeHandler<?> entry : entries.getValue()) {
                 if (entry.getSize() != -1) {
-                    if (size == -1) {
-                        size = 0;
-                    }
                     size += entry.getSize();
                     totalSize += entry.getSize();
                 } else {
-                    size = -1;
                     break;
                 }
             }
-            if (size == Integer.MAX_VALUE || size == 0) {
+            if (size == Integer.MAX_VALUE) {
                 return null;
             }
+        }
+        if (totalSize == 0) {
+            return null;
         }
 
         // Build input.
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(totalSize);
-        list.addAll(fromIngredients(holder));
+        list.addAll(fromHolder(holder));
 
         // nothing was added, so return nothing
         if (list.size() == 0) return null;
@@ -354,10 +352,14 @@ public class GTRecipeLookup {
     protected List<List<AbstractMapIngredient>> fromRecipe(@NotNull GTRecipe r) {
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(r.inputs.values().size());
         r.inputs.forEach((cap, contents) -> {
-            list.addAll(cap.compressIngredients(contents.stream().map(Content::getContent).toList()).stream().map(cap::convertToMapIngredient).toList());
+            if (cap.isRecipeSearchFilter()) {
+                list.addAll(cap.compressIngredients(contents.stream().map(Content::getContent).toList()).stream().map(cap::convertToMapIngredient).toList());
+            }
         });
         r.tickInputs.forEach((cap, contents) -> {
-            list.addAll(cap.compressIngredients(contents.stream().map(Content::getContent).toList()).stream().map(cap::convertToMapIngredient).toList());
+            if (cap.isRecipeSearchFilter()) {
+                list.addAll(cap.compressIngredients(contents.stream().map(Content::getContent).toList()).stream().map(cap::convertToMapIngredient).toList());
+            }
         });
         return list;
     }
@@ -369,13 +371,30 @@ public class GTRecipeLookup {
      * @return a list of all the AbstractMapIngredients comprising the recipe
      */
     @NotNull
-    protected List<List<AbstractMapIngredient>> fromIngredients(@NotNull IRecipeCapabilityHolder r) {
+    protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(r.getCapabilitiesProxy().row(IO.IN).values().size());
         r.getCapabilitiesProxy().row(IO.IN).forEach((cap, contents) -> {
-            list.addAll(cap.compressIngredients(contents.stream().flatMap(handler -> handler.getStuff().stream()).map(Object.class::cast).toList()).stream().map(cap::convertToMapIngredient).toList());
+            if (cap.isRecipeSearchFilter()) {
+                list.addAll(cap.compressIngredients(contents.stream().map(IRecipeHandler::getContents).flatMap(List::stream).toList()).stream().map(cap::convertToMapIngredient).toList());
+            }
         });
         return list;
     }
+
+    /**
+     * Compiles a recipe and adds it to the ingredient tree
+     *
+     * @param recipe the recipe to compile
+     * @return if the recipe was successfully compiled
+     */
+    public boolean addRecipe(GTRecipe recipe) {
+        if (recipe == null) {
+            return false;
+        }
+        List<List<AbstractMapIngredient>> items = fromRecipe(recipe);
+        return recurseIngredientTreeAdd(recipe, items, lookup, 0, 0);
+    }
+
 
     /**
      * Adds a recipe to the map. (recursive part)
@@ -415,13 +434,13 @@ public class GTRecipeLookup {
                             // the recipe already there was not the one being added, so there is a conflict
                             if (ConfigHolder.INSTANCE.dev.debug || Platform.isDevEnv()) {
                                 GTCEu.LOGGER.warn(
-                                    "Recipe duplicate or conflict found in GTRecipeMap {} and was not added. See next lines for details",
-                                    BuiltInRegistries.RECIPE_TYPE.getId(this.recipeType));
+                                    "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
+                                    BuiltInRegistries.RECIPE_TYPE.getKey(this.recipeType));
 
-                                GTCEu.LOGGER.warn("Attempted to add GTRecipe: {}", recipe);
+                                GTCEu.LOGGER.warn("Attempted to add GTRecipe: {}", recipe.getId());
 
                                 if (v.left().isPresent()) {
-                                    GTCEu.LOGGER.warn("Which conflicts with: {}", v.left().get());
+                                    GTCEu.LOGGER.warn("Which conflicts with: {}", v.left().get().getId());
                                 } else {
                                     GTCEu.LOGGER.warn("Could not find exact duplicate/conflict.");
                                 }

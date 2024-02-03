@@ -242,7 +242,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     @Override
-    public List<Long> getStuff() {
+    public List<Object> getContents() {
         return List.of(energyStored);
     }
 

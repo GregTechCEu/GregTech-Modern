@@ -79,7 +79,7 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public List<Float> getStuff() {
+    public List<Object> getContents() {
         return List.of(available);
     }
 

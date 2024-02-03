@@ -46,8 +46,8 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     }
 
     @Override
-    public List<Ingredient> getStuff() {
-        return handlers.stream().flatMap(handler -> handler.getStuff().stream()).collect(Collectors.toList());
+    public List<Object> getContents() {
+        return handlers.stream().flatMap(handler -> handler.getContents().stream()).collect(Collectors.toList());
     }
 
     @Override

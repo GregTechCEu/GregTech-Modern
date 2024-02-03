@@ -53,10 +53,17 @@ public abstract class RecipeCapability<T> {
         return copyWithModifier((T) content, modifier);
     }
 
-    public abstract List<AbstractMapIngredient> convertToMapIngredient(Object ingredient);
+    /**
+     * Convert the passed object to a list of recipe lookup filters.
+     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
+     * @return a list of recipe lookup filters.
+     */
+    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
+        return List.of();
+    }
 
-    public List<T> compressIngredients(Collection<Object> ingredients) {
-        return (List<T>) new ArrayList<>(ingredients);
+    public List<Object> compressIngredients(Collection<Object> ingredients) {
+        return new ArrayList<>(ingredients);
     }
 
     /**
@@ -74,8 +81,16 @@ public abstract class RecipeCapability<T> {
         return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
     }
 
-    public Component getTraslateComponent() {
+    public Component getName() {
         return Component.translatable("recipe.capability.%s.name".formatted(name));
+    }
+
+    public boolean isRecipeSearchFilter() {
+        return false;
+    }
+
+    public boolean addGuiSlots() {
+        return isRecipeSearchFilter();
     }
 
      //TODO

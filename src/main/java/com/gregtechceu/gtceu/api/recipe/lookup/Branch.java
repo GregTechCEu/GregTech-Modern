@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 
 public class Branch {
 
-    // Keys on this have *(should)* unique hashcodes.
+    // Keys on this have *(should)* have unique hashcodes.
     private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> nodes;
     // Keys on this have collisions, and must be differentiated by equality.
     private Map<AbstractMapIngredient, Either<GTRecipe, Branch>> specialNodes;

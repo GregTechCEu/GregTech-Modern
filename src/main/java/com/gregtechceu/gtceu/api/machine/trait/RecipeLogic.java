@@ -284,14 +284,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 if (!lastFuture.isCancelled()) {
                     // if searching task is done, try to handle searched recipes.
                     try {
-                        ArrayList<GTRecipe> matches = new ArrayList<>();
-                        lastFuture.join().forEachRemaining(match -> {
-                            if (match.matchRecipe(machine).isSuccess()) {
-                                matches.add(match);
-                            }
-                        });
-                        if (!matches.isEmpty()) {
-                            handleSearchingRecipes(matches.iterator());
+                        Iterator<GTRecipe> matches = lastFuture.join();
+                        if (matches.hasNext()) {
+                            handleSearchingRecipes(matches);
                         } else if (dirtySearching) {
                             completableFuture = supplyAsyncSearchingTask();
                         }

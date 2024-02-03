@@ -13,17 +13,14 @@ import java.util.List;
 public class MapItemStackIngredient extends AbstractMapIngredient {
 
     protected ItemStack stack;
-    protected CompoundTag tag;
     protected Ingredient ingredient = null;
 
-    public MapItemStackIngredient(ItemStack stack, CompoundTag tag) {
+    public MapItemStackIngredient(ItemStack stack) {
         this.stack = stack;
-        this.tag = tag;
     }
 
     public MapItemStackIngredient(ItemStack stack, Ingredient ingredient) {
         this.stack = stack;
-        this.tag = stack.getTag();
         this.ingredient = ingredient;
     }
 
@@ -57,12 +54,11 @@ public class MapItemStackIngredient extends AbstractMapIngredient {
     @Override
     protected int hash() {
         int hash = stack.getItem().hashCode() * 31;
-        hash += 31 * (this.tag != null ? this.tag.hashCode() : 0);
         return hash;
     }
 
     @Override
     public String toString() {
-        return "MapItemStackIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "} {tag=" + tag + "}";
+        return "MapItemStackIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
     }
 }

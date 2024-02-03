@@ -20,6 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -140,15 +141,15 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Ingredient> getStuff() {
-        List<Ingredient> ingredients = new ArrayList<>();
+    public List<Object> getContents() {
+        List<ItemStack> stacks = new ArrayList<>();
         for (int i = 0; i < getSlots(); ++i) {
             ItemStack stack = getStackInSlot(i);
             if (!stack.isEmpty()) {
-                ingredients.add(SizedIngredient.create(stack));
+                stacks.add(stack);
             }
         }
-        return ingredients;
+        return Arrays.asList(stacks.toArray());
     }
 
     public boolean isEmpty() {

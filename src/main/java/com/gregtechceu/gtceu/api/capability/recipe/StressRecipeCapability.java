@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFloat;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapStressIngredient;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,12 +31,7 @@ public class StressRecipeCapability extends RecipeCapability<Float> {
     }
 
     @Override
-    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
-        return List.of(new MapStressIngredient((Float) ingredient));
-    }
-
-    @Override
-    public List<Float> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(Collection<Object> ingredients) {
         return List.of(ingredients.stream().map(Float.class::cast).reduce(0f, Float::sum));
     }
 }

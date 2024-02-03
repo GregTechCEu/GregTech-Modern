@@ -100,7 +100,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public FluidStack[] getStacks() {
         if (changed || this.stacks == null) {
-            this.stacks = Arrays.stream(this.values).flatMap(entry -> entry.getStacks().stream()).distinct().map(fluid -> FluidStack.create(fluid, this.amount, this.nbt)).toArray(FluidStack[]::new);
+            this.stacks = Arrays.stream(this.values).flatMap(entry -> entry.getFluids().stream()).distinct().map(fluid -> FluidStack.create(fluid, this.amount, this.nbt)).toArray(FluidStack[]::new);
             this.changed = false;
         }
         return this.stacks;
@@ -192,14 +192,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public static interface Value {
-        public Collection<Fluid> getStacks();
+        public Collection<Fluid> getFluids();
 
         public JsonObject serialize();
         public Value copy();
     }
 
-    public static class TagValue
-            implements Value {
+    public static class TagValue implements Value {
+        @Getter
         private final TagKey<Fluid> tag;
 
         public TagValue(TagKey<Fluid> tag) {
@@ -207,7 +207,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Collection<Fluid> getStacks() {
+        public Collection<Fluid> getFluids() {
             ArrayList<Fluid> list = Lists.newArrayList();
             for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
                 list.add(holder.value());
@@ -228,8 +228,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
     }
 
-    public static class FluidValue
-            implements Value {
+    public static class FluidValue implements Value {
         private final Fluid fluid;
 
         public FluidValue(Fluid item) {
@@ -237,7 +236,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Collection<Fluid> getStacks() {
+        public Collection<Fluid> getFluids() {
             return Collections.singleton(this.fluid);
         }
 

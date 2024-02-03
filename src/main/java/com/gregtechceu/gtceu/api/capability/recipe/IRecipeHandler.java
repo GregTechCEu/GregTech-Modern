@@ -43,7 +43,7 @@ public interface IRecipeHandler<K> {
         return -1;
     }
 
-    List<K> getStuff();
+    List<Object> getContents();
 
     /**
      * Whether the content of same capability  can only be handled distinct.

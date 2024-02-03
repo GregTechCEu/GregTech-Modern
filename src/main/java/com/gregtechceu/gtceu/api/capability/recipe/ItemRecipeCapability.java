@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapItemStackIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapItemStackNBTIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapTagIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapItemTagIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,38 +42,96 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
     @Override
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
-        Ingredient ingredient = (Ingredient) obj;
-        if (ingredient instanceof PartialNBTIngredient nbt) {
-            return MapItemStackNBTIngredient.from(nbt);
-        } if (ingredient instanceof SizedIngredient sized) {
-            if (sized.getInner() instanceof PartialNBTIngredient nbt) {
-                return MapItemStackNBTIngredient.from(nbt);
-            } else if (((IngredientAccessor)sized.getInner()).getValues().length > 0 && ((IngredientAccessor)sized.getInner()).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                return List.of(new MapTagIngredient(((TagValueAccessor)tagValue).getTag()));
+        List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
+        if (obj instanceof Ingredient ingredient) {
+
+            for (Ingredient.Value value : ((IngredientAccessor)ingredient).getValues()) {
+                if (value instanceof Ingredient.TagValue tagValue) {
+                    ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
+                } else {
+                    Collection<ItemStack> stacks = value.getItems();
+                    for (ItemStack stack : stacks) {
+                        ingredients.add(new MapItemStackIngredient(stack));
+                    }
+                }
             }
-        } else if (((IngredientAccessor)ingredient).getValues().length > 0 && ((IngredientAccessor)ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-            return List.of(new MapTagIngredient(((TagValueAccessor)tagValue).getTag()));
+
+            // all kinds of special cases
+            if (ingredient instanceof StrictNBTIngredient nbt) {
+                ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+            } else if (ingredient instanceof SizedIngredient sized) {
+                for (Ingredient.Value value : ((IngredientAccessor)sized.getInner()).getValues()) {
+                    if (value instanceof Ingredient.TagValue tagValue) {
+                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
+                    } else {
+                        Collection<ItemStack> stacks = value.getItems();
+                        for (ItemStack stack : stacks) {
+                            ingredients.add(new MapItemStackIngredient(stack));
+                        }
+                    }
+                }
+
+                if (sized.getInner() instanceof StrictNBTIngredient nbt) {
+                    ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+                }
+            }
+        } else if (obj instanceof ItemStack stack) {
+            ingredients.add(new MapItemStackIngredient(stack));
+
+            stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
+            if (stack.hasTag()) {
+                ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
+            }
         }
-        return MapItemStackIngredient.from(ingredient);
+        return ingredients;
     }
 
     @Override
-    public List<Ingredient> compressIngredients(Collection<Object> ingredients) {
-        List<Ingredient> list = new ObjectArrayList<>(ingredients.size());
+    public List<Object> compressIngredients(Collection<Object> ingredients) {
+        List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
             if (item instanceof Ingredient ingredient) {
                 boolean isEqual = false;
-                for (Ingredient obj : list) {
-                    if (item.equals(obj)) {
-                        isEqual = true;
-                        break;
+                for (Object obj : list) {
+                    if (obj instanceof Ingredient ingredient1) {
+                        if (ingredient.equals(ingredient1)) {
+                            isEqual = true;
+                            break;
+                        }
+                    } else if (obj instanceof ItemStack stack) {
+                        if (ingredient.test(stack)) {
+                            isEqual = true;
+                            break;
+                        }
                     }
                 }
                 if (isEqual) continue;
                 list.add(ingredient);
+            } else if (item instanceof ItemStack stack) {
+                boolean isEqual = false;
+                for (Object obj : list) {
+                    if (obj instanceof Ingredient ingredient) {
+                        if (ingredient.test(stack)) {
+                            isEqual = true;
+                            break;
+                        }
+                    } else if (obj instanceof ItemStack stack1) {
+                        if (ItemStack.isSameItem(stack, stack1)) {
+                            isEqual = true;
+                            break;
+                        }
+                    }
+                }
+                if (isEqual) continue;
+                list.add(stack);
             }
         }
         return list;
+    }
+
+    @Override
+    public boolean isRecipeSearchFilter() {
+        return true;
     }
 
 }

@@ -13,6 +13,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -39,15 +40,15 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
-    public List<Ingredient> getStuff() {
-        List<Ingredient> ingredients = new ArrayList<>();
+    public List<Object> getContents() {
+        List<ItemStack> ingredients = new ArrayList<>();
         for (int i = 0; i < storage.getSlots(); ++i) {
             ItemStack stack = storage.getStackInSlot(i);
             if (!stack.isEmpty()) {
-                ingredients.add(SizedIngredient.create(stack));
+                ingredients.add(stack);
             }
         }
-        return ingredients;
+        return Arrays.asList(ingredients.toArray());
     }
 
     @Override

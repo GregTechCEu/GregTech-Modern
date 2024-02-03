@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -128,7 +129,7 @@ public class SizedIngredient extends Ingredient {
 
         if (amount != that.amount)
             return false;
-        return Arrays.stream(itemStacks).noneMatch(stack -> Arrays.stream(that.itemStacks).anyMatch(stack1 -> ItemStack.isSameItemSameTags(stack, stack1)));
+        return Arrays.stream(((IngredientAccessor)inner).getValues()).noneMatch(stack -> Arrays.stream(((IngredientAccessor)that).getValues()).anyMatch(stack1 -> stack1.serialize().equals(stack.serialize())));
     }
 
     @Override

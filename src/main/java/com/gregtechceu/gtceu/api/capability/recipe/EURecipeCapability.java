@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapEUIngredient;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,12 +30,7 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     }
 
     @Override
-    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
-        return List.of(new MapEUIngredient((Long) ingredient));
-    }
-
-    @Override
-    public List<Long> compressIngredients(Collection<Object> ingredients) {
+    public List<Object> compressIngredients(Collection<Object> ingredients) {
         return List.of(ingredients.stream().map(Long.class::cast).reduce(0L, Long::sum));
     }
 }

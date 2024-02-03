@@ -21,10 +21,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
 import java.util.function.Predicate;
 
 /**
@@ -172,15 +169,15 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<FluidIngredient> getStuff() {
-        List<FluidIngredient> ingredients = new ArrayList<>();
+    public List<Object> getContents() {
+        List<FluidStack> ingredients = new ArrayList<>();
         for (int i = 0; i < getTanks(); ++i) {
             FluidStack stack = getFluidInTank(i);
             if (!stack.isEmpty()) {
-                ingredients.add(FluidIngredient.of(stack));
+                ingredients.add(stack);
             }
         }
-        return ingredients;
+        return Arrays.asList(ingredients.toArray());
     }
 
     public boolean isEmpty() {

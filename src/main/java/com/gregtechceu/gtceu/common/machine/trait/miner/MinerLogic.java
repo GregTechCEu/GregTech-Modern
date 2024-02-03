@@ -186,7 +186,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
             } else {
                 // the miner cannot drain, therefore it is inactive
                 if (this.isWorking()) {
-                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(ItemRecipeCapability.CAP.getTraslateComponent()));
+                    setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(ItemRecipeCapability.CAP.getName()));
                 }
             }
 
