@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
-import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
@@ -19,7 +19,7 @@ import java.util.function.Predicate;
  */
 public abstract class MachineTrait implements IEnhancedManaged {
     @Getter
-    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
 
     @Getter
     protected final MetaMachine machine;
