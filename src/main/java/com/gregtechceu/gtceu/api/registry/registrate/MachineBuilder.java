@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
@@ -18,10 +19,10 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.GTRendererProvider;
 import com.gregtechceu.gtceu.common.data.GTCompassSections;
+import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
@@ -110,7 +111,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
-    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier = (machine, recipe) -> recipe;
+    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
     @Setter
     private boolean alwaysTryModifyRecipe;
     @Setter
@@ -220,6 +221,12 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     public MachineBuilder<DEFINITION> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
         this.recipeModifier = recipeModifier;
         this.alwaysTryModifyRecipe = alwaysTryModifyRecipe;
+        return this;
+    }
+
+    public MachineBuilder<DEFINITION> noRecipeModifier() {
+        this.recipeModifier = ((machine, recipe) -> recipe);
+        this.alwaysTryModifyRecipe = false;
         return this;
     }
 

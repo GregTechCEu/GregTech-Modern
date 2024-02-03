@@ -98,16 +98,18 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @Nullable
     private EnergyNet getEnergyNet() {
-        if (level instanceof ServerLevel serverLevel && getBlockState().getBlock() instanceof CableBlock cableBlock) {
-            EnergyNet currentEnergyNet = this.currentEnergyNet.get();
-            if (currentEnergyNet != null && currentEnergyNet.isValid() && currentEnergyNet.containsNode(getBlockPos()))
-                return currentEnergyNet; //return current net if it is still valid
-            currentEnergyNet = cableBlock.getWorldPipeNet(serverLevel).getNetFromPos(getBlockPos());
-            if (currentEnergyNet != null) {
-                this.currentEnergyNet = new WeakReference<>(currentEnergyNet);
-            }
+        if (!(level instanceof ServerLevel serverLevel))
+            return null;
+        EnergyNet currentEnergyNet = this.currentEnergyNet.get();
+        if (currentEnergyNet != null && currentEnergyNet.isValid() &&
+            currentEnergyNet.containsNode(getBlockPos()))
+            return currentEnergyNet; // return current net if it is still valid
+        LevelEnergyNet worldENet = LevelEnergyNet.getOrCreate(serverLevel);
+        currentEnergyNet = worldENet.getNetFromPos(getBlockPos());
+        if (currentEnergyNet != null) {
+            this.currentEnergyNet = new WeakReference<>(currentEnergyNet);
         }
-        return this.currentEnergyNet.get();
+        return currentEnergyNet;
     }
 
     public void checkNetwork() {
@@ -124,7 +126,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
 
     @Nullable
     public IEnergyContainer getEnergyContainer(@Nullable Direction side) {
-        if (side != null && isBlocked(side)) return null;
+        if (side != null && !isConnected(side)) return null;
         // the EnergyNetHandler can only be created on the server, so we have an empty placeholder for the client
         if (isRemote()) return IEnergyContainer.DEFAULT;
         if (handlers.isEmpty())

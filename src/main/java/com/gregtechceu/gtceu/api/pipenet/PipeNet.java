@@ -301,7 +301,7 @@ public abstract class PipeNet<NodeDataType> implements ITagSerializable<Compound
         observedSet.put(startPos, getNodeAt(startPos));
         Node<NodeDataType> firstNode = getNodeAt(startPos);
         BlockPos.MutableBlockPos currentPos = startPos.mutable();
-        Stack<Direction> moveStack = new Stack<>();
+        Deque<Direction> moveStack = new ArrayDeque<>();
         main:
         while (true) {
             for (Direction facing : GTUtil.DIRECTIONS) {

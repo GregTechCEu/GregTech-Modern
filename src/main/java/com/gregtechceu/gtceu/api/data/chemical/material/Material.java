@@ -197,7 +197,7 @@ public class Material implements Comparable<Material> {
     public Fluid getFluid() {
         FluidProperty prop = getProperty(PropertyKey.FLUID);
         if (prop == null) {
-            throw new IllegalArgumentException("Material " + getName() + " does not have a Fluid!");
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
         }
 
         FluidStorageKey key = prop.getPrimaryKey();
@@ -219,7 +219,7 @@ public class Material implements Comparable<Material> {
     public Fluid getFluid(@Nonnull FluidStorageKey key) {
         FluidProperty prop = getProperty(PropertyKey.FLUID);
         if (prop == null) {
-            throw new IllegalArgumentException("Material " + getName() + " does not have a Fluid!");
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
         }
 
         return prop.getStorage().get(key);
@@ -242,6 +242,47 @@ public class Material implements Comparable<Material> {
      */
     public FluidStack getFluid(@Nonnull FluidStorageKey key, long amount) {
         return FluidStack.create(getFluid(key), amount);
+    }
+
+    /**
+     * Retrieves a fluid builder from the material.
+     * <br/>
+     * NOTE: only available before the fluids are registered.
+     * <br/>
+     * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
+     * {@link FluidStorageKeys#GAS}.
+     * @return the fluid builder
+     */
+    public FluidBuilder getFluidBuilder() {
+        FluidProperty prop = getProperty(PropertyKey.FLUID);
+        if (prop == null) {
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
+        }
+
+        FluidStorageKey key = prop.getPrimaryKey();
+        FluidBuilder fluid = null;
+
+        if (key != null) fluid = prop.getStorage().getQueuedBuilder(key);
+        if (fluid != null) return fluid;
+
+        fluid = getFluidBuilder(FluidStorageKeys.LIQUID);
+        if (fluid != null) return fluid;
+
+        return getFluidBuilder(FluidStorageKeys.GAS);
+    }
+
+    /**
+     * NOTE: only available before the fluids are registered.
+     * @param key the key for the fluid
+     * @return the fluid corresponding with the key
+     */
+    public FluidBuilder getFluidBuilder(@Nonnull FluidStorageKey key) {
+        FluidProperty prop = getProperty(PropertyKey.FLUID);
+        if (prop == null) {
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
+        }
+
+        return prop.getStorage().getQueuedBuilder(key);
     }
 
     public MaterialToolTier getToolTier() {
@@ -1091,7 +1132,6 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        // TODO make these work
         @Deprecated
         public Builder addDefaultEnchant(Enchantment enchant, int level) {
             if (!properties.hasProperty(PropertyKey.TOOL)) // cannot assign default here

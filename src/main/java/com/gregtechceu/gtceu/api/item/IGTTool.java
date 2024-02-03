@@ -26,9 +26,9 @@ import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.ModHandler;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -48,7 +48,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
@@ -66,7 +65,6 @@ import net.minecraft.world.item.enchantment.MendingEnchantment;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -79,10 +77,7 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
@@ -90,6 +85,8 @@ import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
 public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
+
+    GTToolType getToolType();
 
     Material getMaterial();
     
@@ -428,11 +425,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (entry == null || entry.material == null) return false;
         if (entry.material == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
-            /* TODO Add plank prefix
-            if (ModHandler.isMaterialWood(entry.material)) {
+            if (VanillaRecipeHelper.isMaterialWood(entry.material)) {
                 return entry.tagPrefix == TagPrefix.planks;
             }
-            */
             // Gems can use gem and plate, Ingots can use ingot and plate
             if (entry.tagPrefix == TagPrefix.plate) {
                 return true;
@@ -699,7 +694,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                 Material material = getToolMaterial(stack);
 
                 Collection<Component> repairItems = new ArrayList<>();
-                if (!ModHandler.isMaterialWood(material)) {
+                if (!VanillaRecipeHelper.isMaterialWood(material)) {
                     if (material.hasProperty(PropertyKey.INGOT)) {
                         repairItems.add(TagPrefix.ingot.getLocalizedName(material));
                     } else if (material.hasProperty(PropertyKey.GEM)) {
@@ -841,7 +836,9 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
                         Integer.toString(1 + AoESymmetrical.getLayer(getBehaviorsTag(holder.getHeld()), defaultDefinition))));
     }
 
-    Set<GTToolType> getToolClasses(ItemStack stack);
+    default Set<GTToolType> getToolClasses(ItemStack stack) {
+        return new HashSet<>(getToolType().toolClasses);
+    }
 
     default Set<String> getToolClassNames(ItemStack stack) {
         return getToolClasses(stack).stream().flatMap(type -> type.toolClassNames.stream()).collect(Collectors.toSet());

@@ -5,6 +5,7 @@ import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -43,6 +44,7 @@ public class PartAbility {
     public static final PartAbility STEAM_EXPORT_ITEMS = new PartAbility("steam_export_items");
     public static final PartAbility MAINTENANCE = new PartAbility("maintenance");
     public static final PartAbility MUFFLER = new PartAbility("muffler");
+    public static final PartAbility MACHINE_HATCH = new PartAbility("machine_hatch");
     public static final PartAbility TANK_VALVE = new PartAbility("tank_valve");
     public static final PartAbility PASSTHROUGH_HATCH = new PartAbility("passthrough_hatch");
     public static final PartAbility PARALLEL_HATCH = new PartAbility("parallel_hatch");

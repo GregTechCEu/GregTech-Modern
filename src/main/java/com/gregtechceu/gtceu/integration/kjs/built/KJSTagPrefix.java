@@ -55,7 +55,12 @@ public class KJSTagPrefix extends TagPrefix {
 
     @Override
     public KJSTagPrefix unformattedTagPath(String path) {
-        this.tags.add(TagType.withNoFormatter(path));
+        return unformattedTagPath(path, false);
+    }
+
+    @Override
+    public KJSTagPrefix unformattedTagPath(String path, boolean isVanilla) {
+        this.tags.add(TagType.withNoFormatter(path, isVanilla));
         return this;
     }
 

@@ -42,7 +42,7 @@ public class LaserRoutePath implements IRoutePath<ILaserContainer>, IAttachData 
      */
     @Nullable
     public ILaserContainer getHandler(Level level) {
-        return GTCapabilityHelper.getLaser(level, getTargetPipePos(), getTargetFacing());
+        return GTCapabilityHelper.getLaser(level, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
     }
 
     @Override
