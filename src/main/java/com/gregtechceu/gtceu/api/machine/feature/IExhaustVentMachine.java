@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,7 +32,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
     /**
      * @return if venting is needed
      */
-    boolean needsVenting();
+    boolean isNeedsVenting();
 
     void setNeedsVenting(boolean needsVenting);
 
@@ -53,10 +52,10 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * @return if the machine does not need venting
      */
     default boolean checkVenting() {
-        if (needsVenting()) {
+        if (isNeedsVenting()) {
             tryDoVenting(self().getLevel(), self().getPos());
         }
-        return !needsVenting();
+        return !isNeedsVenting();
     }
 
     /**
@@ -78,7 +77,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * @param pos the position of the machine
      */
     default void tryDoVenting(@NotNull Level level, @NotNull BlockPos pos) {
-        if (needsVenting() && !isVentingBlocked()) {
+        if (isNeedsVenting() && !isVentingBlocked()) {
             doVentingDamage(level, pos);
 
             Direction ventingDirection = getVentingDirection();
