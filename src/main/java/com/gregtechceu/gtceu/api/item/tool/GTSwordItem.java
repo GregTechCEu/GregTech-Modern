@@ -132,11 +132,6 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     }
 
     @Override
-    public Set<GTToolType> getToolClasses(ItemStack stack) {
-        return Set.of(this.toolType);
-    }
-
-    @Override
     public float getDestroySpeed(ItemStack stack, BlockState state) {
         return definition$getDestroySpeed(stack, state);
     }

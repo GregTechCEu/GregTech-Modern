@@ -210,7 +210,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
 
     @Nullable
     static Direction rayTraceCoverableSide(ICoverable coverable, Player player) {
-        var rayTrace = RayTraceHelper.rayTraceRange(coverable.getLevel(), player, ToolHelper.getPlayerBlockReach(player));
+        BlockHitResult rayTrace = (BlockHitResult) player.pick(player.getBlockReach(), 0, false);
         if (rayTrace.getType() == HitResult.Type.MISS) {
             return null;
         }
