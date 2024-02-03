@@ -616,7 +616,7 @@ public class ToolHelper {
         if (toolClasses.contains(GTToolType.SCYTHE)) {
         }
         if (toolClasses.contains(GTToolType.FILE)) {
-            if (block instanceof GlassPaneBlock) {
+            if (block instanceof IronBarsBlock) {
                 return true;
             }
         }
