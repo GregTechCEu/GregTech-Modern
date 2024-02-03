@@ -5,14 +5,14 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
-import com.gregtechceu.gtceu.api.syncdata.EnhancedFieldManagedStorage;
-import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -44,7 +44,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CoverBehavior.class);
 
     @Getter
-    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     public final CoverDefinition coverDefinition;
     public final ICoverable coverHolder;
     public final Direction attachedSide;
