@@ -38,6 +38,7 @@
     "ServerChunkProviderMixin",
     "ShapedRecipeAccessor",
     "SidedRedstoneConnectivityMixin",
+    "StrictNBTIngredientAccessor",
     "TagLoaderMixin",
     "TagManagerMixin",
     "TagValueAccessor",

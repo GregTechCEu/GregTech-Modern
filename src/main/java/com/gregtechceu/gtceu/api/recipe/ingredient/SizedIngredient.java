@@ -56,13 +56,15 @@ public class SizedIngredient extends Ingredient {
         return new SizedIngredient(tag, amount);
     }
 
-    public static SizedIngredient copy(Ingredient ingredient) {
+    public static Ingredient copy(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
             if (sizedIngredient.itemStacks != null) {
                 copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy).toArray(ItemStack[]::new);
             }
             return copied;
+        } else if (ingredient instanceof IntCircuitIngredient circuit) {
+            return circuit.copy();
         }
         return SizedIngredient.create(ingredient);
     }
@@ -118,18 +120,6 @@ public class SizedIngredient extends Ingredient {
     @Override
     public boolean isEmpty() {
         return inner.isEmpty();
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o)
-            return true;
-        if (!(o instanceof SizedIngredient that))
-            return false;
-
-        if (amount != that.amount)
-            return false;
-        return Arrays.stream(((IngredientAccessor)inner).getValues()).noneMatch(stack -> Arrays.stream(((IngredientAccessor)that).getValues()).anyMatch(stack1 -> stack1.serialize().equals(stack.serialize())));
     }
 
     @Override

@@ -89,7 +89,7 @@ public abstract class RecipeCapability<T> {
         return false;
     }
 
-    public boolean addGuiSlots() {
+    public boolean doAddGuiSlots() {
         return isRecipeSearchFilter();
     }
 

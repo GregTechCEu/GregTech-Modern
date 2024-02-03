@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.utils.IngredientEquality;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -42,7 +43,7 @@ public class MapItemStackIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-                    return ingredient.equals(other.ingredient);
+                    return IngredientEquality.ingredientEquals(this.ingredient, other.ingredient);
                 }
             } else if (other.ingredient != null) {
                 return other.ingredient.test(this.stack);
@@ -53,8 +54,7 @@ public class MapItemStackIngredient extends AbstractMapIngredient {
 
     @Override
     protected int hash() {
-        int hash = stack.getItem().hashCode() * 31;
-        return hash;
+        return stack.getItem().hashCode() * 31;
     }
 
     @Override

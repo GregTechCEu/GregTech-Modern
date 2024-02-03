@@ -2,13 +2,16 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapItemStackIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapItemStackNBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapItemTagIngredient;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+import com.gregtechceu.gtceu.utils.IngredientEquality;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -45,34 +48,34 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
         if (obj instanceof Ingredient ingredient) {
 
-            for (Ingredient.Value value : ((IngredientAccessor)ingredient).getValues()) {
-                if (value instanceof Ingredient.TagValue tagValue) {
-                    ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
-                } else {
-                    Collection<ItemStack> stacks = value.getItems();
-                    for (ItemStack stack : stacks) {
-                        ingredients.add(new MapItemStackIngredient(stack));
-                    }
-                }
-            }
-
             // all kinds of special cases
             if (ingredient instanceof StrictNBTIngredient nbt) {
                 ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
             } else if (ingredient instanceof SizedIngredient sized) {
-                for (Ingredient.Value value : ((IngredientAccessor)sized.getInner()).getValues()) {
+                if (sized.getInner() instanceof StrictNBTIngredient nbt) {
+                    ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+                } else {
+                    for (Ingredient.Value value : ((IngredientAccessor)sized.getInner()).getValues()) {
+                        if (value instanceof Ingredient.TagValue tagValue) {
+                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
+                        } else {
+                            Collection<ItemStack> stacks = value.getItems();
+                            for (ItemStack stack : stacks) {
+                                ingredients.add(new MapItemStackIngredient(stack, sized.getInner()));
+                            }
+                        }
+                    }
+                }
+            } else {
+                for (Ingredient.Value value : ((IngredientAccessor)ingredient).getValues()) {
                     if (value instanceof Ingredient.TagValue tagValue) {
                         ingredients.add(new MapItemTagIngredient(((TagValueAccessor)tagValue).getTag()));
                     } else {
                         Collection<ItemStack> stacks = value.getItems();
                         for (ItemStack stack : stacks) {
-                            ingredients.add(new MapItemStackIngredient(stack));
+                            ingredients.add(new MapItemStackIngredient(stack, ingredient));
                         }
                     }
-                }
-
-                if (sized.getInner() instanceof StrictNBTIngredient nbt) {
-                    ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
                 }
             }
         } else if (obj instanceof ItemStack stack) {
@@ -94,7 +97,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 boolean isEqual = false;
                 for (Object obj : list) {
                     if (obj instanceof Ingredient ingredient1) {
-                        if (ingredient.equals(ingredient1)) {
+                        if (IngredientEquality.ingredientEquals(ingredient, ingredient1)) {
                             isEqual = true;
                             break;
                         }
@@ -106,7 +109,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     }
                 }
                 if (isEqual) continue;
-                list.add(ingredient);
+                if (ingredient instanceof IntCircuitIngredient) {
+                    list.add(0, ingredient);
+                } else if (ingredient instanceof SizedIngredient sized && sized.getInner() instanceof IntCircuitIngredient) {
+                    list.add(0, ingredient);
+                } else {
+                    list.add(ingredient);
+                }
             } else if (item instanceof ItemStack stack) {
                 boolean isEqual = false;
                 for (Object obj : list) {

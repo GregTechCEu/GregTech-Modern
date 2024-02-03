@@ -20,6 +20,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -29,6 +30,7 @@ public class GTRecipeLookup {
 
     @Getter
     private final Branch lookup = new Branch();
+    private static final WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> ingredientRoot = new WeakHashMap<>();
 
     /**
      * Finds a GTRecipe matching the Fluid and/or ItemStack Inputs.
@@ -512,8 +514,7 @@ public class GTRecipeLookup {
      * @return the correct nodes for the ingredient
      */
     @NotNull
-    protected static Map<AbstractMapIngredient, Either<GTRecipe, Branch>> determineRootNodes(@NotNull AbstractMapIngredient ingredient,
-                                                                                           @NotNull Branch branchMap) {
+    protected static Map<AbstractMapIngredient, Either<GTRecipe, Branch>> determineRootNodes(@NotNull AbstractMapIngredient ingredient, @NotNull Branch branchMap) {
         return ingredient.isSpecialIngredient() ? branchMap.getSpecialNodes() : branchMap.getNodes();
     }
 }
