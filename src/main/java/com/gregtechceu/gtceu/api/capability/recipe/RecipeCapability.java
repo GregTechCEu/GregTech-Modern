@@ -2,17 +2,20 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
+import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Used to detect whether a machine has a certain capability.
  */
-public class RecipeCapability<T> {
+public abstract class RecipeCapability<T> {
 
     public final String name;
     public final int color;
@@ -48,6 +51,12 @@ public class RecipeCapability<T> {
     @SuppressWarnings("unchecked")
     public final T copyContent(Object content, ContentModifier modifier) {
         return copyWithModifier((T) content, modifier);
+    }
+
+    public abstract List<AbstractMapIngredient> convertToMapIngredient(Object ingredient);
+
+    public List<T> compressIngredients(Collection<Object> ingredients) {
+        return (List<T>) new ArrayList<>(ingredients);
     }
 
     /**

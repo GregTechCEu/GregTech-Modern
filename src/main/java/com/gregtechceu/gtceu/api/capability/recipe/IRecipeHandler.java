@@ -37,6 +37,15 @@ public interface IRecipeHandler<K> {
     }
 
     /**
+     * container size, if it has one. otherwise -1.
+     */
+    default int getSize() {
+        return -1;
+    }
+
+    List<K> getStuff();
+
+    /**
      * Whether the content of same capability  can only be handled distinct.
      */
     default boolean isDistinct() {

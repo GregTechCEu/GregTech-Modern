@@ -106,7 +106,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     @Override
-    public @NotNull RecipeType<?> getType() {
+    public @NotNull GTRecipeType getType() {
         return recipeType;
     }
 

@@ -47,6 +47,20 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
     }
 
     @Override
+    public List<Long> getStuff() {
+        List<FluidStack> tankContents = new ArrayList<>();
+        for (int i = 0; i < steamTank.getTanks(); ++i) {
+            FluidStack stack = steamTank.getFluidInTank(i);
+            if (!stack.isEmpty()) {
+                tankContents.add(stack);
+            }
+        }
+        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        long realSum = (long) Math.ceil(sum * conversionRate);
+        return List.of(realSum);
+    }
+
+    @Override
     public RecipeCapability<Long> getCapability() {
         return EURecipeCapability.CAP;
     }

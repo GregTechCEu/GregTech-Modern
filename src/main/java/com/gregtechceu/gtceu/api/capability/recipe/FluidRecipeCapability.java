@@ -3,7 +3,12 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
+import java.util.Collection;
+import java.util.List;
 
 /**
  * @author KilaBash
@@ -31,4 +36,28 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         return copy;
     }
 
+    @Override
+    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
+        return MapFluidIngredient.from((FluidIngredient) ingredient);
+    }
+
+    @Override
+    public List<FluidIngredient> compressIngredients(Collection<Object> ingredients) {
+        List<FluidIngredient> list = new ObjectArrayList<>(ingredients.size());
+        for (Object item : ingredients) {
+            if (item instanceof FluidIngredient fluid) {
+                boolean isEqual = false;
+                for (FluidIngredient obj : list) {
+                    if (item.equals(obj)) {
+                        isEqual = true;
+                        break;
+                    }
+                }
+                if (isEqual) continue;
+                list.add(fluid);
+
+            }
+        }
+        return list;
+    }
 }

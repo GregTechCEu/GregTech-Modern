@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.ItemRecipeHandler;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
@@ -329,7 +330,10 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
 
         var matches = machine.getRecipeType().searchRecipe(getRecipeManager(), this);
 
-        for (var match : matches) {
+        while (matches != null && matches.hasNext()) {
+            GTRecipe match = matches.next();
+            if (match == null) continue;
+
             var eut = RecipeHelper.getInputEUt(match);
             if (GTUtil.getTierByVoltage(eut)<= getVoltageTier()) {
                 if (match.handleRecipeIO(IO.OUT, this)) {

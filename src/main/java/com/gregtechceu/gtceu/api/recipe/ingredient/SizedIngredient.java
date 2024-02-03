@@ -119,6 +119,25 @@ public class SizedIngredient extends Ingredient {
         return inner.isEmpty();
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof SizedIngredient that))
+            return false;
+
+        if (amount != that.amount)
+            return false;
+        return Arrays.stream(itemStacks).noneMatch(stack -> Arrays.stream(that.itemStacks).anyMatch(stack1 -> ItemStack.isSameItemSameTags(stack, stack1)));
+    }
+
+    @Override
+    public int hashCode() {
+        int result = amount;
+        result = 31 * result + Arrays.hashCode(itemStacks);
+        return result;
+    }
+
     public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {
         @Override
         public @NotNull SizedIngredient parse(FriendlyByteBuf buffer) {

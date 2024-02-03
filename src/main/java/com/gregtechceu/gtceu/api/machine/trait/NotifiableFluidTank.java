@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
@@ -15,9 +16,12 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -160,6 +164,23 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     public int getTanks() {
         return storages.length;
+    }
+
+    @Override
+    public int getSize() {
+        return getTanks();
+    }
+
+    @Override
+    public List<FluidIngredient> getStuff() {
+        List<FluidIngredient> ingredients = new ArrayList<>();
+        for (int i = 0; i < getTanks(); ++i) {
+            FluidStack stack = getFluidInTank(i);
+            if (!stack.isEmpty()) {
+                ingredients.add(FluidIngredient.of(stack));
+            }
+        }
+        return ingredients;
     }
 
     public boolean isEmpty() {

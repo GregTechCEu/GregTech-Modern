@@ -40,6 +40,7 @@
     "SidedRedstoneConnectivityMixin",
     "TagLoaderMixin",
     "TagManagerMixin",
+    "TagValueAccessor",
     "WorldLoaderPackConfigMixin",
     "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",

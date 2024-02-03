@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait {
     @Getter
@@ -42,6 +43,11 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
             if (left.isEmpty()) return null;
         }
         return left;
+    }
+
+    @Override
+    public List<Ingredient> getStuff() {
+        return handlers.stream().flatMap(handler -> handler.getStuff().stream()).collect(Collectors.toList());
     }
 
     @Override
