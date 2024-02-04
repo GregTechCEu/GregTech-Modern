@@ -70,6 +70,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
         // layout
         var size = new Size(Math.max(172, mainPage.getSize().width + border * 2), Math.max(86, mainPage.getSize().height + border * 2));
+        setSize(new Size(size.width, size.height + (playerInventory == null ? 0 : playerInventory.getSize().height)));
         if (LDLib.isRemote() && getGui() != null) {
             getGui().setSize(getSize().width, getSize().height);
         }
@@ -77,6 +78,9 @@ public class FancyMachineUIWidget extends WidgetGroup {
         this.sideTabsWidget.setSize(new Size(24, size.height));
         this.pageContainer.setSize(size);
         this.tooltipsPanel.setSelfPosition(new Position(size.width + 2, 2));
+        if (this.playerInventory != null) {
+            this.playerInventory.setSelfPosition(new Position((size.width - playerInventory.getSize().width) / 2, size.height));
+        }
 
         // setup
         this.pageContainer.addWidget(mainPage);
