@@ -26,15 +26,15 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
     private static final IGuiTexture TEXTURE_OFF = new GuiTextureGroup(
         GuiTextures.VANILLA_BUTTON,
-        GuiTextures.BUTTON_IO_CONFIG_FLUID_MODES.getSubTexture(0, 0, 1, 1/3f)
+        GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 0, 1, 1/3f)
     );
     private static final IGuiTexture TEXTURE_OUTPUT = new GuiTextureGroup(
         GuiTextures.VANILLA_BUTTON,
-        GuiTextures.BUTTON_IO_CONFIG_FLUID_MODES.getSubTexture(0, 1/3f, 1, 1/3f)
+        GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 1/3f, 1, 1/3f)
     );
     private static final IGuiTexture TEXTURE_AUTO = new GuiTextureGroup(
         GuiTextures.VANILLA_BUTTON,
-        GuiTextures.BUTTON_IO_CONFIG_FLUID_MODES.getSubTexture(0, 2/3f, 1, 1/3f)
+        GuiTextures.IO_CONFIG_FLUID_MODES_BUTTON.getSubTexture(0, 2/3f, 1, 1/3f)
     );
 
     private final IAutoOutputFluid machine;
@@ -47,9 +47,9 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
 
     @Override
     public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIWidget machineUI) {
-        WidgetGroup group = new WidgetGroup(0, 0, (16 * 2) + 1, 16);
+        WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
 
-        group.addWidget(ioModeButton = new ButtonWidget(0, 0, 16, 16, this::onIOModePressed) {
+        group.addWidget(ioModeButton = new ButtonWidget(0, 0, 18, 18, this::onIOModePressed) {
             @Override
             public void updateScreen() {
                 super.updateScreen();
@@ -66,7 +66,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
         });
 
         group.addWidget(new ToggleButtonWidget(
-            17, 0, 16, 16, GuiTextures.BUTTON_FLUID_OUTPUT,
+            19, 0, 18, 18, GuiTextures.BUTTON_FLUID_OUTPUT,
             machine::isAllowInputFromOutputSideFluids, machine::setAllowInputFromOutputSideFluids
         ).setShouldUseBaseBackground().setTooltipText("gtceu.gui.fluid_auto_output.allow_input"));
 

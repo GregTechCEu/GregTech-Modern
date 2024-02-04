@@ -89,8 +89,10 @@ public class GuiTextures {
     public static final ResourceTexture ENERGY_DETECTOR_COVER_MODE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_energy_mode.png");
     public static final ResourceTexture INVERT_REDSTONE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_inverted.png");
 
-    public static final ResourceTexture BUTTON_IO_CONFIG_FLUID_MODES = new ResourceTexture("gtceu:textures/gui/icon/io_config/output-config-fluid-modes.png");
-    public static final ResourceTexture BUTTON_IO_CONFIG_ITEM_MODES = new ResourceTexture("gtceu:textures/gui/icon/io_config/output-config-item-modes.png");
+    public static final ResourceTexture IO_CONFIG_FLUID_MODES_BUTTON = new ResourceTexture("gtceu:textures/gui/icon/io_config/output_config_fluid_modes.png");
+    public static final ResourceTexture IO_CONFIG_ITEM_MODES_BUTTON = new ResourceTexture("gtceu:textures/gui/icon/io_config/output_config_item_modes.png");
+    public static final ResourceTexture IO_CONFIG_COVER_SLOT_OVERLAY = new ResourceTexture("gtceu:textures/gui/icon/io_config/cover_slot_overlay.png");
+    public static final ResourceTexture IO_CONFIG_COVER_SETTINGS = new ResourceTexture("gtceu:textures/gui/icon/io_config/cover_settings.png");
 
     //INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png");

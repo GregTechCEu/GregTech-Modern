@@ -12,8 +12,6 @@ import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandle
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.texture.ColorBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -35,9 +33,7 @@ import java.awt.*;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CoverableConfigHandler implements IDirectionalConfigHandler {
-    private static final int UPDATE_CLIENT_ID = 0x0001_0001;
-
-    private static final IGuiTexture CONFIG_BTN_TEXTURE = GuiTextures.TOOL_COVER_SETTINGS;
+    private static final IGuiTexture CONFIG_BTN_TEXTURE = new GuiTextureGroup(GuiTextures.IO_CONFIG_COVER_SETTINGS);
 
     private final ICoverable machine;
     private ItemStackTransfer transfer;
@@ -78,8 +74,8 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
 
         group.addWidget(slotWidget = new SlotWidget(transfer, 0, 19, 0)
             .setChangeListener(this::coverItemChanged)
-            .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
-        group.addWidget(new PredicatedButtonWidget(2, 2, 14, 14, CONFIG_BTN_TEXTURE, this::toggleConfigTab)
+            .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY)));
+        group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BTN_TEXTURE, this::toggleConfigTab)
             .setPredicate(() -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
 
         checkCoverBehaviour();
