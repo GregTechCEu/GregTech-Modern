@@ -37,7 +37,7 @@ import java.awt.*;
 public class CoverableConfigHandler implements IDirectionalConfigHandler {
     private static final int UPDATE_CLIENT_ID = 0x0001_0001;
 
-    private static final IGuiTexture CONFIG_BTN_TEXTURE = new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, GuiTextures.TOOL_COVER_SETTINGS);
+    private static final IGuiTexture CONFIG_BTN_TEXTURE = GuiTextures.TOOL_COVER_SETTINGS;
 
     private final ICoverable machine;
     private ItemStackTransfer transfer;
@@ -79,7 +79,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         group.addWidget(slotWidget = new SlotWidget(transfer, 0, 19, 0)
             .setChangeListener(this::coverItemChanged)
             .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
-        group.addWidget(new PredicatedButtonWidget(1, 1, 16, 16, CONFIG_BTN_TEXTURE, this::toggleConfigTab)
+        group.addWidget(new PredicatedButtonWidget(2, 2, 14, 14, CONFIG_BTN_TEXTURE, this::toggleConfigTab)
             .setPredicate(() -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
 
         checkCoverBehaviour();
@@ -186,16 +186,20 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         this.coverConfigurator.setGui(this.panel.getGui());
         this.panel.addWidget(this.coverConfigurator);
         this.panel.expandTab(this.coverConfigurator);
+
+        coverConfigurator.onClose(() -> {
+            if (coverConfigurator != null) {
+                this.panel.removeWidget(this.coverConfigurator);
+            }
+
+            this.coverConfigurator = null;
+        });
     }
 
     private void closeConfigTab() {
-        if (this.coverConfigurator == null)
-            return;
-
-        this.panel.collapseTab();
-        this.coverConfigurator.collapseTo(18, 30);
-        this.panel.removeWidget(this.coverConfigurator);
-        this.coverConfigurator = null;
+        if (this.coverConfigurator != null) {
+            this.panel.collapseTab();
+        }
     }
 
     @Override

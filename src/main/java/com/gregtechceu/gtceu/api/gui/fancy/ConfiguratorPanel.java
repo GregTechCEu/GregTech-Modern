@@ -393,6 +393,7 @@ public class ConfiguratorPanel extends WidgetGroup {
     }
 
     public class FloatingTab extends Tab {
+        protected Runnable closeCallback = () -> {};
 
         public FloatingTab(IFancyConfigurator configurator) {
             super(configurator);
@@ -403,6 +404,11 @@ public class ConfiguratorPanel extends WidgetGroup {
         public void collapseTo(int x, int y) {
             super.collapseTo(x, y);
             ConfiguratorPanel.this.removeWidget(this);
+            closeCallback.run();
+        }
+
+        public void onClose(Runnable closeCallback) {
+            this.closeCallback = closeCallback;
         }
     }
 
