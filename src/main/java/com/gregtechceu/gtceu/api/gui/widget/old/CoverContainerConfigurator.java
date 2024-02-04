@@ -1,10 +1,11 @@
-package com.gregtechceu.gtceu.api.gui.widget;
+package com.gregtechceu.gtceu.api.gui.widget.old;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.gui.widget.CoverConfigurator;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;

@@ -1,6 +1,7 @@
-package com.gregtechceu.gtceu.api.gui.widget;
+package com.gregtechceu.gtceu.api.gui.widget.old;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;

@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.*;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
-import com.gregtechceu.gtceu.api.machine.fancyconfigurator.AutoOutputFancyConfigurator;
+import com.gregtechceu.gtceu.api.gui.widget.directional.CombinedDirectionalConfigurator;
+import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CombinedDirectionalFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.MachineModeFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.OverclockFancyConfigurator;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -16,7 +16,6 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
-import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -102,10 +101,9 @@ public interface IFancyUIMachine extends IUIMachine, IFancyUIProvider {
         if (this instanceof IRecipeLogicMachine rLMachine && rLMachine.getRecipeTypes().length > 1) {
             sideTabs.attachSubTab(new MachineModeFancyConfigurator(rLMachine));
         }
-        sideTabs.attachSubTab(self().getCoverContainer());
-        if (this instanceof IAutoOutputItem || this instanceof IAutoOutputFluid) {
-            sideTabs.attachSubTab(new AutoOutputFancyConfigurator(self()));
-        }
+        var directionalConfigurator = CombinedDirectionalFancyConfigurator.of(self(), self());
+        if (directionalConfigurator != null)
+            sideTabs.attachSubTab(directionalConfigurator);
     }
 
     @Override

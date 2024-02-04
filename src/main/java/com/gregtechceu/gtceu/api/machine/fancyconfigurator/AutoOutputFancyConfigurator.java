@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.widget.AutoOutputConfigurator;
+import com.gregtechceu.gtceu.api.gui.widget.old.AutoOutputConfigurator;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

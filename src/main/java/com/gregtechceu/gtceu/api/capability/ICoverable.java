@@ -6,17 +6,14 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.widget.CoverContainerConfigurator;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.gui.widget.old.CoverContainerConfigurator;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -41,7 +38,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProvider {
+public interface ICoverable extends ITickSubscription, IAppearance {
 
     Level getLevel();
 
@@ -269,24 +266,5 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyUIProv
             return getCoverAtSide(side).getAppearance(sourceState, sourcePos);
         }
         return null;
-    }
-
-    //////////////////////////////////////
-    //*********    Fancy Gui   *********//
-    //////////////////////////////////////
-
-    @Override
-    default Component getTitle() {
-        return Component.translatable("gtceu.gui.cover_setting.title");
-    }
-
-    @Override
-    default IGuiTexture getTabIcon() {
-        return GuiTextures.TOOL_COVER_SETTINGS;
-    }
-
-    @Override
-    default Widget createMainPage(FancyMachineUIWidget widget) {
-        return new CoverContainerConfigurator(this, widget.getConfiguratorPanel());
     }
 }

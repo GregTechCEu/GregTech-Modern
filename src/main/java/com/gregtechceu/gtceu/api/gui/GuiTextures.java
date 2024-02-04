@@ -89,6 +89,9 @@ public class GuiTextures {
     public static final ResourceTexture ENERGY_DETECTOR_COVER_MODE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_energy_mode.png");
     public static final ResourceTexture INVERT_REDSTONE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_inverted.png");
 
+    public static final ResourceTexture BUTTON_IO_CONFIG_FLUID_MODES = new ResourceTexture("gtceu:textures/gui/icon/io_config/output-config-fluid-modes.png");
+    public static final ResourceTexture BUTTON_IO_CONFIG_ITEM_MODES = new ResourceTexture("gtceu:textures/gui/icon/io_config/output-config-item-modes.png");
+
     //INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png");
     public static final SteamTexture INDICATOR_NO_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/indicator_no_steam_%s.png");
