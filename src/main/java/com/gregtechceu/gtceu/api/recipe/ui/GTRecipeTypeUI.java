@@ -158,14 +158,18 @@ public class GTRecipeTypeUI {
                 return group;
             }
 
-            WidgetGroup inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
-            WidgetGroup outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
-            WidgetGroup group = new WidgetGroup(new Position(0, 0));
+            var inputs = addInventorySlotGroup(false, isSteam, isHighPressure);
+            var outputs = addInventorySlotGroup(true, isSteam, isHighPressure);
+            var maxWidth = Math.max(inputs.getSize().width, outputs.getSize().width);
+            var group = new WidgetGroup(0, 0, 2 * maxWidth + 40, Math.max(inputs.getSize().height, outputs.getSize().height));
+            var size = group.getSize();
 
+            inputs.addSelfPosition(maxWidth -inputs.getSize().width , (size.height - inputs.getSize().height) / 2);
+            outputs.addSelfPosition(maxWidth + 40, (size.height - outputs.getSize().height) / 2);
             group.addWidget(inputs);
             group.addWidget(outputs);
 
-            ProgressWidget progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, 78, 23, 20, 20, progressBarTexture);
+            var progressWidget = new ProgressWidget(ProgressWidget.JEIProgress, maxWidth + 10, size.height / 2 - 10, 20, 20, progressBarTexture);
             progressWidget.setId("progress");
             group.addWidget(progressWidget);
 
@@ -175,7 +179,6 @@ public class GTRecipeTypeUI {
                 .setFillDirection(steamMoveType)
                 : progressBarTexture);
 
-            group.setSize(new Size(Math.max(group.getSize().width, 176), group.getSize().height));
             return group;
         }, (template, recipeHolder) -> {
             var isJEI = recipeHolder.progressSupplier == ProgressWidget.JEIProgress;
@@ -246,56 +249,29 @@ public class GTRecipeTypeUI {
     }
 
     protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
-        var itemCountOriginal = isOutputs ? recipeType.getMaxOutputs(ItemRecipeCapability.CAP) : recipeType.getMaxInputs(ItemRecipeCapability.CAP);
-        var fluidCountOriginal = isOutputs ? recipeType.getMaxOutputs(FluidRecipeCapability.CAP) : recipeType.getMaxInputs(FluidRecipeCapability.CAP);
-        int itemCount = itemCountOriginal;
-        int fluidCount = fluidCountOriginal;
-        boolean invertFluids = false;
-        if (itemCount == 0) {
-            int tmp = itemCount;
-            itemCount = fluidCount;
-            fluidCount = tmp;
-            invertFluids = true;
+        var itemCount = isOutputs ? recipeType.getMaxOutputs(ItemRecipeCapability.CAP) : recipeType.getMaxInputs(ItemRecipeCapability.CAP);
+        var fluidCount = isOutputs ? recipeType.getMaxOutputs(FluidRecipeCapability.CAP) : recipeType.getMaxInputs(FluidRecipeCapability.CAP);
+        var sum = itemCount + fluidCount;
+        WidgetGroup group = new WidgetGroup(0, 0, Math.min(sum, 3) * 18 + 8, ((sum + 2) / 3) * 18 + 8);
+        int index = 0;
+        for (int slotIndex = 0; slotIndex < itemCount; slotIndex++) {
+            var slot = new SlotWidget();
+            slot.initTemplate();
+            slot.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
+            slot.setBackground(getOverlaysForSlot(isOutputs, false, slotIndex == itemCount - 1, isSteam, isHighPressure));
+            slot.setId(ItemRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
+            group.addWidget(slot);
+            index++;
         }
-        int[] inputSlotGrid = determineSlotsGrid(itemCount);
-        int itemSlotsToLeft = inputSlotGrid[0];
-        int itemSlotsToDown = inputSlotGrid[1];
-        int startInputsX = isOutputs ? 106 : 70 - itemSlotsToLeft * 18;
-        int startInputsY = 33 - (int) (itemSlotsToDown / 2.0 * 18);
-        boolean wasGroup = itemCountOriginal + fluidCountOriginal == 12;
-        if (wasGroup) startInputsY -= 9;
-        else if (itemCountOriginal >= 6 && fluidCountOriginal >= 2 && !isOutputs) startInputsY -= 9;
-
-        WidgetGroup group = new WidgetGroup(new Position(startInputsX, startInputsY));
-
-        int count = invertFluids ? fluidCountOriginal : itemCountOriginal;
-        for (int i = 0; i < itemSlotsToDown; i++) {
-            for (int j = 0; j < itemSlotsToLeft; j++) {
-                int slotIndex = i * itemSlotsToLeft + j;
-                if (slotIndex >= itemCount) break;
-                int x = 18 * j;
-                int y = 18 * i;
-                addSlot(group, x, y, slotIndex, count, invertFluids, isOutputs, isSteam, isHighPressure);
-            }
-        }
-        int offset = wasGroup ? 2 : 0;
-        if (fluidCount > 0 || invertFluids) {
-            count = invertFluids ? itemCountOriginal : fluidCountOriginal;
-            if (itemSlotsToDown >= fluidCount && itemSlotsToLeft < 3) {
-                int startSpecX = isOutputs ? itemSlotsToLeft * 18 : -18;
-                for (int i = 0; i < fluidCount; i++) {
-                    int y = offset + 18 * i;
-                    addSlot(group, startSpecX, y, i, count, !invertFluids, isOutputs, isSteam, isHighPressure);
-                }
-            } else {
-                int startSpecY = itemSlotsToDown * 18;
-                for (int i = 0; i < fluidCount; i++) {
-                    int x = isOutputs ? 18 * (i % 3) :
-                        itemSlotsToLeft * 18 - 18 - 18 * (i % 3);
-                    int y = startSpecY + (i / 3) * 18;
-                    addSlot(group, x, y, i, count, !invertFluids, isOutputs, isSteam, isHighPressure);
-                }
-            }
+        for (int i = 0; i < fluidCount; i++) {
+            var tank = new TankWidget();
+            tank.initTemplate();
+            tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
+            tank.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
+            tank.setBackground(getOverlaysForSlot(isOutputs, true, i == fluidCount - 1, isSteam, isHighPressure));
+            tank.setId(FluidRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, i));
+            group.addWidget(tank);
+            index++;
         }
         return group;
     }
