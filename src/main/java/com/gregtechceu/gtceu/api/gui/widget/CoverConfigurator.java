@@ -24,10 +24,6 @@ import javax.annotation.Nullable;
 @AllArgsConstructor
 public class CoverConfigurator implements IFancyConfigurator {
     protected final ICoverable coverable;
-    protected final IItemTransfer transfer;
-    protected final ConfiguratorPanel panel;
-    protected final SceneWidget sceneWidget;
-    protected final SlotWidget slotWidget;
     // runtime
     @Nullable
     protected final Direction side;
