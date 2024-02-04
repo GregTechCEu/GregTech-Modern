@@ -164,8 +164,8 @@ public class GTRecipeTypeUI {
             var group = new WidgetGroup(0, 0, 2 * maxWidth + 40, Math.max(inputs.getSize().height, outputs.getSize().height));
             var size = group.getSize();
 
-            inputs.addSelfPosition(maxWidth -inputs.getSize().width , (size.height - inputs.getSize().height) / 2);
-            outputs.addSelfPosition(maxWidth + 40, (size.height - outputs.getSize().height) / 2);
+            inputs.addSelfPosition((maxWidth -inputs.getSize().width) / 2, (size.height - inputs.getSize().height) / 2);
+            outputs.addSelfPosition(maxWidth + 40 + (maxWidth - outputs.getSize().width) / 2, (size.height - outputs.getSize().height) / 2);
             group.addWidget(inputs);
             group.addWidget(outputs);
 
@@ -251,8 +251,11 @@ public class GTRecipeTypeUI {
     protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
         var itemCount = isOutputs ? recipeType.getMaxOutputs(ItemRecipeCapability.CAP) : recipeType.getMaxInputs(ItemRecipeCapability.CAP);
         var fluidCount = isOutputs ? recipeType.getMaxOutputs(FluidRecipeCapability.CAP) : recipeType.getMaxInputs(FluidRecipeCapability.CAP);
-        var sum = itemCount + fluidCount;
-        WidgetGroup group = new WidgetGroup(0, 0, Math.min(sum, 3) * 18 + 8, ((sum + 2) / 3) * 18 + 8);
+        var itemR = (itemCount + 2) / 3;
+        var fluidR = (fluidCount + 2) / 3;
+        var itemC = Math.min(itemCount, 3);
+        var fluidC = Math.min(fluidCount, 3);
+        WidgetGroup group = new WidgetGroup(0, 0, Math.max(itemC, fluidC) * 18 + 8, (itemR + fluidR) * 18 + 8);
         int index = 0;
         for (int slotIndex = 0; slotIndex < itemCount; slotIndex++) {
             var slot = new SlotWidget();
@@ -263,6 +266,8 @@ public class GTRecipeTypeUI {
             group.addWidget(slot);
             index++;
         }
+        // move to new row
+        index += (3 - (index % 3)) % 3;
         for (int i = 0; i < fluidCount; i++) {
             var tank = new TankWidget();
             tank.initTemplate();
