@@ -106,7 +106,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
             machine.setOutputFacingFluids(side);
             machine.setAutoOutputFluids(false);
         } else {
-            machine.setAutoOutputFluids(machine.isAutoOutputFluids());
+            machine.setAutoOutputFluids(!machine.isAutoOutputFluids());
         }
     }
 
