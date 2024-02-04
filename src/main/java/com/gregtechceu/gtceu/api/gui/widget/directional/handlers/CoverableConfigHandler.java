@@ -7,27 +7,37 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.widget.CoverConfigurator;
+import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.lowdragmc.lowdraglib.gui.texture.ColorBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
+import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
+import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.utils.Position;
+import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.awt.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class CoverableConfigHandler implements IDirectionalConfigHandler {
     private static final int UPDATE_CLIENT_ID = 0x0001_0001;
+
+    private static final IGuiTexture CONFIG_BTN_TEXTURE = new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, GuiTextures.TOOL_COVER_SETTINGS);
 
     private final ICoverable machine;
     private ItemStackTransfer transfer;
@@ -37,10 +47,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     private ConfiguratorPanel.FloatingTab coverConfigurator;
 
     private SlotWidget slotWidget;
-    private ButtonWidget buttonWidget;
-
     private CoverBehavior coverBehavior;
-    private boolean needsUpdate;
 
     public CoverableConfigHandler(ICoverable machine) {
         this.machine = machine;
@@ -66,23 +73,23 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
 
     @Override
     public Widget getSideSelectorWidget(SceneWidget scene, FancyMachineUIWidget machineUI) {
-        WidgetGroup group = new CoverConfigWidgetGroup((18 * 2) + 1, 18);
-
+        WidgetGroup group = new WidgetGroup(0, 0, (18 * 2) + 1, 18);
         this.panel = machineUI.getConfiguratorPanel();
-        this.slotWidget = new SlotWidget(transfer, 0, 19, 0)
+
+        group.addWidget(slotWidget = new SlotWidget(transfer, 0, 19, 0)
             .setChangeListener(this::coverItemChanged)
-            .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY));
-        this.buttonWidget = new ButtonWidget(0, 0, 18, 18, GuiTextures.VANILLA_BUTTON, this::toggleConfigTab);
+            .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.FILTER_SLOT_OVERLAY)));
+        group.addWidget(new PredicatedButtonWidget(1, 1, 16, 16, CONFIG_BTN_TEXTURE, this::toggleConfigTab)
+            .setPredicate(() -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
 
-        updateWidgetVisibility();
-
-        group.addWidget(slotWidget);
-        group.addWidget(buttonWidget);
+        checkCoverBehaviour();
 
         return group;
     }
 
     private void coverItemChanged() {
+        closeConfigTab();
+
         if (!(panel.getGui().entityPlayer instanceof ServerPlayer serverPlayer) || side == null)
             return;
 
@@ -108,32 +115,30 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     @Override
     public void onSideSelected(BlockPos pos, Direction side) {
         this.side = side;
-        updateWidgetVisibility();
         checkCoverBehaviour();
+        closeConfigTab();
     }
 
     private void updateWidgetVisibility() {
         var sideSelected = this.side != null;
         slotWidget.setVisible(sideSelected);
         slotWidget.setActive(sideSelected);
-
-        var coverPresent = sideSelected && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover;
-        buttonWidget.setVisible(coverPresent);
-        buttonWidget.setActive(coverPresent);
     }
 
-    public boolean checkCoverBehaviour() {
-        if (side != null) {
-            var coverBehaviour = machine.getCoverAtSide(side);
-            if (coverBehaviour != this.coverBehavior) {
-                this.coverBehavior = coverBehaviour;
-                var attachItem = coverBehaviour == null ? ItemStack.EMPTY : coverBehaviour.getAttachItem();
-                transfer.setStackInSlot(0, attachItem);
-                transfer.onContentsChanged(0);
-                return true;
-            }
+    public void checkCoverBehaviour() {
+        if (side == null)
+            return;
+
+        var coverBehaviour = machine.getCoverAtSide(side);
+        if (coverBehaviour != this.coverBehavior) {
+            this.coverBehavior = coverBehaviour;
+
+            var attachItem = coverBehaviour == null ? ItemStack.EMPTY : coverBehaviour.getAttachItem();
+            transfer.setStackInSlot(0, attachItem);
+            transfer.onContentsChanged(0);
         }
-        return false;
+
+        updateWidgetVisibility();
     }
 
     private void toggleConfigTab(ClickData cd) {
@@ -144,10 +149,41 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     }
 
     private void openConfigTab() {
-        CoverConfigurator configurator = new CoverConfigurator(this.machine, this.side, this.coverBehavior);
+        CoverConfigurator configurator = new CoverConfigurator(this.machine, this.side, this.coverBehavior) {
+            @Override
+            public Component getTitle() {
+                // Uses the widget's own title
+                return Component.empty();
+            }
+
+            @Override
+            public IGuiTexture getIcon() {
+                // TODO make a proper texture for this
+                return new TextTexture("x", Color.BLACK.getRGB());
+            }
+
+            @Override
+            public Widget createConfigurator() {
+                WidgetGroup group = new WidgetGroup(new Position(0, 0));
+
+                if (side == null || !(coverable.getCoverAtSide(side) instanceof IUICover iuiCover))
+                    return group;
+
+                Widget coverConfigurator = iuiCover.createUIWidget();
+                coverConfigurator.addSelfPosition(-1, -20);
+
+                group.addWidget(coverConfigurator);
+                group.setSize(new Size(
+                    Math.max(120, coverConfigurator.getSize().width),
+                    Math.max(80, coverConfigurator.getSize().height - 20)
+                ));
+
+                return group;
+            }
+        };
 
         this.coverConfigurator = this.panel.createFloatingTab(configurator);
-        this.coverConfigurator.setGui(panel.getGui());
+        this.coverConfigurator.setGui(this.panel.getGui());
         this.panel.addWidget(this.coverConfigurator);
         this.panel.expandTab(this.coverConfigurator);
     }
@@ -165,36 +201,5 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     @Override
     public ScreenSide getScreenSide() {
         return ScreenSide.RIGHT;
-    }
-
-
-    private class CoverConfigWidgetGroup extends WidgetGroup {
-        public CoverConfigWidgetGroup(int width, int height) {
-            super(0, 0, width, height);
-        }
-
-        @Override
-        public void updateScreen() {
-            super.updateScreen();
-            if (side != null && checkCoverBehaviour()) {
-                writeClientAction(UPDATE_CLIENT_ID, $ -> {});
-            }
-        }
-
-        @Override
-        public void detectAndSendChanges() {
-            super.detectAndSendChanges();
-            if (side != null && needsUpdate && checkCoverBehaviour()) {
-                needsUpdate = false;
-            }
-        }
-
-        @Override
-        public void handleClientAction(int id, FriendlyByteBuf buffer) {
-            switch (id) {
-                case UPDATE_CLIENT_ID -> needsUpdate = true;
-                default -> super.handleClientAction(id, buffer);
-            }
-        }
     }
 }
