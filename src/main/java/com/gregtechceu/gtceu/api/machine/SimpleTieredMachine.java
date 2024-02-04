@@ -355,8 +355,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
         WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
         SlotWidget batterySlot = createBatterySlot().createDefault();
-        batterySlot.setSelfPosition(new Position(template.getSize().width / 2 - 8, template.getSize().height - 8));
-        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width, template.getSize().height + 8);
+        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width, Math.max(template.getSize().height, 78));
+        template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
+        batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
         group.addWidget(batterySlot);
         group.addWidget(template);
 
