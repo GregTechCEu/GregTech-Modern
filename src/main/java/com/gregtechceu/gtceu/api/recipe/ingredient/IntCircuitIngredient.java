@@ -5,6 +5,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
@@ -36,6 +37,7 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     }
 
     private final int configuration;
+    private ItemStack[] stacks;
 
     protected IntCircuitIngredient(int configuration) {
         super(IntCircuitBehaviour.stack(configuration));
@@ -46,6 +48,14 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     public boolean test(@Nullable ItemStack stack) {
         if (stack == null) return false;
         return stack.is(GTItems.INTEGRATED_CIRCUIT.get()) && IntCircuitBehaviour.getCircuitConfiguration(stack) == this.configuration;
+    }
+
+    @Override
+    public ItemStack[] getItems() {
+        if (stacks == null) {
+            stacks = new ItemStack[]{((StrictNBTIngredientAccessor) this).getStack()};
+        }
+        return stacks;
     }
 
     public IntCircuitIngredient copy() {

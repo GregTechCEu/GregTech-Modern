@@ -178,7 +178,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 }
             }
             RecipeCapability<?> capability = entry.getKey();
-            content = content.stream().map(capability::copyContent).toList();
+            List newContent = new ArrayList();
+            for (Object cont : content) {
+                newContent.add(capability.copyContent(cont));
+            }
+            content = newContent;
             if (content.isEmpty() && contentSlot.isEmpty()) continue;
             if (content.isEmpty()) content = null;
 

@@ -2,8 +2,10 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 public class IngredientEquality {
 
@@ -21,6 +23,14 @@ public class IngredientEquality {
     }
 
     private static boolean cmp(Ingredient first, Ingredient second) {
+        if (first == second) return true;
+
+        if (first instanceof StrictNBTIngredient strict1) {
+            if (second instanceof StrictNBTIngredientAccessor strict2) {
+                return strict1.test(strict2.getStack());
+            }
+        }
+
         if (((IngredientAccessor)first).getValues().length != ((IngredientAccessor)second).getValues().length) return false;
         for (Ingredient.Value value1 : ((IngredientAccessor)first).getValues()) {
             for (Ingredient.Value value2 : ((IngredientAccessor)second).getValues()) {

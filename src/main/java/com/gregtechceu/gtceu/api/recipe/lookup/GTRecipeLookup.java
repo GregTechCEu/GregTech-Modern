@@ -20,7 +20,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -30,10 +29,9 @@ public class GTRecipeLookup {
 
     @Getter
     private final Branch lookup = new Branch();
-    private static final WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> ingredientRoot = new WeakHashMap<>();
 
     /**
-     * Finds a GTRecipe matching the Fluid and/or ItemStack Inputs.
+     * Finds a GTRecipe matching the Fluid and/or ItemStack Inputs in the holder.
      *
      * @return the GTRecipe it has found or null for no matching GTRecipe
      */
@@ -54,17 +52,18 @@ public class GTRecipeLookup {
         int totalSize = 0;
         for (Map.Entry<RecipeCapability<?>, List<IRecipeHandler<?>>> entries : holder.getCapabilitiesProxy().row(IO.IN).entrySet()) {
             int size = 0;
+            if (!entries.getKey().isRecipeSearchFilter()) {
+                continue;
+            }
             for (IRecipeHandler<?> entry : entries.getValue()) {
                 if (entry.getSize() != -1) {
                     size += entry.getSize();
-                    totalSize += entry.getSize();
-                } else {
-                    break;
                 }
             }
             if (size == Integer.MAX_VALUE) {
                 return null;
             }
+            totalSize += size;
         }
         if (totalSize == 0) {
             return null;
@@ -354,13 +353,27 @@ public class GTRecipeLookup {
     protected List<List<AbstractMapIngredient>> fromRecipe(@NotNull GTRecipe r) {
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(r.inputs.values().size());
         r.inputs.forEach((cap, contents) -> {
-            if (cap.isRecipeSearchFilter()) {
-                list.addAll(cap.compressIngredients(contents.stream().map(Content::getContent).toList()).stream().map(cap::convertToMapIngredient).toList());
+            if (cap.isRecipeSearchFilter() && !contents.isEmpty()) {
+                List<Object> ingredients = new ArrayList<>();
+                for (Content content : contents) {
+                    ingredients.add(content.getContent());
+                }
+                ingredients = cap.compressIngredients(ingredients);
+                for (Object ingredient : ingredients) {
+                    list.add(cap.convertToMapIngredient(ingredient));
+                }
             }
         });
         r.tickInputs.forEach((cap, contents) -> {
-            if (cap.isRecipeSearchFilter()) {
-                list.addAll(cap.compressIngredients(contents.stream().map(Content::getContent).toList()).stream().map(cap::convertToMapIngredient).toList());
+            if (cap.isRecipeSearchFilter() && !contents.isEmpty()) {
+                List<Object> ingredients = new ArrayList<>();
+                for (Content content : contents) {
+                    ingredients.add(content.getContent());
+                }
+                ingredients = cap.compressIngredients(ingredients);
+                for (Object ingredient : ingredients) {
+                    list.add(cap.convertToMapIngredient(ingredient));
+                }
             }
         });
         return list;
@@ -375,9 +388,15 @@ public class GTRecipeLookup {
     @NotNull
     protected List<List<AbstractMapIngredient>> fromHolder(@NotNull IRecipeCapabilityHolder r) {
         List<List<AbstractMapIngredient>> list = new ObjectArrayList<>(r.getCapabilitiesProxy().row(IO.IN).values().size());
-        r.getCapabilitiesProxy().row(IO.IN).forEach((cap, contents) -> {
-            if (cap.isRecipeSearchFilter()) {
-                list.addAll(cap.compressIngredients(contents.stream().map(IRecipeHandler::getContents).flatMap(List::stream).toList()).stream().map(cap::convertToMapIngredient).toList());
+        r.getCapabilitiesProxy().row(IO.IN).forEach((cap, handlers) -> {
+            if (cap.isRecipeSearchFilter() && !handlers.isEmpty()) {
+                for (IRecipeHandler<?> handler : handlers) {
+                    List<Object> compressed = cap.compressIngredients(handler.getContents());
+                    for (Object content : compressed) {
+                        List<AbstractMapIngredient> ingredients = cap.convertToMapIngredient(content);
+                        list.add(ingredients);
+                    }
+                }
             }
         });
         return list;
