@@ -3,10 +3,8 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.material.Fluid;
 import org.jetbrains.annotations.NotNull;
 
@@ -36,7 +34,7 @@ public class MapFluidIngredient extends AbstractMapIngredient {
     protected int hash() {
         // the Fluid registered to the fluidName on game load might not be the same Fluid after loading the world, but
         // will still have the same fluidName.
-        int hash = 31 + BuiltInRegistries.FLUID.getKey(fluid).hashCode();
+        int hash = 31 + Registry.FLUID.getKey(fluid).hashCode();
         if (tag != null) {
             return 31 * hash + tag.hashCode();
         }
@@ -59,6 +57,6 @@ public class MapFluidIngredient extends AbstractMapIngredient {
     @Override
     public String toString() {
         return "MapFluidIngredient{" +
-                "{fluid=" + BuiltInRegistries.FLUID.getKey(fluid) + "} {tag=" + tag + "}";
+                "{fluid=" + Registry.FLUID.getKey(fluid) + "} {tag=" + tag + "}";
     }
 }

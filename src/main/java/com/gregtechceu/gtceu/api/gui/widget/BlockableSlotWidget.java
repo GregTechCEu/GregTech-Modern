@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.world.Container;
 import org.jetbrains.annotations.NotNull;
 
@@ -42,14 +43,14 @@ public class BlockableSlotWidget extends SlotWidget {
     }
 
     @Override
-    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawInBackground(@NotNull PoseStack graphics, int mouseX, int mouseY, float partialTicks) {
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
         if (isBlocked.getAsBoolean()) {
             Position pos = getPosition();
             Size size = getSize();
             RenderSystem.disableDepthTest();
             RenderSystem.colorMask(true, true, true, false);
-            graphics.fill(pos.getX() + 1, pos.getY() + 1,  pos.getX() + 1 + size.getWidth() - 2, pos.getY() + 1 + size.getHeight() - 2, OVERLAY_COLOR);
+            DrawerHelper.drawSolidRect(graphics, pos.getX() + 1, pos.getY() + 1, size.getWidth() - 2, size.getHeight() - 2, OVERLAY_COLOR);
             RenderSystem.colorMask(true, true, true, true);
             RenderSystem.enableDepthTest();
             RenderSystem.enableBlend();

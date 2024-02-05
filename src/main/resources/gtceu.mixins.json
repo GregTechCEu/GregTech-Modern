@@ -47,6 +47,7 @@
     "emi.EmiRecipeHandlerMixin",
     "emi.FluidEmiStackMixin",
     "jei.FluidHelperMixin",
+    "kjs.RecipeEventJSMixin",
     "rei.InputSlotCrafterMixin",
     "rei.RecipeFinderMixin",
     "top.ConfigMixin"

@@ -15,8 +15,7 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import mezz.jei.library.recipes.collect.RecipeMap;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
@@ -467,7 +466,7 @@ public class GTRecipeLookup {
                             if (ConfigHolder.INSTANCE.dev.debug || Platform.isDevEnv()) {
                                 GTCEu.LOGGER.warn(
                                     "Recipe duplicate or conflict found in GTRecipeType {} and was not added. See next lines for details",
-                                    BuiltInRegistries.RECIPE_TYPE.getKey(this.recipeType));
+                                    Registry.RECIPE_TYPE.getKey(this.recipeType));
 
                                 GTCEu.LOGGER.warn("Attempted to add GTRecipe: {}", recipe.getId());
 

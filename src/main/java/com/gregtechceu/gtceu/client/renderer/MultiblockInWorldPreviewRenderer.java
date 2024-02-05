@@ -71,7 +71,7 @@ public class MultiblockInWorldPreviewRenderer {
         List<RenderType> layers = RenderType.chunkBufferLayers();
         var buffers = new VertexBuffer[layers.size()];
         for (int j = 0; j < layers.size(); ++j) {
-            buffers[j] = new VertexBuffer(VertexBuffer.Usage.STATIC);
+            buffers[j] = new VertexBuffer();
         }
         return buffers;
     }

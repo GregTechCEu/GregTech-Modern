@@ -33,6 +33,8 @@ public class GregTechMixinPlugin implements IMixinConfigPlugin {
             return MixinPluginShared.isClassFound("dev.emi.emi.api.EmiPlugin");
         } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.RecipeManagerMixin")) {
             return !MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.KubeJSPlugin");
+        } else if (mixinClassName.contains("com.gregtechceu.gtceu.core.mixins.kjs")) {
+            return MixinPluginShared.isClassFound("dev.latvian.mods.kubejs.KubeJSPlugin");
         }
         return true;
     }
