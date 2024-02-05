@@ -19,6 +19,7 @@ import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,9 +59,9 @@ public class FluidBuilder {
     @Setter
     private int burnTime = -1;
 
-    @Getter
+    @Getter @Setter(onMethod_ = @ApiStatus.Internal)
     private ResourceLocation still = null;
-    @Getter
+    @Getter @Setter(onMethod_ = @ApiStatus.Internal)
     private ResourceLocation flowing = null;
     private boolean hasCustomStill = false;
     private boolean hasCustomFlowing = false;

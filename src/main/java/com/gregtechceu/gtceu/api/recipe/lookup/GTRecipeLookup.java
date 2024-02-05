@@ -15,8 +15,10 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import mezz.jei.library.recipes.collect.RecipeMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -400,6 +402,15 @@ public class GTRecipeLookup {
             }
         });
         return list;
+    }
+
+    /**
+     * Removes all recipes.
+     */
+    @ApiStatus.Internal
+    public void removeAllRecipes() {
+        this.lookup.getNodes().clear();
+        this.lookup.getSpecialNodes().clear();
     }
 
     /**

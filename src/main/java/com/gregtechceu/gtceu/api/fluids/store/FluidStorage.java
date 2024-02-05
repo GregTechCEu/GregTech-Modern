@@ -24,8 +24,9 @@ public final class FluidStorage {
     public static class FluidEntry {
         @Getter
         private Supplier<? extends Fluid> fluid;
+        @Nullable
         @Getter @Setter
-        private ResourceLocation stillTexture, flowTexture;
+        private FluidBuilder builder;
     }
 
     private final Map<FluidStorageKey, FluidEntry> map = new Object2ObjectOpenHashMap<>();
@@ -133,9 +134,9 @@ public final class FluidStorage {
             throw new IllegalArgumentException(key + " already has an associated fluid");
         }
         if (builder != null) {
-            map.put(key, new FluidEntry(fluid, builder.still(), builder.flowing()));
+            map.put(key, new FluidEntry(fluid, builder));
         } else {
-            map.put(key, new FluidEntry(fluid, null, null));
+            map.put(key, new FluidEntry(fluid, null));
         }
     }
 }
