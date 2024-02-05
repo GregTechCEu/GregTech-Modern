@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -18,6 +19,8 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -130,6 +133,23 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     public int getSlots() {
         return storage.getSlots();
+    }
+
+    @Override
+    public int getSize() {
+        return getSlots();
+    }
+
+    @Override
+    public List<Object> getContents() {
+        List<ItemStack> stacks = new ArrayList<>();
+        for (int i = 0; i < getSlots(); ++i) {
+            ItemStack stack = getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                stacks.add(stack);
+            }
+        }
+        return Arrays.asList(stacks.toArray());
     }
 
     public boolean isEmpty() {
