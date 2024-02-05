@@ -14,9 +14,11 @@ import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
-import com.lowdragmc.lowdraglib.gui.widget.*;
+import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
+import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -28,7 +30,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.awt.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -154,8 +155,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
 
             @Override
             public IGuiTexture getIcon() {
-                // TODO make a proper texture for this
-                return new TextTexture("x", Color.BLACK.getRGB());
+                return GuiTextures.CLOSE_ICON;
             }
 
             @Override

@@ -52,6 +52,8 @@ public class GuiTextures {
     public static final SteamTexture SLOT_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/slot_%s.png");
     public static final ResourceTexture TOGGLE_BUTTON_BACK = new ResourceTexture("gtceu:textures/gui/widget/toggle_button_background.png");
 
+    public static final ResourceTexture CLOSE_ICON = new ResourceTexture("gtceu:textures/gui/icon/close.png");
+
     //FLUID & ITEM OUTPUT BUTTONS
     public static final ResourceTexture BLOCKS_INPUT = new ResourceTexture("gtceu:textures/gui/widget/button_blocks_input.png");
     public static final ResourceBorderTexture BUTTON = new ResourceBorderTexture("gtceu:textures/gui/widget/button.png", 32, 32, 2, 2);

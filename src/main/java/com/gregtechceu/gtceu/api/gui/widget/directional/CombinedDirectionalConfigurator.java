@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.scene.ISceneBlockRenderHook;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
@@ -23,16 +22,12 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.server.TickTask;
-import net.minecraft.server.level.ServerLevel;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
-import java.util.function.Consumer;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
