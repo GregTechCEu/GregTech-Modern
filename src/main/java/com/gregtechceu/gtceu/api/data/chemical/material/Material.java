@@ -320,8 +320,12 @@ public class Material implements Comparable<Material> {
         return getProperty(PropertyKey.TOOL).getHarvestLevel();
     }
 
-    public void setMaterialRGB(int materialRGB) {
+    public void setMaterialARGB(int materialRGB) {
         materialInfo.colors.set(0, materialRGB);
+    }
+
+    public void setMaterialSecondaryARGB(int materialRGB) {
+        materialInfo.colors.set(1, materialRGB);
     }
 
     public int getLayerARGB(int layerIndex) {
