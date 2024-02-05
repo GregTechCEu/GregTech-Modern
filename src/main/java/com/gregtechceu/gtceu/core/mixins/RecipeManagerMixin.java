@@ -29,6 +29,8 @@ public abstract class RecipeManagerMixin {
     private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
+                gtRecipeType.getLookup().removeAllRecipes();
+
                 var proxyRecipes = gtRecipeType.getProxyRecipes();
                 for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
                     var type = entry.getKey();
