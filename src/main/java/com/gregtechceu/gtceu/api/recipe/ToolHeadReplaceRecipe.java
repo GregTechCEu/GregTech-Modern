@@ -2,12 +2,16 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import appeng.recipes.game.FacadeRecipe;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -17,6 +21,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -38,7 +43,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
-    public boolean matches(CraftingContainer inv, Level level) {
+    public boolean matches(CraftingContainer inv, @NotNull Level level) {
         List<ItemStack> list = new ArrayList<>();
 
         for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -74,7 +79,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer inv, RegistryAccess registryAccess) {
+    public @NotNull ItemStack assemble(CraftingContainer inv, @NotNull RegistryAccess registryAccess) {
         List<ItemStack> list = new ArrayList<>();
 
         for (int i = 0; i < inv.getContainerSize(); i++) {
@@ -89,22 +94,23 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             ItemStack first = list.get(0), second = list.get(1);
 
             IGTTool tool;
-            ItemStack toolStack;
             UnificationEntry toolHead;
+            ItemStack realTool;
             if (first.getItem() instanceof IGTTool) {
                 tool = (IGTTool) first.getItem();
-                toolStack = first;
                 toolHead = ChemicalHelper.getUnificationEntry(second.getItem());
+                realTool = first;
             } else if (second.getItem() instanceof IGTTool) {
                 tool = (IGTTool) second.getItem();
-                toolStack = second;
                 toolHead = ChemicalHelper.getUnificationEntry(first.getItem());
+                realTool = second;
             } else return ItemStack.EMPTY;
-
             if (!tool.isElectric()) return ItemStack.EMPTY;
+            IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(realTool);
             if (toolHead == null) return ItemStack.EMPTY;
             GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix);
-            ItemStack newTool = ToolHelper.get(toolArray[tool.getElectricTier()], toolHead.material);
+            ItemStack newTool = GTItems.TOOL_ITEMS.get(toolHead.material, toolArray[tool.getElectricTier()])
+                .get().get(powerUnit.getCharge(), powerUnit.getMaxCharge());
             if (newTool == null) return ItemStack.EMPTY;
 
             return newTool;
@@ -113,12 +119,23 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
     }
 
     @Override
+    public @NotNull NonNullList<ItemStack> getRemainingItems(@NotNull CraftingContainer container) {
+        var result = super.getRemainingItems(container);
+        for (ItemStack stack : result) {
+            if (stack.getItem() instanceof IGTTool) {
+                stack.setCount(0);
+            }
+        }
+        return result;
+    }
+
+    @Override
     public boolean canCraftInDimensions(int width, int height) {
         return width * height >= 2;
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public @NotNull RecipeSerializer<?> getSerializer() {
         return SERIALIZER;
     }
 }

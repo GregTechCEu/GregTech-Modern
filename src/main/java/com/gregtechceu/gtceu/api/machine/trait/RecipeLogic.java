@@ -9,8 +9,8 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
-import com.gregtechceu.gtceu.api.syncdata.IEnhancedManaged;
-import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -28,6 +28,7 @@ import org.jetbrains.annotations.VisibleForTesting;
 import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
@@ -75,7 +76,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected TickableSubscription subscription;
     protected Object workingSound;
     @Nullable
-    protected CompletableFuture<List<GTRecipe>> completableFuture = null;
+    protected CompletableFuture<Boolean> completableFuture = null;
     // if storage is dirty while async searching recipe, it will be set to true.
     protected boolean dirtySearching = false;
 
@@ -251,7 +252,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
-    protected List<GTRecipe> searchRecipe() {
+    protected Iterator<GTRecipe> searchRecipe() {
         return machine.getRecipeType().searchRecipe(getRecipeManager(), this.machine);
     }
 
@@ -283,10 +284,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 if (!lastFuture.isCancelled()) {
                     // if searching task is done, try to handle searched recipes.
                     try {
-                        var matches = lastFuture.join().stream().filter(match -> match.matchRecipe(machine).isSuccess()).toList();
-                        if (!matches.isEmpty()) {
-                            handleSearchingRecipes(matches);
-                        } else if (dirtySearching) {
+                        boolean matches = lastFuture.join();
+                        if (!matches && dirtySearching) {
                             completableFuture = supplyAsyncSearchingTask();
                         }
                     } catch (Throwable throwable) {
@@ -302,25 +301,35 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         recipeDirty = false;
     }
 
-    private CompletableFuture<List<GTRecipe>> supplyAsyncSearchingTask() {
-        return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("Searching recipes", this::searchRecipe), Util.backgroundExecutor());
+    private CompletableFuture<Boolean> supplyAsyncSearchingTask() {
+        return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("GTCEu Recipe Search", () -> handleSearchingRecipes(searchRecipe())), Util.backgroundExecutor());
     }
 
-    private void handleSearchingRecipes(List<GTRecipe> matches) {
-        for (GTRecipe match : matches) {
-            // try to modify recipe by machine, such as overclock, tier checking.
-            if (checkMatchedRecipeAvailable(match)) break;
+    private boolean handleSearchingRecipes(Iterator<GTRecipe> matches) {
+        while (matches != null && matches.hasNext()) {
+            GTRecipe match = matches.next();
+            if (match == null) continue;
+
+            // If a new recipe was found, cache found recipe.
+            if (checkMatchedRecipeAvailable(match)) return true;
+
             // cache matching recipes.
             if (lastFailedMatches == null) {
                 lastFailedMatches = new ArrayList<>();
             }
             lastFailedMatches.add(match);
         }
+        return false;
     }
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        for (GTRecipe recipe : machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine)) {
+        Iterator<GTRecipe> iterator = machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine);
+
+        while (iterator != null && iterator.hasNext()) {
+            GTRecipe recipe = iterator.next();
+            if (recipe == null) continue;
+
             if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;

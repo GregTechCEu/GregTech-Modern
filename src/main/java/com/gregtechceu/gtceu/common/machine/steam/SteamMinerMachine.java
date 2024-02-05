@@ -28,6 +28,7 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -49,7 +50,8 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, IControllable, IExhaustVentMachine, IUIMachine, IMachineModifyDrops {
-    @Setter @Persisted @DescSynced
+    @Getter @Setter
+    @Persisted @DescSynced
     private boolean needsVenting;
     @Persisted
     public final NotifiableItemStackHandler importItems;
@@ -208,7 +210,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
-                steamTank.drain(energyPerTick, true);
+                steamTank.drain(energyPerTick, false);
             return true;
         }
         return false;
@@ -220,13 +222,8 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
     }
 
     @Override
-    public boolean needsVenting() {
-        return needsVenting;
-    }
-
-    @Override
     public void markVentingComplete() {
-
+        this.needsVenting = false;
     }
 
     @Override

@@ -252,10 +252,9 @@ public class MixinHelpers {
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
         if (value != null) {
             IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(value.getFluid().get());
-            if (extensions instanceof GTClientFluidTypeExtensions gtExtensions) {
-                gtExtensions.setFlowingTexture(value.getFlowTexture());
-                gtExtensions.setStillTexture(value.getStillTexture());
-                gtExtensions.setTintColor(material.getMaterialARGB());
+            if (extensions instanceof GTClientFluidTypeExtensions gtExtensions && value.getBuilder() != null) {
+                gtExtensions.setFlowingTexture(value.getBuilder().flowing());
+                gtExtensions.setStillTexture(value.getBuilder().still());
             }
         }
     }

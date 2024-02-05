@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -45,18 +46,31 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     }
 
     @Override
+    public List<Object> getContents() {
+        List<Object> contents = new ObjectArrayList<>(2);
+        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
+            contents.addAll(handler.getContents());
+        }
+        return contents;
+    }
+
+    @Override
     public RecipeCapability<Ingredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
 
     @Override
     public boolean isDistinct() {
-        return handlers.stream().allMatch(NotifiableRecipeHandlerTrait::isDistinct);
+        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
+            if (!handler.isDistinct)
+                return false;
+        }
+        return true;
     }
 
     @Override
     public void setDistinct(boolean distinct) {
-        handlers.stream().forEach(handler -> handler.setDistinct(distinct));
+        handlers.forEach(handler -> handler.setDistinct(distinct));
         recomputeEnabledState();
     }
 

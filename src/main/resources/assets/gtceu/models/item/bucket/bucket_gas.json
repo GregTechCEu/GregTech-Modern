@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "gtceu:item/bucket/bucket_gas",
-    "layer1": "gtceu:item/bucket/gas_overlay"
-  }
-}

@@ -29,7 +29,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
         LaserRoutePath data = netData.get(pipePos);
         if (data == null) {
             data = LaserNetWalker.createNetData(this, pipePos, facing);
-            if (data == null) {
+            if (data == LaserNetWalker.FAILED_MARKER) {
                 // walker failed, don't cache, so it tries again on next insertion
                 return null;
             }

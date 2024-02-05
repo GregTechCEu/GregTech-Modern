@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -55,13 +56,15 @@ public class SizedIngredient extends Ingredient {
         return new SizedIngredient(tag, amount);
     }
 
-    public static SizedIngredient copy(Ingredient ingredient) {
+    public static Ingredient copy(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             var copied = SizedIngredient.create(sizedIngredient.inner, sizedIngredient.amount);
             if (sizedIngredient.itemStacks != null) {
                 copied.itemStacks = Arrays.stream(sizedIngredient.itemStacks).map(ItemStack::copy).toArray(ItemStack[]::new);
             }
             return copied;
+        } else if (ingredient instanceof IntCircuitIngredient circuit) {
+            return circuit.copy();
         }
         return SizedIngredient.create(ingredient);
     }
@@ -117,6 +120,13 @@ public class SizedIngredient extends Ingredient {
     @Override
     public boolean isEmpty() {
         return inner.isEmpty();
+    }
+
+    @Override
+    public int hashCode() {
+        int result = amount;
+        result = 31 * result + Arrays.hashCode(itemStacks);
+        return result;
     }
 
     public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {

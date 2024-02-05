@@ -263,6 +263,10 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier, alwaysTryModifyRecipe);
     }
 
+    public MultiblockMachineBuilder noRecipeModifier() {
+        return (MultiblockMachineBuilder) super.noRecipeModifier();
+    }
+
     @Override
     public MultiblockMachineBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
         return (MultiblockMachineBuilder) super.alwaysTryModifyRecipe(alwaysTryModifyRecipe);

@@ -51,9 +51,9 @@ public class TagType {
         return type;
     }
 
-    public static TagType withNoFormatter(String tagPath) {
+    public static TagType withNoFormatter(String tagPath, boolean isVanilla) {
         TagType type = new TagType(tagPath);
-        type.formatter = (prefix, material) -> TagUtil.createItemTag(type.tagPath);
+        type.formatter = (prefix, material) -> TagUtil.createItemTag(type.tagPath, isVanilla);
         type.isParentTag = true;
         return type;
     }
