@@ -401,6 +401,8 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         // clone vanilla recipes for stuff like electric furnaces, etc
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
+                gtRecipeType.getLookup().removeAllRecipes();
+
                 var proxyRecipes = gtRecipeType.getProxyRecipes();
                 for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
                     var type = entry.getKey();
