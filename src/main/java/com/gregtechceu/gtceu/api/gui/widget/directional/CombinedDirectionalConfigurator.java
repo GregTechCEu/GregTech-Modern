@@ -163,7 +163,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
                 var cd = new ClickData();
                 writeClientAction(MOUSE_CLICK_CLIENT_ACTION_ID, buf -> {
                     cd.writeToBuf(buf);
-                    buf.writeEnum(this.selectedSide);
+                    buf.writeByte(this.selectedSide.ordinal());
                 });
             }
         }
@@ -179,7 +179,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
         }
 
         var clickData = ClickData.readFromBuf(buf);
-        var side = buf.readEnum(Direction.class);
+        var side = GTUtil.DIRECTIONS[buf.readByte()];
 
         for (IDirectionalConfigHandler configHandler : configHandlers) {
             configHandler.handleClick(clickData, side);
