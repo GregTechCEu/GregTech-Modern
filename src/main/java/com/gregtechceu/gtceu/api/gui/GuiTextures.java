@@ -52,6 +52,8 @@ public class GuiTextures {
     public static final SteamTexture SLOT_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/slot_%s.png");
     public static final ResourceTexture TOGGLE_BUTTON_BACK = new ResourceTexture("gtceu:textures/gui/widget/toggle_button_background.png");
 
+    public static final ResourceTexture CLOSE_ICON = new ResourceTexture("gtceu:textures/gui/icon/close.png");
+
     //FLUID & ITEM OUTPUT BUTTONS
     public static final ResourceTexture BLOCKS_INPUT = new ResourceTexture("gtceu:textures/gui/widget/button_blocks_input.png");
     public static final ResourceBorderTexture BUTTON = new ResourceBorderTexture("gtceu:textures/gui/widget/button.png", 32, 32, 2, 2);
@@ -88,6 +90,11 @@ public class GuiTextures {
 
     public static final ResourceTexture ENERGY_DETECTOR_COVER_MODE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_energy_mode.png");
     public static final ResourceTexture INVERT_REDSTONE_BUTTON = new ResourceTexture("gtceu:textures/gui/widget/button_detector_cover_inverted.png");
+
+    public static final ResourceTexture IO_CONFIG_FLUID_MODES_BUTTON = new ResourceTexture("gtceu:textures/gui/icon/io_config/output_config_fluid_modes.png");
+    public static final ResourceTexture IO_CONFIG_ITEM_MODES_BUTTON = new ResourceTexture("gtceu:textures/gui/icon/io_config/output_config_item_modes.png");
+    public static final ResourceTexture IO_CONFIG_COVER_SLOT_OVERLAY = new ResourceTexture("gtceu:textures/gui/icon/io_config/cover_slot_overlay.png");
+    public static final ResourceTexture IO_CONFIG_COVER_SETTINGS = new ResourceTexture("gtceu:textures/gui/icon/io_config/cover_settings.png");
 
     //INDICATORS & ICONS
     public static final ResourceTexture INDICATOR_NO_ENERGY = new ResourceTexture("gtceu:textures/gui/base/indicator_no_energy.png");

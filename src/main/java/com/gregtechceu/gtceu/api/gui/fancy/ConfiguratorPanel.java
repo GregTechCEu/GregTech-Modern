@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.animation.Animation;
 import com.lowdragmc.lowdraglib.gui.animation.Transform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -66,7 +67,7 @@ public class ConfiguratorPanel extends WidgetGroup {
             tabs.add(tab);
             addWidgetAnima(tab, new Transform()
                     .scale(0)
-                    .duration(500)
+                    .duration(getAnimationTime())
                     .ease(Eases.EaseQuadOut));
         }
         setSize(new Size(getSize().width, Math.max(0, tabs.size() * (getTabSize() + 2) - 2)));
@@ -167,14 +168,14 @@ public class ConfiguratorPanel extends WidgetGroup {
     }
 
     public class Tab extends WidgetGroup {
-        private final IFancyConfigurator configurator;
-        private final ButtonWidget button;
+        protected final IFancyConfigurator configurator;
+        protected final ButtonWidget button;
         @Nullable
-        private final WidgetGroup view;
+        protected final WidgetGroup view;
         // dragging
-        private double lastDeltaX, lastDeltaY;
-        private int dragOffsetX, dragOffsetY;
-        private boolean isDragging;
+        protected double lastDeltaX, lastDeltaY;
+        protected int dragOffsetX, dragOffsetY;
+        protected boolean isDragging;
 
         public Tab(IFancyConfigurator configurator) {
             super(0, tabs.size() * (getTabSize() + 2), getTabSize(), getTabSize());
@@ -199,7 +200,7 @@ public class ConfiguratorPanel extends WidgetGroup {
 
                 this.view.setVisible(false);
                 this.view.setActive(false);
-                this.view.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
+                this.view.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + button.getSize().height + border));
                 this.view.addWidget(widget);
                 this.view.addWidget(new ImageWidget(border + 5, border, widget.getSize().width - getTabSize() - 5, getTabSize() - border,
                         new TextTexture(configurator.getTitle().getString())
@@ -246,14 +247,14 @@ public class ConfiguratorPanel extends WidgetGroup {
                 if (expanded == this) {
                     var size = view.getSize();
                     animation(new Animation()
-                            .duration(500)
-                            .position(new Position(dragOffsetX + (- size.width + (tabs.size() > 1 ?  - 2 : getTabSize())), dragOffsetY))
-                            .size(size)
-                            .ease(Eases.EaseQuadOut)
-                            .onFinish(() -> {
-                                view.setVisible(true);
-                                view.setActive(true);
-                            }));
+                        .duration(getAnimationTime())
+                        .position(new Position(dragOffsetX + (- size.width + (tabs.size() > 1 ?  - 2 : getTabSize())), dragOffsetY))
+                        .size(size)
+                        .ease(Eases.EaseQuadOut)
+                        .onFinish(() -> {
+                            view.setVisible(true);
+                            view.setActive(true);
+                        }));
                 }
             }
         }
@@ -289,15 +290,17 @@ public class ConfiguratorPanel extends WidgetGroup {
                     this.dragOffsetY -= view.getParentPosition().y + size.height - gui.getScreenHeight();
                 }
             }
+            Position position = new Position(dragOffsetX - size.width + (tabs.size() > 1 ? -2 : getTabSize()), dragOffsetY);
+
             animation(new Animation()
-                    .duration(500)
-                    .position(new Position(dragOffsetX - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()), dragOffsetY))
-                    .size(size)
-                    .ease(Eases.EaseQuadOut)
-                    .onFinish(() -> {
-                        view.setVisible(true);
-                        view.setActive(true);
-                    }));
+                .duration(getAnimationTime())
+                .position(position)
+                .size(size)
+                .ease(Eases.EaseQuadOut)
+                .onFinish(() -> {
+                    view.setVisible(true);
+                    view.setActive(true);
+                }));
         }
 
         protected void collapseTo(int x, int y) {
@@ -306,10 +309,10 @@ public class ConfiguratorPanel extends WidgetGroup {
                 view.setActive(false);
             }
             animation(new Animation()
-                    .duration(500)
-                    .position(new Position(x, y))
-                    .size(new Size(getTabSize(), getTabSize()))
-                    .ease(Eases.EaseQuadOut));
+                .duration(getAnimationTime())
+                .position(new Position(x, y))
+                .size(new Size(getTabSize(), getTabSize()))
+                .ease(Eases.EaseQuadOut));
         }
 
         @Override
@@ -390,15 +393,26 @@ public class ConfiguratorPanel extends WidgetGroup {
     }
 
     public class FloatingTab extends Tab {
+        protected Runnable closeCallback = () -> {};
 
         public FloatingTab(IFancyConfigurator configurator) {
             super(configurator);
+            this.view.setBackground(GuiTextures.BACKGROUND);
         }
 
         @Override
         public void collapseTo(int x, int y) {
             super.collapseTo(x, y);
             ConfiguratorPanel.this.removeWidget(this);
+            closeCallback.run();
         }
+
+        public void onClose(Runnable closeCallback) {
+            this.closeCallback = closeCallback;
+        }
+    }
+
+    private static int getAnimationTime() {
+        return ConfigHolder.INSTANCE.client.animationTime;
     }
 }

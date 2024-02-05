@@ -47,4 +47,8 @@ public class WidgetUtils {
             return -1;
         }
     }
+
+    public static int getInventoryHeight(boolean includeHotbar) {
+        return 64 + (includeHotbar ? 22 : 0);
+    }
 }
