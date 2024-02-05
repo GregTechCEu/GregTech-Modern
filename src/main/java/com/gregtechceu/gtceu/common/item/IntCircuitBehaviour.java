@@ -45,11 +45,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
         if (configuration < 0 || configuration > CIRCUIT_MAX)
             throw new IllegalArgumentException("Given configuration number is out of range!");
-        var tagCompound = itemStack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-            itemStack.setTag(tagCompound);
-        }
+        var tagCompound = itemStack.getOrCreateTag();
         tagCompound.putInt("Configuration", configuration);
     }
 

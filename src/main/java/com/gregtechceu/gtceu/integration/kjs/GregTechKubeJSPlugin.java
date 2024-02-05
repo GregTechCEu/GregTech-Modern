@@ -78,7 +78,9 @@ import net.minecraft.world.level.material.MaterialColor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -345,20 +347,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager, Map<ResourceLocation, Recipe<?>> recipesByName) {
-        // clone vanilla recipes for stuff like electric furnaces, etc
-        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
-            if (recipeType instanceof GTRecipeType gtRecipeType) {
-                var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
-                    var type = entry.getKey();
-                    var recipes = entry.getValue();
-                    recipes.clear();
-                    for (var recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
-                    }
-                }
-            }
-        }
+
 
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
@@ -411,5 +400,26 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(), GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
             }
         })));
+
+        // clone vanilla recipes for stuff like electric furnaces, etc
+        for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
+            if (recipeType instanceof GTRecipeType gtRecipeType) {
+                var proxyRecipes = gtRecipeType.getProxyRecipes();
+                for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
+                    var type = entry.getKey();
+                    var recipes = entry.getValue();
+                    recipes.clear();
+                    for (var recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
+                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                    }
+                }
+
+                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == gtRecipeType).collect(Collectors.toSet())) {
+                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
+                        gtRecipeType.getLookup().addRecipe(gtRecipe);
+                    }
+                }
+            }
+        }
     }
 }

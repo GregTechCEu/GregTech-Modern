@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.google.gson.JsonElement;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
@@ -38,6 +37,12 @@ public abstract class RecipeManagerMixin {
                     recipes.clear();
                     for (var recipe : this.recipes.get(type).entrySet()) {
                         recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                    }
+                }
+
+                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : this.recipes.get(gtRecipeType).entrySet()) {
+                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
+                        gtRecipeType.getLookup().addRecipe(gtRecipe);
                     }
                 }
             }

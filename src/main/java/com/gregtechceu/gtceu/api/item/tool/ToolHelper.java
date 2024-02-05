@@ -406,8 +406,8 @@ public class ToolHelper {
                 caps.put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
-                List<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(Platform.getMinecraftServer().getRecipeManager(), be.metaMachine);
-                GTRecipe hammerRecipe = hammerRecipes.isEmpty() ? null : hammerRecipes.get(0);
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(Platform.getMinecraftServer().getRecipeManager(), be.metaMachine);
+                GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine)) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
@@ -615,7 +615,7 @@ public class ToolHelper {
         if (toolClasses.contains(GTToolType.SCYTHE)) {
         }
         if (toolClasses.contains(GTToolType.FILE)) {
-            if (block instanceof GlassPaneBlock) {
+            if (block instanceof IronBarsBlock) {
                 return true;
             }
         }

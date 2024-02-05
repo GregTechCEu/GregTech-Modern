@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.Registry;
@@ -17,16 +18,12 @@ import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
+import java.util.*;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
 public class FluidIngredient implements Predicate<FluidStack> {
-    private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, null);
     public FluidIngredient.Value[] values;
     @Nullable
@@ -92,14 +89,55 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
         return false;
     }
-    
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (!(obj instanceof FluidIngredient other)) {
+            return false;
+        }
+
+        if (!Objects.equals(this.nbt, other.nbt)) return false;
+        if (this.values.length != other.values.length) return false;
+        for (Value value1 : this.values) {
+            for (Value value2 : other.values) {
+                if (value1 instanceof TagValue tagValue) {
+                    if (!(value2 instanceof TagValue tagValue1)) {
+                        return false;
+                    }
+                    if (tagValue.tag != tagValue1.tag) {
+                        return false;
+                    }
+                } else if (value1 instanceof FluidValue) {
+                    if (!(value2 instanceof FluidValue)) {
+                        return false;
+                    }
+                    if (!value1.getFluids().containsAll(value2.getFluids())) {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
     public boolean isEmpty() {
         return this.values.length == 0;
     }
 
     public FluidStack[] getStacks() {
         if (changed || this.stacks == null) {
-            this.stacks = Arrays.stream(this.values).flatMap(entry -> entry.getStacks().stream()).distinct().map(fluid -> FluidStack.create(fluid, this.amount, this.nbt)).toArray(FluidStack[]::new);
+            List<FluidStack> fluidStacks = new ObjectArrayList<>(1);
+            List<Fluid> found = new ObjectArrayList<>(1);
+            for (Value value : this.values) {
+                for (Fluid fluid : value.getFluids()) {
+                    if (found.contains(fluid)) continue;
+                    found.add(fluid);
+
+                    fluidStacks.add(FluidStack.create(fluid, this.amount, this.nbt));
+                }
+            }
+            this.stacks = fluidStacks.toArray(FluidStack[]::new);
             this.changed = false;
         }
         return this.stacks;
@@ -191,14 +229,14 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public static interface Value {
-        public Collection<Fluid> getStacks();
+        public Collection<Fluid> getFluids();
 
         public JsonObject serialize();
         public Value copy();
     }
 
-    public static class TagValue
-            implements Value {
+    public static class TagValue implements Value {
+        @Getter
         private final TagKey<Fluid> tag;
 
         public TagValue(TagKey<Fluid> tag) {
@@ -206,7 +244,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Collection<Fluid> getStacks() {
+        public Collection<Fluid> getFluids() {
             ArrayList<Fluid> list = Lists.newArrayList();
             for (Holder<Fluid> holder : Registry.FLUID.getTagOrEmpty(this.tag)) {
                 list.add(holder.value());
@@ -227,8 +265,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
     }
 
-    public static class FluidValue
-            implements Value {
+    public static class FluidValue implements Value {
         private final Fluid fluid;
 
         public FluidValue(Fluid item) {
@@ -236,7 +273,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Collection<Fluid> getStacks() {
+        public Collection<Fluid> getFluids() {
             return Collections.singleton(this.fluid);
         }
 
