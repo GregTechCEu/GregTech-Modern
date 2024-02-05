@@ -109,7 +109,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
     }
 
     @Override
-    public boolean needsVenting() {
+    public boolean isNeedsVenting() {
         return this.needsVenting;
     }
 

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
+import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
@@ -9,12 +10,14 @@ import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
-import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.material.Fluid;
+
+import java.io.BufferedReader;
+import java.io.IOException;
 
 /**
  * @author KilaBash
@@ -35,13 +38,13 @@ public class GTModels {
                 FluidStorage storage = fluidProperty.getStorage();
                 // fluid block models.
                 FluidStorage.FluidEntry fluidEntry = storage.getEntry(key);
-                if (fluidEntry != null) {
-                    if (fluidEntry.getStillTexture() == null) {
+                if (fluidEntry != null && fluidEntry.getBuilder() != null) {
+                    if (fluidEntry.getBuilder().still() == null) {
                         ResourceLocation foundTexture = key.getIconType().getBlockTexturePath(iconSet, false);
-                        fluidEntry.setStillTexture(foundTexture);
+                        fluidEntry.getBuilder().still(foundTexture);
                     }
-                    if (fluidEntry.getFlowTexture() == null) {
-                        fluidEntry.setFlowTexture(fluidEntry.getStillTexture());
+                    if (fluidEntry.getBuilder().flowing() == null) {
+                        fluidEntry.getBuilder().flowing(fluidEntry.getBuilder().still());
                     }
                     MixinHelpers.addFluidTexture(material, fluidEntry);
                 }
@@ -49,11 +52,24 @@ public class GTModels {
                 // bucket models.
                 Fluid fluid = storage.get(key);
                 if (fluid instanceof GTFluid gtFluid) {
-                    FluidStack testFor = FluidStack.create(gtFluid, FluidHelper.getBucket());
-                    GTDynamicResourcePack.addItemModel(
-                            Registry.ITEM.getKey(gtFluid.getBucket()),
-                            new DelegatedModel(GTCEu.id("item/bucket/" + (FluidHelper.isLighterThanAir(testFor) ? "bucket_gas" : "bucket")))
-                    );
+                    // read the base bucket model JSON
+                    JsonObject original;
+                    try(BufferedReader reader = Minecraft.getInstance().getResourceManager().openAsReader(GTCEu.id("models/item/bucket/bucket.json"))) {
+                        original = GsonHelper.parse(reader, true);
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    JsonObject newJson = original.deepCopy();
+                    newJson.addProperty("fluid", Registry.FLUID.getKey(gtFluid).toString());
+                    if (gtFluid.getFluidType().isLighterThanAir()) {
+                        newJson.addProperty("flip_gas", true);
+                    }
+                    if (gtFluid.getFluidType().getLightLevel() > 0) {
+                        newJson.addProperty("apply_fluid_luminosity", true);
+                    }
+
+                    GTDynamicResourcePack.addItemModel(Registry.ITEM.getKey(gtFluid.getBucket()), newJson);
                 }
             }
         }

@@ -4,9 +4,11 @@ import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -17,9 +19,11 @@ import lombok.experimental.Accessors;
 import lombok.experimental.Tolerate;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -55,9 +59,9 @@ public class FluidBuilder {
     @Setter
     private int burnTime = -1;
 
-    @Getter
+    @Getter @Setter(onMethod_ = @ApiStatus.Internal)
     private ResourceLocation still = null;
-    @Getter
+    @Getter @Setter(onMethod_ = @ApiStatus.Internal)
     private ResourceLocation flowing = null;
     private boolean hasCustomStill = false;
     private boolean hasCustomFlowing = false;
@@ -315,8 +319,8 @@ public class FluidBuilder {
                     }
                     case GAS -> ROOM_TEMPERATURE;
                     case PLASMA -> {
-                        if (material.hasFluid() && material.getFluid() != null) {
-                            yield BASE_PLASMA_TEMPERATURE + material.getFluid().getFluidType().getTemperature();
+                        if (material.hasFluid() && material.getFluidBuilder() != null && material.getFluidBuilder() != material.getFluidBuilder(FluidStorageKeys.PLASMA)) {
+                            yield BASE_PLASMA_TEMPERATURE + material.getFluidBuilder().temperature;
                         }
                         yield BASE_PLASMA_TEMPERATURE;
                     }

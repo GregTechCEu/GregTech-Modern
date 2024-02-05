@@ -302,5 +302,4 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         });
         typeWrappers.registerSimple(GTRecipeComponents.FluidIngredientJS.class, GTRecipeComponents.FluidIngredientJS::of);
     }
-
 }

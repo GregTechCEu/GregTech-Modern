@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.google.gson.JsonElement;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTRecipes;
@@ -21,16 +20,18 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import java.util.List;
 import java.util.Map;
 
+// only fires if KJS is NOT loaded.
 @Mixin(RecipeManager.class)
 public abstract class RecipeManagerMixin {
 
     @Shadow private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes;
 
-    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
-            at = @At(value = "TAIL"))
+    @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V", at = @At(value = "TAIL"))
     private void gtceu$cloneVanillaRecipes(Map<ResourceLocation, JsonElement> map, ResourceManager resourceManager, ProfilerFiller profiler, CallbackInfo ci) {
         for (RecipeType<?> recipeType : Registry.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
+                gtRecipeType.getLookup().removeAllRecipes();
+
                 var proxyRecipes = gtRecipeType.getProxyRecipes();
                 for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
                     var type = entry.getKey();
@@ -38,6 +39,12 @@ public abstract class RecipeManagerMixin {
                     recipes.clear();
                     for (var recipe : this.recipes.get(type).entrySet()) {
                         recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                    }
+                }
+
+                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : this.recipes.get(gtRecipeType).entrySet()) {
+                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
+                        gtRecipeType.getLookup().addRecipe(gtRecipe);
                     }
                 }
             }

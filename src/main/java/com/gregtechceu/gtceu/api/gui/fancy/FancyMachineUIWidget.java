@@ -44,7 +44,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
         addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
         addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
-        addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), 102));
+        addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));
 
         setBackground(GuiTextures.BACKGROUND.copy().setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
     }
@@ -70,13 +70,17 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
         // layout
         var size = new Size(Math.max(172, mainPage.getSize().width + border * 2), Math.max(86, mainPage.getSize().height + border * 2));
+        setSize(new Size(size.width, size.height + (playerInventory == null ? 0 : playerInventory.getSize().height)));
         if (LDLib.isRemote() && getGui() != null) {
             getGui().setSize(getSize().width, getSize().height);
         }
         this.tabsWidget.setSize(new Size(size.width, 24));
         this.sideTabsWidget.setSize(new Size(24, size.height));
         this.pageContainer.setSize(size);
-        this.tooltipsPanel.setSelfPosition(new Position(size.width + 2, 2));
+        this.tooltipsPanel.setSelfPosition(new Position(-20, -20));
+        if (this.playerInventory != null) {
+            this.playerInventory.setSelfPosition(new Position((size.width - playerInventory.getSize().width) / 2, size.height));
+        }
 
         // setup
         this.pageContainer.addWidget(mainPage);
@@ -84,6 +88,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
                 (pageContainer.getSize().width - mainPage.getSize().width) / 2,
                 (pageContainer.getSize().height - mainPage.getSize().height) / 2));
         fancyUI.attachConfigurators(configuratorPanel);
+        configuratorPanel.setSelfPosition(new Position(-24 - 2, getGui().getHeight() - configuratorPanel.getSize().height - 4));
         fancyUI.attachTooltips(tooltipsPanel);
     }
 

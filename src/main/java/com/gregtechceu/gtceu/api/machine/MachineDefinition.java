@@ -53,14 +53,13 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private GTRecipeType[] recipeTypes;
     @Getter @Setter
     private int tier;
-    @Setter @Getter
+    @Getter @Setter
     private int defaultPaintingColor;
-    @Setter @Getter
+    @Getter @Setter
     private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier;
-    @Setter @Getter
+    @Getter @Setter
     private boolean alwaysTryModifyRecipe;
-    @Setter
-    @Getter
+    @Getter @Setter
     private IRenderer renderer;
     @Setter
     private VoxelShape shape;

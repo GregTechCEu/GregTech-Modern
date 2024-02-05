@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -355,8 +355,9 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
         WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
         SlotWidget batterySlot = createBatterySlot().createDefault();
-        batterySlot.setSelfPosition(new Position(79, 56));
-        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width + 12, template.getSize().height + 8);
+        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width, Math.max(template.getSize().height, 78));
+        template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
+        batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
         group.addWidget(batterySlot);
         group.addWidget(template);
 

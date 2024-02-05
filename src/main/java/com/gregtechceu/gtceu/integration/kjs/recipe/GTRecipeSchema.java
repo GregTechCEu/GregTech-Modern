@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -267,7 +268,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
-            return notConsumable(InputItem.of(NBTIngredient.createNBTIngredient(IntCircuitBehaviour.stack(configuration)), 1));
+            return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
@@ -468,9 +469,9 @@ public interface GTRecipeSchema {
          */
 
         public InputItem readInputItem(Object from) {
-            if(from instanceof SizedIngredient ingr) {
+            if (from instanceof SizedIngredient ingr) {
                 return InputItem.of(ingr.getInner(), ingr.getAmount());
-            } else if(from instanceof JsonObject jsonObject) {
+            } else if (from instanceof JsonObject jsonObject) {
                 if (!jsonObject.has("type") || !jsonObject.get("type").getAsString().equals(SizedIngredient.TYPE.toString())) {
                     return InputItem.of(from);
                 }

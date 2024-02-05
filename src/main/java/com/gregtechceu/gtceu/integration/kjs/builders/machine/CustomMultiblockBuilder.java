@@ -387,6 +387,14 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
+            public CustomMultiblockBuilder noRecipeModifier() {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.noRecipeModifier();
+                }
+                return this;
+            }
+
             public CustomMultiblockBuilder tier(int tier, BuilderConsumer consumer) {
                 for (var builder : builders) {
                     if (builder == null) continue;

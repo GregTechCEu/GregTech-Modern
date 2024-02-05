@@ -229,12 +229,6 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
         }
     }
 
-    @Nullable
-    @Override
-    public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return super.getStateForPlacement(context);
-    }
-
     @Override
     public void tick(BlockState state, ServerLevel level, BlockPos pos, RandomSource random) {
         IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
