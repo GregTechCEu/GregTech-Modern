@@ -22,6 +22,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.lang.ref.WeakReference;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -31,6 +32,8 @@ public class GTRecipeLookup {
 
     @Getter
     private final Branch lookup = new Branch();
+
+    private static final WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> ingredientRoot = new WeakHashMap<>();
 
     /**
      * Finds a GTRecipe matching the Fluid and/or ItemStack Inputs in the holder.
@@ -346,6 +349,29 @@ public class GTRecipeLookup {
     }
 
     /**
+     * Retrieves a cached ingredient, or inserts a default one
+     *
+     * @param list        the list to append to
+     * @param ingredients the ingredient to use as a default value, if not cached
+     * @param cache       the ingredient root to retrieve from
+     */
+    protected static void retrieveCachedIngredient(@NotNull List<List<AbstractMapIngredient>> list,
+                                                   @NotNull List<AbstractMapIngredient> ingredients,
+                                                   @NotNull WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> cache) {
+        for (int i = 0; i < ingredients.size(); i++) {
+            AbstractMapIngredient mappedIngredient = ingredients.get(i);
+            // attempt to use the cached value if possible, otherwise cache for the next time
+            WeakReference<AbstractMapIngredient> cached = ingredientRoot.get(mappedIngredient);
+            if (cached != null && cached.get() != null) {
+                ingredients.set(i, cached.get());
+            } else {
+                ingredientRoot.put(mappedIngredient, new WeakReference<>(mappedIngredient));
+            }
+        }
+        list.add(ingredients);
+    }
+
+    /**
      * Converts a GTRecipe's {@link com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability}s into a List of {@link AbstractMapIngredient}s
      *
      * @param r the recipe to use
@@ -362,7 +388,8 @@ public class GTRecipeLookup {
                 }
                 ingredients = cap.compressIngredients(ingredients);
                 for (Object ingredient : ingredients) {
-                    list.add(cap.convertToMapIngredient(ingredient));
+                    // use the cached ingredient, if possible
+                    retrieveCachedIngredient(list, cap.convertToMapIngredient(ingredient), ingredientRoot);
                 }
             }
         });
@@ -374,7 +401,8 @@ public class GTRecipeLookup {
                 }
                 ingredients = cap.compressIngredients(ingredients);
                 for (Object ingredient : ingredients) {
-                    list.add(cap.convertToMapIngredient(ingredient));
+                    // use the cached ingredient, if possible
+                    retrieveCachedIngredient(list, cap.convertToMapIngredient(ingredient), ingredientRoot);
                 }
             }
         });
@@ -395,8 +423,7 @@ public class GTRecipeLookup {
                 for (IRecipeHandler<?> handler : handlers) {
                     List<Object> compressed = cap.compressIngredients(handler.getContents());
                     for (Object content : compressed) {
-                        List<AbstractMapIngredient> ingredients = cap.convertToMapIngredient(content);
-                        list.add(ingredients);
+                        retrieveCachedIngredient(list, cap.convertToMapIngredient(content), ingredientRoot);
                     }
                 }
             }
