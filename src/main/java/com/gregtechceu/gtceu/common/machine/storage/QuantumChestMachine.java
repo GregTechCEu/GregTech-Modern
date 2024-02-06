@@ -67,9 +67,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Persisted @DescSynced @DropSaved
     protected int itemsStoredInside = 0;
     @Getter @Persisted @DescSynced @DropSaved
-    private int storedAmount = 0;
+    protected int storedAmount = 0;
     @Getter @Persisted @DescSynced @DropSaved @Nonnull
-    private ItemStack stored = ItemStack.EMPTY;
+    protected ItemStack stored = ItemStack.EMPTY;
     @Persisted @DropSaved
     protected final NotifiableItemStackHandler cache;
     @Nullable

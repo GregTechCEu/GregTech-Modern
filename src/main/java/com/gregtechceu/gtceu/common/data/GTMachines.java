@@ -387,13 +387,28 @@ public class GTMachines {
     //////////////////////////////////////
     //*********     Storage    *********//
     //////////////////////////////////////
-    public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("infinite_energy", CreativeEnergyContainerMachine::new)
-            .rotationState(RotationState.NONE)
-            .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
-                    Component.translatable("gtceu.creative_tooltip.3"))
-            .compassNodeSelf()
-            .register();
+    public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("creative_energy", CreativeEnergyContainerMachine::new)
+        .rotationState(RotationState.NONE)
+        .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
+            Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
+            Component.translatable("gtceu.creative_tooltip.3"))
+        .compassNodeSelf()
+        .register();
+    public final static MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
+        .rotationState(RotationState.ALL)
+        .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
+            Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
+            Component.translatable("gtceu.creative_tooltip.3"))
+        .compassNodeSelf()
+        .register();
+    public final static MachineDefinition CREATIVE_ITEM = REGISTRATE.machine("creative_chest", CreativeChestMachine::new)
+        .rotationState(RotationState.ALL)
+        .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
+            Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
+            Component.translatable("gtceu.creative_tooltip.3"))
+        .compassNodeSelf()
+        .register();
+
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
