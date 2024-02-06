@@ -76,7 +76,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Persisted @Getter @Setter
     private boolean isVoiding;
     @Persisted @DescSynced @Getter
-    private final FluidStorage lockedFluid;
+    protected final FluidStorage lockedFluid;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxStoredFluids, Object... args) {
         super(holder, tier);
