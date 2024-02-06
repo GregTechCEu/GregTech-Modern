@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
@@ -45,8 +46,12 @@ public class IngredientEquality {
                     if (!(value2 instanceof Ingredient.ItemValue)) {
                         return false;
                     }
-                    if (!value1.getItems().containsAll(value2.getItems())) {
-                        return false;
+                    for (ItemStack item1 : value1.getItems()) {
+                        for (ItemStack item2 : value2.getItems()) {
+                            if (!ItemStack.isSameItemSameTags(item1, item2)) {
+                                return false;
+                            }
+                        }
                     }
                 }
             }
