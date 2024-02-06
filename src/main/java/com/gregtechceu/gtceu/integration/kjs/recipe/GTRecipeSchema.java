@@ -31,6 +31,7 @@ import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.nbt.CompoundTag;
@@ -56,11 +57,14 @@ public interface GTRecipeSchema {
         public float chance = 1;
         @Setter
         public float tierChanceBoost = 0;
+        @Getter
+        private ResourceLocation idWithoutType;
 
         @HideFromJS
         @Override
         public GTRecipeJS id(ResourceLocation _id) {
-            this.id = new ResourceLocation(_id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), _id.getPath()));
+            this.idWithoutType = new ResourceLocation(_id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(), _id.getPath());
+            this.id = new ResourceLocation(idWithoutType.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), idWithoutType.getPath()));
             return this;
         }
 

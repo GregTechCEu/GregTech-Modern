@@ -344,13 +344,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager, Map<ResourceLocation, Recipe<?>> recipesByName) {
-
-
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
             if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
                 // get the recipe ID without the leading type path
-                GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id)).recipeBuilder(new ResourceLocation(gtRecipe.id.getNamespace(), gtRecipe.id.getPath().split(Pattern.quote(gtRecipe.type.id.getPath()) + "/")[1]));
+                GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id)).recipeBuilder(gtRecipe.idWithoutType());
 
                 if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
                     builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
