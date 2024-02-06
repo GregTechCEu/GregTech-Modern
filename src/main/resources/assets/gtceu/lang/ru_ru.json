@@ -6468,5 +6468,10 @@
     "item.gtceu.iron_minecart_wheels": "Железные колеса вагонетки",
     "item.gtceu.steel_minecart_wheels": "Стальные колеса вагонетки",
     "tagprefix.crimsite": "Кримзит (%s)",
-    "tagprefix.plank": "Доска (%s)"
+    "tagprefix.plank": "Доска (%s)",
+    "config.gtceu.option.gt6StylePipesCables": "gt6StylePipesCables",
+    "config.gtceu.option.defaultUIColor": "defaultUIColor",
+    "gtceu.universal.tooltip.deprecated": "§5ВНИМАНИЕ: УСТАРЕЛО. БУДЕТ УДАЛЕН В БУДУЩЕЙ ВЕРСИИ.§r",
+    "gtceu.gui.machinemode": "Режим машины:%s",
+    "tagprefix.planks": "Доска (%s)"
 }
