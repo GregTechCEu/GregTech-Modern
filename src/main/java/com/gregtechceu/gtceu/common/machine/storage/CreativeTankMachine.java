@@ -35,10 +35,6 @@ public class CreativeTankMachine extends QuantumTankMachine {
         return new NotifiableFluidTank(this, 1, 1000, IO.BOTH);
     }
 
-    @Override
-    public void onLoad() {
-        super.onLoad();
-    }
 
     @Override
     protected void updateAutoOutputSubscription() {
