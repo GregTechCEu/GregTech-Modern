@@ -12,7 +12,9 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -25,28 +27,42 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
 public class CreativeChestMachine extends QuantumChestMachine {
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeChestMachine.class, QuantumChestMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted
+    @Persisted @DropSaved
     private int itemsPerCycle = 1;
-    @Persisted
+    @Persisted @DropSaved
     private int ticksPerCycle = 1;
-    @Persisted
-    private final NotifiableItemStackHandler handler = new NotifiableItemStackHandler(this, 1, IO.BOTH) {
-        @Override
-        public int getSlotLimit(int slot) {
-            return 1;
-        }
-
-        @Override
-        public void setStackInSlot(int slot, ItemStack stack) {
-            stack.setCount(1);
-            this.storage.setStackInSlot(slot, stack);
-            this.onContentsChanged();
-        }
-    };
 
     public CreativeChestMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.MAX, -1);
+    }
+
+    @Override
+    protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
+        return new NotifiableItemStackHandler(this, 1, IO.BOTH) {
+            @Override
+            public int getSlotLimit(int slot) {
+                return 1;
+            }
+
+            @Override
+            public void setStackInSlot(int slot, ItemStack stack) {
+                stack.setCount(1);
+                this.storage.setStackInSlot(slot, stack);
+                this.onContentsChanged();
+            }
+
+            @Override
+            public void onContentsChanged() {
+                super.onContentsChanged();
+                if (!isRemote()) {
+                    stored = getStackInSlot(0).copy();
+                    storedAmount = stored.getCount();
+                    stored.setCount(1);
+                }
+            }
+        };
     }
 
     protected void checkAutoOutput() {
@@ -61,7 +77,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     @Override
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomSlotWidget(handler, 0, 36, 6)
+        group.addWidget(new PhantomSlotWidget(cache, 0, 36, 6)
             .setClearSlotOnRightClick(true)
             .setBackgroundTexture(GuiTextures.SLOT)
             .setChangeListener(this::markDirty));
@@ -92,7 +108,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     public void updateItemTick() {
-        ItemStack stack = handler.getStackInSlot(0).copy();
+        ItemStack stack = cache.getStackInSlot(0).copy();
         this.stored = stack; // For rendering purposes
         if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0) return;
         if (getLevel().isClientSide || !isWorkingEnabled() || stack.isEmpty()) return;
@@ -115,7 +131,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
             var held = player.getMainHandItem();
             if (!held.isEmpty() && (ItemTransferHelper.canItemStacksStack(held, stored) || stored.isEmpty())) { // push
                 if (!isRemote()) {
-                    var remaining = handler.insertItem(0, held, false);
+                    var remaining = cache.insertItem(0, held, false);
                     player.setItemInHand(InteractionHand.MAIN_HAND, remaining);
                 }
                 return InteractionResult.SUCCESS;
@@ -128,7 +144,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (!stored.isEmpty()) { // pull
-                var drained = handler.extractItem(0, player.isCrouching() ? stored.getItem().getMaxStackSize() : 1, false);
+                var drained = cache.extractItem(0, player.isCrouching() ? stored.getItem().getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (player.addItem(drained)) {
                         Block.popResource(world, getPos().relative(getFrontFacing()), drained);
@@ -137,5 +153,10 @@ public class CreativeChestMachine extends QuantumChestMachine {
             }
         }
         return super.onLeftClick(player, world, hand, pos, direction);
+    }
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
     }
 }
