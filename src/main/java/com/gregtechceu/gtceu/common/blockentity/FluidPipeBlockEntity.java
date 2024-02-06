@@ -108,10 +108,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == ForgeCapabilities.FLUID_HANDLER) {
-            PipeTankList tankList = getTankList(facing);
-            if (tankList == null)
-                return LazyOptional.empty();
-            return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(tankList)));
+            if (facing != null && isConnected(facing)) {
+                PipeTankList tankList = getTankList(facing);
+                if (tankList == null)
+                    return LazyOptional.empty();
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(tankList)));
+            }
         } else if (capability == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverContainer));
         } else if (capability == GTCapability.CAPABILITY_TOOLABLE) {
