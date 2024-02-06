@@ -37,14 +37,18 @@ public abstract class RecipeManagerMixin {
                     var type = entry.getKey();
                     var recipes = entry.getValue();
                     recipes.clear();
-                    for (var recipe : this.recipes.get(type).entrySet()) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                    if (this.recipes.containsKey(type)) {
+                        for (var recipe : this.recipes.get(type).entrySet()) {
+                            recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                        }
                     }
                 }
 
-                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : this.recipes.get(gtRecipeType).entrySet()) {
-                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
-                        gtRecipeType.getLookup().addRecipe(gtRecipe);
+                if (this.recipes.containsKey(gtRecipeType)) {
+                    for (Map.Entry<ResourceLocation, Recipe<?>> recipe : this.recipes.get(gtRecipeType).entrySet()) {
+                        if (recipe.getValue() instanceof GTRecipe gtRecipe) {
+                            gtRecipeType.getLookup().addRecipe(gtRecipe);
+                        }
                     }
                 }
             }
