@@ -41,6 +41,7 @@ public class GuiTextures {
     public static final SteamTexture BACKGROUND_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/background_%s.png");
     public static final ResourceTexture CLIPBOARD_BACKGROUND = new ResourceTexture("gtceu:textures/gui/base/clipboard_background.png");
     public static final ResourceTexture CLIPBOARD_PAPER_BACKGROUND = new ResourceTexture("gtceu:textures/gui/base/clipboard_paper_background.png");
+    public static final ResourceBorderTexture TITLE_BAR_BACKGROUND = new ResourceBorderTexture("gtceu:textures/gui/base/title_bar_background.png", 16, 16, 4, 4);
 
     public static final ResourceTexture DISPLAY = new ResourceTexture("gtceu:textures/gui/base/display.png");
     public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/display_%s.png");
