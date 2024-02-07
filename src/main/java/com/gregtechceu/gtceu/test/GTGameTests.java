@@ -1,23 +1,37 @@
 package com.gregtechceu.gtceu.test;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.test.api.machine.trait.ParallelLogicTest;
+import com.gregtechceu.gtceu.test.api.machine.trait.EnergyContainerListTest;
+import com.gregtechceu.gtceu.test.api.machine.trait.FluidStorageListTest;
+import com.gregtechceu.gtceu.test.api.recipe.logic.ParallelLogicTest;
 import com.gregtechceu.gtceu.test.api.machine.trait.RecipeLogicTest;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestGenerator;
 import net.minecraft.gametest.framework.TestFunction;
 import net.minecraft.world.level.block.Rotation;
+import net.minecraftforge.event.RegisterGameTestsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
+@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
 public class GTGameTests {
+
+    @SubscribeEvent
+    public static void registerGameTests(RegisterGameTestsEvent event) {
+        event.register(GTGameTests.class);
+    }
+
     private static final Class<?>[] testHolders = {
-            RecipeLogicTest.class,
-            ParallelLogicTest.class
+        RecipeLogicTest.class,
+        ParallelLogicTest.class,
+        EnergyContainerListTest.class,
+        FluidStorageListTest.class,
     };
 
     @GameTestGenerator

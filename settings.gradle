@@ -22,7 +22,7 @@ dependencyResolutionManagement {
         def reiVersion = "12.0.684"
         def emiVersion = "1.0.30"
         def ae2Version = "15.0.18"
-        def kjsVersion = "2001.6.4-build.120"
+        def kjsVersion = "2001.6.4-build.133"
         def auVersion = "1.20.1-0.6.0"
 
         // Forge
