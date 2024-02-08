@@ -23,6 +23,7 @@
     "IFoliagePlacerTypeAccessor",
     "IHolderReferenceAccessor",
     "IngredientAccessor",
+    "IntersectionIngredientAccessor",
     "InventoryMixin",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
