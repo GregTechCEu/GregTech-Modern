@@ -167,7 +167,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.GLASS_BOTTLE))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("glass").duration(12).EUt(4)
+        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_glass_block").duration(12).EUt(4)
                 .inputFluids(Glass.getFluid(L))
                 .notConsumable(SHAPE_MOLD_BLOCK)
                 .outputItems(new ItemStack(Blocks.GLASS))
@@ -306,7 +306,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_slice")
-                .inputItems(new ItemStack(Items.MELON))
+                .inputItems(new ItemStack(Items.MELON_SLICE))
                 .outputItems(new ItemStack(Items.MELON_SEEDS))
                 .duration(400).EUt(2)
                 .save(provider);
