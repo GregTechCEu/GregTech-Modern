@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
@@ -55,14 +56,19 @@ public class IngredientEquality {
 
             if (first instanceof IntersectionIngredient intersection1) {
                 if (second instanceof IntersectionIngredient intersection2) {
-                    List<Ingredient> ing1 = ((IntersectionIngredientAccessor)intersection1).getChildren().stream().sorted(INGREDIENT_COMPARATOR).toList();
-                    List<Ingredient> ing2 = ((IntersectionIngredientAccessor)intersection2).getChildren().stream().sorted(INGREDIENT_COMPARATOR).toList();
-                    for (Ingredient ingredient1 : ing1) {
-                        for (Ingredient ingredient2 : ing2) {
-                            int result = compare(ingredient1, ingredient2);
-                            if (result != 0) {
-                                return result;
-                            }
+                    List<Ingredient> ingredients1 = Lists.newArrayList(((IntersectionIngredientAccessor)intersection1).getChildren());
+                    List<Ingredient> ingredients2 = Lists.newArrayList(((IntersectionIngredientAccessor)intersection2).getChildren());
+                    if (ingredients1.size() != ingredients2.size()) return 1;
+
+                    ingredients1.sort(this);
+                    ingredients2.sort(this);
+
+                    for (int i = 0; i < ingredients1.size(); ++i) {
+                        Ingredient ingredient1 = ingredients1.get(i);
+                        Ingredient ingredient2 = ingredients2.get(i);
+                        int result = compare(ingredient1, ingredient2);
+                        if (result != 0) {
+                            return result;
                         }
                     }
                     return 0;
@@ -72,14 +78,19 @@ public class IngredientEquality {
 
             if (((IngredientAccessor) first).getValues().length != ((IngredientAccessor) second).getValues().length)
                 return 1;
-            List<Ingredient.Value> values1 = Arrays.stream(((IngredientAccessor)first).getValues()).sorted(INGREDIENT_VALUE_COMPARATOR).toList();
-            List<Ingredient.Value> values2 = Arrays.stream(((IngredientAccessor)second).getValues()).sorted(INGREDIENT_VALUE_COMPARATOR).toList();
-            for (Ingredient.Value value1 : values1) {
-                for (Ingredient.Value value2 : values2) {
-                    int result = INGREDIENT_VALUE_COMPARATOR.compare(value1, value2);
-                    if (result != 0) {
-                        return result;
-                    }
+            Ingredient.Value[] values1 = ((IngredientAccessor)first).getValues();
+            Ingredient.Value[] values2 = ((IngredientAccessor)second).getValues();
+            if (values1.length != values2.length) return 1;
+
+            Arrays.parallelSort(values1, INGREDIENT_VALUE_COMPARATOR);
+            Arrays.parallelSort(values2, INGREDIENT_VALUE_COMPARATOR);
+
+            for (int i = 0; i < values1.length; ++i) {
+                Ingredient.Value value1 = values1[i];
+                Ingredient.Value value2 = values2[i];
+                int result = INGREDIENT_VALUE_COMPARATOR.compare(value1, value2);
+                if (result != 0) {
+                    return result;
                 }
             }
             return 0;

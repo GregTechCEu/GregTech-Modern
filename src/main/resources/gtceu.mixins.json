@@ -25,6 +25,7 @@
     "IngredientAccessor",
     "IntersectionIngredientAccessor",
     "InventoryMixin",
+    "ItemValueAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LootDataManagerMixin",
