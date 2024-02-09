@@ -63,7 +63,8 @@ public class CoilBlock extends ActiveBlock {
         CUPRONICKEL("cupronickel", 1800, 1, 1, GTMaterials.Cupronickel, GTCEu.id("block/casings/coils/machine_coil_cupronickel")),
         KANTHAL("kanthal", 2700, 2, 1, GTMaterials.Kanthal, GTCEu.id("block/casings/coils/machine_coil_kanthal")),
         NICHROME("nichrome", 3600, 2, 2, GTMaterials.Nichrome, GTCEu.id("block/casings/coils/machine_coil_nichrome")),
-        TUNGSTENSTEEL("tungstensteel", 4500, 4, 2, GTMaterials.TungstenSteel, GTCEu.id("block/casings/coils/machine_coil_tungstensteel")),
+        RTMALLOY("rtm_alloy", 4500, 4, 2, GTMaterials.RTMAlloy, GTCEu.id("block/casings/coils/machine_coil_rtm_alloy")),
+
         HSSG("hssg", 5400, 4, 4, GTMaterials.HSSG, GTCEu.id("block/casings/coils/machine_coil_hssg")),
         NAQUADAH("naquadah", 7200, 8, 4, GTMaterials.Naquadah, GTCEu.id("block/casings/coils/machine_coil_naquadah")),
         TRINIUM("trinium", 9001, 8, 8, GTMaterials.Trinium, GTCEu.id("block/casings/coils/machine_coil_trinium")),
