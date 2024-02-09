@@ -122,9 +122,9 @@ public class OreRecipeHandler {
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])), ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])), ingotStack, xp);
         }
     }
 
