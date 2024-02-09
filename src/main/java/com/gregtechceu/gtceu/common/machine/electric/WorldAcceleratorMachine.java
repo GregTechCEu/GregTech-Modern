@@ -27,6 +27,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFunction;
@@ -44,6 +46,9 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     private static final Object2BooleanFunction<Class<? extends BlockEntity>> blacklistCache = new Object2BooleanOpenHashMap<>();
 
     private static boolean gatheredClasses = false;
+
+    //Hard-coded blacklist for blockentities
+    private static final List<String> blockEntityClassNamesBlackList = new ArrayList<>();
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
@@ -207,12 +212,11 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
                     }
                 }
             }
-
-            try {
-                // Block CoFH tile entities by default, non-overridable
-                String cofhTileClass = "cofh.thermal.lib.block.entity.AugmentableBlockEntity";
-                blacklistedClasses.put(cofhTileClass, Class.forName(cofhTileClass));
-            } catch (ClassNotFoundException ignored) {/**/}
+            for(String className: blockEntityClassNamesBlackList) {
+                try {
+                    blacklistedClasses.put(className, Class.forName(className));
+                } catch (ClassNotFoundException ignored) {}
+            }
 
             gatheredClasses = true;
         }
