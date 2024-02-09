@@ -15,7 +15,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -50,7 +49,7 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
 
     private static final long BEAmperage = 6;
     private static final long RTAmperage = 3;
-
+    @Getter
     @Persisted
     private boolean isWorkingEnabled = true;
     @DescSynced
@@ -178,10 +177,6 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
         return InteractionResult.CONSUME;
     }
 
-    @Override
-    public boolean isWorkingEnabled() {
-        return this.isWorkingEnabled;
-    }
 
     @Override
     public void setWorkingEnabled(boolean isWorkingAllowed) {
@@ -215,7 +210,7 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
 
             try {
                 // Block CoFH tile entities by default, non-overridable
-                String cofhTileClass = "cofh.thermalexpansion.block.device.TileDeviceBase";
+                String cofhTileClass = "cofh.thermal.lib.block.entity.AugmentableBlockEntity";
                 blacklistedClasses.put(cofhTileClass, Class.forName(cofhTileClass));
             } catch (ClassNotFoundException ignored) {/**/}
 
