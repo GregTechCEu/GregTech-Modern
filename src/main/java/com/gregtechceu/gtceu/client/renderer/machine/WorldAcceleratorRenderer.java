@@ -38,10 +38,9 @@ public class WorldAcceleratorRenderer extends TieredHullMachineRenderer{
     @OnlyIn(Dist.CLIENT)
     public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        if (machine instanceof IWorkable workable) {
-            WorldAcceleratorMachine worldAcceleratorMachine = (WorldAcceleratorMachine)machine;
+        if (machine instanceof WorldAcceleratorMachine worldAcceleratorMachine) {
             WorkableOverlayModel model = getModeModel(worldAcceleratorMachine.isRandomTickMode());
-            quads.addAll(model.bakeQuads(side, frontFacing, worldAcceleratorMachine.isActive(), workable.isWorkingEnabled()));
+            quads.addAll(model.bakeQuads(side, frontFacing, worldAcceleratorMachine.isActive(), worldAcceleratorMachine.isWorkingEnabled()));
         } else {
             quads.addAll(getModeModel(true).bakeQuads(side, frontFacing, false, false));
         }
