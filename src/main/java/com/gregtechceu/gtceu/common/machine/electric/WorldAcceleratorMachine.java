@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -52,6 +54,8 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorldAcceleratorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
+    private TickableSubscription subscription;
+
     private static final long BEAmperage = 6;
     private static final long RTAmperage = 3;
     @Getter
@@ -62,6 +66,11 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     @Getter
     private boolean isRandomTickMode = true;
 
+    @DescSynced
+    @Persisted
+    @Getter
+    private boolean active = false;
+
 
     // Variables for Random Tick mode optimization
     // limit = ((tier - min) / (max - min)) * 2^tier
@@ -71,8 +80,6 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     private final int successLimit;
     private final int randRange;
 
-    @DescSynced
-    private boolean active = false;
     public WorldAcceleratorMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier, defaultTankSizeFunction, args);
         this.speed = (int) Math.pow(2, tier);
@@ -119,11 +126,11 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
             return;
         }
         // else handle block entity mode
-        Direction.stream().forEach(dir ->{
+        for (Direction dir : GTUtil.DIRECTIONS){
             BlockEntity blockEntity = this.getLevel().getBlockEntity(this.getPos().relative(dir));
             if(blockEntity != null && canAccelerate(blockEntity))
                 tickBlockEntity(blockEntity);
-        });
+        }
     }
 
     public boolean drainEnergy(long toDrain) {
@@ -138,10 +145,9 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     private <T extends BlockEntity> void tickBlockEntity(@NotNull T blockEntity){
             BlockPos pos = blockEntity.getBlockPos();
             BlockEntityTicker<T> blockEntityTicker =  this.getLevel().getBlockState(pos).getTicker(this.getLevel(),(BlockEntityType<T>) blockEntity.getType());
-            for (int i = 0; i < speed-1; i++) {
-                assert blockEntityTicker != null;
+            if(blockEntityTicker==null) return;
+            for (int i = 0; i < speed-1; i++)
                 blockEntityTicker.tick(this.getLevel(), this.getPos(), blockEntity.getBlockState(), blockEntity);
-            }
     }
 
     private boolean canAccelerate(BlockEntity blockEntity){
@@ -169,7 +175,14 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     @Override
     public void onLoad() {
         super.onLoad();
-        subscribeServerTick(this::update);
+        subscription = subscribeServerTick(this::update);
+    }
+
+    @Override
+    public void onUnload() {
+        super.onUnload();
+        if(subscription!=null)
+            unsubscribe(subscription);
     }
 
     @Override
@@ -188,11 +201,6 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
         if(isWorkingAllowed==this.isWorkingEnabled) return;
         this.isWorkingEnabled = isWorkingAllowed;
         scheduleRenderUpdate();
-    }
-
-    @Override
-    public boolean isActive() {
-        return active;
     }
 
     public void setActive(boolean active) {

@@ -364,7 +364,8 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.ITEM_IMPORT_BUS, " C", " M", 'M', HULL, 'C', CustomTags.TAG_WOODEN_CHESTS);
         registerMachineRecipe(provider, GTMachines.ITEM_EXPORT_BUS, " M", " C", 'M', HULL, 'C', CustomTags.TAG_WOODEN_CHESTS);
 
-        registerMachineRecipe(provider, GTMachines.WORLD_ACCELERATOR, "FSF", "EHE", "FSF", 'F', FIELD_GENERATOR, 'S', SENSOR, 'E', EMITTER, 'H', HULL);
+        if(ConfigHolder.INSTANCE.machines.enableWorldAccelerators)
+            registerMachineRecipe(provider, GTMachines.WORLD_ACCELERATOR, "FSF", "EHE", "FSF", 'F', FIELD_GENERATOR, 'S', SENSOR, 'E', EMITTER, 'H', HULL);
 
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wooden_crate", GTMachines.WOODEN_CRATE.asStack(), "RPR", "PsP", "RPR", 'P', ItemTags.PLANKS, 'R', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
