@@ -167,7 +167,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.GLASS_BOTTLE))
                 .save(provider);
 
-        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("glass").duration(12).EUt(4)
+        FLUID_SOLIDFICATION_RECIPES.recipeBuilder("solidify_glass_block").duration(12).EUt(4)
                 .inputFluids(Glass.getFluid(L))
                 .notConsumable(SHAPE_MOLD_BLOCK)
                 .outputItems(new ItemStack(Blocks.GLASS))
@@ -306,7 +306,7 @@ public class VanillaStandardRecipes {
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_melon_slice")
-                .inputItems(new ItemStack(Items.MELON))
+                .inputItems(new ItemStack(Items.MELON_SLICE))
                 .outputItems(new ItemStack(Items.MELON_SEEDS))
                 .duration(400).EUt(2)
                 .save(provider);
@@ -890,17 +890,17 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("painting").duration(100).EUt(4).circuitMeta(1).inputItems(ItemTags.WOOL).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.PAINTING)).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER)).inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("oak_sign").duration(100).EUt(4).inputItems(Items.OAK_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.OAK_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_sign").duration(100).EUt(4).inputItems(Items.SPRUCE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.SPRUCE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("birch_sign").duration(100).EUt(4).inputItems(Items.BIRCH_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.BIRCH_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_sign").duration(100).EUt(4).inputItems(Items.JUNGLE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.JUNGLE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_sign").duration(100).EUt(4).inputItems(Items.ACACIA_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.ACACIA_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("cherry_sign").duration(100).EUt(4).inputItems(Items.CHERRY_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.CHERRY_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_sign").duration(100).EUt(4).inputItems(Items.DARK_OAK_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.DARK_OAK_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("mangrove_sign").duration(100).EUt(4).inputItems(Items.MANGROVE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.MANGROVE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bamboo_sign").duration(100).EUt(4).inputItems(Items.BAMBOO_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.BAMBOO_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("crimson_sign").duration(100).EUt(4).inputItems(Items.CRIMSON_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.CRIMSON_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("warped_sign").duration(100).EUt(4).inputItems(Items.WARPED_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(1).outputItems(Items.WARPED_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("oak_sign").duration(100).EUt(4).inputItems(Items.OAK_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.OAK_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("spruce_sign").duration(100).EUt(4).inputItems(Items.SPRUCE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.SPRUCE_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("birch_sign").duration(100).EUt(4).inputItems(Items.BIRCH_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.BIRCH_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("jungle_sign").duration(100).EUt(4).inputItems(Items.JUNGLE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.JUNGLE_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("acacia_sign").duration(100).EUt(4).inputItems(Items.ACACIA_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.ACACIA_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("cherry_sign").duration(100).EUt(4).inputItems(Items.CHERRY_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.CHERRY_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_sign").duration(100).EUt(4).inputItems(Items.DARK_OAK_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.DARK_OAK_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("mangrove_sign").duration(100).EUt(4).inputItems(Items.MANGROVE_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.MANGROVE_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("bamboo_sign").duration(100).EUt(4).inputItems(Items.BAMBOO_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.BAMBOO_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("crimson_sign").duration(100).EUt(4).inputItems(Items.CRIMSON_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.CRIMSON_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("warped_sign").duration(100).EUt(4).inputItems(Items.WARPED_PLANKS, 6).inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.WARPED_SIGN, 3).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("flower_pot").duration(10).EUt(2).inputItems(new ItemStack(Items.BRICK, 3)).outputItems(new ItemStack(Items.FLOWER_POT)).save(provider);
 

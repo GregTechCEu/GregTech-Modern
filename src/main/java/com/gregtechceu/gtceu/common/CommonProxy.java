@@ -89,6 +89,7 @@ public class CommonProxy {
         GTPlacerTypes.init();
         GTRecipeCapabilities.init();
         GTRecipeConditions.init();
+        GTToolTiers.init();
         GTElements.init();
         MaterialIconSet.init();
         MaterialIconType.init();
