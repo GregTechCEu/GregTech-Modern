@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapItemStackIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapItemStackNBTIngredient;
-import com.gregtechceu.gtceu.api.recipe.lookup.MapItemTagIngredient;
+import com.gregtechceu.gtceu.api.recipe.lookup.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.utils.IngredientEquality;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import java.util.Collection;
@@ -54,6 +55,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             } else if (ingredient instanceof SizedIngredient sized) {
                 if (sized.getInner() instanceof StrictNBTIngredient nbt) {
                     ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+                } else if (sized.getInner() instanceof IntersectionIngredient intersection) {
+                    ingredients.add(new MapIntersectionIngredient(intersection));
                 } else {
                     for (Ingredient.Value value : ((IngredientAccessor)sized.getInner()).getValues()) {
                         if (value instanceof Ingredient.TagValue tagValue) {
@@ -66,6 +69,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                         }
                     }
                 }
+            } else if (ingredient instanceof IntersectionIngredient intersection) {
+                ingredients.add(new MapIntersectionIngredient(intersection));
             } else {
                 for (Ingredient.Value value : ((IngredientAccessor)ingredient).getValues()) {
                     if (value instanceof Ingredient.TagValue tagValue) {
@@ -84,6 +89,11 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
             if (stack.hasTag()) {
                 ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
+            }
+            TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
+            if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
+                Material material = ChemicalHelper.getMaterial(stack.getItem()).material();
+                ingredients.add(new MapIntersectionIngredient((IntersectionIngredient) IntersectionIngredient.of(Ingredient.of(prefix.getItemTags(material)[0]), Ingredient.of(prefix.getItemParentTags()[0]))));
             }
         }
         return ingredients;

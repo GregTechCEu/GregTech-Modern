@@ -23,15 +23,6 @@ public class MapItemStackIngredient extends AbstractMapIngredient {
         this.ingredient = ingredient;
     }
 
-    @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull Ingredient r) {
-        ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (ItemStack s : r.getItems()) {
-            list.add(new MapItemStackIngredient(s, r));
-        }
-        return list;
-    }
-
     @Override
     public boolean equals(Object o) {
         if (super.equals(o)) {
