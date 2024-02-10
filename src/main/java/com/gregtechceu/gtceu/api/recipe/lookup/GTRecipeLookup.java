@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
-import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
-import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -15,9 +12,9 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import mezz.jei.library.recipes.collect.RecipeMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -358,17 +355,29 @@ public class GTRecipeLookup {
     protected static void retrieveCachedIngredient(@NotNull List<List<AbstractMapIngredient>> list,
                                                    @NotNull List<AbstractMapIngredient> ingredients,
                                                    @NotNull WeakHashMap<AbstractMapIngredient, WeakReference<AbstractMapIngredient>> cache) {
+        boolean added = false;
         for (int i = 0; i < ingredients.size(); i++) {
             AbstractMapIngredient mappedIngredient = ingredients.get(i);
             // attempt to use the cached value if possible, otherwise cache for the next time
-            WeakReference<AbstractMapIngredient> cached = ingredientRoot.get(mappedIngredient);
+            WeakReference<AbstractMapIngredient> cached = cache.get(mappedIngredient);
             if (cached != null && cached.get() != null) {
                 ingredients.set(i, cached.get());
             } else {
-                ingredientRoot.put(mappedIngredient, new WeakReference<>(mappedIngredient));
+                cache.put(mappedIngredient, new WeakReference<>(mappedIngredient));
+            }
+
+            // hardcode a tree specialization for the intersection ingredient
+            if (mappedIngredient instanceof MapIntersectionIngredient intersection) {
+                for (Ingredient inner : intersection.ingredients) {
+                    List<AbstractMapIngredient> converted = ItemRecipeCapability.CAP.convertToMapIngredient(inner);
+                    retrieveCachedIngredient(list, converted, cache);
+                }
+                added = true;
             }
         }
-        list.add(ingredients);
+        if (!added) {
+            list.add(ingredients);
+        }
     }
 
     /**
