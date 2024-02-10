@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:tungstensteel_coil_block"
+          "name": "gtceu:rtm_alloy_coil_block"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/tungstensteel_coil_block"
+  "random_sequence": "gtceu:blocks/rtm_alloy_coil_block"
 }

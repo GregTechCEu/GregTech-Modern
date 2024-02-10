@@ -152,7 +152,7 @@ public class AdvancementLang {
         provider.add("gtceu.advancement.insane_voltage.56_quantum_processor.name", "Quantum Processor");
         provider.add("gtceu.advancement.insane_voltage.56_quantum_processor.desc", "Get Quantum Processors.");
         provider.add("gtceu.advancement.insane_voltage.57_tungstensteel_coil.name", "Upgrade your Coils to Level IV");
-        provider.add("gtceu.advancement.insane_voltage.57_tungstensteel_coil.desc", "Craft a Tungstensteel Heating Coil.");
+        provider.add("gtceu.advancement.insane_voltage.57_tungstensteel_coil.desc", "Craft an RTM Alloy Heating Coil.");
         provider.add("gtceu.advancement.insane_voltage.58_hss_g_coil.name", "Upgrade your Coils to Level V");
         provider.add("gtceu.advancement.insane_voltage.58_hss_g_coil.desc", "Craft an HSS-G Heating Coil.");
         provider.add("gtceu.advancement.root_luv.name", "Ludicrous Voltage");
