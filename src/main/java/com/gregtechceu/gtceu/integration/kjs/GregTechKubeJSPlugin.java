@@ -64,7 +64,10 @@ import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 import net.minecraft.world.level.material.MaterialColor;
 
-import java.util.Optional;
+import java.util.*;
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
