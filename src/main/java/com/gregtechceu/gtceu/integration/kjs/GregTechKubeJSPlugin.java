@@ -74,14 +74,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -411,11 +407,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     }
                 }
 
-                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == gtRecipeType).collect(Collectors.toSet())) {
-                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
-                        gtRecipeType.getLookup().addRecipe(gtRecipe);
-                    }
-                }
+                Stream.concat(
+                    recipesByName.values().stream()
+                        .filter(recipe -> recipe.getType() == gtRecipeType),
+                        proxyRecipes.entrySet().stream()
+                            .flatMap(entry -> entry.getValue().stream()))
+                    .filter(GTRecipe.class::isInstance)
+                    .map(GTRecipe.class::cast)
+                    .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
             }
         }
     }
