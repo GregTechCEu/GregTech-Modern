@@ -80,7 +80,7 @@ public class ChemicalHelper {
                         .add(() -> block);
             } else if (item instanceof BlockEntry<?> blockEntry) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                        .add(blockEntry::get);
+                        .add(blockEntry);
             } else if (item instanceof RegistryObject<?> registryObject) {
                 if (registryObject.getKey().isFor(Registries.BLOCK)) {
                     UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
@@ -225,7 +225,7 @@ public class ChemicalHelper {
     public static UnificationEntry getUnificationEntry(ItemLike itemLike) {
         return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
             for (var entry : ITEM_UNIFICATION_ENTRY) {
-                if (entry.getKey().get() == itemLike) {
+                if (entry.getKey().get().asItem() == itemLike.asItem()) {
                     return entry.getValue();
                 }
             }
