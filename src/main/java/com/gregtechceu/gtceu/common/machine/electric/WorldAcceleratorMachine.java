@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -17,6 +17,7 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -42,7 +43,7 @@ import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFuncti
  * @implNote WorldAcceleratorMachine
  */
 
-public class WorldAcceleratorMachine extends WorkableTieredMachine  {
+public class WorldAcceleratorMachine extends TieredEnergyMachine implements IControllable {
 
     private static final Map<String, Class<?>> blacklistedClasses = new Object2ObjectOpenHashMap<>();
     private static final Object2BooleanFunction<Class<? extends BlockEntity>> blacklistCache = new Object2BooleanOpenHashMap<>();
@@ -60,6 +61,7 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     private static final long RTAmperage = 3;
     @Getter
     @Persisted
+    @Setter
     private boolean isWorkingEnabled = true;
     @DescSynced
     @Persisted
@@ -196,13 +198,6 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
     }
 
 
-    @Override
-    public void setWorkingEnabled(boolean isWorkingAllowed) {
-        if(isWorkingAllowed==this.isWorkingEnabled) return;
-        this.isWorkingEnabled = isWorkingAllowed;
-        scheduleRenderUpdate();
-    }
-
     public void setActive(boolean active) {
         if(active==this.active) return;
         this.active = active;
@@ -229,4 +224,5 @@ public class WorldAcceleratorMachine extends WorkableTieredMachine  {
             gatheredClasses = true;
         }
     }
+
 }
