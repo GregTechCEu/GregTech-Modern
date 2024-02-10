@@ -1,0 +1,9 @@
+{
+    "ldlib": {
+        "connection": "gtceu:block/casings/coils/machine_coil_rtm_alloy_bloom_ctm",
+        "emissive": true
+    },
+    "shimmer": {
+        "bloom": true
+    }
+}
