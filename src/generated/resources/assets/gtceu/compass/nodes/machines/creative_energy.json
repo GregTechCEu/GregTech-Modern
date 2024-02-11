@@ -1,14 +1,23 @@
 {
   "button_texture": {
     "type": "item",
+<<<<<<<< HEAD:src/generated/resources/assets/gtceu/compass/nodes/machines/creative_chest.json
+    "res": "gtceu:creative_chest"
+  },
+  "items": [
+    "gtceu:creative_chest"
+  ],
+  "page": "gtceu:machines/creative_chest",
+========
     "res": "gtceu:creative_energy"
   },
   "items": [
     "gtceu:creative_energy"
   ],
   "page": "gtceu:machines/creative_energy",
+>>>>>>>> 1.19.2:src/generated/resources/assets/gtceu/compass/nodes/machines/creative_energy.json
   "position": [
-    -300,
+    -150,
     300
   ],
   "section": "gtceu:machines"

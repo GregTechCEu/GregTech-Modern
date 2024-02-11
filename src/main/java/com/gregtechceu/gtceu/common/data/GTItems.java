@@ -766,7 +766,7 @@ public class GTItems {
             .register() : null;
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_electric_pump", ComponentItem::create)
-            .lang("UHV Electric Pump")
+            .lang("UXV Electric Pump")
             .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[11])))
             .onRegister(attach(new TooltipBehavior(lines -> {
                 lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
