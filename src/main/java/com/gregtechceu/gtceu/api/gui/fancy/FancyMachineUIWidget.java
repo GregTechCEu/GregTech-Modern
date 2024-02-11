@@ -119,6 +119,9 @@ public class FancyMachineUIWidget extends WidgetGroup {
     }
 
     protected void performNavigation(IFancyUIProvider nextPage, IFancyUIProvider nextHomePage) {
+        if (currentHomePage != nextHomePage)
+            setupSideTabs(nextHomePage);
+
         this.currentPage = nextPage;
         this.currentHomePage = nextHomePage;
 
@@ -166,6 +169,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
         sideTabsWidget.setVisible(true);
         sideTabsWidget.setActive(true);
 
+        setupSideTabs(this.currentHomePage);
         navigate(nextHomePage, nextHomePage);
     }
 
@@ -179,7 +183,6 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
     protected void setupFancyUI(IFancyUIProvider fancyUI, boolean showInventory) {
         clearUI();
-        setupSideTabs();
 
         sideTabsWidget.selectTab(fancyUI);
         titleBar.updateState(
@@ -233,8 +236,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
         this.tooltipsPanel.clear();
     }
 
-    protected void setupSideTabs() {
+    protected void setupSideTabs(IFancyUIProvider currentHomePage) {
         this.sideTabsWidget.clearSubTabs();
-        this.currentHomePage.attachSideTabs(sideTabsWidget);
+        currentHomePage.attachSideTabs(sideTabsWidget);
     }
 }
