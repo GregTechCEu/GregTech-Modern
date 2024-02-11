@@ -118,12 +118,12 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
-        event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
+        event.getMappings(Registry.BLOCK.key(), GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get());
             }
         });
-        event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
+        event.getMappings(Registry.ITEM.key(), GTCEu.MOD_ID).forEach(mapping -> {
             if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
                 mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
             }

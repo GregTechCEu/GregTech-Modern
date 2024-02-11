@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
@@ -15,7 +15,7 @@ import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import java.util.*;
 
 public class IngredientEquality {
-    public static final Comparator<ItemStack> STACK_COMPARATOR = Comparator.comparing(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()));
+    public static final Comparator<ItemStack> STACK_COMPARATOR = Comparator.comparing(stack -> Registry.ITEM.getKey(stack.getItem()));
 
     public static final Comparator<Ingredient.Value> INGREDIENT_VALUE_COMPARATOR = new Comparator<>() {
         @Override
