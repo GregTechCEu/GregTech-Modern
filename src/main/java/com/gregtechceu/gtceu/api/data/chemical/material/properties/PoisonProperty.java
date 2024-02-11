@@ -21,6 +21,11 @@ public class PoisonProperty implements IMaterialProperty<PoisonProperty>{
         this.poisonType = poisonType;
         this.applyToDerivatives = applyToDerivatives;
     }
+
+    public PoisonProperty(PoisonType poisonType, boolean applyToDerivatives) {
+        this(2,poisonType,applyToDerivatives);
+    }
+
     public PoisonProperty(int damage, PoisonType poisonType) {
         this(damage,poisonType,true);
     }
