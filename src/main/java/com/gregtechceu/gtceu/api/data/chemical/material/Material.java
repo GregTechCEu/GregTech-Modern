@@ -1032,6 +1032,12 @@ public class Material implements Comparable<Material> {
             properties.setProperty(POISON, new PoisonProperty(damage, poisonType));
             return this;
         }
+
+        public Builder poison(PoisonProperty.PoisonType poisonType, boolean applyToDerivativese) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, applyToDerivativese));
+            return this;
+        }
+
         public Builder poison(int damage, PoisonProperty.PoisonType poisonType, boolean applyToDerivatives) {
             properties.setProperty(POISON, new PoisonProperty(damage, poisonType, applyToDerivatives));
             return this;

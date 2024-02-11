@@ -46,7 +46,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .poison(PoisonProperty.PoisonType.INHALATION, false)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
@@ -1134,6 +1134,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x0E4880)
                 .components(Carbon, 1, Oxygen, 1)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         HypochlorousAcid = new Material.Builder(GTCEu.id("hypochlorous_acid"))
@@ -1158,6 +1159,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x7DC8F0)
                 .components(Nitrogen, 1, Oxygen, 1)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
@@ -1193,6 +1195,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x7DC8FF)
                 .components(Nitrogen, 2, Oxygen, 1)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         EnderPearl = new Material.Builder(GTCEu.id("ender_pearl"))
@@ -1377,6 +1380,7 @@ public class FirstDegreeMaterials {
                 .color(0xACAD71).secondaryColor(0x291f34).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Osmium, 1, Oxygen, 4)
+                .poison(PoisonProperty.PoisonType.CONTACT)
                 .buildAndRegister();
 
         IridiumChloride = new Material.Builder(GTCEu.id("iridium_chloride"))

@@ -97,6 +97,7 @@ public class ElementMaterials {
                 .ore()
                 .color(0x98d677).secondaryColor(0x254d40).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
+                .poison(PoisonProperty.PoisonType.CONTACT)
                 .element(GTElements.Be)
                 .buildAndRegister();
 
@@ -151,6 +152,7 @@ public class ElementMaterials {
                 .dust()
                 .color(0x636377).secondaryColor(0x412738).iconSet(SHINY)
                 .element(GTElements.Cd)
+                .poison(PoisonProperty.PoisonType.CONTACT)
                 .buildAndRegister();
 
         Cerium = new Material.Builder(GTCEu.id("cerium"))
@@ -464,6 +466,7 @@ public class ElementMaterials {
                 .fluid()
                 .color(0xE6DCDC).iconSet(DULL)
                 .element(GTElements.Hg)
+                .poison(PoisonProperty.PoisonType.CONTACT)
                 .buildAndRegister();
 
         Molybdenum = new Material.Builder(GTCEu.id("molybdenum"))
@@ -787,6 +790,7 @@ public class ElementMaterials {
         Thallium = new Material.Builder(GTCEu.id("thallium"))
                 .color(0xc1c9de).secondaryColor(0x1e576a).iconSet(SHINY)
                 .element(GTElements.Tl)
+                .poison(PoisonProperty.PoisonType.CONTACT)
                 .buildAndRegister();
 
         Thulium = new Material.Builder(GTCEu.id("thulium"))
