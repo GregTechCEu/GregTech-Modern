@@ -13,6 +13,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.List;
 import java.util.Stack;
 import java.util.stream.Stream;
@@ -47,7 +49,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
     protected List<IFancyUIProvider> allPages;
 
-    protected Stack<NavigationEntry> previousPages = new Stack<>();
+    protected Deque<NavigationEntry> previousPages = new ArrayDeque<>();
 
     protected record NavigationEntry(IFancyUIProvider page, IFancyUIProvider homePage, Runnable onNavigation) {
     }
