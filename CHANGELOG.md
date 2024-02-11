@@ -1,27 +1,17 @@
 # ChangeLog
 
-Version: 1.1.3
+Version: 1.1.3.a
 
 ### ADDITIONS:
-- in-world multiblock preview
-- all machines now have an overclocking logic by default
-- added a way to change a ToolProperty's types
-- added a way for tools to have "subtypes", eg LV wrench -> wrench
-- made KJS recipes able to have subrecipes, like DT -> distillery
-- added `setMaterialSecondaryARGB` for changing a material's secondary color
+- added Creative Chest, Creative Tank
 
 ### FIXES:
-- fixed cover placement on pipes picking a random face
-- fixed custom fluid textures not working
-- fixed power being transfered through nonconnected pipes
-- fixed the planks TagPrefix
-- fixed rubber logs not being burnable
-- fixed crash when registering fluids
-- fixed steam miner venting every tick, and not consuming any steam
-- fixed machine UI layout sometimes being offcenter
-- fixed electric tools getting -1/-1 energy when changing the tool head
+- fixed crashes related to KubeJS recipe loading
+- fixed ore block maceration not working
+- fixed high tier tools (duranium, neutronium) not working
+- fixed electric furnace / multismelter recipes not working
+- fixed transformers always having 1A storage
 
 ### CHANGES:
-- deprecated the PA for removal in a future update.
-- made recipe lookup be 500-900% faster!
-- combined cover configuration UI and output configuration UI into one
+- replaced Tungstensteel coils with RTM-Alloy coils 
+- updated Russian translation
