@@ -4,6 +4,7 @@ Version: 1.1.3.a
 
 ### ADDITIONS:
 - added Creative Chest, Creative Tank
+- added a title bar and new multiblock part selector to machine UIs
 
 ### FIXES:
 - fixed crashes related to KubeJS recipe loading
