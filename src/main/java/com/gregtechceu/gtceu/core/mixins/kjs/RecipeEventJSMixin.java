@@ -23,10 +23,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -46,7 +43,7 @@ public class RecipeEventJSMixin {
      * Cuz KJS does a mixin {@link dev.latvian.mods.kubejs.core.mixin.common.RecipeManagerMixin} which breaks what we do {@link com.gregtechceu.gtceu.core.mixins.RecipeManagerMixin}.
      */
     @Inject(method = "post", at = @At(value = "RETURN"), remap = false)
-    public void injectPost(RecipeManager recipeManager, Map<ResourceLocation, JsonObject> jsonMap, CallbackInfo ci, @Local(ordinal = 0) Map<ResourceLocation, Recipe<?>> recipesByName) {
+    public void injectPost(RecipeManager recipeManager, Map<ResourceLocation, JsonObject> jsonMap, CallbackInfo ci, @Local(ordinal = 0) HashMap<ResourceLocation, Recipe<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesEventJS.runInParallel((() -> addedRecipes.forEach(recipe -> {
             if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
