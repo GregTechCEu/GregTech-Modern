@@ -28,13 +28,23 @@ public class TitleBarWidget extends WidgetGroup {
     private static final float ROLL_SPEED = 0.2f;
 
     private int width;
-    private int shownButtons;
+    private boolean showBackButton = false;
+    private boolean showMenuButton = false;
     private final int innerHeight;
 
+    /**
+     * The button group is rendered behind the main section and contains the back and menu buttons.
+     * <p>
+     * For easier texture reuse, the background is applied to the group itself, instead of the individual buttons.<br>
+     * The button group therefore needs to be rendered behind the main section.
+     */
     private final WidgetGroup buttonGroup;
     private final Widget backButton;
     private final Widget menuButton;
 
+    /**
+     * The main section contains the current tab's icon and title text
+     */
     private final WidgetGroup mainSection;
     private final ImageWidget tabIcon;
     private final ImageWidget tabTitle;
@@ -50,7 +60,7 @@ public class TitleBarWidget extends WidgetGroup {
         buttonGroup.addWidget(this.backButton = new ButtonWidget(0, BORDER_WIDTH, BTN_WIDTH, HEIGHT - BORDER_WIDTH, new TextTexture(" <").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor()), onBackClicked));
         buttonGroup.addWidget(this.menuButton = new ButtonWidget(width - BTN_WIDTH, BORDER_WIDTH, BTN_WIDTH, HEIGHT - BORDER_WIDTH, new TextTexture("+").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor()), onMenuClicked));
 
-        addWidget(this.mainSection = new WidgetGroup(0, -(BORDER_WIDTH * 2), width, HEIGHT));
+        addWidget(this.mainSection = new WidgetGroup(BTN_WIDTH, 0, width, HEIGHT));
         mainSection.setBackground(GuiTextures.TITLE_BAR_BACKGROUND);
         mainSection.addWidget(this.tabIcon = new ImageWidget(
             BORDER_WIDTH + 1, BORDER_WIDTH + 1,
@@ -63,11 +73,8 @@ public class TitleBarWidget extends WidgetGroup {
     }
 
     public void setTitle(IFancyUIProvider uiProvider, boolean showBackButton, boolean showMenuButton) {
-        this.shownButtons = 0;
-        if (showBackButton) shownButtons++;
-        if (showMenuButton) shownButtons++;
-
-        mainSection.setSelfPosition(new Position(showBackButton ? BTN_WIDTH : 0, 0));
+        this.showBackButton = showBackButton;
+        this.showMenuButton = showMenuButton;
 
         titleText = new TextTexture(ChatFormatting.BLACK.toString() + uiProvider.getTitle().copy().getString())
             .setDropShadow(false)
@@ -90,12 +97,16 @@ public class TitleBarWidget extends WidgetGroup {
     protected void onSizeUpdate() {
         this.width = getSize().getWidth() - (2 * HORIZONTAL_MARGIN);
 
-        mainSection.setSize(new Size(width, HEIGHT));
-        buttonGroup.setSize(new Size(width, innerHeight));
+        var hiddenButtons = 2;
+        if (showBackButton) hiddenButtons--;
+        if (showMenuButton) hiddenButtons--;
 
-        menuButton.setSelfPosition(new Position(width - BTN_WIDTH, BORDER_WIDTH));
+        int buttonGroupWidth = this.width - (BTN_WIDTH * hiddenButtons);
+        buttonGroup.setSize(new Size(buttonGroupWidth, innerHeight));
+        buttonGroup.setSelfPosition(new Position(showBackButton ? 0 : BTN_WIDTH, BORDER_WIDTH));
+        menuButton.setSelfPosition(new Position(buttonGroupWidth - BTN_WIDTH, BORDER_WIDTH));
 
-        int mainSectionWidth = this.width - (BTN_WIDTH * shownButtons);
+        int mainSectionWidth = this.width - (BTN_WIDTH * 2);
         int titleWidth = mainSectionWidth - (2 * BORDER_WIDTH) - innerHeight;
         mainSection.setSize(new Size(mainSectionWidth, HEIGHT));
         titleText.setWidth(titleWidth);
