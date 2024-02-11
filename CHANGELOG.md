@@ -14,4 +14,4 @@ Version: 1.1.3.a
 
 ### CHANGES:
 - replaced Tungstensteel coils with RTM-Alloy coils 
-- updated Russian translation
+- updated Russian and Chinese translations
