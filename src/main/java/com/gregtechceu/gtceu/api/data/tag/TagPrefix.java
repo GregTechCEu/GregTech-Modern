@@ -95,7 +95,7 @@ public class TagPrefix {
 
     public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Deepslate %s Ore")
-            .registerOre(Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F), new ResourceLocation("block/deepslate"));
+            .registerOre(Blocks.DEEPSLATE::defaultBlockState, () -> GTMaterials.Deepslate, BlockBehaviour.Properties.of().mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F), new ResourceLocation("block/deepslate"), false, false, true);
 
     public static final TagPrefix oreTuff = oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Tuff %s Ore")
@@ -597,9 +597,8 @@ public class TagPrefix {
             .generationCondition(material -> material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK))
             .unificationEnabled(true);
 
-    public static final TagPrefix plank = new TagPrefix("plank")
-        .defaultTagPath("planks/%s")
-        .unformattedTagPath("planks");
+    public static final TagPrefix planks = new TagPrefix("planks")
+        .unformattedTagPath("planks", true);
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
@@ -787,7 +786,11 @@ public class TagPrefix {
     }
 
     public TagPrefix unformattedTagPath(String path) {
-        this.tags.add(TagType.withNoFormatter(path));
+        return unformattedTagPath(path, false);
+    }
+
+    public TagPrefix unformattedTagPath(String path, boolean isVanilla) {
+        this.tags.add(TagType.withNoFormatter(path, isVanilla));
         return this;
     }
 

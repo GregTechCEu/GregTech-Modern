@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
+import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
@@ -81,6 +82,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
     private CompoundTag customUICache;
+    @Getter
+    private final GTRecipeLookup lookup = new GTRecipeLookup(this);
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
@@ -163,29 +166,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return null;
     }
 
-    public List<GTRecipe> searchFuelRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies() || !isFuelRecipeType()) return Collections.emptyList();
-        List<GTRecipe> matches = new ArrayList<>();
-        for (GTRecipe recipe : recipeManager.getAllRecipesFor(this)) {
-            if (recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess()) {
-                matches.add(recipe);
-            }
-        }
-        return matches;
+    @Nullable
+    public Iterator<GTRecipe> searchFuelRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
+        if (!holder.hasProxies() || !isFuelRecipeType()) return null;
+        return getLookup().getRecipeIterator(holder, recipe -> recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
     }
 
-    public List<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies()) return Collections.emptyList();
-        List<GTRecipe> matches = recipeManager.getAllRecipesFor(this).parallelStream()
-                .filter(recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess())
-                .collect(Collectors.toList());
-        for (List<GTRecipe> recipes : proxyRecipes.values()) {
-            var found = recipes.parallelStream()
-                    .filter(recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess())
-                    .toList();
-            matches.addAll(found);
-        }
-        return matches;
+    @Nullable
+    public Iterator<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
+        if (!holder.hasProxies()) return null;
+        return getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
     }
 
     public int getMaxInputs(RecipeCapability<?> cap) {

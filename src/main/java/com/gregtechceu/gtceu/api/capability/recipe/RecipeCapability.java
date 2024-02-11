@@ -2,17 +2,20 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
+import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Locale;
 
 /**
  * Used to detect whether a machine has a certain capability.
  */
-public class RecipeCapability<T> {
+public abstract class RecipeCapability<T> {
 
     public final String name;
     public final int color;
@@ -51,6 +54,19 @@ public class RecipeCapability<T> {
     }
 
     /**
+     * Convert the passed object to a list of recipe lookup filters.
+     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
+     * @return a list of recipe lookup filters.
+     */
+    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
+        return List.of();
+    }
+
+    public List<Object> compressIngredients(Collection<Object> ingredients) {
+        return new ArrayList<>(ingredients);
+    }
+
+    /**
      * used for recipe builder via KubeJs.
      */
     public T of(Object o) {
@@ -65,8 +81,16 @@ public class RecipeCapability<T> {
         return "%s_%s_%s".formatted(name, io.name().toLowerCase(Locale.ROOT), index);
     }
 
-    public Component getTraslateComponent() {
+    public Component getName() {
         return Component.translatable("recipe.capability.%s.name".formatted(name));
+    }
+
+    public boolean isRecipeSearchFilter() {
+        return false;
+    }
+
+    public boolean doAddGuiSlots() {
+        return isRecipeSearchFilter();
     }
 
      //TODO

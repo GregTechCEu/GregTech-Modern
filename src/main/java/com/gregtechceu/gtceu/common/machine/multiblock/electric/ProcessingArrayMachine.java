@@ -31,10 +31,10 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -52,6 +52,8 @@ import java.util.stream.Collectors;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
+@Deprecated(forRemoval = true)
+@ApiStatus.ScheduledForRemoval(inVersion = "1.2.0")
 public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine implements IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -230,6 +232,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Override
     public void addDisplayText(List<Component> textList) {
+        textList.add(Component.translatable("gtceu.universal.tooltip.deprecated"));
         super.addDisplayText(textList);
         if (isActive()) {
             textList.add(Component.translatable("gtceu.machine.machine_hatch.locked").withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
@@ -242,7 +245,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         if (widget instanceof WidgetGroup group) {
             var size = group.getSize();
             group.addWidget(new SlotWidget(machineStorage.storage, 0, size.width - 30, size.height - 30, true, true)
-                    .setBackground(GuiTextures.SLOT));
+                .setBackground(GuiTextures.SLOT));
         }
         return widget;
     }

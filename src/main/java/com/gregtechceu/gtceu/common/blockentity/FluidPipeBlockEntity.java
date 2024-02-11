@@ -41,6 +41,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.AABB;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
@@ -108,10 +109,12 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
     @Override
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == ForgeCapabilities.FLUID_HANDLER) {
-            PipeTankList tankList = getTankList(facing);
-            if (tankList == null)
-                return LazyOptional.empty();
-            return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(tankList)));
+            if (facing != null && isConnected(facing)) {
+                PipeTankList tankList = getTankList(facing);
+                if (tankList == null)
+                    return LazyOptional.empty();
+                return ForgeCapabilities.FLUID_HANDLER.orEmpty(capability, LazyOptional.of(() -> FluidTransferHelperImpl.toFluidHandler(tankList)));
+            }
         } else if (capability == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(capability, LazyOptional.of(this::getCoverContainer));
         } else if (capability == GTCapability.CAPABILITY_TOOLABLE) {
@@ -138,7 +141,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 int index = (i + j) % tanks;
                 FluidStorage tank = getFluidTanks()[index];
                 FluidStack fluid = tank.getFluid();
-                if (fluid.isEmpty())
+                if (fluid.isEmpty() || fluid.getFluid() == Fluids.EMPTY)
                     continue;
                 if (fluid.getAmount() <= 0) {
                     tank.setFluid(FluidStack.empty());
@@ -227,6 +230,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
             }
 
             FluidStack toInsert = fluid.copy();
+            if (toInsert.isEmpty() || toInsert.getFluid() == Fluids.EMPTY) continue;
             toInsert.setAmount(transaction.amount);
 
             long inserted = transaction.target.fill(toInsert, false);

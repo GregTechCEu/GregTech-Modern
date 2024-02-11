@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -67,9 +67,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Persisted @DescSynced @DropSaved
     protected int itemsStoredInside = 0;
     @Getter @Persisted @DescSynced @DropSaved
-    private int storedAmount = 0;
+    protected int storedAmount = 0;
     @Getter @Persisted @DescSynced @DropSaved @Nonnull
-    private ItemStack stored = ItemStack.EMPTY;
+    protected ItemStack stored = ItemStack.EMPTY;
     @Persisted @DropSaved
     protected final NotifiableItemStackHandler cache;
     @Nullable

@@ -384,16 +384,52 @@ public class GTMachines {
                     .register(),
             LV, MV, HV);
 
+    public static final MachineDefinition[] WORLD_ACCELERATOR = registerTieredMachines("world_accelerator", WorldAcceleratorMachine::new,
+        (tier, builder) -> builder
+            .rotationState(RotationState.NONE)
+            .langValue("%s World Accelerator %s".formatted(VLVH[tier], VLVT[tier]))
+            .recipeType(DUMMY_RECIPES)
+            .renderer(() -> new WorldAcceleratorRenderer(tier, GTCEu.id("block/machines/world_accelerator_te"),GTCEu.id("block/machines/world_accelerator")))
+            .tooltipBuilder((stack, tooltip) -> {
+                int randTickWorkingArea = 3+(tier-1)*2;
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.description"));
+
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]));
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L));
+
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area"));
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area_tile"));
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area_random",randTickWorkingArea,randTickWorkingArea));
+            })
+            .compassNode("world_accelerator")
+            .register(),
+        LV, MV, HV, EV, IV, LuV, ZPM, UV);
+
     //////////////////////////////////////
     //*********     Storage    *********//
     //////////////////////////////////////
-    public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("infinite_energy", CreativeEnergyContainerMachine::new)
-            .rotationState(RotationState.NONE)
-            .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
-                    Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
-                    Component.translatable("gtceu.creative_tooltip.3"))
-            .compassNodeSelf()
-            .register();
+    public final static MachineDefinition CREATIVE_ENERGY = REGISTRATE.machine("creative_energy", CreativeEnergyContainerMachine::new)
+        .rotationState(RotationState.NONE)
+        .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
+            Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
+            Component.translatable("gtceu.creative_tooltip.3"))
+        .compassNodeSelf()
+        .register();
+    public final static MachineDefinition CREATIVE_FLUID = REGISTRATE.machine("creative_tank", CreativeTankMachine::new)
+        .rotationState(RotationState.ALL)
+        .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
+            Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
+            Component.translatable("gtceu.creative_tooltip.3"))
+        .compassNodeSelf()
+        .register();
+    public final static MachineDefinition CREATIVE_ITEM = REGISTRATE.machine("creative_chest", CreativeChestMachine::new)
+        .rotationState(RotationState.ALL)
+        .tooltips(Component.translatable("gtceu.creative_tooltip.1"),
+            Component.translatable("gtceu.creative_tooltip.2").withStyle(style -> style.withColor(TooltipHelper.RAINBOW_SLOW.getCurrent())),
+            Component.translatable("gtceu.creative_tooltip.3"))
+        .compassNodeSelf()
+        .register();
+
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
         if (stack.hasTag()) {
@@ -1565,24 +1601,25 @@ public class GTMachines {
                             .aisle("XXX", "C#C", "XXX")
                             .aisle("XSX", "CCC", "XXX")
                             .where('S', Predicates.controller(blocks(definition.getBlock())))
-                            .where('X', blocks(ProcessingArrayMachine.getCasingState(tier)).setMinGlobalLimited(4)
-                                    .or(Predicates.abilities(PartAbility.IMPORT_ITEMS))
-                                    .or(Predicates.abilities(PartAbility.EXPORT_ITEMS))
-                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS))
-                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS))
-                                    .or(Predicates.abilities(PartAbility.INPUT_ENERGY))
-                                    .or(Predicates.abilities(PartAbility.OUTPUT_ENERGY))
+                            .where('X', blocks(ProcessingArrayMachine.getCasingState(tier))
+                                    .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.EXPORT_ITEMS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(4).setPreviewCount(1))
+                                    .or(Predicates.abilities(PartAbility.MACHINE_HATCH).setExactLimit(1))
                                     .or(Predicates.autoAbilities(true, false, false)))
                             .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
                             .build())
                     .tooltips(Component.translatable("gtceu.universal.tooltip.parallel", ProcessingArrayMachine.getMachineLimit(tier)))
-                    .renderer(() -> new ProcessingArrayMachineRenderer(tier == IV ?
+                    .workableCasingRenderer(tier == IV ?
                             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel") :
                             GTCEu.id("block/casings/solid/machine_casing_sturdy_hsse"),
-                            GTCEu.id("block/multiblock/processing_array")))
+                            GTCEu.id("block/multiblock/processing_array"))
                     .compassSections(GTCompassSections.TIER[IV])
                     .compassNode("processing_array")
+                    .tooltips(Component.translatable("gtceu.universal.tooltip.deprecated"))
                     .register(),
             IV, LuV) : null;
 

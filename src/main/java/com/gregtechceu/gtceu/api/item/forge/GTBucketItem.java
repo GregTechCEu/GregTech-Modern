@@ -3,9 +3,6 @@ package com.gregtechceu.gtceu.api.item.forge;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
-import com.gregtechceu.gtceu.client.renderer.item.GTBucketItemRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.nbt.CompoundTag;
@@ -26,22 +23,15 @@ import java.util.function.Supplier;
  * @date 2023/3/28
  * @implNote GTBucketItem
  */
-public class GTBucketItem extends BucketItem implements IItemRendererProvider {
+public class GTBucketItem extends BucketItem {
 
-    IRenderer renderer;
     final Material material;
     final String langKey;
 
-    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, boolean isGas, Material material, String langKey) {
+    public GTBucketItem(Supplier<? extends Fluid> fluid, Properties properties, Material material, String langKey) {
         super(fluid, properties);
-        this.renderer = isGas ? GTBucketItemRenderer.INSTANCE_GAS : GTBucketItemRenderer.INSTANCE;
         this.material = material;
         this.langKey = langKey;
-    }
-
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        return renderer;
     }
 
     public static int color(ItemStack itemStack, int index) {

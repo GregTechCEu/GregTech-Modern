@@ -218,6 +218,14 @@ public class MachineFunctionPresets {
                 return this;
             }
 
+            public MachineBuilder<D> noRecipeModifier() {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.noRecipeModifier();
+                }
+                return this;
+            }
+
             public MachineBuilder<D> tooltips(Component... tooltips) {
                 for (var builder : builders) {
                     if (builder == null) continue;

@@ -1,6 +1,17 @@
 # ChangeLog
 
-Version: 1.1.2.a
+Version: 1.1.3.a
+
+### ADDITIONS:
+- added Creative Chest, Creative Tank
 
 ### FIXES:
-- fixed crash when opening a GUI with many slots
+- fixed crashes related to KubeJS recipe loading
+- fixed ore block maceration not working
+- fixed high tier tools (duranium, neutronium) not working
+- fixed electric furnace / multismelter recipes not working
+- fixed transformers always having 1A storage
+
+### CHANGES:
+- replaced Tungstensteel coils with RTM-Alloy coils 
+- updated Russian translation

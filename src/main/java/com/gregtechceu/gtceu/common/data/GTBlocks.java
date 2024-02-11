@@ -551,7 +551,7 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
     public static final BlockEntry<CoilBlock> COIL_KANTHAL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
     public static final BlockEntry<CoilBlock> COIL_NICHROME = createCoilBlock(CoilBlock.CoilType.NICHROME);
-    public static final BlockEntry<CoilBlock> COIL_TUNGSTENSTEEL = createCoilBlock(CoilBlock.CoilType.TUNGSTENSTEEL);
+    public static final BlockEntry<CoilBlock> COIL_RTMALLOY = createCoilBlock(CoilBlock.CoilType.RTMALLOY);
     public static final BlockEntry<CoilBlock> COIL_HSSG = createCoilBlock(CoilBlock.CoilType.HSSG);
     public static final BlockEntry<CoilBlock> COIL_NAQUADAH = createCoilBlock(CoilBlock.CoilType.NAQUADAH);
     public static final BlockEntry<CoilBlock> COIL_TRINIUM = createCoilBlock(CoilBlock.CoilType.TRINIUM);
@@ -847,10 +847,10 @@ public class GTBlocks {
                                                     .hasProperty(RubberLogBlock.NATURAL, true)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
-            .tag(BlockTags.LOGS)
+            .tag(BlockTags.LOGS_THAT_BURN)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS)
+            .tag(ItemTags.LOGS_THAT_BURN)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -880,7 +880,7 @@ public class GTBlocks {
             .lang("Rubber Leaves")
             .blockstate((ctx, prov) -> createModelBlockState(ctx, prov, GTCEu.id("block/rubber_leaves")))
             .loot((table, block) -> table.add(block, table.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
-            .tag(BlockTags.LEAVES)
+            .tag(BlockTags.LEAVES, BlockTags.MINEABLE_WITH_HOE)
             .color(() -> GTBlocks::leavesBlockColor)
             .item()
             .color(() -> GTBlocks::leavesItemColor)

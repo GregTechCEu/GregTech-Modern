@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
@@ -22,6 +23,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.Comparator;
@@ -48,12 +50,28 @@ public class VanillaRecipeHelper {
         addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
     }
 
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, Ingredient input, ItemStack output, float experience) {
+        addSmeltingRecipe(provider, GTCEu.id(regName), input, output, experience);
+    }
+
+    public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, Ingredient input, ItemStack output, float experience) {
+        new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+    }
+
     public static void addSmeltingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, TagKey<Item> input, ItemStack output, float experience) {
         addBlastingRecipe(provider, GTCEu.id(regName), input, output, experience);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull String regName, Ingredient input, ItemStack output, float experience) {
+        addBlastingRecipe(provider, GTCEu.id(regName), input, output, experience);
+    }
+
+    public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, Ingredient input, ItemStack output, float experience) {
+        new BlastingRecipeBuilder(regName).input(input).output(output).cookingTime(100).experience(experience).save(provider);
     }
 
     public static void addBlastingRecipe(Consumer<FinishedRecipe> provider, @Nonnull ResourceLocation regName, TagKey<Item> input, ItemStack output, float experience) {
@@ -297,6 +315,14 @@ public class VanillaRecipeHelper {
             }
         }
         builder.save(provider);
+    }
+
+    /**
+     * @param material the material to check
+     * @return if the material is a wood
+     */
+    public static boolean isMaterialWood(@Nullable Material material) {
+        return material != null && material.hasProperty(PropertyKey.WOOD);
     }
 
 

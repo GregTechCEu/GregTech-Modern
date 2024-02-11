@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -76,7 +76,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Persisted @Getter @Setter
     private boolean isVoiding;
     @Persisted @DescSynced @Getter
-    private final FluidStorage lockedFluid;
+    protected final FluidStorage lockedFluid;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxStoredFluids, Object... args) {
         super(holder, tier);

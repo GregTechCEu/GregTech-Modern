@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
@@ -30,6 +31,7 @@ import dev.latvian.mods.kubejs.recipe.component.BooleanComponent;
 import dev.latvian.mods.kubejs.recipe.component.TimeComponent;
 import dev.latvian.mods.kubejs.recipe.schema.RecipeSchema;
 import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.nbt.CompoundTag;
@@ -55,11 +57,14 @@ public interface GTRecipeSchema {
         public float chance = 1;
         @Setter
         public float tierChanceBoost = 0;
+        @Getter
+        private ResourceLocation idWithoutType;
 
         @HideFromJS
         @Override
         public GTRecipeJS id(ResourceLocation _id) {
-            this.id = new ResourceLocation(_id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), _id.getPath()));
+            this.idWithoutType = new ResourceLocation(_id.getNamespace().equals("minecraft") ? this.type.id.getNamespace() : _id.getNamespace(), _id.getPath());
+            this.id = new ResourceLocation(idWithoutType.getNamespace(), "%s/%s".formatted(this.type.id.getPath(), idWithoutType.getPath()));
             return this;
         }
 
@@ -267,7 +272,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
-            return notConsumable(InputItem.of(NBTIngredient.createNBTIngredient(IntCircuitBehaviour.stack(configuration)), 1));
+            return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
@@ -468,9 +473,9 @@ public interface GTRecipeSchema {
          */
 
         public InputItem readInputItem(Object from) {
-            if(from instanceof SizedIngredient ingr) {
+            if (from instanceof SizedIngredient ingr) {
                 return InputItem.of(ingr.getInner(), ingr.getAmount());
-            } else if(from instanceof JsonObject jsonObject) {
+            } else if (from instanceof JsonObject jsonObject) {
                 if (!jsonObject.has("type") || !jsonObject.get("type").getAsString().equals(SizedIngredient.TYPE.toString())) {
                     return InputItem.of(from);
                 }

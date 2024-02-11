@@ -6,13 +6,16 @@ import com.gregtechceu.gtceu.client.ClientCommands;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
+import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
 import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
 import net.minecraftforge.client.event.RenderHighlightEvent;
+import net.minecraftforge.client.event.RenderLevelStageEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -28,6 +31,14 @@ import java.util.List;
 @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class ForgeClientEventListener {
+
+    @SubscribeEvent
+    public static void onRenderLevelStageEvent(RenderLevelStageEvent event) {
+        if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
+            // to render the preview after block entities, before the translucent. so it can be seen through the transparent blocks.
+            MultiblockInWorldPreviewRenderer.renderInWorldPreview(event.getPoseStack(), event.getCamera(), event.getPartialTick());
+        }
+    }
 
     @SubscribeEvent
     public static void onBlockHighlightEvent(RenderHighlightEvent.Block event) {
@@ -50,6 +61,7 @@ public class ForgeClientEventListener {
     public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
         if (event.phase == TickEvent.Phase.END) {
             TooltipHelper.onClientTick();
+            MultiblockInWorldPreviewRenderer.onClientTick();
             GTValues.CLIENT_TIME++;
         }
     }

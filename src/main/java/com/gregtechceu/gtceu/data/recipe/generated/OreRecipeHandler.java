@@ -32,12 +32,12 @@ public class OreRecipeHandler {
     // Make sure to update OreByProduct jei page with any byproduct changes made here!
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         for (TagPrefix ore : ORES.keySet()) {
             if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
                 ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
             }
         }
+        ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOreForgeHammer(tagPrefix, material, property, provider));
 
         rawOre.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processRawOre(tagPrefix, material, property, provider));
 
@@ -62,6 +62,24 @@ public class OreRecipeHandler {
         }
     }
 
+    public static void processOreForgeHammer(TagPrefix orePrefix, Material material, OreProperty property, Consumer<FinishedRecipe> provider) {
+        ItemStack crushedStack = ChemicalHelper.get(crushed, material);
+        int amountOfCrushedOre = property.getOreMultiplier();
+        int oreTypeMultiplier = TagPrefix.ORES.get(orePrefix).isDoubleDrops() ? 2 : 1;
+        crushedStack.setCount(crushedStack.getCount() * property.getOreMultiplier());
+
+        String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
+        GTRecipeBuilder builder = FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_raw_ore")
+            .inputItems(orePrefix, material)
+            .duration(10).EUt(16);
+        if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
+            builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
+        } else {
+            builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, crushedStack));
+        }
+        builder.save(provider);
+    }
+
     public static void processOre(TagPrefix orePrefix, Material material, OreProperty property, Consumer<FinishedRecipe> provider) {
         Material byproductMaterial = GTUtil.selectItemInList(0, material, property.getOreByProducts(), Material.class);
         ItemStack ingotStack;
@@ -83,17 +101,7 @@ public class OreRecipeHandler {
 
         String prefixString = orePrefix == ore ? "" : orePrefix.name + "_";
         if (!crushedStack.isEmpty()) {
-            GTRecipeBuilder builder = FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + prefixString + material.getName() + "_ore_to_raw_ore")
-                    .inputItems(orePrefix, material)
-                    .duration(10).EUt(16);
-            if (material.hasProperty(PropertyKey.GEM) && !gem.isIgnored(material)) {
-                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, ChemicalHelper.get(gem, material, crushedStack.getCount())));
-            } else {
-                builder.outputItems(GTUtil.copyAmount(amountOfCrushedOre * oreTypeMultiplier, crushedStack));
-            }
-            builder.save(provider);
-
-            builder = MACERATOR_RECIPES.recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_raw_ore")
+            GTRecipeBuilder builder = MACERATOR_RECIPES.recipeBuilder("macerate_" + prefixString + material.getName() + "_ore_to_raw_ore")
                     .inputItems(IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])))
                     .outputItems(GTUtil.copyAmount(amountOfCrushedOre * 2 * oreTypeMultiplier, crushedStack))
                     .chancedOutput(byproductStack, 1400, 850)
@@ -114,9 +122,9 @@ public class OreRecipeHandler {
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + oreTypeMultiplier * 0.5f) * 0.5f - 0.05f) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])), ingotStack, xp);
             VanillaRecipeHelper.addBlastingRecipe(provider, "smelt_" + prefixString + material.getName() + "_ore_to_ingot",
-                    ChemicalHelper.getTag(orePrefix, material), ingotStack, xp);
+                IntersectionIngredient.of(Ingredient.of(orePrefix.getItemTags(material)[0]), Ingredient.of(orePrefix.getItemParentTags()[0])), ingotStack, xp);
         }
     }
 

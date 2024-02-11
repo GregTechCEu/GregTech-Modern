@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:creative_tank"
+  },
+  "items": [
+    "gtceu:creative_tank"
+  ],
+  "page": "gtceu:machines/creative_tank",
+  "position": [
+    -200,
+    300
+  ],
+  "section": "gtceu:machines"
+}

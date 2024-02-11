@@ -72,9 +72,11 @@ public class ItemPipeBlockEntity extends PipeBlockEntity<ItemPipeType, ItemPipeP
             if (world.isClientSide())
                 return LazyOptional.empty();
 
-            ensureHandlersInitialized();
-            checkNetwork();
-            return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, true))));
+            if (side != null && isConnected(side)) {
+                ensureHandlersInitialized();
+                checkNetwork();
+                return ForgeCapabilities.ITEM_HANDLER.orEmpty(cap, LazyOptional.of(() -> ItemTransferHelperImpl.toItemHandler(getHandler(side, true))));
+            }
         } else if (cap == GTCapability.CAPABILITY_COVERABLE) {
             return GTCapability.CAPABILITY_COVERABLE.orEmpty(cap, LazyOptional.of(this::getCoverContainer));
         } else if (cap == GTCapability.CAPABILITY_TOOLABLE) {
