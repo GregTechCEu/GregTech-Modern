@@ -37,6 +37,8 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
 
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.POISON;
+
 public class Material implements Comparable<Material> {
 
     /**
@@ -1021,6 +1023,19 @@ public class Material implements Comparable<Material> {
             properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, eutOverride, durationOverride));
             return this;
         }
+        public Builder poison(PoisonProperty.PoisonType poisonType) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType));
+            return this;
+        }
+
+        public Builder poison(int damage, PoisonProperty.PoisonType poisonType) {
+            properties.setProperty(POISON, new PoisonProperty(damage, poisonType));
+            return this;
+        }
+        public Builder poison(int damage, PoisonProperty.PoisonType poisonType, boolean applyToDerivatives) {
+            properties.setProperty(POISON, new PoisonProperty(damage, poisonType, applyToDerivatives));
+            return this;
+        }
 
         public Builder ore() {
             properties.ensureSet(PropertyKey.ORE);
@@ -1137,6 +1152,9 @@ public class Material implements Comparable<Material> {
 
         public Material buildAndRegister() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ? ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack).toArray(MaterialStack[]::new)) : ImmutableList.copyOf(composition);
+            for (MaterialStack materialStack: materialInfo.componentList)
+                if(materialStack.material().getProperties().hasProperty(POISON) && materialStack.material().getProperties().getProperty(POISON).isApplyToDerivatives())
+                    properties.setProperty(POISON,materialStack.material().getProperties().getProperty(POISON));
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
@@ -25,6 +26,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.POISON;
 
 /**
  * @author KilaBash
@@ -99,7 +102,13 @@ public class TagPrefixItem extends Item {
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
 
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) return;
+
+                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) {
+                    if(!material.hasProperty(POISON) || !material.getProperty(POISON).getPoisonType().isAffected(tagPrefix)) return;
+                    //TODO protective equipment
+                    EntityDamageUtil.applyChemicalDamage(livingEntity, material.getProperty(POISON).getDamage());
+                    return;
+                }
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);

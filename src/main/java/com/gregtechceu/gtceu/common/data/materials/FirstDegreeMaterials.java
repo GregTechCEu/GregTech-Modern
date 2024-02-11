@@ -4,12 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PoisonProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -46,6 +46,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
