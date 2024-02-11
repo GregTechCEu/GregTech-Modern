@@ -31,8 +31,8 @@ public class MaterialInfoLoader {
                         new MaterialStack(GTMaterials.StainlessSteel, M * 2), // foil
                         new MaterialStack(GTMaterials.Aluminium, M)) // ingot
         );
-        ChemicalHelper.registerMaterialInfo(GTBlocks.COIL_TUNGSTENSTEEL.get(),
-                new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, M * 8), // double wire
+        ChemicalHelper.registerMaterialInfo(GTBlocks.COIL_RTMALLOY.get(),
+                new ItemMaterialInfo(new MaterialStack(GTMaterials.RTMAlloy, M * 8), // double wire
                         new MaterialStack(GTMaterials.VanadiumSteel, M * 2), // foil
                         new MaterialStack(GTMaterials.Nichrome, M)) // ingot
         );
