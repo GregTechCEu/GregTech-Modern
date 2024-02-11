@@ -70,6 +70,10 @@ public class TabsWidget extends Widget {
         }
     }
 
+    public void clearSubTabs() {
+        subTabs.clear();
+    }
+
     public void attachSubTab(IFancyUIProvider subTab) {
         subTabs.add(subTab);
     }
