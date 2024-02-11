@@ -74,14 +74,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
 
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import java.util.Map;
-import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -344,13 +340,11 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
     @Override
     public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager, Map<ResourceLocation, Recipe<?>> recipesByName) {
-
-
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
             if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
                 // get the recipe ID without the leading type path
-                GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id)).recipeBuilder(new ResourceLocation(gtRecipe.id.getNamespace(), gtRecipe.id.getPath().split(Pattern.quote(gtRecipe.type.id.getPath()) + "/")[1]));
+                GTRecipeBuilder builder = ((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(gtRecipe.type.id)).recipeBuilder(gtRecipe.idWithoutType());
 
                 if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
                     builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
@@ -413,11 +407,14 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     }
                 }
 
-                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == gtRecipeType).collect(Collectors.toSet())) {
-                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
-                        gtRecipeType.getLookup().addRecipe(gtRecipe);
-                    }
-                }
+                Stream.concat(
+                    recipesByName.values().stream()
+                        .filter(recipe -> recipe.getType() == gtRecipeType),
+                        proxyRecipes.entrySet().stream()
+                            .flatMap(entry -> entry.getValue().stream()))
+                    .filter(GTRecipe.class::isInstance)
+                    .map(GTRecipe.class::cast)
+                    .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
             }
         }
     }

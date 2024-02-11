@@ -56,14 +56,11 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
-    @Getter
-    protected final ItemHandlerProxyRecipeTrait combinedInventory;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitInventory = createCircuitItemHandler(io);
-        this.combinedInventory = createCombinedItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -91,14 +88,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         }
     }
 
-    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
-        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
-        } else {
-            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
-        }
-    }
-
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
         clearInventory(drops, getInventory().storage);
@@ -115,8 +104,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
-
-        combinedInventory.recomputeEnabledState();
     }
 
     @Override
@@ -137,7 +124,6 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public void setDistinct(boolean isDistinct) {
         getInventory().setDistinct(isDistinct);
         circuitInventory.setDistinct(isDistinct);
-        combinedInventory.setDistinct(isDistinct);
     }
 
     //////////////////////////////////////
