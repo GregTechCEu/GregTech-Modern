@@ -31,7 +31,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
-import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
@@ -119,6 +118,17 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void remapIds(MissingMappingsEvent event) {
+        event.getMappings(Registry.BLOCK.key(), GTCEu.MOD_ID).forEach(mapping -> {
+            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
+                mapping.remap(GTBlocks.COIL_RTMALLOY.get());
+            }
+        });
+        event.getMappings(Registry.ITEM.key(), GTCEu.MOD_ID).forEach(mapping -> {
+            if (mapping.getKey().equals(GTCEu.id("tungstensteel_coil_block"))) {
+                mapping.remap(GTBlocks.COIL_RTMALLOY.get().asItem());
+            }
+        });
+
         for (TagPrefix prefix : TagPrefix.values()) {
             String first = prefix.invertedName ? toLowerCaseUnder(prefix.name) : "(.+?)";
             String last = prefix.invertedName ? "(.+?)" : toLowerCaseUnder(prefix.name);

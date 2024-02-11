@@ -1,14 +1,14 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:infinite_energy"
+    "res": "gtceu:creative_chest"
   },
   "items": [
-    "gtceu:infinite_energy"
+    "gtceu:creative_chest"
   ],
-  "page": "gtceu:machines/infinite_energy",
+  "page": "gtceu:machines/creative_chest",
   "position": [
-    -300,
+    -200,
     300
   ],
   "section": "gtceu:machines"

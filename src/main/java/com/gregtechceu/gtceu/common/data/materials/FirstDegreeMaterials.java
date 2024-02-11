@@ -481,6 +481,15 @@ public class FirstDegreeMaterials {
                 .components(Potassium, 1, Chlorine, 1)
                 .buildAndRegister();
 
+        RTMAlloy = new Material.Builder(GTCEu.id("rtm_alloy"))
+            .ingot().fluid()
+            .color(0x30306B).iconSet(SHINY)
+            .components(Ruthenium, 4, Tungsten, 2, Molybdenum, 1)
+            .flags(GENERATE_SPRING)
+            .cableProperties(V[EV],6,2)
+            .blastTemp(3000, GasTier.MID, GTValues.VA[GTValues.EV], 1400)
+            .buildAndRegister();
+
         Ruridit = new Material.Builder(GTCEu.id("ruridit"))
                 .ingot(3)
                 .color(0xFFFFFF).secondaryColor(0xc5c5c5).iconSet(BRIGHT)

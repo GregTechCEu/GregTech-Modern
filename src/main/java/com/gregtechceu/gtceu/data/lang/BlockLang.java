@@ -12,8 +12,11 @@ public class BlockLang {
 
     private static void initCasingLang(RegistrateLangProvider provider) {
 
+
+
         // Coils
         replace(provider, "block.gtceu.hssg_coil_block", "HSS-G Coil Block");
+        replace(provider, "block.gtceu.rtm_alloy_coil_block", "RTM Alloy Coil Block");
 
         replace(provider, "block.gtceu.wire_coil.tooltip_extended_info", "§7Hold SHIFT to show Coil Bonus Info");
         replace(provider, "block.gtceu.wire_coil.tooltip_heat", "§cBase Heat Capacity: §f%d K");

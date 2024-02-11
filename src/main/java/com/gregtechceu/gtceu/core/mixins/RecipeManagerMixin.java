@@ -19,6 +19,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Stream;
 
 // only fires if KJS is NOT loaded.
 @Mixin(RecipeManager.class)
@@ -37,15 +38,26 @@ public abstract class RecipeManagerMixin {
                     var type = entry.getKey();
                     var recipes = entry.getValue();
                     recipes.clear();
-                    for (var recipe : this.recipes.get(type).entrySet()) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                    if (this.recipes.containsKey(type)) {
+                        for (var recipe : this.recipes.get(type).entrySet()) {
+                            recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                        }
                     }
                 }
 
-                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : this.recipes.get(gtRecipeType).entrySet()) {
-                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
-                        gtRecipeType.getLookup().addRecipe(gtRecipe);
-                    }
+                if (this.recipes.containsKey(gtRecipeType)) {
+                    Stream.concat(
+                            this.recipes.get(gtRecipeType).values().stream(),
+                            proxyRecipes.entrySet().stream()
+                                .flatMap(entry -> entry.getValue().stream()))
+                        .filter(GTRecipe.class::isInstance)
+                        .map(GTRecipe.class::cast)
+                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
+                } else if (!proxyRecipes.isEmpty()) {
+                    proxyRecipes.values().stream()
+                        .filter(GTRecipe.class::isInstance)
+                        .map(GTRecipe.class::cast)
+                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
                 }
             }
         }

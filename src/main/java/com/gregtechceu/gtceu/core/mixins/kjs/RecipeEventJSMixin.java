@@ -23,12 +23,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * @author KilaBash
@@ -45,12 +43,12 @@ public class RecipeEventJSMixin {
      * Cuz KJS does a mixin {@link dev.latvian.mods.kubejs.core.mixin.common.RecipeManagerMixin} which breaks what we do {@link com.gregtechceu.gtceu.core.mixins.RecipeManagerMixin}.
      */
     @Inject(method = "post", at = @At(value = "RETURN"), remap = false)
-    public void injectPost(RecipeManager recipeManager, Map<ResourceLocation, JsonObject> jsonMap, CallbackInfo ci, @Local(ordinal = 0) Map<ResourceLocation, Recipe<?>> recipesByName) {
+    public void injectPost(RecipeManager recipeManager, Map<ResourceLocation, JsonObject> jsonMap, CallbackInfo ci, @Local(ordinal = 0) HashMap<ResourceLocation, Recipe<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesEventJS.runInParallel((() -> addedRecipes.forEach(recipe -> {
             if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
                 // get the recipe ID without the leading type path
-                GTRecipeBuilder builder = ((GTRecipeType) Registry.RECIPE_TYPE.get(gtRecipe.type.id)).recipeBuilder(new ResourceLocation(gtRecipe.id.getNamespace(), gtRecipe.id.getPath().split(Pattern.quote(gtRecipe.type.id.getPath()) + "/")[1]));
+                GTRecipeBuilder builder = ((GTRecipeType) Registry.RECIPE_TYPE.get(gtRecipe.type.id)).recipeBuilder(gtRecipe.idWithoutType());
 
                 if (gtRecipe.getValue(GTRecipeSchema.DURATION) != null) {
                     builder.duration = gtRecipe.getValue(GTRecipeSchema.DURATION).intValue();
@@ -113,11 +111,12 @@ public class RecipeEventJSMixin {
                     }
                 }
 
-                for (Map.Entry<ResourceLocation, Recipe<?>> recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == gtRecipeType).collect(Collectors.toSet())) {
-                    if (recipe.getValue() instanceof GTRecipe gtRecipe) {
-                        gtRecipeType.getLookup().addRecipe(gtRecipe);
-                    }
-                }
+                Stream.concat(
+                        recipesByName.values().stream().filter(recipe -> recipe.getType() == gtRecipeType),
+                        proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream()))
+                    .filter(GTRecipe.class::isInstance)
+                    .map(GTRecipe.class::cast)
+                    .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
             }
         }
     }
