@@ -72,16 +72,16 @@ public class TitleBarWidget extends WidgetGroup {
         ));
     }
 
-    public void setTitle(IFancyUIProvider uiProvider, boolean showBackButton, boolean showMenuButton) {
+    public void updateState(IFancyUIProvider currentPage, boolean showBackButton, boolean showMenuButton) {
         this.showBackButton = showBackButton;
         this.showMenuButton = showMenuButton;
 
-        titleText = new TextTexture(ChatFormatting.BLACK.toString() + uiProvider.getTitle().copy().getString())
+        titleText = new TextTexture(ChatFormatting.BLACK.toString() + currentPage.getTitle().copy().getString())
             .setDropShadow(false)
             .setType(TextTexture.TextType.ROLL_ALWAYS);
         titleText.setRollSpeed(ROLL_SPEED);
 
-        tabIcon.setImage(uiProvider.getTabIcon());
+        tabIcon.setImage(currentPage.getTabIcon());
         tabTitle.setImage(titleText);
 
         backButton.setVisible(showBackButton);
