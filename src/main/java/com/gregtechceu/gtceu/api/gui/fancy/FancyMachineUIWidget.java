@@ -198,7 +198,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
         }
         this.sideTabsWidget.setSize(new Size(24, size.height));
         this.pageContainer.setSize(size);
-        this.tooltipsPanel.setSelfPosition(new Position(-20, -20));
+        this.tooltipsPanel.setSelfPosition(new Position(size.width + 2, 2));
 
         setupInventoryPosition(showInventory, size);
 
