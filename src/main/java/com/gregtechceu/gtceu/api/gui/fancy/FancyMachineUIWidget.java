@@ -11,7 +11,11 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import lombok.Getter;
 import lombok.Setter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
+import java.util.Stack;
 
 /**
  * @author KilaBash
@@ -23,7 +27,6 @@ public class FancyMachineUIWidget extends WidgetGroup {
     protected final IFancyUIProvider fancyUIProvider;
 
     protected final TitleBarWidget titleBar;
-    //protected final TabsWidget tabsWidget;
     protected final VerticalTabsWidget sideTabsWidget;
     protected final WidgetGroup pageContainer;
     protected final ConfiguratorPanel configuratorPanel;
@@ -33,6 +36,12 @@ public class FancyMachineUIWidget extends WidgetGroup {
     protected final PlayerInventoryWidget playerInventory;
     @Setter
     protected int border = 4;
+
+    private IFancyUIProvider mainTab;
+    private List<IFancyUIProvider> subTabs;
+
+    private Stack<IFancyUIProvider> previousPages = new Stack<>();
+    private IFancyUIProvider currentPage;
 
     public FancyMachineUIWidget(IFancyUIProvider fancyUIProvider, int width, int height) {
         super(0, 0, width, height);
@@ -47,8 +56,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
         }
 
         addWidget(this.titleBar = new TitleBarWidget(width, this::navigateBack, this::openPartSelector));
-        //addWidget(this.tabsWidget = new TabsWidget(this::onTabSwitch));
-        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::onTabSwitch, -20, 0, 24, height));
+        addWidget(this.sideTabsWidget = new VerticalTabsWidget(this::navigate, -20, 0, 24, height));
         addWidget(this.tooltipsPanel = new TooltipsPanel());
         addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));
 
@@ -59,25 +67,27 @@ public class FancyMachineUIWidget extends WidgetGroup {
         // TODO
     }
 
-    private void navigateBack(ClickData clickData) {
-        // TODO
-    }
-
     @Override
     public void initWidget() {
         super.initWidget();
         if (this.playerInventory != null) {
             this.playerInventory.setPlayer(gui.entityPlayer);
         }
+
+        this.mainTab = this.fancyUIProvider;
+        this.subTabs = this.fancyUIProvider.getSubTabs();
+
         setupFancyUI(this.fancyUIProvider);
-        //this.fancyUIProvider.setupTabs(tabsWidget);
+        this.currentPage = this.fancyUIProvider;
         this.fancyUIProvider.attachSideTabs(sideTabsWidget);
     }
 
     public void setupFancyUI(IFancyUIProvider fancyUI) {
         clearUI();
 
-        titleBar.setTitle(fancyUIProvider, true, true);
+        sideTabsWidget.selectTab(fancyUI);
+        titleBar.setTitle(fancyUIProvider, !this.previousPages.isEmpty(), !this.subTabs.isEmpty());
+
         var mainPage = fancyUI.createMainPage(this);
 
         // layout
@@ -86,7 +96,6 @@ public class FancyMachineUIWidget extends WidgetGroup {
         if (LDLib.isRemote() && getGui() != null) {
             getGui().setSize(getSize().width, getSize().height);
         }
-        //this.tabsWidget.setSize(new Size(size.width, 24));
         this.sideTabsWidget.setSize(new Size(24, size.height));
         this.pageContainer.setSize(size);
         this.tooltipsPanel.setSelfPosition(new Position(-20, -20));
@@ -112,7 +121,20 @@ public class FancyMachineUIWidget extends WidgetGroup {
         this.tooltipsPanel.clear();
     }
 
-    private void onTabSwitch(IFancyUIProvider newTab) {
-        setupFancyUI(newTab);
+    private void navigate(@NotNull IFancyUIProvider newPage) {
+        if (!this.previousPages.isEmpty() && this.previousPages.peek() == newPage) {
+            // In case the user manually navigates back one step, just remove it from the navigation stack
+            this.previousPages.pop();
+        } else if (this.currentPage != null) {
+            this.previousPages.push(this.currentPage);
+        }
+
+        this.currentPage = newPage;
+        setupFancyUI(newPage);
+    }
+
+    private void navigateBack(ClickData clickData) {
+        this.currentPage = previousPages.pop();
+        setupFancyUI(this.currentPage);
     }
 }
