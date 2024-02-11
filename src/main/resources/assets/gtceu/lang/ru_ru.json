@@ -6473,5 +6473,15 @@
     "config.gtceu.option.defaultUIColor": "defaultUIColor",
     "gtceu.universal.tooltip.deprecated": "§5ВНИМАНИЕ: УСТАРЕЛО. БУДЕТ УДАЛЕН В БУДУЩЕЙ ВЕРСИИ.§r",
     "gtceu.gui.machinemode": "Режим машины:%s",
-    "tagprefix.planks": "Доска (%s)"
+    "tagprefix.planks": "Доска (%s)",
+    "block.gtceu.creative_energy": "Творческий источник энергии",
+    "block.gtceu.rtm_alloy_coil_block": "Катушка из РВМ Сплава",
+    "compass.node.gtceu.machines/creative_energy": "Творческий источник энергии",
+    "compass.node.gtceu.machines/creative_tank": "Творческий резервуар",
+    "config.gtceu.option.inWorldPreviewDuration": "inWorldPreviewDuration",
+    "block.gtceu.creative_chest": "Творческий сундук",
+    "block.gtceu.creative_tank": "Творческий резервуар",
+    "compass.node.gtceu.machines/creative_chest": "Творческий сундук",
+    "config.gtceu.option.animationTime": "animationTime",
+    "material.gtceu.rtm_alloy": "РВМ Сплав"
 }
