@@ -28,6 +28,8 @@ import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
@@ -1023,23 +1025,36 @@ public class Material implements Comparable<Material> {
             properties.setProperty(PropertyKey.BLAST, new BlastProperty(temp, gasTier, eutOverride, durationOverride));
             return this;
         }
+
+
+        public Builder poison(PoisonProperty.PoisonType poisonType, PoisonProperty.ChemicalEffect effect, PoisonProperty.ChemicalDamage damage, boolean applyToDerivatives) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, effect, damage, applyToDerivatives));
+            return this;
+        }
+        public Builder poison(PoisonProperty.PoisonType poisonType, PoisonProperty.ChemicalEffect effect, PoisonProperty.ChemicalDamage damage) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, effect, damage, true));
+            return this;
+        }
+        public Builder poison(PoisonProperty.PoisonType poisonType, PoisonProperty.ChemicalEffect effect, boolean applyToDerivatives) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, effect, null, applyToDerivatives));
+            return this;
+        }
+        public Builder poison(PoisonProperty.PoisonType poisonType, PoisonProperty.ChemicalDamage damage, boolean applyToDerivatives) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, null, damage, applyToDerivatives));
+            return this;
+        }
+
+        public Builder poison(PoisonProperty.PoisonType poisonType, PoisonProperty.ChemicalEffect effect) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, effect, null, true));
+            return this;
+        }
+        public Builder poison(PoisonProperty.PoisonType poisonType, PoisonProperty.ChemicalDamage damage) {
+            properties.setProperty(POISON, new PoisonProperty(poisonType, null, damage, true));
+            return this;
+        }
+
         public Builder poison(PoisonProperty.PoisonType poisonType) {
-            properties.setProperty(POISON, new PoisonProperty(poisonType));
-            return this;
-        }
-
-        public Builder poison(int damage, PoisonProperty.PoisonType poisonType) {
-            properties.setProperty(POISON, new PoisonProperty(damage, poisonType));
-            return this;
-        }
-
-        public Builder poison(PoisonProperty.PoisonType poisonType, boolean applyToDerivativese) {
-            properties.setProperty(POISON, new PoisonProperty(poisonType, applyToDerivativese));
-            return this;
-        }
-
-        public Builder poison(int damage, PoisonProperty.PoisonType poisonType, boolean applyToDerivatives) {
-            properties.setProperty(POISON, new PoisonProperty(damage, poisonType, applyToDerivatives));
+            properties.setProperty(POISON, new PoisonProperty(poisonType, new PoisonProperty.ChemicalEffect(200, MobEffects.POISON), new PoisonProperty.ChemicalDamage(2,1), true));
             return this;
         }
 

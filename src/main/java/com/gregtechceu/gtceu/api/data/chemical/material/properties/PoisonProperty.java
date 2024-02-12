@@ -3,46 +3,51 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 import lombok.Getter;
+import net.minecraft.world.effect.MobEffect;
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.LivingEntity;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class PoisonProperty implements IMaterialProperty<PoisonProperty>{
+
     @Getter
-    private final int damage;
+    @Nullable
+    private final ChemicalDamage damage;
+
+    @Getter
+    @Nullable
+    private final ChemicalEffect effect;
+
     @Getter
     private final PoisonType poisonType;
+
     @Getter
     private final boolean applyToDerivatives;
 
-    public PoisonProperty(int damage, PoisonType poisonType, boolean applyToDerivatives) {
+
+
+    public PoisonProperty(PoisonType poisonType, @Nullable ChemicalEffect effect, @Nullable ChemicalDamage damage, boolean applyToDerivatives) {
         this.damage = damage;
         this.poisonType = poisonType;
         this.applyToDerivatives = applyToDerivatives;
+        this.effect = effect;
     }
+    public PoisonProperty(PoisonType poisonType, ChemicalDamage damage) {this(poisonType,null,damage,true);}
 
-    public PoisonProperty(PoisonType poisonType, boolean applyToDerivatives) {
-        this(2,poisonType,applyToDerivatives);
-    }
 
-    public PoisonProperty(int damage, PoisonType poisonType) {
-        this(damage,poisonType,true);
-    }
-
-    public PoisonProperty(PoisonType poisonType) {
-        this(2,poisonType,true);
-    }
     /**
      * Default property constructor.
      */
     public PoisonProperty(){
-        this(0,PoisonType.CONTACT,false);
+        this(PoisonType.CONTACT,null,null,false);
     }
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
-
     }
 
     public enum PoisonType{
@@ -59,4 +64,18 @@ public class PoisonProperty implements IMaterialProperty<PoisonProperty>{
             return affectedTagPrefixes.contains(prefix);
         }
     }
+
+    /**
+     * @param delay damage is applied every X seconds
+     */
+    public record ChemicalDamage( int damage, int delay){}
+    public record ChemicalEffect( int duration, MobEffect... effects){
+        public void apply(LivingEntity entity) {
+            for(MobEffect effect: effects)
+                entity.addEffect(new MobEffectInstance(effect,duration));
+
+        }
+
+    }
+
 }
