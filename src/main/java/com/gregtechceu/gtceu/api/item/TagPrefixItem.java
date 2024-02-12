@@ -3,12 +3,12 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PoisonProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
@@ -107,7 +107,15 @@ public class TagPrefixItem extends Item {
                 if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) {
                     if(!material.hasProperty(POISON) || !material.getProperty(POISON).getPoisonType().isAffected(tagPrefix)) return;
                     //TODO protective equipment
-                    EntityDamageUtil.applyChemicalDamage(livingEntity, material.getProperty(POISON).getDamage());
+
+
+                    PoisonProperty poisonProperty = material.getProperty(POISON);
+
+                    if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
+                        livingEntity.hurt(GTDamageTypes.CHEMICAL.source(level), poisonProperty.getDamage().damage());
+
+                    if(poisonProperty.getEffect()!=null)
+                        poisonProperty.getEffect().apply(livingEntity);
                     return;
                 }
 

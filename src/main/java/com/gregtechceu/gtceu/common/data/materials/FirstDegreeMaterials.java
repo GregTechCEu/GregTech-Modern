@@ -46,7 +46,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
-                .poison(PoisonProperty.PoisonType.INHALATION, false)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
@@ -1091,11 +1091,13 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x85FCFF)
                 .components(Nitrogen, 1, Oxygen, 2)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         HydrogenSulfide = new Material.Builder(GTCEu.id("hydrogen_sulfide"))
                 .gas(new FluidBuilder().customStill())
                 .components(Hydrogen, 2, Sulfur, 1)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         NitricAcid = new Material.Builder(GTCEu.id("nitric_acid"))
@@ -1122,12 +1124,14 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0xA0A014)
                 .components(Sulfur, 1, Oxygen, 3)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         SulfurDioxide = new Material.Builder(GTCEu.id("sulfur_dioxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Sulfur, 1, Oxygen, 2)
+                .poison(PoisonProperty.PoisonType.INHALATION)
                 .buildAndRegister();
 
         CarbonMonoxide = new Material.Builder(GTCEu.id("carbon_monoxide"))
@@ -1153,6 +1157,7 @@ public class FirstDegreeMaterials {
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x0088AA)
                 .components(Hydrogen, 1, Fluorine, 1)
+                .poison(PoisonProperty.PoisonType.CONTACT)
                 .buildAndRegister();
 
         NitricOxide = new Material.Builder(GTCEu.id("nitric_oxide"))
