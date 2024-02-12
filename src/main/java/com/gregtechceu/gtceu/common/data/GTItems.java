@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.google.common.collect.ArrayTable;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
@@ -59,7 +58,6 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -122,7 +120,7 @@ public class GTItems {
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
-                                .onRegister(GTItems::cauldronInteraction)
+
                                 .onRegister(item -> {
                                     switch (tagPrefix.name) {
                                         case "buzzSawBlade", "screwDriverTip", "drillHead", "chainSawHead", "wrenchTip", "turbineBlade" ->
@@ -130,6 +128,7 @@ public class GTItems {
                                         default ->
                                             CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
                                                 .iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
+
                                     }
                                 })
                                 .register());

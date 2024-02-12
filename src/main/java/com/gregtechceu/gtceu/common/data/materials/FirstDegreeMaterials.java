@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PoisonProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
@@ -46,7 +46,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
@@ -911,12 +911,14 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xff6000).secondaryColor(0xFF0000)
                 .components(Potassium, 2, Chromium, 2, Oxygen, 7)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         ChromiumTrioxide = new Material.Builder(GTCEu.id("chromium_trioxide"))
                 .dust(1)
                 .color(0xFFE4E1)
                 .components(Chromium, 1, Oxygen, 3)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         AntimonyTrioxide = new Material.Builder(GTCEu.id("antimony_trioxide"))
@@ -1091,13 +1093,13 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x85FCFF)
                 .components(Nitrogen, 1, Oxygen, 2)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         HydrogenSulfide = new Material.Builder(GTCEu.id("hydrogen_sulfide"))
                 .gas(new FluidBuilder().customStill())
                 .components(Hydrogen, 2, Sulfur, 1)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         NitricAcid = new Material.Builder(GTCEu.id("nitric_acid"))
@@ -1124,21 +1126,21 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0xA0A014)
                 .components(Sulfur, 1, Oxygen, 3)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         SulfurDioxide = new Material.Builder(GTCEu.id("sulfur_dioxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Sulfur, 1, Oxygen, 2)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         CarbonMonoxide = new Material.Builder(GTCEu.id("carbon_monoxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Carbon, 1, Oxygen, 1)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         HypochlorousAcid = new Material.Builder(GTCEu.id("hypochlorous_acid"))
@@ -1157,14 +1159,14 @@ public class FirstDegreeMaterials {
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x0088AA)
                 .components(Hydrogen, 1, Fluorine, 1)
-                .poison(PoisonProperty.PoisonType.CONTACT)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         NitricOxide = new Material.Builder(GTCEu.id("nitric_oxide"))
                 .gas()
                 .color(0x7DC8F0)
                 .components(Nitrogen, 1, Oxygen, 1)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
@@ -1200,7 +1202,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x7DC8FF)
                 .components(Nitrogen, 2, Oxygen, 1)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         EnderPearl = new Material.Builder(GTCEu.id("ender_pearl"))
@@ -1385,7 +1387,7 @@ public class FirstDegreeMaterials {
                 .color(0xACAD71).secondaryColor(0x291f34).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Osmium, 1, Oxygen, 4)
-                .poison(PoisonProperty.PoisonType.CONTACT)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         IridiumChloride = new Material.Builder(GTCEu.id("iridium_chloride"))

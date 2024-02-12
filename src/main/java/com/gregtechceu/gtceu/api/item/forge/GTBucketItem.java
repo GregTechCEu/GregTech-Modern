@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PoisonProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.nbt.CompoundTag;
@@ -13,6 +14,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.material.Fluid;
@@ -21,9 +23,10 @@ import net.minecraftforge.fluids.capability.wrappers.FluidBucketWrapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.List;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.POISON;
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 /**
  * @author KilaBash
@@ -66,6 +69,16 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        if (material.hasProperty(HAZARD)){
+            tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
+            if (GTUtil.isShiftDown())
+                tooltipComponents.add(Component.translatable("gtceu.hazard." + material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
+        }
+    }
+
+    @Override
     public Component getName(ItemStack stack) {
         return this.getDescription();
     }
@@ -86,11 +99,11 @@ public class GTBucketItem extends BucketItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if(entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0) {
-            if (!material.hasProperty(POISON)) return;
+            if (!material.hasProperty(HAZARD)) return;
             //TODO protective equipment
 
 
-            PoisonProperty poisonProperty = material.getProperty(POISON);
+            HazardProperty poisonProperty = material.getProperty(HAZARD);
 
             if (poisonProperty.getDamage() != null && livingEntity.tickCount % (20 * poisonProperty.getDamage().delay()) == 0)
                 livingEntity.hurt(GTDamageTypes.CHEMICAL.source(level), poisonProperty.getDamage().damage());

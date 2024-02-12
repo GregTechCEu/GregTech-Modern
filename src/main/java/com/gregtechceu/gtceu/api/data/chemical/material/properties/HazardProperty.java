@@ -12,50 +12,49 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class PoisonProperty implements IMaterialProperty<PoisonProperty>{
+public class HazardProperty implements IMaterialProperty<HazardProperty>{
 
     @Getter
     @Nullable
-    private final ChemicalDamage damage;
+    private final HazardProperty.HazardDamage damage;
 
     @Getter
     @Nullable
-    private final ChemicalEffect effect;
+    private final HazardProperty.HazardEffect effect;
 
     @Getter
-    private final PoisonType poisonType;
+    private final HazardType hazardType;
 
     @Getter
     private final boolean applyToDerivatives;
 
 
 
-    public PoisonProperty(PoisonType poisonType, @Nullable ChemicalEffect effect, @Nullable ChemicalDamage damage, boolean applyToDerivatives) {
+    public HazardProperty(HazardType hazardType, @Nullable HazardProperty.HazardEffect effect, @Nullable HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
         this.damage = damage;
-        this.poisonType = poisonType;
+        this.hazardType = hazardType;
         this.applyToDerivatives = applyToDerivatives;
         this.effect = effect;
     }
-    public PoisonProperty(PoisonType poisonType, ChemicalDamage damage) {this(poisonType,null,damage,true);}
-
 
     /**
      * Default property constructor.
      */
-    public PoisonProperty(){
-        this(PoisonType.CONTACT,null,null,false);
+    public HazardProperty(){
+        this(HazardType.CONTACT_POISON,null,null,false);
     }
 
     @Override
     public void verifyProperty(MaterialProperties properties) {
     }
 
-    public enum PoisonType{
-        INHALATION(TagPrefix.dust,TagPrefix.dustImpure,TagPrefix.dustSmall,TagPrefix.dustPure,TagPrefix.dustTiny,TagPrefix.rawOre,TagPrefix.rawOreBlock,TagPrefix.crushed,TagPrefix.crushedRefined,TagPrefix.crushedPurified),
-        CONTACT;
+    public enum HazardType {
+        INHALATION_POISON(TagPrefix.dust,TagPrefix.dustImpure,TagPrefix.dustSmall,TagPrefix.dustPure,TagPrefix.dustTiny,TagPrefix.rawOre,TagPrefix.rawOreBlock,TagPrefix.crushed,TagPrefix.crushedRefined,TagPrefix.crushedPurified),
+        CONTACT_POISON,
+        NONE;
 
         private final List<TagPrefix> affectedTagPrefixes = new ArrayList<>();
-        PoisonType(TagPrefix... tagPrefixes){
+        HazardType(TagPrefix... tagPrefixes){
             affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
         }
 
@@ -68,8 +67,8 @@ public class PoisonProperty implements IMaterialProperty<PoisonProperty>{
     /**
      * @param delay damage is applied every X seconds
      */
-    public record ChemicalDamage( int damage, int delay){}
-    public record ChemicalEffect( int duration, MobEffect... effects){
+    public record HazardDamage(int damage, int delay){}
+    public record HazardEffect(int duration, MobEffect... effects){
         public void apply(LivingEntity entity) {
             for(MobEffect effect: effects)
                 entity.addEffect(new MobEffectInstance(effect,duration));
