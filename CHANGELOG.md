@@ -4,6 +4,8 @@ Version: 1.1.3.a
 
 ### ADDITIONS:
 - added Creative Chest, Creative Tank
+- added a title bar and new multiblock part selector to machine UIs
+- added world accelerators
 
 ### FIXES:
 - fixed crashes related to KubeJS recipe loading
@@ -14,4 +16,4 @@ Version: 1.1.3.a
 
 ### CHANGES:
 - replaced Tungstensteel coils with RTM-Alloy coils 
-- updated Russian translation
+- updated Russian and Chinese translations
