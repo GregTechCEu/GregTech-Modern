@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
@@ -15,7 +14,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -76,11 +74,7 @@ public class TagPrefixItem extends Item {
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
         }
-        if(material.hasProperty(HAZARD) && material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix)){
-            tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
-            if(GTUtil.isShiftDown())
-                tooltipComponents.add(Component.translatable("gtceu.hazard."+material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
-        }
+        GTUtil.appendHazardTooltips(material,tooltipComponents);
     }
 
     @Override
@@ -111,21 +105,16 @@ public class TagPrefixItem extends Item {
 
 
                 if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) {
-                    if(!material.hasProperty(HAZARD) || !material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix)) return;
-                    //TODO protective equipment
-
-
-                    HazardProperty poisonProperty = material.getProperty(HAZARD);
-
-                    if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
-                        livingEntity.hurt(GTDamageTypes.CHEMICAL.source(level), poisonProperty.getDamage().damage());
-
-                    if(poisonProperty.getEffect()!=null)
-                        poisonProperty.getEffect().apply(livingEntity);
+                    GTUtil.applyHazardEffects(material,livingEntity,()->!material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
                     return;
                 }
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
+//                ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
+                // TODO armor
+//                if (!armor.isEmpty() && armor.getItem() instanceof ArmorMetaItem<?>) {
+//                    heatDamage *= ((ArmorMetaItem<?>) armor.getItem()).getItem(armor).getArmorLogic().getHeatResistance();
+//                }
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
                 if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem) {
                     heatDamage *= armorItem.getArmorLogic().getHeatResistance();

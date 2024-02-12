@@ -11,7 +11,11 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
+/**
+ * @author h3tR
+ * @date 2024/2/12
+ * @implNote HazardProperty
+ */
 public class HazardProperty implements IMaterialProperty<HazardProperty>{
 
     @Getter
