@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -71,11 +69,7 @@ public class GTBucketItem extends BucketItem {
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
-        if (material.hasProperty(HAZARD)){
-            tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
-            if (GTUtil.isShiftDown())
-                tooltipComponents.add(Component.translatable("gtceu.hazard." + material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
-        }
+        GTUtil.appendHazardTooltips(material,tooltipComponents);
     }
 
     @Override
@@ -98,19 +92,8 @@ public class GTBucketItem extends BucketItem {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
-        if(entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0) {
-            if (!material.hasProperty(HAZARD)) return;
-            //TODO protective equipment
+        if(entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0)
+           GTUtil.applyHazardEffects(material,livingEntity,()->true);
 
-
-            HazardProperty poisonProperty = material.getProperty(HAZARD);
-
-            if (poisonProperty.getDamage() != null && livingEntity.tickCount % (20 * poisonProperty.getDamage().delay()) == 0)
-                livingEntity.hurt(GTDamageTypes.CHEMICAL.source(level), poisonProperty.getDamage().damage());
-
-            if (poisonProperty.getEffect() != null)
-                poisonProperty.getEffect().apply(livingEntity);
-
-        }
     }
 }

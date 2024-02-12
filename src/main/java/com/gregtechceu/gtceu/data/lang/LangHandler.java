@@ -145,6 +145,7 @@ public class LangHandler {
         provider.add("gtceu.tool.class.drill", "Drill");
 
         provider.add("gtceu.hazard.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("gtceu.hazard.description_shift", "§l§cHAZARDOUS:");
         provider.add("gtceu.hazard.contact_poison", "§7Contact Poison");
         provider.add("gtceu.hazard.inhalation_poison", "§7Poisonous when inhaled");
 
