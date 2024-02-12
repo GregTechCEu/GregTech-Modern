@@ -55,6 +55,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty>{
     public enum HazardType {
         INHALATION_POISON(TagPrefix.dust,TagPrefix.dustImpure,TagPrefix.dustSmall,TagPrefix.dustPure,TagPrefix.dustTiny,TagPrefix.rawOre,TagPrefix.rawOreBlock,TagPrefix.crushed,TagPrefix.crushedRefined,TagPrefix.crushedPurified),
         CONTACT_POISON,
+        RADIOACTIVE,
+        CORROSIVE(TagPrefix.dust,TagPrefix.dustSmall,TagPrefix.dustTiny),
         NONE;
 
         private final List<TagPrefix> affectedTagPrefixes = new ArrayList<>();
