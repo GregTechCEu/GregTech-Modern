@@ -396,6 +396,7 @@ public class SecondDegreeMaterials {
                 .color(0x4C3434)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(CarbonMonoxide, 78, HydrogenSulfide, 21, Neon, 9)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         LiquidNetherAir = new Material.Builder(GTCEu.id("liquid_nether_air"))

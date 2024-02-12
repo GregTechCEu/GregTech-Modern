@@ -146,8 +146,10 @@ public class LangHandler {
 
         provider.add("gtceu.hazard.description", "§l§cHAZARDOUS §7Hold Shift to show details");
         provider.add("gtceu.hazard.description_shift", "§l§cHAZARDOUS:");
-        provider.add("gtceu.hazard.contact_poison", "§7Contact Poison");
-        provider.add("gtceu.hazard.inhalation_poison", "§7Poisonous when inhaled");
+        provider.add("gtceu.hazard.contact_poison", "§5Contact Poison");
+        provider.add("gtceu.hazard.inhalation_poison", "§2Poisonous when inhaled");
+        provider.add("gtceu.hazard.corrosive", "§6Corrosive");
+        provider.add("gtceu.hazard.radioactive", "§eRadioactive");
 
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");

@@ -866,6 +866,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xecfff3).secondaryColor(0x7d8e83)
                 .components(Calcium, 1, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.CORROSIVE)
                 .buildAndRegister();
 
         SodiumBisulfate = new Material.Builder(GTCEu.id("sodium_bisulfate"))
@@ -974,6 +975,7 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
+                .hazard(HazardProperty.HazardType.CORROSIVE)
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))
@@ -1210,6 +1212,7 @@ public class FirstDegreeMaterials {
                 .color(0x8cf4e2).secondaryColor(0x032620).iconSet(SHINY)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_PLATE)
                 .components(Beryllium, 1, Potassium, 4, Nitrogen, 5)
+                .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
 
         PotassiumFeldspar = new Material.Builder(GTCEu.id("potassium_feldspar"))
