@@ -952,6 +952,8 @@ public class LangHandler {
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");
         provider.add("gtceu.fluid.state_plasma", "§aState: Plasma");
         provider.add("gtceu.fluid.type_acid.tooltip", "§6Acidic! Handle with care!");
+        provider.add("gtceu.gui.title_bar.back", "Back");
+        provider.add("gtceu.gui.title_bar.page_switcher", "Pages");
         provider.add("gtceu.gui.fuel_amount", "Fuel Amount:");
         provider.add("gtceu.gui.fluid_amount", "Fluid Amount:");
         provider.add("gtceu.gui.toggle_view.disabled", "Toggle View (Fluids)");

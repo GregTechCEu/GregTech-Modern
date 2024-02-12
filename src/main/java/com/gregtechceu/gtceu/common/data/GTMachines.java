@@ -384,6 +384,27 @@ public class GTMachines {
                     .register(),
             LV, MV, HV);
 
+    public static final MachineDefinition[] WORLD_ACCELERATOR = registerTieredMachines("world_accelerator", WorldAcceleratorMachine::new,
+        (tier, builder) -> builder
+            .rotationState(RotationState.NONE)
+            .langValue("%s World Accelerator %s".formatted(VLVH[tier], VLVT[tier]))
+            .recipeType(DUMMY_RECIPES)
+            .renderer(() -> new WorldAcceleratorRenderer(tier, GTCEu.id("block/machines/world_accelerator_te"),GTCEu.id("block/machines/world_accelerator")))
+            .tooltipBuilder((stack, tooltip) -> {
+                int randTickWorkingArea = 3+(tier-1)*2;
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.description"));
+
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]));
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L));
+
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area"));
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area_tile"));
+                tooltip.add(Component.translatable("gtceu.machine.world_accelerator.working_area_random",randTickWorkingArea,randTickWorkingArea));
+            })
+            .compassNode("world_accelerator")
+            .register(),
+        LV, MV, HV, EV, IV, LuV, ZPM, UV);
+
     //////////////////////////////////////
     //*********     Storage    *********//
     //////////////////////////////////////
@@ -1586,7 +1607,6 @@ public class GTMachines {
                                     .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
                                     .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
                                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(4).setPreviewCount(1))
-                                    .or(Predicates.abilities(PartAbility.MACHINE_HATCH).setExactLimit(1))
                                     .or(Predicates.autoAbilities(true, false, false)))
                             .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
