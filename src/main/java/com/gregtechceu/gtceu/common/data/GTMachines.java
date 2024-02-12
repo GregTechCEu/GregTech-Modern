@@ -1607,7 +1607,6 @@ public class GTMachines {
                                     .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
                                     .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
                                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(4).setPreviewCount(1))
-                                    .or(Predicates.abilities(PartAbility.MACHINE_HATCH).setExactLimit(1))
                                     .or(Predicates.autoAbilities(true, false, false)))
                             .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
