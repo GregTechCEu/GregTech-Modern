@@ -3,12 +3,13 @@ package com.gregtechceu.gtceu.api.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PoisonProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
@@ -28,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.POISON;
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 /**
  * @author KilaBash
@@ -75,6 +76,11 @@ public class TagPrefixItem extends Item {
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
         }
+        if(material.hasProperty(HAZARD) && material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix)){
+            tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
+            if(GTUtil.isShiftDown())
+                tooltipComponents.add(Component.translatable("gtceu.hazard."+material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
+        }
     }
 
     @Override
@@ -105,11 +111,11 @@ public class TagPrefixItem extends Item {
 
 
                 if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) {
-                    if(!material.hasProperty(POISON) || !material.getProperty(POISON).getPoisonType().isAffected(tagPrefix)) return;
+                    if(!material.hasProperty(HAZARD) || !material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix)) return;
                     //TODO protective equipment
 
 
-                    PoisonProperty poisonProperty = material.getProperty(POISON);
+                    HazardProperty poisonProperty = material.getProperty(HAZARD);
 
                     if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
                         livingEntity.hurt(GTDamageTypes.CHEMICAL.source(level), poisonProperty.getDamage().damage());

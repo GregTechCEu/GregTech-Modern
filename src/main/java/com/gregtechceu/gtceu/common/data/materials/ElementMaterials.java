@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PoisonProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
@@ -72,7 +72,7 @@ public class ElementMaterials {
                         .temperature(887))
                 .color(0x9c9c8d).secondaryColor(0x676756)
                 .element(GTElements.As)
-                .poison(PoisonProperty.PoisonType.CONTACT)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         Astatine = new Material.Builder(GTCEu.id("astatine"))
@@ -97,7 +97,7 @@ public class ElementMaterials {
                 .ore()
                 .color(0x98d677).secondaryColor(0x254d40).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
-                .poison(PoisonProperty.PoisonType.CONTACT)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .element(GTElements.Be)
                 .buildAndRegister();
 
@@ -152,7 +152,7 @@ public class ElementMaterials {
                 .dust()
                 .color(0x636377).secondaryColor(0x412738).iconSet(SHINY)
                 .element(GTElements.Cd)
-                .poison(PoisonProperty.PoisonType.CONTACT)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         Cerium = new Material.Builder(GTCEu.id("cerium"))
@@ -165,7 +165,7 @@ public class ElementMaterials {
         Chlorine = new Material.Builder(GTCEu.id("chlorine"))
                 .gas(new FluidBuilder().state(FluidState.GAS).customStill())
                 .element(GTElements.Cl)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Chromium = new Material.Builder(GTCEu.id("chromium"))
@@ -177,6 +177,7 @@ public class ElementMaterials {
                 .rotorStats(12.0f, 3.0f, 512)
                 .fluidPipeProperties(2180, 35, true, true, false, false)
                 .blastTemp(1700, GasTier.LOW)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON,false)
                 .buildAndRegister();
 
         Cobalt = new Material.Builder(GTCEu.id("cobalt"))
@@ -415,7 +416,7 @@ public class ElementMaterials {
                 .element(GTElements.Pb)
                 .cableProperties(GTValues.V[0], 2, 2)
                 .fluidPipeProperties(1200, 32, true)
-                .poison(PoisonProperty.PoisonType.INHALATION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Lithium = new Material.Builder(GTCEu.id("lithium"))
@@ -468,7 +469,7 @@ public class ElementMaterials {
                 .fluid()
                 .color(0xE6DCDC).iconSet(DULL)
                 .element(GTElements.Hg)
-                .poison(PoisonProperty.PoisonType.CONTACT)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         Molybdenum = new Material.Builder(GTCEu.id("molybdenum"))

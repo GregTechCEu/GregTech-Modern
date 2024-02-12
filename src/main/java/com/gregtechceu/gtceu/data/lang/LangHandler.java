@@ -112,6 +112,11 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
+        provider.add("gtceu.hazard.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("gtceu.hazard.contact_poison", "§7Contact Poison");
+        provider.add("gtceu.hazard.inhalation_poison", "§7Poisonous when inhaled");
+
+
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");

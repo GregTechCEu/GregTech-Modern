@@ -121,7 +121,7 @@ public class GTItems {
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
-                                .onRegister(GTItems::cauldronInteraction)
+
                                 .onRegister(item -> {
                                     switch (tagPrefix.name) {
                                         case "buzzSawBlade", "screwDriverTip", "drillHead", "chainSawHead", "wrenchTip", "turbineBlade" ->
@@ -129,6 +129,7 @@ public class GTItems {
                                         default ->
                                             CompassNode.getOrCreate(GTCompassSections.MATERIALS, FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
                                                 .iconIfNull(() -> new ItemStackTexture(item)).addTag(tagPrefix.getItemParentTags());
+
                                     }
                                 })
                                 .register());
