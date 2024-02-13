@@ -34,6 +34,7 @@ public class ItemTagLoader {
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
+        create(provider, "personal_protective_equipment",Items.DIAMOND_HELMET.kjs$getIdLocation(),Items.DIAMOND_CHESTPLATE.kjs$getIdLocation(),Items.DIAMOND_LEGGINGS.kjs$getIdLocation(),Items.DIAMOND_BOOTS.kjs$getIdLocation()); //TODO equipment
 
         // add treated wood stick to vanilla sticks tag
         //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod

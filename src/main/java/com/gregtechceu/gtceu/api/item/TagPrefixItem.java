@@ -105,7 +105,7 @@ public class TagPrefixItem extends Item {
 
 
                 if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) {
-                    GTUtil.applyHazardEffects(material,livingEntity,()->!material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
+                    GTUtil.applyHazardEffects(material,livingEntity,()->material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
                     return;
                 }
 
