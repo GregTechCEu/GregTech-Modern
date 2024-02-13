@@ -70,6 +70,10 @@ public class TabsWidget extends Widget {
         }
     }
 
+    public void clearSubTabs() {
+        subTabs.clear();
+    }
+
     public void attachSubTab(IFancyUIProvider subTab) {
         subTabs.add(subTab);
     }
@@ -239,5 +243,10 @@ public class TabsWidget extends Widget {
         }
         // render icon
         tab.getTabIcon().draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
+    }
+
+    public void selectTab(IFancyUIProvider selectedTab) {
+        this.selectedTab = selectedTab;
+        this.detectAndSendChanges();
     }
 }

@@ -114,15 +114,9 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!isRemote()) {
-            if (isTransformUp()) {
-                setTransformUp(false);
-                playerIn.sendSystemMessage(Component.translatable("gtceu.machine.transformer.message_transform_down",
-                        energyContainer.getInputVoltage(), energyContainer.getInputAmperage(), energyContainer.getOutputVoltage(), energyContainer.getOutputAmperage()));
-            } else {
-                setTransformUp(true);
-                playerIn.sendSystemMessage(Component.translatable("gtceu.machine.transformer.message_transform_up",
-                        energyContainer.getInputVoltage(), energyContainer.getInputAmperage(), energyContainer.getOutputVoltage(), energyContainer.getOutputAmperage()));
-            }
+            setTransformUp(!isTransformUp());
+            playerIn.sendSystemMessage(Component.translatable(isTransformUp()?"gtceu.machine.transformer.message_transform_up":"gtceu.machine.transformer.message_transform_down",
+                energyContainer.getInputVoltage(), energyContainer.getInputAmperage(), energyContainer.getOutputVoltage(), energyContainer.getOutputAmperage()));
         }
         return InteractionResult.CONSUME;
     }

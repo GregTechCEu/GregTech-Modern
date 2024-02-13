@@ -64,14 +64,6 @@ public interface IFancyUIProvider {
     }
 
     /**
-     * Set up the top tabs. Only if it's a main page will it be called.
-     */
-    default void setupTabs(TabsWidget tabsWidget) {
-        tabsWidget.setMainTab(this);
-        getSubTabs().forEach(tabsWidget::attachSubTab);
-    }
-
-    /**
      * Get tab's Tooltips
      */
     default List<Component> getTabTooltips() {
