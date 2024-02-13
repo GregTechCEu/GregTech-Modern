@@ -431,11 +431,11 @@ public class GTUtil {
     }
 
     public static void applyHazardEffects(Material material, LivingEntity livingEntity, Supplier<Boolean> condition){
-        if(!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD) || condition.get()) return;
-        //TODO protective equipment
-
+        if(!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD) || !condition.get()) return;
 
         HazardProperty poisonProperty = material.getProperty(HAZARD);
+
+        if(poisonProperty.getHazardType().getProtectionType().isProtected(livingEntity)) return; //entity has proper safety equipment
 
         if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
             livingEntity.hurt(GTDamageTypes.CHEMICAL.source(livingEntity.level()), poisonProperty.getDamage().damage());
