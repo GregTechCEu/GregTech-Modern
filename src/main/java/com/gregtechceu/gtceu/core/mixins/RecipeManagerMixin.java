@@ -54,8 +54,7 @@ public abstract class RecipeManagerMixin {
                         .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
                 } else if (!proxyRecipes.isEmpty()) {
                     proxyRecipes.values().stream()
-                        .filter(GTRecipe.class::isInstance)
-                        .map(GTRecipe.class::cast)
+                        .flatMap(List::stream)
                         .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
                 }
             }
