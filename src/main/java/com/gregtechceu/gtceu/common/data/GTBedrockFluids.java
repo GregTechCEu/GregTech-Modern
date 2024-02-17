@@ -31,7 +31,6 @@ public class GTBedrockFluids {
     //////////////////////////////////////
     //********     OVERWORLD    ********//
     //////////////////////////////////////
-    //Added overworld Dimension requirements to overworld veins to prevent modded dim generation
     public static BedrockFluidDefinition HEAVY_OIL = BedrockFluidDefinition.builder(GTCEu.id("heavy_oil_deposit"))
             .fluid(GTMaterials.OilHeavy::getFluid)
             .weight(15)
