@@ -149,7 +149,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
             BlockEntityTicker<T> blockEntityTicker =  this.getLevel().getBlockState(pos).getTicker(this.getLevel(),(BlockEntityType<T>) blockEntity.getType());
             if(blockEntityTicker==null) return;
             for (int i = 0; i < speed-1; i++)
-                blockEntityTicker.tick(this.getLevel(), this.getPos(), blockEntity.getBlockState(), blockEntity);
+                blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity);
     }
 
     private boolean canAccelerate(BlockEntity blockEntity){
