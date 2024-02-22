@@ -53,6 +53,8 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
+
+        provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
         //capabilities
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
