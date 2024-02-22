@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -40,10 +41,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
@@ -94,7 +97,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
     private final int inventorySize;
 
-    private BoundingBox boundingBox;
+    private AABB aabb;
     @Persisted
     private int range; //TODO: setting range GUI
 
@@ -196,25 +199,65 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
     public void update() {
         if (drainEnergy(false)) {
-
-            if (boundingBox == null) {
+            if (aabb == null) {
                 BlockPos pos1,pos2;
                 pos1 = getPos().offset(-range,0,-range);
                 pos2 = getPos().offset(range,2,range);
-                this.boundingBox = BoundingBox.fromCorners(pos1,pos2);
-
+                this.aabb =  AABB.of(BoundingBox.fromCorners(pos1,pos2));
             }
+            moveItemsInRange();
             updateCollectionSubscription();
         }
     }
 
-    private boolean tryFilloutput(ItemStack stack) {
-        for (int i = 0; i < output.getSlots(); i++) {
-            if (output.insertItemInternal(i, stack, false).getCount() < stack.getCount()) {
-                return true;
+    public void moveItemsInRange(){
+            ItemFilter filter = null;
+        if(!filterInventory.getStackInSlot(0).isEmpty())
+            filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
+        BlockPos centerPos = self().getPos().above();
+
+        List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, aabb);
+        for(ItemEntity itemEntity: itemEntities){
+            if(!itemEntity.isAlive()) continue;
+            if(filter != null && !filter.test(itemEntity.getItem())) continue;
+            double distX = (centerPos.getX() + 0.5) - itemEntity.position().x;
+            double distZ = (centerPos.getZ() + 0.5) - itemEntity.position().z;
+            double dist = Math.sqrt(Math.pow(distX,2) + Math.pow(distZ,2));
+            if(dist>=.7f){
+                if(itemEntity.pickupDelay==32767) continue; //INFINITE_PICKUP_DELAY = 32767
+                double dirX = distX/dist;
+                double dirZ = distZ/dist;
+                itemEntity.kjs$setMotionX(dirX*MOTION_MULTIPLIER*tier);
+                itemEntity.kjs$setMotionZ(dirZ*MOTION_MULTIPLIER*tier);
+                itemEntity.setPickUpDelay(1);
+
+            } else {
+                ItemStack stack = itemEntity.getItem();
+                if(!canFillOutput(stack)) continue;
+
+                ItemStack remainder = fillOutput(stack);
+                if(remainder.isEmpty())
+                    itemEntity.kill();
+                else if(stack.getCount()>remainder.getCount())
+                    itemEntity.setItem(remainder);
             }
         }
+    }
+
+    private boolean canFillOutput(ItemStack stack) {
+        for (int i = 0; i < output.getSlots(); i++)
+            if (output.insertItemInternal(i, stack, true).getCount() < stack.getCount())
+                return true;
+
         return false;
+    }
+
+    private ItemStack fillOutput(ItemStack stack) {
+        for (int i = 0; i < output.getSlots(); i++)
+            if (output.insertItemInternal(i, stack, true).getCount() < stack.getCount())
+                return output.insertItemInternal(i, stack, false);
+
+        return ItemStack.EMPTY;
     }
 
     public boolean drainEnergy(boolean simulate) {
