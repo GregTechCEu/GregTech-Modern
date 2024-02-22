@@ -2025,6 +2025,7 @@
   "cover.voiding.voiding_mode.description.1": "§eVoid Overflow§r will void anything matching the filter, up to the specified amount.",
   "cover.voiding.voiding_mode.void_any": "Void Matching",
   "cover.voiding.voiding_mode.void_overflow": "Void Overflow",
+  "curios.identifier.gtceu_magnet": "GTCEu Magnet",
   "death.attack.axe": "%s has been chopped by %s",
   "death.attack.butchery_knife": "%s was butchered by %s",
   "death.attack.buzzsaw": "%s got buzzed by %s",
