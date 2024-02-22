@@ -1,0 +1,18 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:lv_item_collector"
+  },
+  "items": [
+    "gtceu:lv_item_collector",
+    "gtceu:mv_item_collector",
+    "gtceu:hv_item_collector",
+    "gtceu:ev_item_collector"
+  ],
+  "page": "gtceu:machines/item_collector",
+  "position": [
+    -250,
+    300
+  ],
+  "section": "gtceu:machines"
+}
