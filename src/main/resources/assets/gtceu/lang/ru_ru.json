@@ -6496,5 +6496,6 @@
     "block.gtceu.mv_world_accelerator": "§bУлучшенный ускоритель мира §r",
     "block.gtceu.zpm_world_accelerator": "§cПревосходный ускоритель мира III§r",
     "config.gtceu.option.enableWorldAccelerators": "enableWorldAccelerators",
-    "gtceu.gui.title_bar.back": "Назад"
+    "gtceu.gui.title_bar.back": "Назад",
+    "curios.identifier.gtceu_magnet": "GTCEu Магнит"
 }
