@@ -3,15 +3,20 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
@@ -33,6 +38,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFunction;
 
@@ -62,6 +68,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     @Getter
     @Persisted
     @Setter
+    @DescSynced
     private boolean isWorkingEnabled = true;
     @DescSynced
     @Persisted
@@ -71,6 +78,7 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     @DescSynced
     @Persisted
     @Getter
+    @RequireRerender
     private boolean active = false;
 
 
@@ -101,12 +109,20 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         return MANAGED_FIELD_HOLDER;
     }
 
-    public void update() {
-        if(!isWorkingEnabled() || !drainEnergy((isRandomTickMode?RTAmperage:BEAmperage)*GTValues.V[tier])) {
-            setActive(false);
-            return;
+    public void updateSubscription() {
+        if (drainEnergy(true) && isWorkingEnabled) {
+            subscription = subscribeServerTick(subscription, this::update);
+            active = true;
+        } else if (subscription != null) {
+            subscription.unsubscribe();
+            subscription = null;
+            active = false;
         }
-        setActive(true);
+    }
+
+    public void update() {
+
+        drainEnergy(false);
       //handle random tick mode
         if(isRandomTickMode){
             BlockPos cornerPos = new BlockPos(
@@ -133,12 +149,15 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
             if(blockEntity != null && canAccelerate(blockEntity))
                 tickBlockEntity(blockEntity);
         }
+        updateSubscription();
     }
 
-    public boolean drainEnergy(long toDrain) {
+    public boolean drainEnergy(boolean simulate) {
+        long toDrain = (isRandomTickMode?RTAmperage:BEAmperage)*GTValues.V[tier];
         long resultEnergy = energyContainer.getEnergyStored() - toDrain;
         if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
-            energyContainer.removeEnergy(toDrain);
+            if(!simulate)
+                energyContainer.removeEnergy(toDrain);
             return true;
         }
         return false;
@@ -158,17 +177,17 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         generateWorldAcceleratorBlacklist();
 
         final Class<? extends BlockEntity> blockEntityClass = blockEntity.getClass();
-        if (blacklistCache.containsKey(blockEntityClass)) {
+        if (blacklistCache.containsKey(blockEntityClass))
             return blacklistCache.getBoolean(blockEntityClass);
-        }
 
-        for (Class<?> clazz : blacklistedClasses.values()) {
+
+        for (Class<?> clazz : blacklistedClasses.values())
             if (clazz.isAssignableFrom(blockEntityClass)) {
                 // Is a subclass, so it cannot be accelerated
                 blacklistCache.put(blockEntityClass, false);
                 return false;
             }
-        }
+
 
         blacklistCache.put(blockEntityClass, true);
         return true;
@@ -177,7 +196,9 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     @Override
     public void onLoad() {
         super.onLoad();
-        subscription = subscribeServerTick(this::update);
+        if(!isRemote()){
+            energyContainer.addChangedListener(this::updateSubscription);
+        }
     }
 
     @Override
@@ -185,6 +206,29 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         super.onUnload();
         if(subscription!=null)
             unsubscribe(subscription);
+    }
+
+
+    @Override
+    public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
+        if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+        }
+        return super.sideTips(player, toolTypes, side);
+    }
+
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        if (controllable != null) {
+            if (!isRemote()) {
+                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
+                updateSubscription();
+                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+            }
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
     }
 
     @Override
@@ -198,28 +242,22 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
 
-    public void setActive(boolean active) {
-        if(active==this.active) return;
-        this.active = active;
-        scheduleRenderUpdate();
-    }
+
 
     private static void generateWorldAcceleratorBlacklist(){
         if (!gatheredClasses) {
-            for (String name : ConfigHolder.INSTANCE.machines.worldAcceleratorBlacklist) {
-                if (!blacklistedClasses.containsKey(name)) {
+            for (String name : ConfigHolder.INSTANCE.machines.worldAcceleratorBlacklist)
+                if (!blacklistedClasses.containsKey(name))
                     try {
                         blacklistedClasses.put(name, Class.forName(name));
                     } catch (ClassNotFoundException ignored) {
                         GTCEu.LOGGER.warn("Could not find class {} for World Accelerator Blacklist!", name);
                     }
-                }
-            }
-            for(String className: blockEntityClassNamesBlackList) {
+
+            for(String className: blockEntityClassNamesBlackList)
                 try {
                     blacklistedClasses.put(className, Class.forName(className));
                 } catch (ClassNotFoundException ignored) {}
-            }
 
             gatheredClasses = true;
         }
