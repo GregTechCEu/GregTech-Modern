@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
@@ -33,6 +34,7 @@ import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -67,7 +69,7 @@ import java.util.function.BiFunction;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FisherMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops {
+public class FisherMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IWorkable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -99,14 +101,30 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     private final long energyPerTick;
 
     private final int inventorySize;
-    public final int fishingTicks;
+
+    @Getter
+    public final int maxProgress;
+
+    @Getter
+    @Persisted
+    private int progress = 0;
+
+    @Getter
+    @Persisted
+    @Setter
+    @DescSynced
+    private boolean isWorkingEnabled = true;
+
+    @Getter
+    @Persisted
+    private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
 
-    public FisherMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.fishingTicks = 1000 - tier * 200;
+        this.maxProgress = 1000 - tier * 200;
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = createCacheItemHandler();
         this.baitHandler = createBaitItemHandler();
@@ -192,29 +210,38 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     //////////////////////////////////////
 
     public void updateFishingUpdateSubscription() {
-        if (drainEnergy(true) && this.baitHandler.getStackInSlot(0).is(Items.STRING)) {
+
+        if (drainEnergy(true) && this.baitHandler.getStackInSlot(0).is(Items.STRING) && isWorkingEnabled) {
             fishingSubs = subscribeServerTick(fishingSubs, this::fishingUpdate);
+            active = true;
+            return;
         } else if (fishingSubs != null) {
             fishingSubs.unsubscribe();
             fishingSubs = null;
+            active = false;
         }
+        progress = 0;
+    }
+
+    private boolean hasWater(){
+        for (int x = 0; x < WATER_CHECK_SIZE; x++)
+            for (int z = 0; z < WATER_CHECK_SIZE; z++) {
+                BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
+
+                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER))
+                    return false;
+
+
+            }
+        return true;
     }
 
     public void fishingUpdate() {
+        if(!hasWater()) return;
+
         drainEnergy(false);
-        if (this.getOffsetTimer() % this.fishingTicks == 0) {
-            int waterCount = 0;
-            int edgeSize = WATER_CHECK_SIZE;
-            for (int x = 0; x < edgeSize; x++) {
-                for (int z = 0; z < edgeSize; z++) {
-                    BlockPos waterCheckPos = getPos().below().offset(x - edgeSize / 2, 0, z - edgeSize / 2);
-                    if (getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
-                        waterCount++;
-                    }
-                }
-            }
-            if (waterCount < WATER_CHECK_SIZE * WATER_CHECK_SIZE)
-                return;
+        if (progress >= maxProgress) {
+
 
             LootTable lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
 
@@ -241,7 +268,9 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
             if (useBait)
                 this.baitHandler.extractItem(0, 1, false);
             updateFishingUpdateSubscription();
+            progress=-1;
         }
+        progress++;
     }
 
     private boolean tryFillCache(ItemStack stack) {
@@ -425,11 +454,12 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
-        }
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingItems()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            return this.isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
         return super.sideTips(player, toolTypes, side);
     }
@@ -460,4 +490,5 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
+
 }

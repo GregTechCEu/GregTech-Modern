@@ -412,11 +412,13 @@ public class GTMachines {
             .langValue("%s Item Collector %s".formatted(VLVH[tier], VLVT[tier]))
             .recipeType(DUMMY_RECIPES)
             .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"), ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
-            .renderer(() -> new WorkableTieredHullMachineRenderer(tier,GTCEu.id("block/machine/item_collector_machine")))
+            .renderer(() -> new WorkableTieredHullMachineRenderer(tier,GTCEu.id("block/machines/item_collector")))
             .tooltipBuilder((stack, tooltip) -> {
                 int range = (int)Math.pow(2,tier+2);
                 tooltip.add(Component.translatable("gtceu.machine.item_collector.tooltip"));
                 tooltip.add(Component.translatable("gtceu.machine.item_collector.gui.collect_range",range));
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]));
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L));
 
             })
             .compassNode("item_collector")

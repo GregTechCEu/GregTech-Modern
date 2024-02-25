@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -30,10 +31,12 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -62,7 +65,7 @@ import java.util.function.BiFunction;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops {
+public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IWorkable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemCollectorMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -101,6 +104,17 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     @Persisted
     private int range; //TODO: setting range GUI
 
+    @Getter
+    @Persisted
+    @Setter
+    @DescSynced
+    private boolean isWorkingEnabled = true;
+
+    @DescSynced
+    @Persisted
+    @Getter
+    @RequireRerender
+    private boolean active = false;
 
     public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
@@ -191,9 +205,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     public void updateCollectionSubscription() {
         if (drainEnergy(true)) {
             collectionSubs = subscribeServerTick(collectionSubs, this::update);
+            active = true;
         } else if (collectionSubs != null) {
             collectionSubs.unsubscribe();
             collectionSubs = null;
+            active = false;
         }
     }
 
@@ -339,6 +355,16 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         updateAutoOutputSubscription();
     }
 
+    @Override
+    public int getProgress() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return 0;
+    }
+
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
@@ -442,12 +468,14 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
-        }
-        if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
+        } else if (toolTypes.contains(GTToolType.SCREWDRIVER)) {
             if (side == getOutputFacingItems()) {
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
+
         return super.sideTips(player, toolTypes, side);
     }
 
@@ -477,4 +505,21 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
+
+    @Override
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        if (controllable != null) {
+            if (!isRemote()) {
+                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
+                updateCollectionSubscription();
+                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+            }
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
+    }
+
+
 }
