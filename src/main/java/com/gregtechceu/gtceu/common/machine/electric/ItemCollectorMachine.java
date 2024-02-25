@@ -203,7 +203,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     //////////////////////////////////////
 
     public void updateCollectionSubscription() {
-        if (drainEnergy(true)) {
+        if (drainEnergy(true) && isWorkingEnabled) {
             collectionSubs = subscribeServerTick(collectionSubs, this::update);
             active = true;
         } else if (collectionSubs != null) {
