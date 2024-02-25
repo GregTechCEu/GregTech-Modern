@@ -96,11 +96,10 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     @DescSynced
     private boolean isWorkingEnabled = true;
 
-
     public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.cache = createCacheItemHandler(args);
+        this.cache = createCacheItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.energyPerTick = GTValues.V[tier - 1];
         setOutputFacingItems(getFrontFacing().getOpposite());
@@ -128,13 +127,13 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createChargerItemHandler(Object... args) {
+    protected ItemStackTransfer createChargerItemHandler() {
         var transfer = new ItemStackTransfer();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return transfer;
     }
 
-    protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
+    protected NotifiableItemStackHandler createCacheItemHandler() {
         return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
     }
 
@@ -359,6 +358,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
             Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
         var size = group.getSize();
         energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+
         template.setSelfPosition(new Position(
             (size.width - 4 - template.getSize().width) / 2 + 4,
             (size.height - template.getSize().height) / 2));
@@ -427,8 +427,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
-        }else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-                return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
         return super.sideTips(player, toolTypes, side);
     }
@@ -436,20 +436,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     //////////////////////////////////////
     //*******    Interactions   ********//
     //////////////////////////////////////
-
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
-        if (controllable != null) {
-            if (!isRemote()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                updateBreakerUpdateSubscription();
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            }
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
-    }
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!playerIn.isCrouching() && !isRemote()) {
@@ -472,5 +458,20 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        if (controllable != null) {
+            if (!isRemote()) {
+                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
+                updateBreakerUpdateSubscription();
+                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+            }
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
     }
 }

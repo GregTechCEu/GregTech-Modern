@@ -150,12 +150,14 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                 tickBlockEntity(blockEntity);
         }
         updateSubscription();
+
     }
 
     public boolean drainEnergy(boolean simulate) {
         long toDrain = (isRandomTickMode?RTAmperage:BEAmperage)*GTValues.V[tier];
         long resultEnergy = energyContainer.getEnergyStored() - toDrain;
         if (resultEnergy >= 0L && resultEnergy <= energyContainer.getEnergyCapacity()) {
+            energyContainer.removeEnergy(toDrain);
             if(!simulate)
                 energyContainer.removeEnergy(toDrain);
             return true;
@@ -196,9 +198,9 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     @Override
     public void onLoad() {
         super.onLoad();
-        if(!isRemote()){
+        if(!isRemote())
             energyContainer.addChangedListener(this::updateSubscription);
-        }
+
     }
 
     @Override
@@ -207,7 +209,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if(subscription!=null)
             unsubscribe(subscription);
     }
-
 
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
@@ -242,8 +243,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     }
 
 
-
-
     private static void generateWorldAcceleratorBlacklist(){
         if (!gatheredClasses) {
             for (String name : ConfigHolder.INSTANCE.machines.worldAcceleratorBlacklist)
@@ -254,10 +253,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                         GTCEu.LOGGER.warn("Could not find class {} for World Accelerator Blacklist!", name);
                     }
 
+
             for(String className: blockEntityClassNamesBlackList)
                 try {
                     blacklistedClasses.put(className, Class.forName(className));
                 } catch (ClassNotFoundException ignored) {}
+
 
             gatheredClasses = true;
         }

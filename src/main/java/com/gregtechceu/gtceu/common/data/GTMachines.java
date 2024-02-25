@@ -416,7 +416,9 @@ public class GTMachines {
             .tooltipBuilder((stack, tooltip) -> {
                 int range = (int)Math.pow(2,tier+2);
                 tooltip.add(Component.translatable("gtceu.machine.item_collector.tooltip"));
-                tooltip.add(Component.translatable("gtceu.machine.item_collector.gui.collect_range",range,range));
+                tooltip.add(Component.translatable("gtceu.machine.item_collector.gui.collect_range",range));
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]));
+                tooltip.add(Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L));
 
             })
             .compassNode("item_collector")

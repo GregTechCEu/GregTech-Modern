@@ -101,8 +101,12 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     private final long energyPerTick;
 
     private final int inventorySize;
-    public final int fishingTicks;
 
+    @Getter
+    public final int maxProgress;
+
+    @Getter
+    @Persisted
     private int progress = 0;
 
     @Getter
@@ -117,10 +121,10 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
 
-    public FisherMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.fishingTicks = 1000 - tier * 200;
+        this.maxProgress = 1000 - tier * 200;
         this.energyPerTick = GTValues.V[tier - 1];
         this.cache = createCacheItemHandler();
         this.baitHandler = createBaitItemHandler();
@@ -206,17 +210,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     //////////////////////////////////////
 
     public void updateFishingUpdateSubscription() {
-        int waterCount = 0;
-        int edgeSize = WATER_CHECK_SIZE;
-        for (int x = 0; x < edgeSize; x++) {
-            for (int z = 0; z < edgeSize; z++) {
-                BlockPos waterCheckPos = getPos().below().offset(x - edgeSize / 2, 0, z - edgeSize / 2);
-                if (getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
-                    waterCount++;
-                }
-            }
-        }
-        if (drainEnergy(true) && this.baitHandler.getStackInSlot(0).is(Items.STRING) && isWorkingEnabled && waterCount >= WATER_CHECK_SIZE * WATER_CHECK_SIZE) {
+
+        if (drainEnergy(true) && this.baitHandler.getStackInSlot(0).is(Items.STRING) && isWorkingEnabled) {
             fishingSubs = subscribeServerTick(fishingSubs, this::fishingUpdate);
             active = true;
             return;
@@ -228,9 +223,24 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         progress = 0;
     }
 
+    private boolean hasWater(){
+        for (int x = 0; x < WATER_CHECK_SIZE; x++)
+            for (int z = 0; z < WATER_CHECK_SIZE; z++) {
+                BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
+
+                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER))
+                    return false;
+
+
+            }
+        return true;
+    }
+
     public void fishingUpdate() {
+        if(!hasWater()) return;
+
         drainEnergy(false);
-        if (progress >= this.fishingTicks) {
+        if (progress >= maxProgress) {
 
 
             LootTable lootTable = getLevel().getServer().getLootData().getLootTable(BuiltInLootTables.FISHING);
@@ -257,8 +267,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
 
             if (useBait)
                 this.baitHandler.extractItem(0, 1, false);
-            progress=-1;
             updateFishingUpdateSubscription();
+            progress=-1;
         }
         progress++;
     }
@@ -457,19 +467,6 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     //////////////////////////////////////
     //*******    Interactions   ********//
     //////////////////////////////////////
-
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
-        if (controllable != null) {
-            if (!isRemote()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            }
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
-    }
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!playerIn.isCrouching() && !isRemote()) {
@@ -494,13 +491,4 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
 
-    @Override
-    public int getProgress() {
-        return progress;
-    }
-
-    @Override
-    public int getMaxProgress() {
-        return this.fishingTicks;
-    }
 }

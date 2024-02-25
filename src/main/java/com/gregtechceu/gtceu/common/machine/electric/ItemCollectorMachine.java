@@ -60,8 +60,8 @@ import java.util.function.BiFunction;
 
 /**
  * @author h3tr
- * @date 2024/2/24
- * @implNote ItemCollectorMachine
+ * @date 2023/7/13
+ * @implNote FisherMachine
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -100,22 +100,21 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
     private final int inventorySize;
 
+    private AABB aabb;
+    @Persisted
+    private int range; //TODO: setting range GUI
+
     @Getter
     @Persisted
     @Setter
     @DescSynced
     private boolean isWorkingEnabled = true;
 
-    private AABB aabb;
-    @Persisted
-    private int range; //TODO: setting range GUI
-
     @DescSynced
     @Persisted
     @Getter
     @RequireRerender
     private boolean active = false;
-
 
     public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... args) {
         super(holder, tier);
@@ -356,6 +355,16 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         updateAutoOutputSubscription();
     }
 
+    @Override
+    public int getProgress() {
+        return 0;
+    }
+
+    @Override
+    public int getMaxProgress() {
+        return 0;
+    }
+
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
@@ -464,29 +473,15 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
                 return GuiTextures.TOOL_ALLOW_INPUT;
             }
         } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
-                return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
+            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
+
         return super.sideTips(player, toolTypes, side);
     }
 
     //////////////////////////////////////
     //*******    Interactions   ********//
     //////////////////////////////////////
-
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
-        if (controllable != null) {
-            if (!isRemote()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                updateCollectionSubscription();
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            }
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
-    }
-
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!playerIn.isCrouching() && !isRemote()) {
@@ -512,12 +507,19 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     }
 
     @Override
-    public int getProgress() {
-        return 0;
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        if (controllable != null) {
+            if (!isRemote()) {
+                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
+                updateCollectionSubscription();
+                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+            }
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
     }
 
-    @Override
-    public int getMaxProgress() {
-        return 0;
-    }
+
 }
