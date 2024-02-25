@@ -29,7 +29,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -92,11 +91,10 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
 
     @Getter
     @Persisted
-    @Setter
     @DescSynced
     private boolean isWorkingEnabled = true;
 
-    public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
         this.cache = createCacheItemHandler();
@@ -143,12 +141,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         if (!isRemote()) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerUpdateSubscription));
+                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerSubscription));
             }
             exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
             energySubs = energyContainer.addChangedListener(() -> {
                 this.updateBatterySubscription();
-                this.updateBreakerUpdateSubscription();
+                this.updateBreakerSubscription();
             });
             chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         }
@@ -176,7 +174,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
-        updateBreakerUpdateSubscription();
+        updateBreakerSubscription();
         updateAutoOutputSubscription();
     }
 
@@ -184,7 +182,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     //*********     Logic     **********//
     //////////////////////////////////////
 
-    public void updateBreakerUpdateSubscription() {
+    public void updateBreakerSubscription() {
         if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() && isWorkingEnabled) {
             breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
         } else if (breakerSubs != null) {
@@ -233,7 +231,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
             }
         }
 
-        updateBreakerUpdateSubscription();
+        updateBreakerSubscription();
     }
 
     @Override
@@ -340,6 +338,11 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
             return false;
         }
         return super.isFacingValid(facing);
+    }
+
+    public void setWorkingEnabled(boolean workingEnabled) {
+        isWorkingEnabled = workingEnabled;
+        updateBreakerSubscription();
     }
 
     //////////////////////////////////////
@@ -466,7 +469,6 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                updateBreakerUpdateSubscription();
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
             }

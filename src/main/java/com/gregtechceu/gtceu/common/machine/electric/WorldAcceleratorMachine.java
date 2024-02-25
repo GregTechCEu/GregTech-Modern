@@ -22,7 +22,6 @@ import it.unimi.dsi.fastutil.objects.Object2BooleanFunction;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -67,7 +66,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
     private static final long RTAmperage = 3;
     @Getter
     @Persisted
-    @Setter
     @DescSynced
     private boolean isWorkingEnabled = true;
     @DescSynced
@@ -210,6 +208,12 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
             unsubscribe(subscription);
     }
 
+
+    public void setWorkingEnabled(boolean workingEnabled) {
+        isWorkingEnabled = workingEnabled;
+        updateSubscription();
+    }
+
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
@@ -223,7 +227,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                updateSubscription();
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
             }

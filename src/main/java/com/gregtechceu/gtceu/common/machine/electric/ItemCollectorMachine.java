@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
+import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -31,7 +32,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -101,12 +101,18 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     private final int inventorySize;
 
     private AABB aabb;
+
     @Persisted
-    private int range; //TODO: setting range GUI
+    @Getter
+    @DescSynced
+    private int range;
+
+    private boolean rangeDirty = false;
+
+    private final int maxRange;
 
     @Getter
     @Persisted
-    @Setter
     @DescSynced
     private boolean isWorkingEnabled = true;
 
@@ -116,7 +122,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     @RequireRerender
     private boolean active = false;
 
-    public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    public ItemCollectorMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
@@ -124,7 +130,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
 
-        range = (int) Math.pow(2,tier+2);
+        maxRange = (int) Math.pow(2,tier+2);
+        range = maxRange;
         setOutputFacingItems(getFrontFacing());
     }
 
@@ -215,7 +222,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
     public void update() {
         if (drainEnergy(false)) {
-            if (aabb == null) {
+            if (aabb == null || rangeDirty) {
+                rangeDirty = false;
                 BlockPos pos1,pos2;
                 pos1 = getPos().offset(-range,0,-range);
                 pos2 = getPos().offset(range,2,range);
@@ -365,6 +373,17 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         return 0;
     }
 
+    public void setRange(int range) {
+        this.range = range;
+        rangeDirty = true;
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        isWorkingEnabled = workingEnabled;
+        updateCollectionSubscription();
+    }
+
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
@@ -380,13 +399,15 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         energyGroup.addWidget(batterySlot);
         var group = new WidgetGroup(0, 0,
                 Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
+                Math.max(template.getSize().height + 8 + 30, energyGroup.getSize().height + 8));
         var size = group.getSize();
         energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
         template.setSelfPosition(new Position(
                 (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
-                (size.height - template.getSize().height) / 2));
+                (size.height - template.getSize().height) / 2+15));
+
+
 
         group.addWidget(energyGroup);
         group.addWidget(template);
@@ -396,7 +417,10 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
             createTemplate(inventorySize).setupUI(template, itemCollectorMachine);
             createEnergyBar().setupUI(template, itemCollectorMachine);
             createBatterySlot().setupUI(template, itemCollectorMachine);
-
+            var rangeSelector = new IntInputWidget((template.getSize().width-80)/2,5,80,20, itemCollectorMachine::getRange, itemCollectorMachine::setRange);
+            rangeSelector.setMin(1);
+            rangeSelector.setMax(itemCollectorMachine.maxRange);
+            template.addWidget(rangeSelector);
         }
     }));
 
@@ -415,10 +439,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
 
 
+
     protected static EditableUI<WidgetGroup, ItemCollectorMachine> createTemplate(int inventorySize) {
         return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
             int rowSize = (int) Math.sqrt(inventorySize);
-            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8 + 20, rowSize * 18 + 8);
+            WidgetGroup main = new WidgetGroup(0, 0, rowSize * 18 + 8+ 25, rowSize * 18 + 8);
 
             for (int y = 0; y < rowSize; y++) {
                 for (int x = 0; x < rowSize; x++) {
@@ -454,6 +479,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
                 slot.setCanTakeItems(true);
                 slot.setCanPutItems(true);
             });
+
         });
     }
 
@@ -512,7 +538,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         if (controllable != null) {
             if (!isRemote()) {
                 controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                updateCollectionSubscription();
                 playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
                     "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
             }
