@@ -120,7 +120,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
-
+    private boolean hasWater=false;
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
@@ -223,21 +223,21 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         progress = 0;
     }
 
-    private boolean hasWater(){
+    private void updateHasWater(){
         for (int x = 0; x < WATER_CHECK_SIZE; x++)
             for (int z = 0; z < WATER_CHECK_SIZE; z++) {
                 BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
-
-                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER))
-                    return false;
-
-
+                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)){
+                    hasWater = false;
+                    return;
+                }
             }
-        return true;
+        hasWater = true;
     }
 
     public void fishingUpdate() {
-        if(!hasWater()) return;
+        if(this.getOffsetTimer() % maxProgress) updateHasWater();
+        if(!hasWater) return;
 
         drainEnergy(false);
         if (progress >= maxProgress) {
