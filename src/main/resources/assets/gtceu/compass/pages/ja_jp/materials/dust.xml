@@ -1,8 +1,0 @@
-<page>
-  <h1>Dust</h1>
-  <h3>Source</h3>
-  <text>
-    <style color="0xaaaaaa" italic="true">Note: this page is ported from MCMOD's GTCEu wiki. <br></br>Author: <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://center.mcmod.cn/119280/">Oganesson897</style>, <br></br> <style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://github.com/blackdragon2447">BlackDragon2447</style> <br></br></style>
-  </text>
-  <text>Dusts are mainly used in (un)mixing materials, most composite materials can be <style color="0xafff00" hover-info="click link" link="gtceu:machines/electrolyzer" underlined="true">Electrolyzed</style> or <style color="0xafff00" hover-info="click link" link="gtceu:machines/centrifuge" underlined="true">centrifuged</style> in dust form to obtain their components (either elemental or composite). Similarly metal dusts can be used in a <style color="0xafff00" hover-info="click link" link="gtceu:machines/mixer" underlined="true">Mixer</style>, <style color="0xbbffaa">Alloy Blast Smelter</style> or, in some cases, <style color="0xafff00" hover-info="click link" link="gtceu:materials/" underlined="true">Alloy Smelter</style> to create alloys.</text>
-</page>
