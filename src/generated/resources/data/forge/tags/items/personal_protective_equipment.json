@@ -1,0 +1,20 @@
+{
+  "values": [
+    {
+      "id": "minecraft:diamond_helmet",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_chestplate",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_leggings",
+      "required": false
+    },
+    {
+      "id": "minecraft:diamond_boots",
+      "required": false
+    }
+  ]
+} //placeholder PPE

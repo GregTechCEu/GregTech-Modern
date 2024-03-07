@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
@@ -30,6 +29,7 @@ public class ItemTagLoader {
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
+        create(provider, "personal_protective_equipment",Items.DIAMOND_HELMET.kjs$getIdLocation(),Items.DIAMOND_CHESTPLATE.kjs$getIdLocation(),Items.DIAMOND_LEGGINGS.kjs$getIdLocation(),Items.DIAMOND_BOOTS.kjs$getIdLocation()); //TODO equipment
 
         // TODO add to planks mc tag?
         //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
