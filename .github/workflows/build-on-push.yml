@@ -30,3 +30,10 @@ jobs:
         uses: gradle/gradle-build-action@v2.4.2
         with:
           arguments: build
+          
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v4.0.0
+        with:
+          name: build output
+          path: build/libs/*
+          retention-days: 30
