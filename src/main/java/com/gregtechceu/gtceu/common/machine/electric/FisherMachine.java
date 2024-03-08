@@ -236,7 +236,9 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     public void fishingUpdate() {
-        if(this.getOffsetTimer() % maxProgress) updateHasWater();
+        if(this.getOffsetTimer() % maxProgress == 0L)
+            updateHasWater();
+        
         if(!hasWater) return;
 
         drainEnergy(false);
