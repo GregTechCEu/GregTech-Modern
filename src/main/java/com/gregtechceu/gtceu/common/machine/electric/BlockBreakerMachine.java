@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
@@ -27,12 +28,12 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -59,7 +60,7 @@ import java.util.function.BiFunction;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops {
+public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IControllable {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(BlockBreakerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -88,10 +89,15 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     private final long energyPerTick;
     public final float efficiencyMultiplier;
 
-    public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... args) {
+    @Getter
+    @Persisted
+    @DescSynced
+    private boolean isWorkingEnabled = true;
+
+    public BlockBreakerMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
-        this.cache = createCacheItemHandler(args);
+        this.cache = createCacheItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.energyPerTick = GTValues.V[tier - 1];
         setOutputFacingItems(getFrontFacing().getOpposite());
@@ -119,13 +125,13 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected ItemStackTransfer createChargerItemHandler(Object... args) {
+    protected ItemStackTransfer createChargerItemHandler() {
         var transfer = new ItemStackTransfer();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return transfer;
     }
 
-    protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
+    protected NotifiableItemStackHandler createCacheItemHandler() {
         return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
     }
 
@@ -135,12 +141,12 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         if (!isRemote()) {
             if (getLevel() instanceof ServerLevel serverLevel) {
                 serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
-                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerUpdateSubscription));
+                serverLevel.getServer().tell(new TickTask(0, this::updateBreakerSubscription));
             }
             exportItemSubs = cache.addChangedListener(this::updateAutoOutputSubscription);
             energySubs = energyContainer.addChangedListener(() -> {
                 this.updateBatterySubscription();
-                this.updateBreakerUpdateSubscription();
+                this.updateBreakerSubscription();
             });
             chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         }
@@ -168,7 +174,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         super.onNeighborChanged(block, fromPos, isMoving);
-        updateBreakerUpdateSubscription();
+        updateBreakerSubscription();
         updateAutoOutputSubscription();
     }
 
@@ -176,8 +182,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     //*********     Logic     **********//
     //////////////////////////////////////
 
-    public void updateBreakerUpdateSubscription() {
-        if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() && getLevel().hasNeighborSignal(getPos())) {
+    public void updateBreakerSubscription() {
+        if (drainEnergy(true) && !getLevel().getBlockState(getPos().relative(getFrontFacing())).isAir() && isWorkingEnabled) {
             breakerSubs = subscribeServerTick(breakerSubs, this::breakerUpdate);
         } else if (breakerSubs != null) {
             blockBreakProgress = 0;
@@ -225,7 +231,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
             }
         }
 
-        updateBreakerUpdateSubscription();
+        updateBreakerSubscription();
     }
 
     @Override
@@ -334,21 +340,33 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         return super.isFacingValid(facing);
     }
 
+    public void setWorkingEnabled(boolean workingEnabled) {
+        isWorkingEnabled = workingEnabled;
+        updateBreakerSubscription();
+    }
+
     //////////////////////////////////////
     //**********     GUI     ***********//
     //////////////////////////////////////
     public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-        WidgetGroup template = createTemplate(inventorySize).createDefault();
-        SlotWidget batterySlot = createBatterySlot().createDefault();
-        batterySlot.setSelfPosition(new Position(79, 62));
-        WidgetGroup group = new WidgetGroup(0, 0, Math.max(template.getSize().width + 12, 172), template.getSize().height + 8);
-        group.addWidget(batterySlot);
-        Size size = group.getSize();
+        var template = createTemplate(inventorySize).createDefault();
+        var energyBar = createEnergyBar().createDefault();
+        var batterySlot = createBatterySlot().createDefault();
+        var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
+        batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
+        energyGroup.addWidget(energyBar);
+        energyGroup.addWidget(batterySlot);
+        var group = new WidgetGroup(0, 0,
+            Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
+            Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
+        var size = group.getSize();
+        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
         template.setSelfPosition(new Position(
             (size.width - 4 - template.getSize().width) / 2 + 4,
             (size.height - template.getSize().height) / 2));
 
+        group.addWidget(energyGroup);
         group.addWidget(template);
         return group;
     }, (template, machine) -> {
@@ -412,6 +430,8 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
             }
+        } else if (toolTypes.contains(GTToolType.SOFT_MALLET)) {
+            return isWorkingEnabled ? GuiTextures.TOOL_PAUSE : GuiTextures.TOOL_START;
         }
         return super.sideTips(player, toolTypes, side);
     }
@@ -441,5 +461,19 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
+        if (controllable != null) {
+            if (!isRemote()) {
+                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
+                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
+                    "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
+            }
+            return InteractionResult.CONSUME;
+        }
+        return InteractionResult.PASS;
     }
 }

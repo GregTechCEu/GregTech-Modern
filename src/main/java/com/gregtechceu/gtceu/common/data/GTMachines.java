@@ -405,6 +405,23 @@ public class GTMachines {
             .register(),
         LV, MV, HV, EV, IV, LuV, ZPM, UV);
 
+
+    public static final MachineDefinition[] ITEM_COLLECTOR = registerTieredMachines("item_collector", ItemCollectorMachine::new,
+        (tier, builder) -> builder
+            .rotationState(RotationState.NONE)
+            .langValue("%s Item Collector %s".formatted(VLVH[tier], VLVT[tier]))
+            .recipeType(DUMMY_RECIPES)
+            .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"), ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
+            .renderer(() -> new WorkableTieredHullMachineRenderer(tier,GTCEu.id("block/machines/item_collector")))
+            .tooltips(
+                Component.translatable("gtceu.machine.item_collector.tooltip")
+                Component.translatable("gtceu.machine.item_collector.gui.collect_range",(int)Math.pow(2,tier+2))
+                Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier])
+                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L))
+            .compassNode("item_collector")
+            .register(),
+        LV, MV, HV, EV);
+
     //////////////////////////////////////
     //*********     Storage    *********//
     //////////////////////////////////////

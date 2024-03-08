@@ -29,3 +29,5 @@ accessible method net/minecraft/world/item/context/UseOnContext getHitResult ()L
 accessible field net/minecraft/world/item/crafting/ShapedRecipe result Lnet/minecraft/world/item/ItemStack;
 
 accessible method net/minecraft/world/level/block/Block popExperience (Lnet/minecraft/server/level/ServerLevel;Lnet/minecraft/core/BlockPos;I)V
+
+accessible field net/minecraft/world/entity/item/ItemEntity pickupDelay I
