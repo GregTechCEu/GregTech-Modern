@@ -324,8 +324,8 @@ public class MachineLang {
         provider.add("gtceu.machine.energy_converter.message_conversion_eu", "Converting EU, In: %dA %d EU, Out: %d Native");
         provider.add("gtceu.machine.pump.tooltip", "§7The best way to empty Oceans!");
         provider.add("gtceu.machine.pump.tooltip_buckets", "§f%d §7ticks per Bucket");
-        provider.add("gtceu.machine.item_collector.gui.collect_range", "Collect in %s blocks");
-        provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself when given a Redstone signal");
+        provider.add("gtceu.machine.item_collector.gui.collect_range", "Collect within an area of %sx%s blocks");
+        provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself");
         provider.add("gtceu.machine.quantum_chest.tooltip", "§7Better than Storage Drawers");
         provider.add("gtceu.machine.quantum_chest.items_stored", "Item Amount:");
         provider.add("gtceu.machine.quantum_tank.tooltip", "§7Compact place to store all your fluids");
