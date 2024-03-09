@@ -3,13 +3,11 @@ import net.fabricmc.loom.task.RemapJarTask;
 plugins {
     alias libs.plugins.architectury
     alias libs.plugins.architectury.loom
-    alias libs.plugins.vineFlower // VineFlower, a better decompiler
     alias libs.plugins.machete // automatic jar compressing on build
     alias libs.plugins.shadow
 }
 
 apply plugin: "dev.architectury.loom"
-apply plugin: "io.github.juuxel.loom-vineflower"
 apply plugin: "java"
 apply plugin: "architectury-plugin"
 apply plugin: "maven-publish"
