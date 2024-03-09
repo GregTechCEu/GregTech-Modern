@@ -40,10 +40,9 @@ dependencyResolutionManagement {
         def parchmentVersion = "2022.11.27" // https://parchmentmc.org/docs/getting-started
         def shadowVersion = "7.1.2"
         def architecturyPluginVersion = "3.4-SNAPSHOT"
-        def architecturyLoomVersion = "1.0-SNAPSHOT"
-        def vineFlowerVersion = "1.+"
+        def architecturyLoomVersion = "1.5-SNAPSHOT"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.23.a"
+        def ldLibVersion = "1.0.24.a"
         def mixinextrasVersion = "0.2.0"
 
         forge {
@@ -116,9 +115,6 @@ dependencyResolutionManagement {
 
             def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
             plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
-
-            def vineFlower = version("vineFlower", vineFlowerVersion)
-            plugin("vineFlower", "io.github.juuxel.loom-vineflower").versionRef(vineFlower)
 
             def machete = version("machete", macheteVersion)
             plugin("machete", "io.github.p03w.machete").versionRef(machete)
