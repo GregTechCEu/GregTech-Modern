@@ -6497,5 +6497,10 @@
     "block.gtceu.zpm_world_accelerator": "§cПревосходный ускоритель мира III§r",
     "config.gtceu.option.enableWorldAccelerators": "enableWorldAccelerators",
     "gtceu.gui.title_bar.back": "Назад",
-    "curios.identifier.gtceu_magnet": "GTCEu Магнит"
+    "curios.identifier.gtceu_magnet": "GTCEu Магнит",
+    "block.gtceu.ev_item_collector": "§5Улучшенный собиратель предметов III§r",
+    "block.gtceu.hv_item_collector": "§6Улучшенный собиратель предметов II§r",
+    "block.gtceu.lv_item_collector": "Обычный собиратель предметов §r",
+    "block.gtceu.mv_item_collector": "§bУлучшенный собиратель предметов §r",
+    "compass.node.gtceu.machines/item_collector": "Cобиратель предметов"
 }
