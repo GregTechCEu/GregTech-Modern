@@ -78,13 +78,13 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     public void updateEnergyContainer(boolean isTransformUp) {
         long tierVoltage = GTValues.V[getTier()];
         if (isTransformUp) {
-            //storage = n amp high; input = tier / 4; amperage = 4; output = tier; amperage = 1
+            //storage = n amp high; input = tier / 4; amperage = 4n; output = tier; amperage = n
             this.energyContainer.resetBasicInfo(tierVoltage * 8L * baseAmp, tierVoltage, baseAmp * 4L, tierVoltage * 4, baseAmp);
             energyContainer.setSideInputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
             energyContainer.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         } else {
-            //storage = 1 amp high; input = tier; amperage = 1; output = tier / 4; amperage = 4
-            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
+            //storage = n amp high; input = tier; amperage = n; output = tier / 4; amperage = 4n
+            this.energyContainer.resetBasicInfo(tierVoltage * 8L * baseAmp, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
             energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         }

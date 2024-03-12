@@ -40,6 +40,8 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
+
+        provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
         //capabilities
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
@@ -115,8 +117,8 @@ public class LangHandler {
         provider.add("metaitem.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("metaitem.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
         provider.add("metaitem.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
-        provider.add("metaitem.dust.tooltip.purify", "Throw into Cauldron to get clean Dust");
-        provider.add("metaitem.crushed.tooltip.purify", "Throw into Cauldron to get Purified Ore");
+        provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
+        provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
 
 
@@ -952,6 +954,8 @@ public class LangHandler {
         provider.add("gtceu.fluid.state_liquid", "§aState: Liquid");
         provider.add("gtceu.fluid.state_plasma", "§aState: Plasma");
         provider.add("gtceu.fluid.type_acid.tooltip", "§6Acidic! Handle with care!");
+        provider.add("gtceu.gui.title_bar.back", "Back");
+        provider.add("gtceu.gui.title_bar.page_switcher", "Pages");
         provider.add("gtceu.gui.fuel_amount", "Fuel Amount:");
         provider.add("gtceu.gui.fluid_amount", "Fluid Amount:");
         provider.add("gtceu.gui.toggle_view.disabled", "Toggle View (Fluids)");

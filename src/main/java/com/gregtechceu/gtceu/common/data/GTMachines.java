@@ -405,6 +405,24 @@ public class GTMachines {
             .register(),
         LV, MV, HV, EV, IV, LuV, ZPM, UV);
 
+
+    public static final MachineDefinition[] ITEM_COLLECTOR = registerTieredMachines("item_collector", ItemCollectorMachine::new,
+        (tier, builder) -> builder
+            .rotationState(RotationState.NONE)
+            .langValue("%s Item Collector %s".formatted(VLVH[tier], VLVT[tier]))
+            .recipeType(DUMMY_RECIPES)
+            .editableUI(ItemCollectorMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id("item_collector"), ItemCollectorMachine.getINVENTORY_SIZES()[tier]))
+            .renderer(() -> new WorkableTieredHullMachineRenderer(tier,GTCEu.id("block/machines/item_collector")))
+            .tooltips(
+                Component.translatable("gtceu.machine.item_collector.tooltip"),
+                Component.translatable("gtceu.machine.item_collector.gui.collect_range", (int) Math.pow(2, tier + 2)),
+                Component.translatable("gtceu.universal.tooltip.voltage_in", GTValues.V[tier], GTValues.VNF[tier]),
+                Component.translatable("gtceu.universal.tooltip.energy_storage_capacity", GTValues.V[tier] * 64L)
+            )
+            .compassNode("item_collector")
+            .register(),
+        LV, MV, HV, EV);
+
     //////////////////////////////////////
     //*********     Storage    *********//
     //////////////////////////////////////
@@ -1607,7 +1625,6 @@ public class GTMachines {
                                     .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setPreviewCount(1))
                                     .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setPreviewCount(1))
                                     .or(Predicates.abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(4).setPreviewCount(1))
-                                    .or(Predicates.abilities(PartAbility.MACHINE_HATCH).setExactLimit(1))
                                     .or(Predicates.autoAbilities(true, false, false)))
                             .where('C', blocks(CLEANROOM_GLASS.get()))
                             .where('#', Predicates.air())
@@ -1886,7 +1903,7 @@ public class GTMachines {
                 .langValue("Large %s Boiler".formatted(FormattingUtil.toEnglishName(name)))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.LARGE_BOILER_RECIPES)
-                .recipeModifier(LargeBoilerMachine::recipeModifier)
+                .recipeModifier(LargeBoilerMachine::recipeModifier, true)
                 .appearanceBlock(casing)
                 .partAppearance((controller, part, side) -> controller.self().getPos().below().getY() == part.self().getPos().getY() ? fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern(definition -> FactoryBlockPattern.start()
