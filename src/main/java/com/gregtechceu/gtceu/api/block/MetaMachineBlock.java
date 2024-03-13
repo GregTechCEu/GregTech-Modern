@@ -127,6 +127,13 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
     }
 
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        //needed to trigger block updates so machines connect to open cables properly.
+        level.updateNeighbourForOutputSignal(pos, this);
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
