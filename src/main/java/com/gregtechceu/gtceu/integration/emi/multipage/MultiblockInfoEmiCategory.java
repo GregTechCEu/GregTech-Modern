@@ -10,8 +10,6 @@ import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
-import java.util.Objects;
-
 public class MultiblockInfoEmiCategory extends ModularUIEmiRecipeCategory {
     public static final MultiblockInfoEmiCategory CATEGORY = new MultiblockInfoEmiCategory();
 
