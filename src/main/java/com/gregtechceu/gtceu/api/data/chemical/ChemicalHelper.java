@@ -131,7 +131,7 @@ public class ChemicalHelper {
     @Nullable
     public static MaterialStack getMaterial(ItemLike itemLike) {
         var entry = getUnificationEntry(itemLike);
-        if (entry != null) {
+        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) {
             Material entryMaterial = entry.material;
             if (entryMaterial != null) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix.getMaterialAmount(entryMaterial));
@@ -166,7 +166,7 @@ public class ChemicalHelper {
     public static TagPrefix getPrefix(ItemLike itemLike) {
         if (itemLike == null) return null;
         UnificationEntry entry = getUnificationEntry(itemLike);
-        if (entry != null) return entry.tagPrefix;
+        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) return entry.tagPrefix;
         return null;
     }
 
@@ -229,7 +229,7 @@ public class ChemicalHelper {
                     return entry.getValue();
                 }
             }
-            return null;
+            return UnificationEntry.EmptyMapMarkerEntry;
         });
     }
 
@@ -242,7 +242,7 @@ public class ChemicalHelper {
                     }
                 }
             }
-            return new UnificationEntry.EmptyMapMarkerEntry();
+            return UnificationEntry.EmptyMapMarkerEntry;
         });
     }
 
@@ -252,7 +252,7 @@ public class ChemicalHelper {
         return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
             Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item.asItem());
             return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
-                    .filter(entry -> !(entry instanceof UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
+                    .filter(entry -> !(entry == UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
         });
     }
 
