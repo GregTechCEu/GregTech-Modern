@@ -15,7 +15,7 @@ public class GTOreVeinEmiCategory extends ModularUIEmiRecipeCategory {
     public static final GTOreVeinEmiCategory CATEGORY = new GTOreVeinEmiCategory();
 
     public GTOreVeinEmiCategory() {
-        super(GTCEu.id("ore_vein_diagram"), EmiStack.of(Items.IRON_INGOT));
+        super(GTCEu.id("ore_vein_diagram"), EmiStack.of(Items.RAW_IRON));
     }
 
     public static void registerDisplays(EmiRegistry registry) {

@@ -1,10 +1,15 @@
 package com.gregtechceu.gtceu.integration;
 
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
+import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
@@ -64,6 +69,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         setupText(fluid);
     }
 
+    @SuppressWarnings("all")
     private String range(GTOreDefinition oreDefinition) {
         HeightProvider height = oreDefinition.range().height;
         int minHeight = 0, maxHeight = 0;
@@ -99,7 +105,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         addWidget(fluidSlot);
     }
 
-    private void setupText(GTOreDefinition oreDefinition){
+    private void setupText(GTOreDefinition ignored){
         addWidget(new ImageWidget(5, 0, width - 10, 16,
                 new TextTexture("gtceu.jei.ore_vein." + name).setType(TextTexture.TextType.LEFT_ROLL).setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
@@ -113,7 +119,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         addWidget(new LabelWidget(5, 80, dimensions));
     }
 
-    private void setupText(BedrockFluidDefinition fluid){
+    private void setupText(BedrockFluidDefinition ignored){
         addWidget(new ImageWidget(5, 0, width - 10, 16,
                 new TextTexture("gtceu.jei.bedrock_fluid." + name).setType(TextTexture.TextType.LEFT_ROLL).setWidth(width - 10)));
         addWidget(new LabelWidget(5, 40,
@@ -144,5 +150,21 @@ public class GTOreVeinWidget extends WidgetGroup {
     public String getFluidName(BedrockFluidDefinition fluid) {
         ResourceLocation id = GTRegistries.BEDROCK_FLUID_DEFINITIONS.getKey(fluid);
         return id.getPath();
+    }
+
+    public static void init(){
+        if (GTRegistries.ORE_VEINS.values().isEmpty()){
+            GTRegistries.ORE_VEINS.unfreeze();
+            GTOres.init();
+            AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
+            OreDataLoader.buildVeinGenerator();
+            GTRegistries.ORE_VEINS.freeze();
+        }
+        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.values().isEmpty()){
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
+            GTBedrockFluids.init();
+            AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
+        }
     }
 }
