@@ -77,6 +77,7 @@ public class GTRecipeTypeUI {
     private boolean JEIVisible = true;
 
     private CompoundTag customUICache;
+    private Size jeiSize;
 
     /**
      * @param recipeType the recipemap corresponding to this ui
@@ -120,11 +121,16 @@ public class GTRecipeTypeUI {
 
     public void reloadCustomUI() {
         this.customUICache = null;
+        this.jeiSize = null;
     }
 
     public Size getJEISize() {
-        Size size = createEditableUITemplate(false, false).createDefault().getSize();
-        return new Size(size.width, getPropertyHeightShift() + 5 + size.height);
+        Size size = this.jeiSize;
+        if(size == null) {
+            var originalSize = createEditableUITemplate(false, false).createDefault().getSize();
+            this.jeiSize = size = new Size(originalSize.width, getPropertyHeightShift() + 5 + originalSize.height);
+        }
+        return size;
     }
 
     public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
