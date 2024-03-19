@@ -75,10 +75,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected long totalContinuousRunningTime;
     protected TickableSubscription subscription;
     protected Object workingSound;
-    @Nullable
-    protected CompletableFuture<Boolean> completableFuture = null;
-    // if storage is dirty while async searching recipe, it will be set to true.
-    protected boolean dirtySearching = false;
 
     public RecipeLogic(IRecipeLogicMachine machine) {
         super(machine.self());
@@ -126,9 +122,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
         } else {
             subscription = getMachine().subscribeServerTick(subscription, this::serverTick);
-            if (completableFuture != null) {
-                dirtySearching = true;
-            }
         }
     }
 
@@ -176,11 +169,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             boolean unsubscribe = false;
             if (isSuspend()) {
                 unsubscribe = true;
-                if (completableFuture != null) {
-                    completableFuture.cancel(true);
-                    completableFuture = null;
-                }
-            } else if (completableFuture == null && lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty && lastFailedMatches == null) {
+            } else if (lastRecipe == null && isIdle() && !machine.keepSubscribing() && !recipeDirty && lastFailedMatches == null) {
                 // machine isn't working enabled
                 // or
                 // there is no available recipes, so it will wait for notification.
@@ -270,48 +259,19 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         } else { // try to find and handle a new recipe
             lastRecipe = null;
             lastOriginRecipe = null;
-            if (completableFuture == null) {
-                // try to search recipe in threads.
-                if (ConfigHolder.INSTANCE.machines.asyncRecipeSearching) {
-                    completableFuture = supplyAsyncSearchingTask();
-                } else {
-                    handleSearchingRecipes(searchRecipe());
-                }
-                dirtySearching = false;
-            } else if (completableFuture.isDone()) {
-                var lastFuture = this.completableFuture;
-                completableFuture = null;
-                if (!lastFuture.isCancelled()) {
-                    // if searching task is done, try to handle searched recipes.
-                    try {
-                        boolean matches = lastFuture.join();
-                        if (!matches && dirtySearching) {
-                            completableFuture = supplyAsyncSearchingTask();
-                        }
-                    } catch (Throwable throwable) {
-                        // if error occurred, schedule a new async task.
-                        completableFuture = supplyAsyncSearchingTask();
-                    }
-                } else {
-                    handleSearchingRecipes(searchRecipe());
-                }
-                dirtySearching = false;
-            }
+            handleSearchingRecipes(searchRecipe());
         }
         recipeDirty = false;
     }
 
-    private CompletableFuture<Boolean> supplyAsyncSearchingTask() {
-        return CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("GTCEu Recipe Search", () -> handleSearchingRecipes(searchRecipe())), Util.backgroundExecutor());
-    }
-
-    private boolean handleSearchingRecipes(Iterator<GTRecipe> matches) {
+    private void handleSearchingRecipes(Iterator<GTRecipe> matches) {
         while (matches != null && matches.hasNext()) {
             GTRecipe match = matches.next();
             if (match == null) continue;
 
             // If a new recipe was found, cache found recipe.
-            if (checkMatchedRecipeAvailable(match)) return true;
+            if (checkMatchedRecipeAvailable(match))
+                return;
 
             // cache matching recipes.
             if (lastFailedMatches == null) {
@@ -319,7 +279,6 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             lastFailedMatches.add(match);
         }
-        return false;
     }
 
     public boolean handleFuelRecipe() {
