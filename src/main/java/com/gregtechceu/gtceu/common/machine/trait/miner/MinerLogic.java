@@ -144,7 +144,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     @Override
     public void resetRecipeLogic() {
         super.resetRecipeLogic();
-        resetArea();
+        resetArea(false);
         this.cachedItemTransfer = null;
         this.pipeLength = 0;
     }
@@ -445,12 +445,14 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
     /**
      * Recalculates the mining area, refills the block list and restarts the miner, if it was done
      */
-    public void resetArea() {
+    public void resetArea(boolean checkToMine) {
         initPos(getMiningPos(), currentRadius);
         if (this.isDone) this.setWorkingEnabled(false);
         this.isDone = false;
-        blocksToMine.clear();
-        checkBlocksToMine();
+        if (checkToMine) {
+            blocksToMine.clear();
+            checkBlocksToMine();
+        }
     }
 
     /**
