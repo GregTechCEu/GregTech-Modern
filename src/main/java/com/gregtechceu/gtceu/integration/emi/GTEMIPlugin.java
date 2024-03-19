@@ -46,7 +46,10 @@ public class GTEMIPlugin implements EmiPlugin {
             registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
         // recipes
-        MultiblockInfoEmiCategory.registerDisplays(registry);
+        try {
+            MultiblockInfoEmiCategory.registerDisplays(registry);
+        } catch (NullPointerException ignored){
+        }
         GTRecipeTypeEmiCategory.registerDisplays(registry);
         GTOreProcessingEmiCategory.registerDisplays(registry);
         GTOreVeinEmiCategory.registerDisplays(registry);

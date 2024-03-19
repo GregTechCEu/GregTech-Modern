@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.NoopVeinGenerator;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
@@ -74,6 +73,13 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
+        buildVeinGenerator();
+
+        GTOres.updateLargestVeinSize();
+        GTRegistries.ORE_VEINS.freeze();
+    }
+
+    public static void buildVeinGenerator() {
         Iterator<Map.Entry<ResourceLocation, GTOreDefinition>> iterator = GTRegistries.ORE_VEINS.entries().iterator();
         while (iterator.hasNext()) {
             var entry = iterator.next().getValue();
@@ -83,9 +89,6 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
                 iterator.remove();
             }
         }
-
-        GTOres.updateLargestVeinSize();
-        GTRegistries.ORE_VEINS.freeze();
     }
 
     public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
