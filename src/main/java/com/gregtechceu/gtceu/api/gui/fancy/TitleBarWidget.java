@@ -24,8 +24,7 @@ public class TitleBarWidget extends WidgetGroup {
     private static final int HEIGHT = 16;
     private static final int BTN_WIDTH = 18;
 
-    // TODO make this work. The roll speed isn't getting applied currently and it's too fast.
-    private static final float ROLL_SPEED = 0.2f;
+    private static final float ROLL_SPEED = 0.7f;
 
     private int width;
     private boolean showBackButton = false;
@@ -80,7 +79,7 @@ public class TitleBarWidget extends WidgetGroup {
 
         titleText = new TextTexture(ChatFormatting.BLACK.toString() + currentPage.getTitle().copy().getString())
             .setDropShadow(false)
-            .setType(TextTexture.TextType.ROLL_ALWAYS);
+            .setType(TextTexture.TextType.LEFT_ROLL);
         titleText.setRollSpeed(ROLL_SPEED);
 
         tabIcon.setImage(currentPage.getTabIcon());
