@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.machine.multiblock.electric;
+package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;

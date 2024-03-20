@@ -413,10 +413,4 @@ public class GTUtil {
         return world.isDay();
     }
 
-    @Nullable
-    @ExpectPlatform
-    public static CompoundTag getIngredientTag(Ingredient ingredient) {
-        throw new AssertionError();
-    }
-
 }
