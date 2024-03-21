@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -9,7 +12,9 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -25,8 +30,8 @@ import java.util.function.Consumer;
 
 public final class AssemblyLineManager {
 
-    public static final String RESEARCH_NBT_TAG = "assemblylineResearch";
-    public static final String RESEARCH_ID_NBT_TAG = "researchId";
+    public static final String RESEARCH_NBT_TAG = "assembly_line_research";
+    public static final String RESEARCH_ID_NBT_TAG = "research_id";
 
     @Nonnull
     public static ItemStack getDefaultScannerItem() {
@@ -151,13 +156,15 @@ public final class AssemblyLineManager {
         private static final int DURATION = 100;
 
         @Override
-        public GTRecipe createCustomRecipe(long voltage, List<ItemStack> inputs, List<FluidStack> fluidInputs) {
-            if (inputs.size() > 1) {
+        public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
+            var itemInputs = holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream().filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast).toArray(IItemTransfer[]::new);
+            var inputs = new ItemTransferList(itemInputs);
+            if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
-                GTRecipe recipe = createDataRecipe(inputs.get(0), inputs.get(1));
+                GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
                 if (recipe != null) return recipe;
 
-                createDataRecipe(inputs.get(1), inputs.get(0));
+                createDataRecipe(inputs.getStackInSlot(1), inputs.getStackInSlot(0));
             }
             return null;
         }

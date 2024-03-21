@@ -28,6 +28,8 @@ public class GTRecipes {
      */
     public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
         ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
+        AssemblyLineManager.registerScannerLogic();
+
         // Decomposition info loading
         MaterialInfoLoader.init();
 

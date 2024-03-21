@@ -14,7 +14,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.*;
@@ -41,7 +40,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -183,7 +181,17 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Nullable
     public Iterator<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return null;
-        return getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+        var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
+        if (!this.isScanner || (iterator.hasNext() && iterator.next() != null)) {
+            iterator.reset();
+            return iterator;
+        }
+
+        for (ICustomScannerLogic logic : CUSTOM_SCANNER_LOGICS) {
+            GTRecipe recipe = logic.createCustomRecipe(holder);
+            if (recipe != null) return Collections.singleton(recipe).iterator();
+        }
+        return Collections.emptyIterator();
     }
 
     public int getMaxInputs(RecipeCapability<?> cap) {
@@ -297,7 +305,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
          *         recipe is not found to run. Return null if no recipe should be run by your logic.
          */
         @Nullable
-        GTRecipe createCustomRecipe(long voltage, List<ItemStack> inputs, List<FluidStack> fluidInputs);
+        GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder);
 
         /**
          * @return A list of Recipes that are never registered, but are added to JEI to demonstrate the custom logic.
