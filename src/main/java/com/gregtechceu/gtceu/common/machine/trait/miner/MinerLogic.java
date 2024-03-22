@@ -47,7 +47,7 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
+public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerLogic.class, RecipeLogic.MANAGED_FIELD_HOLDER);
     private static final short MAX_SPEED = Short.MAX_VALUE;
     private static final byte POWER = 5;
@@ -138,7 +138,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         this.inputEnergyHandler = new IgnoreEnergyRecipeHandler();
         this.capabilitiesProxy.put(IO.IN, inputItemHandler.getCapability(), List.of(inputItemHandler));
         this.capabilitiesProxy.put(IO.IN, inputEnergyHandler.getCapability(), List.of(inputEnergyHandler));
-        this.capabilitiesProxy.put(IO.OUT, inputItemHandler.getCapability(), List.of(outputItemHandler));
+        this.capabilitiesProxy.put(IO.OUT, outputItemHandler.getCapability(), List.of(outputItemHandler));
     }
 
     @Override
@@ -325,7 +325,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
         // create dummy recipe handler
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
         inputItemHandler.storage.onContentsChanged(0);
-        outputItemHandler.storage.setStackInSlot(0, ItemStack.EMPTY);
+        for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {
+            outputItemHandler.storage.setStackInSlot(i, ItemStack.EMPTY);
+        }
         outputItemHandler.storage.onContentsChanged(0);
 
         var matches = machine.getRecipeType().searchRecipe(getRecipeManager(), this);
@@ -335,7 +337,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder{
             if (match == null) continue;
 
             var eut = RecipeHelper.getInputEUt(match);
-            if (GTUtil.getTierByVoltage(eut)<= getVoltageTier()) {
+            if (GTUtil.getTierByVoltage(eut) <= getVoltageTier()) {
                 if (match.handleRecipeIO(IO.OUT, this)) {
                     blockDrops.clear();
                     var result = new ArrayList<ItemStack>();
