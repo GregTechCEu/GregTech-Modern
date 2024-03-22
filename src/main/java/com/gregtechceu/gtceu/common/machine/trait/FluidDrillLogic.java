@@ -79,6 +79,14 @@ public class FluidDrillLogic extends RecipeLogic {
         return null;
     }
 
+    public long getFluidToProduce() {
+        if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinFluid != null) {
+            var data = BedrockFluidVeinSavedData.getOrCreate(serverLevel);
+            return getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()));
+        }
+        return 0;
+    }
+
     private long getFluidToProduce(FluidVeinWorldEntry entry) {
         var definition = entry.getDefinition();
         if (definition != null) {

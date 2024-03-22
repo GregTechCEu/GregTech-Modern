@@ -1132,6 +1132,11 @@ public class LangHandler {
         provider.add("gtceu.multiblock.large_miner.radius", "Radius: §a%d§r Blocks");
         provider.add("gtceu.multiblock.large_miner.errorradius", "§cCannot change radius while working!");
         provider.add("gtceu.multiblock.large_miner.needsfluid", "Needs Drilling Fluid");
+        provider.add("gtceu.multiblock.fluid_rig.drilled_fluid", "Fluid: %s");
+        provider.add("gtceu.multiblock.fluid_rig.no_fluid_in_area", "None in Area.");
+        provider.add("gtceu.multiblock.fluid_rig.fluid_amount", "Pumping Rate: %s");
+        provider.add("gtceu.multiblock.fluid_rig.vein_depletion", "Vein Size: %s");
+        provider.add("gtceu.multiblock.fluid_rig.vein_depleted", "Vein Depleted.");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
         provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");
