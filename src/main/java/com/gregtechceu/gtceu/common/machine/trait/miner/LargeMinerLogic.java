@@ -86,7 +86,7 @@ public class LargeMinerLogic extends MinerLogic {
         if (!isWorking()) {
             this.isChunkMode = isChunkMode;
             if (!getMachine().isRemote()) {
-                resetArea();
+                resetArea(true);
             }
         }
     }
