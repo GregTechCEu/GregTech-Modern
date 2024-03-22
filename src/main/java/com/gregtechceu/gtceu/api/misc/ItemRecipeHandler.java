@@ -52,6 +52,11 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
+    public int getSize() {
+        return this.storage.getSlots();
+    }
+
+    @Override
     public RecipeCapability<Ingredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
