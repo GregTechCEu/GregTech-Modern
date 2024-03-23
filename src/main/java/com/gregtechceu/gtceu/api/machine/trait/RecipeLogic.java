@@ -286,7 +286,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             GTRecipe recipe = iterator.next();
             if (recipe == null) continue;
 
-            if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
+            if (recipe.checkConditions(this).isSuccess() && handleRecipeIO(recipe, IO.IN)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;
             }
@@ -299,8 +299,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (recipe.hasTick()) {
             var result = recipe.matchTickRecipe(this.machine);
             if (result.isSuccess()) {
-                recipe.handleTickRecipeIO(IO.IN, this.machine);
-                recipe.handleTickRecipeIO(IO.OUT, this.machine);
+                handleTickRecipeIO(recipe, IO.IN);
+                handleTickRecipeIO(recipe, IO.OUT);
             } else {
                 return result;
             }
@@ -312,7 +312,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (handleFuelRecipe()) {
             machine.beforeWorking();
             recipe.preWorking(this.machine);
-            if (recipe.handleRecipeIO(IO.IN, this.machine)) {
+            if (handleRecipeIO(recipe, IO.IN)) {
                 recipeDirty = false;
                 lastRecipe = recipe;
                 setStatus(Status.WORKING);
@@ -401,7 +401,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         machine.afterWorking();
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine);
+            handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
                     var modified = machine.fullModifyRecipe(lastOriginRecipe);
@@ -428,10 +428,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
+    protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
+        return recipe.handleRecipeIO(io, this.machine);
+    }
+
+    protected boolean handleTickRecipeIO(GTRecipe recipe, IO io) {
+        return recipe.handleTickRecipeIO(io, this.machine);
+    }
+
     /**
      * Interrupt current recipe without io.
      */
-    public void interruptRecipe(){
+    public void interruptRecipe() {
         machine.afterWorking();
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);

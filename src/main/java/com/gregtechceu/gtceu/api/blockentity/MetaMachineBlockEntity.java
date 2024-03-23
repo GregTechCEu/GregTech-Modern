@@ -170,7 +170,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
                 return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap, LazyOptional.of(() -> cleanroomReceiver));
             }
-        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE ) {
+        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
             if (machine instanceof IMaintenanceMachine maintenanceMachine) {
                 return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap, LazyOptional.of(() -> maintenanceMachine));
             }
@@ -232,6 +232,14 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             var list = machine.getTraits().stream().filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IOpticalComputationProvider.class::cast).toList();
             if (!list.isEmpty()) {
                 return GTCapability.CABABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
+            if (machine instanceof IDataAccessHatch computationProvider) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+            }
+            var list = machine.getTraits().stream().filter(IDataAccessHatch.class::isInstance).filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
         }
         if (GTCEu.isAE2Loaded()) {

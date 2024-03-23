@@ -377,6 +377,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.SCANNER_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.RESEARCH_STATION_OVERLAY)
             .setScanner(true)
+            .setMaxTooltips(4)
             .setSound(GTValues.FOOLS.get() ? GTSoundEntries.SCIENCE : GTSoundEntries.COMPUTATION);
 
     public final static GTRecipeType ROCK_BREAKER_RECIPES = register("rock_breaker", ELECTRIC).setMaxIOSize(1, 4, 0, 0).setEUIO(IO.IN)
@@ -562,6 +563,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType ASSEMBLY_LINE_RECIPES = register("assembly_line", MULTIBLOCK).setMaxIOSize(16, 1, 4, 0).setEUIO(IO.IN)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.ASSEMBLER)
+            .setHasResearchSlot(true)
             .onRecipeBuild(AssemblyLineManager::createDefaultResearchRecipe);
 
     public static final GTRecipeType LARGE_CHEMICAL_RECIPES = register("large_chemical_reactor", MULTIBLOCK).setMaxIOSize(3, 3, 5, 4).setEUIO(IO.IN)

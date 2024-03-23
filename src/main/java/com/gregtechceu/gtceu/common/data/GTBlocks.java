@@ -32,12 +32,14 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeT
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
+import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
@@ -110,6 +112,7 @@ public class GTBlocks {
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
     public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeType.values().length];
+    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[OpticalPipeType.values().length];
 
 
     //////////////////////////////////////
@@ -364,8 +367,8 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks... Complete!");
     }
-    private static void registerLaserPipeBlock(int slot) {
-        var type = LaserPipeType.values()[slot];
+    private static void registerLaserPipeBlock(int index) {
+        var type = LaserPipeType.values()[index];
         var entry = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
                 .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
@@ -379,7 +382,31 @@ public class GTBlocks {
                 .color(() -> LaserPipeBlockItem::tintColor)
                 .build()
                 .register();
-        LASER_PIPES[slot] = entry;
+        LASER_PIPES[index] = entry;
+    }
+
+    // Optical Pipe Blocks
+    private static void generateOpticalPipeBlocks() {
+        GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks...");
+        for (int i = 0; i < OpticalPipeType.values().length; ++i) {
+            registerOpticalPipeBlock(i);
+        }
+        GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks... Complete!");
+    }
+    private static void registerOpticalPipeBlock(int index) {
+        var type = OpticalPipeType.values()[index];
+        var entry = REGISTRATE.block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+            .blockstate(NonNullBiConsumer.noop())
+            .defaultLoot()
+            .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
+            .addLayer(() -> RenderType::cutoutMipped)
+            .item(OpticalPipeBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+        OPTICAL_PIPES[index] = entry;
     }
 
 
@@ -600,15 +627,8 @@ public class GTBlocks {
 
     // HPCA, AT
     public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE.block("computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube"),
-                            Map.of("north", GTCEu.id("block/casings/hpca/computer_casing/front"),
-                                    "south", GTCEu.id("block/casings/hpca/computer_casing/back"),
-                                    "up", GTCEu.id("block/casings/hpca/computer_casing/top"),
-                                    "down", GTCEu.id("block/casings/hpca/computer_casing/bottom"),
-                                    "west", GTCEu.id("block/casings/hpca/computer_casing/side"),
-                                    "east", GTCEu.id("block/casings/hpca/computer_casing/side"))) : null))
+                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item(RendererBlockItem::new)
@@ -616,15 +636,8 @@ public class GTBlocks {
             .build()
             .register();
     public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE.block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
-                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube"),
-                            Map.of("north", GTCEu.id("block/casings/hpca/advanced_computer_casing/front"),
-                                    "south", GTCEu.id("block/casings/hpca/advanced_computer_casing/back"),
-                                    "up", GTCEu.id("block/casings/hpca/advanced_computer_casing/top"),
-                                    "down", GTCEu.id("block/casings/hpca/advanced_computer_casing/bottom"),
-                                    "west", GTCEu.id("block/casings/hpca/advanced_computer_casing/side"),
-                                    "east", GTCEu.id("block/casings/hpca/advanced_computer_casing/side"))) : null))
+                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item(RendererBlockItem::new)
@@ -989,10 +1002,11 @@ public class GTBlocks {
 
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
-        generateCableBlocks();      // Cable & Wire Blocks
-        generateFluidPipeBlocks();  // Fluid Pipe Blocks
-        generateItemPipeBlocks();   // Item Pipe Blocks
-        generateLaserPipeBlocks();  // Laser Pipe Blocks
+        generateCableBlocks();        // Cable & Wire Blocks
+        generateFluidPipeBlocks();    // Fluid Pipe Blocks
+        generateItemPipeBlocks();     // Item Pipe Blocks
+        generateLaserPipeBlocks();    // Laser Pipe Blocks
+        generateOpticalPipeBlocks();  // Optical Pipe Blocks
 
         // Remove Builder Tables
         MATERIAL_BLOCKS_BUILDER = null;

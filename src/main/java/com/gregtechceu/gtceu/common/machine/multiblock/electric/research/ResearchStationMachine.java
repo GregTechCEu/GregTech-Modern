@@ -13,16 +13,19 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.machine.trait.computation.ComputationRecipeLogic;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 @MethodsReturnNonnullByDefault
@@ -108,6 +111,42 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             return (ResearchStationMachine) super.getMachine();
         }
 
+        // Custom recipe matching logic to override output space test
+        @Nullable
+        @Override
+        protected Iterator<GTRecipe> searchRecipe() {
+            IRecipeCapabilityHolder holder = this.machine;
+            if (!holder.hasProxies()) return null;
+            var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {
+                if (recipe.isFuel) return false;
+                if (!holder.hasProxies()) return false;
+                var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs, false);
+                if (!result.isSuccess()) return false;
+                if (recipe.hasTick()) {
+                    result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs, false);
+                    return result.isSuccess();
+                }
+                return true;
+            });
+            boolean any = false;
+            while (iterator.hasNext()) {
+                GTRecipe recipe = iterator.next();
+                if (recipe == null) continue;
+                any = true;
+                break;
+            }
+            if (!machine.getRecipeType().isScanner() || any) {
+                iterator.reset();
+                return iterator;
+            }
+
+            for (GTRecipeType.ICustomScannerLogic logic : GTRecipeType.CUSTOM_SCANNER_LOGICS) {
+                GTRecipe recipe = logic.createCustomRecipe(holder);
+                if (recipe != null) return Collections.singleton(recipe).iterator();
+            }
+            return Collections.emptyIterator();
+        }
+
         @Override
         protected boolean checkMatchedRecipeAvailable(GTRecipe match) {
             var modified = machine.fullModifyRecipe(match);
@@ -116,7 +155,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                     return true;
                 }
                 IOpticalComputationProvider provider = getComputationProvider();
-                int recipeCWUt = CWURecipeCapability.CAP.of(modified.inputs.containsKey(CWURecipeCapability.CAP) ? modified.getInputContents(CWURecipeCapability.CAP).get(0).content : modified.getTickInputContents(CWURecipeCapability.CAP).get(0).content);
+                int recipeCWUt = modified.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();
                 var thing = provider.requestCWUt(recipeCWUt, true) >= recipeCWUt;
                 if (!thing) {
                     return false;
@@ -189,6 +228,22 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             }
             holder.setDataItem(outputItem);
             holder.setLocked(false);
+        }
+
+        @Override
+        protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
+            if (io != IO.OUT) {
+                return super.handleRecipeIO(recipe, io);
+            }
+            return true;
+        }
+
+        @Override
+        protected boolean handleTickRecipeIO(GTRecipe recipe, IO io) {
+            if (io != IO.OUT) {
+                return super.handleTickRecipeIO(recipe, io);
+            }
+            return true;
         }
     }
 }

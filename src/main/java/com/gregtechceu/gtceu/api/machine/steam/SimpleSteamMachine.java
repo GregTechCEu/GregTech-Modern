@@ -28,6 +28,7 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -155,7 +156,7 @@ public class SimpleSteamMachine extends SteamWorkableMachine implements IExhaust
 
     @Override
     public ModularUI createUI(Player entityPlayer) {
-        var group = getRecipeType().getRecipeUI().createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, IFluidTransfer.EMPTY, IFluidTransfer.EMPTY, true, isHighPressure);
+        var group = getRecipeType().getRecipeUI().createUITemplate(recipeLogic::getProgressPercent, importItems.storage, exportItems.storage, IFluidTransfer.EMPTY, IFluidTransfer.EMPTY, new CompoundTag(), true, isHighPressure);
         Position pos = new Position((Math.max(group.getSize().width + 4 + 8, 176) - 4 - group.getSize().width) / 2 + 4, 32);
         group.setSelfPosition(pos);
         return new ModularUI(176, 166, this, entityPlayer)

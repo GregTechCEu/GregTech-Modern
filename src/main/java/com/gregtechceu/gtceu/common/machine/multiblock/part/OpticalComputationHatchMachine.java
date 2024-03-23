@@ -3,9 +3,12 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
@@ -17,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
+import java.util.Iterator;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -98,13 +102,10 @@ public class OpticalComputationHatchMachine extends MultiblockPartMachine implem
     private IOpticalComputationProvider getOpticalNetProvider() {
         BlockEntity tileEntity = getLevel().getBlockEntity(getPos().relative(getFrontFacing()));
         if (tileEntity == null) return null;
-        // TODO
 
-/*
-        if (tileEntity instanceof TileEntityOpticalPipe) {
-            return tileEntity.getCapability(GregtechTileCapabilities.CABABILITY_COMPUTATION_PROVIDER, getFrontFacing().getOpposite());
+        if (tileEntity instanceof OpticalPipeBlockEntity) {
+            return tileEntity.getCapability(GTCapability.CABABILITY_COMPUTATION_PROVIDER, getFrontFacing().getOpposite()).orElse(null);
         }
- */
         return null;
     }
 

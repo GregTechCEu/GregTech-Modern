@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -89,8 +92,19 @@ public abstract class RecipeCapability<T> {
         return false;
     }
 
+    /**
+     * Does the recipe test if this capability is workable? if not, you should test validity somewhere later.
+     */
+    public boolean doMatchInRecipe() {
+        return true;
+    }
+
     public boolean doAddGuiSlots() {
         return isRecipeSearchFilter();
+    }
+
+    public void addXEIInfo(WidgetGroup group, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
+
     }
 
      //TODO

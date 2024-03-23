@@ -19,6 +19,7 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
@@ -115,6 +116,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                             generatorMachine.exportItems.storage,
                             generatorMachine.importFluids,
                             generatorMachine.exportFluids,
+                            new CompoundTag(),
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }

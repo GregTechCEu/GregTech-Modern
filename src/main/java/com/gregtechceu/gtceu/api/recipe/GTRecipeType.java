@@ -48,7 +48,7 @@ import java.util.function.Supplier;
  */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
-    private static final List<ICustomScannerLogic> CUSTOM_SCANNER_LOGICS = new ArrayList<>();
+    public static final List<ICustomScannerLogic> CUSTOM_SCANNER_LOGICS = new ArrayList<>();
 
     public final ResourceLocation registryName;
     public final String group;
@@ -83,6 +83,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     @Setter
     protected boolean isScanner;
+    // Does this recipe type have a research item slot? If this is true you MUST create a custom UI.
+    @Getter
+    @Setter
+    protected boolean hasResearchSlot;
     @Getter
     protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
     private CompoundTag customUICache;
@@ -182,7 +186,14 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public Iterator<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return null;
         var iterator = getLookup().getRecipeIterator(holder, recipe -> !recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
-        if (!this.isScanner || (iterator.hasNext() && iterator.next() != null)) {
+        boolean any = false;
+        while (iterator.hasNext()) {
+            GTRecipe recipe = iterator.next();
+            if (recipe == null) continue;
+            any = true;
+            break;
+        }
+        if (!this.isScanner || any) {
             iterator.reset();
             return iterator;
         }

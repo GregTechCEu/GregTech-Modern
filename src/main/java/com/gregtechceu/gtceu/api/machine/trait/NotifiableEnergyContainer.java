@@ -39,7 +39,16 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     private Predicate<Direction> sideInputCondition, sideOutputCondition;
 
     protected long amps, lastTS;
+    @Nullable
     protected TickableSubscription outputSubs;
+    @Nullable
+    protected TickableSubscription updateSubs;
+
+
+    protected long lastEnergyInputPerSec = 0;
+    protected long lastEnergyOutputPerSec = 0;
+    protected long energyInputPerSec = 0;
+    protected long energyOutputPerSec = 0;
 
     public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
         super(machine);
@@ -83,24 +92,58 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     public void onMachineLoad() {
         super.onMachineLoad();
         checkOutputSubscription();
+        updateSubs = getMachine().subscribeServerTick(updateSubs, this::updateTick);
+    }
+
+    @Override
+    public void onMachineUnLoad() {
+        super.onMachineUnLoad();
+        if (updateSubs != null) {
+            updateSubs.unsubscribe();
+            updateSubs = null;
+        }
     }
 
     public void checkOutputSubscription() {
         if (getOutputVoltage() > 0 && getOutputAmperage() > 0) {
             if (getEnergyStored() >= getOutputVoltage()) {
                 outputSubs = getMachine().subscribeServerTick(outputSubs, this::serverTick);
-            } else if (outputSubs != null){
+            } else if (outputSubs != null) {
                 outputSubs.unsubscribe();
                 outputSubs = null;
             }
         }
     }
 
+    @Override
+    public long getInputPerSec() {
+        return lastEnergyInputPerSec;
+    }
+
+    @Override
+    public long getOutputPerSec() {
+        return lastEnergyOutputPerSec;
+    }
+
     public void setEnergyStored(long energyStored) {
         if (this.energyStored == energyStored) return;
+        if (energyStored > this.energyStored) {
+            energyInputPerSec += energyStored - this.energyStored;
+        } else {
+            energyOutputPerSec += this.energyStored - energyStored;
+        }
         this.energyStored = energyStored;
         checkOutputSubscription();
         notifyListeners();
+    }
+
+    public void updateTick() {
+        if (getMachine().getOffsetTimer() % 20 == 0) {
+            lastEnergyOutputPerSec = energyOutputPerSec;
+            lastEnergyInputPerSec = energyInputPerSec;
+            energyOutputPerSec = 0;
+            energyInputPerSec = 0;
+        }
     }
 
     public void serverTick() {

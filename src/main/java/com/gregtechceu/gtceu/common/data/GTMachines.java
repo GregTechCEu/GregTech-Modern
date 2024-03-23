@@ -1258,12 +1258,13 @@ public class GTMachines {
     public static final MultiblockMachineDefinition ASSEMBLY_LINE = REGISTRATE.multiblock("assembly_line", WorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.ASSEMBLY_LINE_RECIPES)
+            .alwaysTryModifyRecipe(true)
             .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STEEL_SOLID)
             .pattern(definition -> FactoryBlockPattern.start(BACK, UP, RIGHT)
                     .aisle("FIF", "RTR", "SAG", "#Y#")
-                    .aisle("FIF", "RTR", "GAG", "#Y#").setRepeatable(3, 15)
-                    .aisle("FOF", "RTR", "GAG", "#Y#")
+                    .aisle("FIF", "RTR", "DAG", "#Y#").setRepeatable(3, 15)
+                    .aisle("FOF", "RTR", "DAG", "#Y#")
                     .where('S', Predicates.controller(blocks(definition.getBlock())))
                     .where('F', blocks(CASING_STEEL_SOLID.get())
                             .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMaxGlobalLimited(4)))
@@ -1274,6 +1275,7 @@ public class GTMachines {
                     .where('A', blocks(CASING_ASSEMBLY_CONTROL.get()))
                     .where('R', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('T', blocks(CASING_ASSEMBLY_LINE.get()))
+                    .where('D', dataHatchPredicate(blocks(CASING_GRATE.get())))
                     .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
@@ -2062,6 +2064,17 @@ public class GTMachines {
         if (recipeType.getMaxInputs(FluidRecipeCapability.CAP) > 0 || recipeType.getMaxOutputs(FluidRecipeCapability.CAP) > 0)
             tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", tankCapacity));
         return tooltipComponents.toArray(Component[]::new);
+    }
+
+    private static TraceabilityPredicate dataHatchPredicate(TraceabilityPredicate def) {
+        // if research is enabled, require the data hatch, otherwise use a grate instead
+        if (ConfigHolder.INSTANCE.machines.enableResearch) {
+            return abilities(PartAbility.DATA_ACCESS, PartAbility.OPTICAL_DATA_RECEPTION)
+                .setExactLimit(1)
+                .or(def);
+        }
+        return def;
+
     }
 
     public static void init() {

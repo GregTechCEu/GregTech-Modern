@@ -164,7 +164,7 @@ public final class AssemblyLineManager {
                 GTRecipe recipe = createDataRecipe(inputs.getStackInSlot(0), inputs.getStackInSlot(1));
                 if (recipe != null) return recipe;
 
-                createDataRecipe(inputs.getStackInSlot(1), inputs.getStackInSlot(0));
+                return createDataRecipe(inputs.getStackInSlot(1), inputs.getStackInSlot(0));
             }
             return null;
         }

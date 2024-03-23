@@ -10,11 +10,13 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 public class ComputationRecipeLogic extends RecipeLogic {
@@ -78,10 +80,11 @@ public class ComputationRecipeLogic extends RecipeLogic {
         if (machine.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP) == null) return;
         IEnergyContainer container = new EnergyContainerList(machine.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP).stream().filter(IEnergyContainer.class::isInstance).map(IEnergyContainer.class::cast).toList());
 
-        long recipeEUt = this.lastRecipe.getTickInputContents(EURecipeCapability.CAP).stream().map(Content::getContent).map(EURecipeCapability.CAP::of).reduce(0L, Long::sum);
-        long pulled = container.changeEnergy(-recipeEUt);
-        if (getStatus() != Status.WAITING && pulled > 0) {
+        long recipeEUt = RecipeHelper.getInputEUt(this.lastRecipe);
+        long pulled = container.removeEnergy(recipeEUt);
 
+        var result = lastRecipe.checkConditions(this);
+        if (result.isSuccess() && pulled > 0) {
             IOpticalComputationProvider provider = getComputationProvider();
             int availableCWUt = provider.requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= recipeCWUt) {
@@ -104,23 +107,17 @@ public class ComputationRecipeLogic extends RecipeLogic {
                 this.hasNotEnoughComputation = true;
                 // only decrement progress for low CWU/t if we need a steady supply
                 if (type == ComputationType.STEADY) {
-                    if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
-                        this.progress = 1;
-                    } else {
-                        this.progress = Math.max(1, progress - 2);
-                    }
+                    this.progress = Math.max(1, progress - 2);
                 }
             }
-            if (this.isWaiting()/* && getEnergyInputPerSecond() > 19L * recipeEUt*/) {
+            if (this.isWaiting() && container.getInputPerSec() > 19L * recipeEUt) {
                 this.setStatus(Status.WORKING);
             }
         } else if (recipeEUt > 0) {
-            this.setStatus(Status.WAITING);
-            if (ConfigHolder.INSTANCE.machines.recipeProgressLowEnergy) {
-                this.progress = 1;
-            } else {
-                this.progress = Math.max(1, progress - 2);
-            }
+            this.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
+            this.doDamping();
+        } else {
+            this.setWaiting(result.reason().get());
         }
         if (pulled <= 0) {
             container.addEnergy(recipeEUt);

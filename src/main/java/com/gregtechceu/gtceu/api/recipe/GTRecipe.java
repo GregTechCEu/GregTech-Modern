@@ -179,6 +179,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 }
             }
             RecipeCapability<?> capability = entry.getKey();
+            if (!capability.doMatchInRecipe()) {
+                continue;
+            }
+
             List newContent = new ArrayList();
             for (Object cont : content) {
                 newContent.add(capability.copyContent(cont));
@@ -249,6 +253,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 }
             }
             RecipeCapability<?> capability = entry.getKey();
+            if (!capability.doMatchInRecipe()) {
+                continue;
+            }
+
             content = content.stream().map(capability::copyContent).toList();
             if (content.isEmpty() && contentSlot.isEmpty()) continue;
             if (content.isEmpty()) content = null;
@@ -268,7 +276,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     private Tuple<List, Map<String, List>> handlerContentsInternal(
             IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
             RecipeCapability<?> capability, Set<IRecipeHandler<?>> used,
-            List content, Map<String, List> contentSlot,
+            @Nullable List content, Map<String, List> contentSlot,
             List contentSearch, Map<String, List> contentSlotSearch,
             boolean simulate
     ) {
@@ -533,5 +541,18 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             }
         }
         return true;
+    }
+
+    // Just check id as there *should* only ever be 1 instance of a recipe with this id.
+    // If this doesn't work, fix.
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GTRecipe recipe)) return false;
+        return this.id.equals(recipe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 }
