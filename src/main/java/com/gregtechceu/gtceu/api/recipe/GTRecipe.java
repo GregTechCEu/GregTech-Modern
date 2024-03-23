@@ -269,64 +269,66 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             RecipeCapability<?> capability, Set<IRecipeHandler<?>> used,
             List content, Map<String, List> contentSlot,
             List contentSearch, Map<String, List> contentSlotSearch,
-            boolean simulate) {
-        if (capabilityProxies.contains(capIO, capability)) {
-            var handlers = capabilityProxies.get(capIO, capability);
-            // handle distinct first
-            for (IRecipeHandler<?> handler : handlers) {
-                if (!handler.isDistinct()) continue;
-                var result = handler.handleRecipe(io, this, contentSearch, null, true);
-                if (result == null) {
-                    // check distint slot handler
-                    if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(contentSlotSearch.keySet())) {
-                        boolean success = true;
-                        for (var entry : contentSlotSearch.entrySet()) {
-                            List<?> left = handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), true);
-                            if (left != null) {
-                                success = false;
-                                break;
-                            }
-                        }
-                        if (success) {
-                            if (!simulate) {
-                                for (var entry : contentSlot.entrySet()) {
-                                    handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), false);
-                                }
-                            }
-                            contentSlot.clear();
+            boolean simulate
+    ) {
+        if (!capabilityProxies.contains(capIO, capability))
+            return new Tuple<>(content, contentSlot);
+
+        var handlers = capabilityProxies.get(capIO, capability);
+        // handle distinct first
+        for (IRecipeHandler<?> handler : handlers) {
+            if (!handler.isDistinct()) continue;
+            var result = handler.handleRecipe(io, this, contentSearch, null, true);
+            if (result == null) {
+                // check distint slot handler
+                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(contentSlotSearch.keySet())) {
+                    boolean success = true;
+                    for (var entry : contentSlotSearch.entrySet()) {
+                        List<?> left = handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), true);
+                        if (left != null) {
+                            success = false;
+                            break;
                         }
                     }
-                    if (contentSlot.isEmpty()) {
+                    if (success) {
                         if (!simulate) {
-                            handler.handleRecipe(io, this, content, null, false);
+                            for (var entry : contentSlot.entrySet()) {
+                                handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), false);
+                            }
                         }
-                        content = null;
+                        contentSlot.clear();
                     }
                 }
-                if (content == null && contentSlot.isEmpty()) {
-                    break;
+                if (contentSlot.isEmpty()) {
+                    if (!simulate) {
+                        handler.handleRecipe(io, this, content, null, false);
+                    }
+                    content = null;
                 }
             }
-            if (content != null || !contentSlot.isEmpty()) {
-                // handle undistinct later
-                for (IRecipeHandler<?> proxy : handlers) {
-                    if (used.contains(proxy) || proxy.isDistinct()) continue;
-                    used.add(proxy);
-                    if (content != null) {
-                        content = proxy.handleRecipe(io, this, content, null, simulate);
-                    }
-                    if (proxy.getSlotNames() != null) {
-                        Iterator<String> iterator = contentSlot.keySet().iterator();
-                        while (iterator.hasNext()) {
-                            String key = iterator.next();
-                            if (proxy.getSlotNames().contains(key)) {
-                                List<?> left = proxy.handleRecipe(io, this, contentSlot.get(key), key, simulate);
-                                if (left == null) iterator.remove();
-                            }
+            if (content == null && contentSlot.isEmpty()) {
+                break;
+            }
+        }
+        if (content != null || !contentSlot.isEmpty()) {
+            // handle undistinct later
+            for (IRecipeHandler<?> proxy : handlers) {
+                if (used.contains(proxy) || proxy.isDistinct()) continue;
+                used.add(proxy);
+                if (content != null) {
+                    content = proxy.handleRecipe(io, this, content, null, simulate);
+                }
+                if (proxy.getSlotNames() != null) {
+                    Iterator<String> iterator = contentSlot.keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        if (proxy.getSlotNames().contains(key)) {
+                            List<?> left = proxy.handleRecipe(io, this, contentSlot.get(key), key, simulate);
+                            if (left == null) iterator.remove();
                         }
                     }
-                    if (content == null && contentSlot.isEmpty()) break;
                 }
+                if (content == null && contentSlot.isEmpty()) break;
             }
         }
         return new Tuple<>(content, contentSlot);
