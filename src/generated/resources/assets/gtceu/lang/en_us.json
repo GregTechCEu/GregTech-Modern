@@ -1783,7 +1783,6 @@
   "config.gtceu.option.addLoot": "addLoot",
   "config.gtceu.option.allUniqueStoneTypes": "allUniqueStoneTypes",
   "config.gtceu.option.animationTime": "animationTime",
-  "config.gtceu.option.asyncRecipeSearching": "asyncRecipeSearching",
   "config.gtceu.option.bedrockOreDropTagPrefix": "bedrockOreDropTagPrefix",
   "config.gtceu.option.bedrockOreMultiplier": "bedrockOreMultiplier",
   "config.gtceu.option.cleanMultiblocks": "cleanMultiblocks",
