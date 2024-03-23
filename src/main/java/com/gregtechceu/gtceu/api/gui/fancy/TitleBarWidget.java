@@ -79,7 +79,7 @@ public class TitleBarWidget extends WidgetGroup {
 
         titleText = new TextTexture(ChatFormatting.BLACK.toString() + currentPage.getTitle().copy().getString())
             .setDropShadow(false)
-            .setType(TextTexture.TextType.LEFT_ROLL);
+            .setType(TextTexture.TextType.ROLL);
         titleText.setRollSpeed(ROLL_SPEED);
 
         tabIcon.setImage(currentPage.getTabIcon());
