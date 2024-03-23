@@ -53,6 +53,8 @@ public class LangHandler {
         provider.add("ldlib.gui.editor.register.editor.gtceu.rtui", "RecipeType UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.mui", "Machine UI Project");
         provider.add("ldlib.gui.editor.register.editor.gtceu.template_tab", "templates");
+
+        provider.add("curios.identifier.gtceu_magnet", "GTCEu Magnet");
         //capabilities
         provider.add("recipe.capability.eu.name", "GTCEu Energy");
         provider.add("recipe.capability.fluid.name", "Fluid");
@@ -128,8 +130,8 @@ public class LangHandler {
         provider.add("metaitem.electric.discharge_mode.enabled", "§eDischarge Mode Enabled");
         provider.add("metaitem.electric.discharge_mode.disabled", "§eDischarge Mode Disabled");
         provider.add("metaitem.electric.discharge_mode.tooltip", "Use while sneaking to toggle discharge mode");
-        provider.add("metaitem.dust.tooltip.purify", "Throw into Cauldron to get clean Dust");
-        provider.add("metaitem.crushed.tooltip.purify", "Throw into Cauldron to get Purified Ore");
+        provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
+        provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
 
 
@@ -1130,6 +1132,11 @@ public class LangHandler {
         provider.add("gtceu.multiblock.large_miner.radius", "Radius: §a%d§r Blocks");
         provider.add("gtceu.multiblock.large_miner.errorradius", "§cCannot change radius while working!");
         provider.add("gtceu.multiblock.large_miner.needsfluid", "Needs Drilling Fluid");
+        provider.add("gtceu.multiblock.fluid_rig.drilled_fluid", "Fluid: %s");
+        provider.add("gtceu.multiblock.fluid_rig.no_fluid_in_area", "None in Area.");
+        provider.add("gtceu.multiblock.fluid_rig.fluid_amount", "Pumping Rate: %s");
+        provider.add("gtceu.multiblock.fluid_rig.vein_depletion", "Vein Size: %s");
+        provider.add("gtceu.multiblock.fluid_rig.vein_depleted", "Vein Depleted.");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
         provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");

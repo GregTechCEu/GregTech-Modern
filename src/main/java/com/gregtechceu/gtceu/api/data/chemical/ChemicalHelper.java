@@ -48,7 +48,7 @@ public class ChemicalHelper {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new ConcurrentHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Set<Map.Entry<Supplier<? extends ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = new HashSet<>();
+    public static final Set<Map.Entry<Supplier<? extends ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = ConcurrentHashMap.newKeySet();
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY_COLLECTED = new ConcurrentHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, UnificationEntry> TAG_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
@@ -130,7 +130,7 @@ public class ChemicalHelper {
     @Nullable
     public static MaterialStack getMaterial(ItemLike itemLike) {
         var entry = getUnificationEntry(itemLike);
-        if (entry != null) {
+        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) {
             Material entryMaterial = entry.material;
             if (entryMaterial != null) {
                 return new MaterialStack(entryMaterial, entry.tagPrefix.getMaterialAmount(entryMaterial));
@@ -165,7 +165,7 @@ public class ChemicalHelper {
     public static TagPrefix getPrefix(ItemLike itemLike) {
         if (itemLike == null) return null;
         UnificationEntry entry = getUnificationEntry(itemLike);
-        if (entry != null) return entry.tagPrefix;
+        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) return entry.tagPrefix;
         return null;
     }
 
@@ -222,14 +222,22 @@ public class ChemicalHelper {
 
     @Nullable
     public static UnificationEntry getUnificationEntry(ItemLike itemLike) {
-        return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
-            for (var entry : ITEM_UNIFICATION_ENTRY) {
-                if (entry.getKey().get().asItem() == itemLike.asItem()) {
-                    return entry.getValue();
-                }
-            }
-            return null;
-        });
+        // asItem is a bit slow, avoid calling it multiple times
+        var itemKey = itemLike.asItem();
+        var unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.get(itemKey);
+
+        if(unifyingEntry == null) {
+            // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
+            // for unification entries.
+            ITEM_UNIFICATION_ENTRY.removeIf(entry -> {
+                ITEM_UNIFICATION_ENTRY_COLLECTED.put(entry.getKey().get().asItem(), entry.getValue());
+                return true;
+            });
+
+            unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> UnificationEntry.EmptyMapMarkerEntry);
+        }
+
+        return unifyingEntry;
     }
 
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
@@ -241,7 +249,7 @@ public class ChemicalHelper {
                     }
                 }
             }
-            return new UnificationEntry.EmptyMapMarkerEntry();
+            return UnificationEntry.EmptyMapMarkerEntry;
         });
     }
 
@@ -251,7 +259,7 @@ public class ChemicalHelper {
         return ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
             Holder<Item> holder = Registry.ITEM.getOrCreateHolderOrThrow(Registry.ITEM.getResourceKey(item.asItem()).orElseThrow());
             return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
-                    .filter(entry -> !(entry instanceof UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
+                    .filter(entry -> !(entry == UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(null);
         });
     }
 

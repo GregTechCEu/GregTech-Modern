@@ -434,8 +434,8 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         if (metaTileEntity instanceof SimpleGeneratorMachine) return true;
         // todo: enable checks when these are added?
 //        if (metaTileEntity instanceof FuelMultiblockController) return true;
-//        if (metaTileEntity instanceof MetaTileEntityLargeMiner) return true;
-//        if (metaTileEntity instanceof MetaTileEntityFluidDrill) return true;
+        if (metaTileEntity instanceof LargeMinerMachine) return true;
+        if (metaTileEntity instanceof FluidDrillMachine) return true;
 //        if (metaTileEntity instanceof MetaTileEntityCentralMonitor) return true;
         if (metaTileEntity instanceof CokeOvenMachine) return true;
         if (metaTileEntity instanceof PrimitiveBlastFurnaceMachine) return true;

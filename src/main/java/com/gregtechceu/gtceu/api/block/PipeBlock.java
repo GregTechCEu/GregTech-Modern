@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.pipenet.*;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
+import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
-import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -29,7 +31,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.*;
 import net.minecraft.world.level.block.Block;
@@ -119,6 +120,31 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
             boolean modeChanged = pipeNet.markNodeAsActive(pos, isActiveNodeNow);
             if (modeChanged) {
                 onActiveModeChange(worldIn, pos, isActiveNodeNow, false);
+            }
+        }
+    }
+
+    @Override
+    public void onNeighborChange(BlockState state, LevelReader level, BlockPos pos, BlockPos neighbor) {
+        if (level.isClientSide()) return;
+        IPipeNode<PipeType, NodeDataType> pipeTile = getPipeTile(level, pos);
+
+        if (pipeTile != null) {
+            Direction facing = GTUtil.getFacingToNeighbor(pos, neighbor);
+            if (facing == null) return;
+            if (!ConfigHolder.INSTANCE.machines.gt6StylePipesCables) {
+                boolean open = pipeTile.isConnected(facing);
+                boolean canConnect = pipeTile.getCoverContainer().getCoverAtSide(facing) != null ||
+                    canConnect(pipeTile, facing);
+                if (!open && canConnect)
+                    pipeTile.setConnection(facing, true, false);
+                if (open && !canConnect)
+                    pipeTile.setConnection(facing, false, false);
+                updateActiveNodeStatus(pipeTile.getPipeLevel(), pos, pipeTile);
+            }
+            PipeNet<NodeDataType> net = pipeTile.getPipeNet();
+            if (net != null) {
+                pipeTile.getPipeNet().onNeighbourUpdate(neighbor);
             }
         }
     }

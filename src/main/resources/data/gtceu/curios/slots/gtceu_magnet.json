@@ -1,0 +1,10 @@
+{
+  "replace": false,
+  "size": 1,
+  "operation": "SET",
+  "order": 420,
+  "icon": "gtceu:item/gtmag",
+  "add_cosmetic": false,
+  "use_native_gui": true,
+  "render_toggle": false
+}

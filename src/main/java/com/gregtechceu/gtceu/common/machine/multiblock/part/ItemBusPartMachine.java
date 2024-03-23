@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -56,11 +57,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     @Getter
     @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
+    @Getter
+    protected final ItemHandlerProxyRecipeTrait combinedInventory;
 
     public ItemBusPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.inventory = createInventory(args);
         this.circuitInventory = createCircuitItemHandler(io);
+        this.combinedInventory = createCombinedItemHandler(io);
     }
 
     //////////////////////////////////////
@@ -88,6 +92,14 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         }
     }
 
+    protected ItemHandlerProxyRecipeTrait createCombinedItemHandler(Object... args) {
+        if (args.length > 0 && args[0] instanceof IO io && io == IO.IN) {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.IN, IO.NONE);
+        } else {
+            return new ItemHandlerProxyRecipeTrait(this, Set.of(getInventory(), circuitInventory), IO.NONE, IO.NONE);
+        }
+    }
+
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
         clearInventory(drops, getInventory().storage);
@@ -104,6 +116,8 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
             serverLevel.getServer().tell(new TickTask(0, this::updateInventorySubscription));
         }
         inventorySubs = getInventory().addChangedListener(this::updateInventorySubscription);
+
+        combinedInventory.recomputeEnabledState();
     }
 
     @Override
@@ -124,6 +138,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
     public void setDistinct(boolean isDistinct) {
         getInventory().setDistinct(isDistinct);
         circuitInventory.setDistinct(isDistinct);
+        combinedInventory.setDistinct(isDistinct);
     }
 
     //////////////////////////////////////
@@ -196,7 +211,7 @@ public class ItemBusPartMachine extends TieredIOPartMachine implements IDistinct
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 container.addWidget(new SlotWidget(getInventory().storage, index++, 4 + x * 18, 4 + y * 18, true, io.support(IO.IN))
-                        .setBackgroundTexture(GuiTextures.SLOT));
+                        .setBackgroundTexture(GuiTextures.SLOT).setIngredientIO(this.io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT));
             }
         }
 
