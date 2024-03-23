@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/granite",
   "position": [
-    -200,
-    100
+    -150,
+    150
   ],
   "pre_nodes": [
     "gtceu:generation/ore"
