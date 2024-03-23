@@ -49,7 +49,7 @@ public class PageSwitcher implements IFancyUIProvider {
                 new TextTexture(ChatFormatting.BLACK.toString() + page.getTitle().getString())
                     .setDropShadow(false)
                     .setWidth(118)
-                    .setType(TextTexture.TextType.LEFT_ROLL_ALWAYS)
+                    .setType(TextTexture.TextType.LEFT_ROLL)
             ));
 
             scrollableGroup.addWidget(pageWidget);

@@ -79,14 +79,14 @@ public class LargeMinerLogic extends MinerLogic {
     }
 
     private int getDropCountMultiplier() {
-        return 3;
+        return 5;
     }
 
     public void setChunkMode(boolean isChunkMode) {
         if (!isWorking()) {
             this.isChunkMode = isChunkMode;
             if (!getMachine().isRemote()) {
-                resetArea();
+                resetArea(true);
             }
         }
     }
@@ -114,7 +114,7 @@ public class LargeMinerLogic extends MinerLogic {
                 if (getDropCountMultiplier() > 0) {
                     ItemStack fortunePick = pickaxeTool.copy();
                     fortunePick.enchant(Enchantments.BLOCK_FORTUNE, getDropCountMultiplier());
-                    outputStack = ApplyBonusCount.addUniformBonusCount(Enchantments.BLOCK_FORTUNE).build().apply(outputStack,
+                    outputStack = ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE).build().apply(outputStack,
                             new LootContext.Builder(builder.withParameter(LootContextParams.TOOL, fortunePick).create(LootContextParamSets.BLOCK)).create(null));
                 }
             }
