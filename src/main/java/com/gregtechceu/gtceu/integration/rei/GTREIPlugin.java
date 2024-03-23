@@ -96,7 +96,7 @@ public class GTREIPlugin implements REIClientPlugin {
                     Objects.equals(name, TagPrefix.rawOreBlock.name))
                     continue;
 
-                items.add(t.getValue());
+                items.add(t.getValue().get());
             }
 
             var name = material.getName();

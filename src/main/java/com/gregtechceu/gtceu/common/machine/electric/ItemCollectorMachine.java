@@ -147,7 +147,7 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
     protected ItemStackTransfer createFilterItemHandler() {
         var transfer = new ItemStackTransfer();
-       transfer.setFilter(item -> item.is(GTItems.ITEM_FILTER.asItem())||item.is(GTItems.ORE_DICTIONARY_FILTER.asItem()));
+       transfer.setFilter(item -> item.is(GTItems.ITEM_FILTER.get())||item.is(GTItems.ORE_DICTIONARY_FILTER.get()));
         return transfer;
     }
 
