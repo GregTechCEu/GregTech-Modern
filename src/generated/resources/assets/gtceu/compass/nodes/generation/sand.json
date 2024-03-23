@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/sand",
   "position": [
-    -50,
-    50
+    -150,
+    100
   ],
   "pre_nodes": [
     "gtceu:generation/ore"
