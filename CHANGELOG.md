@@ -31,7 +31,7 @@ Version: 1.1.4
 - fix distinct bus mode not working with ghost circuits
 - fix item filter mode resetting every time the UI is opened
 - fix pumps inserting the same fluid into more than one slot
-- fix pumps and other machines being able to extract from a creative tank's internal slot 
+- fix pump/conveyor covers andd other machines being able to extract from a creative tank's internal slot 
 
 ### CHANGES:
 - updated Russian and Chinese translations

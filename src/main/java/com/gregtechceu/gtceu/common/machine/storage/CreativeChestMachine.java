@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
+import com.gregtechceu.gtceu.api.transfer.item.InfiniteItemTransferProxy;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.Nullable;
 
 public class CreativeChestMachine extends QuantumChestMachine {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeChestMachine.class, QuantumChestMachine.MANAGED_FIELD_HOLDER);
@@ -34,13 +37,26 @@ public class CreativeChestMachine extends QuantumChestMachine {
     @Persisted @DropSaved
     private int ticksPerCycle = 1;
 
+    private final InfiniteItemTransferProxy capabilityTransferProxy;
+
     public CreativeChestMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.MAX, -1);
+
+        capabilityTransferProxy = new InfiniteItemTransferProxy(cache, true, true);
+    }
+
+    @Nullable
+    @Override
+    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
+            return super.getItemTransferCap(side, useCoverCapability);
+
+        return capabilityTransferProxy;
     }
 
     @Override
     protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.BOTH) {
+        return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.NONE) {
             @Override
             public int getSlotLimit(int slot) {
                 return 1;
