@@ -32,8 +32,11 @@ public class InfiniteItemTransferProxy extends ItemTransferDelegate {
     @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-        if (infiniteSource)
-            return delegate.getStackInSlot(slot).copyWithCount(amount);
+        if (infiniteSource) {
+            ItemStack copy = delegate.getStackInSlot(slot).copy();
+            copy.setCount(amount);
+            return copy;
+        }
 
         return super.extractItem(slot, amount, simulate, notifyChanges);
     }
