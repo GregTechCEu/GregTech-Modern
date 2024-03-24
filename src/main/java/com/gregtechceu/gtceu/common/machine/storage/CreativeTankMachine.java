@@ -32,7 +32,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 1000, IO.BOTH);
+        return new NotifiableFluidTank(this, 1, 1000, IO.BOTH, IO.NONE);
     }
 
 
