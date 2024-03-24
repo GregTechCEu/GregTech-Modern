@@ -107,7 +107,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected @Nullable IFluidTransfer getOwnFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        return coverHolder.getFluidTransferCap(attachedSide, false);
     }
 
     protected @Nullable IFluidTransfer getAdjacentFluidTransfer() {
