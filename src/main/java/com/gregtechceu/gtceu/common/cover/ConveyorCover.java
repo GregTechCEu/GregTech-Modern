@@ -98,7 +98,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected @Nullable IItemTransfer getOwnItemTransfer() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        return coverHolder.getItemTransferCap(attachedSide, false);
     }
 
     protected @Nullable IItemTransfer getAdjacentItemTransfer() {
