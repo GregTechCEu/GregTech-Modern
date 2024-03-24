@@ -32,7 +32,7 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
     }
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
-        return true;
+        return recipe instanceof GTEmiRecipe;
     }
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
