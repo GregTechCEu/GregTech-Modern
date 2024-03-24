@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -16,6 +18,10 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankMachine extends QuantumTankMachine {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class, QuantumTankMachine.MANAGED_FIELD_HOLDER);
@@ -25,14 +31,25 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Persisted @DropSaved
     private int ticksPerCycle = 1;
 
+    private final InfiniteFluidTransferProxy capabilityTransferProxy;
+
     public CreativeTankMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.MAX, -1);
+
+        capabilityTransferProxy = new InfiniteFluidTransferProxy(cache, true, true);
     }
 
+    @Nullable
+    @Override
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
+            return super.getFluidTransferCap(side, useCoverCapability);
 
+        return capabilityTransferProxy;
+    }
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 1000, IO.BOTH);
+        return new NotifiableFluidTank(this, 1, 1000, IO.BOTH, IO.NONE);
     }
 
 
