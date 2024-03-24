@@ -11,7 +11,6 @@ import dev.latvian.mods.kubejs.block.BlockItemBuilder;
 import dev.latvian.mods.kubejs.generator.AssetJsonGenerator;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
@@ -21,7 +20,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
     public transient Material material = GTMaterials.Air;
     @Setter
-    public transient ResourceLocation texture = MissingTextureAtlasSprite.getLocation();
+    public transient ResourceLocation texture = new ResourceLocation("missingno");
 
     public CoilBlockBuilder(ResourceLocation i) {
         super(i);
