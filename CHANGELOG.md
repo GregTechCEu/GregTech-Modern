@@ -29,6 +29,7 @@ Version: 1.1.4
 - fix large miner crashes
 - fix fluid drilling rig EU/t usage and add extra tooltips
 - fix distinct bus mode not working with ghost circuits
+- fix item filter mode resetting every time the UI is opened
 
 ### CHANGES:
 - updated Russian and Chinese translations
