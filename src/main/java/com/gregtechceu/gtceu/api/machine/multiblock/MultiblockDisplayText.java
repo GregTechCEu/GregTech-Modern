@@ -422,11 +422,8 @@ public class MultiblockDisplayText {
             return this;
         }
 
-        private boolean addMaintenanceProblemHeader(boolean hasAddedHeader) {
-            if (!hasAddedHeader) {
-                textList.add(Component.translatable("gtceu.multiblock.universal.has_problems").withStyle(ChatFormatting.YELLOW));
-            }
-            return true;
+        private void addMaintenanceProblemHeader() {
+            textList.add(Component.translatable("gtceu.multiblock.universal.has_problems").withStyle(ChatFormatting.YELLOW));
         }
 
         /**
