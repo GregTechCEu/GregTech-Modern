@@ -192,12 +192,13 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             return GTRecipe.ActionResult.SUCCESS;
         }
 
-        // lock the object holder on recipe start
         @Override
         public void setupRecipe(GTRecipe recipe) {
+            // lock the object holder on recipe start
             IObjectHolder holder = getMachine().getObjectHolder();
             holder.setLocked(true);
 
+            // Do RecipeLogic#setupRecipe but without any i/o
             if (handleFuelRecipe()) {
                 machine.beforeWorking();
                 recipe.preWorking(this.machine);
@@ -210,8 +211,9 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                 duration = recipe.duration;
             }
 
+            // Add the direct super method's calls here as we don't want to call RecipeLogic#setupRecipe at all.
             this.recipeCWUt = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::getContent).map(CWURecipeCapability.CAP::of).reduce(0, Integer::sum);
-            this.isDurationTotalCWU = !recipe.getInputContents(CWURecipeCapability.CAP).isEmpty();
+            this.isDurationTotalCWU = recipe.data.getBoolean("duration_is_total_cwu");
         }
 
         // "replace" the items in the slots rather than outputting elsewhere

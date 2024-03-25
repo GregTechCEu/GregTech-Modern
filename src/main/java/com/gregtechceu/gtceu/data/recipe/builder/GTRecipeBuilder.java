@@ -215,21 +215,14 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder totalCWU(int cwu) {
-        var lastPerTick = perTick;
-        perTick = false;
-        if (cwu > 0) {
-            input.remove(CWURecipeCapability.CAP);
-            inputCWU(cwu);
-        } else if (cwu < 0) {
-            output.remove(CWURecipeCapability.CAP);
-            outputCWU(cwu);
-        }
-        perTick = lastPerTick;
+        this.durationIsTotalCWU(true);
+        this.hideDuration(true);
+        this.duration(cwu);
         return this;
     }
 
-    public GTRecipeBuilder outputCWU(int eu) {
-        return output(CWURecipeCapability.CAP, eu);
+    public GTRecipeBuilder outputCWU(int cwu) {
+        return output(CWURecipeCapability.CAP, cwu);
     }
 
     public GTRecipeBuilder inputItems(Ingredient... inputs) {
@@ -525,7 +518,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder solderMultiplier(int multiplier) {
-        return addData("solderMultiplier", multiplier);
+        return addData("solder_multiplier", multiplier);
     }
 
     public GTRecipeBuilder disableDistilleryRecipes(boolean flag) {
@@ -538,6 +531,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder researchScan(boolean isScan) {
         return addData("scan_for_research", isScan);
+    }
+
+    public GTRecipeBuilder durationIsTotalCWU(boolean durationIsTotalCWU) {
+        return addData("duration_is_total_cwu", durationIsTotalCWU);
+    }
+
+    public GTRecipeBuilder hideDuration(boolean hideDuration) {
+        return addData("hide_duration", hideDuration);
     }
 
     //////////////////////////////////////
@@ -771,7 +772,10 @@ public class GTRecipeBuilder {
     }
 
     public int getSolderMultiplier() {
-        return Math.max(1, data.getInt("solderMultiplier"));
+        if (data.contains("solderMultiplier")) {
+            return Math.max(1, data.getInt("solderMultiplier"));
+        }
+        return Math.max(1, data.getInt("solder_multiplier"));
     }
 
     /**

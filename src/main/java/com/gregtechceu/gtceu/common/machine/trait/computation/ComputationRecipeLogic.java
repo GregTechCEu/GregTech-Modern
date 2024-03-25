@@ -67,7 +67,7 @@ public class ComputationRecipeLogic extends RecipeLogic {
     public void setupRecipe(GTRecipe recipe) {
         super.setupRecipe(recipe);
         this.recipeCWUt = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::getContent).map(CWURecipeCapability.CAP::of).reduce(0, Integer::sum);
-        this.isDurationTotalCWU = !recipe.getInputContents(CWURecipeCapability.CAP).isEmpty();
+        this.isDurationTotalCWU = recipe.data.getBoolean("duration_is_total_cwu");
     }
 
     @Override

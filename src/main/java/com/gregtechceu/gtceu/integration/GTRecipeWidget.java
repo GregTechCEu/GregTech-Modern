@@ -231,8 +231,10 @@ public class GTRecipeWidget extends WidgetGroup {
         addWidget(group);
 
         int yOffset = 5 + size.height;
-        addWidget(new LabelWidget(3, yOffset,
+        if (!recipe.data.getBoolean("hide_duration")) {
+            addWidget(new LabelWidget(3, yOffset,
                 LocalizationUtils.format("gtceu.recipe.duration", recipe.duration / 20f)));
+        }
         var EUt = RecipeHelper.getInputEUt(recipe);
         boolean isOutput = false;
         if (EUt == 0) {
