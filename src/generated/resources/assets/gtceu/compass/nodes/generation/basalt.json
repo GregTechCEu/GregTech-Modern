@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/basalt",
   "position": [
-    -100,
-    150
+    -50,
+    100
   ],
   "pre_nodes": [
     "gtceu:generation/ore"
