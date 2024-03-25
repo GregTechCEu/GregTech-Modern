@@ -18,7 +18,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class CoilWorkableElectricMultiblockMachine extends WorkableElectricMultiblockMachine {
 
     @Getter
-    private ICoilType coilType  = CoilBlock.CoilType.CUPRONICKEL;
+    private ICoilType coilType = CoilBlock.CoilType.CUPRONICKEL;
 
     public CoilWorkableElectricMultiblockMachine(IMachineBlockEntity holder) {
         super(holder);
