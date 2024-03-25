@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -1043,6 +1044,10 @@ public class LangHandler {
         provider.add("gtceu.multiblock.invalid_structure.tooltip", "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
         provider.add("gtceu.multiblock.validation_failed", "Invalid amount of inputs/outputs.");
         provider.add("gtceu.multiblock.max_energy_per_tick", "Max EU/t: §a%s (%s§r)");
+        provider.add("gtceu.multiblock.max_energy_per_tick_hover", "The maximum EU/t available for running recipes or overclocking");
+        provider.add("gtceu.multiblock.max_energy_per_tick_amps", "Max EU/t: %s (%sA %s)");
+        provider.add("gtceu.multiblock.max_recipe_tier", "Max Recipe Tier: %s");
+        provider.add("gtceu.multiblock.max_recipe_tier_hover", "The maximum tier of recipes that can be run");
         provider.add("gtceu.multiblock.generation_eu", "Outputting: §a%s EU/t");
         provider.add("gtceu.multiblock.universal.no_problems", "No Maintenance Problems!");
         provider.add("gtceu.multiblock.universal.has_problems", "Has Maintenance Problems!");
