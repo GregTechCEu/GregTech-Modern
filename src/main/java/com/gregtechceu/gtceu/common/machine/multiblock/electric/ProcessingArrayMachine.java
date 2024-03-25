@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.TieredWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -90,7 +91,13 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected boolean isMachineStack(ItemStack itemStack) {
         if (itemStack.getItem() instanceof MetaMachineItem metaMachineItem) {
-            var recipeTypes = metaMachineItem.getDefinition().getRecipeTypes();
+            MachineDefinition definition = metaMachineItem.getDefinition();
+
+            if (definition instanceof MultiblockMachineDefinition) {
+                return false;
+            }
+
+            var recipeTypes = definition.getRecipeTypes();
             if(recipeTypes == null){
                 return false;
             }
