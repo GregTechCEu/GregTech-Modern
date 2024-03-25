@@ -386,42 +386,36 @@ public class MultiblockDisplayText {
         public Builder addMaintenanceProblemLines(byte maintenanceProblems) {
             if (!isStructureFormed || !ConfigHolder.INSTANCE.machines.enableMaintenance)
                 return this;
-            if (maintenanceProblems < 63) {
-                boolean hasAddedHeader = false;
+            if (maintenanceProblems <= 0b111111 && maintenanceProblems > 0) {
+                addMaintenanceProblemHeader();
 
                 // Wrench
                 if ((maintenanceProblems & 1) == 0) {
-                    hasAddedHeader = addMaintenanceProblemHeader(hasAddedHeader);
                     textList.add(Component.translatable("gtceu.multiblock.universal.problem.wrench").withStyle(ChatFormatting.GRAY));
                 }
 
                 // Screwdriver
                 if (((maintenanceProblems >> 1) & 1) == 0) {
-                    hasAddedHeader = addMaintenanceProblemHeader(hasAddedHeader);
                     textList.add(Component.translatable("gtceu.multiblock.universal.problem.screwdriver").withStyle(ChatFormatting.GRAY));
                 }
 
                 // Soft Mallet
                 if (((maintenanceProblems >> 2) & 1) == 0) {
-                    hasAddedHeader = addMaintenanceProblemHeader(hasAddedHeader);
                     textList.add(Component.translatable("gtceu.multiblock.universal.problem.soft_mallet").withStyle(ChatFormatting.GRAY));
                 }
 
                 // Hammer
                 if (((maintenanceProblems >> 3) & 1) == 0) {
-                    hasAddedHeader = addMaintenanceProblemHeader(hasAddedHeader);
                     textList.add(Component.translatable("gtceu.multiblock.universal.problem.hard_hammer").withStyle(ChatFormatting.GRAY));
                 }
 
                 // Wire Cutters
                 if (((maintenanceProblems >> 4) & 1) == 0) {
-                    hasAddedHeader = addMaintenanceProblemHeader(hasAddedHeader);
                     textList.add(Component.translatable("gtceu.multiblock.universal.problem.wire_cutter").withStyle(ChatFormatting.GRAY));
                 }
 
                 // Crowbar
                 if (((maintenanceProblems >> 5) & 1) == 0) {
-                    addMaintenanceProblemHeader(hasAddedHeader);
                     textList.add(Component.translatable("gtceu.multiblock.universal.problem.crowbar").withStyle(ChatFormatting.GRAY));
                 }
             }
