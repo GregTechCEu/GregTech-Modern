@@ -209,6 +209,9 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     public long getMaxVoltage() {
         IEnergyContainer energyContainer = this.energyContainer;
+        if (this.energyContainer == null) {
+            this.energyContainer = getEnergyContainer();
+        }
         if (this.isGenerator()) {
             // Generators
             long voltage = energyContainer.getOutputVoltage();
