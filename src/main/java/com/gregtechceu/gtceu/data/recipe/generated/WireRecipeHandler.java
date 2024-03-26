@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.google.common.collect.ImmutableMap;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -53,6 +54,8 @@ public class WireRecipeHandler {
             cableGtHex, 5
     );
 
+    private static final TagPrefix[] wireSizes = {wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex};
+
     public static void init(Consumer<FinishedRecipe> provider) {
 
         // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
@@ -90,37 +93,16 @@ public class WireRecipeHandler {
             .EUt(getVoltageMultiplier(material))
             .save(provider);
 
-        WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_2")
-            .inputItems(prefix, material)
-            .circuitMeta(2)
-            .outputItems(wireGtDouble, material, 1)
-            .duration((int) material.getMass())
-            .EUt(getVoltageMultiplier(material))
-            .save(provider);
-
-        WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_4")
-            .inputItems(prefix, material, 2)
-            .circuitMeta(4)
-            .outputItems(wireGtQuadruple, material, 1)
-            .duration((int) material.getMass() * 2)
-            .EUt(getVoltageMultiplier(material))
-            .save(provider);
-
-        WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_8")
-            .inputItems(prefix, material, 4)
-            .circuitMeta(8)
-            .outputItems(wireGtOctal, material, 1)
-            .duration((int) material.getMass() * 4)
-            .EUt(getVoltageMultiplier(material))
-            .save(provider);
-
-        WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_16")
-            .inputItems(prefix, material, 8)
-            .circuitMeta(16)
-            .outputItems(wireGtHex, material, 1)
-            .duration((int) material.getMass() * 8)
-            .EUt(getVoltageMultiplier(material))
-            .save(provider);
+        for (TagPrefix wireSize : wireSizes) {
+            final int multiplier = (int) (wireSize.getMaterialAmount(material) / GTValues.M);
+            WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_" + (multiplier * 2))
+                .inputItems(prefix, material, multiplier)
+                .circuitMeta(multiplier * 2)
+                .outputItems(wireSize, material)
+                .duration((int) material.getMass() * multiplier)
+                .EUt(getVoltageMultiplier(material))
+                .save(provider);
+        }
 
         if (material.hasFlag(GENERATE_FINE_WIRE)) {
             WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_fine")
