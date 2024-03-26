@@ -222,6 +222,6 @@ public class GTRecipeWidget extends WidgetGroup {
         // add recipe id getter
         addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
             Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
-        }).setPredicate(() -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
     }
 }
