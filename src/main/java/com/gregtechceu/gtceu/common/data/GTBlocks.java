@@ -957,6 +957,10 @@ public class GTBlocks {
         FLUID_PIPE_BLOCKS_BUILDER = null;
         ITEM_PIPE_BLOCKS_BUILDER = null;
 
+        // Add compostables
+        ComposterBlock.COMPOSTABLES.put(RUBBER_SAPLING, 0.3F);
+        ComposterBlock.COMPOSTABLES.put(RUBBER_LEAVES, 0.3F);
+
         // GCyM
         GCyMBlocks.init();
     }
