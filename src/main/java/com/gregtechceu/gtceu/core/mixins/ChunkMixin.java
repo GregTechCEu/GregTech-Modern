@@ -20,8 +20,8 @@ public class ChunkMixin {
     @Final @Shadow Level level;
 
     // We want to be as quick as possible here
-    @Inject(method = "setBlockState", at =@At(value = "INVOKE", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/world/level/block/state/BlockState;onPlace(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)V"))
-    private void onAddingBlock(BlockPos pos, BlockState state, boolean isMoving, CallbackInfoReturnable<BlockState> cir) {
+    @Inject(method = "setBlockState", at = @At(value = "INVOKE", opcode = Opcodes.GETFIELD, target = "Lnet/minecraft/world/level/block/state/BlockState;onPlace(Lnet/minecraft/world/level/Level;Lnet/minecraft/core/BlockPos;Lnet/minecraft/world/level/block/state/BlockState;Z)V"))
+    private void gtceu$onChunkChanged(BlockPos pos, BlockState state, boolean isMoving, CallbackInfoReturnable<BlockState> cir) {
         MinecraftServer server = level.getServer();
         if (server != null) {
             if (level instanceof ServerLevel serverLevel) {
