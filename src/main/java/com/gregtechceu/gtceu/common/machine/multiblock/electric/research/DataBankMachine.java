@@ -151,7 +151,7 @@ public class DataBankMachine extends MultiblockControllerMachine implements IFan
 
     public void tick() {
         int energyToConsume = this.getEnergyUsage();
-        boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance;
+        boolean hasMaintenance = ConfigHolder.INSTANCE.machines.enableMaintenance && this.maintenance != null;
         if (hasMaintenance) {
             // 10% more energy per maintenance problem
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
@@ -175,6 +175,7 @@ public class DataBankMachine extends MultiblockControllerMachine implements IFan
             this.hasNotEnoughEnergy = true;
             setActive(false);
         }
+        updateTickSubscription();
     }
 
     @Override
