@@ -76,7 +76,11 @@ public class GrassPathBehavior implements IToolBehavior {
 
         boolean pathed = false;
         for (BlockPos blockPos : blocks) {
-            pathed |= level.setBlock(blockPos, getFlattened(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))), Block.UPDATE_ALL);
+            BlockState newState = getFlattened(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos)));
+            if (newState == null) {
+                continue;
+            }
+            pathed |= level.setBlock(blockPos, newState, Block.UPDATE_ALL);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
             }
