@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -17,17 +15,22 @@ import java.util.function.Consumer;
  * @date 2023/2/24
  * @implNote DisplayButtonWidget
  */
-@Accessors(chain = true)
 public class PredicatedButtonWidget extends ButtonWidget {
-    @Setter
-    private BooleanSupplier predicate;
+    private final BooleanSupplier predicate;
 
-    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture, Consumer<ClickData> onPressed) {
+    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture, Consumer<ClickData> onPressed, BooleanSupplier predicate, boolean defaultVisibility) {
         super(xPosition, yPosition, width, height, buttonTexture, onPressed);
+        this.predicate = predicate;
+        setVisible(defaultVisibility);
     }
 
-    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, Consumer<ClickData> onPressed) {
+    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture, Consumer<ClickData> onPressed, BooleanSupplier predicate) {
+        this(xPosition, yPosition, width, height, buttonTexture, onPressed, predicate, false);
+    }
+
+    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, Consumer<ClickData> onPressed, BooleanSupplier predicate) {
         super(xPosition, yPosition, width, height, onPressed);
+        this.predicate = predicate;
     }
 
     @Override
