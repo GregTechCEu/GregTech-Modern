@@ -38,6 +38,7 @@ import lombok.Setter;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -377,6 +378,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                             tieredMachine.exportItems.storage,
                             tieredMachine.importFluids,
                             tieredMachine.exportFluids,
+                            new CompoundTag(),
                             false, false));
             createBatterySlot().setupUI(template, tieredMachine);
 //            createCircuitConfigurator().setupUI(template, tieredMachine);

@@ -3,6 +3,9 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.common.machine.trait.computation.ComputationRecipeLogic;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,6 +46,18 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
         int currentProgress = capData.getInt("Progress");
         int maxProgress = capData.getInt("MaxProgress");
         String text;
+
+        if (block.getBlockEntity() instanceof IMachineBlockEntity mbe && mbe.getMetaMachine() instanceof IRecipeLogicMachine rlm && rlm.getRecipeLogic() instanceof ComputationRecipeLogic logic && !logic.shouldShowDuration()) {
+            // show as total computation instead
+            int color = logic.isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
+            tooltip.add(tooltip.getElementHelper().progress(
+                    currentProgress,
+                    Component.literal(" / " + maxProgress + " CWU"),
+                    tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
+                    Util.make(BoxStyle.DEFAULT, style -> style.borderColor = 0xFF555555),
+                    true));
+            return;
+        }
 
         if (maxProgress < 20) {
             text = currentProgress + " / " + maxProgress + " t";

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
@@ -57,20 +58,19 @@ public class AssemblerRecipeLoader {
                 .duration(50).EUt(16).save(provider);
 
         // Other
-        // TODO LCE/ECE
-        //ASSEMBLER_RECIPES.recipeBuilder("stable_titanium_casing")
-        //        .inputItems(rotor, Titanium, 2)
-        //        .inputItems(pipeNormalFluid, Titanium, 4)
-        //        .inputs(METAL_CASING.getItemVariant(TITANIUM_STABLE))
-        //        .outputItems(MULTIBLOCK_CASING.getItemVariant(ENGINE_INTAKE_CASING, 2))
-        //        .duration(50).EUt(16).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("stable_titanium_casing")
+                .inputItems(rotor, Titanium, 2)
+                .inputItems(pipeNormalFluid, Titanium, 4)
+                .inputItems(CASING_TITANIUM_STABLE.asStack())
+                .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(2))
+                .duration(50).EUt(16).save(provider);
 
-        //ASSEMBLER_RECIPES.recipeBuilder("stable_tungstensteel_casing")
-        //        .inputItems(rotor, TungstenSteel, 2)
-        //        .inputItems(pipeNormalFluid, TungstenSteel, 4)
-        //        .inputs(METAL_CASING.getItemVariant(TUNGSTENSTEEL_ROBUST))
-        //        .outputItems(MULTIBLOCK_CASING.getItemVariant(EXTREME_ENGINE_INTAKE_CASING, 2))
-        //        .duration(50).EUt(16).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("stable_tungstensteel_casing")
+                .inputItems(rotor, TungstenSteel, 2)
+                .inputItems(pipeNormalFluid, TungstenSteel, 4)
+                .inputItems(CASING_TUNGSTENSTEEL_ROBUST.asStack())
+                .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(2))
+                .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("spray_can_empty")
                 .inputItems(dust, Redstone)

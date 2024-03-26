@@ -9,6 +9,7 @@ import lombok.val;
  * @date 2023/2/22
  * @implNote GuiTextures
  */
+@SuppressWarnings("unused")
 public class GuiTextures {
     //GREGTECH
     public static final ResourceTexture GREGTECH_LOGO = new ResourceTexture("gtceu:textures/gui/icon/gregtech_logo.png");
@@ -45,6 +46,8 @@ public class GuiTextures {
 
     public static final ResourceTexture DISPLAY = new ResourceTexture("gtceu:textures/gui/base/display.png");
     public static final SteamTexture DISPLAY_STEAM = SteamTexture.fullImage("gtceu:textures/gui/base/display_%s.png");
+    public static final ResourceTexture BLANK = new ResourceBorderTexture("gtceu:textures/gui/base/blank.png", 1, 1, 0, 0);
+    public static final ResourceTexture BLANK_TRANSPARENT = new ResourceBorderTexture("gtceu:textures/gui/base/blank_transparent.png", 1, 1, 0, 0);
     public static final ResourceBorderTexture FLUID_SLOT = new ResourceBorderTexture("gtceu:textures/gui/base/fluid_slot.png", 18, 18, 1, 1);
     public static final ResourceTexture FLUID_TANK_BACKGROUND = new ResourceTexture("gtceu:textures/gui/base/fluid_tank_background.png");
     public static final ResourceTexture FLUID_TANK_OVERLAY = new ResourceTexture("gtceu:textures/gui/base/fluid_tank_overlay.png");
@@ -207,6 +210,7 @@ public class GuiTextures {
     public static final ResourceTexture DATA_ORB_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/data_orb_overlay.png");
     public static final ResourceTexture SCANNER_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/scanner_overlay.png");
     public static final ResourceTexture DUCT_TAPE_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/duct_tape_overlay.png");
+    public static final ResourceTexture RESEARCH_STATION_OVERLAY = new ResourceTexture("gtceu:textures/gui/overlay/research_station_overlay.png");
 
     //PROGRESS BARS
     public static final ResourceTexture PROGRESS_BAR_ARC_FURNACE = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_arc_furnace.png");
@@ -255,6 +259,9 @@ public class GuiTextures {
     public static final ResourceTexture PROGRESS_BAR_UNLOCK = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_unlock.png");
     public static final ResourceTexture PROGRESS_BAR_UNPACKER = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_unpacker.png");
     public static final ResourceTexture PROGRESS_BAR_WIREMILL = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_wiremill.png");
+    public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_1 = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_research_station_1.png");
+    public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_2 = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_research_station_2.png");
+    public static final ResourceTexture PROGRESS_BAR_RESEARCH_STATION_BASE = new ResourceTexture("gtceu:textures/gui/progress_bar/progress_bar_research_station_base.png");
 
     //JEI
     public static final ResourceTexture INFO_ICON = new ResourceTexture("gtceu:textures/gui/widget/information.png");
@@ -309,4 +316,15 @@ public class GuiTextures {
     public static final ResourceTexture CONFIG_ARROW = new ResourceTexture("gtceu:textures/gui/widget/config_arrow.png");
     public static final ResourceTexture CONFIG_ARROW_DARK = new ResourceTexture("gtceu:textures/gui/widget/config_arrow_dark.png");
     public static final ResourceTexture SELECT_BOX = new ResourceTexture("gtceu:textures/gui/widget/select_box.png");
+
+    // HPCA Component icons
+    public static final ResourceTexture HPCA_COMPONENT_OUTLINE = new ResourceTexture("gtceu:textures/gui/widget/hpca/component_outline.png");
+    public static final ResourceTexture HPCA_ICON_EMPTY_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/empty_component.png");
+    public static final ResourceTexture HPCA_ICON_ADVANCED_COMPUTATION_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/advanced_computation_component.png");
+    public static final ResourceTexture HPCA_ICON_BRIDGE_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/bridge_component.png");
+    public static final ResourceTexture HPCA_ICON_COMPUTATION_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/computation_component.png");
+    public static final ResourceTexture HPCA_ICON_ACTIVE_COOLER_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/active_cooler_component.png");
+    public static final ResourceTexture HPCA_ICON_HEAT_SINK_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/heat_sink_component.png");
+    public static final ResourceTexture HPCA_ICON_DAMAGED_ADVANCED_COMPUTATION_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/damaged_advanced_computation_component.png");
+    public static final ResourceTexture HPCA_ICON_DAMAGED_COMPUTATION_COMPONENT = new ResourceTexture("gtceu:textures/gui/widget/hpca/damaged_computation_component.png");
 }

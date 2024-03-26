@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
+import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -58,6 +59,7 @@ public class BlockableSlotWidget extends SlotWidget {
 
     @Override
     public boolean isMouseOverElement(double mouseX, double mouseY) {
+        // prevent slot removal and hover highlighting when slot is blocked
         return super.isMouseOverElement(mouseX, mouseY) && !isBlocked.getAsBoolean();
     }
 }

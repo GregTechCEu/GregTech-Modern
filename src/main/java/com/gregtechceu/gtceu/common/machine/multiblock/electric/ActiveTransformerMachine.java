@@ -102,7 +102,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
     private List<IMultiPart> getPrioritySortedParts() {
         return getParts().stream().sorted(Comparator.comparing(part -> {
             if (part instanceof MetaMachine partMachine) {
-                Block partBlock = ((MetaMachine) part).getBlockState().getBlock();
+                Block partBlock = partMachine.getBlockState().getBlock();
 
                 if (PartAbility.OUTPUT_ENERGY.isApplicable(partBlock))
                     return 1;

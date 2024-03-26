@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.top.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
+import com.gregtechceu.gtceu.common.machine.trait.computation.ComputationRecipeLogic;
 import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.core.BlockPos;
@@ -33,6 +34,17 @@ public class WorkableInfoProvider extends CapabilityInfoProvider<IWorkable> {
         int currentProgress = capability.getProgress();
         int maxProgress = capability.getMaxProgress();
         String text;
+
+        if (capability instanceof ComputationRecipeLogic logic && !logic.shouldShowDuration()) {
+            // show as total computation instead
+            int color = capability.isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
+            probeInfo.progress(currentProgress, maxProgress, probeInfo.defaultProgressStyle()
+                    .suffix(" / " + maxProgress + " CWU")
+                    .filledColor(color)
+                    .alternateFilledColor(color)
+                    .borderColor(0xFF555555));
+            return;
+        }
 
         if (maxProgress < 20) {
             text = " / " + maxProgress + " t";

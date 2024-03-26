@@ -348,6 +348,7 @@ public class BatteryRecipes {
                 .inputItems(bolt, Naquadah, 16)
                 .inputFluids(SolderingAlloy.getFluid(L * 5))
                 .outputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
+                .scannerResearch(ENERGY_LAPOTRONIC_ORB.asStack())
                 .EUt(80000).duration(1000).save(provider);
 
         // Energy Module
@@ -367,6 +368,9 @@ public class BatteryRecipes {
                 .inputItems(bolt, Trinium, 16)
                 .inputFluids(SolderingAlloy.getFluid(L * 10))
                 .outputItems(ENERGY_MODULE)
+                .stationResearch(b -> b
+                        .researchStack(ENERGY_LAPOTRONIC_ORB_CLUSTER.asStack())
+                        .CWUt(16))
                 .EUt(100000).duration(1200).save(provider);
 
         // Energy Cluster
@@ -387,6 +391,10 @@ public class BatteryRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 20))
                 .inputFluids(Polybenzimidazole.getFluid(L * 4))
                 .outputItems(ENERGY_CLUSTER)
+                .stationResearch(b -> b
+                        .researchStack(ENERGY_MODULE.asStack())
+                        .CWUt(96)
+                        .EUt(VA[ZPM]))
                 .EUt(200000).duration(1400).save(provider);
 
         // Ultimate Battery
@@ -408,6 +416,10 @@ public class BatteryRecipes {
                 .inputFluids(Polybenzimidazole.getFluid(2304))
                 .inputFluids(Naquadria.getFluid(L * 18))
                 .outputItems(ULTIMATE_BATTERY)
+                .stationResearch(b -> b
+                        .researchStack(ENERGY_CLUSTER.asStack())
+                        .CWUt(144)
+                        .EUt(VA[UHV]))
                 .EUt(300000).duration(2000).save(provider);
     }
 

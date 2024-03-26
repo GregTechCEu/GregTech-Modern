@@ -94,6 +94,16 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
+    public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CABABILITY_COMPUTATION_PROVIDER, level, pos, side);
+    }
+
+    @Nullable
+    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_DATA_ACCESS, level, pos, side);
+    }
+
+    @Nullable
     private static <T> T getBlockEntityCapability(Capability<T> capability, Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);

@@ -18,6 +18,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
+import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -129,6 +130,33 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS outputEU(long eu) {
             return output(EURecipeCapability.CAP, eu);
+        }
+
+        public GTRecipeJS inputCWU(int cwu) {
+            return input(CWURecipeCapability.CAP, cwu);
+        }
+
+        public GTRecipeJS CWUt(int cwu) {
+            var lastPerTick = perTick;
+            perTick = true;
+            if (cwu > 0) {
+                inputCWU(cwu);
+            } else if (cwu < 0) {
+                outputCWU(cwu);
+            }
+            perTick = lastPerTick;
+            return this;
+        }
+
+        public GTRecipeJS totalCWU(int cwu) {
+            this.durationIsTotalCWU(true);
+            this.hideDuration(true);
+            this.setValue(GTRecipeSchema.DURATION, (long) cwu);
+            return this;
+        }
+
+        public GTRecipeJS outputCWU(int cwu) {
+            return output(CWURecipeCapability.CAP, cwu);
         }
 
         public GTRecipeJS itemInputs(InputItem... inputs) {
@@ -401,7 +429,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS solderMultiplier(int multiplier) {
-            return addData("solderMultiplier", multiplier);
+            return addData("solder_multiplier", multiplier);
         }
 
         public GTRecipeJS disableDistilleryRecipes(boolean flag) {
@@ -410,6 +438,14 @@ public interface GTRecipeSchema {
 
         public GTRecipeJS fusionStartEU(long eu) {
             return addData("eu_to_start", eu);
+        }
+
+        public GTRecipeJS durationIsTotalCWU(boolean durationIsTotalCWU) {
+            return addData("duration_is_total_cwu", durationIsTotalCWU);
+        }
+
+        public GTRecipeJS hideDuration(boolean hideDuration) {
+            return addData("hide_duration", hideDuration);
         }
 
         //////////////////////////////////////
