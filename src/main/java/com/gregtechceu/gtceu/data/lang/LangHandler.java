@@ -64,6 +64,10 @@ public class LangHandler {
         provider.add("gtceu.io.both", "Both");
         provider.add("gtceu.io.none", "None");
 
+        provider.add("gtceu.multiblock.page_switcher.io.import", "§2Inputs");
+        provider.add("gtceu.multiblock.page_switcher.io.export", "§4Outputs");
+        provider.add("gtceu.multiblock.page_switcher.io.both", "§5Combined Inputs + Outputs");
+
         provider.add("enchantment.disjunction", "Disjunction");
         provider.add("gtceu.multiblock.steam_grinder.description", "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
         provider.add("gtceu.multiblock.steam.low_steam", "Not enough Steam to run!");

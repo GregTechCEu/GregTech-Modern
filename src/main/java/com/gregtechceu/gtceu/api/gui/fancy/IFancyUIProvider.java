@@ -77,4 +77,12 @@ public interface IFancyUIProvider {
     default TooltipComponent getTabTooltipComponent() {
         return null;
     }
+
+    @Nullable
+    default PageGroupingData getPageGroupingData() {
+        return null;
+    }
+
+    record PageGroupingData(@Nullable String groupKey, int groupPositionWeight) {
+    }
 }
