@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
@@ -23,14 +24,16 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder {
+public class ObjectHolderMachine extends MultiblockPartMachine implements IObjectHolder, IMachineModifyDrops {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ObjectHolderMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     // purposefully not exposed to automation or capabilities
@@ -77,6 +80,11 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
             heldItems.setStackInSlot(slot, ItemStack.EMPTY);
         }
         return stackInSlot;
+    }
+
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        clearInventory(drops, this.heldItems);
     }
 
     @Override

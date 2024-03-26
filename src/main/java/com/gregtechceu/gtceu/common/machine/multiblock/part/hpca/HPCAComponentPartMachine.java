@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part.hpca;
 
 import com.gregtechceu.gtceu.api.capability.IHPCAComponentHatch;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -10,13 +12,15 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class HPCAComponentPartMachine extends MultiblockPartMachine implements IHPCAComponentHatch {
+public abstract class HPCAComponentPartMachine extends MultiblockPartMachine implements IHPCAComponentHatch, IMachineModifyDrops {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HPCAComponentPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted @DescSynced @RequireRerender
@@ -68,26 +72,31 @@ public abstract class HPCAComponentPartMachine extends MultiblockPartMachine imp
         }
     }
 
-    /*
     @Override
-    public boolean shouldDropWhenDestroyed() {
-        return super.shouldDropWhenDestroyed() && !(canBeDamaged() && isDamaged());
-    }
-
-    @Override
-    public void getDrops(NonNullList<ItemStack> dropsList, @Nullable EntityPlayer harvester) {
-        if (canBeDamaged() && isDamaged()) {
-            if (isAdvanced()) {
-                dropsList.add(MetaBlocks.COMPUTER_CASING
-                    .getItemVariant(BlockComputerCasing.CasingType.ADVANCED_COMPUTER_CASING));
-            } else {
-                dropsList
-                    .add(MetaBlocks.COMPUTER_CASING.getItemVariant(BlockComputerCasing.CasingType.COMPUTER_CASING));
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        for (int i = 0; i < drops.size(); ++i) {
+            ItemStack drop = drops.get(i);
+            if (drop.getItem() == this.getDefinition().getItem()) {
+                if (canBeDamaged() && isDamaged()) {
+                    if (isAdvanced()) {
+                        drops.set(i, GTBlocks.ADVANCED_COMPUTER_CASING.asStack());
+                    } else {
+                        drops.set(i, GTBlocks.COMPUTER_CASING.asStack());
+                    }
+                }
+                break;
             }
         }
     }
-    */
-
+/* // TODO add some way to show a custom display name for machines
+    @Override
+    public String getMetaName() {
+        if (canBeDamaged() && isDamaged()) {
+            return super.getMetaName() + ".damaged";
+        }
+        return super.getMetaName();
+    }
+*/
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
