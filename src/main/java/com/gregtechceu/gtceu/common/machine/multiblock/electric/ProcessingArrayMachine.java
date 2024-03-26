@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.TieredWorkableElectricMultiblockMachine;
@@ -53,8 +54,8 @@ import java.util.stream.Collectors;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-@Deprecated(forRemoval = true)
-@ApiStatus.ScheduledForRemoval(inVersion = "1.2.0")
+//@Deprecated(forRemoval = true)
+//@ApiStatus.ScheduledForRemoval(inVersion = "1.2.0")
 public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine implements IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -91,7 +92,13 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected boolean isMachineStack(ItemStack itemStack) {
         if (itemStack.getItem() instanceof MetaMachineItem metaMachineItem) {
-            var recipeTypes = metaMachineItem.getDefinition().getRecipeTypes();
+            MachineDefinition definition = metaMachineItem.getDefinition();
+
+            if (definition instanceof MultiblockMachineDefinition) {
+                return false;
+            }
+
+            var recipeTypes = definition.getRecipeTypes();
             if(recipeTypes == null){
                 return false;
             }
@@ -233,7 +240,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        textList.add(Component.translatable("gtceu.universal.tooltip.deprecated"));
+//        textList.add(Component.translatable("gtceu.universal.tooltip.deprecated"));
         super.addDisplayText(textList);
         if (isActive()) {
             textList.add(Component.translatable("gtceu.machine.machine_hatch.locked").withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
