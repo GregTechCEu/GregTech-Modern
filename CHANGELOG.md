@@ -29,6 +29,10 @@ Version: 1.1.4
 - fix large miner crashes
 - fix fluid drilling rig EU/t usage and add extra tooltips
 - fix distinct bus mode not working with ghost circuits
+- fix item filter mode resetting every time the UI is opened
+- fix pumps inserting the same fluid into more than one slot
+- fix pump/conveyor covers and other machines being able to extract from a creative tank's internal slot 
+- fix startup crash when creating custom coils using KJS
 
 ### CHANGES:
 - updated Russian and Chinese translations

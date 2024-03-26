@@ -24,11 +24,8 @@ import java.util.List;
  */
 public interface IDisplayUIMachine extends IUIMachine, IMultiController {
     default void addDisplayText(List<Component> textList) {
-        if (!isFormed()) {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip").withStyle(ChatFormatting.GRAY);
-            textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
+        for (var part : this.getParts()) {
+            part.addMultiText(textList);
         }
     }
 
