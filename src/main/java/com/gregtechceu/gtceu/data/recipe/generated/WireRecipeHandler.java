@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.google.common.collect.ImmutableMap;
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -12,14 +13,16 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Map;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_PLATE;
+
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FINE_WIRE;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_WORKING;
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_PLATE;
+
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -51,10 +54,16 @@ public class WireRecipeHandler {
             cableGtHex, 5
     );
 
+    private static final TagPrefix[] wireSizes = {wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex};
+
     public static void init(Consumer<FinishedRecipe> provider) {
 
-        // Generate 1x Wire creation recipes (Wiremill, Extruder, Wire Cutters)
-        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireSingle(tagPrefix, material, property, provider));
+        // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
+        // Wiremill: Ingot -> 1x, 2x, 4x, 8x, 16x, Fine
+        // Wiremill: 1x Wire -> Fine
+        // Extruder: Ingot -> 1x Wire
+        // Wire Cutter: Plate -> 1x Wire
+        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWires(tagPrefix, material, property, provider));
 
         // Generate Cable Covering Recipes
         wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateCableCovering(tagPrefix, material, property, provider));
@@ -65,7 +74,7 @@ public class WireRecipeHandler {
     }
 
 
-    public static void processWireSingle(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
+    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property, Consumer<FinishedRecipe> provider) {
         TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot : material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_wire")
@@ -77,11 +86,33 @@ public class WireRecipeHandler {
                 .save(provider);
 
         WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire")
-                .inputItems(prefix, material)
-                .outputItems(wireGtSingle, material, 2)
-                .duration((int) material.getMass())
+            .inputItems(prefix, material)
+            .circuitMeta(1)
+            .outputItems(wireGtSingle, material, 2)
+            .duration((int) material.getMass())
+            .EUt(getVoltageMultiplier(material))
+            .save(provider);
+
+        for (TagPrefix wireSize : wireSizes) {
+            final int multiplier = (int) (wireSize.getMaterialAmount(material) / GTValues.M);
+            WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_" + (multiplier * 2))
+                .inputItems(prefix, material, multiplier)
+                .circuitMeta(multiplier * 2)
+                .outputItems(wireSize, material)
+                .duration((int) material.getMass() * multiplier)
                 .EUt(getVoltageMultiplier(material))
                 .save(provider);
+        }
+
+        if (material.hasFlag(GENERATE_FINE_WIRE)) {
+            WIREMILL_RECIPES.recipeBuilder("mill_" + material.getName() + "_wire_fine")
+                .inputItems(prefix, material, 1)
+                .circuitMeta(3)
+                .outputItems(wireFine, material, 8)
+                .duration((int) material.getMass() * 3)
+                .EUt(getVoltageMultiplier(material))
+                .save(provider);
+        }
 
         if (!material.hasFlag(NO_WORKING) && material.hasFlag(GENERATE_PLATE)) {
             VanillaRecipeHelper.addShapedRecipe(provider, String.format("%s_wire_single", material.getName()),
