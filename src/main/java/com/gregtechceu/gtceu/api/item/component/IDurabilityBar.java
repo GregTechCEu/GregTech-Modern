@@ -16,8 +16,8 @@ public interface IDurabilityBar extends IItemComponent {
         return Math.round(getDurabilityForDisplay(stack) * 13);
     }
 
-    default int getDurabilityForDisplay(ItemStack stack) {
-        return (stack.getMaxDamage() - stack.getDamageValue()) / stack.getMaxDamage();
+    default float getDurabilityForDisplay(ItemStack stack) {
+        return (float) (stack.getMaxDamage() - stack.getDamageValue()) / stack.getMaxDamage();
     }
 
     default int getMaxDurability(ItemStack stack) {
