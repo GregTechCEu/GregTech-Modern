@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 
 import com.lowdragmc.lowdraglib.Platform;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.*;
 
@@ -38,6 +39,16 @@ public class MaterialProperties {
     }
 
     public <T extends IMaterialProperty<T>> void setProperty(PropertyKey<T> key, IMaterialProperty<T> value) {
+        if (value == null) throw new IllegalArgumentException("Material Property must not be null!");
+        if (hasProperty(key))
+            throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");
+        propertyMap.put(key, value);
+        propertyMap.remove(PropertyKey.EMPTY);
+    }
+
+    // Skips generic checks. don't use.
+    @ApiStatus.Internal
+    public void setPropertyNoGeneric(PropertyKey<?> key, IMaterialProperty<?> value) {
         if (value == null) throw new IllegalArgumentException("Material Property must not be null!");
         if (hasProperty(key))
             throw new IllegalArgumentException("Material Property " + key.toString() + " already registered!");

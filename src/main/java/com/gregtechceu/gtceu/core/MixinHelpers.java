@@ -282,7 +282,7 @@ public class MixinHelpers {
     }
 
     public static void addFluidTexture(Material material, FluidStorage.FluidEntry value) {
-        if (value != null) {
+        if (value != null && value.getFluid().get() != null) {
             IClientFluidTypeExtensions extensions = IClientFluidTypeExtensions.of(value.getFluid().get());
             if (extensions instanceof GTClientFluidTypeExtensions gtExtensions && value.getBuilder() != null) {
                 gtExtensions.setFlowingTexture(value.getBuilder().flowing());

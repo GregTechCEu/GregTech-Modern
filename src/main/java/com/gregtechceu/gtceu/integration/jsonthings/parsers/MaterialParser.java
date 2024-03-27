@@ -5,16 +5,19 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.common.data.GTElements;
 import com.gregtechceu.gtceu.integration.jsonthings.builders.MaterialBuilder;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
+import com.mojang.serialization.JsonOps;
 import dev.gigaherz.jsonthings.things.builders.BaseBuilder;
 import dev.gigaherz.jsonthings.things.parsers.ThingParser;
 import dev.gigaherz.jsonthings.util.parse.JParse;
 import dev.gigaherz.jsonthings.util.parse.value.IntValue;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.eventbus.api.IEventBus;
 
@@ -23,16 +26,16 @@ import java.util.function.Consumer;
 public class MaterialParser extends ThingParser<MaterialBuilder> {
     public MaterialParser(IEventBus bus) {
         super(GSON, "material");
-        bus.addListener(this::registerMaterials);
+        bus.addListener(this::registerMaterialRegistries);
         bus.addListener(this::registerMaterials);
     }
 
     public void registerMaterialRegistries(MaterialRegistryEvent event) {
         LOGGER.info("Started registering material registries, errors about unexpected registry domains are harmless...");
         processAndConsumeErrors(this.getThingType(), this.getBuilders(), (thing) -> {
-            String location = thing.getRegistryName().getNamespace();
-            if (GTCEuAPI.materialManager.getRegistry(location) == GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID)) {
-                GTCEuAPI.materialManager.createRegistry(location);
+            String namespace = thing.getRegistryName().getNamespace();
+            if (!namespace.equals(GTCEu.MOD_ID) && GTCEuAPI.materialManager.getRegistry(namespace) == GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID)) {
+                GTCEuAPI.materialManager.createRegistry(namespace);
             }
         }, BaseBuilder::getRegistryName);
         LOGGER.info("Done processing thingpack Material Registries.");
@@ -54,7 +57,7 @@ public class MaterialParser extends ThingParser<MaterialBuilder> {
         JParse.begin(data)
             .ifKey("material_info", (materialInfo) -> {
                 materialInfo.obj().ifKey("colors", colors -> {
-                    builder.getInternal().getMaterialInfo().setColors(colors.array().ints().flatMap(values -> values.map(IntValue::getAsInt).mapToInt(Integer::intValue).toArray()));
+                    builder.getInternal().getMaterialInfo().setColors(colors.array().ints().flatMap(values -> values.map(IntValue::getAsInt).mapToInt(Integer::intValue).collect(IntArrayList::new, IntList::add, IntList::addAll)));
                 }).ifKey("has_fluid_color", hasFluidColor -> {
                     builder.getInternal().getMaterialInfo().setHasFluidColor(hasFluidColor.bool().getAsBoolean());
                 }).ifKey("icon_set", iconSet -> {
@@ -65,18 +68,21 @@ public class MaterialParser extends ThingParser<MaterialBuilder> {
                     builder.getInternal().element(GTElements.get(element.string().getAsString()));
                 });
             }).ifKey("properties", properties -> {
-                properties.array().map(any -> {
-                    var ref = new Object() {
-                        IMaterialProperty<?> property = null;
-                    };
-                    any.ifObj(objValue -> {
-                        objValue.ifKey("name", name -> {
-                            ref.property = PropertyKey.getByName(name.string().getAsString()).;
-                        });
-                    }).ifString(stringValue -> ref.property = PropertyKey.getByName(stringValue.getAsString()));
-                    return ref.property;
+                properties.array().forEach((index, any) -> {
+                    var objValue = any.obj();
+                    objValue.ifKey("type", type -> {
+                        PropertyKey<?> propertyKey = PropertyKey.getByName(type.string().getAsString());
+                        var property = propertyKey.getCodec().parse(JsonOps.INSTANCE, objValue.getAsJsonObject()).getOrThrow(false, GTCEu.LOGGER::error);
+                        builder.getInternal().getProperties().setPropertyNoGeneric(propertyKey, property);
+                    });
+                });
+            }).ifKey("flags", flags -> {
+                flags.array().forEach((index, any) -> {
+                    String name = any.string().getAsString();
+                    builder.getInternal().flags(MaterialFlag.getByName(name));
                 });
             });
+        builderModification.accept(builder);
         return builder;
     }
 }

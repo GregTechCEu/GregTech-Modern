@@ -2,10 +2,12 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.NoArgsConstructor;
 import net.minecraft.util.ExtraCodecs;
 
 import org.jetbrains.annotations.NotNull;
 
+@NoArgsConstructor
 public class RotorProperty implements IMaterialProperty<RotorProperty> {
     public static final Codec<RotorProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         ExtraCodecs.POSITIVE_FLOAT.fieldOf("speed").forGetter(val -> val.speed),

@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.Platform;
+import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
@@ -32,7 +33,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Supplier;
@@ -44,7 +44,7 @@ import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
 public class FluidBuilder {
     public static final Codec<FluidBuilder> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.STRING.fieldOf("name").forGetter(val -> val.name),
-        Codec.STRING.fieldOf("translation_key").forGetter(val -> val.translationKey),
+        Codec.STRING.fieldOf("translation_key").forGetter(val -> val.translation),
         FluidAttribute.CODEC.listOf().fieldOf("attributes").forGetter(val -> val.attributes),
         StringRepresentable.fromEnum(FluidState::values).fieldOf("state").forGetter(val -> val.state),
         Codec.INT.optionalFieldOf("temperature", FluidBuilder.INFER_TEMPERATURE).forGetter(val -> val.temperature),
@@ -58,9 +58,13 @@ public class FluidBuilder {
         ResourceLocation.CODEC.optionalFieldOf("flowing_texture", null).forGetter(val -> val.flowing),
         Codec.BOOL.optionalFieldOf("has_custom_still", false).forGetter(val -> val.hasCustomStill),
         Codec.BOOL.optionalFieldOf("has_custom_flowing", false).forGetter(val -> val.hasCustomFlowing),
-        Codec.BOOL.optionalFieldOf("has_fluid_block", false).forGetter(val -> val.hasFluidBlock),
-        Codec.BOOL.optionalFieldOf("has_bucket", true).forGetter(val -> val.hasBucket)
-    ).apply(instance, FluidBuilder::new));
+        instance.group(
+            Codec.BOOL.optionalFieldOf("has_fluid_block", false).forGetter(val -> val.hasFluidBlock),
+            Codec.BOOL.optionalFieldOf("has_bucket", true).forGetter(val -> val.hasBucket)
+        ).apply(instance, Pair::of)
+    ).apply(instance,
+        (name, translation, attributes, state, temp, color, colorEnabled, density, luminosity, viscosity, burnTime, stillTexture, flowingTexture, hasCustomStill, hasCustomFlowing, pair) ->
+            new FluidBuilder(name, translation, attributes, state, temp, color, colorEnabled, density, luminosity, viscosity, burnTime, stillTexture, flowingTexture, hasCustomStill, hasCustomFlowing, pair.getFirst(), pair.getSecond())));
 
     private static final int INFER_TEMPERATURE = -1;
     private static final int INFER_COLOR = 0xFFFFFFFF;
@@ -87,11 +91,11 @@ public class FluidBuilder {
     @Setter
     private int burnTime = -1;
 
-    @Getter
-    @Setter(onMethod_ = @ApiStatus.Internal)
+    @Getter @Setter
+    @ApiStatus.Internal
     private ResourceLocation still = null;
-    @Getter
-    @Setter(onMethod_ = @ApiStatus.Internal)
+    @Getter @Setter
+    @ApiStatus.Internal
     private ResourceLocation flowing = null;
     private boolean hasCustomStill = false;
     private boolean hasCustomFlowing = false;

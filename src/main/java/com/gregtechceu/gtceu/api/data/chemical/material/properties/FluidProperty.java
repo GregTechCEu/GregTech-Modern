@@ -5,6 +5,9 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageImpl;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 
 import net.minecraft.world.level.material.Fluid;
@@ -20,6 +23,11 @@ import java.util.function.Supplier;
 
 @NoArgsConstructor
 public class FluidProperty implements IMaterialProperty<FluidProperty>, FluidStorage {
+
+    public static final Codec<FluidProperty> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            FluidStorage.CODEC.fieldOf("storage").forGetter(val -> val.storage),
+            FluidStorageKey.CODEC.optionalFieldOf("primary_key", null).forGetter(val -> val.primaryKey)
+    ).apply(instance, FluidProperty::new));
 
     private final FluidStorageImpl storage = new FluidStorageImpl();
     @Getter
