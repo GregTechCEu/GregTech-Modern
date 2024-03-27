@@ -144,8 +144,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public int getDurabilityForDisplay(ItemStack stack) {
-        return getUsesLeft(stack) / totalUses;
+    public float getDurabilityForDisplay(ItemStack stack) {
+        return (float) getUsesLeft(stack) / totalUses;
     }
 
     @Override
