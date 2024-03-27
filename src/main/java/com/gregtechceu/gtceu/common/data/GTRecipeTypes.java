@@ -340,7 +340,7 @@ public class GTRecipeTypes {
             .setSound(GTSoundEntries.CENTRIFUGE);
 
 
-    public final static GTRecipeType WIREMILL_RECIPES = register("wiremill", ELECTRIC).setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
+    public final static GTRecipeType WIREMILL_RECIPES = register("wiremill", ELECTRIC).setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.WIREMILL_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_WIREMILL, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.MOTOR);
