@@ -329,6 +329,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Random chance for electric tools to take actual damage", "Default: 10%" })
         @Configurable.Range(min = 0, max = 100)
         public int rngDamageElectricTools = 10;
+        @Configurable
+        @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
+        @Configurable.Range(min = 1, max = 512)
+        public int sprayCanChainLength = 16;
     }
 
     public static class ClientConfigs {
