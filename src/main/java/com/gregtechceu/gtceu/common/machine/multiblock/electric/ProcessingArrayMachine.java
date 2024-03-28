@@ -191,11 +191,6 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         return getOverclockTier();
     }
 
-    @Override
-    public long getMaxVoltage() {
-        return getOverclockVoltage();
-    }
-
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
         if (machine instanceof ProcessingArrayMachine processingArray && processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
