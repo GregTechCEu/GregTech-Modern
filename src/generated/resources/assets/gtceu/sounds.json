@@ -296,11 +296,11 @@
     ],
     "subtitle": "gtceu.subtitle.sus"
   },
-  "tricorder": {
+  "portable_scanner": {
     "sounds": [
       {
         "type": "file",
-        "name": "gtceu:tricorder"
+        "name": "gtceu:portable_scanner"
       }
     ],
     "subtitle": "gtceu.subtitle.tricorder"

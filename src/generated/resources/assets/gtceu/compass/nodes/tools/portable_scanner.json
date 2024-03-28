@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:lv_aluminium_chainsaw"
+    "res": "gtceu:portable_scanner"
   },
   "items": [
-    "#minecraft:axes"
+    "gtceu:portable_scanner"
   ],
-  "page": "gtceu:tools/lv_chainsaw",
+  "page": "gtceu:tools/portable_scanner",
   "position": [
     -300,
-    50
+    0
   ],
   "section": "gtceu:tools"
 }
