@@ -193,7 +193,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var player = context.getPlayer();
         var level = context.getLevel();
         var facing = context.getClickedFace();
-        var pos = context.getClickedPos();
+        var pos = context.getClickedPos().mutable();
         var stack = context.getItemInHand();
         var block = level.getBlockState(pos).getBlock();
 
@@ -215,14 +215,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     break;
                 }
 
-                switch (getPaintDirection(player)) {
-                    case UP -> pos = pos.offset(0, 1, 0);
-                    case DOWN -> pos = pos.offset(0, -1, 0);
-                    case NORTH -> pos = pos.offset(0, 0, -1);
-                    case SOUTH -> pos = pos.offset(0, 0, 1);
-                    case WEST -> pos = pos.offset(-1, 0, 0);
-                    case EAST -> pos = pos.offset(1, 0, 0);
-                }
+                pos.move(getPaintDirection(player));
             }
 
             GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
