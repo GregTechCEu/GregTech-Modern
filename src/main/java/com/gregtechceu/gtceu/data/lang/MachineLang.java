@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
 import com.tterrag.registrate.providers.RegistrateLangProvider;
-import net.minecraft.client.player.Input;
-import org.checkerframework.checker.lock.qual.Holding;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.*;
 
@@ -732,6 +730,7 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.time_years", "%s Years");
         provider.add("gtceu.multiblock.power_substation.time_forever", "Forever");
         provider.add("gtceu.multiblock.power_substation.under_one_hour_left", "Less than 1 hour until fully drained!");
+        provider.add("gtceu.multiblock.data_bank.providing", "Providing data.");
         provider.add("gtceu.multiblock.hpca.computation", "Providing: %s");
         provider.add("gtceu.multiblock.hpca.energy", "Using: %s / %s EU/t (%s)");
         provider.add("gtceu.multiblock.hpca.temperature", "Temperature: %s");
