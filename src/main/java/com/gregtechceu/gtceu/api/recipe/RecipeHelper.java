@@ -93,9 +93,7 @@ public class RecipeHelper {
         int numberOfOCs = maximumTier - recipeTier;
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
-        // cannot overclock, so return the starting values
-        if (numberOfOCs <= 0) return LongIntMutablePair.of(EUt, recipe.duration);
-
+        // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
         return logic.getLogic().runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
     }
 
