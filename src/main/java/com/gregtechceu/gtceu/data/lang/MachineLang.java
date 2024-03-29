@@ -381,14 +381,14 @@ public class MachineLang {
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.name", "Damaged HPCA Advanced Computation Component");
         provider.add("gtceu.machine.hpca.advanced_computation_component.damaged.tooltip", "It only cost an arm and a leg");
 
-        provider.add("gtceu.machine.hpca.component_general.upkeep_eut", "§eUpkeep Energy: §f%,d EU/t");
-        provider.add("gtceu.machine.hpca.component_general.max_eut", "§6Max Energy: §f%,d EU/t");
+        provider.add("gtceu.machine.hpca.component_general.upkeep_eut", "§eUpkeep Energy: §f%d EU/t");
+        provider.add("gtceu.machine.hpca.component_general.max_eut", "§6Max Energy: §f%d EU/t");
         provider.add("gtceu.machine.hpca.component_type.cooler_passive", "§bCooler Type: §fPassive");
         provider.add("gtceu.machine.hpca.component_type.cooler_active", "§bCooler Type: §fActive");
-        provider.add("gtceu.machine.hpca.component_type.cooler_cooling", "§aProvides: §f%,d Cooling");
-        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant", "§cRequires up to: §f%,d L/t %s");
-        provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%,d CWU/t");
-        provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%,d Cooling");
+        provider.add("gtceu.machine.hpca.component_type.cooler_cooling", "§aProvides: §f%d Cooling");
+        provider.add("gtceu.machine.hpca.component_type.cooler_active_coolant", "§cRequires up to: §f%d L/t %s");
+        provider.add("gtceu.machine.hpca.component_type.computation_cwut", "§9Computation: §f%d CWU/t");
+        provider.add("gtceu.machine.hpca.component_type.computation_cooling", "§cRequires up to: §f%d Cooling");
         provider.add("gtceu.machine.hpca.component_type.bridge", "Allows §fHPCA§7 to connect to §fNetwork Switches§7");
         provider.add("gtceu.machine.hpca.component_type.damaged", "Can be damaged by HPCA overheating!");
 
