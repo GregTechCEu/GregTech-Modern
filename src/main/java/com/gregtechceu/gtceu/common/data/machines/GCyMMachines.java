@@ -61,7 +61,7 @@ public class GCyMMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
-                    .tooltips(Component.translatable("gtceu.parallel_hatch_mk"+tier))
+                    .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk"+tier+".tooltip"))
                     .compassNode("parallel_hatch")
                     .register(),
             IV, LuV, ZPM, UV);
