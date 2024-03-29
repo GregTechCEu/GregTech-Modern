@@ -3,6 +3,8 @@ package com.gregtechceu.gtceu.data.pack;
 import com.google.common.collect.Sets;
 import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
@@ -49,6 +51,10 @@ public class GTDynamicResourcePack implements PackResources {
 
     static {
         CLIENT_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "forge", "c"));
+    }
+
+    public GTDynamicResourcePack(String name) {
+        this(name, AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet()));
     }
 
     public GTDynamicResourcePack(String name, Collection<String> domains) {
