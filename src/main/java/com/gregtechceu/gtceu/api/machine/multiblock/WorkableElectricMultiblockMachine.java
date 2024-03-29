@@ -97,6 +97,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+                        .textSupplier(this.self().getLevel().isClientSide ? null : this::addDisplayText)
                         .setMaxWidthLimit(150)
                         .clickHandler(this::handleDisplayClick)));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
@@ -214,9 +215,9 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         }
         if (this.isGenerator()) {
             // Generators
-            long voltage = energyContainer.getOutputVoltage();
-            long amperage = energyContainer.getOutputAmperage();
-            if (energyContainer instanceof EnergyContainerList && amperage == 1) {
+            long voltage = this.energyContainer.getOutputVoltage();
+            long amperage = this.energyContainer.getOutputAmperage();
+            if (this.energyContainer instanceof EnergyContainerList && amperage == 1) {
                 // Amperage is 1 when the energy is not exactly on a tier.
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
@@ -226,7 +227,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             return voltage;
         } else {
             // Machines
-            if (energyContainer instanceof EnergyContainerList energyList) {
+            if (this.energyContainer instanceof EnergyContainerList energyList) {
                 long highestVoltage = energyList.getHighestInputVoltage();
                 if (energyList.getNumHighestInputContainers() > 1) {
                     // allow tier + 1 if there are multiple hatches present at the highest tier
@@ -236,7 +237,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                     return highestVoltage;
                 }
             } else {
-                return energyContainer.getInputVoltage();
+                return this.energyContainer.getInputVoltage();
             }
         }
     }

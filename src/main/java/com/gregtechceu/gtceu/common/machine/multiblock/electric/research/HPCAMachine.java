@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
+import com.gregtechceu.gtceu.api.gui.widget.ExtendedProgressWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -25,7 +26,6 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
-import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
@@ -239,13 +239,11 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
     public Widget createUIWidget() {
         WidgetGroup builder = (WidgetGroup) super.createUIWidget();
         // Create the hover grid
-        List<Component> tooltips = new ArrayList<>();
-        hpcaHandler.addInfo(tooltips);
-        builder.addWidget(new ProgressWidget(
+        builder.addWidget(new ExtendedProgressWidget(
             () -> hpcaHandler.getAllocatedCWUt() > 0 ? progressSupplier.getAsDouble() : 0,
             74, 57, 47, 47, GuiTextures.HPCA_COMPONENT_OUTLINE)
-            .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT)
-            .setHoverTooltips(tooltips));
+            .setServerTooltipSupplier(hpcaHandler::addInfo)
+            .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT));
         int startX = 76;
         int startY = 59;
         for (int i = 0; i < 3; i++) {
@@ -270,13 +268,12 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             .addCustom(tl -> {
                 if (isFormed()) {
                     // Energy Usage
-                    Component voltageName = Component.literal(
-                        GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())]);
                     tl.add(Component.translatable(
                         "gtceu.multiblock.hpca.energy",
                         FormattingUtil.formatNumbers(hpcaHandler.cachedEUt),
                         FormattingUtil.formatNumbers(hpcaHandler.getMaxEUt()),
-                        voltageName).withStyle(ChatFormatting.GRAY));
+                        GTValues.VNF[GTUtil.getTierByVoltage(hpcaHandler.getMaxEUt())])
+                        .withStyle(ChatFormatting.GRAY));
 
                     // Provided Computation
                     Component cwutInfo = Component.literal(

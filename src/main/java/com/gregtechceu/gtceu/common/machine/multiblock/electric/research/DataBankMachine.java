@@ -6,6 +6,10 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -18,7 +22,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
@@ -200,13 +204,33 @@ public class DataBankMachine extends MultiblockControllerMachine implements IFan
     */
 
     @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return IFancyUIMachine.super.createUI(entityPlayer);
+    public Widget createUIWidget() {
+        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
+        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
+            .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
+            .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+                .textSupplier(this.self().getLevel().isClientSide ? null : this::addDisplayText)
+                .setMaxWidthLimit(150)
+                .clickHandler(this::handleDisplayClick)));
+        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
+        return group;
     }
 
     @Override
-    public Widget createUIWidget() {
-        return IFancyUIMachine.super.createUIWidget();
+    public ModularUI createUI(Player entityPlayer) {
+        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
+    }
+
+    @Override
+    public List<IFancyUIProvider> getSubTabs() {
+        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast).toList();
+    }
+
+    @Override
+    public void attachTooltips(TooltipsPanel tooltipsPanel) {
+        for (IMultiPart part : getParts()) {
+            part.attachFancyTooltipsToController(this, tooltipsPanel);
+        }
     }
 
     @Override

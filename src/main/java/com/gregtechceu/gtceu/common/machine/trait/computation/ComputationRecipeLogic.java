@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -35,8 +34,6 @@ public class ComputationRecipeLogic extends RecipeLogic {
     @Persisted
     @Getter
     protected int recipeCWUt;
-    @Getter
-    private boolean hasNotEnoughComputation;
     private int currentDrawnCWUt;
 
     public ComputationRecipeLogic(IRecipeLogicMachine machine, ComputationType type) {
@@ -89,7 +86,7 @@ public class ComputationRecipeLogic extends RecipeLogic {
             int availableCWUt = provider.requestCWUt(Integer.MAX_VALUE, true);
             if (availableCWUt >= recipeCWUt) {
                 // carry on as normal
-                this.hasNotEnoughComputation = false;
+                this.setStatus(Status.WORKING);
                 if (isDurationTotalCWU) {
                     // draw as much CWU as possible, and increase progress by this amount
                     currentDrawnCWUt = provider.requestCWUt(availableCWUt, false);
@@ -104,7 +101,7 @@ public class ComputationRecipeLogic extends RecipeLogic {
                 }
             } else {
                 currentDrawnCWUt = 0;
-                this.hasNotEnoughComputation = true;
+                this.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
                 // only decrement progress for low CWU/t if we need a steady supply
                 if (type == ComputationType.STEADY) {
                     this.progress = Math.max(1, progress - 2);
@@ -129,7 +126,7 @@ public class ComputationRecipeLogic extends RecipeLogic {
         super.onRecipeFinish();
         this.recipeCWUt = 0;
         this.isDurationTotalCWU = false;
-        this.hasNotEnoughComputation = false;
+        this.setStatus(Status.IDLE);
         this.currentDrawnCWUt = 0;
     }
 
