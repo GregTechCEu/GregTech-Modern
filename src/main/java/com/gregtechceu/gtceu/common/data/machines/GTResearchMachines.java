@@ -103,7 +103,6 @@ public class GTResearchMachines {
         .langValue("Object Holder")
         .tier(ZPM)
         .rotationState(RotationState.ALL)
-        .tooltips(Component.translatable("gtceu.machine.object_holder.tooltip"))
         .abilities(PartAbility.OBJECT_HOLDER)
         .renderer(() -> new OverlayTieredActiveMachineRenderer(ZPM, GTCEu.id("block/machine/part/object_holder"), GTCEu.id("block/machine/part/object_holder_active")))
         .register();
@@ -298,30 +297,26 @@ public class GTResearchMachines {
         "computation_transmitter_hatch", "Computation Data Transmission Hatch",
         ZPM, (holder) -> new OpticalComputationHatchMachine(holder, true),
         "computation_data_hatch", PartAbility.COMPUTATION_DATA_TRANSMISSION
-    ).tooltips(Component.translatable("gtceu.machine.computation_transmitter_hatch.tooltip"))
-        .register();
+    ).register();
 
     public static final MachineDefinition COMPUTATION_HATCH_RECEIVER = registerDataHatch(
         "computation_receiver_hatch", "Computation Data Reception Hatch",
         ZPM, (holder) -> new OpticalComputationHatchMachine(holder, false),
         "computation_data_hatch", PartAbility.COMPUTATION_DATA_RECEPTION
-    ).tooltips(Component.translatable("gtceu.machine.computation_receiver_hatch.tooltip"))
-        .register();
+    ).register();
 
 
     public static final MachineDefinition DATA_HATCH_TRANSMITTER = registerDataHatch(
         "data_transmitter_hatch", "Optical Data Transmission Hatch",
         LuV, (holder) -> new OpticalDataHatchMachine(holder, true),
         "optical_data_hatch", PartAbility.OPTICAL_DATA_TRANSMISSION
-    ).tooltips(Component.translatable("gtceu.machine.data_transmitter_hatch.tooltip"))
-        .register();
+    ).register();
 
     public static final MachineDefinition DATA_HATCH_RECEIVER = registerDataHatch(
         "data_receiver_hatch", "Optical Data Reception Hatch",
         LuV, (holder) -> new OpticalDataHatchMachine(holder, false),
         "optical_data_hatch", PartAbility.OPTICAL_DATA_RECEPTION
-    ).tooltips(Component.translatable("gtceu.machine.data_receiver_hatch.tooltip"))
-        .register();
+    ).register();
 
 
     public static final MachineDefinition DATA_ACCESS_HATCH = REGISTRATE.machine("data_access_hatch", (holder) -> new DataAccessHatchMachine(holder, EV, false))
