@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.pattern.predicates;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -29,7 +29,7 @@ public class PredicateBlockTag extends SimplePredicate {
             return this;
         }
         predicate = state -> state.getBlockState().is(tag);
-        candidates = () -> BuiltInRegistries.BLOCK.getTag(tag)
+        candidates = () -> Registry.BLOCK.getTag(tag)
             .stream()
             .flatMap(HolderSet.Named::stream)
             .map(Holder::value)

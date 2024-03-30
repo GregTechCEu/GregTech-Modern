@@ -144,7 +144,7 @@ public class GTDynamicResourcePack implements PackResources {
     @Nullable
     @Override
     public InputStream getRootResource(String elements) {
-        throw new UnsupportedOperationException("Dynamic Resource Pack cannot have root resources");
+        return this.getClass().getResourceAsStream(elements);
     }
 
     @Override

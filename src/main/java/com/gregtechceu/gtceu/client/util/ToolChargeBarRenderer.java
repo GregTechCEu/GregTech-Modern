@@ -95,7 +95,7 @@ public final class ToolChargeBarRenderer {
     }
 
     private static boolean renderDurabilityBar(PoseStack poseStack, ItemStack stack, IDurabilityBar manager, int xPosition, int yPosition) {
-        int level = manager.getDurabilityForDisplay(stack);
+        float level = manager.getDurabilityForDisplay(stack);
         if (level == 0.0 && !manager.showEmptyBar(stack)) return false;
         if (level == 1.0 && !manager.showFullBar(stack)) return false;
         Pair<Integer, Integer> colors = manager.getDurabilityColorsForDisplay(stack);
