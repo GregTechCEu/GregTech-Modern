@@ -22,3 +22,4 @@ Version: 1.1.4.a
 ### CHANGES:
 - ported multi-amp energy hatches not giving overclocks. You now always need 2 energy hatches for an overclock.
 - made dynamic data- and resourcepacks appear in the pack list(s) 
+- Use a grid-based UI for the multiblock part switcher
