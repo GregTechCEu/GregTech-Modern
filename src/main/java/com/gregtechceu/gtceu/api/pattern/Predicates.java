@@ -11,10 +11,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
-import com.gregtechceu.gtceu.api.pattern.predicates.PredicateBlocks;
-import com.gregtechceu.gtceu.api.pattern.predicates.PredicateFluids;
-import com.gregtechceu.gtceu.api.pattern.predicates.PredicateStates;
-import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.pattern.predicates.*;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
@@ -25,6 +22,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
@@ -62,8 +60,16 @@ public class Predicates {
         return new TraceabilityPredicate(new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
     }
 
+    public static TraceabilityPredicate blockTag(TagKey<Block> tag) {
+        return new TraceabilityPredicate(new PredicateBlockTag(tag));
+    }
+
     public static TraceabilityPredicate fluids(Fluid... fluids) {
         return new TraceabilityPredicate(new PredicateFluids(fluids));
+    }
+
+    public static TraceabilityPredicate fluidTag(TagKey<Fluid> tag) {
+        return new TraceabilityPredicate(new PredicateFluidTag(tag));
     }
 
     public static TraceabilityPredicate custom(Predicate<MultiblockState> predicate, Supplier<BlockInfo[]> candidates) {
