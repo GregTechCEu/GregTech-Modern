@@ -110,8 +110,13 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
         private final GenericStackInv internalBuffer;
 
         public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
-            super(holder, internalBuffer.size(), 0, IO.OUT);
+            super(holder, internalBuffer.size(), Long.MAX_VALUE, IO.OUT);
             this.internalBuffer = internalBuffer;
+        }
+
+        @Override
+        public boolean canCapInput() {
+            return true;
         }
 
         @Override
@@ -123,10 +128,17 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(0) {
+            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(Long.MAX_VALUE) {
                 @Override
                 public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-                    return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
+                    long filled = InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
+                    if (!simulate && filled > 0) {
+                        GenericStack stack1 = GenericStack.fromFluidStack(new net.minecraftforge.fluids.FluidStack(
+                            resource.getFluid(), (int) filled
+                        ));
+                        InaccessibleInfiniteSlot.this.internalBuffer.insert(0, stack1.what(), stack1.amount(), Actionable.MODULATE);
+                    }
+                    return filled;
                 }
             }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
         }
