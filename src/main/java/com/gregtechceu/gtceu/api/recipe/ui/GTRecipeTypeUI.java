@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
+import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
@@ -202,9 +203,15 @@ public class GTRecipeTypeUI {
 
             // bind progress
             List<Widget> progress = new ArrayList<>();
+            // First set the progress suppliers separately.
             WidgetUtils.widgetByIdForEach(template, "^progress$", ProgressWidget.class, progressWidget -> {
                 progressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(progressWidget);
+            });
+            // Then set the dual progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
+            WidgetUtils.widgetByIdForEach(template, "^progress$", DualProgressWidget.class, dualProgressWidget -> {
+                dualProgressWidget.setProgressSupplier(recipeHolder.progressSupplier);
+                progress.add(dualProgressWidget);
             });
             // add recipe button
             if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
