@@ -87,14 +87,14 @@ public final class ToolChargeBarRenderer {
     }
 
     private static boolean renderDurabilityBar(GuiGraphics graphics, ItemStack stack, IDurabilityBar manager, int xPosition, int yPosition) {
-        int level = manager.getDurabilityForDisplay(stack);
+        float level = manager.getDurabilityForDisplay(stack);
         if (level == 0.0 && !manager.showEmptyBar(stack)) return false;
         if (level == 1.0 && !manager.showFullBar(stack)) return false;
         Pair<Integer, Integer> colors = manager.getDurabilityColorsForDisplay(stack);
         boolean doDepletedColor = manager.doDamagedStateColors(stack);
         int left = colors != null ? colors.getLeft() : colorBarLeftDurability;
         int right = colors != null ? colors.getRight() : colorBarRightDurability;
-        render(graphics, level, xPosition, yPosition, 0, true, left, right, doDepletedColor);
+        render(graphics, manager.getBarWidth(stack), xPosition, yPosition, 0, true, left, right, doDepletedColor);
         return true;
     }
 

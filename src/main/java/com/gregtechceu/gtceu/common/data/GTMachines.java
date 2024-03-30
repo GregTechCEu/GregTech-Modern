@@ -1605,6 +1605,7 @@ public class GTMachines {
             GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel"),
             GTCEu.id("block/multiblock/generator/large_plasma_turbine"));
 
+    @SuppressWarnings("removal")
     public final static MultiblockMachineDefinition[] PROCESSING_ARRAY = ConfigHolder.INSTANCE.machines.doProcessingArray ? registerTieredMultis("processing_array", ProcessingArrayMachine::new,
             (tier, builder) ->  builder
                     .langValue(VNF[tier] + " Processing Array")
@@ -1935,6 +1936,7 @@ public class GTMachines {
         return REGISTRATE.multiblock(name, holder -> new LargeCombustionEngineMachine(holder, tier))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(GTRecipeTypes.COMBUSTION_GENERATOR_FUELS)
+                .generator(true)
                 .recipeModifier(LargeCombustionEngineMachine::recipeModifier, true)
                 .appearanceBlock(casing)
                 .pattern(definition -> FactoryBlockPattern.start()
@@ -1967,6 +1969,7 @@ public class GTMachines {
         return REGISTRATE.multiblock(name, holder -> new LargeTurbineMachine(holder, tier))
                 .rotationState(RotationState.NON_Y_AXIS)
                 .recipeType(recipeType)
+                .generator(true)
                 .recipeModifier(LargeTurbineMachine::recipeModifier, true)
                 .appearanceBlock(casing)
                 .pattern(definition -> FactoryBlockPattern.start()

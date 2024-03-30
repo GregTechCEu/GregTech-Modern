@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/diorite",
   "position": [
-    -150,
-    50
+    -200,
+    150
   ],
   "pre_nodes": [
     "gtceu:generation/ore"

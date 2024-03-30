@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -144,8 +145,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public int getDurabilityForDisplay(ItemStack stack) {
-        return getUsesLeft(stack) / totalUses;
+    public float getDurabilityForDisplay(ItemStack stack) {
+        return (float) getUsesLeft(stack) / totalUses;
     }
 
     @Override
@@ -192,17 +193,45 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var player = context.getPlayer();
         var level = context.getLevel();
         var facing = context.getClickedFace();
-        var pos = context.getClickedPos();
+        var pos = context.getClickedPos().mutable();
         var stack = context.getItemInHand();
+        var block = level.getBlockState(pos).getBlock();
+
+        int maxBlocksToRecolor = Math.max(1, player != null && player.isCrouching() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
+
         if (player != null) {
-            if (!tryPaintBlock(player, level, pos, facing)) {
-                return InteractionResult.PASS;
+            for (int i = 0; i < maxBlocksToRecolor; i++) {
+
+                // Stop once we hit another block to prevent accidentally recoloring stuff
+                if (level.getBlockState(pos).getBlock() != block) {
+                    break;
+                }
+
+                if (!tryPaintBlock(player, level, pos, facing)) {
+                    return InteractionResult.PASS;
+                }
+
+                if (!useItemDurability(player, context.getHand(), stack, empty.get())) {
+                    break;
+                }
+
+                pos.move(getPaintDirection(player));
             }
-            useItemDurability(player, context.getHand(), stack, empty.get());
+
             GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    private Direction getPaintDirection(Player player) {
+        if (player.getXRot() > 45F) {
+            return Direction.DOWN;
+        } else if (player.getXRot() < -45F) {
+            return Direction.UP;
+        }
+
+        return player.getDirection();
     }
 
     private boolean tryPaintBlock(Player player, Level world, BlockPos pos, Direction side) {
@@ -328,6 +357,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 state.setValue(property, old.getValue(property));
             }
             world.setBlock(pos, state, 3);
+            world.sendBlockUpdated(pos, old, state, 3);
             return true;
         }
         return false;
@@ -446,7 +476,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     //otherwise, update held item to replacement stack
                     player.setItemInHand(hand, replacementStack);
                 }
-                return true;
+                return false;
             }
             setUsesLeft(stack, usesLeft);
         }

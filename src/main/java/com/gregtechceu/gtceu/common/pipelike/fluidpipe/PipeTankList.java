@@ -159,13 +159,13 @@ public class PipeTankList implements IFluidTransfer, Iterable<FluidStorage> {
     @Nullable
     @Override
     public FluidStack drain(FluidStack fluidStack, boolean doDrain) {
-        if (fluidStack == null || fluidStack.getAmount() <= 0) return null;
+        if (fluidStack.isEmpty() || fluidStack.getAmount() <= 0) return FluidStack.empty();
         fluidStack = fluidStack.copy();
         for (FluidStorage tank : tanks) {
             FluidStack drained = tank.drain(fluidStack, doDrain);
             if (!drained.isEmpty()) return drained;
         }
-        return null;
+        return FluidStack.empty();
     }
 
     @Override

@@ -86,13 +86,13 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
                     if (!cd.isRemote) {
                         overclockMachine.setOverclockTier(currentTier - 1);
                     }
-                }).setPredicate(() -> currentTier > overclockMachine.getMinOverclockTier()));
+                }, () -> currentTier > overclockMachine.getMinOverclockTier()));
                 addWidget(new ImageWidget(20, 5, 120 - 5 - 10 - 5 - 20, 20, () -> new GuiTextureGroup(GuiTextures.DISPLAY_FRAME, new TextTexture(GTValues.VNF[currentTier]))));
                 addWidget(new PredicatedButtonWidget(120 -5 - 10, 5, 10, 20, new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)), cd -> {
                     if (!cd.isRemote) {
                         overclockMachine.setOverclockTier(currentTier + 1);
                     }
-                }).setPredicate(() -> currentTier < overclockMachine.getMaxOverclockTier()));
+                }, () -> currentTier < overclockMachine.getMaxOverclockTier()));
             }
 
             @Override
