@@ -144,7 +144,7 @@ public class GTDynamicResourcePack implements PackResources {
     @Nullable
     @Override
     public InputStream getRootResource(String elements) {
-        return this.getClass().getResourceAsStream(elements);
+        return null;
     }
 
     @Override
