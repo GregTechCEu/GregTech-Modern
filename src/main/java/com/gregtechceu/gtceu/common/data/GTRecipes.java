@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.ComposterBlock;
 
 import java.util.function.Consumer;
 
@@ -25,6 +26,7 @@ public class GTRecipes {
      * to respond to a config option in ConfigHolder.
      */
     public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
+        ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
         // Decomposition info loading
         MaterialInfoLoader.init();
 

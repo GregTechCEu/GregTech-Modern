@@ -27,6 +27,8 @@ import java.util.function.Supplier;
  * @implNote MultiblockMachineDefinition
  */
 public class MultiblockMachineDefinition extends MachineDefinition {
+    @Getter @Setter
+    private boolean generator;
     @Setter
     @Getter
     @NonNull
