@@ -110,7 +110,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
         private final GenericStackInv internalBuffer;
 
         public InaccessibleInfiniteSlot(MetaMachine holder, GenericStackInv internalBuffer) {
-            super(holder, internalBuffer.size(), Long.MAX_VALUE, IO.OUT);
+            super(holder, internalBuffer.size(), Integer.MAX_VALUE, IO.OUT);
             this.internalBuffer = internalBuffer;
         }
 
@@ -128,7 +128,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(Long.MAX_VALUE) {
+            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(Integer.MAX_VALUE) {
                 @Override
                 public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
                     long filled = InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
