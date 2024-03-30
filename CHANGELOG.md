@@ -6,6 +6,7 @@ Version: 1.1.4.a
 - added more wiremill recipes for different wire sizes
 - made rubber saplings & leaves compostable
 - made spray paint able to paint multiple blocks in a chain if crouching
+- added ability to use block/fluid tags in multiblock patterns
 
 ### FIXES:
 - fix AMD driver error in LDlib
