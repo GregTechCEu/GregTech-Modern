@@ -349,7 +349,7 @@ public class GTItems {
             .lang("Portable Scanner")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.TOOLS))
-            .onRegister(attach(new PortableScannerBehavior()))
+            .onRegister(attach(ElectricStats.createElectricItem(100_00L, GTValues.MV), new PortableScannerBehavior()))
             .register();
 
     @OnlyIn(Dist.CLIENT)
