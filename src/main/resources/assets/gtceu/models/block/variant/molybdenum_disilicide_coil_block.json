@@ -1,0 +1,6 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "gtceu:block/casings/coils/machine_coil_molybdenum_disilicide"
+  }
+}
