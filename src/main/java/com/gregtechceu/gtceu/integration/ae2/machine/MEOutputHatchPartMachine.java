@@ -39,6 +39,9 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
     @Persisted
     private SerializableGenericStackInv internalBuffer;
 
+    @Persisted
+    private InaccessibleInfiniteSlot fluidTank;
+
     public MEOutputHatchPartMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, IO.IN, args);
     }
@@ -46,8 +49,10 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
     @Override
     @NotNull
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-        this.internalBuffer = new SerializableGenericStackInv(this::onChanged, slots);
-        return new InaccessibleInfiniteSlot(this, this.internalBuffer);
+        this.internalBuffer = new SerializableGenericStackInv(this::onChanged, 1);
+//        this.internalBuffer = new SerializableGenericStackInv(this::onChanged, slots);
+        this.fluidTank = new InaccessibleInfiniteSlot(this, this.internalBuffer);
+        return fluidTank;
     }
 
     @Override
@@ -80,8 +85,9 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
                     long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
                     if (inserted > 0) {
                         item = new GenericStack(item.what(), (item.amount() - inserted));
+                        this.fluidTank.drain(inserted, false, false);
                     }
-                    this.internalBuffer.setStack(slot, item);
+                    this.internalBuffer.setStack(slot, item.amount() == 0 ? null : item);
                 }
             }
             this.updateTankSubscription();
@@ -128,6 +134,10 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
+            if (simulate) {
+                // avoid finding receipe errorly when fluid storage has contents but different fulid is produced
+                return handleIngredient(io, left, simulate, this.handlerIO, this.storages);
+            }
             return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(Integer.MAX_VALUE) {
                 @Override
                 public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
