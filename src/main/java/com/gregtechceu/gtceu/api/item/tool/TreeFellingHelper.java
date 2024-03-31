@@ -60,8 +60,7 @@ public class TreeFellingHelper {
                 orderedBlocks.subList(durabilityLeft, orderedBlocks.size()).clear();
             }
 
-
-            stack.hurtAndBreak(orderedBlocks.size(), serverPlayer, p -> p.broadcastBreakEvent(EquipmentSlot.MAINHAND));
+            ToolHelper.damageItem(stack, serverPlayer);
 
             breakBlocksPerTick(serverPlayer, orderedBlocks, origin.getBlock());
         }

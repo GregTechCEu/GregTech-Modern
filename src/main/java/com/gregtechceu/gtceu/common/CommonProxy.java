@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.PostMaterialEvent;
@@ -31,7 +32,12 @@ import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
 import com.gregtechceu.gtceu.data.loot.ChestGenHooks;
+import com.gregtechceu.gtceu.data.loot.DungeonLootLoader;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
+import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
+import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
+import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -43,23 +49,25 @@ import com.tterrag.registrate.providers.RegistrateLangProvider;
 import com.tterrag.registrate.providers.RegistrateProvider;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.server.packs.repository.RepositorySource;
 import net.minecraftforge.common.capabilities.RegisterCapabilitiesEvent;
 import net.minecraftforge.common.crafting.CraftingHelper;
+import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.ModList;
 import net.minecraftforge.fml.ModLoader;
-import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.javafmlmod.FMLModContainer;
-import net.minecraftforge.registries.ForgeDeferredRegistriesSetup;
-import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegisterEvent;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class CommonProxy {
     public CommonProxy() {
@@ -109,6 +117,7 @@ public class CommonProxy {
         GTFoods.init();
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
+        GTOreVeinWidget.init();
 
         // fabric exclusive, squeeze this in here to register before stuff is used
         GTRegistration.REGISTRATE.registerRegistrate();
@@ -211,6 +220,37 @@ public class CommonProxy {
     @SubscribeEvent
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
         GTCapability.register(event);
+    }
+
+    @SubscribeEvent
+    public void registerPackFinders(AddPackFindersEvent event) {
+        if (event.getPackType() == PackType.CLIENT_RESOURCES) {
+            // Clear old data
+            GTDynamicResourcePack.clearClient();
+
+            event.addRepositorySource(new GTPackSource("gtceu:dynamic_assets",
+                event.getPackType(),
+                Pack.Position.BOTTOM,
+                GTDynamicResourcePack::new)
+            );
+        } else {
+            // Clear old data
+            GTDynamicDataPack.clearServer();
+
+            // Register recipes & unification data again
+            long startTime = System.currentTimeMillis();
+            ChemicalHelper.reinitializeUnification();
+            GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
+            // Initialize dungeon loot additions
+            DungeonLootLoader.init();
+            GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
+
+            event.addRepositorySource(new GTPackSource("gtceu:dynamic_data",
+                event.getPackType(),
+                Pack.Position.BOTTOM,
+                GTDynamicDataPack::new)
+            );
+        }
     }
 
     public static final class KJSEventWrapper {

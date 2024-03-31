@@ -362,98 +362,86 @@ public class MetaTileEntityMachineRecipeLoader {
         // 4A Energy Hatches
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_ev")
-                .inputItems(TRANSFORMER[EV])
                 .inputItems(ENERGY_INPUT_HATCH[EV])
-                .inputItems(POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_EV)
                 .inputItems(wireGtQuadruple, Aluminium, 2)
+                .inputItems(plate, Titanium, 2)
                 .outputItems(ENERGY_INPUT_HATCH_4A[EV])
                 .duration(100).EUt(VA[HV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_iv")
-                .inputItems(TRANSFORMER[IV])
                 .inputItems(ENERGY_INPUT_HATCH[IV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_IV)
                 .inputItems(wireGtQuadruple, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 2)
                 .outputItems(ENERGY_INPUT_HATCH_4A[IV])
                 .duration(100).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_luv")
-                .inputItems(TRANSFORMER[LuV])
                 .inputItems(ENERGY_INPUT_HATCH[LuV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_LuV)
                 .inputItems(wireGtQuadruple, NiobiumTitanium, 2)
+                .inputItems(plate, RhodiumPlatedPalladium, 2)
                 .outputItems(ENERGY_INPUT_HATCH_4A[LuV])
                 .duration(100).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_zpm")
-                .inputItems(TRANSFORMER[ZPM])
                 .inputItems(ENERGY_INPUT_HATCH[ZPM])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_ZPM)
                 .inputItems(wireGtQuadruple, VanadiumGallium, 2)
+                .inputItems(plate, NaquadahAlloy, 2)
                 .outputItems(ENERGY_INPUT_HATCH_4A[ZPM])
                 .duration(100).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_uv")
-                .inputItems(TRANSFORMER[UV])
                 .inputItems(ENERGY_INPUT_HATCH[UV])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_UV)
                 .inputItems(wireGtQuadruple, YttriumBariumCuprate, 2)
+                .inputItems(plate, Darmstadtium, 2)
                 .outputItems(ENERGY_INPUT_HATCH_4A[UV])
                 .duration(100).EUt(VA[ZPM]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_4a_uhv")
-                .inputItems(ENERGY_INPUT_HATCH[UHV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate)
+                .inputItems(ENERGY_INPUT_HATCH[UHV])
                 .inputItems(wireGtQuadruple, Europium, 2)
+                .inputItems(plate, Neutronium, 2)
                 .outputItems(ENERGY_INPUT_HATCH_4A[UHV])
                 .duration(100).EUt(VA[UV]).save(provider);
 
         // 16A Energy Hatches
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_ev")
-                .inputItems(ENERGY_INPUT_HATCH_4A[EV], 2)
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_IV)
+                .inputItems(TRANSFORMER[IV])
+                .inputItems(ENERGY_INPUT_HATCH_4A[EV])
                 .inputItems(wireGtOctal, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 4)
                 .outputItems(ENERGY_INPUT_HATCH_16A[EV])
                 .duration(200).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_iv")
-                .inputItems(ENERGY_INPUT_HATCH_4A[IV], 2)
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_LuV)
+                .inputItems(TRANSFORMER[LuV])
+                .inputItems(ENERGY_INPUT_HATCH_4A[IV])
                 .inputItems(wireGtOctal, NiobiumTitanium, 2)
+                .inputItems(plate, RhodiumPlatedPalladium, 4)
                 .outputItems(ENERGY_INPUT_HATCH_16A[IV])
                 .duration(200).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_luv")
-                .inputItems(ENERGY_INPUT_HATCH_4A[LuV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_ZPM)
+                .inputItems(TRANSFORMER[ZPM])
+                .inputItems(ENERGY_INPUT_HATCH_4A[LuV])
                 .inputItems(wireGtOctal, VanadiumGallium, 2)
+                .inputItems(plate, NaquadahAlloy, 4)
                 .outputItems(ENERGY_INPUT_HATCH_16A[LuV])
                 .duration(200).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_zpm")
-                .inputItems(ENERGY_INPUT_HATCH_4A[ZPM], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_UV)
+                .inputItems(TRANSFORMER[UV])
+                .inputItems(ENERGY_INPUT_HATCH_4A[ZPM])
                 .inputItems(wireGtOctal, YttriumBariumCuprate, 2)
+                .inputItems(plate, Darmstadtium, 4)
                 .outputItems(ENERGY_INPUT_HATCH_16A[ZPM])
                 .duration(200).EUt(VA[ZPM]).save(provider);
 
-
         ASSEMBLER_RECIPES.recipeBuilder("energy_hatch_16a_uv")
+                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
                 .inputItems(ENERGY_INPUT_HATCH_4A[UV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate)
                 .inputItems(wireGtOctal, Europium, 2)
+                .inputItems(plate, Neutronium, 4)
                 .outputItems(ENERGY_INPUT_HATCH_16A[UV])
                 .duration(200).EUt(VA[UV]).save(provider);
 
@@ -462,146 +450,128 @@ public class MetaTileEntityMachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_ev")
                 .inputItems(POWER_TRANSFORMER[IV])
                 .inputItems(ENERGY_INPUT_HATCH_16A[EV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_IV, 2)
                 .inputItems(wireGtHex, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 6)
                 .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[EV])
                 .duration(400).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_iv")
                 .inputItems(POWER_TRANSFORMER[LuV])
                 .inputItems(ENERGY_INPUT_HATCH_16A[IV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_LuV, 2)
                 .inputItems(wireGtHex, NiobiumTitanium, 2)
+                .inputItems(plate, RhodiumPlatedPalladium, 6)
                 .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[IV])
                 .duration(400).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_luv")
                 .inputItems(POWER_TRANSFORMER[ZPM])
                 .inputItems(ENERGY_INPUT_HATCH_16A[LuV])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_ZPM, 2)
                 .inputItems(wireGtHex, VanadiumGallium, 2)
+                .inputItems(plate, NaquadahAlloy, 6)
                 .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[LuV])
                 .duration(400).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_zpm")
                 .inputItems(POWER_TRANSFORMER[UV])
                 .inputItems(ENERGY_INPUT_HATCH_16A[ZPM])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_UV, 2)
                 .inputItems(wireGtHex, YttriumBariumCuprate, 2)
+                .inputItems(plate, Darmstadtium, 6)
                 .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[ZPM])
                 .duration(400).EUt(VA[ZPM]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_energy_hatch_uv")
-                .inputItems(ENERGY_INPUT_HATCH_16A[UV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate)
+                .inputItems(POWER_TRANSFORMER[UV])
+                .inputItems(ENERGY_INPUT_HATCH_16A[UV])
                 .inputItems(wireGtHex, Europium, 2)
+                .inputItems(plate, Neutronium, 6)
                 .outputItems(SUBSTATION_ENERGY_INPUT_HATCH[UV])
                 .duration(400).EUt(VA[UV]).save(provider);
 
         // 4A Dynamo Hatches
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_ev")
-                .inputItems(TRANSFORMER[EV])
                 .inputItems(ENERGY_OUTPUT_HATCH[EV])
-                .inputItems(POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_EV)
                 .inputItems(wireGtQuadruple, Aluminium, 2)
+                .inputItems(plate, Titanium, 2)
                 .outputItems(ENERGY_OUTPUT_HATCH_4A[EV])
                 .duration(100).EUt(VA[HV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_iv")
-                .inputItems(TRANSFORMER[IV])
                 .inputItems(ENERGY_OUTPUT_HATCH[IV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_IV)
                 .inputItems(wireGtQuadruple, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 2)
                 .outputItems(ENERGY_OUTPUT_HATCH_4A[IV])
                 .duration(100).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_luv")
-                .inputItems(TRANSFORMER[LuV])
                 .inputItems(ENERGY_OUTPUT_HATCH[LuV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_LuV)
                 .inputItems(wireGtQuadruple, NiobiumTitanium, 2)
+                .inputItems(plate, RhodiumPlatedPalladium, 2)
                 .outputItems(ENERGY_OUTPUT_HATCH_4A[LuV])
                 .duration(100).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_zpm")
                 .inputItems(TRANSFORMER[ZPM])
                 .inputItems(ENERGY_OUTPUT_HATCH[ZPM])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_ZPM)
                 .inputItems(wireGtQuadruple, VanadiumGallium, 2)
+                .inputItems(plate, NaquadahAlloy, 2)
                 .outputItems(ENERGY_OUTPUT_HATCH_4A[ZPM])
                 .duration(100).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_uv")
-                .inputItems(TRANSFORMER[UV])
                 .inputItems(ENERGY_OUTPUT_HATCH[UV])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(VOLTAGE_COIL_UV)
                 .inputItems(wireGtQuadruple, YttriumBariumCuprate, 2)
+                .inputItems(plate, Darmstadtium, 2)
                 .outputItems(ENERGY_OUTPUT_HATCH_4A[UV])
                 .duration(100).EUt(VA[ZPM]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_4a_uhv")
-                .inputItems(ENERGY_OUTPUT_HATCH[UHV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT)
-                .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate)
+                .inputItems(ENERGY_OUTPUT_HATCH[UHV])
                 .inputItems(wireGtQuadruple, Europium, 2)
+                .inputItems(plate, Neutronium, 2)
                 .outputItems(ENERGY_OUTPUT_HATCH_4A[UHV])
                 .duration(100).EUt(VA[UV]).save(provider);
 
         // 16A Dynamo Hatches
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_ev")
-                .inputItems(HI_AMP_TRANSFORMER_4A[IV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[IV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_IV)
+                .inputItems(TRANSFORMER[IV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[EV])
                 .inputItems(wireGtOctal, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 4)
                 .outputItems(ENERGY_OUTPUT_HATCH_16A[EV])
                 .duration(200).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_iv")
-                .inputItems(HI_AMP_TRANSFORMER_4A[LuV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[LuV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_LuV)
+                .inputItems(TRANSFORMER[LuV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[IV])
                 .inputItems(wireGtOctal, NiobiumTitanium, 2)
+                .inputItems(plate, RhodiumPlatedPalladium, 4)
                 .outputItems(ENERGY_OUTPUT_HATCH_16A[IV])
                 .duration(200).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_luv")
-                .inputItems(HI_AMP_TRANSFORMER_4A[ZPM])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[ZPM])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_ZPM)
+                .inputItems(TRANSFORMER[ZPM])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[LuV])
                 .inputItems(wireGtOctal, VanadiumGallium, 2)
+                .inputItems(plate, NaquadahAlloy, 4)
                 .outputItems(ENERGY_OUTPUT_HATCH_16A[LuV])
                 .duration(200).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_zpm")
-                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[UV])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(VOLTAGE_COIL_UV)
+                .inputItems(TRANSFORMER[UV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[ZPM])
                 .inputItems(wireGtOctal, YttriumBariumCuprate, 2)
+                .inputItems(plate, Darmstadtium, 4)
                 .outputItems(ENERGY_OUTPUT_HATCH_16A[ZPM])
                 .duration(200).EUt(VA[ZPM]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("dynamo_hatch_16a_uv")
-                .inputItems(ENERGY_OUTPUT_HATCH_4A[UHV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputItems(wireGtDouble, RutheniumTriniumAmericiumNeutronate)
+                .inputItems(HI_AMP_TRANSFORMER_4A[UV])
+                .inputItems(ENERGY_OUTPUT_HATCH_4A[5])
                 .inputItems(wireGtOctal, Europium, 2)
-                .outputItems(ENERGY_OUTPUT_HATCH_16A[UV])
+                .inputItems(plate, Neutronium, 4)
+                .outputItems(ENERGY_OUTPUT_HATCH_16A[4])
                 .duration(200).EUt(VA[UV]).save(provider);
 
         // 64A Substation Dynamo Hatches
@@ -609,44 +579,40 @@ public class MetaTileEntityMachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_ev")
                 .inputItems(POWER_TRANSFORMER[IV])
                 .inputItems(ENERGY_OUTPUT_HATCH_16A[EV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_IV, 2)
                 .inputItems(wireGtHex, Tungsten, 2)
+                .inputItems(plate, TungstenSteel, 6)
                 .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[EV])
                 .duration(400).EUt(VA[EV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_iv")
                 .inputItems(POWER_TRANSFORMER[LuV])
                 .inputItems(ENERGY_OUTPUT_HATCH_16A[IV])
-                .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_LuV, 2)
                 .inputItems(wireGtHex, NiobiumTitanium, 2)
+                .inputItems(plate, RhodiumPlatedPalladium, 6)
                 .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[IV])
                 .duration(400).EUt(VA[IV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_luv")
                 .inputItems(POWER_TRANSFORMER[ZPM])
                 .inputItems(ENERGY_OUTPUT_HATCH_16A[LuV])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_ZPM, 2)
                 .inputItems(wireGtHex, VanadiumGallium, 2)
+                .inputItems(plate, NaquadahAlloy, 6)
                 .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[LuV])
                 .duration(400).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_zpm")
                 .inputItems(POWER_TRANSFORMER[UV])
                 .inputItems(ENERGY_OUTPUT_HATCH_16A[ZPM])
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(VOLTAGE_COIL_UV, 2)
                 .inputItems(wireGtHex, YttriumBariumCuprate, 2)
+                .inputItems(plate, Darmstadtium, 6)
                 .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[ZPM])
                 .duration(400).EUt(VA[ZPM]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("substation_dynamo_hatch_uv")
-                .inputItems(ENERGY_OUTPUT_HATCH_16A[UV], 2)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 4)
-                .inputItems(wireGtQuadruple, RutheniumTriniumAmericiumNeutronate)
+                .inputItems(POWER_TRANSFORMER[UV])
+                .inputItems(ENERGY_OUTPUT_HATCH_16A[UV])
                 .inputItems(wireGtHex, Europium, 2)
+                .inputItems(plate, Neutronium, 6)
                 .outputItems(SUBSTATION_ENERGY_OUTPUT_HATCH[UV])
                 .duration(400).EUt(VA[UV]).save(provider);
 

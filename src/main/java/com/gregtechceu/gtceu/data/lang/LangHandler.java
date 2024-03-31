@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraftforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
@@ -62,6 +63,10 @@ public class LangHandler {
         provider.add("gtceu.io.export", "Export");
         provider.add("gtceu.io.both", "Both");
         provider.add("gtceu.io.none", "None");
+
+        provider.add("gtceu.multiblock.page_switcher.io.import", "§2Inputs");
+        provider.add("gtceu.multiblock.page_switcher.io.export", "§4Outputs");
+        provider.add("gtceu.multiblock.page_switcher.io.both", "§5Combined Inputs + Outputs");
 
         provider.add("enchantment.disjunction", "Disjunction");
         provider.add("gtceu.multiblock.steam_grinder.description", "A Multiblock Macerator at the Steam Age. Requires at least 14 Bronze Casings to form. Cannot use normal Input/Output busses, nor Fluid Hatches other than the Steam Hatch.");
@@ -1043,6 +1048,10 @@ public class LangHandler {
         provider.add("gtceu.multiblock.invalid_structure.tooltip", "This block is a controller of the multiblock structure. For building help, see structure template in JEI.");
         provider.add("gtceu.multiblock.validation_failed", "Invalid amount of inputs/outputs.");
         provider.add("gtceu.multiblock.max_energy_per_tick", "Max EU/t: §a%s (%s§r)");
+        provider.add("gtceu.multiblock.max_energy_per_tick_hover", "The maximum EU/t available for running recipes or overclocking");
+        provider.add("gtceu.multiblock.max_energy_per_tick_amps", "Max EU/t: %s (%sA %s)");
+        provider.add("gtceu.multiblock.max_recipe_tier", "Max Recipe Tier: %s");
+        provider.add("gtceu.multiblock.max_recipe_tier_hover", "The maximum tier of recipes that can be run");
         provider.add("gtceu.multiblock.generation_eu", "Outputting: §a%s EU/t");
         provider.add("gtceu.multiblock.universal.no_problems", "No Maintenance Problems!");
         provider.add("gtceu.multiblock.universal.has_problems", "Has Maintenance Problems!");
@@ -1119,6 +1128,11 @@ public class LangHandler {
         provider.add("gtceu.multiblock.large_miner.radius", "Radius: §a%d§r Blocks");
         provider.add("gtceu.multiblock.large_miner.errorradius", "§cCannot change radius while working!");
         provider.add("gtceu.multiblock.large_miner.needsfluid", "Needs Drilling Fluid");
+        provider.add("gtceu.multiblock.fluid_rig.drilled_fluid", "Fluid: %s");
+        provider.add("gtceu.multiblock.fluid_rig.no_fluid_in_area", "None in Area.");
+        provider.add("gtceu.multiblock.fluid_rig.fluid_amount", "Pumping Rate: %s");
+        provider.add("gtceu.multiblock.fluid_rig.vein_depletion", "Vein Size: %s");
+        provider.add("gtceu.multiblock.fluid_rig.vein_depleted", "Vein Depleted.");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
         provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");

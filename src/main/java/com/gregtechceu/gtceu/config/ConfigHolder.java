@@ -322,9 +322,6 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false"})
         public boolean highTierContent = false;
-        @Configurable
-        @Configurable.Comment({"Whether search for recipes asynchronously.", " Default: true"})
-        public boolean asyncRecipeSearching = true;
     }
 
     public static class ToolConfigs {
@@ -332,6 +329,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Random chance for electric tools to take actual damage", "Default: 10%" })
         @Configurable.Range(min = 0, max = 100)
         public int rngDamageElectricTools = 10;
+        @Configurable
+        @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
+        @Configurable.Range(min = 1, max = 512)
+        public int sprayCanChainLength = 16;
     }
 
     public static class ClientConfigs {

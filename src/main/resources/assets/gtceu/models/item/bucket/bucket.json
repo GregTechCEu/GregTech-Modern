@@ -1,10 +1,6 @@
 {
+  "parent": "forge:item/bucket_drip",
   "loader": "forge:fluid_container",
-  "textures": {
-    "base": "minecraft:item/bucket",
-    "fluid": "forge:item/mask/bucket_fluid_drip",
-    "cover": "forge:item/mask/bucket_fluid_cover_drip"
-  },
   "fluid": "minecraft:water",
   "flip_gas": false,
   "apply_fluid_luminosity": false

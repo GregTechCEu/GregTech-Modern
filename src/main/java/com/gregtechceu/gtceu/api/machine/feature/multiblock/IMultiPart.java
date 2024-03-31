@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -112,6 +113,14 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      */
     default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
+    }
+
+    /**
+     * Add text to the multiblock's screen.
+     * @param textList the text list to add to.
+     */
+    default void addMultiText(List<Component> textList) {
+
     }
 
     /**

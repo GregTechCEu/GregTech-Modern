@@ -258,38 +258,4 @@ public class MixinHelpers {
             }
         }
     }
-
-    public static List<PackResources> addDynamicDataPack(Collection<PackResources> packs) {
-        List<PackResources> packResources = new ArrayList<>(packs);
-        // Clear old data
-        GTDynamicDataPack.clearServer();
-
-        // Register recipes & unification data again
-        long startTime = System.currentTimeMillis();
-        ChemicalHelper.reinitializeUnification();
-        GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
-        // Initialize dungeon loot additions
-        DungeonLootLoader.init();
-        GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);
-
-        // Load the data
-        packResources.add(new GTDynamicDataPack("gtceu:dynamic_data", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
-        return packResources;
-    }
-
-    public static List<PackResources> addDynamicResourcePack(Collection<PackResources> packs) {
-        List<PackResources> packResources = new ArrayList<>(packs);
-        // Clear old data
-        GTDynamicResourcePack.clearClient();
-
-        // Load the data
-        packResources.add(0, new GTDynamicResourcePack("gtceu:dynamic_assets", AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet())));
-        return packResources;
-    }
-
-    // unused on purpose. Do not call, will destroy ram usage.
-    public static void initializeDynamicTextures() {
-        //MaterialBlockRenderer.initTextures();
-        //TagPrefixItemRenderer.initTextures();
-    }
 }

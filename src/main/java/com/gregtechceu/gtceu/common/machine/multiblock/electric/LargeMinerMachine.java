@@ -249,7 +249,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine impleme
                 int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
                 playerIn.sendSystemMessage(Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
             }
-            getRecipeLogic().resetArea();
+            getRecipeLogic().resetArea(true);
         } else {
             playerIn.sendSystemMessage(Component.translatable("gtceu.multiblock.large_miner.errorradius"));
         }
