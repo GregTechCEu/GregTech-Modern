@@ -20,10 +20,8 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -97,6 +95,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+                        .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
                         .setMaxWidthLimit(150)
                         .clickHandler(this::handleDisplayClick)));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
@@ -146,7 +145,9 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getOverclockVoltage() {
-        IEnergyContainer energyContainer = this.energyContainer;
+        if (this.energyContainer == null) {
+            this.energyContainer = getEnergyContainer();
+        }
         if (energyContainer instanceof EnergyContainerList) {
             long voltage;
             long amperage;
@@ -208,7 +209,6 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     public long getMaxVoltage() {
-        IEnergyContainer energyContainer = this.energyContainer;
         if (this.energyContainer == null) {
             this.energyContainer = getEnergyContainer();
         }
