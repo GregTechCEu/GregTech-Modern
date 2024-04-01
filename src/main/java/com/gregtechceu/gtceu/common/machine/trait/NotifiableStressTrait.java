@@ -79,6 +79,11 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
+    public List<Object> getContents() {
+        return List.of(available);
+    }
+
+    @Override
     public void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
         if (machine instanceof IKineticMachine kineticMachine) {
             var kineticDefinition = kineticMachine.getKineticDefinition();

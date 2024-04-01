@@ -14,6 +14,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Comparator;
 import java.util.Map;
 import java.util.function.Supplier;
 
@@ -23,8 +24,9 @@ public final class FluidStorage {
     public static class FluidEntry {
         @Getter
         private Supplier<? extends Fluid> fluid;
+        @Nullable
         @Getter @Setter
-        private ResourceLocation stillTexture, flowTexture;
+        private FluidBuilder builder;
     }
 
     private final Map<FluidStorageKey, FluidEntry> map = new Object2ObjectOpenHashMap<>();
@@ -73,12 +75,24 @@ public final class FluidStorage {
             throw new IllegalStateException("FluidStorage has already been registered");
         }
 
-        for (var entry : toRegister.entrySet()) {
-            if (map.containsKey(entry.getKey())) {
-                continue;
-            }
-            storeWithLogging(entry.getKey(), new FluidEntry(entry.getValue().build(material.getModid(), material, entry.getKey(), registrate), entry.getValue().getStill(), entry.getValue().getFlowing()), material);
+        // If nothing is queued for registration and nothing is manually stored,
+        // we need something for the registry to handle this will prevent cases
+        // of a material having a fluid property but no fluids actually created
+        // for the material.
+        if (toRegister.isEmpty() && map.isEmpty()) {
+            enqueueRegistration(FluidStorageKeys.LIQUID, new FluidBuilder());
         }
+
+        toRegister.entrySet().stream()
+            .sorted(Comparator.comparingInt(e -> -e.getKey().getRegistrationPriority()))
+            .forEach(entry -> {
+                if (map.containsKey(entry.getKey())) {
+                    GTCEu.LOGGER.warn("{} already has an associated fluid for material {}", entry.getKey(), material);
+                    return;
+                }
+                Supplier<? extends Fluid> fluid = entry.getValue().build(material.getModid(), material, entry.getKey(), registrate);
+                store(entry.getKey(), fluid, entry.getValue());
+            });
         toRegister = null;
         registered = true;
     }
@@ -96,14 +110,18 @@ public final class FluidStorage {
     }
 
     /**
-     * @see #store(FluidStorageKey, Fluid)
+     * Will do nothing if an existing fluid association would be overwritten.
+     *
+     * @param key   the key to associate with the fluid
+     * @param fluid the fluid to associate with the key
+     * @return if the associations were successfully updated
      */
-    private void storeWithLogging(@NotNull FluidStorageKey key, @NotNull FluidEntry fluid, @NotNull Material material) {
+    public boolean storeNoOverwrites(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
-            GTCEu.LOGGER.error("{} already has an associated fluid for material {}", this, material);
-            return;
+            return false;
         }
-        map.put(key, fluid);
+        store(key, fluid, builder);
+        return true;
     }
 
     /**
@@ -111,10 +129,14 @@ public final class FluidStorage {
      * @param fluid the fluid to associate with the key
      * @throws IllegalArgumentException if a key is already associated with another fluid
      */
-    public void store(@NotNull FluidStorageKey key, @NotNull Fluid fluid) {
+    public void store(@NotNull FluidStorageKey key, @NotNull Supplier<? extends Fluid> fluid, @Nullable FluidBuilder builder) {
         if (map.containsKey(key)) {
             throw new IllegalArgumentException(key + " already has an associated fluid");
         }
-        map.put(key, new FluidEntry(() -> fluid, null, null));
+        if (builder != null) {
+            map.put(key, new FluidEntry(fluid, builder));
+        } else {
+            map.put(key, new FluidEntry(fluid, null));
+        }
     }
 }

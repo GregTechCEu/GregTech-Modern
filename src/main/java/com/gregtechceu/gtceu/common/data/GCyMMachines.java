@@ -266,7 +266,8 @@ public class GCyMMachines {
                     .aisle("XXXXXXXXX","XGGGXXSXX","XGGGX###X")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(40)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                            .or(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('G', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
                     .where('A', Predicates.air())
@@ -294,7 +295,8 @@ public class GCyMMachines {
                     .aisle("#####XX","#####SX","#####XX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(55)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes()))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                            .or(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('T', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
                     .where('G', Predicates.blocks(CASING_GRATE.get()))
@@ -396,7 +398,6 @@ public class GCyMMachines {
 
     public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("alloy_blast_smelter", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Alloy Blast Smelter")
-            .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.alloy_blast_smelter")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(ALLOY_BLAST_RECIPES)
@@ -561,9 +562,9 @@ public class GCyMMachines {
     public final static MultiblockMachineDefinition LARGE_DISTILLERY = REGISTRATE.multiblock("large_distillery", WorkableElectricMultiblockMachine::new)
             .langValue("Large Fractionating Distillery")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.distillery"), Component.translatable("gtceu.distillation_tower")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.distillation_tower"), Component.translatable("gtceu.distillery")))
             .rotationState(RotationState.NON_Y_AXIS)
-            .recipeTypes(DISTILLERY_RECIPES, DISTILLATION_RECIPES)
+            .recipeTypes(DISTILLATION_RECIPES, DISTILLERY_RECIPES)
             .recipeModifier(GTRecipeModifiers.PARALLEL_HATCH.apply(OverclockingLogic.PERFECT_OVERCLOCK, GTRecipeModifiers.ELECTRIC_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
@@ -581,7 +582,7 @@ public class GCyMMachines {
                                 .or(abilities(EXPORT_ITEMS))
                                 .or(autoAbilities(true, false, true)))
                         .where('X', casingPredicate
-                                .or(abilities(EXPORT_FLUIDS).setMinLayerLimited(1).setMaxLayerLimited(1)))
+                                .or(abilities(EXPORT_FLUIDS_1X).setMinLayerLimited(1).setMaxLayerLimited(1)))
                         .where('Z', casingPredicate)
                         .where('P', blocks(CASING_STEEL_PIPE.get()))
                         .where('C', abilities(MUFFLER))
@@ -589,6 +590,7 @@ public class GCyMMachines {
                         .where('#', any())
                         .build();
             })
+            .partSorter(Comparator.comparingInt(a -> a.self().getPos().getY()))
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/watertight_casing"),
                     GTCEu.id("block/multiblock/gcym/large_distillery"), false)
             .compassSections(GTCompassSections.TIER[IV])

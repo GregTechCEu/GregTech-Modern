@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -26,7 +27,7 @@ public interface IExplosionMachine extends IMachineFeature {
         var level = machine.getLevel();
         var pos = machine.getPos();
         if (GTValues.RNG.nextInt(1000) == 0) {
-            for (Direction side : Direction.values()) {
+            for (Direction side : GTUtil.DIRECTIONS) {
                 var fluidState = level.getBlockState(pos.relative(side)).getFluidState();
                 if (!fluidState.isEmpty()) {
                     doExplosion(explosionPower);
@@ -62,7 +63,7 @@ public interface IExplosionMachine extends IMachineFeature {
         var level = machine.getLevel();
         var pos = machine.getPos();
         boolean isFirstFireSpawned = false;
-        for (Direction side : Direction.values()) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             if (level.isEmptyBlock(pos.relative(side))) {
                 if (!isFirstFireSpawned) {
                     level.setBlock(pos.relative(side), Blocks.FIRE.defaultBlockState(), 11);

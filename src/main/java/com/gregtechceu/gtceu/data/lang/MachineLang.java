@@ -324,8 +324,8 @@ public class MachineLang {
         provider.add("gtceu.machine.energy_converter.message_conversion_eu", "Converting EU, In: %dA %d EU, Out: %d Native");
         provider.add("gtceu.machine.pump.tooltip", "§7The best way to empty Oceans!");
         provider.add("gtceu.machine.pump.tooltip_buckets", "§f%d §7ticks per Bucket");
-        provider.add("gtceu.machine.item_collector.gui.collect_range", "Collect in %s blocks");
-        provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself when given a Redstone signal");
+        provider.add("gtceu.machine.item_collector.gui.collect_range", "Collect within an area of %sx%s blocks");
+        provider.add("gtceu.machine.item_collector.tooltip", "Collects Items around itself");
         provider.add("gtceu.machine.quantum_chest.tooltip", "§7Better than Storage Drawers");
         provider.add("gtceu.machine.quantum_chest.items_stored", "Item Amount:");
         provider.add("gtceu.machine.quantum_tank.tooltip", "§7Compact place to store all your fluids");
@@ -362,9 +362,9 @@ public class MachineLang {
         provider.add("gtceu.machine.fisher.requirement", "Requires a %dx%d centered square of water directly below.");
         provider.add("gtceu.machine.world_accelerator.description", "Tick accelerates nearby blocks in one of 2 modes: §fTile Entity§7 or §fRandom Tick§7. Use Screwdriver to change mode.");
         provider.add("gtceu.machine.world_accelerator.working_area", "§bWorking Area:");
-        provider.add("gtceu.machine.world_accelerator.working_area_tile", "  Tile Entity Mode:§f Adjacent Blocks");
+        provider.add("gtceu.machine.world_accelerator.working_area_tile", "  Block Entity Mode:§f Adjacent Blocks");
         provider.add("gtceu.machine.world_accelerator.working_area_random", "  Random Tick Mode:§f %dx%d");
-        provider.add("gtceu.machine.world_accelerator.mode_tile", "Tile Entity Mode");
+        provider.add("gtceu.machine.world_accelerator.mode_tile", "Block Entity Mode");
         provider.add("gtceu.machine.world_accelerator.mode_entity", "Random Tick Mode");
         provider.add("gtceu.machine.basic.input_from_output_side.allow", "Allow Input from Output Side: ");
         provider.add("gtceu.machine.basic.input_from_output_side.disallow", "Disallow Input from Output Side: ");

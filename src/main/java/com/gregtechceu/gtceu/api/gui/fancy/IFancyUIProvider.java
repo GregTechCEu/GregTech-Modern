@@ -19,23 +19,38 @@ public interface IFancyUIProvider {
     /**
      * Create the main page ui.
      */
-    Widget createMainPage();
+    Widget createMainPage(FancyMachineUIWidget widget);
 
     /**
      * Get the tab icon of this page.
      */
     IGuiTexture getTabIcon();
 
+    /**
+     * Get the title of this page.
+     */
+    Component getTitle();
+
+    /**
+     * Attach configurators to the left subtab list.
+     */
+    default void attachSideTabs(TabsWidget configuratorPanel) {
+
+    }
 
     /**
      * Attach configurators to the left panel.
      */
-    void attachConfigurators(ConfiguratorPanel configuratorPanel);
+    default void attachConfigurators(ConfiguratorPanel configuratorPanel) {
+
+    }
 
     /**
      * Attach tooltips to the right panel
      */
-    void attachTooltips(TooltipsPanel tooltipsPanel);
+    default void attachTooltips(TooltipsPanel tooltipsPanel) {
+
+    }
 
     default boolean hasPlayerInventory() {
         return true;
@@ -46,14 +61,6 @@ public interface IFancyUIProvider {
      */
     default List<IFancyUIProvider> getSubTabs() {
         return Collections.emptyList();
-    }
-
-    /**
-     * Set up the top tabs. Only if it's a main page will it be called.
-     */
-    default void setupTabs(TabsWidget tabsWidget) {
-        tabsWidget.setMainTab(this);
-        getSubTabs().forEach(tabsWidget::attachSubTab);
     }
 
     /**
@@ -69,5 +76,13 @@ public interface IFancyUIProvider {
     @Nullable
     default TooltipComponent getTabTooltipComponent() {
         return null;
+    }
+
+    @Nullable
+    default PageGroupingData getPageGroupingData() {
+        return null;
+    }
+
+    record PageGroupingData(@Nullable String groupKey, int groupPositionWeight) {
     }
 }

@@ -38,6 +38,7 @@ public class GTCapability {
         event.register(IElectricItem.class);
         event.register(ICleanroomReceiver.class);
         event.register(IMaintenanceMachine.class);
+        event.register(ILaserContainer.class);
     }
     */
 

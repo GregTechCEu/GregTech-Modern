@@ -154,11 +154,10 @@ public class GTRecipeTypeBuilder extends BuilderBase<GTRecipeType> {
         var type = GTRecipeTypes.register(name, category);
         type.maxInputs.putAll(maxInputs);
         type.maxOutputs.putAll(maxOutputs);
-        type.setSpecialTexture(specialTexturePosition, specialTexture);
         type.getSlotOverlays().putAll(slotOverlays);
-        type.setProgressBarTexture(progressBarTexture);
-        type.setSteamProgressBarTexture(steamProgressBarTexture);
-        type.setSteamMoveType(steamMoveType);
+        type.getRecipeUI().setProgressBarTexture(progressBarTexture);
+        type.getRecipeUI().setSteamProgressBarTexture(steamProgressBarTexture);
+        type.getRecipeUI().setSteamMoveType(steamMoveType);
         type.setSound(sound);
         type.setMaxTooltips(maxTooltips);
         type.setFuelRecipeType(isFuelRecipeType);

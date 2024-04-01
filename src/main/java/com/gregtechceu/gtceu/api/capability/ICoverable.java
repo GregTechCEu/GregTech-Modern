@@ -4,17 +4,10 @@ import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
-import com.gregtechceu.gtceu.api.gui.widget.CoverContainerConfigurator;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -38,7 +31,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 
-public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfigurator {
+public interface ICoverable extends ITickSubscription, IAppearance {
 
     Level getLevel();
 
@@ -123,12 +116,21 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         return true;
     }
 
+    /**
+     * Drop all attached covers on the ground
+     */
+    default void dropAllCovers() {
+        for (Direction side : GTUtil.DIRECTIONS) {
+            removeCover(side, null);
+        }
+    }
+
     default boolean removeCover(Direction side, @Nullable Player player) {
         return removeCover(true, side, player);
     }
 
     default List<CoverBehavior> getCovers() {
-        return Arrays.stream(Direction.values()).map(this::getCoverAtSide).filter(Objects::nonNull).collect(Collectors.toList());
+        return Arrays.stream(GTUtil.DIRECTIONS).map(this::getCoverAtSide).filter(Objects::nonNull).collect(Collectors.toList());
     }
 
     default void onLoad() {
@@ -150,8 +152,8 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
     }
 
     default boolean hasAnyCover() {
-        for(Direction facing : Direction.values())
-            if(getCoverAtSide(facing) != null)
+        for (Direction facing : GTUtil.DIRECTIONS)
+            if (getCoverAtSide(facing) != null)
                 return true;
         return false;
     }
@@ -168,7 +170,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
         double plateThickness = getCoverPlateThickness();
         List<VoxelShape> shapes = new ArrayList<>();
         if (plateThickness > 0.0) {
-            for (Direction side : Direction.values()) {
+            for (Direction side : GTUtil.DIRECTIONS) {
                 if (getCoverAtSide(side) != null) {
                     var coverBox = getCoverPlateBox(side, plateThickness);
                     shapes.add(coverBox);
@@ -198,7 +200,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
 
     @Nullable
     static Direction rayTraceCoverableSide(ICoverable coverable, Player player) {
-        var rayTrace = RayTraceHelper.rayTraceRange(coverable.getLevel(), player, ToolHelper.getPlayerBlockReach(player));
+        BlockHitResult rayTrace = (BlockHitResult) player.pick(player.getBlockReach(), 0, false);
         if (rayTrace.getType() == HitResult.Type.MISS) {
             return null;
         }
@@ -239,7 +241,7 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
     }
 
     static boolean canPlaceCover(CoverDefinition coverDef, ICoverable coverable) {
-        for (Direction facing : Direction.values()) {
+        for (Direction facing : GTUtil.DIRECTIONS) {
             if (coverable.canPlaceCoverOnSide(coverDef, facing)) {
                 var cover = coverDef.createCoverBehavior(coverable, facing);
                 if (cover.canAttach()) {
@@ -257,24 +259,5 @@ public interface ICoverable extends ITickSubscription, IAppearance, IFancyConfig
             return getCoverAtSide(side).getAppearance(sourceState, sourcePos);
         }
         return null;
-    }
-
-    //////////////////////////////////////
-    //*********    Fancy Gui   *********//
-    //////////////////////////////////////
-
-    @Override
-    default String getTitle() {
-        return "gtceu.gui.cover_setting.title";
-    }
-
-    @Override
-    default IGuiTexture getIcon() {
-        return GuiTextures.TOOL_COVER_SETTINGS;
-    }
-
-    @Override
-    default Widget createConfigurator() {
-        return new CoverContainerConfigurator(this);
     }
 }

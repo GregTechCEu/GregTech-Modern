@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -40,7 +42,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IItemUseFirst {
+public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider {
 
     protected int burnTime = -1;
 
@@ -227,6 +229,16 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         return super.getCraftingRemainingItem(itemStack);
     }
 
+    @Override
+    public boolean hasCraftingRemainingItem(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof IRecipeRemainder recipeRemainder) {
+                return recipeRemainder.getRecipeRemained(stack) != ItemStack.EMPTY;
+            }
+        }
+        return super.hasCraftingRemainingItem(stack);
+    }
+
     public <T> LazyOptional<T> getCapability(@Nonnull final ItemStack itemStack, @Nonnull final Capability<T> cap) {
         for (IItemComponent component : components) {
             if (component instanceof IComponentCapability componentCapability) {
@@ -246,5 +258,22 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
 
     public void burnTime(int burnTime) {
         this.burnTime = burnTime;
+    }
+
+    /**
+     * Attempts to get an fully charged variant of this electric item
+     *
+     * @param chargeAmount amount of charge
+     * @return charged electric item stack
+     * @throws java.lang.IllegalStateException if this item is not electric item
+     */
+    public ItemStack getChargedStack(long chargeAmount) {
+        ItemStack itemStack = getDefaultInstance();
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        if (electricItem == null) {
+            throw new IllegalStateException("Not an electric item.");
+        }
+        electricItem.charge(chargeAmount, Integer.MAX_VALUE, true, false);
+        return itemStack;
     }
 }

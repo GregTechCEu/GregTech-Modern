@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
-import com.gregtechceu.gtceu.api.syncdata.UpdateListener;
+import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -78,13 +78,13 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     public void updateEnergyContainer(boolean isTransformUp) {
         long tierVoltage = GTValues.V[getTier()];
         if (isTransformUp) {
-            //storage = 1 amp high; input = tier / 4; amperage = 4; output = tier; amperage = 1
-            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage, baseAmp * 4L, tierVoltage * 4, baseAmp);
+            //storage = n amp high; input = tier / 4; amperage = 4n; output = tier; amperage = n
+            this.energyContainer.resetBasicInfo(tierVoltage * 8L * baseAmp, tierVoltage, baseAmp * 4L, tierVoltage * 4, baseAmp);
             energyContainer.setSideInputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
             energyContainer.setSideOutputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
         } else {
-            //storage = 1 amp high; input = tier; amperage = 1; output = tier / 4; amperage = 4
-            this.energyContainer.resetBasicInfo(tierVoltage * 8L, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
+            //storage = n amp high; input = tier; amperage = n; output = tier / 4; amperage = 4n
+            this.energyContainer.resetBasicInfo(tierVoltage * 8L * baseAmp, tierVoltage * 4, baseAmp, tierVoltage, baseAmp * 4L);
             energyContainer.setSideInputCondition(s -> s == getFrontFacing() && isWorkingEnabled());
             energyContainer.setSideOutputCondition(s -> s != getFrontFacing() && isWorkingEnabled());
         }
@@ -114,15 +114,9 @@ public class TransformerMachine extends TieredEnergyMachine implements IControll
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!isRemote()) {
-            if (isTransformUp()) {
-                setTransformUp(false);
-                playerIn.sendSystemMessage(Component.translatable("gtceu.machine.transformer.message_transform_down",
-                        energyContainer.getInputVoltage(), energyContainer.getInputAmperage(), energyContainer.getOutputVoltage(), energyContainer.getOutputAmperage()));
-            } else {
-                setTransformUp(true);
-                playerIn.sendSystemMessage(Component.translatable("gtceu.machine.transformer.message_transform_up",
-                        energyContainer.getInputVoltage(), energyContainer.getInputAmperage(), energyContainer.getOutputVoltage(), energyContainer.getOutputAmperage()));
-            }
+            setTransformUp(!isTransformUp());
+            playerIn.sendSystemMessage(Component.translatable(isTransformUp()?"gtceu.machine.transformer.message_transform_up":"gtceu.machine.transformer.message_transform_down",
+                energyContainer.getInputVoltage(), energyContainer.getInputAmperage(), energyContainer.getOutputVoltage(), energyContainer.getOutputAmperage()));
         }
         return InteractionResult.CONSUME;
     }

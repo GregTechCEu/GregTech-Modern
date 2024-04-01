@@ -103,7 +103,11 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     @Override
     default float getDurabilityForDisplay(ItemStack itemStack) {
         var maxDurability = getPartMaxDurability(itemStack);
-        return (maxDurability - getPartDamage(itemStack)) * 1f / maxDurability;
+        return (float) (maxDurability - getPartDamage(itemStack)) / maxDurability;
     }
 
+    @Override
+    default int getMaxDurability(ItemStack stack) {
+        return getPartMaxDurability(stack);
+    }
 }

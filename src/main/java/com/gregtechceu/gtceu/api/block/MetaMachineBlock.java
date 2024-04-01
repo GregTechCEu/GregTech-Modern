@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
@@ -126,6 +127,13 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
     }
 
+    @Override
+    public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+        super.onPlace(state, level, pos, oldState, movedByPiston);
+        //needed to trigger block updates so machines connect to open cables properly.
+        level.updateNeighbourForOutputSignal(pos, this);
+    }
+
     @Nullable
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
@@ -197,7 +205,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var drops = super.getDrops(state, builder);
         if (tileEntity instanceof IMachineBlockEntity holder) {
             var machine = holder.getMetaMachine();
-            for (Direction direction : Direction.values()) {
+            for (Direction direction : GTUtil.DIRECTIONS) {
                 machine.getCoverContainer().removeCover(direction, null);
             }
             if (machine instanceof IMachineModifyDrops machineModifyDrops && entity instanceof Player) {

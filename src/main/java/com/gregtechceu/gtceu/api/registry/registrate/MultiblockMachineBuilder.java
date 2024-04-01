@@ -60,6 +60,8 @@ import java.util.function.*;
 @Accessors(chain = true, fluent = true)
 public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDefinition> {
     @Setter
+    private boolean generator;
+    @Setter
     private Function<MultiblockMachineDefinition, BlockPattern> pattern;
     private final List<Function<MultiblockMachineDefinition, List<MultiblockShapeInfo>>> shapeInfos = new ArrayList<>();
     private final List<Supplier<ItemStack[]>> recoveryItems = new ArrayList<>();
@@ -263,6 +265,10 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
         return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier, alwaysTryModifyRecipe);
     }
 
+    public MultiblockMachineBuilder noRecipeModifier() {
+        return (MultiblockMachineBuilder) super.noRecipeModifier();
+    }
+
     @Override
     public MultiblockMachineBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
         return (MultiblockMachineBuilder) super.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
@@ -311,6 +317,7 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineDefinition register() {
         var definition = (MultiblockMachineDefinition) super.register();
+        definition.setGenerator(generator);
         if (pattern == null) {
             throw new IllegalStateException("missing pattern while creating multiblock " + name);
         }

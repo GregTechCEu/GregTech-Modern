@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.client.model;
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -96,6 +97,7 @@ public class WorkableOverlayModel {
 
         @Nullable
         private TextureAtlasSprite getTextureAtlasSprite(boolean active, boolean workingEnabled, @Nullable ResourceLocation activeSprite, @Nullable ResourceLocation pausedSprite, @Nullable ResourceLocation normalSprite) {
+
             if (active) {
                 if (workingEnabled) {
                     return activeSprite == null ? null : ModelFactory.getBlockSprite(activeSprite);
@@ -129,8 +131,9 @@ public class WorkableOverlayModel {
             assert cache != null;
             if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
                 var quads = new ArrayList<BakedQuad>();
-                for (Direction renderSide : Direction.values()) {
+                for (Direction renderSide : GTUtil.DIRECTIONS) {
                     var rotation = ModelFactory.getRotation(frontFacing);
+
                     ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
                     if (predicate != null) {
                         var texture = predicate.getSprite(isActive, isWorkingEnabled);
@@ -194,7 +197,6 @@ public class WorkableOverlayModel {
             var normalSprite = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath);
             if (!ResourceHelper.isTextureExist(normalSprite)) continue;
             register.accept(normalSprite);
-
             // normal
 
             final String active = String.format("%s_active", overlayPath);
@@ -219,6 +221,7 @@ public class WorkableOverlayModel {
 
             sprites.put(overlayFace, new ActivePredicate(normalSprite, activeSprite, pausedSprite,
                     normalSpriteEmissive, activeSpriteEmissive, pausedSpriteEmissive));
+
         }
     }
 

@@ -10,8 +10,8 @@ dependencies {
     jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
 
     // Create and its dependencies
-    implementation("com.simibubi.create:create-${libs.versions.minecraftOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-    implementation forge.flywheel
+    compileOnly("com.simibubi.create:create-${libs.versions.minecraftOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    compileOnly forge.flywheel
 
     // JEI
     compileOnly(forge.jei.common.api) { transitive = false }

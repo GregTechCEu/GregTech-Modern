@@ -6,9 +6,11 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.integration.ae2.GTAEMachines;
@@ -190,8 +192,8 @@ public class MachineRecipeLoader {
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust").inputItems(ingot, Iron).inputItems(dust, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem").inputItems(ingot, Iron).inputItems(gem, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust").inputItems(ingot, Iron).inputItems(dust, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(1800).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem").inputItems(ingot, Iron).inputItems(gem, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(1500).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust").inputItems(ingot, Iron).inputItems(dust, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(1500).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem").inputItems(ingot, Iron).inputItems(gem, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(1500).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust").inputItems(ingot, Iron).inputItems(dust, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(1500).save(provider);
 
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block").inputItems(block, Iron).inputItems(block, Coal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(16200).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block").inputItems(block, Iron).inputItems(block, Charcoal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(16200).save(provider);
@@ -201,8 +203,8 @@ public class MachineRecipeLoader {
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Coal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_gem_wrought").inputItems(ingot, WroughtIron).inputItems(gem, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Charcoal, 2).outputItems(ingot, Steel).outputItems(dustTiny, DarkAsh, 2).duration(800).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem_wrought").inputItems(ingot, WroughtIron).inputItems(gem, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(600).save(provider);
-        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Coke).outputItems(ingot, Steel).outputItems(dustTiny, Ash).duration(600).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_gem_wrought").inputItems(ingot, WroughtIron).inputItems(gem, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(600).save(provider);
+        PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coke_dust_wrought").inputItems(ingot, WroughtIron).inputItems(dust, Coke).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).duration(600).save(provider);
 
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_coal_block_wrought").inputItems(block, WroughtIron).inputItems(block, Coal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(7200).save(provider);
         PRIMITIVE_BLAST_FURNACE_RECIPES.recipeBuilder("steel_from_charcoal_block_wrought").inputItems(block, WroughtIron).inputItems(block, Charcoal, 2).outputItems(block, Steel).outputItems(dust, DarkAsh, 2).duration(7200).save(provider);
@@ -539,7 +541,7 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("coil_cupronickel").EUt(VA[LV]).inputItems(wireGtDouble, Cupronickel, 8).inputItems(foil, Bronze, 8).inputFluids(TinAlloy.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_CUPRONICKEL.asStack()).duration(200).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_kanthal").EUt(VA[MV]).inputItems(wireGtDouble, Kanthal, 8).inputItems(foil, Aluminium, 8).inputFluids(Copper.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_KANTHAL.asStack()).duration(300).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_nichrome").EUt(VA[HV]).inputItems(wireGtDouble, Nichrome, 8).inputItems(foil, StainlessSteel, 8).inputFluids(Aluminium.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_NICHROME.asStack()).duration(400).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("coil_tungstensteel").EUt(VA[EV]).inputItems(wireGtDouble, TungstenSteel, 8).inputItems(foil, VanadiumSteel, 8).inputFluids(Nichrome.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_TUNGSTENSTEEL.asStack()).duration(500).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("coil_rtm_alloy").EUt(VA[EV]).inputItems(wireGtDouble, RTMAlloy, 8).inputItems(foil, VanadiumSteel, 8).inputFluids(Nichrome.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_RTMALLOY.asStack()).duration(500).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_hssg").EUt(VA[IV]).inputItems(wireGtDouble, HSSG, 8).inputItems(foil, TungstenCarbide, 8).inputFluids(Tungsten.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_HSSG.asStack()).duration(600).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_naquadah").EUt(VA[LuV]).inputItems(wireGtDouble, Naquadah, 8).inputItems(foil, Osmium, 8).inputFluids(TungstenSteel.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_NAQUADAH.asStack()).duration(700).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("coil_trinium").EUt(VA[ZPM]).inputItems(wireGtDouble, Trinium, 8).inputItems(foil, NaquadahEnriched, 8).inputFluids(Naquadah.getFluid(GTValues.L)).outputItems(GTBlocks.COIL_TRINIUM.asStack()).duration(800).save(provider);
@@ -642,51 +644,18 @@ public class MachineRecipeLoader {
                 .inputItems(ring, Platinum, 4)
                 .outputItems(FLUID_CELL_LARGE_TUNGSTEN_STEEL)
                 .duration(200).EUt(VA[HV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_mv")
-                .inputItems(HULL[MV])
-                .inputItems(frameGt, Steel, 4)
-                .inputItems(CustomTags.MV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_MV, 4)
-                .inputItems(ELECTRIC_PUMP_MV, 4)
-                .inputItems(gear, VanadiumSteel, 4)
-                .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[MV])
-                .duration(400).EUt(VA[MV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_ev")
-                .inputItems(HULL[EV])
-                .inputItems(frameGt, Titanium, 4)
-                .inputItems(CustomTags.EV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_EV, 4)
-                .inputItems(ELECTRIC_PUMP_EV, 4)
-                .inputItems(gear, TungstenCarbide, 4)
-                .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[HV])
-                .duration(400).EUt(VA[EV]).save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("fluid_drill_luv")
-                .inputItems(HULL[LuV])
-                .inputItems(frameGt, TungstenSteel, 4)
-                .inputItems(CustomTags.LuV_CIRCUITS, 4)
-                .inputItems(ELECTRIC_MOTOR_LuV, 4)
-                .inputItems(ELECTRIC_PUMP_LuV, 4)
-                .inputItems(gear, Osmiridium, 4)
-                .circuitMeta(2)
-                .outputItems(FLUID_DRILLING_RIG[EV])
-                .duration(400).EUt(VA[LuV]).save(provider);
     }
 
     private static void registerBlastFurnaceRecipes(RecipeOutput provider) {
-        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_dust").duration(400).EUt(100).inputItems(dust, Ruby).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_gem").duration(320).EUt(100).inputItems(gem, Ruby).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_dust").duration(400).EUt(100).inputItems(dust, GreenSapphire).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
-        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_gem").duration(320).EUt(100).inputItems(gem, GreenSapphire).outputItems(nugget, Aluminium, 3).outputItems(dustTiny, DarkAsh).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_dust").duration(400).EUt(100).inputItems(dust, Ruby).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_ruby_gem").duration(320).EUt(100).inputItems(gem, Ruby).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_dust").duration(400).EUt(100).inputItems(dust, GreenSapphire).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
+        BLAST_RECIPES.recipeBuilder("aluminium_from_green_sapphire_gem").duration(320).EUt(100).inputItems(gem, GreenSapphire).outputItems(nugget, Aluminium, 3).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_dust").duration(400).EUt(100).inputItems(dust, Sapphire).outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("aluminium_from_sapphire_gem").duration(320).EUt(100).inputItems(gem, Sapphire).outputItems(nugget, Aluminium, 3).blastFurnaceTemp(1200).save(provider);
         BLAST_RECIPES.recipeBuilder("titanium_from_tetrachloride").duration(800).EUt(VA[HV]).inputItems(dust, Magnesium, 2).inputFluids(TitaniumTetrachloride.getFluid(1000)).outputItems(ingotHot, Titanium).outputItems(dust, MagnesiumChloride, 6).blastFurnaceTemp(Titanium.getBlastTemperature() + 200).save(provider);
-        BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(ingot, Iron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).outputItems(dustTiny, Ash).blastFurnaceTemp(1000).save(provider);
-        BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(ingot, WroughtIron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).outputItems(dustTiny, Ash).blastFurnaceTemp(1000).save(provider);
+        BLAST_RECIPES.recipeBuilder("steel_from_iron").duration(500).EUt(VA[MV]).inputItems(ingot, Iron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1000).save(provider);
+        BLAST_RECIPES.recipeBuilder("steel_from_wrought_iron").duration(300).EUt(VA[MV]).inputItems(ingot, WroughtIron).inputFluids(Oxygen.getFluid(200)).outputItems(ingot, Steel).chancedOutput(dust, Ash, 1111, 0).blastFurnaceTemp(1000).save(provider);
 
         BLAST_RECIPES.recipeBuilder("rutile_from_ilmenite")
                 .inputItems(dust, Ilmenite, 10)
@@ -738,7 +707,7 @@ public class MachineRecipeLoader {
                 .outputFluids(SulfurDioxide.getFluid(1000))
                 .save(provider);
 
-        BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(2273)
+        BLAST_RECIPES.recipeBuilder("chalcopyrite_metallurgy").duration(120).EUt(VA[MV]).blastFurnaceTemp(1200)
                 .inputItems(dust, Chalcopyrite)
                 .inputItems(dust, SiliconDioxide)
                 .inputFluids(Oxygen.getFluid(3000))
@@ -747,11 +716,11 @@ public class MachineRecipeLoader {
                 .outputFluids(SulfurDioxide.getFluid(2000))
                 .save(provider);
 
-        BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(1200)
-                .inputItems(dust, SiliconDioxide)
+        BLAST_RECIPES.recipeBuilder("blast_silicon_dioxide").duration(240).EUt(VA[MV]).blastFurnaceTemp(2273)
+                .inputItems(dust, SiliconDioxide, 3)
                 .inputItems(dust, Carbon, 2)
                 .outputItems(ingotHot, Silicon)
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonMonoxide.getFluid(2000))
                 .save(provider);
     }
@@ -761,7 +730,7 @@ public class MachineRecipeLoader {
                 .inputItems(dust, inputMaterial)
                 .inputFluids(Oxygen.getFluid(3000))
                 .outputItems(dust, outputMaterial)
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(SulfurDioxide.getFluid(sulfurDioxideAmount))
                 .save(provider);
     }
@@ -795,8 +764,7 @@ public class MachineRecipeLoader {
                 .outputItems(dust, RawRubber, 2)
                 .save(provider);
 
-        // todo tag stuff
-        //COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_sapling").duration(300).EUt(2).inputItems("treeSapling", 8).outputItems(PLANT_BALL).save(provider);
+        COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_sapling").duration(300).EUt(2).inputItems(ItemTags.SAPLINGS).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_wheat").duration(300).EUt(2).inputItems(new ItemStack(Items.WHEAT, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_potato").duration(300).EUt(2).inputItems(new ItemStack(Items.POTATO, 8)).outputItems(PLANT_BALL).save(provider);
         COMPRESSOR_RECIPES.recipeBuilder("plant_ball_from_carrot").duration(300).EUt(2).inputItems(new ItemStack(Items.CARROT, 8)).outputItems(PLANT_BALL).save(provider);
@@ -821,7 +789,7 @@ public class MachineRecipeLoader {
         MACERATOR_RECIPES.recipeBuilder("macerate_end_stone")
                 .inputItems(new ItemStack(Blocks.END_STONE))
                 .outputItems(dust, Endstone)
-                .chancedOutput(dustTiny, Tungstate, 1200, 280)
+                .chancedOutput(dust, Tungstate, 130, 30)
                 .duration(150).EUt(2)
                 .save(provider);
 
@@ -837,7 +805,7 @@ public class MachineRecipeLoader {
         //    MACERATOR_RECIPES.recipeBuilder()
         //            .inputItems(stone, Soapstone)
         //            .outputItems(dustImpure, Talc)
-        //            .chancedOutput(dustTiny, Chromite, 1000, 280)
+        //            .chancedOutput(dust, Chromite, 111, 30)
         //            .duration(150).EUt(2)
         //            .save(provider);
 
@@ -873,44 +841,45 @@ public class MachineRecipeLoader {
 //        MACERATOR_RECIPES.recipeBuilder("macerate_red_granite")
 //                .inputItems(block, GraniteRed)
 //                .outputItems(dust, GraniteRed)
-//                .chancedOutput(dustSmall, Uranium238, 100, 40)
+//                .chancedOutput(dust, Uranium238, 10, 5)
 //                .duration(150).EUt(2)
 //                .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_andesite")
                 .inputItems(Blocks.ANDESITE.asItem())
                 .outputItems(dust, Andesite)
-                .chancedOutput(dustSmall, Stone, 100, 40)
+                .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_diorite")
                 .inputItems(Blocks.DIORITE.asItem())
                 .outputItems(dust, Diorite)
-                .chancedOutput(dustSmall, Stone, 100, 40)
+                .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_granite")
                 .inputItems(Blocks.GRANITE.asItem())
                 .outputItems(dust, Granite)
-                .chancedOutput(dustSmall, Stone, 100, 40)
+                .chancedOutput(dust, Stone, 10, 5)
                 .duration(150).EUt(2)
                 .save(provider);
 
         // TODO add other foods
         MACERATOR_RECIPES.recipeBuilder("macerate_pork_chop")
                 .inputItems(new ItemStack(Items.PORKCHOP))
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
-        // TODO all fish
-        //MACERATOR_RECIPES.recipeBuilder("macerate_fish")
-        //        .inputItems(new ItemStack(Items.FISH, 1, GTValues.W))
-        //        .outputItems(dustSmall, Meat, 6)
-        //        .outputItems(dustTiny, Bone)
-        //        .duration(102).EUt(2).save(provider);
+        MACERATOR_RECIPES.recipeBuilder("macerate_fish")
+                .inputItems(ItemTags.FISHES)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
+                .outputItems(dustTiny, Bone)
+                .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_chicken")
                 .inputItems(new ItemStack(Items.CHICKEN))
@@ -920,13 +889,15 @@ public class MachineRecipeLoader {
 
         MACERATOR_RECIPES.recipeBuilder("macerate_steak")
                 .inputItems(new ItemStack(Items.BEEF))
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_rabbit")
                 .inputItems(new ItemStack(Items.RABBIT))
-                .outputItems(dustSmall, Meat, 6)
+                .outputItems(dust, Meat)
+                .chancedOutput(dust, Meat, 5000, 0)
                 .outputItems(dustTiny, Bone)
                 .duration(102).EUt(2).save(provider);
 
@@ -1006,44 +977,44 @@ public class MachineRecipeLoader {
     }
      */
 
-    // TODO NBT removal recipes
     private static void registerNBTRemoval(RecipeOutput provider) {
-        /*
-        for (MetaTileEntityQuantumChest chest : MetaTileEntities.QUANTUM_CHEST)
-            if (chest != null) {
-                ModHandler.addShapelessNBTClearingRecipe("quantum_chest_nbt_" + chest.getTier() + chest.getMetaName(), chest, chest);
-            }
 
-        for (MetaTileEntityQuantumTank tank : MetaTileEntities.QUANTUM_TANK)
-            if (tank != null) {
-                ModHandler.addShapelessNBTClearingRecipe("quantum_tank_nbt_" + tank.getTier() + tank.getMetaName(), tank, tank);
+        for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
+            if (chest != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(), chest.asStack(), chest.asStack());
             }
+        }
+
+        for (MachineDefinition tank : GTMachines.QUANTUM_TANK) {
+            if (tank != null) {
+                VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_tank_nbt_" + tank.getTier(), tank.asStack(), tank.asStack());
+            }
+        }
 
         //Drums
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_wood", MetaTileEntities.WOODEN_DRUM, MetaTileEntities.WOODEN_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_bronze", MetaTileEntities.BRONZE_DRUM, MetaTileEntities.BRONZE_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_steel", MetaTileEntities.STEEL_DRUM, MetaTileEntities.STEEL_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_aluminium", MetaTileEntities.ALUMINIUM_DRUM, MetaTileEntities.ALUMINIUM_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_stainless_steel", MetaTileEntities.STAINLESS_STEEL_DRUM, MetaTileEntities.STAINLESS_STEEL_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_gold", MetaTileEntities.GOLD_DRUM, MetaTileEntities.GOLD_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_titanium", MetaTileEntities.TITANIUM_DRUM, MetaTileEntities.TITANIUM_DRUM);
-        ModHandler.addShapelessNBTClearingRecipe("drum_nbt_tungstensteel", MetaTileEntities.TUNGSTENSTEEL_DRUM, MetaTileEntities.TUNGSTENSTEEL_DRUM);
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_wood", GTMachines.WOODEN_DRUM.asStack(), GTMachines.WOODEN_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_bronze", GTMachines.BRONZE_DRUM.asStack(), GTMachines.BRONZE_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_steel", GTMachines.STEEL_DRUM.asStack(), GTMachines.STEEL_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_aluminium", GTMachines.ALUMINIUM_DRUM.asStack(), GTMachines.ALUMINIUM_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_stainless_steel", GTMachines.STAINLESS_STEEL_DRUM.asStack(), GTMachines.STAINLESS_STEEL_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_gold", GTMachines.GOLD_DRUM.asStack(), GTMachines.GOLD_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_titanium", GTMachines.TITANIUM_DRUM.asStack(), GTMachines.TITANIUM_DRUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "drum_nbt_tungstensteel", GTMachines.TUNGSTENSTEEL_DRUM.asStack(), GTMachines.TUNGSTENSTEEL_DRUM.asStack());
 
         // Cells
-        ModHandler.addShapedNBTClearingRecipe("cell_nbt_regular", FLUID_CELL, " C", "  ", 'C', FLUID_CELL);
-        ModHandler.addShapedNBTClearingRecipe("cell_nbt_universal", FLUID_CELL_UNIVERSAL, " C", "  ", 'C', FLUID_CELL_UNIVERSAL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_steel", FLUID_CELL_LARGE_STEEL, FLUID_CELL_LARGE_STEEL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_aluminium", FLUID_CELL_LARGE_ALUMINIUM, FLUID_CELL_LARGE_ALUMINIUM);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_stainless_steel", FLUID_CELL_LARGE_STAINLESS_STEEL, FLUID_CELL_LARGE_STAINLESS_STEEL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_titanium", FLUID_CELL_LARGE_TITANIUM, FLUID_CELL_LARGE_TITANIUM);
-        ModHandler.addShapelessNBTClearingRecipe("cell_nbt_tungstensteel", FLUID_CELL_LARGE_TUNGSTEN_STEEL, FLUID_CELL_LARGE_TUNGSTEN_STEEL);
-        ModHandler.addShapelessNBTClearingRecipe("cell_vial_nbt", FLUID_CELL_GLASS_VIAL, FLUID_CELL_GLASS_VIAL);
+        VanillaRecipeHelper.addShapedNBTClearingRecipe(provider, "cell_nbt_regular", FLUID_CELL.asStack(), " C", "  ", 'C', FLUID_CELL.asStack());
+        VanillaRecipeHelper.addShapedNBTClearingRecipe(provider, "cell_nbt_universal", FLUID_CELL_UNIVERSAL.asStack(), " C", "  ", 'C', FLUID_CELL_UNIVERSAL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_steel", FLUID_CELL_LARGE_STEEL.asStack(), FLUID_CELL_LARGE_STEEL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_aluminium", FLUID_CELL_LARGE_ALUMINIUM.asStack(), FLUID_CELL_LARGE_ALUMINIUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_stainless_steel", FLUID_CELL_LARGE_STAINLESS_STEEL.asStack(), FLUID_CELL_LARGE_STAINLESS_STEEL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_titanium", FLUID_CELL_LARGE_TITANIUM.asStack(), FLUID_CELL_LARGE_TITANIUM.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_tungstensteel", FLUID_CELL_LARGE_TUNGSTEN_STEEL.asStack(), FLUID_CELL_LARGE_TUNGSTEN_STEEL.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_vial_nbt", FLUID_CELL_GLASS_VIAL.asStack(), FLUID_CELL_GLASS_VIAL.asStack());
 
 
         //Jetpacks
         // TODO armor
         //ModHandler.addShapelessRecipe("fluid_jetpack_clear", SEMIFLUID_JETPACK, SEMIFLUID_JETPACK);
-        */
     }
 
     private static void registerHatchConversion(RecipeOutput provider) {
@@ -1103,11 +1074,12 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "steam_bus_input_to_output", STEAM_IMPORT_BUS.asStack(),
                 "d", "B", 'B', STEAM_EXPORT_BUS.asStack());
 
-        if (GTCEu.isAE2Loaded()) {
-            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input", GTAEMachines.FLUID_IMPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_EXPORT_HATCH.asStack());
-            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output", GTAEMachines.FLUID_EXPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_IMPORT_HATCH.asStack());
-            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input", GTAEMachines.ITEM_IMPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_EXPORT_BUS.asStack());
-            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output", GTAEMachines.ITEM_EXPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_IMPORT_BUS.asStack());
-        }
+        // TODO fix the ME buses/hatches
+//        if (GTCEu.isAE2Loaded()) {
+//            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_output_to_input", GTAEMachines.FLUID_IMPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_EXPORT_HATCH.asStack());
+//            VanillaRecipeHelper.addShapedRecipe(provider, "me_fluid_hatch_input_to_output", GTAEMachines.FLUID_EXPORT_HATCH.asStack(), "d", "B", 'B', GTAEMachines.FLUID_IMPORT_HATCH.asStack());
+//            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_output_to_input", GTAEMachines.ITEM_IMPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_EXPORT_BUS.asStack());
+//            VanillaRecipeHelper.addShapedRecipe(provider, "me_item_bus_input_to_output", GTAEMachines.ITEM_EXPORT_BUS.asStack(), "d", "B", 'B', GTAEMachines.ITEM_IMPORT_BUS.asStack());
+//        }
     }
 }

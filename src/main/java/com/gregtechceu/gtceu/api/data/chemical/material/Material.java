@@ -19,6 +19,8 @@ import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -194,7 +196,7 @@ public class Material implements Comparable<Material> {
     public Fluid getFluid() {
         FluidProperty prop = getProperty(PropertyKey.FLUID);
         if (prop == null) {
-            throw new IllegalArgumentException("Material " + getName() + " does not have a Fluid!");
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
         }
 
         FluidStorageKey key = prop.getPrimaryKey();
@@ -216,7 +218,7 @@ public class Material implements Comparable<Material> {
     public Fluid getFluid(@Nonnull FluidStorageKey key) {
         FluidProperty prop = getProperty(PropertyKey.FLUID);
         if (prop == null) {
-            throw new IllegalArgumentException("Material " + getName() + " does not have a Fluid!");
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
         }
 
         return prop.getStorage().get(key);
@@ -239,6 +241,47 @@ public class Material implements Comparable<Material> {
      */
     public FluidStack getFluid(@Nonnull FluidStorageKey key, int amount) {
         return new FluidStack(getFluid(key), amount);
+    }
+
+    /**
+     * Retrieves a fluid builder from the material.
+     * <br/>
+     * NOTE: only available before the fluids are registered.
+     * <br/>
+     * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
+     * {@link FluidStorageKeys#GAS}.
+     * @return the fluid builder
+     */
+    public FluidBuilder getFluidBuilder() {
+        FluidProperty prop = getProperty(PropertyKey.FLUID);
+        if (prop == null) {
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
+        }
+
+        FluidStorageKey key = prop.getPrimaryKey();
+        FluidBuilder fluid = null;
+
+        if (key != null) fluid = prop.getStorage().getQueuedBuilder(key);
+        if (fluid != null) return fluid;
+
+        fluid = getFluidBuilder(FluidStorageKeys.LIQUID);
+        if (fluid != null) return fluid;
+
+        return getFluidBuilder(FluidStorageKeys.GAS);
+    }
+
+    /**
+     * NOTE: only available before the fluids are registered.
+     * @param key the key for the fluid
+     * @return the fluid corresponding with the key
+     */
+    public FluidBuilder getFluidBuilder(@Nonnull FluidStorageKey key) {
+        FluidProperty prop = getProperty(PropertyKey.FLUID);
+        if (prop == null) {
+            throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
+        }
+
+        return prop.getStorage().getQueuedBuilder(key);
     }
 
     public MaterialToolTier getToolTier() {
@@ -276,38 +319,57 @@ public class Material implements Comparable<Material> {
         return getProperty(PropertyKey.TOOL).getHarvestLevel();
     }
 
-    public void setMaterialRGB(int materialRGB) {
-        materialInfo.color = materialRGB;
+    public void setMaterialARGB(int materialRGB) {
+        materialInfo.colors.set(0, materialRGB);
+    }
+
+    public void setMaterialSecondaryARGB(int materialRGB) {
+        materialInfo.colors.set(1, materialRGB);
     }
 
     public int getLayerARGB(int layerIndex) {
-        return switch (layerIndex) {
-            case 0, -101 -> this.getMaterialARGB();
-            case 1, -111 -> {
-                if (this.getMaterialSecondaryARGB() != -1) {
-                    yield this.getMaterialSecondaryARGB();
-                } else {
-                    yield this.getMaterialARGB();
-                }
-            }
-            default -> -1;
-        };
+        // get 2nd digit as positive if emissive layer
+        if (layerIndex < -100) {
+            layerIndex = (Math.abs(layerIndex) % 100) / 10;
+        }
+        if (layerIndex > materialInfo.colors.size() - 1) return -1;
+        int layerColor = getMaterialARGB(layerIndex);
+        if (layerColor != -1 || layerIndex == 0) return layerColor;
+        else return getMaterialARGB(0);
     }
 
     public int getMaterialARGB() {
-        return materialInfo.color | 0xff000000;
+        return materialInfo.colors.getInt(0) | 0xff000000;
     }
 
     public int getMaterialSecondaryARGB() {
-        return materialInfo.secondaryColor | 0xff000000;
+        return materialInfo.colors.getInt(1) | 0xff000000;
+    }
+
+    /**
+     * Gets a specific color layer in ARGB.
+     * @param index the index of the layer [0,10). will crash if you pass values > 10.
+     * @return Gets a specific color layer.
+     */
+    public int getMaterialARGB(int index) {
+        return materialInfo.colors.getInt(index) | 0xff000000;
     }
 
     public int getMaterialRGB() {
-        return materialInfo.color;
+        return materialInfo.colors.getInt(0);
+    }
+
+    /**
+     * Gets a specific color layer.
+     * @param index the index of the layer [0,10). will crash if you pass values > 10.
+     * @return Gets a specific color layer.
+     */
+    public int getMaterialRGB(int index) {
+        return materialInfo.colors.getInt(index);
     }
 
     public int getMaterialSecondaryRGB() {
-        return materialInfo.secondaryColor;
+        return materialInfo.colors.getInt(1);
     }
 
     public boolean hasFluidColor() {
@@ -519,6 +581,28 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * Add a liquid for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder liquid() {
+            return fluid(FluidStorageKeys.LIQUID, FluidState.LIQUID);
+        }
+
+        /**
+         * Add a liquid for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder liquid(@NotNull FluidBuilder builder) {
+            return fluid(FluidStorageKeys.LIQUID, builder.state(FluidState.LIQUID));
+        }
+
+        public Builder liquid(int temp) {
+            return liquid(new FluidBuilder().temperature(temp));
+        }
+
+        /**
          * Add a plasma for this material.
          * @see #fluid(FluidStorageKey, FluidState)
          */
@@ -527,11 +611,37 @@ public class Material implements Comparable<Material> {
         }
 
         /**
+         * Add a plasma for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder plasma(@NotNull FluidBuilder builder) {
+            return fluid(FluidStorageKeys.PLASMA, builder.state(FluidState.PLASMA));
+        }
+
+        public Builder plasma(int temp) {
+            return plasma(new FluidBuilder().temperature(temp));
+        }
+
+        /**
          * Add a gas for this material.
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder gas() {
             return fluid(FluidStorageKeys.GAS, FluidState.GAS);
+        }
+
+        /**
+         * Add a gas for this material.
+         *
+         * @see #fluid(FluidStorageKey, FluidState)
+         */
+        public Builder gas(@NotNull FluidBuilder builder) {
+            return fluid(FluidStorageKeys.GAS, builder.state(FluidState.GAS));
+        }
+
+        public Builder gas(int temp) {
+            return gas(new FluidBuilder().temperature(temp));
         }
 
         /**
@@ -775,7 +885,7 @@ public class Material implements Comparable<Material> {
          * @param hasFluidColor Whether the fluid should be colored or not.
          */
         public Builder color(int color, boolean hasFluidColor) {
-            this.materialInfo.color = color;
+            this.materialInfo.colors.set(0, color);
             this.materialInfo.hasFluidColor = hasFluidColor;
             return this;
         }
@@ -788,7 +898,7 @@ public class Material implements Comparable<Material> {
          * @param color         The RGB-formatted Color.
          */
         public Builder secondaryColor(int color) {
-            this.materialInfo.secondaryColor = color;
+            this.materialInfo.colors.set(1, color);
             return this;
         }
 
@@ -932,12 +1042,6 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder fluidBurnTime(int burnTime) {
-            //properties.ensureSet(PropertyKey.FLUID);
-            //properties.getProperty(PropertyKey.FLUID).setBurnTime(burnTime);
-            return this;
-        }
-
         public Builder washedIn(Material m) {
             properties.ensureSet(PropertyKey.ORE);
             properties.getProperty(PropertyKey.ORE).setWashedIn(m);
@@ -1023,7 +1127,6 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        // TODO make these work
         @Deprecated
         public Builder addDefaultEnchant(Enchantment enchant, int level) {
             if (!properties.hasProperty(PropertyKey.TOOL)) // cannot assign default here
@@ -1059,21 +1162,13 @@ public class Material implements Comparable<Material> {
         private final ResourceLocation resourceLocation;
 
         /**
-         * The color of this Material.
+         * The colors of this Material.
+         * if any past index 0 are -1, they aren't used.
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
         @Getter @Setter
-        private int color = -1;
-
-        /**
-         * The secondary color of this Material.
-         * If this is default, then it's not used.
-         * <p>
-         * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
-         */
-        @Getter @Setter
-        private int secondaryColor = -1;
+        private IntList colors = new IntArrayList(List.of(-1, -1));
 
         /**
          * The color of this Material.
@@ -1128,9 +1223,9 @@ public class Material implements Comparable<Material> {
             }
 
             // Verify MaterialRGB
-            if (color == -1) {
+            if (colors.getInt(0) == -1) {
                 if (!averageRGB || componentList.isEmpty())
-                    color = 0xFFFFFF;
+                    colors.set(0, 0xFFFFFF);
                 else {
                     long colorTemp = 0;
                     int divisor = 0;
@@ -1138,7 +1233,7 @@ public class Material implements Comparable<Material> {
                         colorTemp += stack.material().getMaterialARGB() * stack.amount();
                         divisor += stack.amount();
                     }
-                    color = (int) (colorTemp / divisor);
+                    colors.set(0, (int) (colorTemp / divisor));
                 }
             }
         }

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,7 +35,7 @@ public class NotifiableLaserContainer extends NotifiableEnergyContainer implemen
         long outputAmperes = Math.min(getEnergyStored() / outputVoltage, getOutputAmperage());
         if (outputAmperes == 0) return;
         long amperesUsed = 0;
-        for (Direction side : Direction.values()) {
+        for (Direction side : GTUtil.DIRECTIONS) {
             if (!outputsEnergy(side)) continue;
             BlockEntity tileEntity = getMachine().getLevel().getBlockEntity(getMachine().getPos().relative(side));
             Direction oppositeSide = side.getOpposite();

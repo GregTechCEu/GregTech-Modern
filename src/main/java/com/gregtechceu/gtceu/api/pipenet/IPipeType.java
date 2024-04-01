@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.pipenet;
 
 import net.minecraft.resources.ResourceLocation;
 
-public interface IPipeType<NodeDataType extends IAttachData> {
+public interface IPipeType<NodeDataType> {
 
     /**
      * the thickness of the pipe.

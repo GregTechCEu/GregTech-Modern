@@ -1,7 +1,7 @@
 {
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "gtceu:item/bucket/bucket",
-    "layer1": "gtceu:item/bucket/fluid_overlay"
-  }
+  "parent": "forge:item/bucket_drip",
+  "loader": "forge:fluid_container",
+  "fluid": "minecraft:water",
+  "flip_gas": false,
+  "apply_fluid_luminosity": false
 }

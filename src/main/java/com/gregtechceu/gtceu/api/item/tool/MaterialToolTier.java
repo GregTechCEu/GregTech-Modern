@@ -3,8 +3,12 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 
@@ -55,5 +59,10 @@ public class MaterialToolTier implements Tier {
     @Nonnull
     public Ingredient getRepairIngredient() {
         return Ingredient.EMPTY;
+    }
+
+    @Override
+    public @Nullable TagKey<Block> getTag() {
+        return CustomTags.TOOL_TIERS[getLevel()];
     }
 }

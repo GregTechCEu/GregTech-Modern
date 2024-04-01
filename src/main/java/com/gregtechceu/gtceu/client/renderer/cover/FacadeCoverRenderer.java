@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.client.model.ModelUtil;
 import com.gregtechceu.gtceu.common.cover.FacadeCover;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
@@ -22,6 +23,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
@@ -83,7 +85,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
 
                 var cube = new AABB(0.01, 0.01, 0.01, 0.99, 0.99, 1 / 16f);
 
-                for (Direction side : Direction.values()) {
+                for (Direction side : GTUtil.DIRECTIONS) {
                     if (side != Direction.NORTH) {
                         quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
                         quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/cable/wire"))).cube(cube).cubeUV().tintIndex(-1).bake());
@@ -102,15 +104,14 @@ public class FacadeCoverRenderer implements ICoverRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, Direction modelFacing, ModelState modelState) {
+    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos, BlockAndTintGetter level, ModelState modelState) {
         if (coverBehavior instanceof FacadeCover facadeCover) {
             var state = facadeCover.getFacadeState();
             if (state.getRenderShape() == RenderShape.MODEL) {
                 BlockRenderDispatcher brd = Minecraft.getInstance().getBlockRenderer();
                 BakedModel model = brd.getBlockModel(state);
-                var level = new FacadeBlockAndTintGetter(coverBehavior.coverHolder.getLevel(), coverBehavior.coverHolder.getPos(), state, null);
                 if (side == coverBehavior.attachedSide) {
-                    quads.addAll(ModelUtil.getBakedModelQuads(model, level, BlockPos.ZERO, state, side, rand));
+                    quads.addAll(ModelUtil.getBakedModelQuads(model, level, pos, state, side, rand));
                 } else if (side == null && coverBehavior.coverHolder.shouldRenderBackSide()) {
                     var normal = coverBehavior.attachedSide.getNormal();
                     var cube = new AABB(
@@ -120,7 +121,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                             normal.getX() == 0 ? 1 : normal.getX() > 0 ? 1 : 0,
                             normal.getY() == 0 ? 1 : normal.getY() > 0 ? 1 : 0,
                             normal.getZ() == 0 ? 1 : normal.getZ() > 0 ? 1 : 0);
-                    for (BakedQuad quad : ModelUtil.getBakedModelQuads(model, level, BlockPos.ZERO, state, coverBehavior.attachedSide, rand)) {
+                    for (BakedQuad quad : ModelUtil.getBakedModelQuads(model, level, pos, state, coverBehavior.attachedSide, rand)) {
                         quads.add(FaceQuad.builder(coverBehavior.attachedSide.getOpposite(), quad.getSprite())
                                 .cube(cube)
                                 .shade(quad.isShade())

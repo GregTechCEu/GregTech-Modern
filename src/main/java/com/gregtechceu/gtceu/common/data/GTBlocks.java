@@ -83,7 +83,6 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toLowerCaseUnder;
 
 /**
  * @author KilaBash
@@ -130,9 +129,9 @@ public class GTBlocks {
                             MATERIAL_BLOCKS_BUILDER.put(tagPrefix, material, registrate
                                 .block(tagPrefix.idPattern().formatted(material.getName()), properties -> new MaterialBlock(properties, tagPrefix, material))
                                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                                .properties(BlockBehaviour.Properties::noLootTable)
+                                .properties(p -> tagPrefix.blockProperties().properties().apply(p).noLootTable())
                                 .transform(unificationBlock(tagPrefix, material))
-                                .addLayer(tagPrefix.blockRenderType())
+                                .addLayer(tagPrefix.blockProperties().renderType())
                                 .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .setData(ProviderType.LOOT, NonNullBiConsumer.noop())
@@ -180,11 +179,11 @@ public class GTBlocks {
                     properties -> new OreBlock(properties, oreTag, material, true))
                 .initialProperties(() -> {
                     if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                        return Blocks.STONE;
+                        return Blocks.IRON_ORE;
                     }
                     return oreType.stoneType().get().getBlock();
                 })
-                .properties(properties -> GTBlocks.copy(oreType.template(), properties).noLootTable())
+                .properties(properties -> GTBlocks.copy(oreType.template().get(), properties).noLootTable())
                 .transform(unificationBlock(oreTag, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -394,12 +393,14 @@ public class GTBlocks {
     public static final BlockEntry<LongDistancePipeBlock> LD_ITEM_PIPE = REGISTRATE.block("long_distance_item_pipeline", properties -> new LongDistancePipeBlock(properties, LDItemPipeType.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .blockstate(GTModels::longDistanceItemPipeModel)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
             .simpleItem()
             .register();
 
     public static final BlockEntry<LongDistancePipeBlock> LD_FLUID_PIPE = REGISTRATE.block("long_distance_fluid_pipeline", properties -> new LongDistancePipeBlock(properties, LDFluidPipeType.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .blockstate(GTModels::longDistanceFluidPipeModel)
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
             .simpleItem()
             .register();
 
@@ -550,7 +551,7 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
     public static final BlockEntry<CoilBlock> COIL_KANTHAL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
     public static final BlockEntry<CoilBlock> COIL_NICHROME = createCoilBlock(CoilBlock.CoilType.NICHROME);
-    public static final BlockEntry<CoilBlock> COIL_TUNGSTENSTEEL = createCoilBlock(CoilBlock.CoilType.TUNGSTENSTEEL);
+    public static final BlockEntry<CoilBlock> COIL_RTMALLOY = createCoilBlock(CoilBlock.CoilType.RTMALLOY);
     public static final BlockEntry<CoilBlock> COIL_HSSG = createCoilBlock(CoilBlock.CoilType.HSSG);
     public static final BlockEntry<CoilBlock> COIL_NAQUADAH = createCoilBlock(CoilBlock.CoilType.NAQUADAH);
     public static final BlockEntry<CoilBlock> COIL_TRINIUM = createCoilBlock(CoilBlock.CoilType.TRINIUM);
@@ -846,10 +847,10 @@ public class GTBlocks {
                                                     .hasProperty(RubberLogBlock.NATURAL, true)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
-            .tag(BlockTags.LOGS)
+            .tag(BlockTags.LOGS_THAT_BURN)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS)
+            .tag(ItemTags.LOGS_THAT_BURN)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -879,7 +880,7 @@ public class GTBlocks {
             .lang("Rubber Leaves")
             .blockstate((ctx, prov) -> createModelBlockState(ctx, prov, GTCEu.id("block/rubber_leaves")))
             .loot((table, block) -> table.add(block, table.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
-            .tag(BlockTags.LEAVES)
+            .tag(BlockTags.LEAVES, BlockTags.MINEABLE_WITH_HOE)
             .color(() -> GTBlocks::leavesBlockColor)
             .item()
             .color(() -> GTBlocks::leavesItemColor)

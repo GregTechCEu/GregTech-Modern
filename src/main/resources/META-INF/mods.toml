@@ -27,5 +27,20 @@ credits = "GregoriusT, Mr_Touchyou, Zerrens for making GregTech and textures, th
     ordering = "NONE"
     side = "BOTH"
 
+[[dependencies.${mod_id}]]
+    modId = "ldlib"
+    mandatory = false
+    versionRange = "[1.0,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "kubejs"
+    mandatory = false
+    versionRange = "[${kjs_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+
 #[features.${mod_id}]
 #openGLVersion = "[3.2,)"

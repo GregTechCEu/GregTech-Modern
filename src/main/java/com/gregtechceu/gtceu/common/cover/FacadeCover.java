@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.pipenet.ITickablePipeNet;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -57,7 +57,7 @@ public class FacadeCover extends CoverBehavior {
     /**
      * @return If the pipe this is placed on and a pipe on the other side should be able to connect
      */
-    public boolean blockPipePassThrough() {
+    public boolean canPipePassThrough() {
         return false;
     }
 

@@ -35,7 +35,7 @@ public class FirstDegreeMaterials {
 
         AnnealedCopper = new Material.Builder(GTCEu.id("annealed_copper"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1358))
+                .liquid(new FluidBuilder().temperature(1358))
                 .color(0xf2c079).secondaryColor(0xe45534).iconSet(BRIGHT)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_FINE_WIRE)
                 .components(Copper, 1)
@@ -64,7 +64,7 @@ public class FirstDegreeMaterials {
 
         BatteryAlloy = new Material.Builder(GTCEu.id("battery_alloy"))
                 .ingot(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(660))
+                .liquid(new FluidBuilder().temperature(660))
                 .color(0xcac0ff).secondaryColor(0x5b0020)
                 .appendFlags(EXT_METAL)
                 .components(Lead, 4, Antimony, 1)
@@ -86,7 +86,7 @@ public class FirstDegreeMaterials {
 
         Brass = new Material.Builder(GTCEu.id("brass"))
                 .ingot(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1160))
+                .liquid(new FluidBuilder().temperature(1160))
                 .color(0xffe36e).secondaryColor(0x935828).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE)
                 .components(Zinc, 1, Copper, 3)
@@ -96,7 +96,7 @@ public class FirstDegreeMaterials {
 
         Bronze = new Material.Builder(GTCEu.id("bronze"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1357))
+                .liquid(new FluidBuilder().temperature(1357))
                 .color(0xffc370).secondaryColor(0x806752).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_FRAME, GENERATE_SMALL_GEAR, GENERATE_FOIL, GENERATE_GEAR)
                 .components(Tin, 1, Copper, 3)
@@ -158,7 +158,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Water = new Material.Builder(GTCEu.id("water"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(300))
+                .liquid(new FluidBuilder().temperature(300))
                 .color(0x0000FF)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Hydrogen, 2, Oxygen, 1)
@@ -185,7 +185,7 @@ public class FirstDegreeMaterials {
 
         Cupronickel = new Material.Builder(GTCEu.id("cupronickel"))
                 .ingot(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1542))
+                .liquid(new FluidBuilder().temperature(1542))
                 .color(0xffda8a).secondaryColor(0xcd2b00).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_SPRING, GENERATE_FINE_WIRE)
                 .components(Copper, 1, Nickel, 1)
@@ -212,7 +212,7 @@ public class FirstDegreeMaterials {
 
         Electrum = new Material.Builder(GTCEu.id("electrum"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1285))
+                .liquid(new FluidBuilder().temperature(1285))
                 .color(0xffff8b).secondaryColor(0xff8533).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_FINE_WIRE, GENERATE_RING)
                 .components(Silver, 1, Gold, 1)
@@ -255,7 +255,7 @@ public class FirstDegreeMaterials {
 
         Ice = new Material.Builder(GTCEu.id("ice"))
                 .dust(0)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder()
+                .liquid(new FluidBuilder()
                         .temperature(273)
                         .customStill())
                 .color(0xeef6ff, false).secondaryColor(0x6389c9).iconSet(SHINY)
@@ -286,7 +286,7 @@ public class FirstDegreeMaterials {
 
         Invar = new Material.Builder(GTCEu.id("invar"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1916))
+                .liquid(new FluidBuilder().temperature(1916))
                 .color(0xe2e8e1).secondaryColor(0x495d57).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_FRAME, GENERATE_GEAR)
                 .components(Iron, 2, Nickel, 1)
@@ -300,7 +300,7 @@ public class FirstDegreeMaterials {
 
         Kanthal = new Material.Builder(GTCEu.id("kanthal"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1708))
+                .liquid(new FluidBuilder().temperature(1708))
                 .color(0xC2D2DF).secondaryColor(0x4c4238).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_SPRING)
                 .components(Iron, 1, Aluminium, 1, Chromium, 1)
@@ -317,7 +317,7 @@ public class FirstDegreeMaterials {
 
         Magnalium = new Material.Builder(GTCEu.id("magnalium"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(929))
+                .liquid(new FluidBuilder().temperature(929))
                 .color(0xadc5e8).secondaryColor(0x522a77).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Magnesium, 1, Aluminium, 2)
@@ -345,7 +345,7 @@ public class FirstDegreeMaterials {
 
         Nichrome = new Material.Builder(GTCEu.id("nichrome"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1818))
+                .liquid(new FluidBuilder().temperature(1818))
                 .color(0xebe6d6).secondaryColor(0x282b42).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_SPRING)
                 .components(Nickel, 4, Chromium, 1)
@@ -364,7 +364,7 @@ public class FirstDegreeMaterials {
 
         NiobiumTitanium = new Material.Builder(GTCEu.id("niobium_titanium"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(2345))
+                .liquid(new FluidBuilder().temperature(2345))
                 .color(0xd2d9f9).secondaryColor(0x262528).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_FINE_WIRE)
                 .components(Niobium, 1, Titanium, 1)
@@ -376,7 +376,7 @@ public class FirstDegreeMaterials {
         Obsidian = new Material.Builder(GTCEu.id("obsidian"))
                 .dust(3)
                 .color(0x3b2754).secondaryColor(0x000001).iconSet(SHINY)
-                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE)
+                .flags(NO_SMASHING, EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_PLATE, GENERATE_DENSE)
                 .components(Magnesium, 1, Iron, 1, Silicon, 2, Oxygen, 4)
                 .buildAndRegister();
 
@@ -396,7 +396,7 @@ public class FirstDegreeMaterials {
 
         SterlingSilver = new Material.Builder(GTCEu.id("sterling_silver"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1258))
+                .liquid(new FluidBuilder().temperature(1258))
                 .color(0xfaf4dc).secondaryColor(0x484434).iconSet(SHINY)
                 .appendFlags(EXT2_METAL)
                 .components(Copper, 1, Silver, 4)
@@ -410,7 +410,7 @@ public class FirstDegreeMaterials {
 
         RoseGold = new Material.Builder(GTCEu.id("rose_gold"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1341))
+                .liquid(new FluidBuilder().temperature(1341))
                 .color(0xecd5b8).secondaryColor(0xd85f2d).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_RING)
                 .components(Copper, 1, Gold, 4)
@@ -424,7 +424,7 @@ public class FirstDegreeMaterials {
 
         BlackBronze = new Material.Builder(GTCEu.id("black_bronze"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1328))
+                .liquid(new FluidBuilder().temperature(1328))
                 .color(0x8b7c70).secondaryColor(0x4b3d32).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR)
                 .components(Gold, 1, Silver, 1, Copper, 3)
@@ -435,7 +435,7 @@ public class FirstDegreeMaterials {
 
         BismuthBronze = new Material.Builder(GTCEu.id("bismuth_bronze"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1036))
+                .liquid(new FluidBuilder().temperature(1036))
                 .color(0xffd26f).secondaryColor(0x895f3d).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Bismuth, 1, Zinc, 1, Copper, 3)
@@ -480,6 +480,15 @@ public class FirstDegreeMaterials {
                 .flags(NO_SMASHING)
                 .components(Potassium, 1, Chlorine, 1)
                 .buildAndRegister();
+
+        RTMAlloy = new Material.Builder(GTCEu.id("rtm_alloy"))
+            .ingot().fluid()
+            .color(0x30306B).iconSet(SHINY)
+            .components(Ruthenium, 4, Tungsten, 2, Molybdenum, 1)
+            .flags(GENERATE_SPRING)
+            .cableProperties(V[EV],6,2)
+            .blastTemp(3000, GasTier.MID, GTValues.VA[GTValues.EV], 1400)
+            .buildAndRegister();
 
         Ruridit = new Material.Builder(GTCEu.id("ruridit"))
                 .ingot(3)
@@ -553,7 +562,7 @@ public class FirstDegreeMaterials {
 
         SolderingAlloy = new Material.Builder(GTCEu.id("soldering_alloy"))
                 .ingot(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(544))
+                .liquid(new FluidBuilder().temperature(544))
                 .color(0x9d9da1).secondaryColor(0x8181a1)
                 .components(Tin, 6, Lead, 3, Antimony, 1)
                 .buildAndRegister();
@@ -573,7 +582,7 @@ public class FirstDegreeMaterials {
 
         StainlessSteel = new Material.Builder(GTCEu.id("stainless_steel"))
                 .ingot(3)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(2011))
+                .liquid(new FluidBuilder().temperature(2011))
                 .color(0xededfd).secondaryColor(0x19191d).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_LONG_ROD, GENERATE_FOIL, GENERATE_GEAR)
                 .components(Iron, 6, Chromium, 1, Manganese, 1, Nickel, 1)
@@ -586,7 +595,7 @@ public class FirstDegreeMaterials {
 
         Steel = new Material.Builder(GTCEu.id("steel"))
                 .ingot(3)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(2046))
+                .liquid(new FluidBuilder().temperature(2046))
                 .color(0xa7a7a7).secondaryColor(0x121c37).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_SPRING,
                         GENERATE_SPRING_SMALL, GENERATE_FRAME, DISABLE_DECOMPOSITION, GENERATE_FINE_WIRE, GENERATE_GEAR)
@@ -595,7 +604,7 @@ public class FirstDegreeMaterials {
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(14).build())
                 .rotorStats(6.0f, 3.0f, 512)
-                .fluidPipeProperties(1855, 75, true)
+                .fluidPipeProperties(1855, 50, true)
                 .cableProperties(GTValues.V[EV], 2, 2)
                 .blastTemp(1000, null, GTValues.VA[MV], 800) // no gas tier for steel
                 .buildAndRegister();
@@ -615,7 +624,7 @@ public class FirstDegreeMaterials {
 
         TinAlloy = new Material.Builder(GTCEu.id("tin_alloy"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1258))
+                .liquid(new FluidBuilder().temperature(1258))
                 .color(0xC8C8C8).secondaryColor(0x8b8b8b).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Tin, 1, Iron, 1)
@@ -639,7 +648,7 @@ public class FirstDegreeMaterials {
 
         Ultimet = new Material.Builder(GTCEu.id("ultimet"))
                 .ingot(4)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1980))
+                .liquid(new FluidBuilder().temperature(1980))
                 .color(0x9f9fb1).secondaryColor(0x385086).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR, GENERATE_FRAME)
                 .components(Cobalt, 5, Chromium, 2, Nickel, 1, Molybdenum, 1)
@@ -666,7 +675,7 @@ public class FirstDegreeMaterials {
 
         VanadiumGallium = new Material.Builder(GTCEu.id("vanadium_gallium"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1712))
+                .liquid(new FluidBuilder().temperature(1712))
                 .color(0x89aeec).secondaryColor(0x00379d).iconSet(SHINY)
                 .appendFlags(STD_METAL, GENERATE_FOIL, GENERATE_SPRING, GENERATE_SPRING_SMALL)
                 .components(Vanadium, 3, Gallium, 1)
@@ -676,7 +685,7 @@ public class FirstDegreeMaterials {
 
         WroughtIron = new Material.Builder(GTCEu.id("wrought_iron"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(2011))
+                .liquid(new FluidBuilder().temperature(2011))
                 .color(0xbcbcbc).secondaryColor(0x521c0b).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_GEAR, GENERATE_FOIL, MORTAR_GRINDABLE, GENERATE_RING, GENERATE_LONG_ROD, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION, BLAST_FURNACE_CALCITE_TRIPLE)
                 .components(Iron, 1)
@@ -703,7 +712,7 @@ public class FirstDegreeMaterials {
 
         YttriumBariumCuprate = new Material.Builder(GTCEu.id("yttrium_barium_cuprate"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1799))
+                .liquid(new FluidBuilder().temperature(1799))
                 .color(0x796d72).secondaryColor(0x260a3a).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .components(Yttrium, 1, Barium, 2, Copper, 3, Oxygen, 7)
@@ -756,7 +765,7 @@ public class FirstDegreeMaterials {
 
         Osmiridium = new Material.Builder(GTCEu.id("osmiridium"))
                 .ingot(3)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(3012))
+                .liquid(new FluidBuilder().temperature(3012))
                 .color(0xe5dcef).secondaryColor(0x241a44).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_ROTOR, GENERATE_ROUND, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .components(Iridium, 3, Osmium, 1)
@@ -791,7 +800,7 @@ public class FirstDegreeMaterials {
 
         GalliumArsenide = new Material.Builder(GTCEu.id("gallium_arsenide"))
                 .ingot(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1511))
+                .liquid(new FluidBuilder().temperature(1511))
                 .color(0xe6ebff).secondaryColor(0xA0A0A0)
                 .appendFlags(STD_METAL, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Arsenic, 1, Gallium, 1)
@@ -812,7 +821,7 @@ public class FirstDegreeMaterials {
 
         IndiumGalliumPhosphide = new Material.Builder(GTCEu.id("indium_gallium_phosphide"))
                 .ingot(1)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(350))
+                .liquid(new FluidBuilder().temperature(350))
                 .color(0xf3e5f9).secondaryColor(0x67596c)
                 .appendFlags(STD_METAL, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Indium, 1, Gallium, 1, Phosphorus, 1)
@@ -820,7 +829,7 @@ public class FirstDegreeMaterials {
 
         NickelZincFerrite = new Material.Builder(GTCEu.id("nickel_zinc_ferrite"))
                 .ingot(0)
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1410))
+                .liquid(new FluidBuilder().temperature(1410))
                 .color(0x3f2821).secondaryColor(0x2c2725)
                 .flags(GENERATE_RING)
                 .components(Nickel, 1, Zinc, 1, Iron, 4, Oxygen, 8)
@@ -965,7 +974,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().customStill())
                 .components(Sodium, 2, Sulfur, 2, Oxygen, 8)
                 .buildAndRegister();
 
@@ -1071,7 +1080,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         TitaniumTetrachloride = new Material.Builder(GTCEu.id("titanium_tetrachloride"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().customStill())
+                .liquid(new FluidBuilder().customStill())
                 .color(0xD40D5C)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Titanium, 1, Chlorine, 4)
@@ -1084,25 +1093,25 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         HydrogenSulfide = new Material.Builder(GTCEu.id("hydrogen_sulfide"))
-                .fluid(FluidStorageKeys.GAS, new FluidBuilder().customStill())
+                .gas(new FluidBuilder().customStill())
                 .components(Hydrogen, 2, Sulfur, 1)
                 .buildAndRegister();
 
         NitricAcid = new Material.Builder(GTCEu.id("nitric_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xCCCC00)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Hydrogen, 1, Nitrogen, 1, Oxygen, 3)
                 .buildAndRegister();
 
         SulfuricAcid = new Material.Builder(GTCEu.id("sulfuric_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Hydrogen, 2, Sulfur, 1, Oxygen, 4)
                 .buildAndRegister();
 
         PhosphoricAcid = new Material.Builder(GTCEu.id("phosphoric_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0xDCDC01)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Hydrogen, 3, Phosphorus, 1, Oxygen, 4)
@@ -1127,7 +1136,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         HypochlorousAcid = new Material.Builder(GTCEu.id("hypochlorous_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x6F8A91)
                 .components(Hydrogen, 1, Chlorine, 1, Oxygen, 1)
                 .buildAndRegister();
@@ -1139,7 +1148,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         HydrofluoricAcid = new Material.Builder(GTCEu.id("hydrofluoric_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x0088AA)
                 .components(Hydrogen, 1, Fluorine, 1)
                 .buildAndRegister();
@@ -1210,12 +1219,12 @@ public class FirstDegreeMaterials {
         Neodymium.getProperty(PropertyKey.INGOT).setMagneticMaterial(NeodymiumMagnetic);
 
         HydrochloricAcid = new Material.Builder(GTCEu.id("hydrochloric_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
                 .components(Hydrogen, 1, Chlorine, 1)
                 .buildAndRegister();
 
         Steam = new Material.Builder(GTCEu.id("steam"))
-                .fluid(FluidStorageKeys.GAS, new FluidBuilder()
+                .gas(new FluidBuilder()
                         .state(FluidState.GAS)
                         .temperature(373)
                         .customStill())
@@ -1250,7 +1259,7 @@ public class FirstDegreeMaterials {
 
         ManganesePhosphide = new Material.Builder(GTCEu.id("manganese_phosphide"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1368))
+                .liquid(new FluidBuilder().temperature(1368))
                 .color(0xE1B454).secondaryColor(0x223033).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Manganese, 1, Phosphorus, 1)
@@ -1260,7 +1269,7 @@ public class FirstDegreeMaterials {
 
         MagnesiumDiboride = new Material.Builder(GTCEu.id("magnesium_diboride"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1103))
+                .liquid(new FluidBuilder().temperature(1103))
                 .color(0x603c1a).secondaryColor(0x423e39).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Magnesium, 1, Boron, 2)
@@ -1270,7 +1279,7 @@ public class FirstDegreeMaterials {
 
         MercuryBariumCalciumCuprate = new Material.Builder(GTCEu.id("mercury_barium_calcium_cuprate"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1075))
+                .liquid(new FluidBuilder().temperature(1075))
                 .color(0x777777).secondaryColor(0x3f2e2e).iconSet(SHINY)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Mercury, 1, Barium, 2, Calcium, 2, Copper, 3, Oxygen, 8)
@@ -1280,7 +1289,7 @@ public class FirstDegreeMaterials {
 
         UraniumTriplatinum = new Material.Builder(GTCEu.id("uranium_triplatinum"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1882))
+                .liquid(new FluidBuilder().temperature(1882))
                 .color(0x457045).secondaryColor(0x66ff00).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Uranium238, 1, Platinum, 3)
@@ -1291,7 +1300,7 @@ public class FirstDegreeMaterials {
 
         SamariumIronArsenicOxide = new Material.Builder(GTCEu.id("samarium_iron_arsenic_oxide"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1347))
+                .liquid(new FluidBuilder().temperature(1347))
                 .color(0x850e85).secondaryColor(0x332f33).iconSet(SHINY)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Samarium, 1, Iron, 1, Arsenic, 1, Oxygen, 1)
@@ -1301,7 +1310,7 @@ public class FirstDegreeMaterials {
 
         IndiumTinBariumTitaniumCuprate = new Material.Builder(GTCEu.id("indium_tin_barium_titanium_cuprate"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1012))
+                .liquid(new FluidBuilder().temperature(1012))
                 .color(0x686760).secondaryColor(0x673300).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING, GENERATE_FINE_WIRE)
                 .components(Indium, 4, Tin, 2, Barium, 2, Titanium, 1, Copper, 7, Oxygen, 14)
@@ -1311,7 +1320,7 @@ public class FirstDegreeMaterials {
 
         UraniumRhodiumDinaquadide = new Material.Builder(GTCEu.id("uranium_rhodium_dinaquadide"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(3410))
+                .liquid(new FluidBuilder().temperature(3410))
                 .color(0x232020).secondaryColor(0xff009c).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(Uranium238, 1, Rhodium, 1, Naquadah, 2)
@@ -1322,7 +1331,7 @@ public class FirstDegreeMaterials {
 
         EnrichedNaquadahTriniumEuropiumDuranide = new Material.Builder(GTCEu.id("enriched_naquadah_trinium_europium_duranide"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(5930))
+                .liquid(new FluidBuilder().temperature(5930))
                 .color(0xc5c1a4).secondaryColor(0x2b0645).iconSet(METALLIC)
                 .flags(DECOMPOSITION_BY_CENTRIFUGING, GENERATE_FINE_WIRE)
                 .components(NaquadahEnriched, 4, Trinium, 3, Europium, 2, Duranium, 1)
@@ -1332,7 +1341,7 @@ public class FirstDegreeMaterials {
 
         RutheniumTriniumAmericiumNeutronate = new Material.Builder(GTCEu.id("ruthenium_trinium_americium_neutronate"))
                 .ingot()
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(23691))
+                .liquid(new FluidBuilder().temperature(23691))
                 .color(0x897b76).secondaryColor(0x00c0ff).iconSet(RADIOACTIVE)
                 .flags(DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Ruthenium, 1, Trinium, 2, Americium, 1, Neutronium, 2, Oxygen, 8)
@@ -1348,7 +1357,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         RhodiumSulfate = new Material.Builder(GTCEu.id("rhodium_sulfate"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().temperature(1128))
+                .liquid(new FluidBuilder().temperature(1128))
                 .color(0xEEAA55)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Rhodium, 2, Sulfur, 3, Oxygen, 12)
@@ -1377,7 +1386,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         FluoroantimonicAcid = new Material.Builder(GTCEu.id("fluoroantimonic_acid"))
-                .fluid(FluidStorageKeys.LIQUID, new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID).customStill())
                 .components(Hydrogen, 2, Antimony, 1, Fluorine, 7)
                 .buildAndRegister();
 

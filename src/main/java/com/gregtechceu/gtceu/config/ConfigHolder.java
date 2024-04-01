@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.config;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import dev.toma.configuration.Configuration;
 import dev.toma.configuration.config.Config;
 import dev.toma.configuration.config.Configurable;
@@ -16,7 +17,9 @@ public class ConfigHolder {
     public static ConfigHolder INSTANCE;
 
     public static void init() {
-        INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        if (INSTANCE == null) {
+            INSTANCE = Configuration.registerConfig(ConfigHolder.class, ConfigFormats.yaml()).getConfigInstance();
+        }
     }
 
     @Configurable
@@ -39,8 +42,8 @@ public class ConfigHolder {
     public static class RecipeConfigs {
         @Configurable
         @Configurable.Comment({"Whether to generate Flawed and Chipped Gems for materials and recipes involving them.",
-                "Useful for mods like TerraFirmaCraft.", "Default: true"})
-        public boolean generateLowQualityGems = true; // default true
+                "Useful for mods like TerraFirmaCraft.", "Default: false"})
+        public boolean generateLowQualityGems = false; // default false
         @Configurable
         @Configurable.Comment({"Whether to remove Block/Ingot compression and decompression in the Crafting Table.", "Default: true"})
         public boolean disableManualCompression = true; // default true
@@ -48,7 +51,7 @@ public class ConfigHolder {
         @Configurable.Comment({"Change the recipe of Rods in the Lathe to 1 Rod and 2 Small Piles of Dust, instead of 2 Rods.", "Default: false"})
         public boolean harderRods = false; // default false
         @Configurable
-        @Configurable.Comment({"Whether to make crafting recipes for Bricks, Firebricks, and Coke Bricks harder.", "Default: false"})
+        @Configurable.Comment({"Whether to make crafting recipes for Bricks, Firebricks, Nether Bricks, and Coke Bricks harder.", "Default: false"})
         public boolean harderBrickRecipes = false; // default false
         @Configurable
         @Configurable.Comment({"Whether to nerf Wood crafting to 2 Planks from 1 Log, and 2 Sticks from 2 Planks.", "Default: false"})
@@ -163,6 +166,13 @@ public class ConfigHolder {
         public boolean sandOresFall = false;
 
         @Configurable
+        @Configurable.Comment({ "Whether to increase number of rolls for dungeon chests. Increases dungeon loot drastically.", "Default: true", "WARNING: Currently unimplemented." })
+        public boolean increaseDungeonLoot = true;
+        @Configurable
+        @Configurable.Comment({ "Allow GregTech to add additional GregTech Items as loot in various structures.", "Default: true" })
+        public boolean addLoot = true;
+
+        @Configurable
         public OreVeinConfigs oreVeins = new OreVeinConfigs();
 
         public static class OreVeinConfigs {
@@ -259,6 +269,25 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
         public boolean enableMaintenance = true;
+
+
+        @Configurable
+        @Configurable.Comment({
+            "Whether to enable World Accelerators, which accelerate ticks for surrounding Tile Entities, Crops, etc.",
+            "Default: true" })
+        public boolean enableWorldAccelerators = true;
+
+        @Configurable
+        @Configurable.Comment({ "List of TileEntities that the World Accelerator should not accelerate.",
+            "GregTech TileEntities are always blocked.",
+            "Entries must be in a fully qualified format. For example: appeng.tile.networking.TileController",
+            "Default: none" })
+        public String[] worldAcceleratorBlacklist = new String[0];
+
+        @Configurable
+        @Configurable.Comment({ "Whether to use GT6-style pipe and cable connections, meaning they will not auto-connect " +
+            "unless placed directly onto another pipe or cable.", "Default: true" })
+        public boolean gt6StylePipesCables = true;
         @Configurable
         @Configurable.Comment({"Whether the machine's circuit slot need to be inserted a real circuit."})
         public boolean ghostCircuit = true;
@@ -293,9 +322,6 @@ public class ConfigHolder {
                 "Other mods can override this to true, regardless of the config file.",
                 "Default: false"})
         public boolean highTierContent = false;
-        @Configurable
-        @Configurable.Comment({"Whether search for recipes asynchronously.", " Default: true"})
-        public boolean asyncRecipeSearching = true;
     }
 
     public static class ToolConfigs {
@@ -303,6 +329,10 @@ public class ConfigHolder {
         @Configurable.Comment({ "Random chance for electric tools to take actual damage", "Default: 10%" })
         @Configurable.Range(min = 0, max = 100)
         public int rngDamageElectricTools = 10;
+        @Configurable
+        @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
+        @Configurable.Range(min = 1, max = 512)
+        public int sprayCanChainLength = 16;
     }
 
     public static class ClientConfigs {
@@ -316,18 +346,37 @@ public class ConfigHolder {
         @Configurable.Comment({ "Whether or not sounds should be played when crafting with tools.", "Default: true" })
         public boolean toolCraftingSounds = true;
         @Configurable
-        @Configurable.Comment({"The default color to overlay onto machines.", "#FFFFFF is no coloring (default).",
-                "#D2DCFF is the classic blue from GT5."})
+        @Configurable.Comment({ "The default color to overlay onto machines.",
+            "#FFFFFF is no coloring (default).",
+            "#D2DCFF is the classic blue from GT5." })
         @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
         @Configurable.Gui.ColorValue
         public String defaultPaintingColor = "#FFFFFF";
         @Configurable
+        @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
+            "16777215 (#FFFFFF) is no coloring (like GTCE).",
+            "13819135 (#D2DCFF in decimal) is the classic blue from GT5 (default)." })
+        @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
+        @Configurable.Gui.ColorValue
+        public String defaultUIColor = "#FFFFFF";
+        @Configurable
         @Configurable.Comment({"Use VBO cache for multiblock preview.", "Disable it if you have issues with rendering multiblocks.", "Default: true"})
         @Configurable.Gui.ColorValue
         public boolean useVBO = true;
+        @Configurable
+        @Configurable.Comment({"Duration of the multiblock in-world preview (s)", "Default: 10"})
+        @Configurable.Range(min = 1, max = 999)
+        public int inWorldPreviewDuration = 10;
+        @Configurable
+        @Configurable.Comment({"Duration of UI animations in ms", "Default: 300"})
+        @Configurable.Range(min = 1)
+        public int animationTime = 300;
     }
 
     public static class DeveloperConfigs {
+        @Configurable
+        @Configurable.Comment({"Debug general events? (will print placed veins to server's debug.log)", "Default: false"})
+        public boolean debug = false;
         @Configurable
         @Configurable.Comment({"Debug ore vein placement? (will print placed veins to server's debug.log)", "Default: false (no placement printout in debug.log)"})
         public boolean debugWorldgen = false;

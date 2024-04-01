@@ -94,6 +94,11 @@ public class MaterialFlags {
             .requireProps(PropertyKey.DUST)
             .build();
 
+    public static final MaterialFlag GENERATE_DENSE = new MaterialFlag.Builder("generate_dense")
+        .requireFlags(GENERATE_PLATE)
+        .requireProps(PropertyKey.DUST)
+        .build();
+
     public static final MaterialFlag GENERATE_ROD = new MaterialFlag.Builder("generate_rod")
             .requireProps(PropertyKey.DUST)
             .build();
@@ -248,11 +253,6 @@ public class MaterialFlags {
 
     public static final MaterialFlag GENERATE_ROTOR = new MaterialFlag.Builder("generate_rotor")
             .requireFlags(GENERATE_BOLT_SCREW, GENERATE_RING, GENERATE_PLATE)
-            .requireProps(PropertyKey.INGOT)
-            .build();
-
-    public static final MaterialFlag GENERATE_DENSE = new MaterialFlag.Builder("generate_dense")
-            .requireFlags(GENERATE_PLATE)
             .requireProps(PropertyKey.INGOT)
             .build();
 

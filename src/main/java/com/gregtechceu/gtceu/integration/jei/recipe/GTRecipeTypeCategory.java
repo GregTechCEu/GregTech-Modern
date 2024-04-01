@@ -36,7 +36,7 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     public GTRecipeTypeCategory(IJeiHelpers helpers, GTRecipeType recipeType) {
         this.recipeType = recipeType;
         IGuiHelper guiHelper = helpers.getGuiHelper();
-        var size = recipeType.getJEISize();
+        var size = recipeType.getRecipeUI().getJEISize();
         this.background = guiHelper.createBlankDrawable(size.width, size.height);
         if (recipeType.getIconSupplier() != null) {
             icon = helpers.getGuiHelper().createDrawableItemStack(recipeType.getIconSupplier().get());
@@ -60,11 +60,13 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     public static void registerRecipes(IRecipeRegistration registration) {
         for (net.minecraft.world.item.crafting.RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
             if (recipeType instanceof GTRecipeType gtRecipeType) {
-                registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
+                if (gtRecipeType.getRecipeUI().isJEIVisible()) {
+                    registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
                         Minecraft.getInstance().getConnection().getRecipeManager().getAllRecipesFor(gtRecipeType)
-                        .stream()
-                        .map(GTRecipeWrapper::new)
-                        .collect(Collectors.toList()));
+                            .stream()
+                            .map(GTRecipeWrapper::new)
+                            .collect(Collectors.toList()));
+                }
             }
         }
     }

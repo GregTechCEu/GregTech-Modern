@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import net.minecraft.util.Mth;
 import org.apache.commons.lang3.tuple.Pair;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -161,6 +163,18 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
 
     public List<Material> getOreByProducts() {
         return this.oreByProducts;
+    }
+
+    @Nullable
+    public final Material getOreByProduct(int index) {
+        if (this.oreByProducts.isEmpty()) return null;
+        return this.oreByProducts.get(Mth.clamp(index, 0, this.oreByProducts.size() - 1));
+    }
+
+    @NotNull
+    public final Material getOreByProduct(int index, @NotNull Material fallback) {
+        Material material = getOreByProduct(index);
+        return material != null ? material : fallback;
     }
 
     @Override

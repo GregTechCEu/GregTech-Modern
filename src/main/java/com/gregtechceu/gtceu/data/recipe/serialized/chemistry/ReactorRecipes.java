@@ -339,12 +339,22 @@ public class ReactorRecipes {
                 .duration(480).EUt(VA[LV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("indium_concentrate_separation")
+                .circuitMeta(1)
                 .inputItems(dust, Aluminium, 4)
                 .inputFluids(IndiumConcentrate.getFluid(1000))
                 .outputItems(dustSmall, Indium)
                 .outputItems(dust, AluminiumSulfite, 4)
                 .outputFluids(LeadZincSolution.getFluid(1000))
                 .duration(50).EUt(600).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("indium_concentrate_separation_4x")
+                .circuitMeta(4)
+                .inputItems(dust, Aluminium, 16)
+                .inputFluids(IndiumConcentrate.getFluid(4000))
+                .outputItems(dust, Indium)
+                .outputItems(dust, AluminiumSulfite, 16)
+                .outputFluids(LeadZincSolution.getFluid(4000))
+                .duration(200).EUt(600).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("vinyl_acetate")
                 .circuitMeta(3)
@@ -366,7 +376,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(gem, Charcoal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -374,7 +384,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(gem, Coal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -382,7 +392,7 @@ public class ReactorRecipes {
                 .circuitMeta(1)
                 .inputItems(dust, Charcoal)
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -391,7 +401,7 @@ public class ReactorRecipes {
                 .inputItems(dust, Coal)
                 .circuitMeta(1)
                 .inputFluids(Oxygen.getFluid(1000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonMonoxide.getFluid(1000))
                 .save(provider);
 
@@ -436,7 +446,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(gem, Charcoal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -444,7 +454,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(gem, Coal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -452,7 +462,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(dust, Charcoal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 
@@ -460,7 +470,7 @@ public class ReactorRecipes {
                 .circuitMeta(2)
                 .inputItems(dust, Coal)
                 .inputFluids(Oxygen.getFluid(2000))
-                .outputItems(dustTiny, Ash)
+                .chancedOutput(dust, Ash, 1111, 0)
                 .outputFluids(CarbonDioxide.getFluid(1000))
                 .duration(80).EUt(VA[ULV]).save(provider);
 

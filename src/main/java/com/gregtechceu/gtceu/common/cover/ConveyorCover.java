@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.data.DistributionMode;
@@ -46,7 +46,6 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
 
@@ -451,11 +450,18 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     //***    CAPABILITY OVERRIDE    ***//
     /////////////////////////////////////
 
-    private final Map<Direction, IItemTransfer> itemTransferWrappers = new EnumMap<>(Direction.class);
+    private CoverableItemTransferWrapper itemHandlerWrapper;
 
+    @Nullable
     @Override
-    public IItemTransfer getItemTransferCap(Direction side, IItemTransfer defaultValue) {
-        return itemTransferWrappers.computeIfAbsent(side, s -> new CoverableItemTransferWrapper(defaultValue));
+    public IItemTransfer getItemTransferCap(@Nullable IItemTransfer defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+        if (itemHandlerWrapper == null || itemHandlerWrapper.delegate != defaultValue) {
+            this.itemHandlerWrapper = new CoverableItemTransferWrapper(defaultValue);
+        }
+        return itemHandlerWrapper;
     }
 
     private class CoverableItemTransferWrapper extends ItemTransferDelegate {

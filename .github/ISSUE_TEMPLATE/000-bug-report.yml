@@ -2,6 +2,22 @@ name: Bug Report
 description: Report a bug where something is not working as expected.
 labels: [ "bug" ]
 body:
+  - type: checkboxes
+    id: existing-issue
+    attributes:
+      label: Checked for existing issues
+      description: You have checked for existing reports of this issue, open or closed.
+      options:
+        - label: "I have checked for existing issues, and have found none."
+          required: true
+  - type: checkboxes
+    id: tried-latest
+    attributes:
+      label: Tested latest version
+      description: You have checked that this issue occurs on the latest version of GTCEu.
+      options:
+        - label: "I have checked that this occurs on the latest version."
+          required: true
   - type: input
     id: version
     attributes:
@@ -39,6 +55,14 @@ body:
         - "Yes"
         - "No"
         - "Unsure"
+    validations:
+      required: true
+  - type: textarea
+    id: other-mods
+    attributes:
+      label: Other Installed Mods
+      description: List all mods you have installed here, or the name of the modpack you're playing.
+      placeholder: "Example: ATM9, Embeddium, NuclearCraft Neoteric, AE2..."
     validations:
       required: true
   - type: textarea

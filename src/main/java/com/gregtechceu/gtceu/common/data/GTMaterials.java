@@ -2,29 +2,18 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
-import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
-import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -120,27 +109,27 @@ public class GTMaterials {
         GCyMMaterials.register();
 
         CHEMICAL_DYES = new Material[]{
-                GTMaterials.DyeWhite, GTMaterials.DyeOrange,
-                GTMaterials.DyeMagenta, GTMaterials.DyeLightBlue,
-                GTMaterials.DyeYellow, GTMaterials.DyeLime,
-                GTMaterials.DyePink, GTMaterials.DyeGray,
-                GTMaterials.DyeLightGray, GTMaterials.DyeCyan,
-                GTMaterials.DyePurple, GTMaterials.DyeBlue,
-                GTMaterials.DyeBrown, GTMaterials.DyeGreen,
-                GTMaterials.DyeRed, GTMaterials.DyeBlack
+                DyeWhite, DyeOrange,
+                DyeMagenta, DyeLightBlue,
+                DyeYellow, DyeLime,
+                DyePink, DyeGray,
+                DyeLightGray, DyeCyan,
+                DyePurple, DyeBlue,
+                DyeBrown, DyeGreen,
+                DyeRed, DyeBlack
         };
 
         VOLTAGE_COMMON_MATERIALS = new Material[] {
-                GTMaterials.WroughtIron,
-                GTMaterials.Steel,
-                GTMaterials.Aluminium,
-                GTMaterials.StainlessSteel,
-                GTMaterials.Titanium,
-                GTMaterials.TungstenSteel,
-                GTMaterials.RhodiumPlatedPalladium,
-                GTMaterials.NaquadahAlloy,
-                GTMaterials.Darmstadtium,
-                GTMaterials.Neutronium
+                WroughtIron,
+                Steel,
+                Aluminium,
+                StainlessSteel,
+                Titanium,
+                TungstenSteel,
+                RhodiumPlatedPalladium,
+                NaquadahAlloy,
+                Darmstadtium,
+                Neutronium
         };
 
         gemExquisite.setIgnored(Sugar);
@@ -219,6 +208,13 @@ public class GTMaterials {
         rock.setIgnored(Obsidian, Blocks.OBSIDIAN);
         rock.setIgnored(Endstone, Blocks.END_STONE);
 
+        for (TagPrefix prefix : ORES.keySet()) {
+            TagPrefix.OreType oreType = ORES.get(prefix);
+            if (oreType.shouldDropAsItem() && oreType.material() != null) {
+                prefix.addSecondaryMaterial(new MaterialStack(oreType.material().get(), dust.materialAmount()));
+            }
+        }
+
         crushed.addSecondaryMaterial(new MaterialStack(Stone, dust.materialAmount()));
 
         toolHeadDrill.addSecondaryMaterial(new MaterialStack(Steel, plate.materialAmount() * 4));
@@ -272,41 +268,21 @@ public class GTMaterials {
         dye.setIgnored(DyeWhite, Items.WHITE_DYE);
 
         // register vanilla materials
-        /* Adding back the GT ores. It'd be too much pain to replace the loot tables.
-        ore.setIgnored(Redstone, Blocks.REDSTONE_ORE);
-        oreDeepslate.setIgnored(Redstone, Blocks.DEEPSLATE_REDSTONE_ORE);
-        ore.setIgnored(Coal, Blocks.COAL_ORE);
-        oreDeepslate.setIgnored(Coal, Blocks.DEEPSLATE_COAL_ORE);
-        ore.setIgnored(Gold, Blocks.GOLD_ORE);
-        oreDeepslate.setIgnored(Gold, Blocks.DEEPSLATE_GOLD_ORE);
-        oreNetherrack.setIgnored(Gold, Blocks.NETHER_GOLD_ORE);
-        ore.setIgnored(Iron, Blocks.IRON_ORE);
-        oreDeepslate.setIgnored(Iron, Blocks.DEEPSLATE_IRON_ORE);
-        ore.setIgnored(Lapis, Blocks.LAPIS_ORE);
-        oreDeepslate.setIgnored(Lapis, Blocks.DEEPSLATE_LAPIS_ORE);
-        ore.setIgnored(Diamond, Blocks.DIAMOND_ORE);
-        oreDeepslate.setIgnored(Diamond, Blocks.DEEPSLATE_DIAMOND_ORE);
-        ore.setIgnored(Emerald, Blocks.EMERALD_ORE);
-        oreDeepslate.setIgnored(Emerald, Blocks.DEEPSLATE_EMERALD_ORE);
-        ore.setIgnored(Copper, Blocks.COPPER_ORE);
-        oreDeepslate.setIgnored(Copper, Blocks.DEEPSLATE_COPPER_ORE);
-        oreNetherrack.setIgnored(NetherQuartz, Blocks.NETHER_QUARTZ_ORE);
-         */
 
         rawOre.setIgnored(Gold, Items.RAW_GOLD);
         rawOre.setIgnored(Iron, Items.RAW_IRON);
         rawOre.setIgnored(Copper, Items.RAW_COPPER);
-        rawOreBlock.setIgnored(Gold, Items.RAW_GOLD_BLOCK);
-        rawOreBlock.setIgnored(Iron, Items.RAW_IRON_BLOCK);
-        rawOreBlock.setIgnored(Copper, Items.RAW_COPPER_BLOCK);
+        rawOreBlock.setIgnored(Gold, Blocks.RAW_GOLD_BLOCK);
+        rawOreBlock.setIgnored(Iron, Blocks.RAW_IRON_BLOCK);
+        rawOreBlock.setIgnored(Copper, Blocks.RAW_COPPER_BLOCK);
 
         // TODO GT stone types, move out of this file
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, GTMaterials.Deepslate);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.RED_GRANITE, 1), TagPrefix.stone, GTMaterials.GraniteRed);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.MARBLE, 1), TagPrefix.stone, GTMaterials.Marble);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, GTMaterials.Basalt);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, GTMaterials.Concrete);
-        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, GTMaterials.Concrete);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BLACK_GRANITE, 1), TagPrefix.stone, Deepslate);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.RED_GRANITE, 1), TagPrefix.stone, GraniteRed);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.MARBLE, 1), TagPrefix.stone, Marble);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.BASALT, 1), TagPrefix.stone, Basalt);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT, 1), TagPrefix.block, Concrete);
+        //ChemicalHelper.registerUnificationEntry(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK, 1), TagPrefix.block, Concrete);
 
         block.modifyMaterialAmount(Amethyst, 4);
         block.modifyMaterialAmount(Glowstone, 4);
@@ -556,6 +532,7 @@ public class GTMaterials {
     public static Material Pyrolusite;
     public static Material Pyrope;
     public static Material RockSalt;
+    public static Material RTMAlloy;
     public static Material Ruridit;
     public static Material Rubber;
     public static Material Ruby;

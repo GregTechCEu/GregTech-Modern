@@ -1,0 +1,9 @@
+{
+  "parent": "item/handheld",
+  "textures": {
+    "layer0": "gtceu:item/tools/power_unit_mv",
+    "layer1": "gtceu:item/tools/drill",
+    "layer2": "gtceu:item/void",
+    "layer3": "gtceu:item/tools/drill_body"
+  }
+}

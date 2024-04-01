@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 
-public enum Insulation implements IMaterialPipeType<CableData> {
+public enum Insulation implements IMaterialPipeType<WireProperties> {
     WIRE_SINGLE("single_wire", 0.125f, 1, 2, wireGtSingle, -1, false),
     WIRE_DOUBLE("double_wire", 0.25f, 2, 2, wireGtDouble, -1, false),
     WIRE_QUADRUPLE("quadruple_wire", 0.375f, 4, 3, wireGtQuadruple, -1, false),
@@ -55,13 +55,13 @@ public enum Insulation implements IMaterialPipeType<CableData> {
     }
 
     @Override
-    public CableData modifyProperties(CableData baseProperties) {
+    public WireProperties modifyProperties(WireProperties baseProperties) {
         int lossPerBlock;
-        if (!baseProperties.properties().isSuperconductor() && baseProperties.properties().getLossPerBlock() == 0)
+        if (!baseProperties.isSuperconductor() && baseProperties.getLossPerBlock() == 0)
             lossPerBlock = (int) (0.75 * lossMultiplier);
-        else lossPerBlock = baseProperties.properties().getLossPerBlock() * lossMultiplier;
+        else lossPerBlock = baseProperties.getLossPerBlock() * lossMultiplier;
 
-        return new CableData(new WireProperties(baseProperties.properties().getVoltage(), baseProperties.properties().getAmperage() * amperage, lossPerBlock, baseProperties.properties().isSuperconductor()), baseProperties.connections);
+        return new WireProperties(baseProperties.getVoltage(), baseProperties.getAmperage() * amperage, lossPerBlock, baseProperties.isSuperconductor());
     }
 
     public boolean isCable() {

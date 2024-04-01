@@ -10,6 +10,8 @@ import lombok.Setter;
 import net.minecraft.world.item.enchantment.Enchantment;
 import org.apache.commons.lang3.ArrayUtils;
 
+import java.util.Arrays;
+
 import static com.gregtechceu.gtceu.api.item.tool.GTToolType.*;
 
 public class ToolProperty implements IMaterialProperty<ToolProperty> {
@@ -104,6 +106,7 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
      * Gen for given type
      */
     @Getter
+    @Setter
     private GTToolType[] types;
 
     /**
@@ -149,6 +152,16 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
         return ArrayUtils.contains(types, toolType);
     }
 
+    public ToolProperty addTypes(GTToolType... types) {
+        this.types = ArrayUtils.addAll(this.types, types);
+        return this;
+    }
+
+    public ToolProperty removeTypes(GTToolType... types) {
+        this.types = Arrays.stream(this.types).filter(type -> !ArrayUtils.contains(types, type)).toArray(GTToolType[]::new);
+        return this;
+    }
+
     public static class Builder {
 
         private final ToolProperty toolProperty;
@@ -174,7 +187,18 @@ public class ToolProperty implements IMaterialProperty<ToolProperty> {
                     SCYTHE,
                     KNIFE,
                     BUTCHERY_KNIFE,
-//                    PLUNGER
+//                    PLUNGER,
+                    DRILL_LV,
+                    DRILL_MV,
+                    DRILL_HV,
+                    DRILL_EV,
+                    DRILL_IV,
+                    CHAINSAW_LV,
+                    WRENCH_LV,
+                    WRENCH_HV,
+                    WRENCH_IV,
+                    BUZZSAW,
+                    SCREWDRIVER_LV,
             });
         }
 

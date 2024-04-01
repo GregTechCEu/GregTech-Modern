@@ -16,7 +16,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.List;
 import java.util.Map;
 
-@Mixin(TagLoader.class)
+@Mixin(value = TagLoader.class, priority = 500)
 public class TagLoaderMixin<T> implements IGTTagLoader<T> {
 
     @Nullable

@@ -25,7 +25,7 @@ import java.util.List;
 public interface ICoverRenderer extends IRenderer {
 
     /**
-     * Use {@link #renderCover(List, Direction, RandomSource, CoverBehavior, Direction, ModelState)} instead
+     * Use {@link #renderCover(List, Direction, RandomSource, CoverBehavior, Direction, BlockPos, BlockAndTintGetter, ModelState)} instead
      */
     @Override
     @Deprecated
@@ -35,5 +35,5 @@ public interface ICoverRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, ModelState modelState);
+    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, BlockPos pos, BlockAndTintGetter level, ModelState modelState);
 }

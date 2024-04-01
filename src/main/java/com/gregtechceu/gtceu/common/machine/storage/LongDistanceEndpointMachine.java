@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
@@ -12,22 +13,26 @@ import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public abstract class LongDistanceEndpointMachine extends MetaMachine implements ILDEndpoint {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LongDistanceEndpointMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
+    @NotNull
+    @Getter
     private final LongDistancePipeType pipeType;
     @Persisted @Getter @Setter
-    private Type type = Type.NONE;
+    private IO ioType = IO.NONE;
     private ILDEndpoint link;
     private boolean placed = false;
 
     public LongDistanceEndpointMachine(IMachineBlockEntity holder, LongDistancePipeType pipeType) {
         super(holder);
-        this.pipeType = pipeType;
+        this.pipeType = Objects.requireNonNull(pipeType);
     }
 
     public void updateNetwork() {
@@ -43,13 +48,13 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
             // no neighbours found, create new network
             network = this.pipeType.createNetwork(getLevel());
             network.onPlaceEndpoint(this);
-            setType(Type.NONE);
+            setIoType(IO.NONE);
         } else if (networks.size() == 1) {
             // one neighbour network found, attach self to neighbour network
             networks.get(0).onPlaceEndpoint(this);
         } else {
             // two neighbour networks found, configuration invalid
-            setType(Type.NONE);
+            setIoType(IO.NONE);
         }
     }
 
@@ -71,7 +76,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
             link.invalidateLink();
             invalidateLink();
         }
-        setType(Type.NONE);
+        setIoType(IO.NONE);
         LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());
         // remove endpoint from network
         if (network != null) network.onRemoveEndpoint(this);
@@ -100,7 +105,7 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
             }
         }
         if (networks.size() != 1) {
-            setType(Type.NONE);
+            setIoType(IO.NONE);
         }
     }
 
@@ -112,13 +117,13 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
         if (network != null && pipeType == network.getPipeType()) {
             // found a network on the input face, therefore this is an output of the network
             networks.add(network);
-            setType(Type.OUTPUT);
+            setIoType(IO.OUT);
         }
         network = LongDistanceNetwork.get(getLevel(), getPos().relative(getOutputFacing()));
         if (network != null && pipeType == network.getPipeType()) {
             // found a network on the output face, therefore this is an input of the network
             networks.add(network);
-            setType(Type.INPUT);
+            setIoType(IO.IN);
         }
         return networks;
     }
@@ -129,6 +134,16 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
             LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());
             if (network != null && network.isValid()) {
                 this.link = network.getOtherEndpoint(this);
+            }
+        } else if (this.link.isInValid()) {
+            this.link.invalidateLink();
+            this.link = null;
+            LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());
+            if (network != null) {
+                network.invalidateEndpoints();
+                if (network.isValid()) {
+                    this.link = network.getOtherEndpoint(this);
+                }
             }
         }
         return this.link;
@@ -142,11 +157,6 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     @Override
     public Direction getOutputFacing() {
         return getFrontFacing().getOpposite();
-    }
-
-    @Override
-    public LongDistancePipeType getPipeType() {
-        return pipeType;
     }
 
     @Override

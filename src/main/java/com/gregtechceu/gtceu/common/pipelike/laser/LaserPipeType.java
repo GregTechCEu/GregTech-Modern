@@ -7,7 +7,7 @@ import net.minecraft.util.StringRepresentable;
 
 import java.util.Locale;
 
-public enum LaserPipeType implements IPipeType<LaserPipeNet.LaserData>, StringRepresentable {
+public enum LaserPipeType implements IPipeType<LaserPipeProperties>, StringRepresentable {
     NORMAL;
 
     public static final ResourceLocation TYPE_ID = GTCEu.id("laser");
@@ -18,7 +18,7 @@ public enum LaserPipeType implements IPipeType<LaserPipeNet.LaserData>, StringRe
     }
 
     @Override
-    public LaserPipeNet.LaserData modifyProperties(LaserPipeNet.LaserData baseProperties) {
+    public LaserPipeProperties modifyProperties(LaserPipeProperties baseProperties) {
         return baseProperties;
     }
 

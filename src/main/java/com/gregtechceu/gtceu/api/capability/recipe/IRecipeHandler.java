@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -37,6 +38,15 @@ public interface IRecipeHandler<K> {
     }
 
     /**
+     * container size, if it has one. otherwise -1.
+     */
+    default int getSize() {
+        return -1;
+    }
+
+    List<Object> getContents();
+
+    /**
      * Whether the content of same capability  can only be handled distinct.
      */
     default boolean isDistinct() {
@@ -51,7 +61,11 @@ public interface IRecipeHandler<K> {
     }
 
     default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName, boolean simulate) {
-        return handleRecipeInner(io, recipe, left.stream().map(this::copyContent).collect(Collectors.toList()), slotName, simulate);
+        List<K> contents = new ObjectArrayList<>(left.size());
+        for (Object leftObj : left) {
+            contents.add(copyContent(leftObj));
+        }
+        return handleRecipeInner(io, recipe, contents, slotName, simulate);
     }
 
     default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {

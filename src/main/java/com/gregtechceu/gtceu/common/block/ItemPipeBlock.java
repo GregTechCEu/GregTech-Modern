@@ -5,29 +5,42 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
+import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeData;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.LevelItemPipeNet;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
-public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeData, LevelItemPipeNet> {
+@ParametersAreNonnullByDefault
+@MethodsReturnNonnullByDefault
+public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeProperties, LevelItemPipeNet> {
     public ItemPipeBlock(Properties properties, ItemPipeType itemPipeType, Material material) {
         super(properties, itemPipeType, material);
     }
 
     @Override
-    protected ItemPipeData createMaterialData() {
-        return new ItemPipeData(material.getProperty(PropertyKey.ITEM_PIPE), (byte) 0);
+    protected ItemPipeProperties createProperties(ItemPipeType itemPipeType, Material material) {
+        return itemPipeType.modifyProperties(material.getProperty(PropertyKey.ITEM_PIPE));
+    }
+
+    @Override
+    protected ItemPipeProperties createMaterialData() {
+        return material.getProperty(PropertyKey.ITEM_PIPE);
     }
 
     @Override
@@ -41,14 +54,14 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeData,
     }
 
     @Override
-    public BlockEntityType<? extends PipeBlockEntity<ItemPipeType, ItemPipeData>> getBlockEntityType() {
+    public BlockEntityType<? extends PipeBlockEntity<ItemPipeType, ItemPipeProperties>> getBlockEntityType() {
         return GTBlockEntities.ITEM_PIPE.get();
     }
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
-        ItemPipeProperties properties = pipeType.modifyProperties(createRawData(defaultBlockState(), stack)).properties();
+        ItemPipeProperties properties = createProperties(defaultBlockState(), stack);
 
         if (properties.getTransferRate() % 1 != 0) {
             tooltip.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", (int) ((properties.getTransferRate() * 64) + 0.5)));
@@ -57,5 +70,18 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipeData,
         }
 
         tooltip.add(Component.translatable("gtceu.item_pipe.priority", properties.getPriority()));
+    }
+
+    @Override
+    public boolean canPipesConnect(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
+                                   IPipeNode<ItemPipeType, ItemPipeProperties> sideTile) {
+        return selfTile instanceof ItemPipeBlockEntity && sideTile instanceof ItemPipeBlockEntity;
+    }
+
+    @Override
+    public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
+                                         @Nullable BlockEntity tile) {
+        return tile != null &&
+            tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
     }
 }

@@ -104,21 +104,25 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     public void serverTick() {
-        long outputVoltage = getOutputVoltage();
-        long outputAmperes = Math.min(getEnergyStored() / outputVoltage, getOutputAmperage());
-        if (outputAmperes == 0) return;
-        long amperesUsed = 0;
-        for (Direction side : Direction.values()) {
-            if (!outputsEnergy(side)) continue;
-            var oppositeSide = side.getOpposite();
-            var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(), machine.getPos().relative(side), oppositeSide);
-            if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
-                amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes - amperesUsed);
-                if (amperesUsed == outputAmperes) break;
+        if (getMachine().getLevel().isClientSide)
+            return;
+        if (getEnergyStored() >= getOutputVoltage() && getOutputVoltage() > 0 && getOutputAmperage() > 0) {
+            long outputVoltage = getOutputVoltage();
+            long outputAmperes = Math.min(getEnergyStored() / outputVoltage, getOutputAmperage());
+            if (outputAmperes == 0) return;
+            long amperesUsed = 0;
+            for (Direction side : GTUtil.DIRECTIONS) {
+                if (!outputsEnergy(side)) continue;
+                var oppositeSide = side.getOpposite();
+                var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(), machine.getPos().relative(side), oppositeSide);
+                if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
+                    amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes - amperesUsed);
+                    if (amperesUsed == outputAmperes) break;
+                }
             }
-        }
-        if (amperesUsed > 0) {
-            setEnergyStored(getEnergyStored() - amperesUsed * outputVoltage);
+            if (amperesUsed > 0) {
+                setEnergyStored(getEnergyStored() - amperesUsed * outputVoltage);
+            }
         }
     }
 
@@ -235,6 +239,11 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
             sum = sum - canInput;
         }
         return sum <= 0 ? null : Collections.singletonList(sum);
+    }
+
+    @Override
+    public List<Object> getContents() {
+        return List.of(energyStored);
     }
 
     @Override

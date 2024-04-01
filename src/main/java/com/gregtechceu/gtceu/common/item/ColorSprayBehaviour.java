@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.lowdragmc.lowdraglib.Platform;
@@ -23,7 +24,7 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.util.Tuple;
+import net.minecraft.util.FastColor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -39,6 +40,7 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -129,7 +131,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     private final Supplier<ItemStack> empty;
     private final DyeColor color;
     public final int totalUses;
-    private final Tuple<float[], float[]> durabilityBarColors;
+    private final Pair<Integer, Integer> durabilityBarColors;
 
 
     public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
@@ -148,23 +150,31 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public int getBarColor(ItemStack stack) {
-        float f = Math.max(0.0F, getDurabilityForDisplay(stack));
-        return mixColors(f, durabilityBarColors.getA(), durabilityBarColors.getB());
+    public int getMaxDurability(ItemStack stack) {
+        return totalUses;
     }
 
-    private static int mixColors(float ratio, float[]... colors) {
-        float r = 0, g = 0, b = 0;
+    @Override
+    public int getBarColor(ItemStack stack) {
+        float f = Math.max(0.0F, getDurabilityForDisplay(stack));
+        return mixColors(f, durabilityBarColors.getLeft(), durabilityBarColors.getRight());
+    }
+
+    @Nullable
+    @Override
+    public Pair<Integer, Integer> getDurabilityColorsForDisplay(ItemStack itemStack) {
+        return durabilityBarColors;
+    }
+
+    private static int mixColors(float ratio, int... colors) {
+        int r = 0, g = 0, b = 0;
         ratio = ratio * (1.0f / colors.length);
-        for (float[] color : colors) {
-            r += color[0] * ratio;
-            g += color[1] * ratio;
-            b += color[2] * ratio;
+        for (int color : colors) {
+            r += FastColor.ARGB32.red(color) * ratio;
+            g += FastColor.ARGB32.green(color) * ratio;
+            b += FastColor.ARGB32.blue(color) * ratio;
         }
-        //noinspection PointlessBitwiseExpression
-        return ((int)(r * 255) & 0xFF) << 16 |
-                ((int)(g * 255) & 0xFF) << 8 |
-                ((int)(b * 255) & 0xFF) << 0;
+        return FastColor.ARGB32.color(255, r, g, b);
     }
 
     @Override
@@ -183,17 +193,45 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var player = context.getPlayer();
         var level = context.getLevel();
         var facing = context.getClickedFace();
-        var pos = context.getClickedPos();
+        var pos = context.getClickedPos().mutable();
         var stack = context.getItemInHand();
+        var block = level.getBlockState(pos).getBlock();
+
+        int maxBlocksToRecolor = Math.max(1, player != null && player.isCrouching() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
+
         if (player != null) {
-            if (!tryPaintBlock(player, level, pos, facing)) {
-                return InteractionResult.PASS;
+            for (int i = 0; i < maxBlocksToRecolor; i++) {
+
+                // Stop once we hit another block to prevent accidentally recoloring stuff
+                if (level.getBlockState(pos).getBlock() != block) {
+                    break;
+                }
+
+                if (!tryPaintBlock(player, level, pos, facing)) {
+                    return InteractionResult.PASS;
+                }
+
+                if (!useItemDurability(player, context.getHand(), stack, empty.get())) {
+                    break;
+                }
+
+                pos.move(getPaintDirection(player));
             }
-            useItemDurability(player, context.getHand(), stack, empty.get());
+
             GTSoundEntries.SPRAY_CAN_TOOL.play(level, null, player.position(), 1.0f, 1.0f);
             return InteractionResult.SUCCESS;
         }
         return InteractionResult.PASS;
+    }
+
+    private Direction getPaintDirection(Player player) {
+        if (player.getXRot() > 45F) {
+            return Direction.DOWN;
+        } else if (player.getXRot() < -45F) {
+            return Direction.UP;
+        }
+
+        return player.getDirection();
     }
 
     private boolean tryPaintBlock(Player player, Level world, BlockPos pos, Direction side) {
@@ -243,12 +281,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE)) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK)) {
             if (recolorBlockNoState(CONCRETE_MAP, this.color, world, pos)) {
                 return true;
             }
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER)) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK)) {
             if (recolorBlockNoState(CONCRETE_POWDER_MAP, this.color, world, pos)) {
                 return true;
             }
@@ -319,6 +357,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                 state.setValue(property, old.getValue(property));
             }
             world.setBlock(pos, state, 3);
+            world.sendBlockUpdated(pos, old, state, 3);
             return true;
         }
         return false;
@@ -347,11 +386,11 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             world.setBlock(pos, Blocks.WHITE_CARPET.defaultBlockState(), 3);
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE) && block != Blocks.WHITE_CONCRETE) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_BLOCK) && block != Blocks.WHITE_CONCRETE) {
             world.setBlock(pos, Blocks.WHITE_CONCRETE.defaultBlockState(), 3);
             return true;
         }
-        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER) && block != Blocks.WHITE_CONCRETE_POWDER) {
+        if (block.defaultBlockState().is(CustomTags.CONCRETE_POWDER_BLOCK) && block != Blocks.WHITE_CONCRETE_POWDER) {
             world.setBlock(pos, Blocks.WHITE_CONCRETE_POWDER.defaultBlockState(), 3);
             return true;
         }
@@ -437,7 +476,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
                     //otherwise, update held item to replacement stack
                     player.setItemInHand(hand, replacementStack);
                 }
-                return true;
+                return false;
             }
             setUsesLeft(stack, usesLeft);
         }

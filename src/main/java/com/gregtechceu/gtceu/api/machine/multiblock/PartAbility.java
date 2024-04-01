@@ -1,12 +1,15 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.google.common.base.Suppliers;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.world.level.block.Block;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -52,6 +55,10 @@ public class PartAbility {
      */
     private final Int2ObjectMap<Set<Block>> registry = new Int2ObjectOpenHashMap<>();
 
+    private Supplier<Collection<Block>> allBlocks = Suppliers.memoize(() ->
+        registry.values().stream().flatMap(Collection::stream).toList()
+    );
+
     @Getter
     private final String name;
 
@@ -64,7 +71,11 @@ public class PartAbility {
     }
 
     public Collection<Block> getAllBlocks() {
-        return registry.values().stream().flatMap(Collection::stream).toList();
+        return allBlocks.get();
+    }
+
+    public boolean isApplicable(Block block) {
+        return getAllBlocks().contains(block);
     }
 
     public Collection<Block> getBlocks(int... tiers) {

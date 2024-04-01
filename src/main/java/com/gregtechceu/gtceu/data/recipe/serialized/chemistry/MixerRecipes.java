@@ -492,6 +492,14 @@ public class MixerRecipes {
                 .outputItems(dust, Ruridit, 3)
                 .save(provider);
 
+        MIXER_RECIPES.recipeBuilder("rtm_alloy").duration(300).EUt(VA[EV])
+            .inputItems(dust, Ruthenium,4)
+            .inputItems(dust, Tungsten,2)
+            .inputItems(dust, Molybdenum)
+            .circuitMeta(1)
+            .outputItems(dust, RTMAlloy, 7)
+            .save(provider);
+
         // Superconductor Alloys
         MIXER_RECIPES.recipeBuilder("manganese_phosphide").duration(400).EUt(24)
                 .inputItems(dust, Manganese)

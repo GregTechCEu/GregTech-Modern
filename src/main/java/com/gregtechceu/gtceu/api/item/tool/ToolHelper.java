@@ -43,6 +43,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
@@ -62,6 +63,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.common.ForgeHooks;
+import net.minecraftforge.common.IForgeShearable;
 import net.minecraftforge.common.TierSortingRegistry;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
@@ -69,6 +71,7 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.*;
+import java.util.function.Supplier;
 
 /**
  * @author KilaBash
@@ -200,7 +203,7 @@ public class ToolHelper {
                     if (electricItem != null) {
                         electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&
-                                random.nextInt(100) > ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
+                                random.nextInt(100) >= ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
                             return;
                         }
                     } else {
@@ -274,8 +277,9 @@ public class ToolHelper {
         int remainingUses = maximumDurability - currentDurability;
         Set<BlockPos> harvestableBlocks = getHarvestableBlocks(stack, player);
         if (!harvestableBlocks.isEmpty()) {
+            int blocksBroken = 0;
             for (BlockPos pos : harvestableBlocks) {
-                if (!breakBlockRoutine(player, stack, pos)) {
+                if (!breakBlockRoutine(player, stack, pos, blocksBroken++ == 0)) {
                     return true;
                 }
 
@@ -381,7 +385,7 @@ public class ToolHelper {
             // natural to mine, but avoid exploits like mining Obsidian quickly by instead targeting Stone.
             return false;
         }
-        return stack.getItem().isCorrectToolForDrops(state);
+        return stack.getItem().isCorrectToolForDrops(stack, state);
     }
 
     /**
@@ -402,8 +406,8 @@ public class ToolHelper {
                 caps.put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
-                List<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(Platform.getMinecraftServer().getRecipeManager(), be.metaMachine);
-                GTRecipe hammerRecipe = hammerRecipes.isEmpty() ? null : hammerRecipes.get(0);
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(Platform.getMinecraftServer().getRecipeManager(), be.metaMachine);
+                GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine)) {
                     drops.clear();
                     TagPrefix prefix = ChemicalHelper.getPrefix(silktouchDrop.getItem());
@@ -432,7 +436,7 @@ public class ToolHelper {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos) {
+    public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
         // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
         if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {
             return false;
@@ -452,10 +456,10 @@ public class ToolHelper {
             } else if (player.blockActionRestricted(world, pos, player.gameMode.getGameModeForPlayer())) {
                 return false;
             } else if (player.isCreative()) {
-                return removeBlockRoutine(state, world, player, pos);
+                return removeBlockRoutine(state, world, player, pos, playSound);
             } else {
                 world.levelEvent(player, LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-                boolean successful = removeBlockRoutine(state, world, player, pos);
+                boolean successful = removeBlockRoutine(state, world, player, pos, playSound);
 
                 ItemStack copiedTool = tool.copy();
                 boolean canHarvest = player.hasCorrectToolForDrops(state);
@@ -497,11 +501,15 @@ public class ToolHelper {
         return itemstack.onBlockStartBreak(pos, player);
     }
 
-    public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos) {
+    public static boolean removeBlockRoutine(@Nullable BlockState state, Level world, ServerPlayer player, BlockPos pos, boolean playSound) {
         state = state == null ? world.getBlockState(pos) : state;
         state.getBlock().playerWillDestroy(world, pos, state, player);
 
-        boolean successful = world.destroyBlock(pos, false);
+        boolean successful = world.removeBlock(pos, false);
+
+        if (playSound)
+            world.levelEvent(2001, pos, Block.getId(state));
+
         if (successful) {
             state.getBlock().destroy(world, pos, state);
         }
@@ -608,7 +616,7 @@ public class ToolHelper {
         if (toolClasses.contains(GTToolType.SCYTHE)) {
         }
         if (toolClasses.contains(GTToolType.FILE)) {
-            if (block instanceof GlassPaneBlock) {
+            if (block instanceof IronBarsBlock) {
                 return true;
             }
         }
@@ -674,10 +682,9 @@ public class ToolHelper {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
-            /*
-            if (state.getBlock() instanceof IShearable shearable) {
+            if (state.getBlock() instanceof IForgeShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
-                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, EnchantmentHelper.getItemEnchantmentLevel(Enchantments.BLOCK_FORTUNE, tool));
+                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
                     boolean relocateMinedBlocks = getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
@@ -700,10 +707,17 @@ public class ToolHelper {
                     return tool.isEmpty() ? 0 : 1;
                 }
             }
-            */
         }
         return -1;
     }
+
+
+    // Suppliers for broken tool stacks
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_LV = () -> GTItems.POWER_UNIT_LV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_MV = () -> GTItems.POWER_UNIT_MV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_HV = () -> GTItems.POWER_UNIT_HV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_EV = () -> GTItems.POWER_UNIT_EV.get().getDefaultInstance();
+    public static final Supplier<ItemStack> SUPPLY_POWER_UNIT_IV = () -> GTItems.POWER_UNIT_IV.get().getDefaultInstance();
 
     /**
      * @param state the BlockState of the block

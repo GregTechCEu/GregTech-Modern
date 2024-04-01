@@ -5,7 +5,7 @@
     <style color="0xaaaaaa" italic="true" pwt="true">注释：本页转载于MCMOD的GTCEu维基<br/>作者：<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/179043/">花海</style>，<style color="0xa4e7ff" hover-info="url" pwt="true" underlined="true" url-link="https://center.mcmod.cn/508290/">morningglory</style>，<style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://github.com/Yefancy">KilaBash</style><br/>，<style color="0xa4e7ff" hover-info="url" underlined="true" url-link="https://github.com/blackdragon2447">BlackDragon2447</style><br/></style>
   </text>
   <h2>合成和用途</h2>
-  <text>单晶硅是由32个<style color="0xbbffaa">硅粉</style>和一小堆<style color="0xbbffaa">砷化镓粉</style>在<style color="0xafff00" hover-info="click link" link="gtceu:multiblock/electric_blast_furnace" underlined="true">电力高炉</style>中熔炼而成的，需要<style color="0xff5555">1,784 K</style>的最低线圈温度才能完成工艺，这只需要白铜线圈即可熔炼。</text>
+  <text>单晶硅是由32个<style color="0xbbffaa">硅粉</style>和一小堆<style color="0xbbffaa">砷化镓粉</style>在<style color="0xafff00" hover-info="click link" link="gtceu:multiblock/electric_blast_furnace" underlined="true">电力高炉</style>中熔炼而成的，需要<style color="0xff5555">1,784 K</style>的最低线圈温度才能完成合成，这只需要白铜线圈即可熔炼。</text>
   <recipe id="gtceu:electric_blast_furnace/silicon_boule"></recipe>
   <br/>
   <text>在<style color="0xafff00" hover-info="click link" link="gtceu:machines/cutter" underlined="true">切割机</style>中，可将一块单晶硅切割成16片<style color="0xafff00" hover-info="click link" link="gtceu:circuits/wafers" underlined="true">硅晶圆</style>，最低需要MV电压处理。</text>

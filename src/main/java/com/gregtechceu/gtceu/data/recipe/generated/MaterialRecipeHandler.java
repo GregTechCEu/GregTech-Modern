@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -62,7 +63,6 @@ public class MaterialRecipeHandler {
         OreProperty oreProperty = mat.hasProperty(PropertyKey.ORE) ? mat.getProperty(PropertyKey.ORE): null;
         if (mat.hasProperty(PropertyKey.GEM)) {
             ItemStack gemStack = ChemicalHelper.get(gem, mat);
-            ItemStack smallDarkAshStack = ChemicalHelper.get(dustSmall, DarkAsh);
 
             if (mat.hasFlag(CRYSTALLIZABLE)) {
                 AUTOCLAVE_RECIPES.recipeBuilder("autoclave_" + id + "_water")
@@ -83,14 +83,16 @@ public class MaterialRecipeHandler {
             if (!mat.hasFlag(EXPLOSIVE) && !mat.hasFlag(FLAMMABLE)) {
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
                         .inputItems(GTUtil.copyAmount(4, dustStack))
-                        .outputItems(GTUtil.copyAmount(3, gemStack), smallDarkAshStack)
+                        .outputItems(GTUtil.copyAmount(3, gemStack))
+                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
                         .explosivesAmount(2)
                         .save(provider);
 
                 // TODO Dynamite
                 //IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
                 //        .inputItems(GTUtil.copyAmount(4, dustStack))
-                //        .outputItems(GTUtil.copyAmount(3, gemStack), smallDarkAshStack)
+                //        .outputs(GTUtil.copyAmount(3, gemStack))
+                //        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
                 //        .explosivesType(GTItems.DYNAMITE.asStack())
                 //        .save(provider);
             }

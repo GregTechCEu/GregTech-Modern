@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -47,7 +48,7 @@ import java.util.stream.Stream;
  */
 public class GTRecipeWidget extends WidgetGroup {
     public GTRecipeWidget(GTRecipe recipe) {
-        super(0, 0, recipe.recipeType.getJEISize().width, recipe.recipeType.getJEISize().height);
+        super(0, 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
         setClientSideWidget();
         List<Content> inputStackContents = new ArrayList<>();
         inputStackContents.addAll(recipe.getInputContents(ItemRecipeCapability.CAP));
@@ -93,7 +94,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 .collect(Collectors.toList());
         while (outputFluids.size() < recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)) outputFluids.add(null);
 
-        var group = recipe.recipeType.createUITemplate(ProgressWidget.JEIProgress,
+        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress,
                 new CycleItemStackHandler(inputStacks),
                 new CycleItemStackHandler(outputStacks),
                 new CycleFluidStorage(inputFluids),
@@ -111,9 +112,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.2f", chance * 100) + "%"));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.2f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()) {
@@ -133,10 +134,10 @@ public class GTRecipeWidget extends WidgetGroup {
                     var chance = content.chance;
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
-                                Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.2f", chance * 100) + "%"));
+                                Component.translatable("gtceu.gui.content.chance_0") : 
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.2f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()) {
@@ -157,9 +158,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()) {
@@ -180,9 +181,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (chance < 1) {
                         tooltips.add(chance == 0 ?
                                 Component.translatable("gtceu.gui.content.chance_0") :
-                                Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance * 100) + "%"));
+                                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
                         if (content.tierChanceBoost > 0) {
-                            tooltips.add(Component.translatable("gtceu.gui.content.tier_boost", String.format("%.1f", content.tierChanceBoost * 100) + "%"));
+                            tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
                         }
                     }
                     if (index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()) {
@@ -192,7 +193,6 @@ public class GTRecipeWidget extends WidgetGroup {
             }
         });
         var size = group.getSize();
-        group.setSelfPosition(new Position((176 - size.width) / 2, 0));
         addWidget(group);
 
         int yOffset = 5 + size.height;
@@ -206,9 +206,9 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (EUt > 0) {
             addWidget(new LabelWidget(3, yOffset += 10,
-                    LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
-            addWidget(new LabelWidget(3, yOffset += 10,
                     LocalizationUtils.format(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt, GTValues.VN[GTUtil.getTierByVoltage(EUt)])));
+            addWidget(new LabelWidget(3, yOffset += 10,
+                LocalizationUtils.format("gtceu.recipe.total", EUt * recipe.duration)));
         }
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
@@ -217,11 +217,11 @@ public class GTRecipeWidget extends WidgetGroup {
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
             addWidget(new LabelWidget(3, yOffset += 10, dataInfo.apply(recipe.data)));
         }
-        recipe.recipeType.appendJEIUI(recipe, this);
+        recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
 
         // add recipe id getter
         addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
             Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
-        }).setPredicate(() -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
     }
 }

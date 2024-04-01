@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.tool;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.IItemUseFirst;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
@@ -42,7 +41,7 @@ import java.util.Set;
  */
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
+public class GTToolItem extends DiggerItem implements IGTTool {
 
     @Getter
     protected final GTToolType toolType;
@@ -81,11 +80,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     }
 
     @Override
-    public MaterialToolTier getTier() {
-        return (MaterialToolTier) super.getTier();
-    }
-
-    @Override
     public boolean hasCraftingRemainingItem() {
         return super.hasCraftingRemainingItem();
     }
@@ -107,7 +101,7 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
 
     @Override
     public Component getDescription() {
-        return Component.translatable(toolType.getUnlocalizedName(), getTier().material.getLocalizedName());
+        return Component.translatable(toolType.getUnlocalizedName(), material.getLocalizedName());
     }
 
     @Override
@@ -134,11 +128,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
     @Override
     public boolean playSoundOnBlockDestroy() {
         return toolType.playSoundOnBlockDestroy;
-    }
-
-    @Override
-    public Set<GTToolType> getToolClasses(ItemStack stack) {
-        return Set.of(this.toolType);
     }
 
     @Override
@@ -173,7 +162,8 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
         return definition$isValidRepairItem(stack, repairCandidate);
     }
 
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+    @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return definition$getDefaultAttributeModifiers(slot, stack);
     }
 
@@ -224,6 +214,6 @@ public class GTToolItem extends DiggerItem implements IItemUseFirst, IGTTool {
 
     @Override
     public boolean isCorrectToolForDrops(ItemStack stack, BlockState state) {
-        return IGTTool.definition$isCorrectToolForDrops(stack, state);
+        return this.definition$isCorrectToolForDrops(stack, state);
     }
 }

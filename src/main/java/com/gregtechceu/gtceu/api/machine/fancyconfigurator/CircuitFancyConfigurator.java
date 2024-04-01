@@ -29,12 +29,11 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
 
     public CircuitFancyConfigurator(ItemStackTransfer circuitSlot) {
         this.circuitSlot = circuitSlot;
-
     }
 
     @Override
-    public String getTitle() {
-        return "gtceu.gui.circuit.title";
+    public Component getTitle() {
+        return Component.translatable("gtceu.gui.circuit.title");
     }
 
     @Override
@@ -48,7 +47,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
     @Override
     public Widget createConfigurator() {
         var group = new WidgetGroup(0, 0, 174, 132);
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         group.addWidget(new LabelWidget(9, 8, "Programmed Circuit Configuration"));
         group.addWidget(new SlotWidget(circuitSlot, 0, (group.getSize().width - 18) / 2, 20, !ConfigHolder.INSTANCE.machines.ghostCircuit, !ConfigHolder.INSTANCE.machines.ghostCircuit)
                 .setBackground(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY)));

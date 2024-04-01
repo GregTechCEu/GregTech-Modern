@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.syncdata.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
@@ -340,11 +340,18 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     //***    CAPABILITY OVERRIDE    ***//
     /////////////////////////////////////
 
-    private final Map<Direction, IFluidTransfer> fluidTransferWrappers = new EnumMap<>(Direction.class);
+    private CoverableFluidTransferWrapper fluidTransferWrapper;
 
+    @Nullable
     @Override
-    public IFluidTransfer getFluidTransferCap(Direction side, IFluidTransfer defaultValue) {
-        return fluidTransferWrappers.computeIfAbsent(side, s -> new CoverableFluidTransferWrapper(defaultValue));
+    public IFluidTransfer getFluidTransferCap(@Nullable IFluidTransfer defaultValue) {
+        if (defaultValue == null) {
+            return null;
+        }
+        if (fluidTransferWrapper == null || fluidTransferWrapper.delegate != defaultValue) {
+            this.fluidTransferWrapper = new CoverableFluidTransferWrapper(defaultValue);
+        }
+        return fluidTransferWrapper;
     }
 
     private class CoverableFluidTransferWrapper extends FluidTransferDelegate {

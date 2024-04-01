@@ -1,5 +1,7 @@
 {
   "values": [
+    "gtceu:long_distance_item_pipeline",
+    "gtceu:long_distance_fluid_pipeline",
     "gtceu:coke_oven_bricks",
     "gtceu:firebricks",
     "gtceu:steam_machine_casing",
@@ -81,7 +83,7 @@
     "gtceu:cupronickel_coil_block",
     "gtceu:kanthal_coil_block",
     "gtceu:nichrome_coil_block",
-    "gtceu:tungstensteel_coil_block",
+    "gtceu:rtm_alloy_coil_block",
     "gtceu:hssg_coil_block",
     "gtceu:naquadah_coil_block",
     "gtceu:trinium_coil_block",

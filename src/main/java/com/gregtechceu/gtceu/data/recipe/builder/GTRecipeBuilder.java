@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
@@ -195,7 +196,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder inputItems(ItemStack... inputs) {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
-                LDLib.LOGGER.error("gt recipe {} input items is empty", id);
+                GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
                 throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
@@ -270,7 +271,7 @@ public class GTRecipeBuilder {
     public GTRecipeBuilder outputItems(ItemStack... outputs) {
         for (ItemStack itemStack : outputs) {
             if (itemStack.isEmpty()) {
-                LDLib.LOGGER.error("gt recipe {} output items is empty", id);
+                GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
                 throw new IllegalArgumentException(id + ": output items is empty");
             }
         }
@@ -316,6 +317,14 @@ public class GTRecipeBuilder {
         this.chance = lastChance;
         return this;
     }
+
+    public GTRecipeBuilder notConsumable(Ingredient ingredient) {
+        float lastChance = this.chance;
+        this.chance = 0;
+        inputItems(ingredient);
+        this.chance = lastChance;
+        return this;
+    }
     
     public GTRecipeBuilder notConsumable(Item item) {
         float lastChance = this.chance;
@@ -342,7 +351,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder circuitMeta(int configuration) {
-        return notConsumable(IntCircuitBehaviour.stack(configuration));
+        return notConsumable(IntCircuitIngredient.circuitInput(configuration));
     }
 
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
