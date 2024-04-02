@@ -9,7 +9,6 @@ import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
@@ -24,10 +23,7 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.GenericStack;
-import com.google.common.collect.Lists;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -65,16 +61,14 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (config != null) {
-            FluidStack stack = config.what() instanceof AEFluidKey key ?
-                    FluidStack.create(key.getFluid(), config.amount(), key.getTag()) : FluidStack.empty();
+            FluidStack stack = config.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) config.amount(), key.getTag()) : FluidStack.EMPTY;
 
             DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 17, 17);
             String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
             drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
         }
         if (stock != null) {
-            FluidStack stack = stock.what() instanceof AEFluidKey key ?
-                    FluidStack.create(key.getFluid(), stock.amount(), key.getTag()) : FluidStack.empty();
+            FluidStack stack = stock.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) stock.amount(), key.getTag()) : FluidStack.EMPTY;
 
             DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 17, 17);
             String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
@@ -102,7 +96,7 @@ public class AEFluidConfigSlot extends AEConfigSlot {
                 if (fluid != null) {
                     writeClientAction(UPDATE_ID, buf -> {
                         buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                        buf.writeVarLong(fluid.getAmount());
+                        buf.writeVarInt(fluid.getAmount());
                     });
                 }
                 this.parentWidget.enableAmount(this.index);
@@ -132,14 +126,13 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             writeUpdateInfo(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = FluidStack.create(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()),
-                    buffer.readVarLong());
+            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()), buffer.readVarInt());
             slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
             this.parentWidget.enableAmount(this.index);
-            if (fluid != FluidStack.empty()) {
+            if (fluid != FluidStack.EMPTY) {
                 writeUpdateInfo(UPDATE_ID, buf -> {
                     buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                    buf.writeVarLong(fluid.getAmount());
+                    buf.writeVarInt(fluid.getAmount());
                 });
             }
         }
@@ -160,13 +153,13 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             }
         }
         if (id == LOAD_PHANTOM_FLUID_STACK_FROM_NBT) {
-            FluidStack fluid = FluidStack.loadFromTag(buffer.readNbt());
+            FluidStack fluid = FluidStack.loadFluidStackFromNBT(buffer.readNbt());
             slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
             this.parentWidget.enableAmount(this.index);
-            if (fluid != FluidStack.empty()) {
+            if (fluid != FluidStack.EMPTY) {
                 writeUpdateInfo(UPDATE_ID, buf -> {
                     buf.writeResourceLocation(BuiltInRegistries.FLUID.getKey(fluid.getFluid()));
-                    buf.writeVarLong(fluid.getAmount());
+                    buf.writeVarInt(fluid.getAmount());
                 });
             }
         }
@@ -180,8 +173,7 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             slot.setConfig(null);
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = FluidStack.create(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()),
-                    buffer.readVarLong());
+            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()), buffer.readVarInt());
             slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
         }
         if (id == AMOUNT_CHANGE_ID) {
@@ -197,7 +189,7 @@ public class AEFluidConfigSlot extends AEConfigSlot {
                 currentStack.setCount(newStackSize);
                 gui.getModularUIContainer().setCarried(currentStack);
 
-                FluidStack stack = FluidStack.create(key.getFluid(), slot.getStock().amount());
+                FluidStack stack = new FluidStack(key.getFluid(), (int) slot.getStock().amount());
                 if (key.hasTag()) {
                     stack.setTag(key.getTag().copy());
                 }
@@ -228,7 +220,7 @@ public class AEFluidConfigSlot extends AEConfigSlot {
                 FluidStack stack = getFluidFromContainer(ingredient);
 
                 if (stack != null) {
-                    CompoundTag compound = stack.saveToTag(new CompoundTag());
+                    CompoundTag compound = stack.writeToNBT(new CompoundTag());
                     writeClientAction(LOAD_PHANTOM_FLUID_STACK_FROM_NBT, buf -> buf.writeNbt(compound));
                 }
             }
@@ -236,21 +228,19 @@ public class AEFluidConfigSlot extends AEConfigSlot {
     }
 
     @Override
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         Rect2i rectangle = toRectangleBox();
         rectangle.setHeight(rectangle.getHeight() / 2);
-        if (slot.getConfig() == null || wheelDelta == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
+        if (slot.getConfig() == null || scrollY == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
             return false;
         }
-        FluidStack fluid = slot.getConfig().what() instanceof AEFluidKey fluidKey ?
-                FluidStack.create(fluidKey.getFluid(), slot.getConfig().amount(), fluidKey.getTag()) :
-                FluidStack.empty();
+        FluidStack fluid = slot.getConfig().what() instanceof AEFluidKey fluidKey ? new FluidStack(fluidKey.getFluid(), (int) slot.getConfig().amount(), fluidKey.getTag()) : FluidStack.EMPTY;
         long amt;
         if (isCtrlDown()) {
-            amt = wheelDelta > 0 ? fluid.getAmount() * 2L : fluid.getAmount() / 2L;
+            amt = scrollY > 0 ? fluid.getAmount() * 2L : fluid.getAmount() / 2L;
         } else {
-            amt = wheelDelta > 0 ? fluid.getAmount() + 1L : fluid.getAmount() - 1L;
+            amt = scrollY > 0 ? fluid.getAmount() + 1L : fluid.getAmount() - 1L;
         }
 
         if (amt > 0 && amt < Integer.MAX_VALUE + 1L) {

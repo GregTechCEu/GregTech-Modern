@@ -37,6 +37,7 @@ public class TabsWidget extends Widget {
     protected IFancyUIProvider selectedTab;
     @Setter
     protected IGuiTexture leftButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().scale(0.7f)), leftButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.LEFT.copy().setColor(0xffaaaaaa).scale(0.7f));
+    @Setter
     protected IGuiTexture rightButtonTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().scale(0.7f)), rightButtonHoverTexture = new GuiTextureGroup(GuiTextures.BUTTON, Icons.RIGHT.copy().setColor(0xffaaaaaa).scale(0.7f));
     @Setter
     protected IGuiTexture tabTexture = new ResourceTexture("gtceu:textures/gui/tab/tabs_top.png").getSubTexture(1 / 3f,
@@ -56,9 +57,7 @@ public class TabsWidget extends Widget {
     protected BiConsumer<IFancyUIProvider, IFancyUIProvider> onTabSwitch;
 
     public TabsWidget(Consumer<IFancyUIProvider> onTabClick) {
-        super(0, -21, 200, 24);
-        this.subTabs = new ArrayList<>();
-        this.onTabClick = onTabClick;
+        this(onTabClick, 0, -20, 200, 24);
     }
 
     public TabsWidget(Consumer<IFancyUIProvider> onTabClick, int x, int y, int width, int height) {
@@ -72,6 +71,10 @@ public class TabsWidget extends Widget {
         if (this.selectedTab == null) {
             this.selectedTab = this.mainTab;
         }
+    }
+
+    public void clearSubTabs() {
+        subTabs.clear();
     }
 
     public void attachSubTab(IFancyUIProvider subTab) {
@@ -90,7 +93,7 @@ public class TabsWidget extends Widget {
             var old = selectedTab;
             if (index < 0) {
                 selectedTab = mainTab;
-            } else if (index < subTabs.size()){
+            } else if (index < subTabs.size()) {
                 selectedTab = subTabs.get(index);
             } else {
                 return;
@@ -137,6 +140,7 @@ public class TabsWidget extends Widget {
     }
 
     @Override
+    @OnlyIn(Dist.CLIENT)
     public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
         var sx = getPosition().x + 8 + 24 + 4 + 16;
         if (isMouseOver(sx, getPosition().y, getSubTabsWidth(), 24, mouseX, mouseY)) {
@@ -246,5 +250,10 @@ public class TabsWidget extends Widget {
         }
         // render icon
         tab.getTabIcon().draw(graphics, mouseX, mouseY, x + (width - 16) / 2f, y + (height - 16) / 2f, 16, 16);
+    }
+
+    public void selectTab(IFancyUIProvider selectedTab) {
+        this.selectedTab = selectedTab;
+        this.detectAndSendChanges();
     }
 }

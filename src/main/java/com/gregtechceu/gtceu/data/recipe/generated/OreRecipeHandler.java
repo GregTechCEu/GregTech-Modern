@@ -16,12 +16,10 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
-
-import com.mojang.datafixers.util.Pair;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
+import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;

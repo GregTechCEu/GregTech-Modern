@@ -16,7 +16,6 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -26,6 +25,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
 
 import lombok.Getter;
 
@@ -81,7 +81,7 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
             return;
 
         ItemFilter filter = filterHandler.getFilter();
-        IItemTransfer itemTransfer = getItemTransfer();
+        IItemHandler itemTransfer = getItemTransfer();
         if (itemTransfer == null)
             return;
 

@@ -5,30 +5,19 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.me.helpers.IGridConnectedBlockEntity;
-import com.mojang.datafixers.util.Pair;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -135,22 +124,18 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
-                                                  @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
-                    new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY,
-                            Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
-
-                        @NotNull
-                        @Override
-                        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                            ItemStack extracted = super.extractItem(slot, amount, simulate, notifyChanges);
-                            if (!extracted.isEmpty()) {
-                                inventory[slot].extractItem(0, amount, simulate, notifyChanges);
-                            }
-                            return extracted;
-                        }
-                    });
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, left, simulate, this.handlerIO, new CustomItemStackHandler(NonNullList.of(ItemStack.EMPTY, Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
+                @NotNull
+                @Override
+                public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                    ItemStack extracted = super.extractItem(slot, amount, simulate);
+                    if (!extracted.isEmpty()) {
+                        inventory[slot].extractItem(0, amount, simulate);
+                    }
+                    return extracted;
+                }
+            });
         }
 
         @Override
@@ -196,24 +181,9 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         public ManagedFieldHolder getFieldHolder() {
             return MANAGED_FIELD_HOLDER;
         }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return Arrays.stream(inventory).map(IItemTransfer::createSnapshot).toArray(Object[]::new);
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof Object[] array && array.length == inventory.length) {
-                for (int i = 0; i < array.length; i++) {
-                    inventory[i].restoreFromSnapshot(array[i]);
-                }
-            }
-        }
     }
 
-    public static class ExportOnlyAEItem extends ExportOnlyAESlot implements IItemTransfer {
+    public static class ExportOnlyAEItem extends ExportOnlyAESlot implements IItemHandlerModifiable {
 
         public ExportOnlyAEItem(GenericStack config, GenericStack stock) {
             super(config, stock);
@@ -237,7 +207,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
 
         @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             return stack;
         }
 
@@ -258,7 +228,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
 
         @NotNull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (slot == 0 && this.stock != null) {
                 int extracted = (int) Math.min(this.stock.amount(), amount);
                 ItemStack result = this.stock.what() instanceof AEItemKey itemKey ?
@@ -270,7 +240,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
                         this.stock = null;
                     }
                 }
-                if (notifyChanges && this.onContentsChanged != null) {
+                if (this.onContentsChanged != null) {
                     this.onContentsChanged.run();
                 }
                 return result;
@@ -296,20 +266,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return Pair.of(this.config, this.stock);
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof Pair<?, ?> pair) {
-                this.config = (GenericStack) pair.getFirst();
-                this.stock = (GenericStack) pair.getSecond();
-            }
         }
     }
 }

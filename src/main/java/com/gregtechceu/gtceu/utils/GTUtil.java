@@ -10,10 +10,8 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
+import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,10 +26,10 @@ import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.Tags;
-
-import com.mojang.blaze3d.platform.InputConstants;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
@@ -312,7 +310,7 @@ public class GTUtil {
     }
 
     public static int getItemBurnTime(Item item) {
-        return ForgeHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
+        return CommonHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
     }
 
     public static long getPumpBiomeModifier(Holder<Biome> biome) {
@@ -393,9 +391,9 @@ public class GTUtil {
         if (ingredient instanceof FluidStack) {
             return (FluidStack) ingredient;
         } else if (ingredient instanceof ItemStack itemStack) {
-            IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
+            IFluidHandler fluidHandler = FluidTransferHelper.getFluidTransfer(itemStack);
             if (fluidHandler != null)
-                return fluidHandler.drain(Integer.MAX_VALUE, false);
+                return fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.EXECUTE);
         }
         return null;
     }

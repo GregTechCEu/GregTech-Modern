@@ -6,9 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.me.ManagedGridNode;
+import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 
-public class SerializableManagedGridNode extends ManagedGridNode implements ITagSerializable<CompoundTag> {
-
+public class SerializableManagedGridNode extends ManagedGridNode implements INBTSerializable<CompoundTag> {
     public <T> SerializableManagedGridNode(T nodeOwner, IGridNodeListener<? super T> listener) {
         super(nodeOwner, listener);
     }

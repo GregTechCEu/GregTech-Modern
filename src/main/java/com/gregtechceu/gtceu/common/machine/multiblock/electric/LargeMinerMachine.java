@@ -25,8 +25,6 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.ChatFormatting;
@@ -39,6 +37,9 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
@@ -126,7 +127,7 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
     private void initializeAbilities() {
         List<IEnergyContainer> energyContainers = new ArrayList<>();
-        List<IFluidTransfer> fluidTanks = new ArrayList<>();
+        List<IFluidHandler> fluidTanks = new ArrayList<>();
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
@@ -138,10 +139,9 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 if (handlerIO == IO.IN && handler.getCapability() == EURecipeCapability.CAP &&
                         handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
-                } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP &&
-                        handler instanceof IFluidTransfer fluidTransfer) {
-                            fluidTanks.add(fluidTransfer);
-                        }
+                } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidHandler fluidTransfer) {
+                    fluidTanks.add(fluidTransfer);
+                }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
@@ -178,13 +178,11 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
         // drain fluid
         if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
-            FluidStack drillingFluid = DrillingFluid
-                    .getFluid((long) this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
+            FluidStack drillingFluid = DrillingFluid.getFluid(this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
             FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
-            if (fluidStack != FluidStack.empty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) &&
-                    fluidStack.getAmount() >= drillingFluid.getAmount()) {
+            if (!fluidStack.isEmpty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
                 if (!simulate) {
-                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, false);
+                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, IFluidHandler.FluidAction.EXECUTE);
                 }
             } else {
                 return false;

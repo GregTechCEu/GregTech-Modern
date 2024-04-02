@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
-
+import com.mojang.serialization.Codec;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -36,15 +36,16 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     public static final FacadeCoverRecipe INSTANCE = new FacadeCoverRecipe();
     public static final RecipeSerializer<FacadeCoverRecipe> SERIALIZER = new RecipeSerializer<>() {
+        public static final Codec<FacadeCoverRecipe> CODEC = Codec.unit(INSTANCE);
 
         @Override
-        public FacadeCoverRecipe fromJson(ResourceLocation recipeId, JsonObject serializedRecipe) {
+        public FacadeCoverRecipe fromNetwork(FriendlyByteBuf buffer) {
             return INSTANCE;
         }
 
         @Override
-        public FacadeCoverRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            return INSTANCE;
+        public Codec<FacadeCoverRecipe> codec() {
+            return CODEC;
         }
 
         @Override
@@ -106,11 +107,6 @@ public class FacadeCoverRecipe implements CraftingRecipe {
         var result = GTItems.COVER_FACADE.asStack();
         FacadeItemBehaviour.setFacadeStack(GTItems.COVER_FACADE.asStack(), new ItemStack(Blocks.STONE));
         return result;
-    }
-
-    @Override
-    public ResourceLocation getId() {
-        return ID;
     }
 
     @Override

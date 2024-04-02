@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
 
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -17,8 +16,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-
-import lombok.Getter;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -50,7 +48,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @Override
     protected void doVoidItems() {
-        IItemTransfer itemTransfer = getOwnItemTransfer();
+        IItemHandler itemTransfer = getOwnItemTransfer();
         if (itemTransfer == null) {
             return;
         }
@@ -61,7 +59,7 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         }
     }
 
-    private void voidOverflow(IItemTransfer itemTransfer) {
+    private void voidOverflow(IItemHandler itemTransfer) {
         Map<ItemStack, TypeItemInfo> sourceItemAmounts = countInventoryItemsByType(itemTransfer);
 
         for (TypeItemInfo itemInfo : sourceItemAmounts.values()) {

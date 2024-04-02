@@ -11,13 +11,13 @@ import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
@@ -57,10 +57,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
-    @Getter
-    @Persisted
-    protected final ItemStackTransfer batteryInventory;
-
+    @Getter @Persisted
+    protected final CustomItemStackHandler batteryInventory;
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
         super(holder, tier, inventorySize);
         this.isWorkingEnabled = true;
@@ -82,9 +80,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
         return new EnergyBatteryTrait((int) args[0]);
     }
 
-    protected ItemStackTransfer createBatteryInventory(Object... ignoredArgs) {
-        var itemTransfer = new ItemStackTransfer(this.inventorySize) {
-
+    protected CustomItemStackHandler createBatteryInventory(Object... ignoredArgs) {
+        var itemTransfer = new CustomItemStackHandler(this.inventorySize){
             @Override
             public int getSlotLimit(int slot) {
                 return 1;

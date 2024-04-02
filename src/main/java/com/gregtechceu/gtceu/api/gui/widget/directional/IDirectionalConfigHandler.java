@@ -10,8 +10,8 @@ import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 public interface IDirectionalConfigHandler {
 

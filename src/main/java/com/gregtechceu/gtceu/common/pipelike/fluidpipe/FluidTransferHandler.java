@@ -45,11 +45,11 @@
 // return 1;
 // }
 //
-// @NotNull
-// @Override
-// public FluidStack getFluidInTank(int tank) {
-// return FluidStack.empty();
-// }
+//    @NotNull
+//    @Override
+//    public FluidStack getFluidInTank(int tank) {
+//        return FluidStack.EMPTY;
+//    }
 //
 // @Override
 // public long getTankCapacity(int tank) {
@@ -137,17 +137,17 @@
 // return resource.getAmount() - left.getAmount();
 // }
 //
-// @NotNull
-// @Override
-// public FluidStack drain(FluidStack resource, boolean simulate) {
-// return FluidStack.empty();
-// }
+//    @NotNull
+//    @Override
+//    public FluidStack drain(FluidStack resource, boolean simulate) {
+//        return FluidStack.EMPTY;
+//    }
 //
-// @NotNull
-// @Override
-// public FluidStack drain(long maxDrain, boolean simulate) {
-// return FluidStack.empty();
-// }
+//    @NotNull
+//    @Override
+//    public FluidStack drain(long maxDrain, boolean simulate) {
+//        return FluidStack.EMPTY;
+//    }
 //
 // @Override
 // public boolean supportsFill(int i) {

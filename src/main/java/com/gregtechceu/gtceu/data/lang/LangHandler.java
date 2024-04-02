@@ -7,9 +7,8 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraftforge.common.data.LanguageProvider;
-
-import com.tterrag.registrate.providers.RegistrateLangProvider;
+import net.minecraft.world.item.crafting.Recipe;
+import net.neoforged.neoforge.common.data.LanguageProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;

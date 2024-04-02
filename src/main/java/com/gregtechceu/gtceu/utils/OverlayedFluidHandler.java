@@ -168,7 +168,7 @@ public class OverlayedFluidHandler {
 
         public void reset() {
             FluidStack fluid = this.property.getFluid();
-            this.fluid = fluid != FluidStack.EMPTY ? fluid.copy() : FluidStack.EMPTY;
+            this.fluid = !fluid.isEmpty() ? fluid.copy() : FluidStack.EMPTY;
         }
     }
 }

@@ -16,8 +16,6 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -32,6 +30,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 
 import org.apache.commons.lang3.ArrayUtils;
@@ -177,7 +176,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public int getItemColor(FluidInfo item) {
-            var fluidStack = FluidStack.create(item.fluid, item.yield);
+            var fluidStack = new FluidStack(item.fluid, item.yield);
             if (fluidStack.getFluid() == Fluids.LAVA) {
                 return 0xFFFF7000;
             }
@@ -191,7 +190,7 @@ public abstract class ProspectorMode<T> {
 
         @Override
         public String getDescriptionId(FluidInfo item) {
-            return FluidStack.create(item.fluid, item.yield).getDisplayName().getString();
+            return item.fluid.getFluidType().getDescription().getString();
         }
 
         @Override
@@ -237,9 +236,7 @@ public abstract class ProspectorMode<T> {
                 float drawnV = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnV(progress);
                 float drawnWidth = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnWidth(progress);
                 float drawnHeight = (float) ProgressTexture.FillDirection.DOWN_TO_UP.getDrawnHeight(progress);
-                DrawerHelper.drawFluidForGui(graphics, FluidStack.create(item.fluid(), item.left), 100,
-                        (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)),
-                        ((int) (height * drawnHeight)));
+                DrawerHelper.drawFluidForGui(graphics, new FluidStack(item.fluid(), item.left), 100, (int) (x + drawnU * width), (int) (y + drawnV * height), ((int) (width * drawnWidth)), ((int) (height * drawnHeight)));
             }
         }
     };

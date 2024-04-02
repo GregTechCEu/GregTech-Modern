@@ -29,6 +29,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -65,7 +66,7 @@ public class RecipeTypeUIProject extends UIProject {
     }
 
     @Override
-    public UIProject loadProject(File file) {
+    public UIProject loadProject(Path file) {
         try {
             var tag = NbtIo.read(file);
             if (tag != null) {
@@ -118,7 +119,7 @@ public class RecipeTypeUIProject extends UIProject {
                     var path = new File(LDLib.getLDLibDir(),
                             "assets/%s/ui/recipe_type".formatted(recipeType.registryName.getNamespace()));
                     path.mkdirs();
-                    saveProject(new File(path, recipeType.registryName.getPath() + "." + this.getRegisterUI().name()));
+                    saveProject(Path.of(recipeType.registryName.getPath(), ".", this.getRegisterUI().name()));
                     recipeType.getRecipeUI().reloadCustomUI();
                 });
             }

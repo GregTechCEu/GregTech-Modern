@@ -6,29 +6,20 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
 
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 
 import net.minecraft.world.item.ItemStack;
-
-import appeng.api.config.Actionable;
-import appeng.api.networking.GridHelper;
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.helpers.externalstorage.GenericStackInv;
-import appeng.me.helpers.IGridConnectedBlockEntity;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -110,10 +101,8 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableFluidTank implements IItemTransfer {
-
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
-                InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
+    private static class InaccessibleInfiniteSlot extends NotifiableFluidTank implements IItemHandlerModifiable {
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
 
         private final GenericStackInv internalBuffer;
 
@@ -130,21 +119,18 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
-                                                       @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
-                    Stream.generate(() -> new FluidStorage(0) {
-
-                        @Override
-                        public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-                            return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);
-                        }
-                    }).limit(this.internalBuffer.size()).toArray(FluidStorage[]::new));
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new CustomFluidTank(0) {
+                @Override
+                public int fill(FluidStack resource, FluidAction action) {
+                    return InaccessibleInfiniteSlot.this.fill(resource, action);
+                }
+            }).limit(this.internalBuffer.size()).toArray(CustomFluidTank[]::new));
         }
 
         @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             if (stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
@@ -170,7 +156,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
 
         @NotNull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
@@ -182,29 +168,6 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            GenericStack[] stacks = new GenericStack[this.internalBuffer.size()];
-            for (int i = 0; i < this.internalBuffer.size(); ++i) {
-                stacks[i] = this.internalBuffer.getStack(i);
-            }
-            return stacks;
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof GenericStack[] stacks) {
-                this.internalBuffer.beginBatch();
-                for (int i = 0; i < stacks.length; ++i) {
-                    GenericStack stack = stacks[i];
-                    if (stack == null) continue;
-                    this.internalBuffer.insert(i, stack.what(), stack.amount(), Actionable.MODULATE);
-                }
-                this.internalBuffer.endBatch();
-            }
         }
 
         @Override

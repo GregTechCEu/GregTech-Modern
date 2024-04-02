@@ -1,26 +1,22 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-
-import org.jetbrains.annotations.ApiStatus;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public abstract class ItemTransferDelegate implements IItemTransfer {
+public abstract class ItemTransferDelegate implements IItemHandlerModifiable {
+    public IItemHandlerModifiable delegate;
 
-    public IItemTransfer delegate;
-
-    public ItemTransferDelegate(IItemTransfer delegate) {
+    public ItemTransferDelegate(IItemHandlerModifiable delegate) {
         this.delegate = delegate;
     }
 
-    protected void setDelegate(IItemTransfer delegate) {
+    protected void setDelegate(IItemHandlerModifiable delegate) {
         this.delegate = delegate;
     }
 
@@ -40,15 +36,20 @@ public abstract class ItemTransferDelegate implements IItemTransfer {
     }
 
     @Override
-    @NotNull
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-        return delegate.insertItem(slot, stack, simulate, notifyChanges);
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+        delegate.setStackInSlot(slot, stack);
     }
 
     @Override
-    @NotNull
-    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-        return delegate.extractItem(slot, amount, simulate, notifyChanges);
+    @Nonnull
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        return delegate.insertItem(slot, stack, simulate);
+    }
+
+    @Override
+    @Nonnull
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
+        return delegate.extractItem(slot, amount, simulate);
     }
 
     @Override
@@ -59,23 +60,5 @@ public abstract class ItemTransferDelegate implements IItemTransfer {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return delegate.isItemValid(slot, stack);
-    }
-
-    @Override
-    @ApiStatus.Internal
-    @NotNull
-    public Object createSnapshot() {
-        return delegate.createSnapshot();
-    }
-
-    @Override
-    @ApiStatus.Internal
-    public void restoreFromSnapshot(Object snapshot) {
-        delegate.restoreFromSnapshot(snapshot);
-    }
-
-    @Override
-    public void onContentsChanged() {
-        delegate.onContentsChanged();
     }
 }

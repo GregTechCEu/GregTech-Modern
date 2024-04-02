@@ -16,7 +16,6 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -41,9 +40,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-
-import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import lombok.Getter;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -70,11 +67,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     protected TickableSubscription autoOutputSubs;
     @Nullable
     protected ISubscription exportFluidSubs;
-    @Persisted(key = "Fluid")
-    @DescSynced
-    @Getter
-    @DropSaved // rename "Fluid" for Item capability
-    protected FluidStack stored = FluidStack.empty();
+    @Persisted(key = "Fluid") @DescSynced @Getter @DropSaved // rename "Fluid" for Item capability
+    protected FluidStack stored = FluidStack.EMPTY;
     @Getter
     protected final Material material;
 
@@ -116,8 +110,8 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     }
 
     private void updateStoredFluidFromCache() {
-        FluidStack cachedFluid = cache.getFluidInTank(0);
-        this.stored = cachedFluid.isEmpty() ? FluidStack.empty() : cachedFluid;
+        net.neoforged.neoforge.fluids.FluidStack cachedFluid = cache.getFluidInTank(0);
+        this.stored = cachedFluid.isEmpty() ? FluidStack.EMPTY : cachedFluid;
     }
 
     @Override
@@ -137,7 +131,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     public void loadFromItem(CompoundTag tag) {
         IDropSaveMachine.super.loadFromItem(tag);
         if (!tag.contains("Fluid")) {
-            stored = FluidStack.empty();
+            stored = FluidStack.EMPTY;
         }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
         cache.getStorages()[0].setFluid(stored.copy());
@@ -208,10 +202,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
             var fluidTank = cache.getStorages()[0];
             if (handler != null && !isRemote()) {
-                if (cache.getStorages()[0].getFluidAmount() > 0) {
-                    FluidStack initialFluid = fluidTank.getFluid();
-                    FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank,
-                            Integer.MAX_VALUE, null, false);
+                if (cache.storages[0].getFluidAmount() > 0) {
+                    net.neoforged.neoforge.fluids.FluidStack initialFluid = fluidTank.getFluid();
+                    FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, false);
                     if (result.isSuccess()) {
                         ItemStack remainingStack = FluidTransferHelper
                                 .tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();

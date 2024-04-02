@@ -17,7 +17,8 @@ import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
-import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
+import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
@@ -32,7 +33,10 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,9 +48,8 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -116,7 +119,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return isWorkingEnabled() && getAdjacentFluidTransfer() != null;
     }
 
-    protected @Nullable IFluidHandler getOwnFluidTransfer() {
+    protected @Nullable IFluidHandlerModifiable getOwnFluidTransfer() {
         return coverHolder.getFluidTransferCap(attachedSide, false);
     }
 
@@ -229,24 +232,25 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     private long doTransferFluids(int platformTransferLimit) {
         var adjacentFluidTransfer = getAdjacentFluidTransfer();
+        var adjacentModifiable = adjacentFluidTransfer instanceof IFluidHandlerModifiable modifiable ? modifiable : new ModifiableFluidHandlerWrapper(adjacentFluidTransfer);
         var ownFluidTransfer = getOwnFluidTransfer();
 
         if (adjacentFluidTransfer != null && ownFluidTransfer != null) {
             return switch (io) {
-                case IN -> doTransferFluidsInternal(adjacentFluidTransfer, ownFluidTransfer, platformTransferLimit);
-                case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentFluidTransfer, platformTransferLimit);
+                case IN -> doTransferFluidsInternal(adjacentModifiable, ownFluidTransfer, platformTransferLimit);
+                case OUT -> doTransferFluidsInternal(ownFluidTransfer, adjacentModifiable, platformTransferLimit);
                 default -> 0L;
             };
         }
         return 0;
     }
 
-    protected long doTransferFluidsInternal(IFluidHandler source, IFluidHandler destination, int platformTransferLimit) {
+    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
         return transferAny(source, destination, platformTransferLimit);
     }
 
-    protected long transferAny(IFluidHandler source, IFluidHandler destination, int platformTransferLimit) {
-        return FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
+    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
+        return (int) FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
     }
 
     protected enum TransferDirection {
@@ -254,8 +258,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         EXTRACT
     }
 
-    protected Map<FluidStack, Long> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Long> summedFluids = new Object2LongOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer, TransferDirection direction) {
+        final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
 
         for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
             if (!canTransfer(fluidTransfer, direction, tank))
@@ -265,7 +269,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             if (fluidStack.isEmpty())
                 continue;
 
-            summedFluids.putIfAbsent(fluidStack, 0L);
+            summedFluids.putIfAbsent(fluidStack, 0);
             summedFluids.computeIfPresent(fluidStack, (stack, totalAmount) -> {
                 return totalAmount + stack.getAmount();
             });

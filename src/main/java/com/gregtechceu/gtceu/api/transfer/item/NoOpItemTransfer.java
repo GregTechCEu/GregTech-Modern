@@ -1,18 +1,15 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
-
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class NoOpItemTransfer implements IItemTransfer {
-
+public class NoOpItemTransfer implements IItemHandlerModifiable {
     public static final NoOpItemTransfer INSTANCE = new NoOpItemTransfer();
 
     private NoOpItemTransfer() {}
@@ -28,15 +25,18 @@ public class NoOpItemTransfer implements IItemTransfer {
         return ItemStack.EMPTY;
     }
 
-    @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-        return stack;
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+
     }
 
-    @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+    public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+        return ItemStack.EMPTY;
+    }
+
+    @Override
+    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;
     }
 
@@ -49,13 +49,4 @@ public class NoOpItemTransfer implements IItemTransfer {
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return false;
     }
-
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return new Object();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {}
 }

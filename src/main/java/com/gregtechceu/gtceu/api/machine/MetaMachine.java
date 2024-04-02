@@ -28,8 +28,12 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -94,7 +98,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
-    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
+    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
     @Getter
     public final IMachineBlockEntity holder;
     @Getter
@@ -610,7 +614,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Override
-    public boolean canConnectRedstone(Direction side) {
+    public boolean canConnectRedstone(@Nullable Direction side) {
         if (side == null) return false;
 
         // For some reason, Minecraft requests the output signal from the opposite side...
@@ -668,7 +672,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IFluidHandler getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
                 .filter(IFluidHandler.class::isInstance)
                 .filter(t -> t.hasCapability(side))

@@ -18,13 +18,14 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.core.mixins.ItemEntityAccessor;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -53,8 +54,6 @@ import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -96,9 +95,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     @Getter
     @Persisted
-    protected final ItemStackTransfer chargerInventory;
+    protected final CustomItemStackHandler chargerInventory;
     @Persisted
-    protected final ItemStackTransfer filterInventory;
+    protected final CustomItemStackHandler filterInventory;
 
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, collectionSubs;
@@ -147,16 +146,15 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     // ***** Initialization *****//
     //////////////////////////////////////
 
-    protected ItemStackTransfer createChargerItemHandler() {
-        var transfer = new ItemStackTransfer();
+    protected CustomItemStackHandler createChargerItemHandler() {
+        var transfer = new CustomItemStackHandler();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return transfer;
     }
 
-    protected ItemStackTransfer createFilterItemHandler() {
-        var transfer = new ItemStackTransfer();
-        transfer.setFilter(
-                item -> item.is(GTItems.ITEM_FILTER.asItem()) || item.is(GTItems.ORE_DICTIONARY_FILTER.asItem()));
+    protected CustomItemStackHandler createFilterItemHandler() {
+        var transfer = new CustomItemStackHandler();
+       transfer.setFilter(item -> item.is(GTItems.ITEM_FILTER.asItem()) || item.is(GTItems.ORE_DICTIONARY_FILTER.asItem()));
         return transfer;
     }
 
@@ -255,11 +253,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine
             if (filter != null && !filter.test(itemEntity.getItem())) continue;
             double distX = (centerPos.getX() + 0.5) - itemEntity.position().x;
             double distZ = (centerPos.getZ() + 0.5) - itemEntity.position().z;
-            double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distZ, 2));
-            if (dist >= 0.7f) {
-                if (itemEntity.pickupDelay == 32767) continue; // INFINITE_PICKUP_DELAY = 32767
-                double dirX = distX / dist;
-                double dirZ = distZ / dist;
+            double dist = Math.sqrt(Math.pow(distX,2) + Math.pow(distZ,2));
+            if(dist>=.7f){
+                if(((ItemEntityAccessor)itemEntity).getPickupDelay()==32767) continue; //INFINITE_PICKUP_DELAY = 32767
+                double dirX = distX/dist;
+                double dirZ = distZ/dist;
                 Vec3 delta = itemEntity.getDeltaMovement();
                 itemEntity.setDeltaMovement(dirX * MOTION_MULTIPLIER * tier, delta.y, dirZ * MOTION_MULTIPLIER * tier);
                 itemEntity.setPickUpDelay(1);
@@ -544,20 +542,5 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         }
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
-    }
-
-    @Override
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
-                                                  BlockHitResult hitResult) {
-        var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
-        if (controllable != null) {
-            if (!isRemote()) {
-                controllable.setWorkingEnabled(!controllable.isWorkingEnabled());
-                playerIn.sendSystemMessage(Component.translatable(controllable.isWorkingEnabled() ?
-                        "behaviour.soft_hammer.enabled" : "behaviour.soft_hammer.disabled"));
-            }
-            return InteractionResult.CONSUME;
-        }
-        return InteractionResult.PASS;
     }
 }

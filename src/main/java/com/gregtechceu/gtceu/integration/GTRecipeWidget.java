@@ -18,15 +18,14 @@ import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.util.Mth;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
@@ -193,167 +192,9 @@ public class GTRecipeWidget extends WidgetGroup {
                     FormattingUtil.formatNumbers(EUt)));
         }
 
-        return texts;
-    }
-
-    private void addButtons() {
-        // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
-        int x = getSize().width + 3 - this.xOffset, y = 3;
-        if (LDLib.isEmiLoaded()) {
-            x = getSize().width - xOffset - 18;
-            y = getSize().height - 30;
-        }
-        addWidget(
-                new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
-                        cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()),
-                        () -> CompassManager.INSTANCE.devMode, CompassManager.INSTANCE.devMode)
-                        .setHoverTooltips("click to copy: " + recipe.id));
-    }
-
-    private int getVoltageXOffset() {
-        int x = getSize().width - switch (tier) {
-            case ULV, LuV, ZPM, UHV, UEV, UXV -> 20;
-            case OpV, MAX -> 22;
-            case UIV -> 18;
-            case IV -> 12;
-            default -> 14;
-        };
-        if (!LDLib.isEmiLoaded()) {
-            x -= 3;
-        }
-        return x;
-    }
-
-    public void setRecipeOC(int button, boolean isShiftClick) {
-        OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
-        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
-            setTier(tier + 1);
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
-            setTier(tier - 1);
-        } else if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
-            setTierToMin();
-        }
-        if (isShiftClick) {
-            oc = OverclockingLogic.PERFECT_OVERCLOCK;
-        }
-        setRecipeTextWidget(oc);
-    }
-
-    private void setRecipeTextWidget(OverclockingLogic logic) {
-        long inputEUt = RecipeHelper.getInputEUt(recipe);
-        int duration = recipe.duration;
-        String tierText = GTValues.VNF[tier];
-        if (tier > getMinTier() && inputEUt != 0) {
-            LongIntPair pair = RecipeHelper.performOverclocking(logic, recipe, inputEUt, GTValues.V[tier]);
-            duration = pair.rightInt();
-            inputEUt = pair.firstLong();
-            tierText = tierText.formatted(ChatFormatting.ITALIC);
-        }
-        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);
-        for (int i = 0; i < texts.size(); i++) {
-            recipeParaTexts.get(i).setComponent(texts.get(i));
-        }
-        voltageTextWidget.setText(tierText);
-        voltageTextWidget.setSelfPositionX(getVoltageXOffset() - xOffset);
-        detectAndSendChanges();
-        updateScreen();
-    }
-
-    public static void setConsumedChance(Content content, List<Component> tooltips) {
-        var chance = content.chance;
-        if (chance < 1) {
-            tooltips.add(chance == 0 ?
-                    Component.translatable("gtceu.gui.content.chance_0") :
-                    FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
-            if (content.tierChanceBoost != 0) {
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
-                        content.tierChanceBoost * 100));
-            }
-        }
-    }
-
-    private int getMinTier() {
-        return RecipeHelper.getRecipeEUtTier(recipe);
-    }
-
-    private void setTier(int tier) {
-        this.tier = Mth.clamp(tier, getMinTier(), GTValues.MAX);
-    }
-
-    private void setTierToMin() {
-        setTier(getMinTier());
-    }
-
-    public void collectStorage(Table<IO, RecipeCapability<?>, Object> extraTable,
-                               Table<IO, RecipeCapability<?>, List<Content>> extraContents, GTRecipe recipe) {
-        Map<RecipeCapability<?>, List<Object>> inputCapabilities = new Object2ObjectLinkedOpenHashMap<>();
-        for (var entry : recipe.inputs.entrySet()) {
-            RecipeCapability<?> cap = entry.getKey();
-            List<Content> contents = entry.getValue();
-
-            extraContents.put(IO.IN, cap, contents);
-            inputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.IN));
-        }
-        for (var entry : recipe.tickInputs.entrySet()) {
-            RecipeCapability<?> cap = entry.getKey();
-            List<Content> contents = entry.getValue();
-
-            extraContents.put(IO.IN, cap, contents);
-            inputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.IN));
-        }
-        for (var entry : inputCapabilities.entrySet()) {
-            while (entry.getValue().size() < recipe.recipeType.getMaxInputs(entry.getKey())) entry.getValue().add(null);
-            var container = entry.getKey().createXEIContainer(entry.getValue());
-            if (container != null) {
-                extraTable.put(IO.IN, entry.getKey(), container);
-            }
-        }
-
-        Map<RecipeCapability<?>, List<Object>> outputCapabilities = new Object2ObjectLinkedOpenHashMap<>();
-        for (var entry : recipe.outputs.entrySet()) {
-            RecipeCapability<?> cap = entry.getKey();
-            List<Content> contents = entry.getValue();
-
-            extraContents.put(IO.OUT, cap, contents);
-            outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.OUT));
-        }
-        for (var entry : recipe.tickOutputs.entrySet()) {
-            RecipeCapability<?> cap = entry.getKey();
-            List<Content> contents = entry.getValue();
-
-            extraContents.put(IO.OUT, cap, contents);
-            outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.OUT));
-        }
-        for (var entry : outputCapabilities.entrySet()) {
-            while (entry.getValue().size() < recipe.recipeType.getMaxOutputs(entry.getKey()))
-                entry.getValue().add(null);
-            var container = entry.getKey().createXEIContainer(entry.getValue());
-            if (container != null) {
-                extraTable.put(IO.OUT, entry.getKey(), container);
-            }
-        }
-    }
-
-    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable, WidgetGroup group,
-                         GTRecipe recipe) {
-        for (var capabilityEntry : contentTable.rowMap().entrySet()) {
-            IO io = capabilityEntry.getKey();
-            for (var contentsEntry : capabilityEntry.getValue().entrySet()) {
-                RecipeCapability<?> cap = contentsEntry.getKey();
-                int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
-                List<Content> contents = contentsEntry.getValue();
-                // bind fluid out overlay
-                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
-                        widget -> {
-                            var index = WidgetUtils.widgetIdIndex(widget);
-                            if (index >= 0 && index < contents.size()) {
-                                var content = contents.get(index);
-                                cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
-                                        null);
-                                widget.setOverlay(content.createOverlay(index >= nonTickCount));
-                            }
-                        });
-            }
-        }
+        // add recipe id getter
+//        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
+//            Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
+//        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
     }
 }

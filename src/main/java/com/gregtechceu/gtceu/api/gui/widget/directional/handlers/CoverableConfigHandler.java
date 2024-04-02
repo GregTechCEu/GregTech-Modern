@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -20,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 
@@ -40,7 +40,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
     private static final IGuiTexture CONFIG_BTN_TEXTURE = new GuiTextureGroup(GuiTextures.IO_CONFIG_COVER_SETTINGS);
 
     private final ICoverable machine;
-    private ItemStackTransfer transfer;
+    private CustomItemStackHandler transfer;
     private Direction side;
 
     private ConfiguratorPanel panel;
@@ -54,9 +54,8 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         this.transfer = createItemStackTransfer();
     }
 
-    private ItemStackTransfer createItemStackTransfer() {
-        var transfer = new ItemStackTransfer(1) {
-
+    private CustomItemStackHandler createItemStackTransfer() {
+        var transfer = new CustomItemStackHandler(1) {
             @Override
             public int getSlotLimit(int slot) {
                 return 1;

@@ -9,15 +9,14 @@ import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-
-import lombok.Getter;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -55,15 +54,15 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     protected void doVoidFluids() {
-        IFluidTransfer fluidTransfer = getOwnFluidTransfer();
+        IFluidHandlerModifiable fluidTransfer = getOwnFluidTransfer();
         if (fluidTransfer == null) {
             return;
         }
         voidAny(fluidTransfer);
     }
 
-    void voidAny(IFluidTransfer fluidTransfer) {
-        final Map<FluidStack, Long> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
+    void voidAny(IFluidHandlerModifiable fluidTransfer) {
+        final Map<FluidStack, Integer> fluidAmounts = enumerateDistinctFluids(fluidTransfer, TransferDirection.EXTRACT);
 
         for (FluidStack fluidStack : fluidAmounts.keySet()) {
             if (!filterHandler.test(fluidStack))
@@ -72,7 +71,7 @@ public class FluidVoidingCover extends PumpCover {
             var toDrain = fluidStack.copy();
             toDrain.setAmount(fluidAmounts.get(fluidStack));
 
-            fluidTransfer.drain(toDrain, false);
+            fluidTransfer.drain(toDrain, IFluidHandler.FluidAction.EXECUTE);
         }
     }
 

@@ -30,7 +30,7 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
      * @return The amount configured for the supplied fluid stack.<br>
      *         If the stack is not matched by this filter, 0 is returned instead.
      */
-    long testFluidAmount(FluidStack fluidStack);
+    int testFluidAmount(FluidStack fluidStack);
 
     /**
      * @return Whether this filter supports querying for exact fluid amounts.
@@ -51,8 +51,8 @@ public interface FluidFilter extends Filter<FluidStack, FluidFilter> {
         }
 
         @Override
-        public long testFluidAmount(FluidStack fluidStack) {
-            return Long.MAX_VALUE;
+        public int testFluidAmount(FluidStack fluidStack) {
+            return Integer.MAX_VALUE;
         }
 
         @Override

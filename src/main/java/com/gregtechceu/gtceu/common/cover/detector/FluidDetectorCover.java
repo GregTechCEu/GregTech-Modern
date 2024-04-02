@@ -3,12 +3,10 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidDetectorCover extends DetectorCover {
 
@@ -26,7 +24,7 @@ public class FluidDetectorCover extends DetectorCover {
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
-        IFluidTransfer fluidHandler = getFluidTransfer();
+        IFluidHandler fluidHandler = getFluidTransfer();
         if (fluidHandler == null)
             return;
 
@@ -47,7 +45,7 @@ public class FluidDetectorCover extends DetectorCover {
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedFluid, fluidCapacity, isInverted()));
     }
 
-    protected IFluidTransfer getFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    protected IFluidHandler getFluidTransfer() {
+        return coverHolder.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, coverHolder.getPos(), attachedSide);
     }
 }

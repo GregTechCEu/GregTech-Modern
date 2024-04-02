@@ -10,8 +10,10 @@ import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -24,6 +26,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -56,9 +59,9 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            FluidStack tank = FluidStack.loadFromTag(stack.getOrCreateTagElement("stored"));
+            FluidStack tank = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
             // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.empty());
+            renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.EMPTY);
 
             poseStack.popPose();
         }

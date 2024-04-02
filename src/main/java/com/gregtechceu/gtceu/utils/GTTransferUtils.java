@@ -47,7 +47,7 @@ public class GTTransferUtils {
             if (canInsertAmount > 0) {
                 fluidStack.setAmount(canInsertAmount);
                 fluidStack = sourceHandler.drain(fluidStack, IFluidHandler.FluidAction.EXECUTE);
-                if (fluidStack != FluidStack.EMPTY && fluidStack.getAmount() > 0) {
+                if (fluidStack.isEmpty() && fluidStack.getAmount() > 0) {
                     fillFluidAccountNotifiableList(destHandler, fluidStack, IFluidHandler.FluidAction.EXECUTE);
 
                     fluidLeftToTransfer -= fluidStack.getAmount();
@@ -69,7 +69,7 @@ public class GTTransferUtils {
         long canInsertAmount = destHandler.fill(sourceFluid, IFluidHandler.FluidAction.SIMULATE);
         if (canInsertAmount == amount) {
             sourceFluid = sourceHandler.drain(sourceFluid, IFluidHandler.FluidAction.EXECUTE);
-            if (sourceFluid != FluidStack.EMPTY && sourceFluid.getAmount() > 0) {
+            if (sourceFluid.isEmpty() && sourceFluid.getAmount() > 0) {
                 destHandler.fill(sourceFluid, IFluidHandler.FluidAction.EXECUTE);
                 return true;
             }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.loader;
 
+import com.google.gson.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
@@ -20,15 +21,7 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.level.storage.loot.Deserializers;
-import net.minecraftforge.fml.ModLoader;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParseException;
-import com.mojang.serialization.JsonOps;
-import dev.latvian.mods.kubejs.script.ScriptType;
+import net.neoforged.fml.ModLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -37,7 +30,7 @@ import java.util.Map;
 public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
 
     public static FluidVeinLoader INSTANCE;
-    public static final Gson GSON_INSTANCE = Deserializers.createFunctionSerializer().create();
+    public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().setLenient().create();
     private static final String FOLDER = "gtceu/fluid_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 

@@ -2,10 +2,9 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
-
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -100,7 +99,7 @@ public class SimpleItemFilter implements ItemFilter {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
 
-                var handler = new ItemStackTransfer(matches[index]);
+                var handler = new CustomItemStackHandler(matches[index]);
 
                 var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
 

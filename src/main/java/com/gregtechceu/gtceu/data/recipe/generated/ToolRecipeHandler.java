@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.ToolItemHelper;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.data.recipes.SpecialRecipeBuilder;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
@@ -38,7 +39,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -378,8 +378,7 @@ public class ToolRecipeHandler {
         registerSoftToolRecipes(provider);
         registerElectricRecipes(provider);
 
-        SpecialRecipeBuilder.special(ToolHeadReplaceRecipe.SERIALIZER).save(provider,
-                "gtceu:crafting/replace_tool_head");
+        SpecialRecipeBuilder.special(ToolHeadReplaceRecipe::new).save(provider, "gtceu:crafting/replace_tool_head");
     }
 
     private static void registerFlintToolRecipes(RecipeOutput provider) {

@@ -12,16 +12,11 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-
-import net.minecraft.data.recipes.FinishedRecipe;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -32,7 +27,6 @@ import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.MIXER_RECIPES;
-import static com.gregtechceu.gtceu.common.data.machines.GCyMMachines.*;
 import static com.gregtechceu.gtceu.data.recipe.CustomTags.*;
 
 public class GCyMRecipes {

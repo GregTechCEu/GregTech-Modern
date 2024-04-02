@@ -6,12 +6,13 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -51,10 +52,9 @@ public class InfiniteWaterCover extends CoverBehavior {
 
     public void update() {
         if (coverHolder.getOffsetTimer() % 20 == 0) {
-            var fluidHandler = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(),
-                    attachedSide);
-            if (fluidHandler != null)
-                fluidHandler.fill(FluidStack.create(Fluids.WATER, 16 * FluidHelper.getBucket()), false);
+            var fluidHandler = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+            if(fluidHandler != null)
+                fluidHandler.fill(new FluidStack(Fluids.WATER, 16 * FluidHelper.getBucket()), IFluidHandler.FluidAction.EXECUTE);
         }
     }
 }

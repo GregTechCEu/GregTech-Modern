@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.ForgeTier;
-import net.minecraftforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.common.SimpleTier;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 
 import java.util.List;
 
@@ -24,16 +24,14 @@ public class GTToolTiers {
         var duranium = GTCEu.id("duranium");
         var neutronium = GTCEu.id("neutronium");
         DURANIUM = TierSortingRegistry.registerTier(
-                new ForgeTier(5, 8193, 14.0F, 12.0F, 33, CustomTags.NEEDS_DURANIUM_TOOL,
-                        () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Duranium))),
-                duranium,
-                List.of(netherite),
-                List.of(neutronium));
+            new SimpleTier(5, 8193, 14.0F, 12.0F, 33, CustomTags.NEEDS_DURANIUM_TOOL, () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Duranium))),
+            duranium,
+            List.of(netherite),
+            List.of(neutronium));
         NEUTRONIUM = TierSortingRegistry.registerTier(
-                new ForgeTier(6, 65536, 180.0F, 100.0F, 33, CustomTags.NEEDS_NEUTRONIUM_TOOL,
-                        () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Neutronium))),
-                neutronium,
-                List.of(duranium),
-                List.of());
+            new SimpleTier(6, 65536, 180.0F, 100.0F, 33, CustomTags.NEEDS_NEUTRONIUM_TOOL, () -> Ingredient.of(ChemicalHelper.getTag(TagPrefix.ingot, GTMaterials.Neutronium))),
+            neutronium,
+            List.of(duranium),
+            List.of());
     }
 }

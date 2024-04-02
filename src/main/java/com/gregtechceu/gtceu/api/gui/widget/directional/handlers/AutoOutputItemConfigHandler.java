@@ -16,8 +16,8 @@ import com.lowdragmc.lowdraglib.utils.BlockPosFace;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.blaze3d.vertex.PoseStack;
 
@@ -124,7 +124,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
-        if (machine.getOutputFacingItems() != blockPosFace.facing)
+        if (machine.getOutputFacingItems() != blockPosFace.facing())
             return;
 
         sceneWidget.drawFacingBorder(new PoseStack(), blockPosFace,

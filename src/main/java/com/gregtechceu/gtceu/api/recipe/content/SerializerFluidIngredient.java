@@ -1,12 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
-import net.minecraft.network.FriendlyByteBuf;
-
 import com.google.gson.JsonElement;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import net.minecraft.network.FriendlyByteBuf;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 
