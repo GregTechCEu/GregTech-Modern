@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
+import com.google.gson.JsonElement;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-
+import com.mojang.serialization.JsonOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
@@ -28,12 +30,12 @@ public class SerializerIngredient implements IContentSerializer<Ingredient> {
 
     @Override
     public Ingredient fromJson(JsonElement json) {
-        return Ingredient.fromJson(json);
+        return Ingredient.fromJson(json, false);
     }
 
     @Override
     public JsonElement toJson(Ingredient content) {
-        return content.toJson();
+        return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, content).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override

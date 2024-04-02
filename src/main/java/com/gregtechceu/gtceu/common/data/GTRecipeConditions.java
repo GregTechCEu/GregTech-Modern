@@ -30,6 +30,7 @@ public final class GTRecipeConditions {
     public static final RecipeConditionType<ThunderCondition> THUNDER = GTRegistries.RECIPE_CONDITIONS.register("thunder", new RecipeConditionType<>(ThunderCondition::new, ThunderCondition.CODEC));
     public static final RecipeConditionType<VentCondition> VENT = GTRegistries.RECIPE_CONDITIONS.register("steam_vent", new RecipeConditionType<>(VentCondition::new, VentCondition.CODEC));
     public static final RecipeConditionType<CleanroomCondition> CLEANROOM = GTRegistries.RECIPE_CONDITIONS.register("cleanroom", new RecipeConditionType<>(CleanroomCondition::new, CleanroomCondition.CODEC));
+    public static final RecipeConditionType<EUToStartCondition> EU_TO_START = GTRegistries.RECIPE_CONDITIONS.register("eu_to_start", new RecipeConditionType<>(EUToStartCondition::new, EUToStartCondition.CODEC));
     public static final RecipeConditionType<RPMCondition> RPM;
 
     static {

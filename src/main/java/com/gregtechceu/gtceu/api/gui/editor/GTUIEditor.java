@@ -13,6 +13,6 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.UIEditor;
 public class GTUIEditor extends UIEditor {
 
     public GTUIEditor() {
-        super(LDLib.location);
+        super(LDLib.getLDLibDir());
     }
 }

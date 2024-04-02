@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.*;
 
@@ -43,11 +45,16 @@ public class GTJadePlugin implements IWailaPlugin {
 
     static {
         GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft"))
-                return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(type.name, type.harvestTags.get(0),
-                    map.values().stream().filter(Objects::nonNull).filter(ItemProviderEntry::isPresent)
-                            .map(ItemProviderEntry::asItem).toArray(Item[]::new)));
+            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
+            HarvestToolProvider.registerHandler(new SimpleToolHandler(GTCEu.id(type.name), true, map
+                .values()
+                .stream()
+                .filter(Objects::nonNull)
+                .filter(ItemProviderEntry::isBound)
+                .map(ItemProviderEntry::asItem)
+                .map(Item::getDefaultInstance)
+                .toList()
+            ));
         });
     }
 }

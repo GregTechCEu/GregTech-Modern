@@ -49,7 +49,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
         this.fuelTank = createFuelTank(args).setFilter(fluid -> FUEL_CACHE.computeIfAbsent(fluid.getFluid(), f -> {
             if (isRemote()) return true;
             return recipeLogic.getRecipeManager().getAllRecipesFor(getRecipeType()).stream().anyMatch(recipe -> {
-                var list = recipe.inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
+                var list = recipe.value().inputs.getOrDefault(FluidRecipeCapability.CAP, Collections.emptyList());
                 if (!list.isEmpty()) {
                     return Arrays.stream(FluidRecipeCapability.CAP.of(list.get(0).content).getStacks())
                             .anyMatch(stack -> stack.getFluid() == f);

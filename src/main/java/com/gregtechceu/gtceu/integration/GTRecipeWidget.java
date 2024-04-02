@@ -25,6 +25,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import com.google.common.collect.Table;
@@ -47,39 +48,9 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
-
-    public static final int LINE_HEIGHT = 10;
-
-    private final int xOffset;
-    private final GTRecipe recipe;
-    private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
-    @Getter
-    private int tier;
-    @Getter
-    private int yOffset;
-    private LabelWidget voltageTextWidget;
-
-    public GTRecipeWidget(GTRecipe recipe) {
-        super(getXOffset(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width,
-                recipe.recipeType.getRecipeUI().getJEISize().height);
-        this.recipe = recipe;
-        this.xOffset = getXOffset(recipe);
-        setRecipeWidget();
-        setTierToMin();
-        initializeRecipeTextWidget();
-        addButtons();
-    }
-
-    private static int getXOffset(GTRecipe recipe) {
-        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width) {
-            return (recipe.recipeType.getRecipeUI().getJEISize().width -
-                    recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
-        }
-        return 0;
-    }
-
-    @SuppressWarnings("UnstableApiUsage")
-    private void setRecipeWidget() {
+    public GTRecipeWidget(RecipeHolder<GTRecipe> recipeHolder) {
+        super(0, 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width, recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
+        GTRecipe recipe = recipeHolder.value();
         setClientSideWidget();
 
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
@@ -193,8 +164,8 @@ public class GTRecipeWidget extends WidgetGroup {
         }
 
         // add recipe id getter
-//        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
-//            Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
-//        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
+            Minecraft.getInstance().keyboardHandler.setClipboard(recipeHolder.id().toString());
+        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipeHolder.id()));
     }
 }

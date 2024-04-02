@@ -218,19 +218,19 @@ public class AEItemConfigSlot extends AEConfigSlot {
     }
 
     @Override
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelX, double wheelY) {
         IConfigurableSlot slot = this.parentWidget.getDisplay(this.index);
         Rect2i rectangle = toRectangleBox();
         rectangle.setHeight(rectangle.getHeight() / 2);
-        if (slot.getConfig() == null || wheelDelta == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
+        if (slot.getConfig() == null || wheelY == 0 || !rectangle.contains((int) mouseX, (int) mouseY)) {
             return false;
         }
         GenericStack stack = slot.getConfig();
         long amt;
         if (isCtrlDown()) {
-            amt = wheelDelta > 0 ? stack.amount() * 2L : stack.amount() / 2L;
+            amt = wheelY > 0 ? stack.amount() * 2L : stack.amount() / 2L;
         } else {
-            amt = wheelDelta > 0 ? stack.amount() + 1L : stack.amount() - 1L;
+            amt = wheelY > 0 ? stack.amount() + 1L : stack.amount() - 1L;
         }
         if (amt > 0 && amt < Integer.MAX_VALUE + 1L) {
             writeClientAction(AMOUNT_CHANGE_ID, buf -> buf.writeVarLong(amt));

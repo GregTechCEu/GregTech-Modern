@@ -37,6 +37,5 @@ public interface IGTFluidBuilder {
     IGTFluidBuilder onFluidRegister(Consumer<Fluid> fluidConsumer);
 
     Supplier<? extends Fluid> registerFluid();
-
-    RegistryEntry<? extends Fluid> register();
+    RegistryEntry<Fluid, ? extends Fluid> register();
 }

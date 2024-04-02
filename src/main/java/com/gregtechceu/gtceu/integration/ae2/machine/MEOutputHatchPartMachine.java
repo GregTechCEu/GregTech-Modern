@@ -41,7 +41,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
 
     @Override
     @NotNull
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         this.internalBuffer = new SerializableGenericStackInv(this::onChanged, slots);
         return new InaccessibleInfiniteSlot(this, this.internalBuffer);
     }

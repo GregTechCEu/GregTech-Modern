@@ -44,10 +44,8 @@ public class GTModels {
         prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
     }
 
-    public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx,
-                                             RegistrateBlockstateProvider prov) {
-        prov.simpleBlock(ctx.getEntry(), prov.models().cross(ForgeRegistries.BLOCKS.getKey(ctx.getEntry()).getPath(),
-                prov.blockTexture(ctx.getEntry())));
+    public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
+        prov.simpleBlock(ctx.getEntry(), prov.models().cross(BuiltInRegistries.BLOCK.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry())));
     }
 
     public static void cellModel(DataGenContext<Item, ? extends Item> ctx, RegistrateItemModelProvider prov) {

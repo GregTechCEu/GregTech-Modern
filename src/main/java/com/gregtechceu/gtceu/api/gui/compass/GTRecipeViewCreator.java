@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 /**
  * @author KilaBash
@@ -19,8 +20,8 @@ import net.minecraft.world.item.crafting.Recipe;
 public class GTRecipeViewCreator implements RecipeComponent.RecipeViewCreator {
 
     @Override
-    public ItemStack getWorkstation(Recipe<?> recipe) {
-        if (recipe instanceof GTRecipe gtRecipe) {
+    public ItemStack getWorkstation(RecipeHolder<?> recipe) {
+        if (recipe.value() instanceof GTRecipe gtRecipe) {
             if (gtRecipe.recipeType.getIconSupplier() != null) {
                 return gtRecipe.recipeType.getIconSupplier().get();
             }
@@ -29,9 +30,10 @@ public class GTRecipeViewCreator implements RecipeComponent.RecipeViewCreator {
     }
 
     @Override
-    public WidgetGroup getViewWidget(Recipe<?> recipe) {
-        if (recipe instanceof GTRecipe gtRecipe) {
-            var widget = new GTRecipeWidget(gtRecipe);
+    public WidgetGroup getViewWidget(RecipeHolder<?> recipe) {
+        if (recipe.value() instanceof GTRecipe gtRecipe) {
+            //noinspection unchecked
+            var widget = new GTRecipeWidget((RecipeHolder<GTRecipe>) recipe);
             widget.addSelfPosition(4, 4);
             var recipeGroup = new WidgetGroup(0, 0, widget.getSize().width + 8, widget.getSize().height + 8);
             recipeGroup.setBackground(GuiTextures.BACKGROUND);

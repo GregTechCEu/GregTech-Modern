@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
-
-import com.google.common.base.CaseFormat;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -180,6 +179,6 @@ public class FormattingUtil {
     }
 
     private static boolean isEmptyComponent(Component component) {
-        return component.getContents() == ComponentContents.EMPTY && component.getSiblings().isEmpty();
+        return component.getContents() == PlainTextContents.EMPTY && component.getSiblings().isEmpty();
     }
 }

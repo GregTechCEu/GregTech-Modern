@@ -29,15 +29,16 @@ public class MaterialRegistryImpl extends MaterialRegistry {
         this.register(material.getName(), material);
     }
 
+    @SuppressWarnings("unchecked")
     @Override
-    public void register(@NotNull java.lang.String key, @NotNull Material value) {
+    public Material register(@NotNull java.lang.String key, @NotNull Material value) {
         if (isRegistryClosed) {
             GTCEu.LOGGER.error(
                     "Materials cannot be registered in the PostMaterialEvent (or after)! Must be added in the MaterialEvent. Skipping material {}...",
                     key);
-            return;
+            return null;
         }
-        super.register(key, value);
+        return super.register(key, value);
     }
 
     @NotNull

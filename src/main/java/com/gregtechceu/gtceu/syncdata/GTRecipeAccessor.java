@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
 
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import io.netty.buffer.Unpooled;
 
@@ -27,7 +28,6 @@ public class GTRecipeAccessor extends CustomObjectAccessor<GTRecipe> {
     @Override
     public ITypedPayload<?> serialize(AccessorOp accessorOp, GTRecipe gtRecipe) {
         FriendlyByteBuf serializedHolder = new FriendlyByteBuf(Unpooled.buffer());
-        serializedHolder.writeUtf(gtRecipe.id.toString());
         GTRecipeSerializer.SERIALIZER.toNetwork(serializedHolder, gtRecipe);
         return FriendlyBufPayload.of(serializedHolder);
     }
@@ -35,8 +35,7 @@ public class GTRecipeAccessor extends CustomObjectAccessor<GTRecipe> {
     @Override
     public GTRecipe deserialize(AccessorOp accessorOp, ITypedPayload<?> payload) {
         if (payload instanceof FriendlyBufPayload buffer) {
-            var id = new ResourceLocation(buffer.getPayload().readUtf());
-            return GTRecipeSerializer.SERIALIZER.fromNetwork(id, buffer.getPayload());
+            return GTRecipeSerializer.SERIALIZER.fromNetwork(buffer.getPayload());
         }
         return null;
     }

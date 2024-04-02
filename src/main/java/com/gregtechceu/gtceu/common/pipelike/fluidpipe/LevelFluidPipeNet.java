@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.saveddata.SavedData;
 
 public class LevelFluidPipeNet extends LevelPipeNet<FluidPipeProperties, FluidPipeNet> {
 
     public static LevelFluidPipeNet getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new LevelFluidPipeNet(serverLevel, tag),
-                () -> new LevelFluidPipeNet(serverLevel), "gtcue_fluid_pipe_net");
+        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new LevelFluidPipeNet(serverLevel), tag -> new LevelFluidPipeNet(serverLevel, tag)), "gtceu_fluid_pipe_net");
     }
 
     public LevelFluidPipeNet(ServerLevel serverLevel) {

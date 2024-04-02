@@ -25,8 +25,8 @@ import java.util.Map;
 @Mixin(value = RepairItemRecipe.class)
 public abstract class RepairItemRecipeMixin extends CustomRecipe {
 
-    public RepairItemRecipeMixin(ResourceLocation id, CraftingBookCategory category) {
-        super(id, category);
+    public RepairItemRecipeMixin(CraftingBookCategory category) {
+        super(category);
     }
 
     /**

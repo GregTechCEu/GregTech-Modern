@@ -7,7 +7,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 
@@ -26,8 +26,7 @@ import java.util.stream.Stream;
 @Mixin(RecipeManager.class)
 public abstract class RecipeManagerMixin {
 
-    @Shadow
-    private Map<RecipeType<?>, Map<ResourceLocation, Recipe<?>>> recipes;
+    @Shadow private Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> recipes;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
@@ -38,25 +37,24 @@ public abstract class RecipeManagerMixin {
                 gtRecipeType.getLookup().removeAllRecipes();
 
                 var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
+                for (Map.Entry<RecipeType<?>, List<RecipeHolder<GTRecipe>>> entry : proxyRecipes.entrySet()) {
                     var type = entry.getKey();
                     var recipes = entry.getValue();
                     recipes.clear();
                     if (this.recipes.containsKey(type)) {
                         for (var recipe : this.recipes.get(type).entrySet()) {
-                            recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                            recipes.add(gtRecipeType.toGTrecipe(recipe.getValue()));
                         }
                     }
                 }
 
                 if (this.recipes.containsKey(gtRecipeType)) {
+                    //noinspection unchecked
                     Stream.concat(
                             this.recipes.get(gtRecipeType).values().stream(),
-                            proxyRecipes.entrySet().stream()
-                                    .flatMap(entry -> entry.getValue().stream()))
-                            .filter(GTRecipe.class::isInstance)
-                            .map(GTRecipe.class::cast)
-                            .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
+                            proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream())
+                        ).filter(holder -> holder != null && holder.value() instanceof GTRecipe)
+                        .forEach(gtRecipeHolder -> gtRecipeType.getLookup().addRecipe((RecipeHolder<GTRecipe>) gtRecipeHolder));
                 } else if (!proxyRecipes.isEmpty()) {
                     proxyRecipes.values().stream()
                             .flatMap(List::stream)

@@ -51,10 +51,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LargeBoilerMachine extends WorkableMultiblockMachine implements IExplosionMachine, IDisplayUIMachine {
-
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeBoilerMachine.class,
-            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
-    private static final long STEAM_PER_WATER = 160;
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LargeBoilerMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+    private static final int STEAM_PER_WATER = 160;
     public static final int TICKS_PER_STEAM_GENERATION = 5;
 
     @Getter
@@ -66,7 +64,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     private boolean hasNoWater;
     @Nullable
     protected TickableSubscription temperatureSubs;
-    private long steamGenerated;
+    private int steamGenerated;
 
     public LargeBoilerMachine(IMachineBlockEntity holder, int maxTemperature, int heatSpeed, Object... args) {
         super(holder, args);
@@ -115,8 +113,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
 
         if (currentTemperature >= 100 && getOffsetTimer() % TICKS_PER_STEAM_GENERATION == 0) {
             // drain water
-            var maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() /
-                    (STEAM_PER_WATER * 100000);
+            int maxDrain = currentTemperature * throttle * TICKS_PER_STEAM_GENERATION * FluidHelper.getBucket() / (STEAM_PER_WATER * 100000);
             var drainWater = List.of(FluidIngredient.of(maxDrain, Fluids.WATER));
             List<IRecipeHandler<?>> inputTanks = new ArrayList<>();
             if (getCapabilitiesProxy().contains(IO.IN, FluidRecipeCapability.CAP)) {

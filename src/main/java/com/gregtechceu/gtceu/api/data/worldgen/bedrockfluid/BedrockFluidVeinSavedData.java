@@ -43,8 +43,7 @@ public class BedrockFluidVeinSavedData extends SavedData {
     private final ServerLevel serverLevel;
 
     public static BedrockFluidVeinSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new BedrockFluidVeinSavedData(serverLevel, tag),
-                () -> new BedrockFluidVeinSavedData(serverLevel), "gtceu_bedrock_fluid");
+        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new BedrockFluidVeinSavedData(serverLevel), tag -> new BedrockFluidVeinSavedData(serverLevel, tag)), "gtceu_bedrock_fluid");
     }
 
     public BedrockFluidVeinSavedData(ServerLevel serverLevel) {

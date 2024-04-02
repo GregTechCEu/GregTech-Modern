@@ -41,9 +41,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
-
-import lombok.Getter;
-import lombok.Setter;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -226,7 +224,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
-                steamTank.drainInternal(energyPerTick, false);
+                steamTank.drain(energyPerTick, IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
         return false;

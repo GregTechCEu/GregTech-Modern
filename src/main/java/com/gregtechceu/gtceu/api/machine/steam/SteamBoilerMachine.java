@@ -46,8 +46,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
-
-import lombok.Getter;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -196,13 +195,11 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
 
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
-                long fillAmount = (long) (getBaseSteamOutput() * (currentTemperature / (getMaxTemperature() * 1.0)) /
-                        2);
-                boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, false).isEmpty();
+                int fillAmount = (int) (getBaseSteamOutput() * (currentTemperature / (getMaxTemperature() * 1.0)) / 2);
+                boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, IFluidHandler.FluidAction.EXECUTE).isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
-                    filledSteam = steamTank.fillInternal(
-                            GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000), false);
+                    filledSteam = steamTank.fillInternal(GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000), IFluidHandler.FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
                     doExplosion(2.0f);
@@ -227,7 +224,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
                     }
 
                     // bypass capability check for special case behavior
-                    steamTank.drainInternal(FluidHelper.getBucket() * 4, false);
+                    steamTank.drainInternal(FluidHelper.getBucket() * 4, IFluidHandler.FluidAction.EXECUTE);
                 }
             } else this.hasNoWater = false;
         }

@@ -313,7 +313,7 @@ public class GTUtil {
         return CommonHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
     }
 
-    public static long getPumpBiomeModifier(Holder<Biome> biome) {
+    public static int getPumpBiomeModifier(Holder<Biome> biome) {
         if (biome.is(BiomeTags.IS_NETHER)) {
             return -1;
         }

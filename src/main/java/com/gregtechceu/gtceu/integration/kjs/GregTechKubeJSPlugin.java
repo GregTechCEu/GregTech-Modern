@@ -76,6 +76,21 @@ import dev.latvian.mods.kubejs.util.ClassFilter;
 import dev.latvian.mods.rhino.Wrapper;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
 import dev.latvian.mods.rhino.util.wrap.TypeWrappers;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.item.crafting.RecipeManager;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 import java.util.Map;
@@ -414,8 +429,18 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                             .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
 
-                builder.save(builtRecipe -> recipesByName.put(builtRecipe.getId(),
-                        GTRecipeSerializer.SERIALIZER.fromJson(builtRecipe.getId(), builtRecipe.serializeRecipe())));
+                builder.save(new RecipeOutput() {
+                    @Override
+                    public Advancement.Builder advancement() {
+                        //noinspection removal
+                        return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
+                    }
+
+                    @Override
+                    public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
+                        recipesByName.put(id, recipe);
+                    }
+                });
             }
         })));
 
@@ -425,24 +450,24 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                 gtRecipeType.getLookup().removeAllRecipes();
 
                 var proxyRecipes = gtRecipeType.getProxyRecipes();
-                for (Map.Entry<RecipeType<?>, List<GTRecipe>> entry : proxyRecipes.entrySet()) {
+                for (Map.Entry<RecipeType<?>, List<RecipeHolder<GTRecipe>>> entry : proxyRecipes.entrySet()) {
                     var type = entry.getKey();
                     var recipes = entry.getValue();
                     recipes.clear();
-                    for (var recipe : recipesByName.entrySet().stream()
-                            .filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTrecipe(recipe.getKey(), recipe.getValue()));
+                    for (var recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
+                        recipes.add(gtRecipeType.toGTrecipe(new RecipeHolder<>(recipe.getKey(), recipe.getValue())));
                     }
                 }
 
+                //noinspection unchecked
                 Stream.concat(
-                        recipesByName.values().stream()
-                                .filter(recipe -> recipe.getType() == gtRecipeType),
+                        recipesByName.entrySet().stream()
+                            .filter(entry -> entry.getValue().getType() == gtRecipeType)
+                            .map(entry -> new RecipeHolder<>(entry.getKey(), entry.getValue())),
                         proxyRecipes.entrySet().stream()
-                                .flatMap(entry -> entry.getValue().stream()))
-                        .filter(GTRecipe.class::isInstance)
-                        .map(GTRecipe.class::cast)
-                        .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe(gtRecipe));
+                            .flatMap(entry -> entry.getValue().stream())
+                    ).filter(holder -> holder != null && holder.value() instanceof GTRecipe)
+                    .forEach(gtRecipe -> gtRecipeType.getLookup().addRecipe((RecipeHolder<GTRecipe>) gtRecipe));
             }
         }
     }

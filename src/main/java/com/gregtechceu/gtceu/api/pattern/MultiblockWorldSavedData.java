@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
@@ -17,12 +18,8 @@ import java.util.*;
 import java.util.concurrent.*;
 
 public class MultiblockWorldSavedData extends SavedData {
-
-    private final ServerLevel serverLevel;
-
     public static MultiblockWorldSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new MultiblockWorldSavedData(serverLevel, tag),
-                () -> new MultiblockWorldSavedData(serverLevel), "gtceu_multiblock");
+        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(MultiblockWorldSavedData::new, MultiblockWorldSavedData::new), "gtceu_multiblock");
     }
 
     /**
@@ -34,14 +31,13 @@ public class MultiblockWorldSavedData extends SavedData {
      */
     public final Map<ChunkPos, Set<MultiblockState>> chunkPosMapping;
 
-    private MultiblockWorldSavedData(ServerLevel serverLevel) {
-        this.serverLevel = serverLevel;
+    private MultiblockWorldSavedData() {
         this.mapping = new Object2ObjectOpenHashMap<>();
         this.chunkPosMapping = new HashMap<>();
     }
 
-    private MultiblockWorldSavedData(ServerLevel serverLevel, CompoundTag tag) {
-        this(serverLevel);
+    private MultiblockWorldSavedData(CompoundTag tag) {
+        this();
     }
 
     public MultiblockState[] getControllerInChunk(ChunkPos chunkPos) {
@@ -66,8 +62,8 @@ public class MultiblockWorldSavedData extends SavedData {
 
     @NotNull
     @Override
-    public CompoundTag save(@NotNull CompoundTag compound) {
-        return compound;
+    public CompoundTag save(@Nonnull CompoundTag tag) {
+        return tag;
     }
 
     // ********************************* thread for searching ********************************* //
@@ -77,7 +73,8 @@ public class MultiblockWorldSavedData extends SavedData {
             .setNameFormat("GTCEu Multiblock Async Thread-%d")
             .setDaemon(true)
             .build();
-    private static final ThreadLocal<Boolean> IN_SERVICE = ThreadLocal.withInitial(() -> false);
+    private static final ThreadLocal<Boolean> IN_SERVICE = ThreadLocal.withInitial(()->false);
+    @Getter
     private long periodID = Long.MIN_VALUE;
 
     public void createExecutorService() {
@@ -135,7 +132,4 @@ public class MultiblockWorldSavedData extends SavedData {
         executorService = null;
     }
 
-    public long getPeriodID() {
-        return periodID;
-    }
 }
