@@ -6,13 +6,14 @@ import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.Nullable;
 
 public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
     final GTRecipeTypeEmiCategory category;
-    final GTRecipe recipe;
+    final RecipeHolder<GTRecipe> recipe;
 
-    public GTEmiRecipe(GTRecipeTypeEmiCategory category, GTRecipe recipe) {
+    public GTEmiRecipe(GTRecipeTypeEmiCategory category, RecipeHolder<GTRecipe> recipe) {
         super(() -> new GTRecipeWidget(recipe));
         this.category = category;
         this.recipe = recipe;
@@ -25,6 +26,6 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
 
     @Override
     public @Nullable ResourceLocation getId() {
-        return recipe.getId();
+        return recipe.id();
     }
 }

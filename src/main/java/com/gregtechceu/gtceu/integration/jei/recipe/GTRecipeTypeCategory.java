@@ -87,6 +87,6 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
 
     @Override
     public @Nullable ResourceLocation getRegistryName(@NotNull GTRecipeWrapper wrapper) {
-        return wrapper.recipe.id;
+        return wrapper.recipe.id();
     }
 }

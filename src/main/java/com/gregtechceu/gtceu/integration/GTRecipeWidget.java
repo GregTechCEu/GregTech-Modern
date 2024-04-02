@@ -26,6 +26,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -41,8 +42,9 @@ import java.util.stream.Stream;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
-    public GTRecipeWidget(GTRecipe recipe) {
-        super(0, 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
+    public GTRecipeWidget(RecipeHolder<GTRecipe> recipeHolder) {
+        super(0, 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width, recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
+        GTRecipe recipe = recipeHolder.value();
         setClientSideWidget();
         List<Content> inputStackContents = new ArrayList<>();
         inputStackContents.addAll(recipe.getInputContents(ItemRecipeCapability.CAP));
@@ -214,8 +216,8 @@ public class GTRecipeWidget extends WidgetGroup {
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
 
         // add recipe id getter
-//        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
-//            Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
-//        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
+            Minecraft.getInstance().keyboardHandler.setClipboard(recipeHolder.id().toString());
+        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipeHolder.id()));
     }
 }

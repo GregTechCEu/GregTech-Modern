@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.google.common.collect.ArrayTable;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
@@ -28,7 +27,6 @@ import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
@@ -59,7 +57,6 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -67,19 +64,23 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createTextureModel;
 import static com.gregtechceu.gtceu.common.data.GTModels.overrideModel;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
@@ -87,6 +88,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  * @date 2023/2/14
  * @implNote GTItems
  */
+@SuppressWarnings("unused")
 public class GTItems {
 
     //////////////////////////////////////
@@ -143,7 +145,7 @@ public class GTItems {
     //////////////////////////////////////
     //*****     Material Tools    ******//
     //////////////////////////////////////
-    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool>> TOOL_ITEMS =
+    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool, ? extends IGTTool>> TOOL_ITEMS =
         ArrayTable.create(GTCEuAPI.materialManager.getRegisteredMaterials().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).toList(),
             GTToolType.getTypes().values().stream().toList());
 
@@ -159,7 +161,7 @@ public class GTItems {
                         var tier = material.getToolTier();
 
                         if (property.hasType(toolType)) {
-                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool>) (ItemProviderEntry<?>) registrate.item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
+                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool, ? extends IGTTool>) (ItemProviderEntry<?, ?>) registrate.item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.apply(toolType, tier, material, toolType.toolDefinition, p).asItem())
                                 .properties(p -> p.craftRemainder(Items.AIR))
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
@@ -1510,7 +1512,7 @@ public class GTItems {
         .register();
 
 
-    //    public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer", ComponentItem::create).onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
+//    public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer", ComponentItem::create).onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
     public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<Item> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", Item::new)
@@ -1701,7 +1703,7 @@ public class GTItems {
 
     public static <T extends Item> void cauldronInteraction(T item) {
         if (item instanceof TagPrefixItem tagPrefixItem && purifyMap.containsKey(tagPrefixItem.tagPrefix)) {
-            CauldronInteraction.WATER.put(item, (state, world, pos, player, hand, stack) -> {
+            CauldronInteraction.WATER.map().put(item, (state, world, pos, player, hand, stack) -> {
                 if (!world.isClientSide) {
                     Item stackItem = stack.getItem();
                     if (stackItem instanceof TagPrefixItem prefixItem) {
@@ -1744,10 +1746,6 @@ public class GTItems {
                 ItemProperties.register(item, predicate, (itemStack, c, l, i) -> property.apply(itemStack));
             }
         };
-    }
-
-    public static void registerToolTier(MaterialToolTier tier, ResourceLocation id, Collection<ResourceLocation> before, Collection<ResourceLocation> after) {
-        TierSortingRegistry.registerTier(tier, id, Arrays.asList((Object[]) before.toArray(ResourceLocation[]::new)), Arrays.asList((Object[]) after.toArray(ResourceLocation[]::new)));
     }
 
     public static ResourceLocation getTierName(Tier tier) {

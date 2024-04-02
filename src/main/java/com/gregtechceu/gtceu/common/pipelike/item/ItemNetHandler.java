@@ -28,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class ItemNetHandler implements IItemHandler {
+public class ItemNetHandler implements IItemHandlerModifiable {
 
     @Getter
     private ItemPipeNet net;
@@ -420,6 +420,11 @@ public class ItemNetHandler implements IItemHandler {
     @Override
     public ItemStack getStackInSlot(int i) {
         return ItemStack.EMPTY;
+    }
+
+    @Override
+    public void setStackInSlot(int slot, @NotNull ItemStack stack) {
+
     }
 
     @Nonnull

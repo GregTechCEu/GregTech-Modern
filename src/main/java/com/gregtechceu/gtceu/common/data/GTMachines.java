@@ -1752,7 +1752,7 @@ public class GTMachines {
         return definitions;
     }
 
-    private static MachineDefinition[] registerFluidHatches(String name, String displayname, String model, IO io, long initialCapacity, int slots, int[] tiers, PartAbility... abilities) {
+    private static MachineDefinition[] registerFluidHatches(String name, String displayname, String model, IO io, int initialCapacity, int slots, int[] tiers, PartAbility... abilities) {
         return registerTieredMachines(name,
                 (holder, tier) -> new FluidHatchPartMachine(holder, tier, io, initialCapacity, slots),
                 (tier, builder) -> {

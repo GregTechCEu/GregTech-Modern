@@ -26,5 +26,5 @@ public interface IGTFluidBuilder {
     IGTFluidBuilder color(int color);
     IGTFluidBuilder onFluidRegister(Consumer<Fluid> fluidConsumer);
     Supplier<? extends Fluid> registerFluid();
-    RegistryEntry<? extends Fluid> register();
+    RegistryEntry<Fluid, ? extends Fluid> register();
 }

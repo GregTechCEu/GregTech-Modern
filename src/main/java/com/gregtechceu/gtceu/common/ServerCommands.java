@@ -8,6 +8,7 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;
 
@@ -29,9 +30,9 @@ public class ServerCommands {
                         .then(Commands.literal("check_recipes_valid")
                                 .requires(cs -> cs.hasPermission(0))
                                 .executes(context -> {
-                                    for (Recipe<?> recipe : context.getSource().getServer().getRecipeManager().getRecipes()) {
-                                        if (recipe instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
-                                            context.getSource().sendSuccess(() -> Component.literal("recipe %s is invalid".formatted(gtRecipe.id)), false);
+                                    for (RecipeHolder<?> recipe : context.getSource().getServer().getRecipeManager().getRecipes()) {
+                                        if (recipe.value() instanceof GTRecipe gtRecipe && !gtRecipe.checkRecipeValid()) {
+                                            context.getSource().sendSuccess(() -> Component.literal("recipe %s is invalid".formatted(recipe.id())), false);
                                         }
                                     }
                                     return 1;

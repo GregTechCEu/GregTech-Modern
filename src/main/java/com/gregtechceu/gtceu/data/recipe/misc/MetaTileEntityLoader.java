@@ -471,7 +471,7 @@ public class MetaTileEntityLoader {
                 recipe[i] = new ItemStack(item);
             } else if (recipe[i] instanceof Block block) {
                 recipe[i] = new ItemStack(block);
-            } else if (recipe[i] instanceof ItemProviderEntry<?> itemEntry) {
+            } else if (recipe[i] instanceof ItemProviderEntry<?, ?> itemEntry) {
                 recipe[i] = itemEntry.asStack();
             }
         }

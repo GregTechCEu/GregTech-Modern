@@ -73,7 +73,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
                 model = ModelFactory.ITEM_MODEL_GENERATOR.generateBlockModel(new SpriteOverrider(override), blockModel);
             }
             itemModel = model.bake(
-                    ModelFactory.getModeBaker(),
+                    ModelFactory.getModelBaker(),
                     new SpriteOverrider(override),
                     BlockModelRotation.X0_Y0,
                     modelLocation);
@@ -84,7 +84,7 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
     @OnlyIn(Dist.CLIENT)
     public BakedModel getRotatedModel(Direction frontFacing) {
         return blockModels.computeIfAbsent(frontFacing, facing -> getModel().bake(
-                ModelFactory.getModeBaker(),
+                ModelFactory.getModelBaker(),
                 new SpriteOverrider(override),
                 ModelFactory.getRotation(facing),
                 modelLocation));

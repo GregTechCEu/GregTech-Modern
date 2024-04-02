@@ -38,7 +38,6 @@ import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.api.distmarker.Dist;
-import net.neoforged.fml.DistExecutor;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
@@ -52,6 +51,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -143,9 +143,8 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         return this;
     }
 
-    @SuppressWarnings("deprecation")
     protected void registerRenderType(GTFluidImpl.Flowing entry) {
-        DistExecutor.runWhenOn(Dist.CLIENT, () -> () -> {
+        if (FMLEnvironment.dist == Dist.CLIENT) {
             OneTimeEventReceiver.addModListener(getOwner(), FMLClientSetupEvent.class, $ -> {
                 if (this.layer != null) {
                     RenderType layer = this.layer.get();
@@ -153,7 +152,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
                     ItemBlockRenderTypes.setRenderLayer(getSource(), layer);
                 }
             });
-        });
+        }
     }
 
     public GTFluidBuilder<P> defaultSource() {
@@ -253,7 +252,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
 
     private FluidType.Properties makeTypeProperties() {
         FluidType.Properties properties = FluidType.Properties.create();
-        RegistryEntry<Block> block = getOwner().getOptional(sourceName, Registries.BLOCK);
+        Optional<RegistryEntry<Block, Block>> block = getOwner().getOptional(sourceName, Registries.BLOCK);
         this.typeProperties.accept(properties);
 
         // Force the translation key after the user callback runs
@@ -261,8 +260,8 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
         // and if it was possible to undo this change, it might result in the user translation getting
         // silently lost, as there's no good way to check whether the translation key was changed.
         // TODO improve this?
-        if (block.isPresent()) {
-            properties.descriptionId(block.get().getDescriptionId());
+        if (block.isPresent() && block.get().isBound()) {
+            properties.descriptionId(block.get().get().getDescriptionId());
         } else {
             // Fallback to material's name
             properties.descriptionId(langKey);
@@ -307,7 +306,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
 
     @SuppressWarnings({ "unchecked", "rawtypes" })
     @Override
-    public RegistryEntry<GTFluidImpl.Flowing> register() {
+    public RegistryEntry<Fluid, GTFluidImpl.Flowing> register() {
         // Check the fluid has a type.
         if (this.fluidType != null) {
             // Register the type.

@@ -44,7 +44,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     private final ServerLevel serverLevel;
 
     public static BedrockOreVeinSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(tag -> new BedrockOreVeinSavedData(serverLevel, tag), () -> new BedrockOreVeinSavedData(serverLevel), "gtceu_bedrock_ore");
+        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new BedrockOreVeinSavedData(serverLevel), tag -> new BedrockOreVeinSavedData(serverLevel, tag)), "gtceu_bedrock_ore");
     }
 
     public BedrockOreVeinSavedData(ServerLevel serverLevel) {

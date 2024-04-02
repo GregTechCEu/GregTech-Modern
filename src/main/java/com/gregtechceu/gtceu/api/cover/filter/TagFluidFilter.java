@@ -53,8 +53,8 @@ public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implement
     }
 
     @Override
-    public long testFluidAmount(FluidStack fluidStack) {
-        return test(fluidStack) ? Long.MAX_VALUE : 0;
+    public int testFluidAmount(FluidStack fluidStack) {
+        return test(fluidStack) ? Integer.MAX_VALUE : 0;
     }
 
     @Override

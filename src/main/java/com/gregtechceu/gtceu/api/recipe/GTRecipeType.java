@@ -87,7 +87,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     @Getter
     protected boolean isFuelRecipeType;
     @Getter
-    protected final Map<RecipeType<?>, List<GTRecipe>> proxyRecipes;
+    protected final Map<RecipeType<?>, List<RecipeHolder<GTRecipe>>> proxyRecipes;
     private CompoundTag customUICache;
     @Getter
     private final GTRecipeLookup lookup = new GTRecipeLookup(this);
@@ -97,7 +97,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         this.group = group;
         recipeBuilder = new GTRecipeBuilder(registryName, this);
         // must be linked to stop json contents from shuffling
-        Map<RecipeType<?>, List<GTRecipe>> map = new Object2ObjectLinkedOpenHashMap<>();
+        Map<RecipeType<?>, List<RecipeHolder<GTRecipe>>> map = new Object2ObjectLinkedOpenHashMap<>();
         for (RecipeType<?> proxyRecipe : proxyRecipes) {
             map.put(proxyRecipe, new ArrayList<>());
         }
@@ -236,16 +236,16 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public GTRecipe toGTrecipe(ResourceLocation id, Recipe<?> recipe) {
-        var builder = recipeBuilder(id);
-        for (var ingredient : recipe.getIngredients()) {
+    public RecipeHolder<GTRecipe> toGTrecipe(RecipeHolder<?> recipe) {
+        var builder = recipeBuilder(recipe.id());
+        for (var ingredient : recipe.value().getIngredients()) {
             builder.inputItems(ingredient);
         }
-        builder.outputItems(recipe.getResultItem(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)));
-        if (recipe instanceof SmeltingRecipe smeltingRecipe) {
+        builder.outputItems(recipe.value().getResultItem(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)));
+        if (recipe.value() instanceof SmeltingRecipe smeltingRecipe) {
             builder.duration(smeltingRecipe.getCookingTime());
         }
-        return GTRecipeSerializer.SERIALIZER.fromJson(id, builder.build().serializeRecipe());
+        return new RecipeHolder<>(builder.id, builder.build());
     }
 
 }

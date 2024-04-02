@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.client.TooltipsHandler;
 import dev.emi.emi.api.stack.FluidEmiStack;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.ComponentContents;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
 import org.spongepowered.asm.mixin.Final;
@@ -14,7 +14,6 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
 
 import java.util.List;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class FluidEmiStackMixin {
 
         List<ClientTooltipComponent> list = cir.getReturnValue();
         tooltips.stream()
-                .filter(component -> component.getContents() != ComponentContents.EMPTY)
+                .filter(component -> component.getContents() != PlainTextContents.EMPTY)
                 .map(component -> Map.entry(tooltips.indexOf(component), ClientTooltipComponent.create(component.getVisualOrderText())))
                 .forEach(component -> list.add(component.getKey(), component.getValue()));
     }

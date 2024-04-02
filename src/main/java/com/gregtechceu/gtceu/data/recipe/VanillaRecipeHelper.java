@@ -191,7 +191,7 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
+                } else if (content instanceof ItemProviderEntry<?, ?> entry) {
                     builder.define(sign, entry.asStack());
                 }
             }
@@ -263,7 +263,7 @@ public class VanillaRecipeHelper {
                     if (tag != null) {
                         builder.define(sign, tag);
                     } else builder.define(sign, ChemicalHelper.get(entry.tagPrefix, entry.material));
-                } else if (content instanceof ItemProviderEntry<?> entry) {
+                } else if (content instanceof ItemProviderEntry<?, ?> entry) {
                     builder.define(sign, entry.asStack());
                 }
             }
@@ -308,7 +308,7 @@ public class VanillaRecipeHelper {
                 if (tag != null) {
                     builder.requires(tag);
                 } else builder.requires(ChemicalHelper.get(entry.tagPrefix, entry.material));
-            } else if (content instanceof ItemProviderEntry<?> entry) {
+            } else if (content instanceof ItemProviderEntry<?, ?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
                 builder.requires(ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
@@ -372,7 +372,7 @@ public class VanillaRecipeHelper {
                 ItemStack stack = ChemicalHelper.get(entry.tagPrefix, entry.material);
                 if (stack == ItemStack.EMPTY) continue;
                 itemLike = stack.getItem();
-            } else if (ingredient instanceof ItemProviderEntry<?> entry) {
+            } else if (ingredient instanceof ItemProviderEntry<?, ?> entry) {
                 itemLike = entry.asItem();
             } else continue; // throw out bad entries
 

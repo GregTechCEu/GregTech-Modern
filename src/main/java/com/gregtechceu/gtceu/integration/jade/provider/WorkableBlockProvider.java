@@ -57,7 +57,7 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
                             getProgress(currentProgress, maxProgress),
                             Component.literal(text),
                             tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
-                            Util.make(BoxStyle.DEFAULT, style -> style.borderColor = 0xFF555555),
+                            Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX, style -> style.borderColor = new int[] {0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555}),
                             true
                     )
             );

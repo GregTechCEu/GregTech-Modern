@@ -182,8 +182,8 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
     //////////////////////////////////////
     @Override
     public boolean isConnected(BlockAndTintGetter level, BlockState state, BlockPos pos, BlockState sourceState, BlockPos sourcePos, Direction side) {
-        var stateAppearance = FacadeBlockAndTintGetter.getAppearance(state, level, pos, side, sourceState, sourcePos);
-        var sourceStateAppearance = FacadeBlockAndTintGetter.getAppearance(sourceState, level, sourcePos, side, state, pos);
+        var stateAppearance = state.getAppearance(level, pos, side, sourceState, sourcePos);
+        var sourceStateAppearance = sourceState.getAppearance(level, sourcePos, side, state, pos);
 //        var machine = MetaMachine.getMachine(level, pos);
 //        if (machine != null) {
 //            if (machine instanceof IMultiController controller && !controller.isFormed()) {

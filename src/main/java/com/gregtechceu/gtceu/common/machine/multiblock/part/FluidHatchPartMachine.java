@@ -33,9 +33,9 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidHatchPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
-    public static final long INITIAL_TANK_CAPACITY_1X = 8 * FluidHelper.getBucket();
-    public static final long INITIAL_TANK_CAPACITY_4X = 2 * FluidHelper.getBucket();
-    public static final long INITIAL_TANK_CAPACITY_9X = FluidHelper.getBucket();
+    public static final int INITIAL_TANK_CAPACITY_1X = 8 * FluidHelper.getBucket();
+    public static final int INITIAL_TANK_CAPACITY_4X = 2 * FluidHelper.getBucket();
+    public static final int INITIAL_TANK_CAPACITY_9X = FluidHelper.getBucket();
 
     @Persisted
     public final NotifiableFluidTank tank;
@@ -47,7 +47,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
     // We can't use fields here because those won't be available while createTank() is called.
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, long initialCapacity, int slots, Object... args) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots, Object... args) {
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
@@ -61,12 +61,12 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
+    protected NotifiableFluidTank createTank(int initialCapacity, int slots, Object... args) {
         return new NotifiableFluidTank(this, slots, getTankCapacity(initialCapacity, getTier()), io);
     }
 
-    public static long getTankCapacity(long initialCapacity, int tier) {
-        return initialCapacity * (1L << Math.min(9, tier));
+    public static int getTankCapacity(int initialCapacity, int tier) {
+        return initialCapacity * (1 << Math.min(9, tier));
     }
 
     @Override

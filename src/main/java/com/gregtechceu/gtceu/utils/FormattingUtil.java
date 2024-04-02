@@ -5,6 +5,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.network.chat.contents.PlainTextContents;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -174,6 +175,6 @@ public class FormattingUtil {
     }
 
     private static boolean isEmptyComponent(Component component) {
-        return component.getContents() == ComponentContents.EMPTY && component.getSiblings().isEmpty();
+        return component.getContents() == PlainTextContents.EMPTY && component.getSiblings().isEmpty();
     }
 }

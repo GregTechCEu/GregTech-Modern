@@ -39,7 +39,7 @@ public class SplitShaftTieredHullMachineRenderer extends TieredHullMachineRender
                 if (renderer instanceof WorkableCasingMachineRenderer workableCasingMachineRenderer) {
                     var baseTexture = workableCasingMachineRenderer.baseCasing;
                     var bakeModel =  ModelFactory.getUnBakedModel(modelLocation).bake(
-                            ModelFactory.getModeBaker(),
+                            ModelFactory.getModelBaker(),
                             new SpriteOverrider(Map.of("bottom", baseTexture, "top", baseTexture, "side", baseTexture)),
                             ModelFactory.getRotation(frontFacing),
                             modelLocation);

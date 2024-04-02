@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -39,6 +40,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -474,17 +476,18 @@ public interface GTRecipeSchema {
             if (from instanceof SizedIngredient ingr) {
                 return InputItem.of(ingr.getInner(), ingr.getAmount());
             } else if (from instanceof JsonObject jsonObject) {
-                if (!jsonObject.has("type") || !jsonObject.get("type").getAsString().equals(SizedIngredient.TYPE.toString())) {
+                var ingredient = SizedIngredient.fromJson(jsonObject, true);
+                if (ingredient instanceof SizedIngredient sized) {
+                    return InputItem.of(sized.getInner(), sized.getAmount());
+                } else {
                     return InputItem.of(from);
                 }
-                var sizedIngredient = SizedIngredient.fromJson(jsonObject);
-                return InputItem.of(sizedIngredient.getInner(), sizedIngredient.getAmount());
             }
             return InputItem.of(from);
         }
 
         public JsonElement writeInputItem(InputItem value) {
-            return SizedIngredient.create(value.ingredient, value.count).toJson();
+            return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, SizedIngredient.create(value.ingredient, value.count)).getOrThrow(false, GTCEu.LOGGER::error);
         }
 
         @Override
@@ -499,7 +502,7 @@ public interface GTRecipeSchema {
                 if (jsonObject.has("content")) {
                     jsonObject = jsonObject.getAsJsonObject("content");
                 }
-                var ingredient = Ingredient.fromJson(jsonObject);
+                var ingredient = Ingredient.fromJson(jsonObject, false);
                 return OutputItem.of(ingredient.getItems()[0], chance);
             }
             return OutputItem.of(from);
@@ -507,13 +510,13 @@ public interface GTRecipeSchema {
 
         @Override
         public JsonElement writeOutputItem(OutputItem value) {
-            return SizedIngredient.create(value.item).toJson();
+            return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, SizedIngredient.create(value.item)).getOrThrow(false, GTCEu.LOGGER::error);
         }
 
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
             var fluid = ((FluidStackJS)value).getFluidStack();
-            return FluidIngredient.of(fluid.getAmount(), fluid.getFluid()).toJson();
+            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
         }
 
         @Override

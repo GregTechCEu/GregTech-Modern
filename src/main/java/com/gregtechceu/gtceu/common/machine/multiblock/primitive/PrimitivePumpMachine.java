@@ -24,7 +24,7 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PrimitivePumpMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
 
-    private long biomeModifier = 0;
+    private int biomeModifier = 0;
     private int hatchModifier = 0;
     private NotifiableFluidTank fluidTank;
     private TickableSubscription produceWaterSubscription;
@@ -111,8 +111,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
         return getLevel().getBiome(getPos()).value().getPrecipitationAt(getPos());
     }
 
-    public long getFluidProduction() {
-        long value = biomeModifier * hatchModifier;
+    public int getFluidProduction() {
+        int value = biomeModifier * hatchModifier;
         if (isRainingInBiome()) {
             value = value * 3 / 2;
         }

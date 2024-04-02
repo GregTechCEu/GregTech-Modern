@@ -12,6 +12,6 @@ import com.lowdragmc.lowdraglib.gui.editor.ui.UIEditor;
 @LDLRegister(name = "editor.gtceu", group = "editor")
 public class GTUIEditor extends UIEditor {
     public GTUIEditor() {
-        super(LDLib.location);
+        super(LDLib.getLDLibDir());
     }
 }

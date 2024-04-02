@@ -7,6 +7,7 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.repository.RepositorySource;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,7 +25,19 @@ public class GTPackSource implements RepositorySource {
         onLoad.accept(Pack.readMetaAndCreate(name,
             Component.literal(name),
             true,
-            resources::apply,
+            new Pack.ResourcesSupplier() {
+                @NotNull
+                @Override
+                public PackResources openPrimary(@NotNull String name) {
+                    return resources.apply(name);
+                }
+
+                @NotNull
+                @Override
+                public PackResources openFull(@NotNull String name, @NotNull Pack.Info info) {
+                    return openPrimary(name);
+                }
+            },
             type,
             position,
             PackSource.BUILT_IN)
