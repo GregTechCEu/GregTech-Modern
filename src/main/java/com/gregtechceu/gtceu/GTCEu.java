@@ -26,10 +26,9 @@ public class GTCEu {
         GTCEu.init();
         GTCEuAPI.instance = this;
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            new ClientProxy(modBus);
-        } else {
-            new CommonProxy(modBus);
+            ClientProxy.init();
         }
+        new CommonProxy(modBus);
     }
 
     public static void init() {

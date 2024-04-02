@@ -75,7 +75,7 @@ public class GTSoundEntries {
     private static void registerSounds() {
         for (SoundEntry entry : GTRegistries.SOUNDS) {
 
-            entry.register(soundEvent -> Registry.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
+            entry.register(soundEvent -> GTRegistries.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
         }
     }
 
