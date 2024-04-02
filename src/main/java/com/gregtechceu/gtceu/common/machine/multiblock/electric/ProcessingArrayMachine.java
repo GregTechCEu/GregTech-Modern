@@ -54,8 +54,8 @@ import java.util.stream.Collectors;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-//@Deprecated(forRemoval = true)
-//@ApiStatus.ScheduledForRemoval(inVersion = "1.2.0")
+@Deprecated(forRemoval = true)
+@ApiStatus.ScheduledForRemoval(inVersion = "1.2.0")
 public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine implements IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
@@ -191,11 +191,6 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         return getOverclockTier();
     }
 
-    @Override
-    public long getMaxVoltage() {
-        return getOverclockVoltage();
-    }
-
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
         if (machine instanceof ProcessingArrayMachine processingArray && processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
@@ -240,7 +235,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Override
     public void addDisplayText(List<Component> textList) {
-//        textList.add(Component.translatable("gtceu.universal.tooltip.deprecated"));
+        textList.add(Component.translatable("gtceu.universal.tooltip.deprecated"));
         super.addDisplayText(textList);
         if (isActive()) {
             textList.add(Component.translatable("gtceu.machine.machine_hatch.locked").withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));

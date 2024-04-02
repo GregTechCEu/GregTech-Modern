@@ -9,7 +9,6 @@
     "GuiGraphicsAccessor",
     "GuiGraphicsMixin",
     "LevelRendererMixin",
-    "MinecraftMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
     "rei.FluidEntryRendererMixin"
@@ -30,7 +29,6 @@
     "LevelMixin",
     "LootDataManagerMixin",
     "LootPoolAccessor",
-    "MinecraftServerMixin",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
     "RecipeManagerAccessor",
@@ -44,7 +42,6 @@
     "TagLoaderMixin",
     "TagManagerMixin",
     "TagValueAccessor",
-    "WorldLoaderPackConfigMixin",
     "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
     "emi.EmiRecipeHandlerMixin",
