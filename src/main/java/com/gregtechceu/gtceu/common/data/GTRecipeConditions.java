@@ -42,8 +42,6 @@ public final class GTRecipeConditions {
     }
 
     public static void init() {
-        GTRegistries.RECIPE_CONDITIONS.unfreeze();
-
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeConditions);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS, (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
         GTRegistries.RECIPE_CONDITIONS.freeze();

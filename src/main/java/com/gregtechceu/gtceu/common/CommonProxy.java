@@ -172,9 +172,7 @@ public class CommonProxy {
             // Force the material lang generator to be at index 0, so that addons' lang generators can override it.
             AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registry.getRegistrate();
             if (accessor.getDoDatagen().get()) {
-                // noinspection UnstableApiUsage
-                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens())
-                        .get(ProviderType.LANG);
+                List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens()).get(ProviderType.LANG);
                 if (providers.isEmpty()) {
                     providers.add(
                             (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
@@ -267,8 +265,6 @@ public class CommonProxy {
 
     @SubscribeEvent(priority = EventPriority.LOWEST)
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        MachineBuilder.capabilityEventRegisters.forEach(consumer -> consumer.accept(event));
-
         for (Block block : BuiltInRegistries.BLOCK) {
             if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && event.isBlockRegistered(Capabilities.EnergyStorage.BLOCK, block)) {
                 event.registerBlock(GTCapability.CAPABILITY_ENERGY_CONTAINER, (level, pos, state, blockEntity, side) -> {
@@ -288,6 +284,8 @@ public class CommonProxy {
                 itemPipe.attachCapabilities(event);
             } else if (block instanceof LaserPipeBlock laserPipe) {
                 laserPipe.attachCapabilities(event);
+            } else if (block instanceof IMachineBlock machine) {
+                machine.attachCapabilities(event);
             }
         }
 

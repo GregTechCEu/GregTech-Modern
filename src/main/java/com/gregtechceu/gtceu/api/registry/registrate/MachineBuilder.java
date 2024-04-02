@@ -75,8 +75,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition> extends BuilderBase<DEFINITION> {
-    public static final Set<NonNullConsumer<RegisterCapabilitiesEvent>> capabilityEventRegisters = new ObjectOpenHashSet<>();
-
     protected final Registrate registrate;
     protected final String name;
     protected final BiFunction<BlockBehaviour.Properties, DEFINITION, IMachineBlock> blockFactory;
@@ -105,8 +103,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
-    @Setter
-    private NonNullConsumer<RegisterCapabilitiesEvent> onCapabilityRegister = event -> this.get().get().attachCapabilities(event);
     private GTRecipeType[] recipeTypes;
     @Getter
     @Setter // getter for KJS
@@ -346,7 +342,6 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             this.blockBuilder.accept(blockBuilder);
         }
         var block = blockBuilder.register();
-        capabilityEventRegisters.add(this.onCapabilityRegister);
 
         var itemBuilder = registrate
                 .item(name, properties -> itemFactory.apply((IMachineBlock) block.get(), properties))

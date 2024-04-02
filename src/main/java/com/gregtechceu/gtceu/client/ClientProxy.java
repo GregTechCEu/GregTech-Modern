@@ -22,9 +22,8 @@ import net.neoforged.bus.api.IEventBus;
  * @implNote ClientProxy
  */
 @OnlyIn(Dist.CLIENT)
-public class ClientProxy extends CommonProxy {
+public class ClientProxy {
     public ClientProxy(IEventBus modBus) {
-        super(modBus);
         init();
     }
 

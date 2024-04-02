@@ -21,6 +21,10 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.RecipeType;
+import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 import net.neoforged.bus.api.IEventBus;
@@ -57,8 +61,15 @@ public final class GTRegistries {
             GTCEu.id("bedrock_ore"));
     public static final GTRegistry.RL<GTOreDefinition> ORE_VEINS = new GTRegistry.RL<>(GTCEu.id("ore_vein"));
 
+
+
     public static final DeferredRegister<TrunkPlacerType<?>> TRUNK_PLACER_TYPE = DeferredRegister.create(Registries.TRUNK_PLACER_TYPE, GTCEu.MOD_ID);
+    public static final DeferredRegister<FoliagePlacerType<?>> FOLIAGE_PLACER_TYPE = DeferredRegister.create(Registries.FOLIAGE_PLACER_TYPE, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacementModifierType<?>> PLACEMENT_MODIFIER = DeferredRegister.create(Registries.PLACEMENT_MODIFIER_TYPE, GTCEu.MOD_ID);
+
+    public static final DeferredRegister<RecipeType<?>> RECIPE_TYPE = DeferredRegister.create(Registries.RECIPE_TYPE, GTCEu.MOD_ID);
+    public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZER = DeferredRegister.create(Registries.RECIPE_SERIALIZER, GTCEu.MOD_ID);
+    public static final DeferredRegister<SoundEvent> SOUND_EVENT = DeferredRegister.create(Registries.SOUND_EVENT, GTCEu.MOD_ID);
     public static final DeferredRegister<Codec<? extends IGlobalLootModifier>> GLOBAL_LOOT_MODIFIES = DeferredRegister.create(NeoForgeRegistries.Keys.GLOBAL_LOOT_MODIFIER_SERIALIZERS, GTCEu.MOD_ID);
 
     public static <V, T extends V> T register(Registry<V> registry, ResourceLocation name, T value) {
@@ -66,8 +77,16 @@ public final class GTRegistries {
 
         if (registryKey == Registries.TRUNK_PLACER_TYPE) {
             TRUNK_PLACER_TYPE.register(name.getPath(), () -> (TrunkPlacerType<?>)value);
+        } else if (registryKey == Registries.FOLIAGE_PLACER_TYPE) {
+            FOLIAGE_PLACER_TYPE.register(name.getPath(), () -> (FoliagePlacerType<?>) value);
         } else if (registryKey == Registries.PLACEMENT_MODIFIER_TYPE) {
             PLACEMENT_MODIFIER.register(name.getPath(), () -> (PlacementModifierType<?>) value);
+        } else if (registryKey == Registries.RECIPE_TYPE) {
+            RECIPE_TYPE.register(name.getPath(), () -> (RecipeType<?>) value);
+        } else if (registryKey == Registries.RECIPE_SERIALIZER) {
+            RECIPE_SERIALIZER.register(name.getPath(), () -> (RecipeSerializer<?>) value);
+        } else if (registryKey == Registries.SOUND_EVENT) {
+            SOUND_EVENT.register(name.getPath(), () -> (SoundEvent) value);
         } else {
             return Registry.register(registry, name, value);
         }
