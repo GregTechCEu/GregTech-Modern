@@ -88,7 +88,11 @@ public final class GTRegistries {
 
     public static void init(IEventBus eventBus) {
         TRUNK_PLACER_TYPE.register(eventBus);
+        FOLIAGE_PLACER_TYPE.register(eventBus);
         PLACEMENT_MODIFIER.register(eventBus);
+        RECIPE_TYPE.register(eventBus);
+        RECIPE_SERIALIZER.register(eventBus);
+        SOUND_EVENT.register(eventBus);
         GLOBAL_LOOT_MODIFIES.register(eventBus);
     }
 

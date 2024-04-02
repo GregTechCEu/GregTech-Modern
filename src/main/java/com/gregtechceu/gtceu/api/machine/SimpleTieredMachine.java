@@ -78,7 +78,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     protected boolean allowInputFromOutputSideItems;
     @Getter @Setter @Persisted
     protected boolean allowInputFromOutputSideFluids;
-    @Getter @Persisted
+    @Getter @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
     @Getter @Persisted
     protected final NotifiableItemStackHandler circuitInventory;

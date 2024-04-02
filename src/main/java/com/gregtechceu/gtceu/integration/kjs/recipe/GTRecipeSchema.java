@@ -516,7 +516,8 @@ public interface GTRecipeSchema {
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
             var fluid = ((FluidStackJS)value).getFluidStack();
-            return FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid()).toJson();
+            FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
+            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(false, GTCEu.LOGGER::error);
         }
 
         @Override

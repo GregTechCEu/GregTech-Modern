@@ -60,7 +60,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
     @Nullable

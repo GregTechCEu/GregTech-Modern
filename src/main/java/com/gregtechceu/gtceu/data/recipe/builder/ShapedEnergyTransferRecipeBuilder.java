@@ -21,6 +21,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 /**
@@ -39,7 +40,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     @Setter
     protected String group;
     @Setter
-    private CraftingBookCategory category;
+    private CraftingBookCategory category = CraftingBookCategory.MISC;
     @Setter
     protected boolean transferMaxCharge;
     @Setter
@@ -100,7 +101,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     }
 
     public ShapedEnergyTransferRecipe build() {
-        return new ShapedEnergyTransferRecipe(this.group, this.category, ShapedRecipePattern.of(this.key, this.rows), this.chargeIngredient, this.overrideCharge, this.transferMaxCharge, this.output, false);
+        return new ShapedEnergyTransferRecipe(Objects.requireNonNullElse(this.group, ""), this.category, ShapedRecipePattern.of(this.key, this.rows), this.chargeIngredient, this.overrideCharge, this.transferMaxCharge, this.output, false);
     }
 
     protected ResourceLocation defaultId() {

@@ -74,7 +74,7 @@ public class BlockBreakerMachine extends TieredEnergyMachine implements IAutoOut
     @Persisted
     protected final NotifiableItemStackHandler cache;
     @Getter
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, breakerSubs;

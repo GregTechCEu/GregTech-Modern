@@ -40,6 +40,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -56,6 +57,9 @@ import java.util.stream.Collectors;
  */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
+    @Getter @Setter(onMethod_ = {@ApiStatus.Internal})
+    public GTRecipeSerializer serializer;
+
     public final ResourceLocation registryName;
     public final String group;
     public final Object2IntMap<RecipeCapability<?>> maxInputs = new Object2IntOpenHashMap<>();

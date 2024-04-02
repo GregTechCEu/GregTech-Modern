@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -75,15 +76,15 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected FluidStack stored = FluidStack.EMPTY;
     @Persisted @Getter @Setter
     private boolean isVoiding;
-    @Persisted @DescSynced @Getter
-    protected final FluidTank lockedFluid;
+    @Persisted(subPersisted = true) @DescSynced @Getter
+    protected final CustomFluidTank lockedFluid;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, int maxStoredFluids, Object... args) {
         super(holder, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler(args);
-        this.lockedFluid = new FluidTank(FluidHelper.getBucket());
+        this.lockedFluid = new CustomFluidTank(FluidHelper.getBucket());
     }
 
     //////////////////////////////////////

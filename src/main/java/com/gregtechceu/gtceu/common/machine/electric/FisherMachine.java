@@ -92,7 +92,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     protected final NotifiableItemStackHandler baitHandler;
 
     @Getter
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs, fishingSubs;

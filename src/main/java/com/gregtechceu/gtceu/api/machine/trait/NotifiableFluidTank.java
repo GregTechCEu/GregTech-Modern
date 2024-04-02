@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.machine.trait;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -16,12 +15,13 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.Predicate;
 
 /**
@@ -36,7 +36,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Persisted
+    @Persisted(subPersisted = true)
     public final CustomFluidTank[] storages;
     @Setter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined while creating tanks.

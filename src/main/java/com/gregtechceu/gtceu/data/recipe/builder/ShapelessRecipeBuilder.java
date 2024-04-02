@@ -24,6 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author KilaBash
@@ -36,13 +37,9 @@ public class ShapelessRecipeBuilder {
     @Setter
     protected String group;
     @Setter
-    private CraftingBookCategory category;
+    private CraftingBookCategory category = CraftingBookCategory.MISC;
 
     private ItemStack output = ItemStack.EMPTY;
-    @Setter
-    private float experience;
-    @Setter
-    private int cookingTime;
     @Setter
     protected ResourceLocation id;
 
@@ -95,7 +92,7 @@ public class ShapelessRecipeBuilder {
     }
 
     public ShapelessRecipe build() {
-        return new ShapelessRecipe(this.group, this.category, this.output, this.ingredients);
+        return new ShapelessRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.output, this.ingredients);
     }
 
     public void save(RecipeOutput consumer) {

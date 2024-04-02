@@ -89,9 +89,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     protected final NotifiableItemStackHandler output;
 
     @Getter
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler filterInventory;
 
     @Nullable

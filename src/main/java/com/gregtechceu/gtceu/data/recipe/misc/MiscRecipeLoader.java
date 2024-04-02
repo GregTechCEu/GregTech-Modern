@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -380,12 +381,12 @@ public class MiscRecipeLoader {
 
         // Dyed Lens Decomposition
         for (ItemEntry<Item> item : GLASS_LENSES.values()) {
-            EXTRACTOR_RECIPES.recipeBuilder("extract_" + item.get()).EUt(VA[LV]).duration(15)
+            EXTRACTOR_RECIPES.recipeBuilder("extract_" + item.getId().getPath()).EUt(VA[LV]).duration(15)
                     .inputItems(item)
                     .outputFluids(Glass.getFluid(108))
                     .save(provider);
 
-            MACERATOR_RECIPES.recipeBuilder("macerate_" + item.get()).duration(15)
+            MACERATOR_RECIPES.recipeBuilder("macerate_" + item.getId().getPath()).duration(15)
                     .inputItems(item)
                     .outputItems(dustSmall, Glass, 3)
                     .save(provider);

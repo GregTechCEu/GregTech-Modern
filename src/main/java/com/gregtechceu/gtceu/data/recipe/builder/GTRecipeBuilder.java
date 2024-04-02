@@ -562,7 +562,7 @@ public class GTRecipeBuilder {
         if (onSave != null) {
             onSave.accept(this, consumer);
         }
-        consumer.accept(this.id, build(), null);
+        consumer.accept(new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath()), build(), null);
     }
 
     public GTRecipe buildRecipe() {

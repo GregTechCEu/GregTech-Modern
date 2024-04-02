@@ -39,7 +39,7 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MufflerPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     @Getter
     private final int recoveryChance;
-    @Getter @Persisted
+    @Getter @Persisted(subPersisted = true)
     private final CustomItemStackHandler inventory;
 
     public MufflerPartMachine(IMachineBlockEntity holder, int tier) {

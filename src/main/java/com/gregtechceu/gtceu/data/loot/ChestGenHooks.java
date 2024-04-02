@@ -72,8 +72,8 @@ public final class ChestGenHooks {
                 }
 
                 try {
-                    LootPoolEntryContainer[] entries = ((LootPoolAccessor)mainPool).getEntries();
-                    entries = ArrayUtils.add(entries, entry);
+                    List<LootPoolEntryContainer> entries = new ArrayList<>(((LootPoolAccessor)mainPool).getEntries());
+                    entries.add(entry);
                     ((LootPoolAccessor) mainPool).setEntries(entries);
                 } catch (RuntimeException e) {
                     GTCEu.LOGGER.error("Couldn't add {} to lootTable {}: {}", entry, name, e.getMessage());

@@ -39,10 +39,11 @@ public class ShapedRecipeBuilder {
     @Setter
     protected String group;
     @Setter
-    private RecipeCategory category;
+    private RecipeCategory category = RecipeCategory.MISC;
 
     private final List<String> rows = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
+    @Setter
     protected boolean isStrict;
 
     public ShapedRecipeBuilder(@Nullable ResourceLocation id) {
@@ -85,23 +86,13 @@ public class ShapedRecipeBuilder {
     public ShapedRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return (ShapedRecipeBuilder) this;
+        return this;
     }
 
     public ShapedRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
         this.output = itemStack.copy();
         this.output.setCount(count);
         this.output.setTag(nbt);
-        return this;
-    }
-
-    public ShapedRecipeBuilder id(String id) {
-        this.id = new ResourceLocation(id);
-        return this;
-    }
-
-    public ShapedRecipeBuilder isStrict(boolean isStrict) {
-        this.isStrict = isStrict;
         return this;
     }
 

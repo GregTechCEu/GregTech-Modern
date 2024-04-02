@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
+import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
+import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -22,6 +24,16 @@ public class MapItemStackNBTIngredient extends MapItemStackIngredient {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : r.getItems()) {
             list.add(new MapItemStackNBTIngredient(s, r));
+        }
+        return list;
+    }
+
+    @NotNull
+    public static List<AbstractMapIngredient> from(@NotNull IntCircuitIngredient r) {
+        NBTIngredient nbtIngredient = NBTIngredient.of(true, IntCircuitBehaviour.stack(r.getConfiguration()));
+        ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
+        for (ItemStack s : r.getItems()) {
+            list.add(new MapItemStackNBTIngredient(s, nbtIngredient));
         }
         return list;
     }
