@@ -7,26 +7,22 @@ import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.helpers.externalstorage.GenericStackInv;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -118,7 +114,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         return MANAGED_FIELD_HOLDER;
     }
 
-    private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler implements IItemTransfer {
+    private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler implements IItemHandler {
         protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class);
 
         private final GenericStackInv internalBuffer;
@@ -137,18 +133,18 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, new ItemStackTransfer(16) {
+            return handleIngredient(io, left, simulate, this.handlerIO, new CustomItemStackHandler(16) {
                 @NotNull
                 @Override
-                public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-                    return InaccessibleInfiniteSlot.this.insertItem(slot, stack, simulate, notifyChanges);
+                public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+                    return InaccessibleInfiniteSlot.this.insertItem(slot, stack, simulate);
                 }
             });
         }
 
         @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             if (stack.isEmpty()) {
                 return ItemStack.EMPTY;
             }
@@ -173,7 +169,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @NotNull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             return ItemStack.EMPTY;
         }
 
@@ -185,29 +181,6 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         @Override
         public boolean isItemValid(int slot, @NotNull ItemStack stack) {
             return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            GenericStack[] stacks = new GenericStack[this.internalBuffer.size()];
-            for (int i = 0; i < this.internalBuffer.size(); ++i) {
-                stacks[i] = this.internalBuffer.getStack(i);
-            }
-            return stacks;
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof GenericStack[] stacks) {
-                this.internalBuffer.beginBatch();
-                for (int i = 0; i < stacks.length; ++i) {
-                    GenericStack stack = stacks[i];
-                    if (stack == null) continue;
-                    this.internalBuffer.insert(i, stack.what(), stack.amount(), Actionable.MODULATE);
-                }
-                this.internalBuffer.endBatch();
-            }
         }
 
         @Override

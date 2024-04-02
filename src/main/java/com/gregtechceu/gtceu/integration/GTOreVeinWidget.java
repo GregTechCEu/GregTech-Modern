@@ -7,15 +7,14 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import lombok.Getter;
 import net.minecraft.core.NonNullList;
@@ -27,6 +26,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.heightproviders.HeightProvider;
 import net.minecraft.world.level.levelgen.heightproviders.UniformHeight;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
 import java.util.Set;
@@ -87,7 +87,7 @@ public class GTOreVeinWidget extends WidgetGroup {
         int n = containedOresAsItemStacks.size();
         int x = (width - 18 * n) / 2;
         for (int i = 0; i < n; i++) {
-            SlotWidget oreSlot = new SlotWidget(new ItemStackTransfer(containedOresAsItemStacks), i, x, 18, false, false);
+            SlotWidget oreSlot = new SlotWidget(new CustomItemStackHandler(containedOresAsItemStacks), i, x, 18, false, false);
             int finalI = i;
             oreSlot.setOnAddedTooltips((stack, tooltips) ->
                     tooltips.add(Component.nullToEmpty(LocalizationUtils.format("gtceu.jei.ore_vein_diagram.chance", chances.get(finalI)))));
@@ -100,7 +100,7 @@ public class GTOreVeinWidget extends WidgetGroup {
     private void setupBaseGui(BedrockFluidDefinition fluid){
         Fluid storedFluid = fluid.getStoredFluid().get();
         TankWidget fluidSlot = new TankWidget(
-                new FluidStorage(FluidStack.create(storedFluid, 1000)), 51, 18, false, false);
+                new CustomFluidTank(new FluidStack(storedFluid, 1000)), 51, 18, false, false);
         fluidSlot.setIngredientIO(IngredientIO.OUTPUT);
         addWidget(fluidSlot);
     }

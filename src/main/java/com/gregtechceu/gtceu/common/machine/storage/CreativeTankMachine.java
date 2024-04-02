@@ -4,23 +4,21 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankMachine extends QuantumTankMachine {
@@ -41,7 +39,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
 
     @Nullable
     @Override
-    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
             return super.getFluidTransferCap(side, useCoverCapability);
 
@@ -108,14 +106,14 @@ public class CreativeTankMachine extends QuantumTankMachine {
         if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 || cache.storages[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
             return;
 
-        IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
+        IFluidHandler transfer = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
         if (transfer != null) {
             FluidStack stack = cache.storages[0].getFluid().copy();
             stack.setAmount(mBPerCycle);
-            long canInsertAmount = transfer.fill(stack, true);
+            int canInsertAmount = transfer.fill(stack, IFluidHandler.FluidAction.SIMULATE);
             stack.setAmount(Math.min(mBPerCycle, canInsertAmount));
 
-            transfer.fill(stack, false);
+            transfer.fill(stack, IFluidHandler.FluidAction.EXECUTE);
         }
     }
 

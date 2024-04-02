@@ -14,13 +14,13 @@ import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -79,14 +79,14 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Persisted @Getter @Setter
     private boolean isVoiding;
     @Persisted @DescSynced @Getter
-    private final ItemStackTransfer lockedItem;
+    private final CustomItemStackHandler lockedItem;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {
         super(holder, tier);
         this.outputFacingItems = getFrontFacing().getOpposite();
         this.maxStoredItems = maxStoredItems;
         this.cache = createCacheItemHandler(args);
-        this.lockedItem = new ItemStackTransfer();
+        this.lockedItem = new CustomItemStackHandler();
     }
 
     //////////////////////////////////////
@@ -116,12 +116,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
 
             @Override
-            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
-                var remained = super.insertItem(slot, stack, simulate, notifyChanges).copy();
+            public @NotNull ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
+                var remained = super.insertItem(slot, stack, simulate).copy();
                 if (!remained.isEmpty()) {
                     if (ItemTransferHelper.canItemStacksStack(getStackInSlot(0), remained)) {
                         int added = Math.min(maxStoredItems - itemsStoredInside, remained.getCount());
-                        if (!simulate && notifyChanges) {
+                        if (!simulate) {
                             itemsStoredInside += added;
                             onContentsChanged();
                         }
@@ -135,12 +135,12 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
             }
 
             @Override
-            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                var extracted = super.extractItem(slot, amount, simulate, notifyChanges).copy();
+            public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
+                var extracted = super.extractItem(slot, amount, simulate).copy();
                 if (!extracted.isEmpty()) {
                     var additional = Math.min(amount - extracted.getCount(), itemsStoredInside);
                     extracted.grow(additional);
-                    if (!simulate && notifyChanges) {
+                    if (!simulate) {
                         itemsStoredInside -= additional;
                         if (getStackInSlot(0).isEmpty() && itemsStoredInside > 0) {
                             var copied = extracted.copy();
@@ -339,7 +339,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 109, 63);
-        var importItems = new ItemStackTransfer();
+        var importItems = new CustomItemStackHandler();
         importItems.setFilter(itemStack -> {
             var item = cache.getStackInSlot(0);
             return (maxStoredItems - storedAmount) > itemStack.getCount() &&

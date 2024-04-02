@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;

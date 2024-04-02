@@ -11,11 +11,14 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.IntRange;
@@ -30,11 +33,9 @@ import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.common.crafting.CraftingHelper;
-import net.minecraftforge.event.LootTableLoadEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.LootTableLoadEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -49,12 +50,12 @@ public final class ChestGenHooks {
     private static final Map<ResourceLocation, List<GTLootEntryItem>> lootEntryItems = new Object2ObjectOpenHashMap<>();
     private static final Map<ResourceLocation, NumberProvider> rollValues = new Object2ObjectOpenHashMap<>();
 
-    private static final LootItemCondition[] NO_CONDITIONS = new LootItemCondition[0];
+    private static final List<LootItemCondition> NO_CONDITIONS = List.of();
 
     private ChestGenHooks() {}
 
     public static void init() {
-        MinecraftForge.EVENT_BUS.register(ChestGenHooks.class);
+        NeoForge.EVENT_BUS.register(ChestGenHooks.class);
     }
 
     @SubscribeEvent
@@ -116,7 +117,7 @@ public final class ChestGenHooks {
 
         public GTLootEntryItem(@NotNull ItemStack stack, int weight, LootItemFunction lootFunction,
                                @NotNull String entryName) {
-            super(stack.getItem(), weight, 1, NO_CONDITIONS, new LootItemFunction[] { lootFunction });
+            super(stack.getItemHolder(), weight, 1, NO_CONDITIONS, List.of(lootFunction));
             this.stack = stack;
             this.entryName = entryName;
         }
@@ -132,7 +133,13 @@ public final class ChestGenHooks {
     }
 
     public static class RandomWeightLootFunction extends LootItemConditionalFunction implements LootItemFunction {
-        public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(new Serializer()));
+        public static final Codec<RandomWeightLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+            ItemStack.CODEC.fieldOf("stack").forGetter(val -> val.stack),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("min").forGetter(val -> val.minAmount),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(val -> val.maxAmount)
+        ).apply(instance, RandomWeightLootFunction::new));
+
+        public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(CODEC));
 
         private final ItemStack stack;
         @Getter
@@ -175,30 +182,6 @@ public final class ChestGenHooks {
             int count = Math.min(minAmount + context.getRandom().nextInt(maxAmount - minAmount + 1), stack.getMaxStackSize());
             itemStack.setCount(count);
             return itemStack;
-        }
-
-        public static class Serializer extends LootItemConditionalFunction.Serializer<RandomWeightLootFunction> {
-            /**
-             * Serialize the {@link SetItemCountFunction} by putting its data into the JsonObject.
-             */
-            public void serialize(JsonObject json, RandomWeightLootFunction setItemCountFunction, JsonSerializationContext serializationContext) {
-                super.serialize(json, setItemCountFunction, serializationContext);
-                json.add("min", serializationContext.serialize(setItemCountFunction.minAmount));
-                json.add("max", serializationContext.serialize(setItemCountFunction.maxAmount));
-                JsonObject stack = new JsonObject();
-                stack.addProperty("item", ForgeRegistries.ITEMS.getKey(setItemCountFunction.stack.getItem()).toString());
-                stack.addProperty("count", setItemCountFunction.stack.getCount());
-                if (setItemCountFunction.stack.hasTag())
-                    stack.addProperty("nbt", setItemCountFunction.stack.getTag().toString());
-                json.add("stack", stack);
-            }
-
-            public RandomWeightLootFunction deserialize(JsonObject object, JsonDeserializationContext deserializationContext, LootItemCondition[] conditions) {
-                ItemStack stack = CraftingHelper.getItemStack(object.getAsJsonObject("stack"), true);
-                int min = GsonHelper.getAsInt(object, "min");
-                int max = GsonHelper.getAsInt(object, "max");
-                return new RandomWeightLootFunction(stack, min, max);
-            }
         }
     }
 }

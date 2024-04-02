@@ -48,7 +48,7 @@
 //    @NotNull
 //    @Override
 //    public FluidStack getFluidInTank(int tank) {
-//        return FluidStack.empty();
+//        return FluidStack.EMPTY;
 //    }
 //
 //    @Override
@@ -136,13 +136,13 @@
 //    @NotNull
 //    @Override
 //    public FluidStack drain(FluidStack resource, boolean simulate) {
-//        return FluidStack.empty();
+//        return FluidStack.EMPTY;
 //    }
 //
 //    @NotNull
 //    @Override
 //    public FluidStack drain(long maxDrain, boolean simulate) {
-//        return FluidStack.empty();
+//        return FluidStack.EMPTY;
 //    }
 //
 //    @Override

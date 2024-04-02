@@ -10,10 +10,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -40,12 +40,12 @@ public class MufflerPartMachine extends TieredPartMachine implements IMufflerMac
     @Getter
     private final int recoveryChance;
     @Getter @Persisted
-    private final ItemStackTransfer inventory;
+    private final CustomItemStackHandler inventory;
 
     public MufflerPartMachine(IMachineBlockEntity holder, int tier) {
         super(holder, tier);
         this.recoveryChance = Math.max(1, tier * 10);
-        this.inventory = new ItemStackTransfer((int) Math.pow(tier + 1, 2));
+        this.inventory = new CustomItemStackHandler((int) Math.pow(tier + 1, 2));
     }
 
     //////////////////////////////////////

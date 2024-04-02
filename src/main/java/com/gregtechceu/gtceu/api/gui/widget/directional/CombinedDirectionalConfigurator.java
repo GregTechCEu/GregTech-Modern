@@ -22,8 +22,8 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -159,7 +159,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
         if (isMouseOverElement(mouseX, mouseY) && this.selectedSide == lastSide && this.selectedSide != null) {
             var hover = sceneWidget.getHoverPosFace();
 
-            if (hover != null && hover.pos.equals(machine.getPos()) && hover.facing == this.selectedSide) {
+            if (hover != null && hover.pos().equals(machine.getPos()) && hover.facing() == this.selectedSide) {
                 var cd = new ClickData();
                 writeClientAction(MOUSE_CLICK_CLIENT_ACTION_ID, buf -> {
                     cd.writeToBuf(buf);

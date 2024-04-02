@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
@@ -22,7 +23,6 @@ import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -61,7 +61,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
 
     @Getter
     @Persisted
-    protected final ItemStackTransfer chargerInventory;
+    protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
@@ -78,8 +78,8 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
     //*****     Initialization    ******//
     //////////////////////////////////////
 
-    protected ItemStackTransfer createChargerItemHandler(Object... args) {
-        var transfer = new ItemStackTransfer();
+    protected CustomItemStackHandler createChargerItemHandler(Object... args) {
+        var transfer = new CustomItemStackHandler();
         transfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
         return transfer;
     }

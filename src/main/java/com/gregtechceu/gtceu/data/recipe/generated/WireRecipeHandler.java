@@ -12,16 +12,12 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import java.util.Map;
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_FINE_WIRE;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_WORKING;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.GENERATE_PLATE;
-
+import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
@@ -141,7 +137,7 @@ public class WireRecipeHandler {
                     .EUt(VA[ULV]).duration(100)
                     .inputItems(wirePrefix, material)
                     .outputItems(cablePrefix, material)
-                    .inputFluids(Rubber.getFluid(L * (long) insulationAmount));
+                    .inputFluids(Rubber.getFluid(L * insulationAmount));
 
             if (voltageTier == EV) {
                 builder.inputItems(foil, PolyvinylChloride, insulationAmount);
@@ -165,7 +161,7 @@ public class WireRecipeHandler {
             builder.inputItems(foil, PolyvinylChloride, insulationAmount);
         }
 
-        builder.inputFluids(SiliconeRubber.getFluid(L * (long) insulationAmount / 2))
+        builder.inputFluids(SiliconeRubber.getFluid(L * insulationAmount / 2))
                 .save(provider);
 
         // Styrene Butadiene Rubber Recipe (all cables)
@@ -184,7 +180,7 @@ public class WireRecipeHandler {
             builder.inputItems(foil, PolyvinylChloride, insulationAmount);
         }
 
-        builder.inputFluids(StyreneButadieneRubber.getFluid(L * (long) insulationAmount / 4))
+        builder.inputFluids(StyreneButadieneRubber.getFluid(L * insulationAmount / 4))
                 .save(provider);
     }
 

@@ -160,7 +160,7 @@ public class GTRegistrate extends Registrate {
         TAB_LOOKUP.put(entry, tab);
     }
 
-    protected <R, T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type, Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator, NonNullFunction<RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
+    protected <R, T extends R> RegistryEntry<T> accept(String name, ResourceKey<? extends Registry<R>> type, Builder<R, T, ?, ?> builder, NonNullSupplier<? extends T> creator, NonNullFunction<    RegistryObject<T>, ? extends RegistryEntry<T>> entryFactory) {
         RegistryEntry<T> entry = super.accept(name, type, builder, creator, entryFactory);
 
         if (this.currentTab != null) {

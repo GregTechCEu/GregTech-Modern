@@ -1,18 +1,19 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import net.minecraft.MethodsReturnNonnullByDefault;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+public class EmptyFluidHandler implements IFluidHandlerModifiable {
+    public static final EmptyFluidHandler INSTANCE = new EmptyFluidHandler();
 
-@MethodsReturnNonnullByDefault
-@ParametersAreNonnullByDefault
-public class NoOpFluidTransfer implements IFluidHandlerModifiable {
-    public static final NoOpFluidTransfer INSTANCE = new NoOpFluidTransfer();
+    private EmptyFluidHandler() {
+        /**/
+    }
 
-    private NoOpFluidTransfer() {
+    @Override
+    public void setFluidInTank(int i, FluidStack fluidStack) {
+
     }
 
     @Override
@@ -20,14 +21,9 @@ public class NoOpFluidTransfer implements IFluidHandlerModifiable {
         return 0;
     }
 
-    @NotNull
     @Override
-    public FluidStack getFluidInTank(int tank) {
+    public @NotNull FluidStack getFluidInTank(int tank) {
         return FluidStack.EMPTY;
-    }
-
-    @Override
-    public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
     }
 
     @Override

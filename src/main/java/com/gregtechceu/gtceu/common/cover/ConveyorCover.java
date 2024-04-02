@@ -25,7 +25,6 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -41,6 +40,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -97,12 +99,12 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return isWorkingEnabled() && getAdjacentItemTransfer() != null;
     }
 
-    protected @Nullable IItemTransfer getOwnItemTransfer() {
+    protected @Nullable IItemHandlerModifiable getOwnItemTransfer() {
         return coverHolder.getItemTransferCap(attachedSide, false);
     }
 
-    protected @Nullable IItemTransfer getAdjacentItemTransfer() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+    protected @Nullable IItemHandler getAdjacentItemTransfer() {
+        return coverHolder.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
@@ -202,11 +204,11 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         }
     }
 
-    protected int doTransferItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
+    protected int doTransferItems(IItemHandler sourceInventory, IItemHandler targetInventory, int maxTransferAmount) {
         return moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
     }
 
-    protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, int maxTransferAmount) {
+    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory, int maxTransferAmount) {
         ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
 
@@ -238,7 +240,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return maxTransferAmount - itemsLeftToTransfer;
     }
 
-    protected static boolean moveInventoryItemsExact(IItemTransfer sourceInventory, IItemTransfer targetInventory, TypeItemInfo itemInfo) {
+    protected static boolean moveInventoryItemsExact(IItemHandler sourceInventory, IItemHandler targetInventory, TypeItemInfo itemInfo) {
         //first, compute how much can we extract in reality from the machine,
         //because totalCount is based on what getStackInSlot returns, which may differ from what
         //extractItem() will return
@@ -292,7 +294,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return true;
     }
 
-    protected int moveInventoryItems(IItemTransfer sourceInventory, IItemTransfer targetInventory, Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
+    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory, Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
         ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
 
@@ -334,7 +336,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @Nonnull
-    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@Nonnull IItemTransfer inventory) {
+    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@Nonnull IItemHandler inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
 
@@ -354,7 +356,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     @Nonnull
-    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@Nonnull IItemTransfer inventory) {
+    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@Nonnull IItemHandler inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
 
@@ -454,7 +456,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
 
     @Nullable
     @Override
-    public IItemTransfer getItemTransferCap(@Nullable IItemTransfer defaultValue) {
+    public IItemHandlerModifiable getItemTransferCap(@Nullable IItemHandlerModifiable defaultValue) {
         if (defaultValue == null) {
             return null;
         }
@@ -465,36 +467,36 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     private class CoverableItemTransferWrapper extends ItemTransferDelegate {
-        public CoverableItemTransferWrapper(IItemTransfer delegate) {
+        public CoverableItemTransferWrapper(IItemHandlerModifiable delegate) {
             super(delegate);
         }
 
         @NotNull
         @Override
-        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             if (io == IO.OUT && manualIOMode == ManualIOMode.DISABLED) {
                 return stack;
             }
             if (manualIOMode == ManualIOMode.FILTERED && !filterHandler.test(stack)) {
                 return stack;
             }
-            return super.insertItem(slot, stack, simulate, notifyChanges);
+            return super.insertItem(slot, stack, simulate);
         }
 
         @NotNull
         @Override
-        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+        public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (io == IO.IN && manualIOMode == ManualIOMode.DISABLED) {
                 return ItemStack.EMPTY;
             }
             if (manualIOMode == ManualIOMode.FILTERED) {
-                ItemStack result = super.extractItem(slot, amount, true, notifyChanges);
+                ItemStack result = super.extractItem(slot, amount, true);
                 if (result.isEmpty() || !filterHandler.test(result)) {
                     return ItemStack.EMPTY;
                 }
-                return simulate ? result : super.extractItem(slot, amount, false, notifyChanges);
+                return simulate ? result : super.extractItem(slot, amount, false);
             }
-            return super.extractItem(slot, amount, simulate, notifyChanges);
+            return super.extractItem(slot, amount, simulate);
         }
     }
 }

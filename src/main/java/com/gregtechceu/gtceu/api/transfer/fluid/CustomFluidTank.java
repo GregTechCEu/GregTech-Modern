@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import lombok.Getter;
 import lombok.Setter;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -21,6 +22,11 @@ public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiabl
         super(capacity, validator);
     }
 
+    public CustomFluidTank(FluidStack stack) {
+        super(stack.getAmount());
+        setFluid(stack);
+    }
+
     @Override
     protected void onContentsChanged() {
         onContentsChanged.run();
@@ -37,13 +43,5 @@ public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiabl
     public void setFluidInTank(int tank, FluidStack stack) {
         this.setFluid(stack);
         this.onContentsChanged();
-    }
-
-    public int fill(int tank, FluidStack resource, FluidAction simulate) {
-        return this.fill(resource, simulate);
-    }
-
-    public FluidStack drain(int tank, FluidStack resource, FluidAction simulate) {
-        return this.drain(resource, simulate);
     }
 }

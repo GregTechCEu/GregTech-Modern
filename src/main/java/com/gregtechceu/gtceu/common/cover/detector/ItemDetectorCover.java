@@ -3,9 +3,9 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ItemDetectorCover extends DetectorCover {
     public ItemDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -22,7 +22,7 @@ public class ItemDetectorCover extends DetectorCover {
         if (this.coverHolder.getOffsetTimer() % 20 != 0)
             return;
 
-        IItemTransfer itemTransfer = getItemTransfer();
+        IItemHandler itemTransfer = getItemTransfer();
         if (itemTransfer == null)
             return;
 
@@ -39,7 +39,7 @@ public class ItemDetectorCover extends DetectorCover {
         setRedstoneSignalOutput(RedstoneUtil.computeRedstoneValue(storedItems, itemCapacity, isInverted()));
     }
 
-    protected IItemTransfer getItemTransfer() {
-        return ItemTransferHelper.getItemTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+    protected IItemHandler getItemTransfer() {
+        return coverHolder.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, coverHolder.getPos(), attachedSide);
     }
 }

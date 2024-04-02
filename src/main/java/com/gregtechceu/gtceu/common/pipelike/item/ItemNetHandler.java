@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
@@ -20,7 +20,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
@@ -29,7 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import javax.annotation.Nonnull;
 import java.util.*;
 
-public class ItemNetHandler implements IItemHandlerModifiable {
+public class ItemNetHandler implements IItemHandler {
 
     @Getter
     private ItemPipeNet net;
@@ -348,13 +347,9 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     }
 
     public CoverBehavior getCoverOnNeighbour(BlockPos pos, Direction handlerFacing) {
-        BlockEntity tile = pipe.getLevel().getBlockEntity(pos.relative(handlerFacing));
-        if (tile != null) {
-            ICoverable coverable = GTCapabilityHelper.getCoverable(pipe.getLevel(), pos.relative(handlerFacing), handlerFacing.getOpposite());
-            if (coverable == null) return null;
-            return coverable.getCoverAtSide(handlerFacing.getOpposite());
-        }
-        return null;
+        ICoverable coverable = pipe.getLevel().getCapability(GTCapability.CAPABILITY_COVERABLE, pos.relative(handlerFacing), handlerFacing.getOpposite());
+        if (coverable == null) return null;
+        return coverable.getCoverAtSide(handlerFacing.getOpposite());
     }
 
     public ItemStack insertOverRobotArm(IItemHandler handler, RobotArmCover arm, ItemStack stack, boolean simulate, int allowed, boolean ignoreLimit) {
@@ -387,7 +382,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         return stack;
     }
 
-    public static int countStack(IItemTransfer handler, ItemStack stack, RobotArmCover arm, boolean isStackSpecific) {
+    public static int countStack(IItemHandler handler, ItemStack stack, RobotArmCover arm, boolean isStackSpecific) {
         if (arm == null) return 0;
         int count = 0;
         for (int i = 0; i < handler.getSlots(); i++) {
@@ -429,7 +424,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
     @Nonnull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;
     }
 
@@ -441,17 +436,6 @@ public class ItemNetHandler implements IItemHandlerModifiable {
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return true;
-    }
-
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return new Object();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
-
     }
 
     private void transferTo(ItemRoutePath handler, boolean simulate, int amount) {

@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 
 import java.util.*;
 
@@ -23,7 +23,7 @@ public class IngredientEquality {
                 if (!(value2 instanceof Ingredient.TagValue tagValue1)) {
                     return 1;
                 }
-                if (((TagValueAccessor) tagValue).getTag() != ((TagValueAccessor) tagValue1).getTag()) {
+                if (((TagValueAccessor) (Object) tagValue).getTag() != ((TagValueAccessor) (Object) tagValue1).getTag()) {
                     return 1;
                 }
             } else if (value1 instanceof Ingredient.ItemValue) {
@@ -46,9 +46,9 @@ public class IngredientEquality {
     public static final Comparator<Ingredient> INGREDIENT_COMPARATOR = new Comparator<>() {
         @Override
         public int compare(Ingredient first, Ingredient second) {
-            if (first instanceof StrictNBTIngredient strict1) {
-                if (second instanceof NBTIngredientAccessor strict2) {
-                    return strict1.test(strict2.getStack()) ? 0 : 1;
+            if (first instanceof NBTIngredient strict1 && strict1.isStrict()) {
+                if (second instanceof NBTIngredient strict2 && strict2.isStrict()) {
+                    return strict1.test(strict2.getItems()[0]) ? 0 : 1;
                 }
                 return 1;
             }

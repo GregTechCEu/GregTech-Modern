@@ -2,11 +2,12 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.entity.FurnaceBlockEntity;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -41,7 +42,7 @@ public class FuelRecipes {
         }
 
         STEAM_BOILER_RECIPES.recipeBuilder("lava")
-                .inputFluids(FluidStack.create(Fluids.LAVA, 100))
+                .inputFluids(new FluidStack(Fluids.LAVA, 100))
                 .duration(600 * 12)
                 .save(provider);
 

@@ -7,12 +7,12 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,7 +27,7 @@ public class GhostCircuitSlotWidget extends SlotWidget {
     private static final int NO_CONFIG = -1;
     
     @Getter
-    private IItemTransfer circuitInventory;
+    private IItemHandlerModifiable circuitInventory;
     @Nullable
     private Widget configurator;
 
@@ -35,7 +35,7 @@ public class GhostCircuitSlotWidget extends SlotWidget {
         super();
     }
 
-    public void setCircuitInventory(IItemTransfer circuitInventory) {
+    public void setCircuitInventory(IItemHandlerModifiable circuitInventory) {
         this.circuitInventory = circuitInventory;
         setHandlerSlot(circuitInventory, 0);
     }
@@ -101,10 +101,10 @@ public class GhostCircuitSlotWidget extends SlotWidget {
     }
 
     @Override
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (isConfiguratorOpen()) return true;
         if (isMouseOverElement(mouseX, mouseY) && gui != null) {
-            int newValue = getNextValue(wheelDelta >= 0);
+            int newValue = getNextValue(scrollY >= 0);
             setCircuitValue(newValue);
             return true;
         }
@@ -129,7 +129,6 @@ public class GhostCircuitSlotWidget extends SlotWidget {
             this.circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(newValue));
             writeClientAction(SET_TO_N, buf -> buf.writeVarInt(newValue));
         }
-        circuitInventory.onContentsChanged();
     }
 
     @Override
@@ -152,7 +151,6 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                 clickData -> {
                     if (!clickData.isRemote) {
                         circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-                        circuitInventory.onContentsChanged();
                     }
                 }));
         }
@@ -170,7 +168,6 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                             } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                 circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                             }
-                            circuitInventory.onContentsChanged();
                         }
                     }));
                 idx++;
@@ -188,7 +185,6 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                         } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                             circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                         }
-                        circuitInventory.onContentsChanged();
                     }
                 }));
         }

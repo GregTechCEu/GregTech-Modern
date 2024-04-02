@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -58,7 +59,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     boolean shouldRenderBackSide();
 
     IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
-    IFluidHandler getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.

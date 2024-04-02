@@ -6,9 +6,8 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.network.FriendlyByteBuf;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
  * @Author GlodBlock
@@ -73,8 +72,8 @@ public class AEFluidGridWidget extends AEListGridWidget {
             buf.writeVarInt(this.changeMap.size());
             for (GenericStack item : this.changeMap.keySet()) {
                 if (item.what() instanceof AEFluidKey key) {
-                    FluidStack stack = FluidStack.create(key.getFluid(), item.amount(), key.getTag());
-                    stack.writeToBuf(buf);
+                    FluidStack stack = new FluidStack(key.getFluid(), (int) item.amount(), key.getTag());
+                    stack.writeToPacket(buf);
                     buf.writeVarLong(this.changeMap.getLong(item));
                 }
             }
@@ -85,7 +84,7 @@ public class AEFluidGridWidget extends AEListGridWidget {
     protected void readListChange(FriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
         for (int i = 0; i < size ; i ++) {
-            FluidStack fluid = FluidStack.readFromBuf(buffer);
+            FluidStack fluid = FluidStack.readFromPacket(buffer);
             long delta = buffer.readVarLong();
             if (fluid != null) {
                 GenericStack stack = new GenericStack(AEFluidKey.of(fluid.getFluid(), fluid.getTag()), delta);

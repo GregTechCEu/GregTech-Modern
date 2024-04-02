@@ -18,10 +18,8 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
@@ -46,6 +44,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -64,7 +64,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Getter @Setter @Persisted
     protected boolean allowInputFromOutputSideFluids;
     @Getter
-    private final long maxStoredFluids;
+    private final int maxStoredFluids;
     @Persisted @DropSaved
     protected final NotifiableFluidTank cache;
     @Nullable
@@ -72,18 +72,18 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Nullable
     protected ISubscription exportFluidSubs;
     @Persisted @DescSynced @Getter @DropSaved
-    protected FluidStack stored = FluidStack.empty();
+    protected FluidStack stored = FluidStack.EMPTY;
     @Persisted @Getter @Setter
     private boolean isVoiding;
     @Persisted @DescSynced @Getter
-    protected final FluidStorage lockedFluid;
+    protected final FluidTank lockedFluid;
 
-    public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxStoredFluids, Object... args) {
+    public QuantumTankMachine(IMachineBlockEntity holder, int tier, int maxStoredFluids, Object... args) {
         super(holder, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler(args);
-        this.lockedFluid = new FluidStorage(FluidHelper.getBucket());
+        this.lockedFluid = new FluidTank(FluidHelper.getBucket());
     }
 
     //////////////////////////////////////
@@ -98,22 +98,11 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, 1, maxStoredFluids, IO.BOTH) {
             @Override
-            public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
-                return handleVoiding(super.fill(resource, simulate, notifyChanges), resource);
+            public int fill(FluidStack resource, FluidAction action) {
+                return handleVoiding(super.fill(resource, action), resource);
             }
 
-            @Override
-            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-                return handleVoiding(super.fill(tank, resource, simulate, notifyChanges), resource);
-            }
-
-            @Override
-            public long fill(FluidStack resource, boolean simulate) {
-                return handleVoiding(super.fill(resource, simulate), resource);
-
-            }
-
-            private long handleVoiding(long filled, FluidStack resource) {
+            private int handleVoiding(int filled, FluidStack resource) {
                 if (filled < resource.getAmount() && isVoiding && isFluidValid(0, resource)) {
                     return resource.getAmount();
                 }
@@ -302,7 +291,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
             copied.setAmount(lockedFluid.getCapacity());
             lockedFluid.setFluid(copied);
         } else if (!locked) {
-            lockedFluid.setFluid(FluidStack.empty());
+            lockedFluid.setFluid(FluidStack.EMPTY);
         }
     }
 

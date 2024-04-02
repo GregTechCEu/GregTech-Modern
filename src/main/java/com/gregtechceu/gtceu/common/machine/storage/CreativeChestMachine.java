@@ -5,14 +5,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
 import com.gregtechceu.gtceu.api.transfer.item.InfiniteItemTransferProxy;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -27,6 +25,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.items.IItemHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeChestMachine extends QuantumChestMachine {
@@ -47,7 +48,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
 
     @Nullable
     @Override
-    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
             return super.getItemTransferCap(side, useCoverCapability);
 
@@ -129,7 +130,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
         if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0) return;
         if (getLevel().isClientSide || !isWorkingEnabled() || stack.isEmpty()) return;
 
-        IItemTransfer transfer = ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
+        IItemHandler transfer = getLevel().getCapability(Capabilities.ItemHandler.BLOCK, getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
         if (transfer != null) {
             stack.setCount(itemsPerCycle);
 

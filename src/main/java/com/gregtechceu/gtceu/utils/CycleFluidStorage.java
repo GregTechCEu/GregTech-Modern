@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class CycleFluidStorage implements IFluidTransfer {
+public class CycleFluidStorage implements IFluidHandlerModifiable {
     private List<List<FluidStack>> stacks;
 
     public CycleFluidStorage(List<List<FluidStack>> stacks) {
@@ -27,7 +26,7 @@ public class CycleFluidStorage implements IFluidTransfer {
     @Override
     public FluidStack getFluidInTank(int tank) {
         List<FluidStack> stackList = this.stacks.get(tank);
-        return stackList != null && !stackList.isEmpty() ? stackList.get(Math.abs((int)(System.currentTimeMillis() / 1000L) % stackList.size())) : FluidStack.empty();
+        return stackList != null && !stackList.isEmpty() ? stackList.get(Math.abs((int)(System.currentTimeMillis() / 1000L) % stackList.size())) : FluidStack.EMPTY;
     }
 
     @Override
@@ -38,7 +37,7 @@ public class CycleFluidStorage implements IFluidTransfer {
     }
 
     @Override
-    public long getTankCapacity(int tank) {
+    public int getTankCapacity(int tank) {
         return this.getFluidInTank(tank).getAmount();
     }
 
@@ -48,19 +47,23 @@ public class CycleFluidStorage implements IFluidTransfer {
     }
 
     @Override
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public int fill(FluidStack resource, FluidAction action) {
         return 0;
+    }
+
+    @Override
+    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+        return FluidStack.EMPTY;
+    }
+
+    @Override
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        return FluidStack.EMPTY;
     }
 
     @Override
     public boolean supportsFill(int tank) {
         return false;
-    }
-
-    @NotNull
-    @Override
-    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        return FluidStack.empty();
     }
 
     @Override
@@ -70,15 +73,5 @@ public class CycleFluidStorage implements IFluidTransfer {
 
     public List<FluidStack> getStackList(int i) {
         return this.stacks.get(i);
-    }
-
-
-    @Override
-    public @NotNull Object createSnapshot() {
-        return new Object();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
     }
 }

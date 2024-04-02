@@ -10,14 +10,14 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandler;
 
 public class ParallelLogicTest {
 
@@ -45,8 +45,8 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRecipe();
 
-        ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidTransfer)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), false);
+        ((IItemHandler)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidHandler)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
@@ -79,8 +79,8 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRecipe();
 
-        ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidTransfer)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), false);
+        ((IItemHandler)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidHandler)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
@@ -113,8 +113,8 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRecipe();
 
-        ((IItemTransfer)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidTransfer)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Naphtha.getFluid(8000), false);
+        ((IItemHandler)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidHandler)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Naphtha.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 

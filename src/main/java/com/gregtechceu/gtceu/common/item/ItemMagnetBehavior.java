@@ -23,10 +23,10 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.entity.item.ItemTossEvent;
-import net.minecraftforge.event.entity.player.PlayerXpEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
+import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -40,7 +40,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     public ItemMagnetBehavior(int range) {
         this.range = range;
         this.energyDraw = GTValues.V[range > 8 ? GTValues.HV : GTValues.LV];
-        MinecraftForge.EVENT_BUS.register(this);
+        NeoForge.EVENT_BUS.register(this);
     }
 
     @Override
@@ -132,7 +132,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
             for (ExperienceOrb orb : xp) {
                 if (!world.isClientSide && !orb.isRemoved()) {
                     if (player.takeXpDelay == 0) {
-                        if (MinecraftForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb))) {
+                        if (NeoForge.EVENT_BUS.post(new PlayerXpEvent.PickupXp(player, orb)).isCanceled()) {
                             continue;
                         }
                         world.playSound(null, entity.getX(), entity.getY(), entity.getZ(),

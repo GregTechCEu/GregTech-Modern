@@ -3,11 +3,9 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.common.data.GTCreateMachines;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
-
-import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.*;
-import static com.gregtechceu.gtceu.data.recipe.CraftingComponent.HULL;
 import static com.gregtechceu.gtceu.data.recipe.misc.MetaTileEntityLoader.registerMachineRecipe;
 
 /**

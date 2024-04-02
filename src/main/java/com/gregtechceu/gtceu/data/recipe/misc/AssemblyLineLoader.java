@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-
-import java.util.function.Consumer;
+import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.plateDouble;
+import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.wireGtSingle;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_COIL;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.SUPERCONDUCTING_COIL;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;
 import static com.gregtechceu.gtceu.common.data.GTMachines.FUSION_REACTOR;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;

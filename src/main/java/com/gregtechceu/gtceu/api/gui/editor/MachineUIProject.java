@@ -25,6 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
 import java.util.*;
 
 /**
@@ -59,7 +60,7 @@ public class MachineUIProject extends UIProject {
     }
 
     @Override
-    public UIProject loadProject(File file) {
+    public UIProject loadProject(Path file) {
         try {
             var tag = NbtIo.read(file);
             if (tag != null) {
@@ -108,9 +109,9 @@ public class MachineUIProject extends UIProject {
                 menu.remove("ldlib.gui.editor.menu.save");
                 menu.leaf(Icons.SAVE, "ldlib.gui.editor.menu.save", () -> {
                     var editableUI = machineDefinition.getEditableUI();
-                    var path = new File(LDLib.location, "assets/%s/ui/machine".formatted(editableUI.getUiPath().getNamespace()));
+                    var path = new File(LDLib.getLDLibDir(), "assets/%s/ui/machine".formatted(editableUI.getUiPath().getNamespace()));
                     path.mkdirs();
-                    saveProject(new File(path, editableUI.getUiPath().getPath() + "." + this.getRegisterUI().name()));
+                    saveProject(Path.of(editableUI.getUiPath().getPath(), ".", this.getRegisterUI().name()));
                     editableUI.reloadCustomUI();
                 });
             }

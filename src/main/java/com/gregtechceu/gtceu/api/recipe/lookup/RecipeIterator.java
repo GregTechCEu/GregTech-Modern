@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -35,7 +36,7 @@ public class RecipeIterator implements Iterator<GTRecipe> {
         // couldn't build any inputs to use for search, so no recipe could be found
         if (ingredients == null) return null;
         // Try each ingredient as a starting point, save current index
-        GTRecipe r = null;
+        RecipeHolder<GTRecipe> r = null;
         while (index < ingredients.size()) {
             r = recipeMap.getLookup().recurseIngredientTreeFindRecipe(ingredients,
                 recipeMap.getLookup().getLookup(), canHandle,
@@ -43,6 +44,6 @@ public class RecipeIterator implements Iterator<GTRecipe> {
             ++index;
             if (r != null) break;
         }
-        return r;
+        return r == null ? null : r.value();
     }
 }

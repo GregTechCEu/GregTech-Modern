@@ -15,8 +15,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -123,7 +123,7 @@ public class AutoOutputItemConfigHandler implements IDirectionalConfigHandler {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
-        if (machine.getOutputFacingItems() != blockPosFace.facing)
+        if (machine.getOutputFacingItems() != blockPosFace.facing())
             return;
 
         sceneWidget.drawFacingBorder(new PoseStack(), blockPosFace, machine.isAutoOutputItems() ? 0xffff6e0f : 0x8fff6e0f, 1);

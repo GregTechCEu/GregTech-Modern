@@ -11,13 +11,13 @@ import com.gregtechceu.gtceu.common.cover.ConveyorCover;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -51,14 +51,14 @@ public class ItemVoidingCover extends ConveyorCover implements IUICover, IContro
     }
 
     protected void doVoidItems() {
-        IItemTransfer itemTransfer = getOwnItemTransfer();
+        IItemHandler itemTransfer = getOwnItemTransfer();
         if (itemTransfer == null) {
             return;
         }
         voidAny(itemTransfer);
     }
 
-    void voidAny(IItemTransfer itemTransfer) {
+    void voidAny(IItemHandler itemTransfer) {
         ItemFilter filter = filterHandler.getFilter();
 
         for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {

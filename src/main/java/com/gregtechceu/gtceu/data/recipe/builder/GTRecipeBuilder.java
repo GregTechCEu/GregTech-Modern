@@ -542,31 +542,6 @@ public class GTRecipeBuilder {
         return rpm(rpm, false);
     }
 
-    public void toJson(JsonObject json) {
-        json.addProperty("type", recipeType.registryName.toString());
-        json.addProperty("duration", Math.abs(duration));
-        if (data != null && !data.isEmpty()) {
-            json.add("data", NBTToJsonConverter.getObject(data));
-        }
-        json.add("inputs", capabilitiesToJson(input));
-        json.add("outputs", capabilitiesToJson(output));
-        json.add("tickInputs", capabilitiesToJson(tickInput));
-        json.add("tickOutputs", capabilitiesToJson(tickOutput));
-        if (!conditions.isEmpty()) {
-            JsonArray array = new JsonArray();
-            for (RecipeCondition condition : conditions) {
-                JsonObject cond = new JsonObject();
-                cond.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
-                cond.add("data", condition.serialize());
-                array.add(cond);
-            }
-            json.add("recipeConditions", array);
-        }
-        if (isFuel) {
-            json.addProperty("isFuel", true);
-        }
-    }
-
     public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
         JsonObject jsonObject = new JsonObject();
         contents.forEach((cap, list) -> {

@@ -28,7 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.neoforge.registries.DeferredHolder;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -81,10 +81,10 @@ public class ChemicalHelper {
             } else if (item instanceof BlockEntry<?> blockEntry) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                         .add(blockEntry);
-            } else if (item instanceof RegistryObject<?> registryObject) {
+            } else if (item instanceof DeferredHolder<?, ?> registryObject) {
                 if (registryObject.getKey().isFor(Registries.BLOCK)) {
                     UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                        .add((RegistryObject<Block>) registryObject);
+                        .add((DeferredHolder<Block, ? extends Block>) registryObject);
                 }
             } else if (item instanceof SupplierMemoizer.MemoizedBlockSupplier<? extends Block> supplier) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())

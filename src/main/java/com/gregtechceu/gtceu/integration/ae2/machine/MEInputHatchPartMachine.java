@@ -12,19 +12,18 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEFluidConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.datafixers.util.Pair;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -77,13 +76,13 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 // Try to clear the wrong fluid
                 GenericStack exceedFluid = aeTank.exceedStack();
                 if (exceedFluid != null) {
-                    long total = exceedFluid.amount();
-                    long inserted = aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE, this.actionSource);
+                    int total = (int) exceedFluid.amount();
+                    int inserted = (int) aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE, this.actionSource);
                     if (inserted > 0) {
-                        aeTank.drain(inserted, false);
+                        aeTank.drain(inserted, IFluidHandler.FluidAction.EXECUTE);
                         continue;
                     } else {
-                        aeTank.drain(total, false);
+                        aeTank.drain(total, IFluidHandler.FluidAction.EXECUTE);
                     }
                 }
                 // Fill it
@@ -110,7 +109,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @Persisted
         private final ExportOnlyAEFluid[] tanks;
 
-        public ExportOnlyAEFluidList(MetaMachine machine, int slots, long capacity, IO io) {
+        public ExportOnlyAEFluidList(MetaMachine machine, int slots, int capacity, IO io) {
             super(machine, slots, capacity, io);
             this.tanks = new ExportOnlyAEFluid[slots];
             for (int i = 0; i < slots; i ++) {
@@ -120,23 +119,18 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return 0;
-        }
-
-        @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new));
+            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(WrappingFluidStorage[]::new));
         }
 
-        public FluidStack drainInternal(long maxDrain, boolean simulate) {
+        public FluidStack drainInternal(int maxDrain, FluidAction action) {
             if (maxDrain == 0) {
-                return FluidStack.empty();
+                return FluidStack.EMPTY;
             }
             FluidStack totalDrained = null;
             for (var tank : tanks) {
                 if (totalDrained == null || totalDrained.isEmpty()) {
-                    totalDrained = tank.drain(maxDrain, simulate);
+                    totalDrained = tank.drain(maxDrain, action);
                     if (totalDrained.isEmpty()) {
                         totalDrained = null;
                     } else {
@@ -145,28 +139,13 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 } else {
                     FluidStack copy = totalDrained.copy();
                     copy.setAmount(maxDrain);
-                    FluidStack drain = tank.drain(copy, simulate);
+                    FluidStack drain = tank.drain(copy, action);
                     totalDrained.grow(drain.getAmount());
                     maxDrain -= drain.getAmount();
                 }
                 if (maxDrain <= 0) break;
             }
-            return totalDrained == null ? FluidStack.empty() : totalDrained;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return Arrays.stream(tanks).map(IFluidTransfer::createSnapshot).toArray(Object[]::new);
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof Object[] array && array.length == tanks.length) {
-                for (int i = 0; i < array.length; i++) {
-                    tanks[i].restoreFromSnapshot(array[i]);
-                }
-            }
+            return totalDrained == null ? FluidStack.EMPTY : totalDrained;
         }
 
         @Override
@@ -174,15 +153,15 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             return MANAGED_FIELD_HOLDER;
         }
 
-        private static class WrappingFluidStorage extends FluidStorage {
+        private static class WrappingFluidStorage extends CustomFluidTank {
             private final ExportOnlyAEFluid fluid;
 
-            public WrappingFluidStorage(long capacity, ExportOnlyAEFluid fluid) {
+            public WrappingFluidStorage(int capacity, ExportOnlyAEFluid fluid) {
                 super(capacity);
                 this.fluid = fluid;
             }
 
-            public WrappingFluidStorage(long capacity, Predicate<FluidStack> validator, ExportOnlyAEFluid fluid) {
+            public WrappingFluidStorage(int capacity, Predicate<FluidStack> validator, ExportOnlyAEFluid fluid) {
                 super(capacity, validator);
                 this.fluid = fluid;
             }
@@ -195,17 +174,17 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
             @NotNull
             @Override
-            public FluidStack drain(FluidStack maxDrain, boolean simulate, boolean notifyChanges) {
-                return fluid.drain(maxDrain, simulate, notifyChanges);
+            public FluidStack drain(FluidStack maxDrain, FluidAction action) {
+                return fluid.drain(maxDrain, action);
             }
 
             @Override
-            public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChange) {
-                return fluid.fill(tank, resource, simulate, notifyChange);
+            public int fill(FluidStack resource, FluidAction action) {
+                return fluid.fill(resource, action);
             }
 
             @Override
-            public FluidStorage copy() {
+            public CustomFluidTank copy() {
                 var storage = new WrappingFluidStorage(capacity, validator, this.fluid);
                 storage.setFluid(super.fluid.copy());
                 return storage;
@@ -213,7 +192,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
     }
 
-    public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidHandler, IFluidTransfer {
+    public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidHandler, IFluidTank {
 
         public ExportOnlyAEFluid(GenericStack config, GenericStack stock) {
             super(config, stock);
@@ -238,23 +217,18 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @NotNull
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
-                return FluidStack.create(fluidKey.getFluid(), this.stock == null ? 0 : this.stock.amount(), fluidKey.getTag());
+                return new FluidStack(fluidKey.getFluid(), this.stock == null ? 0 : (int) this.stock.amount(), fluidKey.getTag());
             }
-            return FluidStack.empty();
+            return FluidStack.EMPTY;
         }
 
         @Override
-        public void setFluid(FluidStack fluid) {
-
+        public int getFluidAmount() {
+            return this.stock != null ? (int) this.stock.amount() : 0;
         }
 
         @Override
-        public long getFluidAmount() {
-            return this.stock != null ? this.stock.amount() : 0;
-        }
-
-        @Override
-        public long getCapacity() {
+        public int getCapacity() {
             // Its capacity is always 0.
             return 0;
         }
@@ -265,70 +239,53 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+        public int getTanks() {
             return 0;
         }
 
         @Override
-        public boolean supportsFill(int tank) {
+        public @NotNull FluidStack getFluidInTank(int tank) {
+            return getFluid();
+        }
+
+        @Override
+        public int getTankCapacity(int tank) {
+            return 0;
+        }
+
+        @Override
+        public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
             return false;
         }
 
-        @NotNull
         @Override
-        public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return this.drain(resource, simulate, notifyChanges);
-        }
-
-        @Override
-        public boolean supportsDrain(int tank) {
-            return tank == 0;
-        }
-
-        @Override
-        public long fill(FluidStack resource, boolean doFill) {
+        public int fill(FluidStack resource, FluidAction action) {
             return 0;
         }
 
         @Nonnull
         @Override
-        public FluidStack drain(FluidStack resource, boolean doDrain, boolean notifyChanges) {
+        public FluidStack drain(FluidStack resource, FluidAction action) {
             if (this.getFluid().isFluidEqual(resource)) {
-                return this.drain(resource.getAmount(), doDrain, notifyChanges);
+                return this.drain(resource.getAmount(), action);
             }
-            return FluidStack.empty();
+            return FluidStack.EMPTY;
         }
 
-        @Override
         @NotNull
-        public FluidStack drain(long maxDrain, boolean simulate, boolean notifyChanges) {
+        public FluidStack drain(int maxDrain, FluidAction action) {
             if (this.stock == null || !(this.stock.what() instanceof AEFluidKey fluidKey)) {
-                return FluidStack.empty();
+                return FluidStack.EMPTY;
             }
             int drained = (int) Math.min(this.stock.amount(), maxDrain);
-            FluidStack result = FluidStack.create(fluidKey.getFluid(), drained, fluidKey.getTag());
-            if (!simulate) {
+            FluidStack result = new FluidStack(fluidKey.getFluid(), drained, fluidKey.getTag());
+            if (action == FluidAction.EXECUTE) {
                 this.stock = new GenericStack(this.stock.what(), this.stock.amount() - drained);
                 if (this.stock.amount() == 0) {
                     this.stock = null;
                 }
-                if (notifyChanges) trigger();
             }
             return result;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return Pair.of(this.config, this.stock);
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof Pair<?,?> pair) {
-                this.config = (GenericStack) pair.getFirst();
-                this.stock = (GenericStack) pair.getSecond();
-            }
         }
 
         private void trigger() {
