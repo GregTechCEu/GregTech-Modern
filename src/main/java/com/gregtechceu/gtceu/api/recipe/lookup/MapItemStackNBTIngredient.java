@@ -1,25 +1,24 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MapItemStackNBTIngredient extends MapItemStackIngredient {
 
-    protected StrictNBTIngredient nbtIngredient;
+    protected NBTIngredient nbtIngredient;
 
-    public MapItemStackNBTIngredient(ItemStack s, StrictNBTIngredient nbtIngredient) {
+    public MapItemStackNBTIngredient(ItemStack s, NBTIngredient nbtIngredient) {
         super(s);
         this.nbtIngredient = nbtIngredient;
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull StrictNBTIngredient r) {
+    public static List<AbstractMapIngredient> from(@NotNull NBTIngredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : r.getItems()) {
             list.add(new MapItemStackNBTIngredient(s, r));
@@ -43,7 +42,7 @@ public class MapItemStackNBTIngredient extends MapItemStackIngredient {
             }
             if (this.nbtIngredient != null) {
                 if (other.nbtIngredient != null) {
-                    return ItemStack.isSameItemSameTags(((StrictNBTIngredientAccessor)nbtIngredient).getStack(), ((StrictNBTIngredientAccessor)other.nbtIngredient).getStack());
+                    return ItemStack.isSameItemSameTags(nbtIngredient.getItems()[0], other.nbtIngredient.getItems()[0]);
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);

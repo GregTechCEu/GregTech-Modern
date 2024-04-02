@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.IFluidTank;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
@@ -13,7 +14,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 /**
- * Simulates consecutive fills to {@link IFluidTransfer} instance.
+ * Simulates consecutive fills to {@link IFluidHandler} instance.
  */
 public class OverlayedFluidHandler {
 
@@ -23,7 +24,7 @@ public class OverlayedFluidHandler {
         this.overlayedTanks = new ArrayList<>();
         FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
-            FluidStorage storage = new FluidStorage(tank.getTankCapacity(i));
+            CustomFluidTank storage = new CustomFluidTank(tank.getTankCapacity(i));
             storage.setFluid(entries[i]);
             this.overlayedTanks.add(new OverlayedTank(storage, tank.isFluidValid(i, entries[i])));
         }
@@ -46,7 +47,7 @@ public class OverlayedFluidHandler {
      * @param amountToInsert Amount of the fluid to insert
      * @return Amount of fluid inserted into tanks
      */
-    public long insertFluid(@Nonnull FluidStack fluid, long amountToInsert) {
+    public long insertFluid(@Nonnull FluidStack fluid, int amountToInsert) {
         if (amountToInsert <= 0) {
             return 0;
         }
@@ -80,7 +81,7 @@ public class OverlayedFluidHandler {
             if ((!distinctFillPerformed || overlayedTank.allowSameFluidFill) &&
                     overlayedTank.isEmpty() &&
                     overlayedTank.property.isFluidValid(fluid)) {
-                long inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;
@@ -124,19 +125,19 @@ public class OverlayedFluidHandler {
 
     private static class OverlayedTank {
 
-        private final IFluidStorage property;
+        private final IFluidTank property;
         private final boolean allowSameFluidFill;
 
         private FluidStack fluid;
 
-        OverlayedTank(@Nonnull IFluidStorage property, boolean allowSameFluidFill) {
+        OverlayedTank(@Nonnull IFluidTank property, boolean allowSameFluidFill) {
             this.property = property;
             this.allowSameFluidFill = allowSameFluidFill;
             reset();
         }
 
         public boolean isEmpty() {
-            return fluid == FluidStack.empty() || fluid.getAmount() <= 0;
+            return fluid.isEmpty();
         }
 
         /**
@@ -149,13 +150,13 @@ public class OverlayedFluidHandler {
          * @param amount Amount of the fluid to insert
          * @return Amount of fluid inserted into this tank
          */
-        public long tryInsert(@Nonnull FluidStack fluid, long amount) {
-            if (this.fluid == FluidStack.empty()) {
+        public int tryInsert(@Nonnull FluidStack fluid, int amount) {
+            if (this.fluid == FluidStack.EMPTY) {
                 this.fluid = fluid.copy();
                 this.fluid.setAmount(Math.min(this.property.getCapacity(), amount));
                 return this.fluid.getAmount();
             } else {
-                long maxInsert = Math.min(this.property.getCapacity() - this.fluid.getAmount(), amount);
+                int maxInsert = Math.min(this.property.getCapacity() - this.fluid.getAmount(), amount);
                 if (maxInsert > 0) {
                     this.fluid.setAmount(this.fluid.getAmount() + maxInsert);
                     return maxInsert;
@@ -165,7 +166,7 @@ public class OverlayedFluidHandler {
 
         public void reset() {
             FluidStack fluid = this.property.getFluid();
-            this.fluid = fluid != FluidStack.empty() ? fluid.copy() : FluidStack.empty();
+            this.fluid = fluid != FluidStack.EMPTY ? fluid.copy() : FluidStack.EMPTY;
         }
     }
 }

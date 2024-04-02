@@ -6,8 +6,6 @@ import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,6 +20,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -57,9 +57,8 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     boolean shouldRenderBackSide();
 
-    // TODO replace getItemTransferCap and getFluidTransferCap with a cross-platform capability implementation
-    IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
-    IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
+    IFluidHandler getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.

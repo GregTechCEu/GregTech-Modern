@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import javax.annotation.Nonnull;
 
 public class OverlayedItemHandler {
     private final OverlayedItemHandlerSlot[] originalSlots;
     private final OverlayedItemHandlerSlot[] slots;
-    private final IItemTransfer overlayedHandler;
+    private final IItemHandlerModifiable overlayedHandler;
 
-    public OverlayedItemHandler(@Nonnull IItemTransfer toOverlay) {
+    public OverlayedItemHandler(@Nonnull IItemHandlerModifiable toOverlay) {
         this.slots = new OverlayedItemHandlerSlot[toOverlay.getSlots()];
         this.originalSlots = new OverlayedItemHandlerSlot[toOverlay.getSlots()];
         this.overlayedHandler = toOverlay;

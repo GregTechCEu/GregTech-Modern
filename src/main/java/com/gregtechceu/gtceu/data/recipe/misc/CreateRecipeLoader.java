@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.common.data.GTCreateMachines;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
-import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
 

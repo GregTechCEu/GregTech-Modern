@@ -11,8 +11,8 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.List;
 
@@ -29,7 +29,6 @@ public class TooltipsHandler {
 
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Energy Item
-        /*
         var energyItem = GTCapabilityHelper.getElectricItem(stack);
         if (energyItem != null) {
             tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
@@ -37,7 +36,6 @@ public class TooltipsHandler {
                     energyItem.getMaxCharge(),
                     Component.literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge())).withStyle(ChatFormatting.GREEN)));
         }
-        */
 
         // Formula
         var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem()); // TODO optimize getOrComputeUnificationEntry so we can use that

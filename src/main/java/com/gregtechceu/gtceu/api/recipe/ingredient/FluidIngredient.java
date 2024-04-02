@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import com.google.gson.*;
 import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
@@ -145,7 +144,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
                     if (found.contains(fluid)) continue;
                     found.add(fluid);
 
-                    fluidStacks.add(FluidStack.create(fluid, this.amount, this.nbt));
+                    fluidStacks.add(new FluidStack(fluid, this.amount, this.nbt));
                 }
             }
             this.stacks = fluidStacks.toArray(FluidStack[]::new);

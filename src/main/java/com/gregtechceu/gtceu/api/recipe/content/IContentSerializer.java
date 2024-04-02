@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.api.recipe.content;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.*;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.util.JavaOps;
 
 public interface IContentSerializer<T> {
 
@@ -13,6 +16,13 @@ public interface IContentSerializer<T> {
 
     default T fromNetwork(FriendlyByteBuf buf) {
         return fromJson(LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class));
+    }
+
+    default Codec<T> codec() {
+        return Codec.PASSTHROUGH.flatXmap(
+            dynamic -> DataResult.success(fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()), Lifecycle.stable()),
+            json -> DataResult.success(new Dynamic<>(JsonOps.INSTANCE, toJson(json)), Lifecycle.stable())
+        );
     }
 
     T fromJson(JsonElement json);

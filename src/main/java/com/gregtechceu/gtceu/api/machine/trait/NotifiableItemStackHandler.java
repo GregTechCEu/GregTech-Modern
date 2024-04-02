@@ -5,9 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -16,6 +14,7 @@ import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +29,7 @@ import java.util.function.Function;
  * @date 2023/2/20
  * @implNote NotifiableItemStackHandler
  */
-public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait, IItemTransfer {
+public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait, IItemHandlerModifiable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableItemStackHandler.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
@@ -38,10 +37,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Getter
     public final IO capabilityIO;
     @Persisted @DescSynced
-    public final ItemStackTransfer storage;
+    public final CustomItemStackHandler storage;
     private Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Function<Integer, ItemStackTransfer> transferFactory) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Function<Integer, CustomItemStackHandler> transferFactory) {
         super(machine);
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
@@ -50,7 +49,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
-        this(machine, slots, handlerIO, capabilityIO, ItemStackTransfer::new);
+        this(machine, slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
     }
 
     public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO) {
@@ -58,7 +57,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     public NotifiableItemStackHandler setFilter(Function<ItemStack, Boolean> filter) {
-        this.storage.setFilter(filter);
+        this.storage.setFilter(filter::apply);
         return this;
     }
 
@@ -78,7 +77,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Nullable
-    public static List<Ingredient> handleIngredient(IO io, List<Ingredient> left, boolean simulate, IO handlerIO, ItemStackTransfer storage) {
+    public static List<Ingredient> handleIngredient(IO io, List<Ingredient> left, boolean simulate, IO handlerIO, CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
         var capability = simulate ? storage.copy() : storage;
         Iterator<Ingredient> iterator = left.iterator();
@@ -198,9 +197,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChange) {
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (canCapInput()) {
-            return storage.insertItem(slot, stack, simulate, notifyChange);
+            return storage.insertItem(slot, stack, simulate);
         }
         return stack;
     }
@@ -209,11 +208,10 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         return storage.insertItem(slot, stack, simulate);
     }
 
-    @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChange) {
+    public @NotNull ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (canCapOutput()) {
-            return storage.extractItem(slot, amount, simulate, notifyChange);
+            return storage.extractItem(slot, amount, simulate);
         }
         return ItemStack.EMPTY;
     }
@@ -230,17 +228,6 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return storage.isItemValid(slot, stack);
-    }
-
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return storage.createSnapshot();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
-        storage.restoreFromSnapshot(snapshot);
     }
 
 }

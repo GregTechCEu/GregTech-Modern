@@ -13,7 +13,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.entity.player.Player;
@@ -42,7 +42,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     @Getter @Setter @Persisted
     public int activeRecipeType;
     @Getter
-    public final Int2LongFunction tankScalingFunction;
+    public final Int2IntFunction tankScalingFunction;
     @Nullable @Getter @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
@@ -62,7 +62,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();

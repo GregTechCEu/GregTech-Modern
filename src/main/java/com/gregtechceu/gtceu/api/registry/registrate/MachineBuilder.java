@@ -32,6 +32,7 @@ import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -50,6 +51,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.TriFunction;
 
@@ -67,6 +69,7 @@ import java.util.function.*;
 @MethodsReturnNonnullByDefault
 @Accessors(chain = true, fluent = true)
 public class MachineBuilder<DEFINITION extends MachineDefinition> extends BuilderBase<DEFINITION> {
+    public static final Set<NonNullConsumer<RegisterCapabilitiesEvent>> capabilityEventRegisters = new ObjectOpenHashSet<>();
 
     protected final Registrate registrate;
     protected final String name;
@@ -96,6 +99,8 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private Consumer<ItemBuilder<? extends MetaMachineItem, ?>> itemBuilder;
     @Setter
     private NonNullConsumer<BlockEntityType<BlockEntity>> onBlockEntityRegister = MetaMachineBlockEntity::onBlockEntityRegister;
+    @Setter
+    private NonNullConsumer<RegisterCapabilitiesEvent> onCapabilityRegister = event -> this.get().get().attachCapabilities(event);
     private GTRecipeType[] recipeTypes;
     @Getter @Setter // getter for KJS
     private int tier;
@@ -295,6 +300,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
             this.blockBuilder.accept(blockBuilder);
         }
         var block = blockBuilder.register();
+        capabilityEventRegisters.add(this.onCapabilityRegister);
 
         var itemBuilder = registrate.item(name, properties -> itemFactory.apply((IMachineBlock) block.get(), properties))
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop()) // do not gen any lang keys

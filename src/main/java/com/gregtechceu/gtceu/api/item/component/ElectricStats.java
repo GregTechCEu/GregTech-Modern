@@ -19,9 +19,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.time.Duration;
@@ -50,11 +48,12 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> capability) {
-        if (capability == GTCapability.CAPABILITY_ELECTRIC_ITEM) {
-            return GTCapability.CAPABILITY_ELECTRIC_ITEM.orEmpty(capability, LazyOptional.of(() -> new ElectricItem(itemStack, maxCharge, tier, chargeable, dischargeable)));
-        }
-        return LazyOptional.empty();
+    public void attachCaps(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (stack, unused) -> createItem(stack), item);
+    }
+
+    public IElectricItem createItem(ItemStack stack) {
+        return new ElectricItem(stack, maxCharge, tier, chargeable, dischargeable);
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {

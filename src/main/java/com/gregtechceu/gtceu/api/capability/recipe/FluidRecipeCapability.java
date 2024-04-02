@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.level.material.Fluid;
 
@@ -49,7 +49,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(FluidStack.create(fluid, ingredient.getAmount(), ingredient.getNbt())));
+                        ingredients.add(new MapFluidIngredient(new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
                     }
                 }
             }

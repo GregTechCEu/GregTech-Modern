@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
-import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.ArrayList;
 import java.util.Arrays;

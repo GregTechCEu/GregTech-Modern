@@ -9,8 +9,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -21,8 +19,8 @@ import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import javax.annotation.Nullable;
@@ -187,8 +185,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         var modified = machine.fullModifyRecipe(match);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
-                    modified.matchRecipe(machine).isSuccess() &&
-                    modified.matchTickRecipe(machine).isSuccess()) {
+                modified.matchRecipe(machine).isSuccess() &&
+                modified.matchTickRecipe(machine).isSuccess()) {
                 setupRecipe(modified);
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
@@ -249,9 +247,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         lastFailedMatches = null;
         // try to execute last recipe if possible
         if (!recipeDirty && lastRecipe != null &&
-                lastRecipe.matchRecipe(this.machine).isSuccess() &&
-                lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                lastRecipe.checkConditions(this).isSuccess()) {
+            lastRecipe.matchRecipe(this.machine).isSuccess() &&
+            lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
+            lastRecipe.checkConditions(this).isSuccess()) {
             GTRecipe recipe = lastRecipe;
             lastRecipe = null;
             lastOriginRecipe = null;
@@ -419,9 +417,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             // try it again
             if (!recipeDirty &&
-                    lastRecipe.matchRecipe(this.machine).isSuccess() &&
-                    lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                    lastRecipe.checkConditions(this).isSuccess()) {
+                lastRecipe.matchRecipe(this.machine).isSuccess() &&
+                lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
+                lastRecipe.checkConditions(this).isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
                 setStatus(Status.IDLE);
@@ -471,11 +469,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             if (sound != null) {
                 workingSound = sound.playAutoReleasedSound(() ->
-                        machine.shouldWorkingPlaySound()
-                                && isWorking()
-                                && !getMachine().isInValid()
-                                && getMachine().getLevel().isLoaded(getMachine().getPos())
-                                && MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(), getMachine().getPos(), true, 0, 1, 1);
+                    machine.shouldWorkingPlaySound()
+                        && isWorking()
+                        && !getMachine().isInValid()
+                        && getMachine().getLevel().isLoaded(getMachine().getPos())
+                        && MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(), getMachine().getPos(), true, 0, 1, 1);
             }
         } else if (workingSound instanceof AutoReleasedSound soundEntry) {
             soundEntry.release();

@@ -16,7 +16,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistr
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.item.*;
+import com.gregtechceu.gtceu.api.item.LaserPipeBlockItem;
+import com.gregtechceu.gtceu.api.item.MaterialBlockItem;
+import com.gregtechceu.gtceu.api.item.MaterialPipeBlockItem;
+import com.gregtechceu.gtceu.api.item.RendererBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeBlock;
@@ -51,17 +54,14 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.ItemTags;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.FoliageColor;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.*;
-import net.minecraft.world.level.block.grower.AbstractTreeGrower;
+import net.minecraft.world.level.block.grower.TreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -69,26 +69,28 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemBlockStatePropertyCondition;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 /**
  * @author KilaBash
  * @date 2023/2/13
  * @implNote GTBlocks
  */
+@SuppressWarnings({"removal", "unchecked"})
 public class GTBlocks {
 
     //////////////////////////////////////
@@ -179,7 +181,7 @@ public class GTBlocks {
                     properties -> new OreBlock(properties, oreTag, material, true))
                 .initialProperties(() -> {
                     if (oreType.stoneType().get().isAir()) { // if the block is not registered (yet), fallback to stone
-                        return Blocks.IRON_ORE;
+                        return Blocks.STONE;
                     }
                     return oreType.stoneType().get().getBlock();
                 })
@@ -393,14 +395,12 @@ public class GTBlocks {
     public static final BlockEntry<LongDistancePipeBlock> LD_ITEM_PIPE = REGISTRATE.block("long_distance_item_pipeline", properties -> new LongDistancePipeBlock(properties, LDItemPipeType.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .blockstate(GTModels::longDistanceItemPipeModel)
-            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
             .simpleItem()
             .register();
 
     public static final BlockEntry<LongDistancePipeBlock> LD_FLUID_PIPE = REGISTRATE.block("long_distance_fluid_pipeline", properties -> new LongDistancePipeBlock(properties, LDFluidPipeType.INSTANCE))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .blockstate(GTModels::longDistanceFluidPipeModel)
-            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE, BlockTags.NEEDS_STONE_TOOL)
             .simpleItem()
             .register();
 
@@ -551,7 +551,7 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
     public static final BlockEntry<CoilBlock> COIL_KANTHAL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
     public static final BlockEntry<CoilBlock> COIL_NICHROME = createCoilBlock(CoilBlock.CoilType.NICHROME);
-    public static final BlockEntry<CoilBlock> COIL_RTMALLOY = createCoilBlock(CoilBlock.CoilType.RTMALLOY);
+    public static final BlockEntry<CoilBlock> COIL_TUNGSTENSTEEL = createCoilBlock(CoilBlock.CoilType.RTMALLOY);
     public static final BlockEntry<CoilBlock> COIL_HSSG = createCoilBlock(CoilBlock.CoilType.HSSG);
     public static final BlockEntry<CoilBlock> COIL_NAQUADAH = createCoilBlock(CoilBlock.CoilType.NAQUADAH);
     public static final BlockEntry<CoilBlock> COIL_TRINIUM = createCoilBlock(CoilBlock.CoilType.TRINIUM);
@@ -817,11 +817,7 @@ public class GTBlocks {
     //**********     Misc     **********//
     //////////////////////////////////////
 
-    public static final BlockEntry<SaplingBlock> RUBBER_SAPLING = REGISTRATE.block("rubber_sapling", properties -> new SaplingBlock(new AbstractTreeGrower() {
-                protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(@Nonnull RandomSource random, boolean largeHive) {
-                    return GTConfiguredFeatures.RUBBER;
-                }
-            }, properties))
+    public static final BlockEntry<SaplingBlock> RUBBER_SAPLING = REGISTRATE.block("rubber_sapling", properties -> new SaplingBlock(new TreeGrower("rubber", Optional.empty(), Optional.of(GTConfiguredFeatures.RUBBER), Optional.empty()), properties))
             .initialProperties(() -> Blocks.OAK_SAPLING)
             .lang("Rubber Sapling")
             .blockstate(GTModels::createCrossBlockState)
@@ -847,10 +843,10 @@ public class GTBlocks {
                                                     .hasProperty(RubberLogBlock.NATURAL, true)))
                                     .when(LootItemRandomChanceCondition.randomChance(0.85F))))))
             .lang("Rubber Log")
-            .tag(BlockTags.LOGS_THAT_BURN)
+            .tag(BlockTags.LOGS)
             .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
             .item()
-            .tag(ItemTags.LOGS_THAT_BURN)
+            .tag(ItemTags.LOGS)
             .onRegister(compassNode(GTCompassSections.GENERATIONS))
             .build()
             .register();
@@ -880,7 +876,7 @@ public class GTBlocks {
             .lang("Rubber Leaves")
             .blockstate((ctx, prov) -> createModelBlockState(ctx, prov, GTCEu.id("block/rubber_leaves")))
             .loot((table, block) -> table.add(block, table.createLeavesDrops(block, GTBlocks.RUBBER_SAPLING.get(), RUBBER_LEAVES_DROPPING_CHANCE)))
-            .tag(BlockTags.LEAVES, BlockTags.MINEABLE_WITH_HOE)
+            .tag(BlockTags.LEAVES)
             .color(() -> GTBlocks::leavesBlockColor)
             .item()
             .color(() -> GTBlocks::leavesItemColor)
@@ -968,7 +964,7 @@ public class GTBlocks {
     /**
      * kinda nasty block property copy function because one doesn't exist.
      * @param props the props to copy
-     * @return a shallow copy of the block properties like {@link BlockBehaviour.Properties#copy(BlockBehaviour)} does
+     * @return a shallow copy of the block properties like {@link BlockBehaviour.Properties#ofFullCopy(BlockBehaviour)} does
      */
     public static BlockBehaviour.Properties copy(BlockBehaviour.Properties props, BlockBehaviour.Properties newProps) {
         if (props == null) {
@@ -993,7 +989,7 @@ public class GTBlocks {
         newProps.pushReaction(((BlockPropertiesAccessor)props).getPushReaction());
         if (((BlockPropertiesAccessor)props).isRequiresCorrectToolForDrops()) newProps.requiresCorrectToolForDrops();
         ((BlockPropertiesAccessor)newProps).setOffsetFunction(((BlockPropertiesAccessor)props).getOffsetFunction());
-        if (!((BlockPropertiesAccessor)props).isSpawnParticlesOnBreak()) newProps.noParticlesOnBreak();
+        if (!((BlockPropertiesAccessor)props).isSpawnTerrainParticles()) newProps.noTerrainParticles();
         ((BlockPropertiesAccessor)newProps).setRequiredFeatures(((BlockPropertiesAccessor)props).getRequiredFeatures());
         newProps.emissiveRendering(((BlockPropertiesAccessor)props).getEmissiveRendering());
         newProps.instrument(((BlockPropertiesAccessor)props).getInstrument());

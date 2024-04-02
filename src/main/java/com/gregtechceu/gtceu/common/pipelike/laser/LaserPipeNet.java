@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
-import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
@@ -59,7 +58,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
     }
 
     @AllArgsConstructor
-    public static class LaserData implements IAttachData {
+    public static class LaserData {
         /**
          * The current position of the pipe
          */
@@ -80,26 +79,6 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
          */
         @Getter
         private final LaserPipeProperties properties;
-        @Getter
-        byte connections;
-
-        @Override
-        public boolean canAttachTo(Direction side) {
-            return (connections & (1 << side.ordinal())) != 0 && side.getAxis() == this.faceToHandler.getAxis();
-        }
-
-        @Override
-        public boolean setAttached(Direction side, boolean attach) {
-            var result = canAttachTo(side);
-            if (result != attach) {
-                if (attach) {
-                    connections |= (1 << side.ordinal());
-                } else {
-                    connections &= ~(1 << side.ordinal());
-                }
-            }
-            return result != attach;
-        }
 
         /**
          * @return The position of where the handler would be

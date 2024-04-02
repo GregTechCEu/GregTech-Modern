@@ -25,8 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
@@ -239,16 +238,12 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         return super.hasCraftingRemainingItem(stack);
     }
 
-    public <T> LazyOptional<T> getCapability(@Nonnull final ItemStack itemStack, @Nonnull final Capability<T> cap) {
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
         for (IItemComponent component : components) {
             if (component instanceof IComponentCapability componentCapability) {
-                var value = componentCapability.getCapability(itemStack, cap);
-                if (value.isPresent()) {
-                    return value;
-                }
+                componentCapability.attachCaps(event, this);
             }
         }
-        return LazyOptional.empty();
     }
 
     @Override

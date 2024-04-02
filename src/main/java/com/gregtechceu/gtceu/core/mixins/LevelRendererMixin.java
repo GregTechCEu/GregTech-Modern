@@ -19,8 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -53,7 +53,7 @@ public abstract class LevelRendererMixin {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
-        if (!ToolHelper.hasBehaviorsTag(mainHandItem) || ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isShiftKeyDown()) return;
+        if (!ToolHelper.hasBehaviorsTag(mainHandItem) || ToolHelper.getAoEDefinition(mainHandItem) == AoESymmetrical.none() || !(minecraft.hitResult instanceof BlockHitResult result) || minecraft.player.isCrouching()) return;
 
         BlockPos hitResultPos = result.getBlockPos();
         BlockState hitResultState = minecraft.level.getBlockState(hitResultPos);
@@ -95,7 +95,7 @@ public abstract class LevelRendererMixin {
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
 
-        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isShiftKeyDown() || !ToolHelper.hasBehaviorsTag(mainHandItem)) return;
+        if (state.isAir() || !minecraft.level.isInWorldBounds(pos) || !mainHandItem.isCorrectToolForDrops(state) || minecraft.player.isCrouching() || !ToolHelper.hasBehaviorsTag(mainHandItem)) return;
 
         Set<BlockPos> blockPositions = ToolHelper.getHarvestableBlocks(mainHandItem, ToolHelper.getAoEDefinition(mainHandItem), level, minecraft.player, minecraft.hitResult);
         Set<VoxelShape> outlineShapes = new HashSet<>();

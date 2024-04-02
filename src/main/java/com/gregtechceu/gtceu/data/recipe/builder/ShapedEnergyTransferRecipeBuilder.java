@@ -1,25 +1,26 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.gregtechceu.gtceu.GTCEu;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-import com.lowdragmc.lowdraglib.utils.Builder;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.function.Consumer;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -27,13 +28,26 @@ import java.util.function.Consumer;
  * @date 2023/11/4
  * @implNote ShapedEnergyTransferRecipeBuilder
  */
-public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, ShapedEnergyTransferRecipeBuilder> {
-    protected ItemStack output = ItemStack.EMPTY;
+@Accessors(fluent = true, chain = true)
+public class ShapedEnergyTransferRecipeBuilder {
+    @Setter
     protected Ingredient chargeIngredient = Ingredient.EMPTY;
+    @Setter
+    protected ItemStack output = ItemStack.EMPTY;
+    @Setter
     protected ResourceLocation id;
+    @Setter
     protected String group;
+    @Setter
+    private CraftingBookCategory category;
+    @Setter
     protected boolean transferMaxCharge;
+    @Setter
     protected boolean overrideCharge;
+
+
+    private final List<String> rows = Lists.newArrayList();
+    private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
 
     public ShapedEnergyTransferRecipeBuilder(@Nullable ResourceLocation id) {
         this.id = id;
@@ -44,46 +58,31 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
     }
 
     public ShapedEnergyTransferRecipeBuilder pattern(String slice) {
-        return aisle(slice);
+        rows.add(slice);
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, TagKey<Item> itemStack) {
-        return where(cha, Ingredient.of(itemStack));
+        key.put(cha, Ingredient.of(itemStack));
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
         if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
-            return where(cha, NBTIngredient.createNBTIngredient(itemStack));
+            key.put(cha, NBTIngredient.of(true, itemStack));
         }else {
-            return where(cha, Ingredient.of(itemStack));
+            key.put(cha, Ingredient.of(itemStack));
         }
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemLike itemLike) {
-        return where(cha, Ingredient.of(itemLike));
+        key.put(cha, Ingredient.of(itemLike));
+        return this;
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, Ingredient ingredient) {
-        return where(cha, ingredient);
-    }
-
-    public ShapedEnergyTransferRecipeBuilder chargeIngredient(Ingredient chargeIngredient) {
-        this.chargeIngredient = chargeIngredient;
-        return this;
-    }
-
-    public ShapedEnergyTransferRecipeBuilder overrideCharge(boolean overrideCharge) {
-        this.overrideCharge = overrideCharge;
-        return this;
-    }
-
-    public ShapedEnergyTransferRecipeBuilder transferMaxCharge(boolean transferMaxCharge) {
-        this.transferMaxCharge = transferMaxCharge;
-        return this;
-    }
-
-    public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack) {
-        this.output = itemStack.copy();
+        key.put(cha, ingredient);
         return this;
     }
 
@@ -100,71 +99,8 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
         return this;
     }
 
-    public ShapedEnergyTransferRecipeBuilder id(ResourceLocation id) {
-        this.id = id;
-        return this;
-    }
-
-    public ShapedEnergyTransferRecipeBuilder id(String id) {
-        this.id = new ResourceLocation(id);
-        return this;
-    }
-
-    public ShapedEnergyTransferRecipeBuilder group(String group) {
-        this.group = group;
-        return this;
-    }
-
-    @Override
-    public ShapedEnergyTransferRecipeBuilder shallowCopy() {
-        var builder = super.shallowCopy();
-        builder.output = output.copy();
-        return builder;
-    }
-
-    public void toJson(JsonObject json) {
-        if (group != null) {
-            json.addProperty("group", group);
-        }
-
-        if (!shape.isEmpty()) {
-            JsonArray pattern = new JsonArray();
-            for (String[] strings : shape) {
-                for (String string : strings) {
-                    pattern.add(string);
-                }
-            }
-            json.add("pattern", pattern);
-        }
-
-        if (!symbolMap.isEmpty()) {
-            JsonObject key = new JsonObject();
-            symbolMap.forEach((k, v) -> key.add(k.toString(), v.toJson()));
-            json.add("key", key);
-        }
-
-        json.addProperty("overrideCharge", overrideCharge);
-        json.addProperty("transferMaxCharge", transferMaxCharge);
-        if (chargeIngredient.isEmpty()) {
-            GTCEu.LOGGER.error("shaped energy transfer recipe {} chargeIngredient is empty", id);
-            throw new IllegalArgumentException(id + ": chargeIngredient is empty");
-        } else {
-            json.add("chargeIngredient", chargeIngredient.toJson());
-        }
-        if (output.isEmpty()) {
-            GTCEu.LOGGER.error("shaped energy transfer recipe {} output is empty", id);
-            throw new IllegalArgumentException(id + ": output items is empty");
-        } else {
-            JsonObject result = new JsonObject();
-            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.getItem()).toString());
-            if (output.getCount() > 1) {
-                result.addProperty("count", output.getCount());
-            }
-            if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
-            }
-            json.add("result", result);
-        }
+    public ShapedEnergyTransferRecipe build() {
+        return new ShapedEnergyTransferRecipe(this.group, this.category, ShapedRecipePattern.of(this.key, this.rows), this.chargeIngredient, this.overrideCharge, this.transferMaxCharge, this.output, false);
     }
 
     protected ResourceLocation defaultId() {
@@ -172,34 +108,7 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
     }
 
     public void save(RecipeOutput consumer) {
-        consumer.accept(new FinishedRecipe() {
-            @Override
-            public void serializeRecipeData(JsonObject pJson) {
-                toJson(pJson);
-            }
-
-            @Override
-            public ResourceLocation getId() {
-                var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "shaped" + "/" + ID.getPath());
-            }
-
-            @Override
-            public RecipeSerializer<?> getType() {
-                return ShapedEnergyTransferRecipe.SERIALIZER;
-            }
-
-            @Nullable
-            @Override
-            public JsonObject serializeAdvancement() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getAdvancementId() {
-                return null;
-            }
-        });
+        var recipeId = id == null ? defaultId() : id;
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shaped" + "/" + recipeId.getPath()), build(), null);
     }
 }

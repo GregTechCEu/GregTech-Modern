@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;

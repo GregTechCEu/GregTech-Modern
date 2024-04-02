@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import net.minecraft.data.recipes.FinishedRecipe;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;

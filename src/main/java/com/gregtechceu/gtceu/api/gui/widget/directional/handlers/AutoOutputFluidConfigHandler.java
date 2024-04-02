@@ -16,8 +16,8 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -124,7 +124,7 @@ public class AutoOutputFluidConfigHandler implements IDirectionalConfigHandler {
     @Override
     @OnlyIn(Dist.CLIENT)
     public void renderOverlay(SceneWidget sceneWidget, BlockPosFace blockPosFace) {
-        if (machine.getOutputFacingFluids() != blockPosFace.facing)
+        if (machine.getOutputFacingFluids() != blockPosFace.facing())
             return;
 
         sceneWidget.drawFacingBorder(new PoseStack(), blockPosFace, machine.isAutoOutputFluids() ? 0xff00b4ff : 0x8f00b4ff, 2);

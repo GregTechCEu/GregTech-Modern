@@ -1,24 +1,22 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
+import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import net.minecraft.core.Direction;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.Iterator;
 
-@SuppressWarnings("UnstableApiUsage")
-public class PipeTankList implements IFluidTransfer, Iterable<FluidStorage> {
+public class PipeTankList implements IFluidHandlerModifiable, Iterable<CustomFluidTank> {
 
     private final FluidPipeBlockEntity pipe;
-    private final FluidStorage[] tanks;
+    private final CustomFluidTank[] tanks;
     private final Direction facing;
 
-    public PipeTankList(FluidPipeBlockEntity pipe, Direction facing, FluidStorage... fluidTanks) {
+    public PipeTankList(FluidPipeBlockEntity pipe, Direction facing, CustomFluidTank... fluidTanks) {
         this.tanks = fluidTanks;
         this.pipe = pipe;
         this.facing = facing;
@@ -55,7 +53,7 @@ public class PipeTankList implements IFluidTransfer, Iterable<FluidStorage> {
     }
 
     @Override
-    public long getTankCapacity(int tank) {
+    public int getTankCapacity(int tank) {
         return tanks[tank].getCapacity();
     }
 
@@ -65,54 +63,27 @@ public class PipeTankList implements IFluidTransfer, Iterable<FluidStorage> {
     }
 
     @Override
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        if (pipe.isBlocked(facing) || resource == null || resource.getAmount() <= 0)
-            return 0;
-
-        return fill(resource, simulate, tank);
-    }
-
-    @Override
-    public boolean supportsFill(int tank) {
-        return true;
-    }
-
-    @NotNull
-    @Override
-    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-        FluidStorage storage = tanks[tank];
-        FluidStack drained = storage.drain(resource, simulate, notifyChanges);
-        if (!drained.isEmpty()) return drained;
-        else return FluidStack.empty();
-    }
-
-    @Override
-    public boolean supportsDrain(int tank) {
-        return true;
-    }
-
-    @Override
-    public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public int fill(FluidStack resource, FluidAction action) {
         int channel;
-        if (pipe.isBlocked(facing) || resource == null || resource.getAmount() <= 0 || (channel = findChannel(resource)) < 0)
+        if (pipe.isBlocked(facing) || resource.getAmount() <= 0 || (channel = findChannel(resource)) < 0)
             return 0;
 
-        return fill(resource, simulate, channel);
+        return fill(resource, action, channel);
     }
 
-    private long fullCapacity() {
+    private int fullCapacity() {
         return tanks.length * pipe.getCapacityPerTank();
     }
 
-    private long fill(FluidStack resource, boolean simulate, int channel) {
+    private int fill(FluidStack resource, FluidAction action, int channel) {
         if (channel >= tanks.length) return 0;
-        FluidStorage tank = tanks[channel];
+        CustomFluidTank tank = tanks[channel];
         FluidStack currentFluid = tank.getFluid();
 
         if (currentFluid.isEmpty() || currentFluid.getAmount() <= 0) {
             FluidStack newFluid = resource.copy();
             newFluid.setAmount(Math.min(pipe.getCapacityPerTank(), newFluid.getAmount()));
-            if (!simulate) {
+            if (action == FluidAction.EXECUTE) {
                 tank.setFluid(newFluid);
                 pipe.receivedFrom(facing);
                 pipe.checkAndDestroy(newFluid);
@@ -120,9 +91,9 @@ public class PipeTankList implements IFluidTransfer, Iterable<FluidStorage> {
             return newFluid.getAmount();
         }
         if (currentFluid.isFluidEqual(resource)) {
-            long toAdd = Math.min(tank.getCapacity() - currentFluid.getAmount(), resource.getAmount());
+            int toAdd = Math.min(tank.getCapacity() - currentFluid.getAmount(), resource.getAmount());
             if (toAdd > 0) {
-                if (!simulate) {
+                if (action == FluidAction.EXECUTE) {
                     currentFluid.setAmount(currentFluid.getAmount() + toAdd);
                     pipe.receivedFrom(facing);
                     pipe.checkAndDestroy(currentFluid);
@@ -136,41 +107,30 @@ public class PipeTankList implements IFluidTransfer, Iterable<FluidStorage> {
 
     @NotNull
     @Override
-    public FluidStack drain(long maxDrain, boolean doDrain, boolean notifyChanges) {
-        if (maxDrain <= 0) return FluidStack.empty();
-        for (FluidStorage tank : tanks) {
-            FluidStack drained = tank.drain(maxDrain, doDrain, notifyChanges);
+    public FluidStack drain(int maxDrain, FluidAction action) {
+        if (maxDrain <= 0) return FluidStack.EMPTY;
+        for (CustomFluidTank tank : tanks) {
+            FluidStack drained = tank.drain(maxDrain, action);
             if (!drained.isEmpty()) return drained;
         }
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     @NotNull
     @Override
-    public Object createSnapshot() {
-        return new Object();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
-
-    }
-
-    @Nullable
-    @Override
-    public FluidStack drain(FluidStack fluidStack, boolean doDrain) {
-        if (fluidStack.isEmpty() || fluidStack.getAmount() <= 0) return FluidStack.empty();
+    public FluidStack drain(FluidStack fluidStack, FluidAction action) {
+        if (fluidStack.isEmpty() || fluidStack.getAmount() <= 0) return FluidStack.EMPTY;
         fluidStack = fluidStack.copy();
-        for (FluidStorage tank : tanks) {
-            FluidStack drained = tank.drain(fluidStack, doDrain);
+        for (CustomFluidTank tank : tanks) {
+            FluidStack drained = tank.drain(fluidStack, action);
             if (!drained.isEmpty()) return drained;
         }
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     @Override
     @NotNull
-    public Iterator<FluidStorage> iterator() {
+    public Iterator<CustomFluidTank> iterator() {
         return Arrays.stream(tanks).iterator();
     }
 }

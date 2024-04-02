@@ -71,7 +71,7 @@ public class FluidDrillLogic extends RecipeLogic {
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
                     .outputFluids(FluidStack.create(veinFluid, getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
-                    .buildRawRecipe();
+                    .buildRecipe();
             if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
                 return recipe;
             }

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.common.machine.trait.NotifiableStressTrait;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 
@@ -28,7 +28,7 @@ public class SimpleKineticElectricWorkableMachine extends SimpleTieredMachine im
     @Persisted
     protected final NotifiableStressTrait stressTrait;
 
-    public SimpleKineticElectricWorkableMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
+    public SimpleKineticElectricWorkableMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.stressTrait = createStressTrait(args);
     }

@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
@@ -10,6 +9,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,13 +19,13 @@ import org.jetbrains.annotations.Nullable;
  * @implNote ItemHandlerProxyTrait
  */
 @Accessors(chain = true)
-public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer, ICapabilityTrait {
+public class ItemHandlerProxyTrait extends MachineTrait implements IItemHandlerModifiable, ICapabilityTrait {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ItemHandlerProxyTrait.class);
     @Getter
     public final IO capabilityIO;
     @Setter @Getter @Nullable
-    public IItemTransfer proxy;
+    public IItemHandlerModifiable proxy;
 
     public ItemHandlerProxyTrait(MetaMachine machine, IO capabilityIO) {
         super(machine);
@@ -40,11 +40,6 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
     //////////////////////////////////////
     //*******     Capability    ********//
     //////////////////////////////////////
-
-    @Override
-    public void onContentsChanged() {
-        if (proxy != null) proxy.onContentsChanged();
-    }
 
     @Override
     public int getSlots() {
@@ -66,9 +61,9 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
 
     @NotNull
     @Override
-    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
+    public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
         if (proxy != null && canCapInput()) {
-            return proxy.insertItem(slot, stack, simulate, notifyChanges);
+            return proxy.insertItem(slot, stack, simulate);
         }
         return stack;
     }
@@ -79,9 +74,9 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
 
     @NotNull
     @Override
-    public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+    public ItemStack extractItem(int slot, int amount, boolean simulate) {
         if (proxy != null && canCapOutput()) {
-            return proxy.extractItem(slot, amount, simulate, notifyChanges);
+            return proxy.extractItem(slot, amount, simulate);
         }
         return ItemStack.EMPTY;
     }
@@ -98,19 +93,6 @@ public class ItemHandlerProxyTrait extends MachineTrait implements IItemTransfer
     @Override
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return proxy != null && proxy.isItemValid(slot, stack);
-    }
-
-    @NotNull
-    @Override
-    public Object createSnapshot() {
-        return proxy != null ? proxy.createSnapshot() : new Object();
-    }
-
-    @Override
-    public void restoreFromSnapshot(Object snapshot) {
-        if (proxy != null) {
-            proxy.restoreFromSnapshot(snapshot);
-        }
     }
 
     public boolean isEmpty() {

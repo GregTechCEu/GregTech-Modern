@@ -11,8 +11,8 @@ import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.fml.ModContainer;
-import net.minecraftforge.fml.ModLoadingContext;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.ModLoadingContext;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -81,7 +81,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         return container != null && container.getModId().equals(GTCEu.MOD_ID) || container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
     }
 
-    public void register(K key, V value) {
+    public <T extends V> T register(K key, T value) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
@@ -89,6 +89,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
             throw new IllegalStateException("[register] registry %s contains key %s already".formatted(registryName, key));
         }
         registry.put(key, value);
+        return value;
     }
 
     @Nullable

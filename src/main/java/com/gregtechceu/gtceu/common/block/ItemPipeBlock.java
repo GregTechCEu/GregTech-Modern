@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.capability.IToolable;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -20,7 +22,8 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -36,6 +39,32 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     @Override
     protected ItemPipeProperties createProperties(ItemPipeType itemPipeType, Material material) {
         return itemPipeType.modifyProperties(material.getProperty(PropertyKey.ITEM_PIPE));
+    }
+
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerBlock(Capabilities.ItemHandler.BLOCK, (level, pos, state, blockEntity, side) -> {
+            if (level.isClientSide) return null;
+            if (blockEntity instanceof ItemPipeBlockEntity itemPipeBlockEntity) {
+                if (side != null && itemPipeBlockEntity.isConnected(side)) {
+                    itemPipeBlockEntity.ensureHandlersInitialized();
+                    itemPipeBlockEntity.checkNetwork();
+                    return itemPipeBlockEntity.getHandler(side, true);
+                }
+            }
+            return null;
+        }, this);
+        event.registerBlock(GTCapability.CAPABILITY_COVERABLE, (level, pos, state, blockEntity, side) -> {
+            if (blockEntity instanceof PipeBlockEntity<?, ?> fluidPipeBlockEntity) {
+                return fluidPipeBlockEntity.getCoverContainer();
+            }
+            return null;
+        }, this);
+        event.registerBlock(GTCapability.CAPABILITY_TOOLABLE, (level, pos, state, blockEntity, side) -> {
+            if (blockEntity instanceof IToolable toolable) {
+                return toolable;
+            }
+            return null;
+        }, this);
     }
 
     @Override
@@ -79,9 +108,7 @@ public class ItemPipeBlock extends MaterialPipeBlock<ItemPipeType, ItemPipePrope
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side,
-                                         @Nullable BlockEntity tile) {
-        return tile != null &&
-            tile.getCapability(ForgeCapabilities.ITEM_HANDLER, side.getOpposite()).isPresent();
+    public boolean canPipeConnectToBlock(IPipeNode<ItemPipeType, ItemPipeProperties> selfTile, Direction side, @Nullable BlockEntity tile) {
+        return tile != null && tile.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, tile.getBlockPos(), tile.getBlockState(), tile, side.getOpposite()) != null;
     }
 }

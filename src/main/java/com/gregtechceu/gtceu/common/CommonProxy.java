@@ -6,7 +6,9 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.forge.compat.GTEnergyWrapper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.data.chemical.material.event.MaterialRegistryEvent;
@@ -18,9 +20,15 @@ import com.gregtechceu.gtceu.api.data.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
-import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.DrumMachineItem;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.common.block.CableBlock;
+import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
+import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
+import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
@@ -45,6 +53,21 @@ import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.providers.RegistrateProvider;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackType;
+import net.minecraft.server.packs.repository.Pack;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.block.Block;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.ModList;
@@ -53,10 +76,24 @@ import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.neoforged.fml.event.lifecycle.FMLConstructModEvent;
 import net.neoforged.fml.event.lifecycle.FMLLoadCompleteEvent;
 import net.neoforged.fml.javafmlmod.FMLModContainer;
+import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import net.neoforged.neoforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.registries.RegisterEvent;
+import org.jetbrains.annotations.ApiStatus;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.List;
 
 public class CommonProxy {
-    public CommonProxy() {
+    // DO NOT USE OUTSIDE GTCEuM!!!
+    @ApiStatus.Internal
+    public static IEventBus modBus;
+
+    public CommonProxy(IEventBus modBus) {
+        CommonProxy.modBus = modBus;
         // used for forge events (ClientProxy + CommonProxy)
         modBus.register(this);
         modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
@@ -103,9 +140,10 @@ public class CommonProxy {
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTOreVeinWidget.init();
+        GTIngredientTypes.INGREDIENT_TYPES.register(modBus);
 
         // fabric exclusive, squeeze this in here to register before stuff is used
-        GTRegistration.REGISTRATE.registerRegistrate();
+        GTRegistration.REGISTRATE.registerRegistrate(modBus);
 
         GregTechDatagen.init();
         // Register all material manager registries, for materials with mod ids.
@@ -201,9 +239,39 @@ public class CommonProxy {
         });
     }
 
-    @SubscribeEvent
+    @SubscribeEvent(priority = EventPriority.LOWEST)
     public void registerCapabilities(RegisterCapabilitiesEvent event) {
-        //GTCapability.register(event);
+        MachineBuilder.capabilityEventRegisters.forEach(consumer -> consumer.accept(event));
+
+        for (Block block : BuiltInRegistries.BLOCK) {
+            if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE && event.isBlockRegistered(Capabilities.EnergyStorage.BLOCK, block)) {
+                event.registerBlock(GTCapability.CAPABILITY_ENERGY_CONTAINER, (level, pos, state, blockEntity, side) -> {
+                    IEnergyStorage forgeEnergy = level.getCapability(Capabilities.EnergyStorage.BLOCK, pos, state, blockEntity, side);
+                    if (forgeEnergy != null) {
+                        return new GTEnergyWrapper(forgeEnergy);
+                    }
+                    return null;
+                }, block);
+            }
+
+            if (block instanceof FluidPipeBlock fluidPipe) {
+                fluidPipe.attachCapabilities(event);
+            } else if (block instanceof CableBlock cable) {
+                cable.attachCapabilities(event);
+            } else if (block instanceof ItemPipeBlock itemPipe) {
+                itemPipe.attachCapabilities(event);
+            } else if (block instanceof LaserPipeBlock laserPipe) {
+                laserPipe.attachCapabilities(event);
+            }
+        }
+
+        for (Item item : BuiltInRegistries.ITEM) {
+            if (item instanceof ComponentItem componentItem) {
+                componentItem.attachCapabilities(event);
+            } else if (item instanceof DrumMachineItem drum) {
+                drum.attachCapabilities(event);
+            }
+        }
     }
 
     @SubscribeEvent
@@ -224,7 +292,18 @@ public class CommonProxy {
             // Register recipes & unification data again
             long startTime = System.currentTimeMillis();
             ChemicalHelper.reinitializeUnification();
-            GTRecipes.recipeAddition(GTDynamicDataPack::addRecipe);
+            GTRecipes.recipeAddition(new RecipeOutput() {
+                @Override
+                public Advancement.Builder advancement() {
+                    //noinspection removal
+                    return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
+                }
+
+                @Override
+                public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
+                    GTDynamicDataPack.addRecipe(id, recipe, advancement);
+                }
+            });
             // Initialize dungeon loot additions
             DungeonLootLoader.init();
             GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);

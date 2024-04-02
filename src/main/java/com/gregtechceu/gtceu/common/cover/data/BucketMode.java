@@ -15,9 +15,9 @@ public enum BucketMode implements EnumSelectorWidget.SelectableEnum {
     public final IGuiTexture icon;
 
 
-    public final long multiplier;
+    public final int multiplier;
 
-    BucketMode(String tooltip, String textureName, long multiplier) {
+    BucketMode(String tooltip, String textureName, int multiplier) {
         this.tooltip = tooltip;
         this.icon = new ResourceTexture(textureName + ".png").scale(16F / 20F);
         this.multiplier = multiplier;

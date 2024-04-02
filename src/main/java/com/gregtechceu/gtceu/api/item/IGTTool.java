@@ -4,7 +4,7 @@ import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.forge.CombinedCapabilityProvider;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
+import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
@@ -38,7 +39,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -65,33 +65,31 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-import net.minecraftforge.common.util.LazyOptional;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.ICapabilityProvider;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.TierSortingRegistry;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.*;
 import static net.minecraft.world.item.Item.BASE_ATTACK_DAMAGE_UUID;
 import static net.minecraft.world.item.Item.BASE_ATTACK_SPEED_UUID;
 
-public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
+public interface IGTTool extends IItemUIFactory, ItemLike {
 
     GTToolType getToolType();
-
     Material getMaterial();
     
     boolean isElectric();
 
     int getElectricTier();
+
+    Tier getTier();
 
     IGTToolDefinition getToolStats();
 
@@ -357,7 +355,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (player.level().isClientSide) return false;
         getToolStats().getBehaviors().forEach(behavior -> behavior.onBlockStartBreak(stack, pos, player));
 
-        if (!player.isShiftKeyDown()) {
+        if (!player.isCrouching()) {
             ServerPlayer playerMP = (ServerPlayer) player;
             int result = -1;
             if (isTool(stack, GTToolType.SHEARS)) {
@@ -405,7 +403,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             if (entityLiving instanceof Player && playSoundOnBlockDestroy()) {
                 // sneaking disables AOE, which means it is okay to play the sound
                 // not checking this means the sound will play for every AOE broken block, which is very loud
-                if (entityLiving.isShiftKeyDown()) {
+                if (entityLiving.isCrouching()) {
                     playSound((Player) entityLiving);
                 }
             }
@@ -424,9 +422,11 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         if (entry == null || entry.material == null) return false;
         if (entry.material == getToolMaterial(toRepair)) {
             // special case wood to allow Wood Planks
-            if (VanillaRecipeHelper.isMaterialWood(entry.material)) {
+            /* TODO Add plank prefix
+            if (ModHandler.isMaterialWood(entry.material)) {
                 return entry.tagPrefix == TagPrefix.planks;
             }
+            */
             // Gems can use gem and plate, Ingots can use ingot and plate
             if (entry.tagPrefix == TagPrefix.plate) {
                 return true;
@@ -476,7 +476,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
             return ItemStack.EMPTY;
         }
         stack = stack.copy();
-        Player player = ForgeHooks.getCraftingPlayer();
+        Player player = CommonHooks.getCraftingPlayer();
         damageItemWhenCrafting(stack, player);
         playCraftingSound(player, stack);
         // We cannot simply return the copied stack here because Forge's bug
@@ -678,9 +678,8 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
 
         // valid tools
         tooltip.add(Component.translatable("item.gtceu.tool.usable_as",
-                getToolClassNames(stack).stream()
-                        .filter(s -> I18n.exists("gtceu.tool.class." + s))
-                        .map(s -> Component.translatable("gtceu.tool.class." + s))
+                getToolClasses(stack).stream()
+                        .map(s -> Component.translatable("gtceu.tool.class." + s.name))
                         .collect(Component::empty, FormattingUtil::combineComponents, FormattingUtil::combineComponents)
         ));
 
@@ -792,8 +791,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         }
     }
 
-    @Override
-    default ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
+    default ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer) {
         CompoundTag tag = getBehaviorsTag(holder.getHeld());
         AoESymmetrical defaultDefinition = getMaxAoEDefinition(holder.getHeld());
         return new ModularUI(120, 80, holder, entityPlayer).background(GuiTextures.BACKGROUND)
@@ -836,35 +834,16 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return new HashSet<>(getToolType().toolClasses);
     }
 
-    default Set<String> getToolClassNames(ItemStack stack) {
-        return getToolClasses(stack).stream().flatMap(type -> type.toolClassNames.stream()).collect(Collectors.toSet());
-    }
-
-    @Nullable
-    default ICapabilityProvider definition$initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        List<ICapabilityProvider> providers = new ArrayList<>();
+    default void definition$initCapabilities(RegisterCapabilitiesEvent event) {
         if (isElectric()) {
-            ElectricStats item = ElectricStats.createElectricItem(0L, getElectricTier());
-            providers.add(new ICapabilityProvider() {
-                @Override
-                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @org.jetbrains.annotations.Nullable Direction arg) {
-                    return item.getCapability(stack, capability);
-                }
-            });
+            ElectricStats stats = ElectricStats.createElectricItem(0L, getElectricTier());
+            event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (item, unused) -> stats.createItem(item), this.asItem());
         }
         for (IToolBehavior behavior : getToolStats().getBehaviors()) {
             if (behavior instanceof IComponentCapability componentCapability) {
-                providers.add(new ICapabilityProvider() {
-                    @Override
-                    public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @org.jetbrains.annotations.Nullable Direction arg) {
-                        return componentCapability.getCapability(stack, capability);
-                    }
-                });
+               componentCapability.attachCaps(event, this.asItem());
             }
         }
-        if (providers.isEmpty()) return null;
-        if (providers.size() == 1) return providers.get(0);
-        return new CombinedCapabilityProvider(providers);
     }
 
     default boolean definition$isCorrectToolForDrops(ItemStack stack, BlockState state) {

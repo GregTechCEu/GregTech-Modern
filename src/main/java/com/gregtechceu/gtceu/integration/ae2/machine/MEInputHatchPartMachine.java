@@ -213,7 +213,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
     }
 
-    public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidStorage, IFluidTransfer {
+    public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidHandler, IFluidTransfer {
 
         public ExportOnlyAEFluid(GenericStack config, GenericStack stock) {
             super(config, stock);

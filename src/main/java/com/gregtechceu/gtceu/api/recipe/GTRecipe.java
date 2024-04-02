@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -13,7 +15,6 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
@@ -38,8 +39,6 @@ import java.util.function.Supplier;
 @ParametersAreNonnullByDefault
 public class GTRecipe implements Recipe<Container> {
     public final GTRecipeType recipeType;
-    @Getter
-    public final ResourceLocation id;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
     public final Map<RecipeCapability<?>, List<Content>> outputs;
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
@@ -50,15 +49,14 @@ public class GTRecipe implements Recipe<Container> {
     @Getter
     public boolean isFuel;
 
-    public GTRecipe(GTRecipeType recipeType, ResourceLocation id, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, CompoundTag data, int duration, boolean isFuel) {
+    public GTRecipe(GTRecipeType recipeType, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, CompoundTag data, int duration, boolean isFuel) {
         this.recipeType = recipeType;
-        this.id = id;
         this.inputs = inputs;
         this.outputs = outputs;
         this.tickInputs = tickInputs;
         this.tickOutputs = tickOutputs;
         this.conditions = conditions;
-        this.data = data;
+        this.data = data != null ? data : new CompoundTag();
         this.duration = duration;
         this.isFuel = isFuel;
     }
@@ -80,7 +78,7 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, id, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), data, duration, isFuel);
+        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -88,7 +86,7 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType, id, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), data, duration, isFuel);
+        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), data, duration, isFuel);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
@@ -258,7 +256,7 @@ public class GTRecipe implements Recipe<Container> {
             result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, used, result.getA(), result.getB(), contentSearch, contentSlotSearch, false);
 
             if (result.getA() != null || !result.getB().isEmpty()) {
-                GTCEu.LOGGER.warn("io error while handling a recipe {} outputs. holder: {}", id, holder);
+                GTCEu.LOGGER.warn("io error while handling a recipe {} outputs. holder: {}", this, holder);
                 return false;
             }
         }
@@ -379,7 +377,7 @@ public class GTRecipe implements Recipe<Container> {
 
     public ActionResult checkConditions(@Nonnull RecipeLogic recipeLogic) {
         if (conditions.isEmpty()) return ActionResult.SUCCESS;
-        Map<String, List<RecipeCondition>> or = new HashMap<>();
+        Map<RecipeConditionType<?>, List<RecipeCondition>> or = new HashMap<>();
         for (RecipeCondition condition : conditions) {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
@@ -417,7 +415,7 @@ public class GTRecipe implements Recipe<Container> {
         builder.output.putAll(recipeOutputs);
         builder.tickOutput.putAll(recipeTickOutputs);
 
-        return builder.buildRawRecipe();
+        return builder.buildRecipe();
     }
 
     /**
@@ -525,13 +523,28 @@ public class GTRecipe implements Recipe<Container> {
         for (Content content : contents.getOrDefault(ItemRecipeCapability.CAP, Collections.emptyList())) {
             var items = ItemRecipeCapability.CAP.of(content.content).getItems();
             if (items.length == 0) {
-                GTCEu.LOGGER.error("recipe {} {} item length is 0", id, name);
+                GTCEu.LOGGER.error("recipe {} {} item length is 0", this, name);
                 return false;
             } else if (Arrays.stream(items).anyMatch(ItemStack::isEmpty)) {
-                GTCEu.LOGGER.error("recipe {} {} item is empty", id, name);
+                GTCEu.LOGGER.error("recipe {} {} item is empty", this, name);
                 return false;
             }
         }
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "GTRecipe{" +
+            "recipeType=" + recipeType +
+            ", inputs=" + inputs +
+            ", outputs=" + outputs +
+            ", tickInputs=" + tickInputs +
+            ", tickOutputs=" + tickOutputs +
+            ", conditions=" + conditions +
+            ", data=" + data +
+            ", duration=" + duration +
+            ", isFuel=" + isFuel +
+            '}';
     }
 }

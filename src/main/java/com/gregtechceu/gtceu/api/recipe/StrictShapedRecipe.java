@@ -2,17 +2,17 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.CraftingBookCategory;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
-import net.minecraft.world.item.crafting.ShapedRecipe;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -29,8 +29,8 @@ import java.util.Map;
 public class StrictShapedRecipe extends ShapedRecipe {
     public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
 
-    public StrictShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
-        super(id, group, category, width, height, recipeItems, result);
+    public StrictShapedRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
+        super(group, category, pattern, result, showNotification);
     }
 
     @Override
@@ -71,41 +71,39 @@ public class StrictShapedRecipe extends ShapedRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<StrictShapedRecipe> {
+        public static final Codec<StrictShapedRecipe> CODEC = RecordCodecBuilder.create(
+            instance -> instance.group(
+                    ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(ShapedRecipe::getGroup),
+                    CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
+                    ShapedRecipePattern.MAP_CODEC.forGetter(val -> ((ShapedRecipeAccessor)val).getPattern()),
+                    ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor)val).getResult()),
+                    ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(val -> ((ShapedRecipeAccessor)val).getShowNotification())
+                )
+                .apply(instance, StrictShapedRecipe::new)
+        );
+
         @Override
-        public StrictShapedRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
-            String string = GsonHelper.getAsString(json, "group", "");
-            CraftingBookCategory craftingBookCategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
-            Map<String, Ingredient> map = ShapedRecipeAccessor.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
-            String[] strings = ShapedRecipeAccessor.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
-            int i = strings[0].length();
-            int j = strings.length;
-            NonNullList<Ingredient> nonNullList = ShapedRecipeAccessor.callDissolvePattern(strings, map, i, j);
-            ItemStack itemStack = StrictShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(json, "result"));
-            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack);
+        public StrictShapedRecipe fromNetwork(FriendlyByteBuf buffer) {
+            String group = buffer.readUtf();
+            CraftingBookCategory category = buffer.readEnum(CraftingBookCategory.class);
+            ShapedRecipePattern pattern = ShapedRecipePattern.fromNetwork(buffer);
+            ItemStack result = buffer.readItem();
+            boolean showNotification = buffer.readBoolean();
+            return new StrictShapedRecipe(group, category, pattern, result, showNotification);
         }
 
         @Override
-        public StrictShapedRecipe fromNetwork(ResourceLocation recipeId, FriendlyByteBuf buffer) {
-            int i = buffer.readVarInt();
-            int j = buffer.readVarInt();
-            String string = buffer.readUtf();
-            CraftingBookCategory craftingBookCategory = buffer.readEnum(CraftingBookCategory.class);
-            NonNullList<Ingredient> nonNullList = NonNullList.withSize(i * j, Ingredient.EMPTY);
-            nonNullList.replaceAll(ignored -> Ingredient.fromNetwork(buffer));
-            ItemStack itemStack = buffer.readItem();
-            return new StrictShapedRecipe(recipeId, string, craftingBookCategory, i, j, nonNullList, itemStack);
+        public Codec<StrictShapedRecipe> codec() {
+            return CODEC;
         }
 
         @Override
         public void toNetwork(FriendlyByteBuf buffer, StrictShapedRecipe recipe) {
-            buffer.writeVarInt(recipe.getWidth());
-            buffer.writeVarInt(recipe.getHeight());
             buffer.writeUtf(recipe.getGroup());
             buffer.writeEnum(recipe.category());
-            for (Ingredient ingredient : recipe.getIngredients()) {
-                ingredient.toNetwork(buffer);
-            }
+            ((ShapedRecipeAccessor)recipe).getPattern().toNetwork(buffer);
             buffer.writeItem(((ShapedRecipeAccessor)recipe).getResult());
+            buffer.writeBoolean(((ShapedRecipeAccessor) recipe).getShowNotification());
         }
     }
 }

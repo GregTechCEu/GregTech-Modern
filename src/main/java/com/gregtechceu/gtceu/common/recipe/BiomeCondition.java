@@ -2,9 +2,13 @@ package com.gregtechceu.gtceu.common.recipe;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import net.minecraft.core.Holder;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,17 +27,25 @@ import javax.annotation.Nonnull;
  */
 @NoArgsConstructor
 public class BiomeCondition extends RecipeCondition {
+    public static final Codec<BiomeCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+        .and(ResourceLocation.CODEC.fieldOf("biome").forGetter(val -> val.biome))
+        .apply(instance, BiomeCondition::new));
 
     public final static BiomeCondition INSTANCE = new BiomeCondition();
     private ResourceLocation biome = new ResourceLocation("dummy");
+
+    public BiomeCondition(boolean isReverse, ResourceLocation biome) {
+        super(isReverse);
+        this.biome = biome;
+    }
 
     public BiomeCondition(ResourceLocation biome) {
         this.biome = biome;
     }
 
     @Override
-    public String getType() {
-        return "biome";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.BIOME;
     }
 
     @Override

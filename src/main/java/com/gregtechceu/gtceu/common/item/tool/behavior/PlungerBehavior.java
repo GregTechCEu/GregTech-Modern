@@ -3,20 +3,20 @@ package com.gregtechceu.gtceu.common.item.tool.behavior;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import com.gregtechceu.gtceu.api.misc.forge.VoidFluidHandlerItemStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.FluidStack;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,17 +34,17 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(), context.getClickedFace());
+        IFluidHandler fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(), context.getClickedFace());
         if (fluidHandler == null) {
             return InteractionResult.PASS;
         }
 
-        IFluidTransfer handlerToRemoveFrom = fluidHandler;
+        IFluidHandler handlerToRemoveFrom = fluidHandler;
 //                player.isCrouching() ?
 //                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).input : null) :
 //                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).output : fluidHandler);
 
-        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(FluidHelper.getBucket(), true) != null) {
+        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(FluidHelper.getBucket(), IFluidHandler.FluidAction.EXECUTE) != null) {
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
             return InteractionResult.PASS;
         }
@@ -58,19 +58,16 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
     }
 
     @Override
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> new VoidFluidHandlerItemStack(itemStack) {
-                @Override
-                public int fill(FluidStack resource, FluidAction doFill) {
-                    int result = super.fill(resource, doFill);
-                    if (result > 0) {
-                        ToolHelper.damageItem(getContainer(), null);
-                    }
-                    return result;
+    public void attachCaps(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, unused) -> new FluidHandlerItemStack(stack, Integer.MAX_VALUE) {
+            @Override
+            public int fill(FluidStack resource, FluidAction action) {
+                int result = resource.getAmount();
+                if (result > 0) {
+                    ToolHelper.damageItem(this.getContainer(), null);
                 }
-            }));
-        }
-        return LazyOptional.empty();
+                return result;
+            }
+        }, item);
     }
 }

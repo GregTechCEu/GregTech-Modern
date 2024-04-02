@@ -15,7 +15,7 @@ import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import it.unimi.dsi.fastutil.chars.*;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -100,7 +100,7 @@ public class VanillaRecipeHelper {
     /**
      * Adds a shaped recipe which clears the nbt of the outputs
      *
-     * @see VanillaRecipeHelper#addShapedRecipe(Consumer, String, ItemStack, Object...)
+     * @see VanillaRecipeHelper#addShapedRecipe(RecipeOutput, String, ItemStack, Object...)
      */
     public static void addShapedNBTClearingRecipe(RecipeOutput provider, String regName, ItemStack result, Object... recipe) {
         addStrictShapedRecipe(provider, regName, result, recipe);
@@ -285,7 +285,7 @@ public class VanillaRecipeHelper {
     /**
      * Adds a shapeless recipe which clears the nbt of the outputs
      *
-     * @see VanillaRecipeHelper#addShapelessRecipe(Consumer, String, ItemStack, Object...)
+     * @see VanillaRecipeHelper#addShapelessRecipe(RecipeOutput, String, ItemStack, Object...)
      */
     public static void addShapelessNBTClearingRecipe(RecipeOutput provider, @NotNull String regName, @NotNull ItemStack result,
                                                      @NotNull Object... recipe) {

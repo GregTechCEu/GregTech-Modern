@@ -12,7 +12,6 @@ import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.Map;
 import java.util.function.Consumer;

@@ -19,6 +19,7 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -27,12 +28,13 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
+import com.lowdragmc.lowdraglib.side.ForgeEventHooks;
 import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -62,10 +64,11 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.ForgeHooks;
-import net.minecraftforge.common.IForgeShearable;
-import net.minecraftforge.common.TierSortingRegistry;
-import net.minecraftforge.event.ForgeEventFactory;
+import net.neoforged.neoforge.common.CommonHooks;
+import net.neoforged.neoforge.common.IShearable;
+import net.neoforged.neoforge.common.TierSortingRegistry;
+import net.neoforged.neoforge.event.EventHooks;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -402,7 +405,7 @@ public class ToolHelper {
                 Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> caps = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
                 DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV, GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachines.defaultTankSizeFunction, caps);
                 caps.put(IO.IN, EURecipeCapability.CAP, List.of(new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1)));
-                caps.put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN, (slots) -> new ItemStackTransfer(silktouchDrop))));
+                caps.put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN, (slots) -> new CustomItemStackHandler(silktouchDrop))));
                 caps.put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
@@ -478,11 +481,11 @@ public class ToolHelper {
     }
 
     public static boolean onBlockBreakEvent(Level level, GameType gameType, ServerPlayer player, BlockPos pos) {
-        return ForgeHooks.onBlockBreakEvent(level, gameType, player, pos) != -1;
+        return CommonHooks.onBlockBreakEvent(level, gameType, player, pos) != -1;
     }
 
     public static void onPlayerDestroyItem(Player player, ItemStack stack, InteractionHand hand) {
-        ForgeEventFactory.onPlayerDestroyItem(player, stack, hand);
+        EventHooks.onPlayerDestroyItem(player, stack, hand);
     }
 
     public static double getPlayerBlockReach(@NotNull Player player) {
@@ -682,7 +685,7 @@ public class ToolHelper {
         if (!player.isCreative()) {
             Level world = player.serverLevel();
             BlockState state = world.getBlockState(pos);
-            if (state.getBlock() instanceof IForgeShearable shearable) {
+            if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
                     boolean relocateMinedBlocks = getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);

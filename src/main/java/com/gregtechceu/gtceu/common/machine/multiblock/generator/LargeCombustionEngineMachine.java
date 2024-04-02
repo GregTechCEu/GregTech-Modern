@@ -93,11 +93,11 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     protected GTRecipe getLubricantRecipe() {
-        return GTRecipeBuilder.ofRaw().inputFluids(LUBRICANT_STACK).buildRawRecipe();
+        return GTRecipeBuilder.ofRaw().inputFluids(LUBRICANT_STACK).buildRecipe();
     }
 
     protected GTRecipe getBoostRecipe() {
-        return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRawRecipe();
+        return GTRecipeBuilder.ofRaw().inputFluids(isExtreme() ? LIQUID_OXYGEN_STACK : OXYGEN_STACK).buildRecipe();
     }
 
     @Nullable

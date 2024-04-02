@@ -9,11 +9,8 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
-import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
-import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -33,8 +30,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -59,11 +56,11 @@ public class BlockHighLightRenderer {
             ItemStack held = player.getMainHandItem();
             BlockPos blockPos = target.getBlockPos();
 
-            Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
+            Set<GTToolType> toolType = held.getItem() instanceof IGTTool toolItem ? toolItem.getToolClasses(held) : null;
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight
-            if (!toolType.isEmpty() && blockEntity instanceof IToolGridHighLight gridHighLight) {
+            if (toolType != null && blockEntity instanceof IToolGridHighLight gridHighLight) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
@@ -94,21 +91,6 @@ public class BlockHighLightRenderer {
                 }
                 poseStack.popPose();
                 return;
-            }
-
-            if (toolType.contains(GTToolType.WRENCH)) {
-                ICustomRotationBehavior behavior = CustomBlockRotations.getCustomRotation(level.getBlockState(blockPos).getBlock());
-                if (behavior != null && behavior.showGrid()) {
-                    Vec3 pos = camera.getPosition();
-                    poseStack.pushPose();
-                    poseStack.translate(-pos.x, -pos.y, -pos.z);
-                    var buffer = multiBufferSource.getBuffer(RenderType.lines());
-                    RenderSystem.lineWidth(3);
-
-                    drawGridOverlays(poseStack, buffer, target, side -> GuiTextures.TOOL_FRONT_FACING_ROTATION);
-
-                    poseStack.popPose();
-                }
             }
 
             // draw cover grid highlight

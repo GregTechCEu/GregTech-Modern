@@ -10,19 +10,16 @@ import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
 import lombok.Setter;
@@ -37,16 +34,13 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 @SuppressWarnings("unchecked")
@@ -88,7 +82,6 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder(GTRecipe toCopy, GTRecipeType recipeType) {
-        this.id = toCopy.id;
         this.recipeType = recipeType;
         toCopy.inputs.forEach((k, v) -> this.input.put(k, new ArrayList<>(v)));
         toCopy.outputs.forEach((k, v) -> this.output.put(k, new ArrayList<>(v)));
@@ -563,7 +556,7 @@ public class GTRecipeBuilder {
             JsonArray array = new JsonArray();
             for (RecipeCondition condition : conditions) {
                 JsonObject cond = new JsonObject();
-                cond.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(condition.getClass()));
+                cond.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
                 cond.add("data", condition.serialize());
                 array.add(cond);
             }
@@ -587,7 +580,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe build() {
-        return new GTRecipe(this.recipeType, this.id, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, this.data, this.duration, this.isFuel);
+        return new GTRecipe(this.recipeType, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, this.data, this.duration, this.isFuel);
     }
 
     public void save(RecipeOutput consumer) {
@@ -597,8 +590,8 @@ public class GTRecipeBuilder {
         consumer.accept(this.id, build(), null);
     }
 
-    public GTRecipe buildRawRecipe() {
-        return new GTRecipe(recipeType, id, input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
+    public GTRecipe buildRecipe() {
+        return new GTRecipe(recipeType, input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
     }
 
     //////////////////////////////////////
