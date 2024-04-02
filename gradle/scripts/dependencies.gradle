@@ -16,12 +16,12 @@ dependencies {
     // JEI
     compileOnly(forge.jei.common.api) { transitive = false }
     compileOnly(forge.jei.forge.api) { transitive = false }
-    compileOnly(forge.jei.forge.impl) { transitive = false }
+    implementation(forge.jei.forge.impl) { transitive = false }
 
     // REI
     compileOnly forge.rei.plugin
     compileOnly forge.rei.api
-    implementation forge.rei.forge
+    compileOnly forge.rei.forge
 
     // EMI
     compileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
@@ -31,16 +31,16 @@ dependencies {
     compileOnly(forge.theoneprobe) { transitive = false }
 
     // Jade
-    implementation(forge.jade)
+    compileOnly(forge.jade)
 
     // AE2
-    implementation(forge.ae2) { transitive = false }
+    compileOnly(forge.ae2) { transitive = false }
 
     //AlmostUnified
-    implementation(forge.almostUnified.forge)
+    compileOnly(forge.almostUnified.forge)
 
     // KJS
-    implementation forge.kubejs
+    compileOnly forge.kubejs
 
     // Configuration
     implementation(forge.configuration)

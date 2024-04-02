@@ -8,12 +8,14 @@ def mod_license = getConfig("mod_license")
 def mod_name = getConfig("mod_name")
 def mod_description = getConfig("mod_description")
 def mod_url = getConfig("mod_url")
+def loader_version = getConfig("loader_version")
 
 tasks.withType(ProcessResources).configureEach {
     var replaceProperties = [
             version             : version,
             mod_id              : mod_id,
             forge_version       : forge.versions.forgeShortVersion.get().split("\\.")[0], // only specify major version of forge
+            loader_version      : loader_version,
             kjs_version         : forge.versions.kubejs.get().split("\\.")[0], // only specify major version of kjs
             minecraft_version   : libs.versions.minecraft.get(),
             mod_license         : mod_license,

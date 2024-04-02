@@ -1,4 +1,7 @@
 repositories {
+    flatDir {
+        dir "libs"
+    }
     mavenLocal()
     mavenCentral()
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade

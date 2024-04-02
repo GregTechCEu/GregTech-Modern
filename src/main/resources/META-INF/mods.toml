@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[${forge_version},)"
+loaderVersion = "[${loader_version},)"
 #issueTrackerURL = ""
 license = "${mod_license}"
 
@@ -34,14 +34,14 @@ file="META-INF/accesstransformer.cfg"
 
 [[dependencies.${mod_id}]]
     modId = "ldlib"
-    mandatory = false
+    type = "required"
     versionRange = "[1.0,)"
     ordering = "AFTER"
     side = "BOTH"
 
 [[dependencies.${mod_id}]]
     modId = "kubejs"
-    mandatory = false
+    type = "optional"
     versionRange = "[${kjs_version},)"
     ordering = "AFTER"
     side = "BOTH"
