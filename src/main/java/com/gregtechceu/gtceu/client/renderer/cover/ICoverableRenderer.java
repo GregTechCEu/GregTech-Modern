@@ -3,8 +3,6 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -17,8 +15,8 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -44,7 +42,7 @@ public interface ICoverableRenderer extends IRenderer {
                 var quads = new LinkedList<BakedQuad>();
                 var modelState = ModelFactory.getRotation(coverable.getFrontFacing());
                 var modelFacing = side == null ? null : ModelFactory.modelFacing(side, coverable.getFrontFacing());
-                renderCovers(quads, side, rand, coverable, modelFacing, pos, level, modelState);
+                renderCovers(quads, side, rand, coverable, modelFacing, modelState);
                 return quads;
             }
         }
@@ -52,11 +50,9 @@ public interface ICoverableRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
-                              @NotNull ICoverable coverable, @Nullable Direction modelFacing, BlockPos pos,
-                              BlockAndTintGetter level, ModelState modelState) {
+    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @Nonnull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
         var thickness = coverable.getCoverPlateThickness();
-        for (Direction face : GTUtil.DIRECTIONS) {
+        for (Direction face : Direction.values()) {
             var cover = coverable.getCoverAtSide(face);
             if (cover != null) {
                 if (thickness > 0 && cover.shouldRenderPlate()) {
@@ -82,7 +78,7 @@ public interface ICoverableRenderer extends IRenderer {
                                 .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
-                cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, pos, level, modelState);
+                cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);
             }
         }
     }

@@ -3,22 +3,12 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.GsonHelper;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonPrimitive;
 import com.mojang.datafixers.util.Pair;
+import net.neoforged.neoforge.fluids.FluidStack;
 import dev.latvian.mods.kubejs.fluid.FluidLike;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
@@ -31,6 +21,10 @@ import dev.latvian.mods.kubejs.typings.desc.DescriptionContext;
 import dev.latvian.mods.kubejs.typings.desc.TypeDescJS;
 import dev.latvian.mods.kubejs.util.ListJS;
 import dev.latvian.mods.rhino.mod.util.NBTUtils;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.GsonHelper;
 
 import java.util.*;
 
@@ -107,7 +101,7 @@ public class GTRecipeComponents {
         @Override
         public JsonElement write(RecipeJS recipe, RecipeCondition value) {
             JsonObject object = new JsonObject();
-            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getClass()));
+            object.addProperty("type", GTRegistries.RECIPE_CONDITIONS.getKey(value.getType()));
             object.add("data", value.serialize());
             return object;
         }
@@ -116,22 +110,22 @@ public class GTRecipeComponents {
         public RecipeCondition read(RecipeJS recipe, Object from) {
             if (from instanceof CharSequence) {
                 var conditionKey = from.toString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             }
             if (from instanceof JsonPrimitive primitive) {
                 var conditionKey = primitive.getAsString();
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    return RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    return type.factory.createDefault();
                 }
             } else if (from instanceof JsonObject jsonObject) {
                 var conditionKey = GsonHelper.getAsString(jsonObject, "type", "");
-                var clazz = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
-                if (clazz != null) {
-                    RecipeCondition condition = RecipeCondition.create(clazz);
+                var type = GTRegistries.RECIPE_CONDITIONS.get(conditionKey);
+                if (type != null) {
+                    RecipeCondition condition = type.factory.createDefault();
                     if (condition != null) {
                         return condition.deserialize(GsonHelper.getAsJsonObject(jsonObject, "data", new JsonObject()));
                     }
@@ -271,15 +265,14 @@ public class GTRecipeComponents {
         @Override
         public FluidIngredientJS kjs$copy(long amount) {
             FluidIngredient ingredient1 = ingredient.copy();
-            ingredient1.setAmount(amount);
+            ingredient1.setAmount((int) amount);
             return new FluidIngredientJS(ingredient1);
         }
 
         @Override
         public boolean matches(FluidLike other) {
             if (other instanceof FluidStackJS fluidStack) {
-                return ingredient
-                        .test(FluidStack.create(fluidStack.getFluid(), fluidStack.getAmount(), fluidStack.getNbt()));
+                return ingredient.test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getNbt()));
             }
             return other.matches(this);
         }
@@ -292,8 +285,7 @@ public class GTRecipeComponents {
             } else if (o instanceof JsonElement json) {
                 return new FluidIngredientJS(FluidIngredient.fromJson(json));
             } else if (o instanceof FluidStackJS fluidStackJS) {
-                return new FluidIngredientJS(FluidIngredient.of(
-                        FluidStack.create(fluidStackJS.getFluid(), fluidStackJS.getAmount(), fluidStackJS.getNbt())));
+                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount(), fluidStackJS.getNbt())));
             }
 
             var list = ListJS.of(o);
@@ -301,13 +293,12 @@ public class GTRecipeComponents {
                 List<FluidStack> stacks = new ArrayList<>();
                 for (var object : list) {
                     FluidStackJS stackJS = FluidStackJS.of(object);
-                    stacks.add(FluidStack.create(stackJS.getFluid(), stackJS.getAmount(), stackJS.getNbt()));
+                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
                 }
                 return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
             } else {
                 FluidStackJS stackJS = FluidStackJS.of(o);
-                return new FluidIngredientJS(FluidIngredient
-                        .of(FluidStack.create(stackJS.getFluid(), stackJS.getAmount(), stackJS.getNbt())));
+                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
             }
         }
     }

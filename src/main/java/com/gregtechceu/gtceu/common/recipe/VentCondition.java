@@ -3,8 +3,12 @@ package com.gregtechceu.gtceu.common.recipe;
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.NoArgsConstructor;
 import net.minecraft.network.chat.Component;
 
 import lombok.NoArgsConstructor;
@@ -17,12 +21,17 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class VentCondition extends RecipeCondition {
-
+    public static final Codec<VentCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+        .apply(instance, VentCondition::new));
     public final static VentCondition INSTANCE = new VentCondition();
 
+    public VentCondition(boolean isReverse) {
+        super(isReverse);
+    }
+
     @Override
-    public String getType() {
-        return "steam_vent";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.VENT;
     }
 
     @Override

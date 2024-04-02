@@ -20,7 +20,6 @@ import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
@@ -39,13 +38,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
-
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import lombok.Getter;
-import lombok.Setter;
-import org.jetbrains.annotations.NotNull;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -336,11 +329,9 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
         // create dummy recipe handler
         inputItemHandler.storage.setStackInSlot(0, oreDrop);
-        inputItemHandler.storage.onContentsChanged(0);
         for (int i = 0; i < outputItemHandler.storage.getSlots(); ++i) {
             outputItemHandler.storage.setStackInSlot(i, ItemStack.EMPTY);
         }
-        outputItemHandler.storage.onContentsChanged(0);
 
         var matches = machine.getRecipeType().searchRecipe(this);
 
@@ -384,8 +375,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
 
     protected ItemTransferList getCachedItemTransfer() {
         if (cachedItemTransfer == null) {
-            cachedItemTransfer = new ItemTransferList(machine.getCapabilitiesProxy()
-                    .get(IO.OUT, ItemRecipeCapability.CAP).stream().map(IItemTransfer.class::cast).toList());
+            cachedItemTransfer = new ItemTransferList(machine.getCapabilitiesProxy().get(IO.OUT, ItemRecipeCapability.CAP).stream().map(IItemHandlerModifiable.class::cast).toList());
         }
         return cachedItemTransfer;
     }
@@ -542,8 +532,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @param world the {@link Level} to get the average tick time of
      * @return the mean tick time
      */
-    private static double getMeanTickTime(@NotNull Level world) {
-        return mean(Objects.requireNonNull(world.getServer()).tickTimes) * 1.0E-6D;
+    private static double getMeanTickTime(@Nonnull Level world) {
+        return mean(Objects.requireNonNull(world.getServer()).getTickTimesNanos()) * 1.0E-6D;
     }
 
     /**

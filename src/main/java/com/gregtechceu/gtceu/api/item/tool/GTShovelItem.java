@@ -27,10 +27,6 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
-
-import com.google.common.collect.Multimap;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -62,11 +58,6 @@ public class GTShovelItem extends ShovelItem implements IGTTool {
     public static GTShovelItem create(GTToolType toolType, MaterialToolTier tier, Material material,
                                       IGTToolDefinition toolStats, Item.Properties properties) {
         return new GTShovelItem(toolType, tier, material, toolStats, properties);
-    }
-
-    @Override
-    public @Nullable ICapabilityProvider initCapabilities(ItemStack stack, @Nullable CompoundTag nbt) {
-        return definition$initCapabilities(stack, nbt);
     }
 
     @Override

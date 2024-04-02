@@ -4,11 +4,9 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
-
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,13 +24,7 @@ public class DrumMachineItem extends MetaMachineItem {
         return new DrumMachineItem(block, properties);
     }
 
-    public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
-        if (cap == ForgeCapabilities.FLUID_HANDLER_ITEM) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(
-                    () -> new FluidHandlerItemStack(
-                            itemStack,
-                            Math.toIntExact(GTMachines.DRUM_CAPACITY.get(getDefinition())))));
-        }
-        return LazyOptional.empty();
+    public void attachCapabilities(RegisterCapabilitiesEvent event) {
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new FluidHandlerItemStack(stack, GTMachines.DRUM_CAPACITY.getInt(getDefinition())), this);
     }
 }

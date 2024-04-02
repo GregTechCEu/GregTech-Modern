@@ -80,8 +80,7 @@ public interface BlockPropertiesAccessor {
     void setOffsetFunction(Optional<BlockBehaviour.OffsetFunction> function);
 
     @Accessor
-    boolean isSpawnParticlesOnBreak();
-
+    boolean isSpawnTerrainParticles();
     @Accessor
     FeatureFlagSet getRequiredFeatures();
 

@@ -10,17 +10,16 @@ import com.gregtechceu.gtceu.common.data.GTPlacements;
 import com.gregtechceu.gtceu.common.data.GTWorldgen;
 import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
 import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
-
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
-import net.minecraftforge.common.data.DatapackBuiltinEntriesProvider;
-import net.minecraftforge.common.data.ExistingFileHelper;
-import net.minecraftforge.data.event.GatherDataEvent;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.registries.ForgeRegistries;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
+import net.neoforged.neoforge.common.data.ExistingFileHelper;
+import net.neoforged.neoforge.data.event.GatherDataEvent;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
 
 import java.util.Set;
 
@@ -45,11 +44,10 @@ public class DataGenerators {
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
-                            .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
-                            .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
-                    set));
+                .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
+                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
+                .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> GTBiomeModifiers.bootstrap(ctx, registries)), set));
         }
     }
 }

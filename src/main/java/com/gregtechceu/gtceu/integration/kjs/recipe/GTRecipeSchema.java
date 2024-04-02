@@ -9,13 +9,10 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.ResearchData;
-import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -207,12 +204,7 @@ public interface GTRecipeSchema {
                     throw new IllegalArgumentException(id + ": input items is empty");
                 }
             }
-            return input(ItemRecipeCapability.CAP,
-                    Arrays.stream(inputs)
-                            .map(stack -> InputItem.of(SizedIngredient.create(
-                                    stack.hasTag() ? NBTIngredient.createNBTIngredient(stack) : Ingredient.of(stack),
-                                    stack.getCount()), stack.getCount()))
-                            .toArray());
+            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> InputItem.of(SizedIngredient.create(stack.hasTag() ? NBTIngredient.of(true, stack) : Ingredient.of(stack), stack.getCount()), stack.getCount())).toArray());
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {

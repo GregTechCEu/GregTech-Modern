@@ -11,8 +11,6 @@ import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -21,6 +19,8 @@ import net.minecraft.core.Direction;
 
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.Direction;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -178,7 +178,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         }
     }
 
-    public boolean dischargeOrRechargeEnergyContainers(IItemTransfer itemHandler, int slotIndex, boolean simulate) {
+    public boolean dischargeOrRechargeEnergyContainers(IItemHandlerModifiable itemHandler, int slotIndex, boolean simulate) {
         var stackInSlot = itemHandler.getStackInSlot(slotIndex).copy();
         if (stackInSlot.isEmpty()) { // no stack to charge/discharge
             return false;
@@ -189,7 +189,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
             if (handleElectricItem(electricItem, simulate)) {
                 if (!simulate) {
                     itemHandler.setStackInSlot(slotIndex, stackInSlot);
-                    itemHandler.onContentsChanged();
                 }
                 return true;
             }

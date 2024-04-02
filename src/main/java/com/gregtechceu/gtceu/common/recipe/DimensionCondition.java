@@ -2,8 +2,13 @@ package com.gregtechceu.gtceu.common.recipe;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -21,6 +26,9 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class DimensionCondition extends RecipeCondition {
+    public static final Codec<DimensionCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+        .and(ResourceLocation.CODEC.fieldOf("dimension").forGetter(val -> val.dimension))
+        .apply(instance, DimensionCondition::new));
 
     public final static DimensionCondition INSTANCE = new DimensionCondition();
     private ResourceLocation dimension = new ResourceLocation("dummy");
@@ -29,9 +37,14 @@ public class DimensionCondition extends RecipeCondition {
         this.dimension = dimension;
     }
 
+    public DimensionCondition(boolean isReverse, ResourceLocation dimension) {
+        super(isReverse);
+        this.dimension = dimension;
+    }
+
     @Override
-    public String getType() {
-        return "dimension";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.DIMENSION;
     }
 
     @Override

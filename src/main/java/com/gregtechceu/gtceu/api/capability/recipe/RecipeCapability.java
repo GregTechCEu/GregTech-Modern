@@ -3,24 +3,39 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
+import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
-import io.netty.buffer.Unpooled;
-import org.apache.commons.lang3.mutable.MutableInt;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * Used to detect whether a machine has a certain capability.
  */
-public class RecipeCapability<T> {
-    public static final Codec<Pair<RecipeCapability<?>, List<Content>>> CODEC =
+public abstract class RecipeCapability<T> implements GenericRecipeCapability {
+    public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
+    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = DIRECT_CODEC.dispatch(
+            Pair::getFirst,
+            RecipeCapability::codec)
+        .listOf()
+        .xmap(list -> list
+                .stream()
+                .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)),
+            contentList -> contentList
+                .entrySet()
+                .stream()
+                .<List<Pair<RecipeCapability<?>, List<Content>>>>collect(
+                    ArrayList::new,
+                    (list, entry) -> list.add(Pair.of(entry.getKey(), entry.getValue())),
+                    List::addAll
+                )
+        );
 
     public final String name;
     public final int color;
@@ -35,6 +50,10 @@ public class RecipeCapability<T> {
         this.doRenderSlot = doRenderSlot;
         this.sortIndex = sortIndex;
         this.serializer = serializer;
+    }
+
+    public static Codec<Pair<RecipeCapability<?>, List<Content>>> codec(RecipeCapability<?> capability) {
+        return Codec.pair(DIRECT_CODEC, Content.codec(capability).listOf());
     }
 
     /**

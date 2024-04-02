@@ -1,27 +1,18 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
-
-import com.google.gson.JsonObject;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.function.Consumer;
 
 /**
  * @author KilaBash
@@ -34,6 +25,8 @@ public class SmokingRecipeBuilder {
     private Ingredient input;
     @Setter
     protected String group;
+    @Setter
+    protected CookingBookCategory category;
 
     private ItemStack output = ItemStack.EMPTY;
     @Setter
@@ -52,9 +45,9 @@ public class SmokingRecipeBuilder {
     }
 
     public SmokingRecipeBuilder input(ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
-            input = NBTIngredient.createNBTIngredient(itemStack);
-        } else {
+        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
+            input = NBTIngredient.of(true, itemStack);
+        }else {
             input = Ingredient.of(itemStack);
         }
         return this;
@@ -91,64 +84,12 @@ public class SmokingRecipeBuilder {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
-    public void toJson(JsonObject json) {
-        if (group != null) {
-            json.addProperty("group", group);
-        }
-
-        if (!input.isEmpty()) {
-            json.add("ingredient", input.toJson());
-        }
-
-        if (output.isEmpty()) {
-            LDLib.LOGGER.error("shapeless recipe {} output is empty", id);
-            throw new IllegalArgumentException(id + ": output items is empty");
-        } else {
-            JsonObject result = new JsonObject();
-            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.getItem()).toString());
-            if (output.getCount() > 1) {
-                result.addProperty("count", output.getCount());
-            }
-            if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
-            }
-            json.add("result", result);
-        }
-
-        json.addProperty("experience", experience);
-        json.addProperty("cookingtime", cookingTime);
+    private SmokingRecipe create() {
+        return new SmokingRecipe(this.group, this.category, this.input, this.output, this.experience, this.cookingTime);
     }
 
     public void save(RecipeOutput consumer) {
-        consumer.accept(new FinishedRecipe() {
-
-            @Override
-            public void serializeRecipeData(JsonObject pJson) {
-                toJson(pJson);
-            }
-
-            @Override
-            public ResourceLocation getId() {
-                var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "smoking" + "/" + ID.getPath());
-            }
-
-            @Override
-            public RecipeSerializer<?> getType() {
-                return RecipeSerializer.BLASTING_RECIPE;
-            }
-
-            @Nullable
-            @Override
-            public JsonObject serializeAdvancement() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getAdvancementId() {
-                return null;
-            }
-        });
+        var recipeId = id == null ? defaultId() : id;
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "smoking/" + recipeId.getPath()), create(), null);
     }
 }

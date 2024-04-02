@@ -11,8 +11,11 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
-
-import net.minecraft.data.recipes.FinishedRecipe;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import it.unimi.dsi.fastutil.chars.*;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -80,6 +83,14 @@ public class VanillaRecipeHelper {
 
     public static void addSmeltingRecipe(RecipeOutput provider, @Nonnull ResourceLocation regName, ItemStack input, ItemStack output, float experience) {
         new SmeltingRecipeBuilder(regName).input(input).output(output).cookingTime(200).experience(experience).save(provider);
+    }
+    /**
+     * Adds a shaped recipe which clears the nbt of the outputs
+     *
+     * @see VanillaRecipeHelper#addShapedRecipe(RecipeOutput, String, ItemStack, Object...)
+     */
+    public static void addShapedNBTClearingRecipe(RecipeOutput provider, String regName, ItemStack result, Object... recipe) {
+        addStrictShapedRecipe(provider, regName, result, recipe);
     }
 
     public static void addShapedRecipe(RecipeOutput provider, @Nonnull String regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {
@@ -256,6 +267,16 @@ public class VanillaRecipeHelper {
 
     public static void addShapedEnergyTransferRecipe(RecipeOutput provider, boolean withUnificationData, boolean overrideCharge, boolean transferMaxCharge, @Nonnull String regName, @Nonnull Ingredient chargeIngredient, @Nonnull ItemStack result, @Nonnull Object... recipe) {
         addShapedEnergyTransferRecipe(provider, withUnificationData, overrideCharge, transferMaxCharge, GTCEu.id(regName), chargeIngredient, result, recipe);
+    }
+
+    /**
+     * Adds a shapeless recipe which clears the nbt of the outputs
+     *
+     * @see VanillaRecipeHelper#addShapelessRecipe(RecipeOutput, String, ItemStack, Object...)
+     */
+    public static void addShapelessNBTClearingRecipe(RecipeOutput provider, @NotNull String regName, @NotNull ItemStack result,
+                                                     @NotNull Object... recipe) {
+        addShapelessRecipe(provider, regName, result, recipe);
     }
 
     public static void addShapelessRecipe(RecipeOutput provider, @Nonnull ResourceLocation regName, @Nonnull ItemStack result, @Nonnull Object... recipe) {

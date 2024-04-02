@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import org.jetbrains.annotations.NotNull;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 

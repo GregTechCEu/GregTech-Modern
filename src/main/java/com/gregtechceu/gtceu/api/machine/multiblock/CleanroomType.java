@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
+import com.mojang.serialization.Codec;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
+import net.minecraft.util.ExtraCodecs;
 
 import java.util.HashSet;
 import java.util.Map;
@@ -13,8 +13,9 @@ public class CleanroomType {
     private static final Map<String, CleanroomType> CLEANROOM_TYPES = new Object2ObjectOpenHashMap<>();
 
     public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", "gtceu.recipe.cleanroom.display_name");
-    public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom",
-            "gtceu.recipe.cleanroom_sterile.display_name");
+    public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom", "gtceu.recipe.cleanroom_sterile.display_name");
+
+    public static final Codec<CleanroomType> CODEC = ExtraCodecs.stringResolverCodec(CleanroomType::getName, CLEANROOM_TYPES::get);
 
     private final String name;
     private final String translationKey;

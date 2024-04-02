@@ -7,10 +7,13 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.util.ExtraCodecs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
@@ -21,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
 public class Content {
-
+    public RecipeCapability<?> capability;
     @Getter
     public Object content;
     public float chance;
@@ -30,6 +33,24 @@ public class Content {
     public String slotName;
     @Nullable
     public String uiName;
+
+    public Content(Object content, float chance, float tierChanceBoost, @Nullable String slotName, @Nullable String uiName) {
+        this.content = content;
+        this.chance = chance;
+        this.tierChanceBoost = tierChanceBoost;
+        this.slotName = slotName == null || slotName.isEmpty() ? null : slotName;
+        this.uiName = uiName == null || uiName.isEmpty() ? null : uiName;
+    }
+
+    public static <T> Codec<Content> codec(RecipeCapability<T> capability) {
+        return RecordCodecBuilder.create(instance -> instance.group(
+            capability.serializer.codec().fieldOf("content").forGetter(val -> capability.of(val.content)),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("chance").forGetter(val -> val.chance),
+            ExtraCodecs.POSITIVE_FLOAT.fieldOf("tierChanceBoost").forGetter(val -> val.tierChanceBoost),
+            Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName),
+            Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName)
+            ).apply(instance, Content::new));
+    }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
         if (modifier == null || chance == 0) {

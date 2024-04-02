@@ -5,12 +5,10 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
@@ -27,6 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
@@ -211,12 +211,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     // TODO possibly refactor this in the future, using some sort of cross-platform capability-like system
 
     @org.jetbrains.annotations.Nullable
-    public IItemTransfer getItemTransferCap(IItemTransfer defaultValue) {
+    public IItemHandlerModifiable getItemTransferCap(IItemHandlerModifiable defaultValue) {
         return defaultValue;
     }
 
     @org.jetbrains.annotations.Nullable
-    public IFluidTransfer getFluidTransferCap(IFluidTransfer defaultValue) {
+    public IFluidHandlerModifiable getFluidTransferCap(IFluidHandlerModifiable defaultValue) {
         return defaultValue;
     }
 }

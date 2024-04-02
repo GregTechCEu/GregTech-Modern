@@ -4,23 +4,20 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipePrope
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.FacingPos;
-
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
-import lombok.Getter;
+import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Predicate;
 
-public class ItemRoutePath implements IRoutePath<IItemTransfer> {
+public class ItemRoutePath implements IRoutePath<IItemHandler> {
 
     @Getter
     private final ItemPipeBlockEntity targetPipe;
@@ -53,9 +50,8 @@ public class ItemRoutePath implements IRoutePath<IItemTransfer> {
     }
 
     @Override
-    public @Nullable IItemTransfer getHandler(Level world) {
-        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos().relative(targetFacing),
-                targetFacing.getOpposite());
+    public @Nullable IItemHandler getHandler(Level world) {
+        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
     }
 
     public boolean matchesFilters(ItemStack stack) {

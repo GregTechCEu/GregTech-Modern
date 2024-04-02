@@ -21,8 +21,9 @@ import net.minecraft.resources.ResourceLocation;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
-import org.jetbrains.annotations.NotNull;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import net.minecraft.Util;
+import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -41,8 +42,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFancyUIMachine {
 
-    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
-                                  Object... args) {
+    public SimpleGeneratorMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
         super(holder, tier, tankScalingFunction, args);
     }
 

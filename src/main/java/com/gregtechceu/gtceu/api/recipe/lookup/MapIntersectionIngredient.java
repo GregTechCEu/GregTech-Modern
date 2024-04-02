@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.neoforge.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.ItemValueAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.utils.IngredientEquality;
 
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +29,7 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
         for (Ingredient ingredient : ingredients) {
             for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
                 if (value instanceof Ingredient.TagValue tagValue) {
-                    hash *= 31 * ((TagValueAccessor) tagValue).getTag().location().hashCode();
+                    hash *= 31 * ((TagValueAccessor)(Object) tagValue).getTag().location().hashCode();
                 } else {
                     hash *= 31 * ((ItemValueAccessor) value).getItem().getItem().hashCode();
                 }

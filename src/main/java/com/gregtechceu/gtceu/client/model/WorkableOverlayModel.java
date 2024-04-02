@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.client.model;
 
 import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.utils.GTUtil;
-
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -21,12 +19,8 @@ import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.SimpleModelState;
-
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.math.Transformation;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -109,10 +103,7 @@ public class WorkableOverlayModel {
         }
 
         @Nullable
-        private TextureAtlasSprite getTextureAtlasSprite(boolean active, boolean workingEnabled,
-                                                         @Nullable ResourceLocation activeSprite,
-                                                         @Nullable ResourceLocation pausedSprite,
-                                                         @Nullable ResourceLocation normalSprite) {
+        private TextureAtlasSprite getTextureAtlasSprite(boolean active, boolean workingEnabled, @Nullable ResourceLocation activeSprite, @Nullable ResourceLocation pausedSprite, @Nullable ResourceLocation normalSprite) {
             if (active) {
                 if (workingEnabled) {
                     return activeSprite == null ? null : ModelFactory.getBlockSprite(activeSprite);
@@ -150,35 +141,20 @@ public class WorkableOverlayModel {
             if (upwardsFacing.getAxis() == Direction.Axis.Z) {
                 matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
             }
-        }
-
-        Quaternionf rot = new Quaternionf().rotationAxis(degree, 0, 0,
-                frontFacing.getAxisDirection() == Direction.AxisDirection.POSITIVE ? 1 : -1);
-        matrix.rotate(rot);
-
-        var rotation = new SimpleModelState(new Transformation(matrix));
-
-        for (Direction renderSide : GTUtil.DIRECTIONS) {
-            // construct a rotation matrix from front & up rotation
-
-            ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
-            if (predicate != null) {
-                var texture = predicate.getSprite(isActive, isWorkingEnabled);
-                if (texture != null) {
-                    var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
-                            rotation, -1, 0, true, true);
-                    if (quad.getDirection() == side) {
-                        quads.add(quad);
-                    }
-                }
-
-                texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
-                if (texture != null) {
-                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
-                                rotation, -101, 15, true, false);
-                        if (quad.getDirection() == side) {
-                            quads.add(quad);
+            var cache = caches.get(side, frontFacing);
+            assert cache != null;
+            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
+                var quads = new ArrayList<BakedQuad>();
+                for (Direction renderSide : Direction.values()) {
+                    var rotation = ModelFactory.getRotation(frontFacing);
+                    ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
+                    if (predicate != null) {
+                        var texture = predicate.getSprite(isActive, isWorkingEnabled);
+                        if (texture != null) {
+                            var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true, true);
+                            if (quad.getDirection() == side) {
+                                quads.add(quad);
+                            }
                         }
                     } else {
                         var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
@@ -226,6 +202,8 @@ public class WorkableOverlayModel {
             var normalSprite1 = getTextureLocation(normalSprite);
             if (!resManager.getResource(normalSprite1).isPresent()) continue;
             register.accept(normalSprite);
+
+            // normal
 
             // normal
             final String active = String.format("%s_active", overlayPath);

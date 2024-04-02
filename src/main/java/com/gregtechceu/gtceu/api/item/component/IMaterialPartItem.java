@@ -12,8 +12,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -108,11 +108,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     @Override
     default float getDurabilityForDisplay(ItemStack itemStack) {
         var maxDurability = getPartMaxDurability(itemStack);
-        return (float) (maxDurability - getPartDamage(itemStack)) / maxDurability;
+        return (maxDurability - getPartDamage(itemStack)) * 1f / maxDurability;
     }
 
-    @Override
-    default int getMaxDurability(ItemStack stack) {
-        return getPartMaxDurability(stack);
-    }
 }

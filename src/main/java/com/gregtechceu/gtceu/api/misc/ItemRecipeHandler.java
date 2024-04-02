@@ -5,9 +5,8 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 
@@ -29,11 +28,11 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
 
     @Getter
     public final IO handlerIO;
-    public final ItemStackTransfer storage;
+    public final CustomItemStackHandler storage;
 
     public ItemRecipeHandler(IO handlerIO, int slots) {
         this.handlerIO = handlerIO;
-        this.storage = new ItemStackTransfer(slots);
+        this.storage = new CustomItemStackHandler(slots);
     }
 
     @Override

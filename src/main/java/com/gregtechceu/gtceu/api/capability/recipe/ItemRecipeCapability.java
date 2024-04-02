@@ -12,10 +12,6 @@ import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.*;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
@@ -36,9 +32,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
-import net.minecraftforge.common.crafting.StrictNBTIngredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -86,12 +81,12 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
         if (obj instanceof Ingredient ingredient) {
 
             // all kinds of special cases
-            if (ingredient instanceof StrictNBTIngredient nbt) {
+            if (ingredient instanceof NBTIngredient nbt && nbt.isStrict()) {
                 ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
             } else if (ingredient instanceof PartialNBTIngredient nbt) {
                 ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
             } else if (ingredient instanceof SizedIngredient sized) {
-                if (sized.getInner() instanceof StrictNBTIngredient nbt) {
+                if (sized.getInner() instanceof NBTIngredient nbt && nbt.isStrict()) {
                     ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
                 } else if (sized.getInner() instanceof PartialNBTIngredient nbt) {
                     ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
@@ -100,7 +95,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 } else {
                     for (Ingredient.Value value : ((IngredientAccessor) sized.getInner()).getValues()) {
                         if (value instanceof Ingredient.TagValue tagValue) {
-                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
+                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor)(Object) tagValue).getTag()));
                         } else {
                             Collection<ItemStack> stacks = value.getItems();
                             for (ItemStack stack : stacks) {
@@ -114,7 +109,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             } else {
                 for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
                     if (value instanceof Ingredient.TagValue tagValue) {
-                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor) tagValue).getTag()));
+                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor)(Object) tagValue).getTag()));
                     } else {
                         Collection<ItemStack> stacks = value.getItems();
                         for (ItemStack stack : stacks) {
@@ -128,7 +123,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
 
             stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
             if (stack.hasTag()) {
-                ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
+                ingredients.add(new MapItemStackNBTIngredient(stack, NBTIngredient.of(true, stack)));
             }
             if (stack.getShareTag() != null) {
                 ingredients.add(new MapItemStackPartialNBTIngredient(stack,

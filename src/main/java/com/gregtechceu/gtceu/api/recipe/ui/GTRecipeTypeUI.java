@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
@@ -35,14 +35,8 @@ import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-
-import com.google.common.collect.Table;
-import dev.emi.emi.api.EmiApi;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
-import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
-import lombok.Getter;
-import lombok.Setter;
-import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,12 +101,10 @@ public class GTRecipeTypeUI {
                 this.customUICache = new CompoundTag();
             } else {
                 try {
-                    var resource = resourceManager
-                            .getResourceOrThrow(new ResourceLocation(recipeType.registryName.getNamespace(),
-                                    "ui/recipe_type/%s.rtui".formatted(recipeType.registryName.getPath())));
-                    try (InputStream inputStream = resource.open()) {
-                        try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
-                            this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.UNLIMITED);
+                    var resource = resourceManager.getResourceOrThrow(new ResourceLocation(recipeType.registryName.getNamespace(), "ui/recipe_type/%s.rtui".formatted(recipeType.registryName.getPath())));
+                    try (InputStream inputStream = resource.open()){
+                        try (DataInputStream dataInputStream = new DataInputStream(inputStream);){
+                            this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.unlimitedHeap());
                         }
                     }
                 } catch (Exception e) {
@@ -146,24 +138,14 @@ public class GTRecipeTypeUI {
         return size;
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier,
-                               Table<IO, RecipeCapability<?>, Object> storages,
-                               CompoundTag data,
-                               List<RecipeCondition> conditions,
-                               boolean isSteam,
-                               boolean isHighPressure) {}
+    public record RecipeHolder(DoubleSupplier progressSupplier, IItemHandlerModifiable importItems, IItemHandlerModifiable exportItems, IFluidHandlerModifiable importFluids, IFluidHandlerModifiable exportFluids, boolean isSteam, boolean isHighPressure) {};
 
     /**
      * Auto layout UI template for recipes.
      * 
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier,
-                                        Table<IO, RecipeCapability<?>, Object> storages,
-                                        CompoundTag data,
-                                        List<RecipeCondition> conditions,
-                                        boolean isSteam,
-                                        boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable importItems, IItemHandlerModifiable exportItems, IFluidHandlerModifiable importFluids, IFluidHandlerModifiable exportFluids, boolean isSteam, boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
         template.setupUI(group,
@@ -171,11 +153,8 @@ public class GTRecipeTypeUI {
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier,
-                                        Table<IO, RecipeCapability<?>, Object> storages,
-                                        CompoundTag data,
-                                        List<RecipeCondition> conditions) {
-        return createUITemplate(progressSupplier, storages, data, conditions, false, false);
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemHandlerModifiable importItems, IItemHandlerModifiable exportItems, IFluidHandlerModifiable importFluids, IFluidHandlerModifiable exportFluids) {
+        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, false, false);
     }
 
     /**

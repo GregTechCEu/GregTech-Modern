@@ -155,26 +155,24 @@ public class ConfigHolder {
         public static class EnergyCompatConfig {
 
             @Configurable
-            @Configurable.Comment({
-                    "Enable Native GTEU to Platform native Energy (RF and alike) on GT Cables and Wires.",
-                    "This does not enable nor disable Converters.", "Default: true" })
-            public boolean nativeEUToPlatformNative = true;
+            @Configurable.Comment({"Enable Native GTEU to Platform native Energy (RF and alike) on GT Cables and Wires.", "This does not enable nor disable Converters.", "Default: true"})
+            public boolean nativeEUToFE = true;
 
             @Configurable
-            @Configurable.Comment({ "Enable GTEU to Platform native (and vice versa) Converters.", "Default: false" })
-            public boolean enablePlatformConverters = false;
+            @Configurable.Comment({"Enable GTEU to Platform native (and vice versa) Converters.", "Default: false"})
+            public boolean enableFEConverters = false;
 
             @Configurable
             @Configurable.Comment({ "Platform native Energy to GTEU ratio for converting FE to EU.",
                     "Only affects converters.", "Default: 4 FE/Energy == 1 EU" })
             @Configurable.Range(min = 1, max = 16)
-            public int platformToEuRatio = 4;
+            public int feToEuRatio = 4;
 
             @Configurable
             @Configurable.Comment({ "GTEU to Platform native Energy ratio for converting EU to FE.",
                     "Affects native conversion and Converters.", "Default: 4 FE/Energy == 1 EU" })
             @Configurable.Range(min = 1, max = 16)
-            public int euToPlatformRatio = 4;
+            public int euToFeRatio = 4;
         }
 
         public static class AE2CompatConfig {

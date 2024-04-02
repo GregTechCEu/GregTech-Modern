@@ -2,9 +2,13 @@ package com.gregtechceu.gtceu.common.recipe;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.NoArgsConstructor;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
@@ -20,12 +24,17 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class RockBreakerCondition extends RecipeCondition {
+    public static final Codec<RockBreakerCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+        .apply(instance, RockBreakerCondition::new));
 
     public final static RockBreakerCondition INSTANCE = new RockBreakerCondition();
+    public RockBreakerCondition(boolean isReverse) {
+        super(isReverse);
+    }
 
     @Override
-    public String getType() {
-        return "rock_breaker";
+    public RecipeConditionType<?> getType() {
+        return GTRecipeConditions.ROCK_BREAKER;
     }
 
     @Override

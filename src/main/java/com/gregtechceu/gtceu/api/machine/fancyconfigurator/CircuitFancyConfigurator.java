@@ -10,12 +10,11 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.neoforged.neoforge.items.ItemStackHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -27,10 +26,9 @@ import java.util.List;
  * @implNote CircuitFancyConfigurator
  */
 public class CircuitFancyConfigurator implements IFancyConfigurator {
+    final ItemStackHandler circuitSlot;
 
-    final ItemStackTransfer circuitSlot;
-
-    public CircuitFancyConfigurator(ItemStackTransfer circuitSlot) {
+    public CircuitFancyConfigurator(ItemStackHandler circuitSlot) {
         this.circuitSlot = circuitSlot;
     }
 
@@ -60,7 +58,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                     clickData -> {
                         if (!clickData.isRemote) {
                             circuitSlot.setStackInSlot(0, ItemStack.EMPTY);
-                            circuitSlot.onContentsChanged(0);
                         }
                     }));
         }
@@ -80,7 +77,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                                 } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                     circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                                 }
-                                circuitSlot.onContentsChanged(0);
                             }
                         }));
                 idx++;
@@ -100,7 +96,6 @@ public class CircuitFancyConfigurator implements IFancyConfigurator {
                             } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                 circuitSlot.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                             }
-                            circuitSlot.onContentsChanged(0);
                         }
                     }));
         }

@@ -16,11 +16,9 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -108,7 +106,7 @@ public class AlloyBlastRecipeProducer {
                 if (fluidAmount >= 2) return -1; // more than 2 fluids won't fit in the machine
                 fluidAmount++;
                 // assume all fluids have 1000mB/mol, since other quantities should be as an item input
-                builder.inputFluids(msMat.getFluid(1000L * msAmount));
+                builder.inputFluids(msMat.getFluid(1000 * msAmount));
             } else return -1; // no fluid or item prop means no valid recipe
             outputAmount += msAmount;
         }
@@ -127,7 +125,7 @@ public class AlloyBlastRecipeProducer {
     protected void buildRecipes(@Nonnull BlastProperty property, @Nonnull Fluid molten, int outputAmount, int componentAmount,
                                 @Nonnull GTRecipeBuilder builder, RecipeOutput provider) {
         // add the fluid output with the correct amount
-        builder.outputFluids(FluidStack.create(molten, (long) GTValues.L * outputAmount));
+        builder.outputFluids(new FluidStack(molten, GTValues.L * outputAmount));
 
         // apply alloy blast duration reduction: 3/4
         int duration = builder.duration * outputAmount * 3 / 4;
@@ -177,7 +175,7 @@ public class AlloyBlastRecipeProducer {
 
         // build the freezer recipe
         GTRecipeBuilder freezerBuilder = GTRecipeTypes.VACUUM_RECIPES.recipeBuilder(material.getName())
-                .inputFluids(FluidStack.create(molten, GTValues.L))
+                .inputFluids(new FluidStack(molten, GTValues.L))
                 .duration((int) material.getMass() * 3)
                 .notConsumable(GTItems.SHAPE_MOLD_INGOT.asStack())
                 .outputItems(TagPrefix.ingot, material);

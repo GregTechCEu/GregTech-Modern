@@ -1,20 +1,16 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import lombok.RequiredArgsConstructor;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.IFluidTank;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
-public class OverlayingFluidStorage implements IFluidHandler {
-    private final IFluidHandler transfer;
+public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTank {
+    private final IFluidHandlerModifiable transfer;
     private final int tank;
-
-    @Override
-    public void onContentsChanged() {
-        this.transfer.onContentsChanged();
-    }
 
     @NotNull
     @Override
@@ -23,12 +19,12 @@ public class OverlayingFluidStorage implements IFluidHandler {
     }
 
     @Override
-    public void setFluid(FluidStack fluid) {
-        transfer.setFluidInTank(tank, fluid);
+    public int getFluidAmount() {
+        return getFluid().getAmount();
     }
 
     @Override
-    public long getCapacity() {
+    public int getCapacity() {
         return transfer.getTankCapacity(tank);
     }
 
@@ -38,29 +34,51 @@ public class OverlayingFluidStorage implements IFluidHandler {
     }
 
     @Override
-    public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public int fill(FluidStack resource, FluidAction action) {
         if (transfer instanceof NotifiableFluidTank notifiable) {
-            return notifiable.getStorages()[this.tank].fill(resource, simulate, notifyChanges);
+            return notifiable.storages[this.tank].fill(resource, action);
         }
-        return transfer.fill(this.tank, resource, simulate, notifyChanges);
+        return transfer.fill(resource, action);
     }
 
     @Override
-    public boolean supportsFill(int tank) {
-        return transfer.supportsFill(this.tank);
-    }
-
-    @NotNull
-    @Override
-    public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
+    public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
         if (transfer instanceof NotifiableFluidTank notifiable) {
-            return notifiable.getStorages()[this.tank].drain(resource, simulate, notifyChanges);
+            return notifiable.storages[this.tank].drain(resource, action);
         }
-        return transfer.drain(this.tank, resource, simulate, notifyChanges);
+        return transfer.drain(resource, action);
     }
 
     @Override
-    public boolean supportsDrain(int tank) {
-        return transfer.supportsDrain(this.tank);
+    public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+        if (transfer instanceof NotifiableFluidTank notifiable) {
+            return notifiable.storages[this.tank].drain(maxDrain, action);
+        }
+        return transfer.drain(maxDrain, action);
+    }
+
+    @Override
+    public void setFluidInTank(int tank, FluidStack stack) {
+        transfer.setFluidInTank(tank, stack);
+    }
+
+    @Override
+    public int getTanks() {
+        return 1;
+    }
+
+    @Override
+    public @NotNull FluidStack getFluidInTank(int tank) {
+        return getFluid();
+    }
+
+    @Override
+    public int getTankCapacity(int tank) {
+        return getCapacity();
+    }
+
+    @Override
+    public boolean isFluidValid(int tank, @NotNull FluidStack stack) {
+        return transfer.isFluidValid(tank, stack);
     }
 }

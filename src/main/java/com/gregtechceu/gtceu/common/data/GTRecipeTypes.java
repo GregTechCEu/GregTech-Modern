@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.RecipeHelper;
@@ -24,13 +25,11 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.misc.FluidStorage;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.resources.language.I18n;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -38,6 +37,10 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.material.Fluids;
+import net.neoforged.fml.ModLoader;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -421,13 +424,15 @@ public class GTRecipeTypes {
                 var fluidA = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidA")));
                 var fluidB = BuiltInRegistries.FLUID.get(new ResourceLocation(recipe.data.getString("fluidB")));
                 if (fluidA != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new FluidStorage(FluidStack.create(fluidA, 1000)),
-                            widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
+                    FluidTank tank = new FluidTank(1000);
+                    tank.setFluid(new FluidStack(fluidA, 1000));
+                    widgetGroup.addWidget(new TankWidget(tank, widgetGroup.getSize().width - 30, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
                 if (fluidB != Fluids.EMPTY) {
-                    widgetGroup.addWidget(new TankWidget(new FluidStorage(FluidStack.create(fluidB, 1000)),
-                            widgetGroup.getSize().width - 30 - 20, widgetGroup.getSize().height - 30, false, false)
+                    FluidTank tank = new FluidTank(1000);
+                    tank.setFluid(new FluidStack(fluidB, 1000));
+                    widgetGroup.addWidget(new TankWidget(tank, widgetGroup.getSize().width - 30 - 20, widgetGroup.getSize().height - 30, false, false)
                             .setBackground(GuiTextures.FLUID_SLOT).setShowAmount(false));
                 }
             })
@@ -681,9 +686,8 @@ public class GTRecipeTypes {
                     .setMaxTooltips(4)
                     .setUiBuilder((recipe, group) -> {
                         if (!recipe.conditions.isEmpty() && recipe.conditions.get(0) instanceof RPMCondition) {
-                            var transfer = new ItemStackTransfer(AllBlocks.SHAFT.asStack());
-                            group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30,
-                                    group.getSize().height - 30, false, false));
+                            var transfer = new CustomItemStackHandler(AllBlocks.SHAFT.asStack());
+                            group.addWidget(new SlotWidget(transfer, 0, group.getSize().width - 30, group.getSize().height - 30, false, false));
                         }
                     });
             MIXER_RECIPES.onRecipeBuild((builder, provider) -> {
@@ -700,16 +704,11 @@ public class GTRecipeTypes {
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
         GTRegistries.RECIPE_TYPES.freeze();
 
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("gt_recipe_serializer"),
-                GTRecipeSerializer.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover_serializer"),
-                FacadeCoverRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe_serializer"),
-                StrictShapedRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("shaped_energy_transfer_recipe_serializer"),
-                ShapedEnergyTransferRecipe.SERIALIZER);
-        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("tool_head_replace_recipe_serializer"),
-                ToolHeadReplaceRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine_recipe"), GTRecipeSerializer.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("facade_cover"), FacadeCoverRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("strict_shaped_recipe"), StrictShapedRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("shaped_energy_transfer_recipe"), ShapedEnergyTransferRecipe.SERIALIZER);
+        GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("tool_head_replace_recipe"), ToolHeadReplaceRecipe.SERIALIZER);
     }
 
     public static GTRecipeType get(String name) {

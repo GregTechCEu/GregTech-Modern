@@ -11,9 +11,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,9 +27,7 @@ import java.util.List;
 public interface ICoverRenderer extends IRenderer {
 
     /**
-     * Use
-     * {@link #renderCover(List, Direction, RandomSource, CoverBehavior, Direction, BlockPos, BlockAndTintGetter, ModelState)}
-     * instead
+     * Use {@link #renderCover(List, Direction, RandomSource, CoverBehavior, Direction, ModelState)} instead
      */
     @Override
     @Deprecated
@@ -41,7 +38,5 @@ public interface ICoverRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
-                     @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, BlockPos pos,
-                     BlockAndTintGetter level, ModelState modelState);
+    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, ModelState modelState);
 }

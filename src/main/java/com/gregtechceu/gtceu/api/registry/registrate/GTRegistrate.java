@@ -28,9 +28,8 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.registries.RegistryObject;
+import net.neoforged.bus.api.IEventBus;
+import org.apache.commons.lang3.function.TriFunction;
 
 import com.tterrag.registrate.Registrate;
 import com.tterrag.registrate.builders.Builder;
@@ -87,11 +86,10 @@ public class GTRegistrate extends Registrate {
         return new GTRegistrate(modId);
     }
 
-    public void registerRegistrate() {
-        registerEventListeners(FMLJavaModLoadingContext.get().getModEventBus());
+    public void registerRegistrate(IEventBus modBus) {
+        registerEventListeners(modBus);
     }
 
-    @Override
     public Registrate registerEventListeners(IEventBus bus) {
         if (!registered.getAndSet(true)) {
             return super.registerEventListeners(bus);

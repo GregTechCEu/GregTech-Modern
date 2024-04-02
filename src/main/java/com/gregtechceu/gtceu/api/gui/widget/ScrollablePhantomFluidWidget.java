@@ -4,13 +4,11 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
@@ -19,27 +17,33 @@ import java.util.function.Supplier;
 public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
 
     private static final int SCROLL_ACTION_ID = 0x0001_0001;
-    private static final long MILLIBUCKETS = FluidHelper.getBucket() / 1000;
+    private static final int MILLIBUCKETS = FluidHelper.getBucket() / 1000;
 
-    public ScrollablePhantomFluidWidget(@Nullable IFluidTransfer fluidTank, int tank, int x, int y, int width,
-                                        int height, Supplier<FluidStack> phantomFluidGetter,
-                                        Consumer<FluidStack> phantomFluidSetter) {
-        super(fluidTank, tank, x, y, width, height, phantomFluidGetter, phantomFluidSetter);
+
+    public ScrollablePhantomFluidWidget() {
+    }
+
+    public ScrollablePhantomFluidWidget(IFluidHandler fluidTank, int x, int y) {
+        super(fluidTank, x, y);
+    }
+
+    public ScrollablePhantomFluidWidget(@Nullable IFluidHandler fluidTank, int x, int y, int width, int height) {
+        super(fluidTank, x, y, width, height);
     }
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean mouseWheelMove(double mouseX, double mouseY, double wheelDelta) {
+    public boolean mouseWheelMove(double mouseX, double mouseY, double scrollX, double scrollY) {
         if (!isMouseOverElement(mouseX, mouseY))
             return false;
 
-        var delta = getModifiedChangeAmount((wheelDelta > 0) ? 1 : -1) * MILLIBUCKETS;
-        writeClientAction(SCROLL_ACTION_ID, buf -> buf.writeLong(delta));
+        int delta = getModifiedChangeAmount((scrollY > 0) ? 1 : -1) * MILLIBUCKETS;
+        writeClientAction(SCROLL_ACTION_ID, buf -> buf.writeVarInt(delta));
 
         return true;
     }
 
-    private long getModifiedChangeAmount(int amount) {
+    private int getModifiedChangeAmount(int amount) {
         if (GTUtil.isShiftDown())
             amount *= 10;
 
@@ -55,28 +59,25 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
     @Override
     public void handleClientAction(int id, FriendlyByteBuf buffer) {
         switch (id) {
-            case SCROLL_ACTION_ID -> handleScrollAction(buffer.readLong());
+            case SCROLL_ACTION_ID -> handleScrollAction(buffer.readVarInt());
             default -> super.handleClientAction(id, buffer);
         }
 
         detectAndSendChanges();
     }
 
-    private void handleScrollAction(long delta) {
-        IFluidTransfer fluidTank = getFluidTank();
-        if (fluidTank == null)
+    private void handleScrollAction(int delta) {
+        IFluidHandler tank = getFluidTank();
+        if (tank == null)
             return;
 
-        FluidStack fluid = fluidTank.getFluidInTank(tank);
+        FluidStack fluid = tank.getFluidInTank(0);
         if (fluid.isEmpty())
             return;
 
-        if (fluid.isEmpty())
-            return;
-
-        fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0L), fluidTank.getTankCapacity(tank)));
+        fluid.setAmount(Math.min(Math.max(fluid.getAmount() + delta, 0), tank.getTankCapacity(0)));
         if (fluid.getAmount() <= 0L) {
-            fluidTank.setFluidInTank(tank, FluidStack.empty());
+            tank.drain(fluid.getAmount(), IFluidHandler.FluidAction.EXECUTE);
         }
     }
 }

@@ -1,30 +1,29 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
-
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
 
 /**
  * @author KilaBash
@@ -33,10 +32,11 @@ import java.util.function.Consumer;
  */
 @Accessors(chain = true, fluent = true)
 public class ShapelessRecipeBuilder {
-
-    private List<Ingredient> ingredients = new ArrayList<>();
+    private NonNullList<Ingredient> ingredients = NonNullList.create();
     @Setter
     protected String group;
+    @Setter
+    private CraftingBookCategory category;
 
     private ItemStack output = ItemStack.EMPTY;
     @Setter
@@ -55,9 +55,9 @@ public class ShapelessRecipeBuilder {
     }
 
     public ShapelessRecipeBuilder requires(ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
-            requires(NBTIngredient.createNBTIngredient(itemStack));
-        } else {
+        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
+            requires(NBTIngredient.of(true, itemStack));
+        }else {
             requires(Ingredient.of(itemStack));
         }
         return this;
@@ -94,63 +94,13 @@ public class ShapelessRecipeBuilder {
         return BuiltInRegistries.ITEM.getKey(output.getItem());
     }
 
-    public void toJson(JsonObject json) {
-        if (group != null) {
-            json.addProperty("group", group);
-        }
-
-        JsonArray jsonarray = new JsonArray();
-        for (Ingredient ingredient : ingredients) {
-            jsonarray.add(ingredient.toJson());
-        }
-        json.add("ingredients", jsonarray);
-
-        if (output.isEmpty()) {
-            LDLib.LOGGER.error("shapeless recipe {} output is empty", id);
-            throw new IllegalArgumentException(id + ": output items is empty");
-        } else {
-            JsonObject result = new JsonObject();
-            result.addProperty("item", BuiltInRegistries.ITEM.getKey(output.getItem()).toString());
-            if (output.getCount() > 1) {
-                result.addProperty("count", output.getCount());
-            }
-            if (output.hasTag() && output.getTag() != null) {
-                result.add("nbt", NBTToJsonConverter.getObject(output.getTag()));
-            }
-            json.add("result", result);
-        }
+    public ShapelessRecipe build() {
+        return new ShapelessRecipe(this.group, this.category, this.output, this.ingredients);
     }
 
     public void save(RecipeOutput consumer) {
-        consumer.accept(new FinishedRecipe() {
+        var recipeId = id == null ? defaultId() : id;
 
-            @Override
-            public void serializeRecipeData(JsonObject pJson) {
-                toJson(pJson);
-            }
-
-            @Override
-            public ResourceLocation getId() {
-                var ID = id == null ? defaultId() : id;
-                return new ResourceLocation(ID.getNamespace(), "shapeless" + "/" + ID.getPath());
-            }
-
-            @Override
-            public RecipeSerializer<?> getType() {
-                return RecipeSerializer.SHAPELESS_RECIPE;
-            }
-
-            @Nullable
-            @Override
-            public JsonObject serializeAdvancement() {
-                return null;
-            }
-
-            @Nullable
-            @Override
-            public ResourceLocation getAdvancementId() {
-                return null;
-            }
-        });
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shapeless" + "/" + recipeId.getPath()), build(), null);
     }
 }

@@ -9,26 +9,8 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.integration.GTRecipeWidget;
-import com.gregtechceu.gtceu.utils.FluidKey;
-import com.gregtechceu.gtceu.utils.GTHashMaps;
-import com.gregtechceu.gtceu.utils.OverlayedFluidHandler;
-import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
-
-import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
-import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
-
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
+import net.neoforged.neoforge.fluids.FluidStack;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.level.material.Fluid;
 
 import com.mojang.datafixers.util.Either;
@@ -78,8 +60,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     Collection<Fluid> fluids = value.getFluids();
                     for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(
-                                FluidStack.create(fluid, ingredient.getAmount(), ingredient.getNbt())));
+                        ingredients.add(new MapFluidIngredient(new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
                     }
                 }
             }

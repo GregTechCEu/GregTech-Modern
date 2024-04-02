@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.neoforge.IntersectionIngredientAccessor;
 import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -55,7 +54,7 @@ public class IngredientEquality {
         @Override
         public int compare(Ingredient first, Ingredient second) {
             if (first instanceof StrictNBTIngredient strict1) {
-                if (second instanceof StrictNBTIngredientAccessor strict2) {
+                if (second instanceof NBTIngredientAccessor strict2) {
                     return strict1.test(strict2.getStack()) ? 0 : 1;
                 }
                 return 1;

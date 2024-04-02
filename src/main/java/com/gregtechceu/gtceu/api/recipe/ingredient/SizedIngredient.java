@@ -1,18 +1,16 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
-
-import net.minecraft.network.FriendlyByteBuf;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.crafting.IIngredientSerializer;
-
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import it.unimi.dsi.fastutil.ints.IntList;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,6 +18,10 @@ import java.util.Arrays;
 import java.util.stream.Stream;
 
 public class SizedIngredient extends Ingredient {
+    public static final Codec<SizedIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Ingredient.CODEC_NONEMPTY.fieldOf("inner").forGetter(val -> val.inner),
+        ExtraCodecs.POSITIVE_INT.fieldOf("amount").forGetter(val -> val.amount)
+    ).apply(instance, SizedIngredient::new));
 
     public static final ResourceLocation TYPE = GTCEu.id("sized");
 
@@ -38,8 +40,7 @@ public class SizedIngredient extends Ingredient {
     }
 
     protected SizedIngredient(ItemStack itemStack) {
-        this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.createNBTIngredient(itemStack) :
-                Ingredient.of(itemStack), itemStack.getCount());
+        this((itemStack.hasTag() || itemStack.getDamageValue() > 0) ? NBTIngredient.of(true, itemStack) : Ingredient.of(itemStack), itemStack.getCount());
     }
 
     public static SizedIngredient create(ItemStack inner) {
@@ -81,25 +82,6 @@ public class SizedIngredient extends Ingredient {
     }
 
     @Override
-    @NotNull
-    public IIngredientSerializer<? extends Ingredient> getSerializer() {
-        return SERIALIZER;
-    }
-
-    public static SizedIngredient fromJson(JsonObject json) {
-        return SERIALIZER.parse(json);
-    }
-
-    @Override
-    public @NotNull JsonElement toJson() {
-        JsonObject json = new JsonObject();
-        json.addProperty("type", TYPE.toString());
-        json.addProperty("count", amount);
-        json.add("ingredient", inner.toJson());
-        return json;
-    }
-
-    @Override
     public boolean test(@Nullable ItemStack stack) {
         return inner.test(stack);
     }
@@ -131,26 +113,4 @@ public class SizedIngredient extends Ingredient {
         result = 31 * result + Arrays.hashCode(itemStacks);
         return result;
     }
-
-    public static final IIngredientSerializer<SizedIngredient> SERIALIZER = new IIngredientSerializer<>() {
-
-        @Override
-        public @NotNull SizedIngredient parse(FriendlyByteBuf buffer) {
-            int amount = buffer.readVarInt();
-            return new SizedIngredient(Ingredient.fromNetwork(buffer), amount);
-        }
-
-        @Override
-        public @NotNull SizedIngredient parse(JsonObject json) {
-            int amount = json.get("count").getAsInt();
-            Ingredient inner = Ingredient.fromJson(json.get("ingredient"));
-            return new SizedIngredient(inner, amount);
-        }
-
-        @Override
-        public void write(FriendlyByteBuf buffer, SizedIngredient ingredient) {
-            buffer.writeVarInt(ingredient.getAmount());
-            ingredient.inner.toNetwork(buffer);
-        }
-    };
 }

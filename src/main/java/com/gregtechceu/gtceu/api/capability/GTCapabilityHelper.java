@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.capability.forge.GTEnergyHelperImpl;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 
@@ -10,9 +9,9 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.energy.IEnergyStorage;
+import net.neoforged.neoforge.capabilities.BlockCapability;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.energy.IEnergyStorage;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -26,13 +25,12 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
-        return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM).resolve().orElse(null);
+        return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
     }
 
     @Nullable
-    public static IPlatformEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
-        IEnergyStorage energyItemStorage = itemStack.getCapability(ForgeCapabilities.ENERGY).resolve().orElse(null);
-        return energyItemStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyItemStorage);
+    public static IEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
+        return itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
     }
 
     @Nullable
@@ -71,12 +69,11 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IPlatformEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
+    public static IEnergyStorage getPlatformEnergy(Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                IEnergyStorage energyStorage = blockEntity.getCapability(ForgeCapabilities.ENERGY, side).orElse(null);
-                return energyStorage == null ? null : GTEnergyHelperImpl.toPlatformEnergyStorage(energyStorage);
+                return blockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side);
             }
         }
         return null;
@@ -98,23 +95,11 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos,
-                                                                            @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, level, pos, side);
-    }
-
-    @Nullable
-    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CAPABILITY_DATA_ACCESS, level, pos, side);
-    }
-
-    @Nullable
-    private static <T> T getBlockEntityCapability(Capability<T> capability, Level level, BlockPos pos,
-                                                  @Nullable Direction side) {
+    private static <T> T getBlockEntityCapability(BlockCapability<T, Direction> capability, Level level, BlockPos pos, @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getCapability(capability, side).resolve().orElse(null);
+                return level.getCapability(capability, pos, side);
             }
         }
         return null;

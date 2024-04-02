@@ -28,14 +28,8 @@ import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -61,8 +55,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.NotNull;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -96,7 +94,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
-    private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
+    private final EnhancedFieldManagedStorage syncStorage = new EnhancedFieldManagedStorage(this);
     @Getter
     public final IMachineBlockEntity holder;
     @Getter
@@ -478,12 +476,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         traits.add(trait);
     }
 
-    public static void clearInventory(List<ItemStack> itemBuffer, IItemTransfer inventory) {
+    public static void clearInventory(List<ItemStack> itemBuffer, IItemHandlerModifiable inventory) {
         for (int i = 0; i < inventory.getSlots(); i++) {
             ItemStack stackInSlot = inventory.getStackInSlot(i);
             if (!stackInSlot.isEmpty()) {
                 inventory.setStackInSlot(i, ItemStack.EMPTY);
-                inventory.onContentsChanged();
                 itemBuffer.add(stackInSlot);
             }
         }
@@ -648,11 +645,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IItemTransfer getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
-                .filter(IItemTransfer.class::isInstance)
+                .filter(IItemHandlerModifiable.class::isInstance)
                 .filter(t -> t.hasCapability(side))
-                .map(IItemTransfer.class::cast)
+                .map(IItemHandlerModifiable.class::cast)
                 .toList();
 
         if (list.isEmpty()) return null;
@@ -671,11 +668,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     @Nullable
-    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+    public IFluidHandler getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
         var list = getTraits().stream()
-                .filter(IFluidTransfer.class::isInstance)
+                .filter(IFluidHandler.class::isInstance)
                 .filter(t -> t.hasCapability(side))
-                .map(IFluidTransfer.class::cast)
+                .map(IFluidHandler.class::cast)
                 .toList();
 
         if (list.isEmpty()) return null;

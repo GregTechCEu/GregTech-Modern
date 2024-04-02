@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.transfer.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
-
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 
 public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
@@ -14,11 +13,11 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         super(holder, LDFluidPipeType.INSTANCE);
     }
 
-    public static class FluidHandlerWrapper implements IFluidTransfer {
+    public static class FluidHandlerWrapper implements IFluidHandlerModifiable {
 
-        private final IFluidTransfer delegate;
+        private final IFluidHandler delegate;
 
-        public FluidHandlerWrapper(IFluidTransfer delegate) {
+        public FluidHandlerWrapper(IFluidHandler delegate) {
             this.delegate = delegate;
         }
 
@@ -35,11 +34,13 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
 
         @Override
         public void setFluidInTank(int tank, @NotNull FluidStack fluidStack) {
-            delegate.setFluidInTank(tank, fluidStack);
+            if (delegate instanceof IFluidHandlerModifiable modifiable) {
+                modifiable.setFluidInTank(tank, fluidStack);
+            }
         }
 
         @Override
-        public long getTankCapacity(int tank) {
+        public int getTankCapacity(int tank) {
             return delegate.getTankCapacity(tank);
         }
 
@@ -49,35 +50,31 @@ public class LDFluidEndpointMachine extends LongDistanceEndpointMachine {
         }
 
         @Override
-        public long fill(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return delegate.fill(resource, simulate, notifyChanges);
+        public int fill(FluidStack resource, FluidAction action) {
+            return delegate.fill(resource, action);
+        }
+
+        @Override
+        public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
+            return FluidStack.EMPTY;
+        }
+
+        @Override
+        public @NotNull FluidStack drain(int maxDrain, FluidAction action) {
+            return FluidStack.EMPTY;
         }
 
         @Override
         public boolean supportsFill(int tank) {
-            return delegate.supportsFill(tank);
-        }
-
-        @NotNull
-        @Override
-        public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
-            return FluidStack.empty();
+            if (delegate instanceof IFluidHandlerModifiable modifiable) {
+                return modifiable.supportsFill(tank);
+            }
+            return true;
         }
 
         @Override
         public boolean supportsDrain(int tank) {
             return false;
-        }
-
-        @NotNull
-        @Override
-        public Object createSnapshot() {
-            return delegate.createSnapshot();
-        }
-
-        @Override
-        public void restoreFromSnapshot(Object snapshot) {
-            delegate.restoreFromSnapshot(snapshot);
         }
     }
 }
