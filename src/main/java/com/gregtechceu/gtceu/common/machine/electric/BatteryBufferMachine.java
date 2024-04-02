@@ -57,7 +57,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
-    @Getter @Persisted
+    @Getter @Persisted(subPersisted = true)
     protected final CustomItemStackHandler batteryInventory;
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
         super(holder, tier, inventorySize);

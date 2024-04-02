@@ -42,6 +42,7 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -57,8 +58,8 @@ import java.util.function.Supplier;
  */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
-
-    public static final List<ICustomScannerLogic> CUSTOM_SCANNER_LOGICS = new ArrayList<>();
+    @Getter @Setter(onMethod_ = {@ApiStatus.Internal})
+    public GTRecipeSerializer serializer;
 
     public final ResourceLocation registryName;
     public final String group;

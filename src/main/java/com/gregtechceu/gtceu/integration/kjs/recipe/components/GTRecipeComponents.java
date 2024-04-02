@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonPrimitive;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -8,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.JsonOps;
 import net.neoforged.neoforge.fluids.FluidStack;
 import dev.latvian.mods.kubejs.fluid.FluidLike;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
@@ -165,7 +170,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
-            return value.ingredient.toJson();
+            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow(false, GTCEu.LOGGER::error);
         }
 
         @Override
@@ -197,7 +202,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
-            return value.ingredient.toJson();
+            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow(false, GTCEu.LOGGER::error);
         }
 
         @Override

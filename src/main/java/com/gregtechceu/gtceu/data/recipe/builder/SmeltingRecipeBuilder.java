@@ -16,6 +16,8 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 /**
  * @author KilaBash
  * @date 2023/2/21
@@ -28,7 +30,7 @@ public class SmeltingRecipeBuilder {
     @Setter
     protected String group;
     @Setter
-    protected CookingBookCategory category;
+    protected CookingBookCategory category = CookingBookCategory.MISC;
 
     private ItemStack output = ItemStack.EMPTY;
     @Setter
@@ -87,7 +89,7 @@ public class SmeltingRecipeBuilder {
     }
 
     private SmeltingRecipe create() {
-        return new SmeltingRecipe(this.group, this.category, this.input, this.output, this.experience, this.cookingTime);
+        return new SmeltingRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.input, this.output, this.experience, this.cookingTime);
     }
 
     public void save(RecipeOutput consumer) {

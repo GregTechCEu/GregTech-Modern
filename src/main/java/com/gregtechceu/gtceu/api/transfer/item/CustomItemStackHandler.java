@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.NonNullList;
@@ -9,7 +10,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
-public class CustomItemStackHandler extends ItemStackHandler {
+public class CustomItemStackHandler extends ItemStackHandler implements IContentChangeAware {
 
     @Getter @Setter
     protected Runnable onContentsChanged = () -> {};

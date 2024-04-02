@@ -39,7 +39,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Persisted @DescSynced
+    @Persisted(subPersisted = true) @DescSynced
     public final CustomItemStackHandler storage;
     private Boolean isEmpty;
 

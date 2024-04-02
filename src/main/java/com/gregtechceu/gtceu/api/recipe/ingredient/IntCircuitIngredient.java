@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTIngredientTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.mojang.serialization.Codec;
@@ -8,12 +9,13 @@ import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
+import java.util.stream.Stream;
 
-public class IntCircuitIngredient extends NBTIngredient {
+public class IntCircuitIngredient extends Ingredient {
     public static final ResourceLocation TYPE = GTCEu.id("circuit");
 
     public static final int CIRCUIT_MIN = 0;
@@ -38,7 +40,7 @@ public class IntCircuitIngredient extends NBTIngredient {
     private ItemStack[] stacks;
 
     protected IntCircuitIngredient(int configuration) {
-        super(Set.of(GTItems.INTEGRATED_CIRCUIT.get()), IntCircuitBehaviour.stack(configuration).getOrCreateTag(), true);
+        super(Stream.of(new Ingredient.ItemValue(IntCircuitBehaviour.stack(configuration))), GTIngredientTypes.INT_CIRCUIT_INGREDIENT);
         this.configuration = configuration;
     }
 

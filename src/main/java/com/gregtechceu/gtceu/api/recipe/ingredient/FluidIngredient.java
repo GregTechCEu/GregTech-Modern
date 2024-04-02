@@ -27,11 +27,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class FluidIngredient implements Predicate<FluidStack> {
-    public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, null);
+    public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, (CompoundTag) null);
     public static final Codec<FluidIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Value.CODEC.listOf().fieldOf("values").forGetter(ing -> Arrays.stream(ing.values).toList()),
             ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 0).forGetter(ing -> ing.amount),
-            CraftingHelper.TAG_CODEC.optionalFieldOf("nbt", null).forGetter(ing -> ing.nbt)
+            CraftingHelper.TAG_CODEC.optionalFieldOf("nbt").forGetter(ing -> Optional.ofNullable(ing.nbt))
     ).apply(instance, (values, amount, tag) -> new FluidIngredient(values.stream(), amount, tag)));
 
     public FluidIngredient.Value[] values;
@@ -48,6 +48,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
         this.amount = amount;
         this.nbt = nbt;
     }
+    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, Optional<CompoundTag> nbt) {
+        this.values = empty.toArray(Value[]::new);
+        this.amount = amount;
+        this.nbt = nbt.orElse(null);
+    }
 
     public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount, @Nullable CompoundTag nbt) {
         FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt);
@@ -58,23 +63,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
         buffer.writeVarLong(amount);
         buffer.writeNbt(nbt);
-    }
-
-    public JsonElement toJson() {
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("amount", this.amount * FluidHelper.getBucket() / 1000);
-        if (this.nbt != null) {
-            jsonObject.addProperty("nbt", this.nbt.getAsString());
-        }
-        if (this.values.length == 1) {
-            jsonObject.add("value", this.values[0].serialize());
-        }
-        JsonArray jsonArray = new JsonArray();
-        for (FluidIngredient.Value value : this.values) {
-            jsonArray.add(value.serialize());
-        }
-        jsonObject.add("value", jsonArray);
-        return jsonObject;
     }
 
     public FluidIngredient copy() {
@@ -215,8 +203,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
         public Collection<Fluid> getStacks();
 
-        public JsonObject serialize();
-
         public Value copy();
     }
 
@@ -242,13 +228,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public JsonObject serialize() {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("tag", this.tag.location().toString());
-            return jsonObject;
-        }
-
-        @Override
         public Value copy() {
             return new TagValue(this.tag);
         }
@@ -268,13 +247,6 @@ public class FluidIngredient implements Predicate<FluidStack> {
         @Override
         public Collection<Fluid> getFluids() {
             return Collections.singleton(this.fluid);
-        }
-
-        @Override
-        public JsonObject serialize() {
-            JsonObject jsonObject = new JsonObject();
-            jsonObject.addProperty("fluid", BuiltInRegistries.FLUID.getKey(this.fluid).toString());
-            return jsonObject;
         }
 
         @Override

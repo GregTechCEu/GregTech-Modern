@@ -12,26 +12,11 @@ import com.gregtechceu.gtceu.api.recipe.content.SerializerIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.*;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
-import com.gregtechceu.gtceu.integration.GTRecipeWidget;
-import com.gregtechceu.gtceu.utils.*;
-
-import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
-import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.network.chat.Component;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
+import com.gregtechceu.gtceu.utils.IngredientEquality;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.CompoundIngredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 import net.neoforged.neoforge.common.crafting.NBTIngredient;
 
@@ -83,8 +68,8 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             // all kinds of special cases
             if (ingredient instanceof NBTIngredient nbt && nbt.isStrict()) {
                 ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
-            } else if (ingredient instanceof PartialNBTIngredient nbt) {
-                ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
+            } if (ingredient instanceof IntCircuitIngredient circuit) {
+                ingredients.addAll(MapItemStackNBTIngredient.from(circuit));
             } else if (ingredient instanceof SizedIngredient sized) {
                 if (sized.getInner() instanceof NBTIngredient nbt && nbt.isStrict()) {
                     ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
@@ -93,9 +78,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 } else if (sized.getInner() instanceof IntersectionIngredient intersection) {
                     ingredients.add(new MapIntersectionIngredient(intersection));
                 } else {
-                    for (Ingredient.Value value : ((IngredientAccessor) sized.getInner()).getValues()) {
+                    for (Ingredient.Value value : sized.getInner().getValues()) {
                         if (value instanceof Ingredient.TagValue tagValue) {
-                            ingredients.add(new MapItemTagIngredient(((TagValueAccessor)(Object) tagValue).getTag()));
+                            ingredients.add(new MapItemTagIngredient(tagValue.tag()));
                         } else {
                             Collection<ItemStack> stacks = value.getItems();
                             for (ItemStack stack : stacks) {
@@ -106,10 +91,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 }
             } else if (ingredient instanceof IntersectionIngredient intersection) {
                 ingredients.add(new MapIntersectionIngredient(intersection));
+            } else if (ingredient instanceof CompoundIngredient compound) {
+                for (Ingredient inner : compound.getChildren()) {
+                    ingredients.addAll(convertToMapIngredient(inner));
+                }
             } else {
-                for (Ingredient.Value value : ((IngredientAccessor) ingredient).getValues()) {
+                for (Ingredient.Value value : ingredient.getValues()) {
                     if (value instanceof Ingredient.TagValue tagValue) {
-                        ingredients.add(new MapItemTagIngredient(((TagValueAccessor)(Object) tagValue).getTag()));
+                        ingredients.add(new MapItemTagIngredient(tagValue.tag()));
                     } else {
                         Collection<ItemStack> stacks = value.getItems();
                         for (ItemStack stack : stacks) {

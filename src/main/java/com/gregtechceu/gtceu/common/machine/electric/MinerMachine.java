@@ -71,7 +71,7 @@ public class MinerMachine extends WorkableTieredMachine
             WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
     private final long energyPerTick;
     @Nullable

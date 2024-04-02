@@ -28,14 +28,14 @@ import java.util.Map;
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
     public static final Codec<GTRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
-        RecipeCapability.CODEC.fieldOf("inputs").forGetter(val -> val.inputs),
-        RecipeCapability.CODEC.fieldOf("tickInputs").forGetter(val -> val.tickInputs),
-        RecipeCapability.CODEC.fieldOf("outputs").forGetter(val -> val.outputs),
-        RecipeCapability.CODEC.fieldOf("tickOutputs").forGetter(val -> val.tickOutputs),
+        RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
+        RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
+        RecipeCapability.CODEC.optionalFieldOf("tickInputs", Map.of()).forGetter(val -> val.tickInputs),
+        RecipeCapability.CODEC.optionalFieldOf("tickOutputs", Map.of()).forGetter(val -> val.tickOutputs),
         RecipeCondition.CODEC.listOf().optionalFieldOf("recipeConditions", List.of()).forGetter(val -> val.conditions),
-        CompoundTag.CODEC.fieldOf("data").forGetter(val -> val.data),
+        CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
-        Codec.BOOL.fieldOf("isFuel").forGetter(val -> val.isFuel)
+        Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel)
     ).apply(instance, GTRecipe::new));
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();

@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.google.gson.JsonElement;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.mojang.serialization.JsonOps;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -28,7 +30,7 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
 
     @Override
     public JsonElement toJson(FluidIngredient content) {
-        return content.toJson();
+        return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, content).getOrThrow(false, GTCEu.LOGGER::error);
     }
 
     @Override

@@ -1,10 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.neoforge.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
-
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
@@ -28,7 +24,7 @@ public class IngredientEquality {
                 if (!(value2 instanceof Ingredient.TagValue tagValue1)) {
                     return 1;
                 }
-                if (((TagValueAccessor) (Object) tagValue).getTag() != ((TagValueAccessor) (Object) tagValue1).getTag()) {
+                if (tagValue.tag() != tagValue1.tag()) {
                     return 1;
                 }
             } else if (value1 instanceof Ingredient.ItemValue) {
@@ -74,10 +70,8 @@ public class IngredientEquality {
 
             if (first instanceof IntersectionIngredient intersection1) {
                 if (second instanceof IntersectionIngredient intersection2) {
-                    List<Ingredient> ingredients1 = Lists
-                            .newArrayList(((IntersectionIngredientAccessor) intersection1).getChildren());
-                    List<Ingredient> ingredients2 = Lists
-                            .newArrayList(((IntersectionIngredientAccessor) intersection2).getChildren());
+                    List<Ingredient> ingredients1 = Lists.newArrayList(intersection1.getChildren());
+                    List<Ingredient> ingredients2 = Lists.newArrayList(intersection2.getChildren());
                     if (ingredients1.size() != ingredients2.size()) return 1;
 
                     ingredients1.sort(this);
@@ -96,10 +90,10 @@ public class IngredientEquality {
                 return 1;
             }
 
-            if (((IngredientAccessor) first).getValues().length != ((IngredientAccessor) second).getValues().length)
+            if (first.getValues().length != second.getValues().length)
                 return 1;
-            Ingredient.Value[] values1 = ((IngredientAccessor) first).getValues();
-            Ingredient.Value[] values2 = ((IngredientAccessor) second).getValues();
+            Ingredient.Value[] values1 = first.getValues();
+            Ingredient.Value[] values2 = second.getValues();
             if (values1.length != values2.length) return 1;
 
             Arrays.parallelSort(values1, INGREDIENT_VALUE_COMPARATOR);

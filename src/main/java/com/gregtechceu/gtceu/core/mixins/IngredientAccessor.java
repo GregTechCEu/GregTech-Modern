@@ -16,9 +16,6 @@ import java.util.stream.Stream;
 @Mixin(Ingredient.class)
 public interface IngredientAccessor {
 
-    @Accessor
-    Ingredient.Value[] getValues();
-
     @Invoker(value = "<init>")
     static Ingredient create(Stream<? extends Ingredient.Value> values) {
         return null;

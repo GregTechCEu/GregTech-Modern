@@ -103,7 +103,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Getter
     @Setter
     private boolean isVoiding;
-    @Persisted @DescSynced @Getter
+    @Persisted(subPersisted = true) @DescSynced @Getter
     private final CustomItemStackHandler lockedItem;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {

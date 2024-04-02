@@ -1,17 +1,19 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.nbt.CompoundTag;
+import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
 
 import java.util.function.Predicate;
 
-public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiable {
+public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiable, INBTSerializable<CompoundTag>, IContentChangeAware {
 
-    @Getter
-    @Setter
+    @Getter @Setter
     protected Runnable onContentsChanged = () -> {};
 
     public CustomFluidTank(int capacity) {
@@ -43,5 +45,17 @@ public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiabl
     public void setFluidInTank(int tank, FluidStack stack) {
         this.setFluid(stack);
         this.onContentsChanged();
+    }
+
+    @Override
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        this.fluid.writeToNBT(tag);
+        return tag;
+    }
+
+    @Override
+    public void deserializeNBT(CompoundTag nbt) {
+        this.fluid = FluidStack.loadFluidStackFromNBT(nbt);
     }
 }

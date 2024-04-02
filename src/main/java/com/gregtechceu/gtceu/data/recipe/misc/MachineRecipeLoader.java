@@ -83,7 +83,7 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         for (ItemEntry<Item> shapeMold : SHAPE_MOLDS) {
-            FORMING_PRESS_RECIPES.recipeBuilder("copy_mold_" + shapeMold.get())
+            FORMING_PRESS_RECIPES.recipeBuilder("copy_mold_" + shapeMold.getId().getPath())
                     .duration(120).EUt(22)
                     .notConsumable(shapeMold)
                     .inputItems(SHAPE_EMPTY)
@@ -93,7 +93,7 @@ public class MachineRecipeLoader {
 
         for (ItemEntry<Item> shapeExtruder : SHAPE_EXTRUDERS) {
             if (shapeExtruder == null) continue;
-            FORMING_PRESS_RECIPES.recipeBuilder("copy_shape_" + shapeExtruder.get())
+            FORMING_PRESS_RECIPES.recipeBuilder("copy_shape_" + shapeExtruder.getId().getPath())
                     .duration(120).EUt(22)
                     .notConsumable(shapeExtruder)
                     .inputItems(SHAPE_EMPTY)

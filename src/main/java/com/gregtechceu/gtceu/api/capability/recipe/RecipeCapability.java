@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.codecs.CompoundListFunctionCodec;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
@@ -12,7 +13,6 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -20,10 +20,9 @@ import java.util.stream.Collectors;
  */
 public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     public static final Codec<RecipeCapability<?>> DIRECT_CODEC = GTRegistries.RECIPE_CAPABILITIES.codec();
-    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = DIRECT_CODEC.dispatch(
-            Pair::getFirst,
-            RecipeCapability::codec)
-        .listOf()
+    public static final Codec<Map<RecipeCapability<?>, List<Content>>> CODEC = new CompoundListFunctionCodec<>(
+            RecipeCapability.DIRECT_CODEC,
+            RecipeCapability::contentCodec)
         .xmap(list -> list
                 .stream()
                 .collect(Collectors.toMap(Pair::getFirst, Pair::getSecond)),
@@ -52,8 +51,8 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
         this.serializer = serializer;
     }
 
-    public static Codec<Pair<RecipeCapability<?>, List<Content>>> codec(RecipeCapability<?> capability) {
-        return Codec.pair(DIRECT_CODEC, Content.codec(capability).listOf());
+    public static Codec<List<Content>> contentCodec(RecipeCapability<?> capability) {
+        return Content.codec(capability).listOf();
     }
 
     /**

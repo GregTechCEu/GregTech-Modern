@@ -65,7 +65,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     @Getter
     private final int inventorySize;
     @Getter
-    @Persisted
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
 
     @Getter

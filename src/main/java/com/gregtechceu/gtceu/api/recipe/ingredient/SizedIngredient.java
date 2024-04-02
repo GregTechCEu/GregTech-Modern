@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTIngredientTypes;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.ints.IntList;
@@ -30,7 +31,7 @@ public class SizedIngredient extends Ingredient {
     protected ItemStack[] itemStacks = null;
 
     protected SizedIngredient(Ingredient inner, int amount) {
-        super(Stream.empty());
+        super(Stream.empty(), GTIngredientTypes.SIZED_INGREDIENT);
         this.amount = amount;
         this.inner = inner;
     }
