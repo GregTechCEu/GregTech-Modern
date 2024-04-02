@@ -349,8 +349,15 @@ public class GTItems {
             .lang("Portable Scanner")
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.TOOLS))
-            .onRegister(attach(ElectricStats.createElectricItem(100_00L, GTValues.MV), new PortableScannerBehavior()))
+            .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.MV), new PortableScannerBehavior(0)))
             .register();
+
+    public static ItemEntry<ComponentItem> PORTABLE_DEBUG_SCANNER = REGISTRATE.item("portable_debug_scanner", ComponentItem::create)
+        .lang("Portable Scanner")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(compassNode(GTCompassSections.TOOLS))
+        .onRegister(attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
+        .register();
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor cellColor() {

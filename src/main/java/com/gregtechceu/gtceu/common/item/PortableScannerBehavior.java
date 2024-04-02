@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -52,13 +53,26 @@ import java.util.Optional;
 
 public class PortableScannerBehavior implements IInteractionItem, IAddInformation {
 
+    private int debugLevel = 0;
+
+    @Getter
     public enum DisplayMode {
-        SHOW_ALL,
-        SHOW_BLOCK_INFO,
-        SHOW_MACHINE_INFO,
-        SHOW_ELECTRICAL_INFO,
-        SHOW_RECIPE_INFO,
-        SHOW_ENVIRONMENTAL_INFO
+        SHOW_ALL("behavior.portable_scanner.mode.show_block_info"),
+        SHOW_BLOCK_INFO("behavior.portable_scanner.mode.show_block_info"),
+        SHOW_MACHINE_INFO("behavior.portable_scanner.mode.show_machine_info"),
+        SHOW_ELECTRICAL_INFO("behavior.portable_scanner.mode.show_electrical_info"),
+        SHOW_RECIPE_INFO("behavior.portable_scanner.mode.show_recipe_info"),
+        SHOW_ENVIRONMENTAL_INFO("behavior.portable_scanner.mode.show_environmental_info");
+
+        private final String langKey;
+
+        DisplayMode(String langKey) {
+            this.langKey = langKey;
+        }
+    }
+
+    public PortableScannerBehavior(int debugLevel) {
+        this.debugLevel = debugLevel;
     }
 
     @Override
@@ -92,7 +106,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             return InteractionResult.CONSUME;
         }
 
-        return InteractionResult.PASS;
+        return InteractionResult.CONSUME;
     }
 
     @Override
@@ -102,7 +116,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             if (!level.isClientSide) {
                 setNextMode(heldItem);
                 var mode = getMode(heldItem);
-                player.sendSystemMessage(Component.translatable(mode.name()));
+                player.sendSystemMessage(Component.translatable("behavior.portable_scanner.mode.caption", Component.translatable(mode.getLangKey())));
             }
             return InteractionResultHolder.success(heldItem);
         }
@@ -133,14 +147,9 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
     }
 
-    // TODO
-    int debugLevel = 0;
-
     public int addScannerInfo(Player player, Level level, BlockPos pos, DisplayMode mode, List<Component> list) {
 
-
         BlockEntity tileEntity = level.getBlockEntity(pos);
-        // TODO:
         int energyCost = 0;
 
         BlockState state = level.getBlockState(pos);
@@ -308,6 +317,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                         list.add(Component.translatable(isInput ? "behavior.portable_scanner.workable_consumption" : "behavior.portable_scanner.workable_production",
                             Component.translatable(FormattingUtil.formatNumbers(EUt))
                                 .withStyle(ChatFormatting.RED),
+                            // TODO: Change number once there is multi amp behavior
                             Component.translatable(
                                     FormattingUtil.formatNumbers(1))
                                 .withStyle(ChatFormatting.RED)));
@@ -405,6 +415,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
     @Override
     public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-
+        tooltipComponents.add(Component.translatable("metaitem.behavior.mode_switch.tooltip"));
+        tooltipComponents.add(Component.translatable("behavior.portable_scanner.mode.caption", Component.translatable(getMode(stack).getLangKey()).withStyle(ChatFormatting.AQUA)));
     }
 }
