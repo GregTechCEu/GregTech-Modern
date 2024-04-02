@@ -1,5 +1,5 @@
 modLoader = "javafml"
-loaderVersion = "[${forge_version},)"
+loaderVersion = "[${loader_version},)"
 #issueTrackerURL = ""
 license = "${mod_license}"
 
@@ -31,6 +31,21 @@ file="META-INF/accesstransformer.cfg"
     versionRange = "${minecraft_version}"
     ordering = "NONE"
     side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "ldlib"
+    type = "required"
+    versionRange = "[1.0,)"
+    ordering = "AFTER"
+    side = "BOTH"
+
+[[dependencies.${mod_id}]]
+    modId = "kubejs"
+    type = "optional"
+    versionRange = "[${kjs_version},)"
+    ordering = "AFTER"
+    side = "BOTH"
+
 
 #[features.${mod_id}]
 #openGLVersion = "[3.2,)"

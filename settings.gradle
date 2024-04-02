@@ -30,12 +30,12 @@ dependencyResolutionManagement {
         def auVersion = "1.20.1-0.6.0"
 
         // NeoForge
-        def forgeVersion = "20.4.47-beta"
-        def registrateForgeVersion = "MC1.20-1.3.11"
+        def forgeVersion = "20.4.80-beta"
+        def registrateForgeVersion = "MC1.20.4-1.3.0"
         def createForgeVersion = "0.5.1.d-9"
         def flywheelForgeVersion = "0.6.9-5"
         def topForgeVersion = "1.20.1-10.0.1-3"
-        def jadeForgeVersion = "13.2.2"
+        def jadeForgeVersion = "5109393"
         def worldStripperForgeFile = "4578579"
 
         // Libs
@@ -47,7 +47,7 @@ dependencyResolutionManagement {
         def architecturyLoomVersion = "1.3-SNAPSHOT"
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
-        def configurationVersion = "5030089"
+        def configurationVersion = "2.2.3"
         def ldLibVersion = "1.0.24.c"
         def shimmerVersion = "0.2.2"
 
@@ -88,13 +88,13 @@ dependencyResolutionManagement {
             library("theoneprobe", "mcjty.theoneprobe", "theoneprobe").versionRef(theoneprobe)
 
             def jade = version("jade", jadeForgeVersion)
-            library("jade", "maven.modrinth", "jade").versionRef(jade)
+            library("jade", "curse.maven", "jade-324717").versionRef(jade)
 
             def kubejs = version("kubejs", kjsVersion)
             library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
 
             def configuration = version("configuration", configurationVersion)
-            library("configuration", "curse.maven", "configuration-444699").versionRef(configuration)
+            library("configuration", "dev.toma", "configuration-neoforge-${minecraftVersion}").versionRef(configuration)
 
             def worldStripper = version("worldStripper", worldStripperForgeFile)
             library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
@@ -110,21 +110,11 @@ dependencyResolutionManagement {
             version("quiltMappings", quiltMappingsVersion)
             version("parchment", parchmentVersion)
 
-            def minecraft = version("minecraft", minecraftVersion)
+            version("minecraft", minecraftVersion)
             version("minecraftOld", minecraftVersionOld)
-            library("minecraft", "com.mojang", "minecraft").versionRef(minecraft)
 
             def shadow = version("shadow", shadowVersion)
             plugin("shadow", "com.github.johnrengelman.shadow").versionRef(shadow)
-
-            def spotless = version("spotless", spotlessVersion)
-            plugin("spotless", "com.diffplug.spotless").versionRef(spotless)
-
-            def architecturyPlugin = version("architectury", architecturyPluginVersion)
-            plugin("architectury", "architectury-plugin").versionRef(architecturyPlugin)
-
-            def architecturyLoom = version("architectury-loom", architecturyLoomVersion)
-            plugin("architectury-loom", "dev.architectury.loom").versionRef(architecturyLoom)
 
             def vineFlower = version("vineFlower", vineFlowerVersion)
             plugin("vineFlower", "io.github.juuxel.loom-vineflower").versionRef(vineFlower)
