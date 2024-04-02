@@ -57,7 +57,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
     @Getter
     public enum DisplayMode {
-        SHOW_ALL("behavior.portable_scanner.mode.show_block_info"),
+        SHOW_ALL("behavior.portable_scanner.mode.show_all_info"),
         SHOW_BLOCK_INFO("behavior.portable_scanner.mode.show_block_info"),
         SHOW_MACHINE_INFO("behavior.portable_scanner.mode.show_machine_info"),
         SHOW_ELECTRICAL_INFO("behavior.portable_scanner.mode.show_electrical_info"),
