@@ -341,7 +341,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        if (playerIn.isCrouching()) {
+        if (playerIn.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
             }
@@ -414,7 +414,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isCrouching()) {
+            if (player.isShiftKeyDown()) {
                 if (isFacingValid(side)) {
                     return GuiTextures.TOOL_FRONT_FACING_ROTATION;
                 }

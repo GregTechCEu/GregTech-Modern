@@ -270,7 +270,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (player.isCrouching()) {
+            if (player.isShiftKeyDown()) {
                 if (hasFrontFacing() && side != this.getFrontFacing() && isFacingValid(side)) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }

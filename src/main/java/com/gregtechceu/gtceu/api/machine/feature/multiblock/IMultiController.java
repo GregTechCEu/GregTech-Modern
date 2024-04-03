@@ -167,7 +167,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      */
     @Override
     default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!self().isFormed() && player.isCrouching() && player.getItemInHand(hand).isEmpty()) {
+        if (!self().isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             if (world.isClientSide()) {
                 MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(), self().getDefinition().getMatchingShapes().get(0), ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
             }

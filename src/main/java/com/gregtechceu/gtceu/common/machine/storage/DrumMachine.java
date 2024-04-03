@@ -232,7 +232,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!isRemote()) {
-            if (!playerIn.isCrouching()) {
+            if (!playerIn.isShiftKeyDown()) {
                 setAutoOutputFluids(!isAutoOutputFluids());
                 playerIn.sendSystemMessage(Component.translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
                 return InteractionResult.SUCCESS;

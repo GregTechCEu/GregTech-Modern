@@ -315,7 +315,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
             int currentRadius = getRecipeLogic().getCurrentRadius();
             if (currentRadius == 1)
                 getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
-            else if (playerIn.isCrouching())
+            else if (playerIn.isShiftKeyDown())
                 getRecipeLogic().setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
             else
                 getRecipeLogic().setCurrentRadius(Math.max(1, currentRadius - 1));

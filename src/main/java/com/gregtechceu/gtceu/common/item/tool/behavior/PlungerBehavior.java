@@ -40,7 +40,7 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
         }
 
         IFluidTransfer handlerToRemoveFrom = fluidHandler;
-//                player.isCrouching() ?
+//                player.isShiftKeyDown() ?
 //                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).input : null) :
 //                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).output : fluidHandler);
 

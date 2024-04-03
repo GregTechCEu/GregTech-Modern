@@ -272,7 +272,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isCrouching() ? stored.getItem().getMaxStackSize() : 1, false);
+                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (player.addItem(drained)) {
                         Block.popResource(world, getPos().relative(getFrontFacing()), drained);
@@ -285,7 +285,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
 
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        if (!playerIn.isCrouching() && !isRemote()) {
+        if (!playerIn.isShiftKeyDown() && !isRemote()) {
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
@@ -407,7 +407,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isCrouching()) {
+            if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }
