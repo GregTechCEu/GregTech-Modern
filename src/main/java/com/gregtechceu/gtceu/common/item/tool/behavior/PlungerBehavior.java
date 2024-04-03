@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
@@ -34,19 +35,28 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        IFluidTransfer fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(), context.getClickedFace());
+
+        if (context.getPlayer() == null || !context.getPlayer().isCrouching()) {
+            return InteractionResult.PASS;
+        }
+
+        IFluidTransfer fluidHandler;
+
+        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof MetaMachineBlockEntity metaMachineBlockEntity) {
+            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidTransferCap(context.getClickedFace(), false);
+        } else {
+            fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(), context.getClickedFace());
+        }
+
         if (fluidHandler == null) {
             return InteractionResult.PASS;
         }
 
-        IFluidTransfer handlerToRemoveFrom = fluidHandler;
-//                player.isCrouching() ?
-//                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).input : null) :
-//                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).output : fluidHandler);
-
-        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(FluidHelper.getBucket(), true) != null) {
+        com.lowdragmc.lowdraglib.side.fluid.FluidStack drained = fluidHandler.drain(FluidHelper.getBucket(), true);
+        if (drained != null && !drained.isEmpty()) {
+            fluidHandler.drain(FluidHelper.getBucket(), false);
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
-            return InteractionResult.PASS;
+            return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
     }
