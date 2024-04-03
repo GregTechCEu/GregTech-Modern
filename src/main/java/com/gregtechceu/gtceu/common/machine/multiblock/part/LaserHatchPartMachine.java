@@ -65,7 +65,7 @@ public class LaserHatchPartMachine extends TieredIOPartMachine implements IDataI
         return MANAGED_FIELD_HOLDER;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_ELECTRICAL_INFO) {
