@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 
 import net.minecraft.core.Direction;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash

@@ -44,19 +44,19 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
                 IMultiController controller = getControllers().get(0);
                 if (!(controller instanceof IWorkable workable) || !workable.isActive()) return false;
 
-                List<IDataAccessHatch> data_accesses = new ArrayList<>();
+                List<IDataAccessHatch> dataAccesses = new ArrayList<>();
                 List<IDataAccessHatch> transmitters = new ArrayList<>();
                 for (var part : controller.getParts()) {
                     Block block = part.self().getBlockState().getBlock();
                     if (part instanceof IDataAccessHatch hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
-                        data_accesses.add(hatch);
+                        dataAccesses.add(hatch);
                     }
                     if (part instanceof IDataAccessHatch hatch && PartAbility.COMPUTATION_DATA_TRANSMISSION.isApplicable(block)) {
                         transmitters.add(hatch);
                     }
                 }
 
-                return isRecipeAvailable(data_accesses, seen, recipe) ||
+                return isRecipeAvailable(dataAccesses, seen, recipe) ||
                     isRecipeAvailable(transmitters, seen,
                         recipe);
             } else {

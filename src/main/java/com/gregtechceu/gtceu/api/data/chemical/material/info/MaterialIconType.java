@@ -11,8 +11,8 @@ import com.lowdragmc.lowdraglib.utils.ResourceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -125,12 +125,12 @@ public record MaterialIconType(String name) {
     }
 
     @Nullable
-    public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+    public ResourceLocation getBlockTexturePath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
         return getBlockTexturePath(materialIconSet, null, doReadCache);
     }
 
     @Nullable // Safe: only null on registration on fabric, and no "required" textures are resolved at that point.
-    public ResourceLocation getBlockTexturePath(@Nonnull MaterialIconSet materialIconSet, String suffix, boolean doReadCache) {
+    public ResourceLocation getBlockTexturePath(@NotNull MaterialIconSet materialIconSet, String suffix, boolean doReadCache) {
         if (doReadCache) {
             if (suffix == null || suffix.isBlank()) {
                 if (BLOCK_TEXTURE_CACHE.contains(this, materialIconSet)) return BLOCK_TEXTURE_CACHE.get(this, materialIconSet);
@@ -167,8 +167,8 @@ public record MaterialIconType(String name) {
         return location;
     }
 
-    @Nonnull
-    public ResourceLocation getBlockModelPath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+    @NotNull
+    public ResourceLocation getBlockModelPath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (BLOCK_MODEL_CACHE.contains(this, materialIconSet)) {
                 return BLOCK_MODEL_CACHE.get(this, materialIconSet);
@@ -192,8 +192,8 @@ public record MaterialIconType(String name) {
         return location;
     }
 
-    @Nonnull
-    public ResourceLocation getItemModelPath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+    @NotNull
+    public ResourceLocation getItemModelPath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (ITEM_MODEL_CACHE.contains(this, materialIconSet)) {
                 return ITEM_MODEL_CACHE.get(this, materialIconSet);
@@ -217,8 +217,8 @@ public record MaterialIconType(String name) {
         return location;
     }
 
-    @Nonnull
-    public ResourceLocation getItemTexturePath(@Nonnull MaterialIconSet materialIconSet, boolean doReadCache) {
+    @NotNull
+    public ResourceLocation getItemTexturePath(@NotNull MaterialIconSet materialIconSet, boolean doReadCache) {
         if (doReadCache) {
             if (ITEM_TEXTURE_CACHE.contains(this, materialIconSet)) {
                 return ITEM_TEXTURE_CACHE.get(this, materialIconSet);

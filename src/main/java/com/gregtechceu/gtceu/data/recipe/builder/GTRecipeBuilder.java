@@ -44,7 +44,7 @@ import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -62,7 +62,7 @@ public class GTRecipeBuilder {
     public final Map<RecipeCapability<?>, List<Content>> tickInput = new HashMap<>();
     public final Map<RecipeCapability<?>, List<Content>> output = new HashMap<>();
     public final Map<RecipeCapability<?>, List<Content>> tickOutput = new HashMap<>();
-    @Nonnull
+    @NotNull
     public CompoundTag data = new CompoundTag();
     public final List<RecipeCondition> conditions = new ArrayList<>();
     @Setter
@@ -628,7 +628,7 @@ public class GTRecipeBuilder {
      * @param researchId the researchId for the recipe
      * @return this
      */
-    public GTRecipeBuilder researchWithoutRecipe(@Nonnull String researchId) {
+    public GTRecipeBuilder researchWithoutRecipe(@NotNull String researchId) {
         return researchWithoutRecipe(researchId, AssemblyLineManager.getDefaultScannerItem());
     }
 
@@ -639,7 +639,7 @@ public class GTRecipeBuilder {
      * @param dataStack the stack to hold the data. Must have the {@link IDataItem} behavior.
      * @return this
      */
-    public GTRecipeBuilder researchWithoutRecipe(@Nonnull String researchId, @Nonnull ItemStack dataStack) {
+    public GTRecipeBuilder researchWithoutRecipe(@NotNull String researchId, @NotNull ItemStack dataStack) {
         applyResearchProperty(new ResearchData.ResearchEntry(researchId, dataStack));
         this.generatingRecipes = false;
         return this;
@@ -662,7 +662,7 @@ public class GTRecipeBuilder {
      * @param researchStack the stack to use for research
      * @return this
      */
-    public GTRecipeBuilder scannerResearch(@Nonnull ItemStack researchStack) {
+    public GTRecipeBuilder scannerResearch(@NotNull ItemStack researchStack) {
         return scannerResearch(b -> b.researchStack(researchStack));
     }
 
@@ -789,9 +789,9 @@ public class GTRecipeBuilder {
      */
     @Accessors(fluent = false)
     public record ResearchRecipeEntry(
-            @Nonnull @Getter String researchId,
-            @Nonnull @Getter ItemStack researchStack,
-            @Nonnull @Getter ItemStack dataStack,
+            @NotNull @Getter String researchId,
+            @NotNull @Getter ItemStack researchStack,
+            @NotNull @Getter ItemStack dataStack,
             @Getter int duration,
             @Getter int EUt,
             @Getter int CWUt) {

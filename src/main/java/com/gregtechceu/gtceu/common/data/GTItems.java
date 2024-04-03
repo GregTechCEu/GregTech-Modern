@@ -71,7 +71,7 @@ import net.minecraftforge.common.TierSortingRegistry;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -1689,7 +1689,7 @@ public class GTItems {
         return item -> ChemicalHelper.registerMaterialInfo(item, materialInfo);
     }
 
-    public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
+    public static <P, T extends Item, S2 extends ItemBuilder<T, P>> NonNullFunction<S2, S2> unificationItem(@NotNull TagPrefix tagPrefix, @NotNull Material mat) {
         return builder -> {
             builder.onRegister(item -> {
                 Supplier<ItemLike> supplier = SupplierMemoizer.memoize(() -> item);

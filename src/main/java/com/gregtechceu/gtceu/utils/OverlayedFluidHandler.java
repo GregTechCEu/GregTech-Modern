@@ -7,7 +7,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -19,7 +19,7 @@ public class OverlayedFluidHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedFluidHandler(@Nonnull FluidTransferList tank) {
+    public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
         this.overlayedTanks = new ArrayList<>();
         FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
@@ -46,7 +46,7 @@ public class OverlayedFluidHandler {
      * @param amountToInsert Amount of the fluid to insert
      * @return Amount of fluid inserted into tanks
      */
-    public long insertFluid(@Nonnull FluidStack fluid, long amountToInsert) {
+    public long insertFluid(@NotNull FluidStack fluid, long amountToInsert) {
         if (amountToInsert <= 0) {
             return 0;
         }
@@ -129,7 +129,7 @@ public class OverlayedFluidHandler {
 
         private FluidStack fluid;
 
-        OverlayedTank(@Nonnull IFluidStorage property, boolean allowSameFluidFill) {
+        OverlayedTank(@NotNull IFluidStorage property, boolean allowSameFluidFill) {
             this.property = property;
             this.allowSameFluidFill = allowSameFluidFill;
             reset();
@@ -149,7 +149,7 @@ public class OverlayedFluidHandler {
          * @param amount Amount of the fluid to insert
          * @return Amount of fluid inserted into this tank
          */
-        public long tryInsert(@Nonnull FluidStack fluid, long amount) {
+        public long tryInsert(@NotNull FluidStack fluid, long amount) {
             if (this.fluid == FluidStack.empty()) {
                 this.fluid = fluid.copy();
                 this.fluid.setAmount(Math.min(this.property.getCapacity(), amount));

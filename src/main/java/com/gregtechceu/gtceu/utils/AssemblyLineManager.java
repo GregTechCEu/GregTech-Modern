@@ -22,8 +22,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
@@ -33,12 +33,12 @@ public final class AssemblyLineManager {
     public static final String RESEARCH_NBT_TAG = "assembly_line_research";
     public static final String RESEARCH_ID_NBT_TAG = "research_id";
 
-    @Nonnull
+    @NotNull
     public static ItemStack getDefaultScannerItem() {
         return GTItems.TOOL_DATA_STICK.asStack();
     }
 
-    @Nonnull
+    @NotNull
     public static ItemStack getDefaultResearchStationItem(int cwut) {
         if (cwut > 32) {
             return GTItems.TOOL_DATA_MODULE.asStack();
@@ -57,7 +57,7 @@ public final class AssemblyLineManager {
      * @param stackCompound the compound contained on the ItemStack to write to
      * @param researchId    the research id
      */
-    public static void writeResearchToNBT(@Nonnull CompoundTag stackCompound, @Nonnull String researchId) {
+    public static void writeResearchToNBT(@NotNull CompoundTag stackCompound, @NotNull String researchId) {
         CompoundTag compound = new CompoundTag();
         compound.putString(RESEARCH_ID_NBT_TAG, researchId);
         stackCompound.put(RESEARCH_NBT_TAG, compound);
@@ -68,7 +68,7 @@ public final class AssemblyLineManager {
      * @return the research id
      */
     @Nullable
-    public static String readResearchId(@Nonnull ItemStack stack) {
+    public static String readResearchId(@NotNull ItemStack stack) {
         CompoundTag compound = stack.getTag();
         if (!hasResearchTag(compound)) return null;
 
@@ -82,7 +82,7 @@ public final class AssemblyLineManager {
      * @param isDataBank if the caller is a Data Bank. Pass "true" here if your use-case does not matter for this check.
      * @return if the stack is a data item
      */
-    public static boolean isStackDataItem(@Nonnull ItemStack stack, boolean isDataBank) {
+    public static boolean isStackDataItem(@NotNull ItemStack stack, boolean isDataBank) {
         if (stack.getItem() instanceof ComponentItem metaItem) {
             for (IItemComponent behaviour : metaItem.getComponents()) {
                 if (behaviour instanceof IDataItem dataItem) {
@@ -97,7 +97,7 @@ public final class AssemblyLineManager {
      * @param stack the stack to check
      * @return if the stack has the research CompoundTag
      */
-    public static boolean hasResearchTag(@Nonnull ItemStack stack) {
+    public static boolean hasResearchTag(@NotNull ItemStack stack) {
         return hasResearchTag(stack.getTag());
     }
 
@@ -115,7 +115,7 @@ public final class AssemblyLineManager {
      *
      * @param builder the builder to retrieve recipe info from
      */
-    public static void createDefaultResearchRecipe(@Nonnull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
+    public static void createDefaultResearchRecipe(@NotNull GTRecipeBuilder builder, Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.researchRecipeEntries()) {
@@ -123,7 +123,7 @@ public final class AssemblyLineManager {
         }
     }
 
-    public static void createDefaultResearchRecipe(@Nonnull String researchId, @Nonnull ItemStack researchItem, @Nonnull ItemStack dataItem, int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
+    public static void createDefaultResearchRecipe(@NotNull String researchId, @NotNull ItemStack researchItem, @NotNull ItemStack dataItem, int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         CompoundTag compound = dataItem.getOrCreateTag();
@@ -169,7 +169,7 @@ public final class AssemblyLineManager {
             return null;
         }
 
-        private GTRecipe createDataRecipe(@Nonnull ItemStack first, @Nonnull ItemStack second) {
+        private GTRecipe createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
             CompoundTag compound = second.getTag();
             if (compound == null) return null;
 

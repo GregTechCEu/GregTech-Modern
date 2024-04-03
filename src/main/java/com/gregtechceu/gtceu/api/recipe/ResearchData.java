@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 @AllArgsConstructor
@@ -21,11 +21,11 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
     /**
      * @param entry the entry to add
      */
-    public void add(@Nonnull ResearchEntry entry) {
+    public void add(@NotNull ResearchEntry entry) {
         this.entries.add(entry);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Iterator<ResearchEntry> iterator() {
         return this.entries.iterator();
@@ -52,10 +52,10 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
      */
     public static final class ResearchEntry {
 
-        @Nonnull
+        @NotNull
         @Getter
         private final String researchId;
-        @Nonnull
+        @NotNull
         @Getter
         private final ItemStack dataItem;
 
@@ -63,7 +63,7 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
          * @param researchId the id of the research
          * @param dataItem the item allowed to contain the research
          */
-        public ResearchEntry(@Nonnull String researchId, @Nonnull ItemStack dataItem) {
+        public ResearchEntry(@NotNull String researchId, @NotNull ItemStack dataItem) {
             this.researchId = researchId;
             this.dataItem = dataItem;
         }

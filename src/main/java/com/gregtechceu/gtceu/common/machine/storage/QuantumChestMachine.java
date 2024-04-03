@@ -46,7 +46,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
@@ -68,7 +68,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     protected int itemsStoredInside = 0;
     @Getter @Persisted @DescSynced @DropSaved
     protected int storedAmount = 0;
-    @Getter @Persisted @DescSynced @DropSaved @Nonnull
+    @Getter @Persisted @DescSynced @DropSaved @NotNull
     protected ItemStack stored = ItemStack.EMPTY;
     @Persisted @DropSaved
     protected final NotifiableItemStackHandler cache;

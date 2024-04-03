@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
@@ -21,7 +20,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import javax.annotation.Nonnull;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.Function;
@@ -42,7 +40,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public final ItemStackTransfer storage;
     private Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, @Nonnull IO handlerIO, @Nonnull IO capabilityIO, Function<Integer, ItemStackTransfer> transferFactory) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO, Function<Integer, ItemStackTransfer> transferFactory) {
         super(machine);
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
@@ -50,11 +48,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, @Nonnull IO handlerIO, @Nonnull IO capabilityIO) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO) {
         this(machine, slots, handlerIO, capabilityIO, ItemStackTransfer::new);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, @Nonnull IO handlerIO) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO) {
         this(machine, slots, handlerIO, handlerIO);
     }
 

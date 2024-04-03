@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class CustomAlloyBlastRecipeProducer extends AlloyBlastRecipeProducer {
 
@@ -26,7 +26,7 @@ public class CustomAlloyBlastRecipeProducer extends AlloyBlastRecipeProducer {
     }
 
     @Override
-    protected int addInputs(@Nonnull Material material, @Nonnull GTRecipeBuilder builder) {
+    protected int addInputs(@NotNull Material material, @NotNull GTRecipeBuilder builder) {
         int amount = super.addInputs(material, builder); // always must be called
         return this.outputAmount < 0 ? amount : this.outputAmount;
     }

@@ -7,7 +7,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Objects;
 
 /**
@@ -61,7 +61,7 @@ public abstract class LongDistancePipeType {
         return endpoint1 != endpoint2 && endpoint1.getPos().distSqr(p) >= minLength * minLength;
     }
 
-    @Nonnull
+    @NotNull
     public LongDistanceNetwork createNetwork(LongDistanceNetwork.WorldData worldData) {
         return new LongDistanceNetwork(this, worldData);
     }

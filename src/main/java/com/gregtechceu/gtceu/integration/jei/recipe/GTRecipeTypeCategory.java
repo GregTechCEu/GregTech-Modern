@@ -21,7 +21,7 @@ import net.minecraft.world.item.Items;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -48,12 +48,12 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public RecipeType<GTRecipeWrapper> getRecipeType() {
         return TYPES.apply(recipeType);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable(recipeType.registryName.toLanguageKey());

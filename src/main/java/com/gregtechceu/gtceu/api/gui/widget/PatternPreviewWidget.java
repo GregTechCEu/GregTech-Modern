@@ -37,7 +37,7 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -235,7 +235,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     }
 
     @Override
-    public void drawInBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.enableBlend();
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
     }
@@ -351,17 +351,17 @@ public class PatternPreviewWidget extends WidgetGroup {
     }
 
     private static class MBPattern {
-        @Nonnull
+        @NotNull
         final List<List<ItemStack>> parts;
-        @Nonnull
+        @NotNull
         final Map<BlockPos, TraceabilityPredicate> predicateMap;
-        @Nonnull
+        @NotNull
         final Map<BlockPos, BlockInfo> blockMap;
-        @Nonnull
+        @NotNull
         final IMultiController controllerBase;
         final int maxY, minY;
 
-        public MBPattern(@Nonnull Map<BlockPos, BlockInfo> blockMap, List<List<ItemStack>> parts, @Nonnull Map<BlockPos, TraceabilityPredicate> predicateMap, @Nonnull IMultiController controllerBase) {
+        public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, List<List<ItemStack>> parts, @NotNull Map<BlockPos, TraceabilityPredicate> predicateMap, @NotNull IMultiController controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;

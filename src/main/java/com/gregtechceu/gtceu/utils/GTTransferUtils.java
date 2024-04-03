@@ -14,21 +14,21 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class GTTransferUtils {
 
-    public static int transferFluids(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler) {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, int transferLimit) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, int transferLimit) {
         return transferFluids(sourceHandler, destHandler, transferLimit, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, int transferLimit, @NotNull Predicate<FluidStack> fluidFilter) {
         int fluidLeftToTransfer = transferLimit;
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
@@ -60,7 +60,7 @@ public class GTTransferUtils {
         return transferLimit - fluidLeftToTransfer;
     }
 
-    public static boolean transferExactFluidStack(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, FluidStack fluidStack) {
+    public static boolean transferExactFluidStack(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, FluidStack fluidStack) {
         long amount = fluidStack.getAmount();
         FluidStack sourceFluid = sourceHandler.drain(fluidStack, true);
         if (sourceFluid == FluidStack.empty() || sourceFluid.getAmount() != amount) {

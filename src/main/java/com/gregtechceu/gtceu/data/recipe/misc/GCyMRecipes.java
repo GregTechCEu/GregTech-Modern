@@ -14,8 +14,8 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -336,9 +336,9 @@ public class GCyMRecipes {
      * @param material the material to generate for
      * @param property the blast property of the material
      */
-    public static void generateAlloyBlastRecipes(@Nullable TagPrefix unused, @Nonnull Material material,
-                                                 @Nonnull AlloyBlastProperty property,
-                                                 @Nonnull Consumer<FinishedRecipe> provider) {
+    public static void generateAlloyBlastRecipes(@Nullable TagPrefix unused, @NotNull Material material,
+                                                 @NotNull AlloyBlastProperty property,
+                                                 @NotNull Consumer<FinishedRecipe> provider) {
         if (material.hasProperty(PropertyKey.BLAST)) {
             property.getRecipeProducer().produce(material, material.getProperty(PropertyKey.BLAST), provider);
         }

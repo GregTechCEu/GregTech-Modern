@@ -34,7 +34,7 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -256,17 +256,17 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return this;
     }
 
-    public void addDataStickEntry(@Nonnull String researchId, @Nonnull GTRecipe recipe) {
+    public void addDataStickEntry(@NotNull String researchId, @NotNull GTRecipe recipe) {
         Collection<GTRecipe> collection = researchEntries.computeIfAbsent(researchId, (k) -> new ObjectOpenHashSet<>());
         collection.add(recipe);
     }
 
     @Nullable
-    public Collection<GTRecipe> getDataStickEntry(@Nonnull String researchId) {
+    public Collection<GTRecipe> getDataStickEntry(@NotNull String researchId) {
         return researchEntries.get(researchId);
     }
 
-    public boolean removeDataStickEntry(@Nonnull String researchId, @Nonnull GTRecipe recipe) {
+    public boolean removeDataStickEntry(@NotNull String researchId, @NotNull GTRecipe recipe) {
         Collection<GTRecipe> collection = researchEntries.get(researchId);
         if (collection == null) return false;
         if (collection.remove(recipe)) {

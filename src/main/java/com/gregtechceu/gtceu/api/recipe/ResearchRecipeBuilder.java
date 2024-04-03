@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.utils.GTStringUtils;
 import lombok.NoArgsConstructor;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> {
 
@@ -19,14 +19,14 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
     protected String researchId;
     protected int eut;
 
-    public T researchStack(@Nonnull ItemStack researchStack) {
+    public T researchStack(@NotNull ItemStack researchStack) {
         if (!researchStack.isEmpty()) {
             this.researchStack = researchStack;
         }
         return (T) this;
     }
 
-    public T dataStack(@Nonnull ItemStack dataStack) {
+    public T dataStack(@NotNull ItemStack dataStack) {
         if (!dataStack.isEmpty()) {
             this.dataStack = dataStack;
         }

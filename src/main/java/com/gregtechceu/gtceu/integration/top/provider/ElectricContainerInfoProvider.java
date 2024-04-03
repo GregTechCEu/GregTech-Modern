@@ -13,7 +13,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class ElectricContainerInfoProvider extends CapabilityInfoProvider<IEnergyContainer> {
 
@@ -40,7 +40,7 @@ public class ElectricContainerInfoProvider extends CapabilityInfoProvider<IEnerg
     }
 
     @Override
-    protected boolean allowDisplaying(@Nonnull IEnergyContainer capability) {
+    protected boolean allowDisplaying(@NotNull IEnergyContainer capability) {
         return !capability.isOneProbeHidden();
     }
 

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.utils;
 
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class GTStringUtils {
 
@@ -14,8 +14,8 @@ public class GTStringUtils {
      * @param stack the stack to convert
      * @return the string form of the stack
      */
-    @Nonnull
-    public static String itemStackToString(@Nonnull ItemStack stack) {
+    @NotNull
+    public static String itemStackToString(@NotNull ItemStack stack) {
         return stack.getCount() + "x" + stack.getItem().getDescriptionId(stack);
     }
 }

@@ -22,7 +22,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
@@ -44,13 +44,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
     public final Map<RecipeCapability<?>, List<Content>> tickOutputs;
     public final List<RecipeCondition> conditions;
-    @Nonnull
+    @NotNull
     public CompoundTag data;
     public int duration;
     @Getter
     public boolean isFuel;
 
-    public GTRecipe(GTRecipeType recipeType, ResourceLocation id, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, @Nonnull CompoundTag data, int duration, boolean isFuel) {
+    public GTRecipe(GTRecipeType recipeType, ResourceLocation id, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, @NotNull CompoundTag data, int duration, boolean isFuel) {
         this.recipeType = recipeType;
         this.id = id;
         this.inputs = inputs;
@@ -385,7 +385,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         }));
     }
 
-    public ActionResult checkConditions(@Nonnull RecipeLogic recipeLogic) {
+    public ActionResult checkConditions(@NotNull RecipeLogic recipeLogic) {
         if (conditions.isEmpty()) return ActionResult.SUCCESS;
         Map<String, List<RecipeCondition>> or = new HashMap<>();
         for (RecipeCondition condition : conditions) {

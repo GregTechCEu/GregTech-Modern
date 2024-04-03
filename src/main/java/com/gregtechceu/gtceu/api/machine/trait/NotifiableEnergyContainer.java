@@ -58,9 +58,9 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         this.inputAmperage = maxInputAmperage;
         this.outputVoltage = maxOutputVoltage;
         this.outputAmperage = maxOutputAmperage;
-        var isIN = (inputVoltage != 0 && inputAmperage != 0);
-        var isOUT = (outputVoltage != 0 && outputAmperage != 0);
-        this.handlerIO = (isIN && isOUT) ? IO.BOTH : isIN ? IO.IN : isOUT ? IO.OUT : IO.NONE;
+        var isIn = (inputVoltage != 0 && inputAmperage != 0);
+        var isOut = (outputVoltage != 0 && outputAmperage != 0);
+        this.handlerIO = (isIn && isOut) ? IO.BOTH : isIn ? IO.IN : isOut ? IO.OUT : IO.NONE;
     }
 
     public static NotifiableEnergyContainer emitterContainer(MetaMachine machine, long maxCapacity, long maxOutputVoltage, long maxOutputAmperage) {
