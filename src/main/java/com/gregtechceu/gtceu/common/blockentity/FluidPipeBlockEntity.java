@@ -11,11 +11,14 @@ import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
+import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.FluidPipeType;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -23,6 +26,7 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidTransferHelperImpl;
+import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleOptions;
@@ -30,6 +34,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -54,7 +59,7 @@ import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
 
-public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties> {
+public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPipeProperties> implements IDataInfoProvider {
     public static final int FREQUENCY = 5;
 
     public byte lastReceivedFrom = 0, oldLastReceivedFrom = 0;
@@ -499,6 +504,40 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 world.setBlockAndUpdate(blockPos, Blocks.FIRE.defaultBlockState());
             }
         }
+    }
+
+    @Override
+    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        List<Component> list = new ArrayList<>();
+
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+            FluidStack[] fluids = getContainedFluids();
+            if (fluids != null) {
+                boolean allTanksEmpty = true;
+                for (int i = 0; i < fluids.length; i++) {
+                    if (fluids[i] != null) {
+                        if (fluids[i].getFluid() == null || fluids[i].isEmpty()) {
+                            continue;
+                        }
+
+                        allTanksEmpty = false;
+                        list.add(Component.translatable("behavior.portable_scanner.tank", i,
+                            Component.translatable(FormattingUtil.formatNumbers(fluids[i].getAmount()))
+                                .withStyle(ChatFormatting.GREEN),
+                            Component.translatable(FormattingUtil.formatNumbers(getCapacityPerTank()))
+                                .withStyle(ChatFormatting.YELLOW),
+                            fluids[i].getDisplayName().copy()
+                                .withStyle(ChatFormatting.GOLD)));
+                    }
+                }
+
+                if (allTanksEmpty) {
+                    list.add(Component.translatable("behavior.portable_scanner.tanks_empty"));
+                }
+            }
+        }
+
+        return list;
     }
 
     private static class FluidTransaction {

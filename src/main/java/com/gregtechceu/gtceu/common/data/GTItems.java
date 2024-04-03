@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.google.common.collect.ArrayTable;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
@@ -60,7 +59,6 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -367,6 +365,20 @@ public class GTItems {
                     .end();
         };
     }
+
+    public static ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE.item("portable_scanner", ComponentItem::create)
+            .lang("Portable Scanner")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.TOOLS))
+            .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.MV), new PortableScannerBehavior(0)))
+            .register();
+
+    public static ItemEntry<ComponentItem> PORTABLE_DEBUG_SCANNER = REGISTRATE.item("portable_debug_scanner", ComponentItem::create)
+        .lang("Portable Scanner")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(compassNode(GTCompassSections.TOOLS))
+        .onRegister(attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
+        .register();
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor cellColor() {
@@ -1592,9 +1604,6 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
             .onRegister(attach(ElectricStats.createElectricItem(1_000_000_000L, GTValues.LuV), new ProspectorScannerBehavior(5, GTValues.V[GTValues.LuV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID, ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null))).register();
-
-    public static ItemEntry<Item> TRICORDER_SCANNER;
-    public static ItemEntry<Item> DEBUG_SCANNER;
 
     public static ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_item_magnet", ComponentItem::create)
         .lang("LV Item Magnet")
