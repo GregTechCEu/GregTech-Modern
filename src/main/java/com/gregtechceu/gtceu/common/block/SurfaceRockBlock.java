@@ -138,7 +138,7 @@ public class SurfaceRockBlock extends Block {
 
     @Override
     public String getDescriptionId() {
-        return super.getDescriptionId();
+        return "block.surface_rock";
     }
 
     @Override
