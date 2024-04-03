@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
@@ -23,7 +24,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PlungerBehavior implements IToolBehavior, IComponentCapability {
+public class PlungerBehavior implements IToolBehavior, IComponentCapability, IInteractionItem {
 
     public static final PlungerBehavior INSTANCE = PlungerBehavior.create();
 
@@ -31,6 +32,11 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
 
     protected static PlungerBehavior create() {
         return new PlungerBehavior();
+    }
+
+    @Override
+    public boolean shouldOpenUIAfterUse(UseOnContext context) {
+        return !(context.getPlayer() != null && context.getPlayer().isCrouching());
     }
 
     @Override
