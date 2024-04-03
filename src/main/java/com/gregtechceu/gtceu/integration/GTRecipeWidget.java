@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -22,6 +23,7 @@ import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -73,13 +75,13 @@ public class GTRecipeWidget extends WidgetGroup {
         if (recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
-            String researchId = null;
+            Pair<GTRecipeType, String> researchData = null;
             for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                researchId = AssemblyLineManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
-                if (researchId != null) break;
+                researchData = AssemblyLineManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+                if (researchData != null) break;
             }
-            if (researchId != null) {
-                Collection<GTRecipe> possibleRecipes = GTRecipeTypes.ASSEMBLY_LINE_RECIPES.getDataStickEntry(researchId);
+            if (researchData != null) {
+                Collection<GTRecipe> possibleRecipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
                 if (possibleRecipes != null) {
                     for (GTRecipe r : possibleRecipes) {
                         ItemStack researchItem = ItemRecipeCapability.CAP.of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];

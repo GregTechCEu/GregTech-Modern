@@ -8,17 +8,19 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -32,6 +34,7 @@ public final class AssemblyLineManager {
 
     public static final String RESEARCH_NBT_TAG = "assembly_line_research";
     public static final String RESEARCH_ID_NBT_TAG = "research_id";
+    public static final String RESEARCH_TYPE_NBT_TAG = "research_type";
 
     @NotNull
     public static ItemStack getDefaultScannerItem() {
@@ -57,9 +60,10 @@ public final class AssemblyLineManager {
      * @param stackCompound the compound contained on the ItemStack to write to
      * @param researchId    the research id
      */
-    public static void writeResearchToNBT(@NotNull CompoundTag stackCompound, @NotNull String researchId) {
+    public static void writeResearchToNBT(@NotNull CompoundTag stackCompound, @NotNull String researchId, GTRecipeType recipeType) {
         CompoundTag compound = new CompoundTag();
         compound.putString(RESEARCH_ID_NBT_TAG, researchId);
+        compound.putString(RESEARCH_TYPE_NBT_TAG, recipeType.registryName.toString());
         stackCompound.put(RESEARCH_NBT_TAG, compound);
     }
 
@@ -68,13 +72,14 @@ public final class AssemblyLineManager {
      * @return the research id
      */
     @Nullable
-    public static String readResearchId(@NotNull ItemStack stack) {
+    public static Pair<GTRecipeType, String> readResearchId(@NotNull ItemStack stack) {
         CompoundTag compound = stack.getTag();
         if (!hasResearchTag(compound)) return null;
 
         CompoundTag researchCompound = compound.getCompound(RESEARCH_NBT_TAG);
         String researchId = researchCompound.getString(RESEARCH_ID_NBT_TAG);
-        return researchId.isEmpty() ? null : researchId;
+        ResourceLocation researchRecipeType = ResourceLocation.tryParse(researchCompound.getString(RESEARCH_TYPE_NBT_TAG));
+        return researchId.isEmpty() || researchRecipeType == null ? null : Pair.of(GTRegistries.RECIPE_TYPES.get(researchRecipeType), researchId);
     }
 
     /**
@@ -119,15 +124,15 @@ public final class AssemblyLineManager {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         for (GTRecipeBuilder.ResearchRecipeEntry entry : builder.researchRecipeEntries()) {
-            createDefaultResearchRecipe(entry.researchId(), entry.researchStack(), entry.dataStack(), entry.duration(), entry.EUt(), entry.CWUt(), provider);
+            createDefaultResearchRecipe(builder.recipeType, entry.researchId(), entry.researchStack(), entry.dataStack(), entry.duration(), entry.EUt(), entry.CWUt(), provider);
         }
     }
 
-    public static void createDefaultResearchRecipe(@NotNull String researchId, @NotNull ItemStack researchItem, @NotNull ItemStack dataItem, int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
+    public static void createDefaultResearchRecipe(@NotNull GTRecipeType recipeType, @NotNull String researchId, @NotNull ItemStack researchItem, @NotNull ItemStack dataItem, int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         CompoundTag compound = dataItem.getOrCreateTag();
-        writeResearchToNBT(compound, researchId);
+        writeResearchToNBT(compound, researchId, recipeType);
 
         if (CWUt > 0) {
             GTRecipeTypes.RESEARCH_STATION_RECIPES.recipeBuilder(FormattingUtil.toLowerCaseUnderscore(researchId))

@@ -246,8 +246,7 @@ public class GTRecipeTypeUI {
                         List<ItemStack> dataItems = new ArrayList<>();
                         for (ResearchData.ResearchEntry entry : data) {
                             ItemStack dataStick = entry.getDataItem().copy();
-                            AssemblyLineManager.writeResearchToNBT(dataStick.getOrCreateTag(),
-                                entry.getResearchId());
+                            AssemblyLineManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), this.recipeType);
                             dataItems.add(dataStick);
                         }
                         CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));

@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
@@ -24,6 +25,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -113,10 +115,10 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IDataAc
         recipes.clear();
         for (int i = 0; i < this.importItems.getSlots(); i++) {
             ItemStack stack = this.importItems.getStackInSlot(i);
-            String researchId = AssemblyLineManager.readResearchId(stack);
+            Pair<GTRecipeType, String> researchData = AssemblyLineManager.readResearchId(stack);
             boolean isValid = AssemblyLineManager.isStackDataItem(stack, isDataBank);
-            if (researchId != null && isValid) {
-                Collection<GTRecipe> collection = GTRecipeTypes.ASSEMBLY_LINE_RECIPES.getDataStickEntry(researchId);
+            if (researchData != null && isValid) {
+                Collection<GTRecipe> collection = researchData.getFirst().getDataStickEntry(researchData.getSecond());
                 if (collection != null) {
                     recipes.addAll(collection);
                 }
