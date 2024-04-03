@@ -38,7 +38,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Setter
     private Predicate<Direction> sideInputCondition, sideOutputCondition;
 
-    protected long amps, lastTS;
+    protected long amps, lastTimeStamp;
     @Nullable
     protected TickableSubscription outputSubs;
     @Nullable
@@ -52,7 +52,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
     public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
         super(machine);
-        this.lastTS = Long.MIN_VALUE;
+        this.lastTimeStamp = Long.MIN_VALUE;
         this.energyCapacity = maxCapacity;
         this.inputVoltage = maxInputVoltage;
         this.inputAmperage = maxInputAmperage;
@@ -220,10 +220,10 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
-        var latestTS = getMachine().getOffsetTimer();
-        if (lastTS < latestTS) {
+        var latestTimeStamp = getMachine().getOffsetTimer();
+        if (lastTimeStamp < latestTimeStamp) {
             amps = 0;
-            lastTS = latestTS;
+            lastTimeStamp = latestTimeStamp;
         }
         if (amps >= getInputAmperage()) return 0;
         long canAccept = getEnergyCapacity() - getEnergyStored();

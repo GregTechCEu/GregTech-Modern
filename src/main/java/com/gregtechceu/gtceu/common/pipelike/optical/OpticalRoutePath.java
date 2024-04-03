@@ -36,7 +36,7 @@ public class OpticalRoutePath implements IRoutePath<IOpticalComputationProvider>
 
     @Nullable
     public IOpticalComputationProvider getComputationHatch() {
-        return getTargetCapability(GTCapability.CABABILITY_COMPUTATION_PROVIDER, targetPipe.getPipeLevel());
+        return getTargetCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, targetPipe.getPipeLevel());
     }
 
     @Override

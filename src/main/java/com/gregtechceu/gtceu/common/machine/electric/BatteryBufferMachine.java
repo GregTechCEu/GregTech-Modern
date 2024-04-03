@@ -233,9 +233,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         @Override
         public long acceptEnergyFromNetwork(@Nullable Direction side, long voltage, long amperage) {
             var latestTS = getMachine().getOffsetTimer();
-            if (lastTS < latestTS) {
+            if (lastTimeStamp < latestTS) {
                 amps = 0;
-                lastTS = latestTS;
+                lastTimeStamp = latestTS;
             }
             if (amperage <= 0 || voltage <= 0)
                 return 0;

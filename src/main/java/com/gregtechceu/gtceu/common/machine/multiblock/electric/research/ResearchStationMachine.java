@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.capability.IObjectHolder;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
@@ -14,8 +14,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.machine.trait.computation.ComputationRecipeLogic;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
@@ -23,10 +21,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -53,20 +49,15 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     @Override
     public void onStructureFormed() {
         super.onStructureFormed();
-        // capture all energy containers
-        List<IOpticalComputationHatch> providers = new ArrayList<>();
-        List<IObjectHolder> holders = new ArrayList<>();
         for (IMultiPart part : getParts()) {
-            if (part instanceof IOpticalComputationHatch hatch) providers.add(hatch);
-            if (part instanceof IObjectHolder objectHolder) holders.add(objectHolder);
-        }
-        if (!providers.isEmpty()) {
-            computationProvider = providers.get(0);
-        }
-        if (!holders.isEmpty()) {
-            objectHolder = holders.get(0);
-            // cannot set in initializeAbilities since super() calls it before setting the objectHolder field here
-            this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP, Collections.singletonList(objectHolder.getAsHandler()));
+            IOpticalComputationProvider provider = part.self().holder.self().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER).resolve().orElse(null);
+            if (provider != null) {
+                this.computationProvider = provider;
+            }
+            if (part instanceof IObjectHolder objectHolder) {
+                this.objectHolder = objectHolder;
+                this.getCapabilitiesProxy().put(IO.IN, ItemRecipeCapability.CAP, Collections.singletonList(objectHolder.getAsHandler()));
+            }
         }
 
         // should never happen, but would rather do this than have an obscure NPE
@@ -88,21 +79,26 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     public void onStructureInvalid() {
         computationProvider = null;
         // recheck the ability to make sure it wasn't the one broken
-        List<IObjectHolder> holders = new ArrayList<>();
         for (IMultiPart part : getParts()) {
-            if (part instanceof IObjectHolder objectHolder) holders.add(objectHolder);
-        }
-        if (holders.size() >= 1 && holders.get(0) == objectHolder) {
-            objectHolder.setLocked(false);
+            if (part instanceof IObjectHolder holder) {
+                if (holder == objectHolder) {
+                    objectHolder.setLocked(false);
+                }
+            }
         }
         objectHolder = null;
         super.onStructureInvalid();
     }
 
-    private static class ResearchStationRecipeLogic extends ComputationRecipeLogic {
+    @Override
+    public boolean dampingWhenWaiting() {
+        return false;
+    }
+
+    private static class ResearchStationRecipeLogic extends RecipeLogic {
 
         public ResearchStationRecipeLogic(ResearchStationMachine metaTileEntity) {
-            super(metaTileEntity, ComputationType.SPORADIC);
+            super(metaTileEntity);
         }
 
         @NotNull
@@ -154,13 +150,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                 if (!modified.inputs.containsKey(CWURecipeCapability.CAP) && !modified.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                     return true;
                 }
-                IOpticalComputationProvider provider = getComputationProvider();
-                int recipeCWUt = modified.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();
-                var thing = provider.requestCWUt(recipeCWUt, true) >= recipeCWUt;
-                if (!thing) {
-                    return false;
-                }
-
                 // skip "can fit" checks, it can always fit
                 if (modified.checkConditions(this).isSuccess() &&
                         this.matchRecipeNoOutput(modified, machine).isSuccess() &&
@@ -210,10 +199,6 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
                 progress = 0;
                 duration = recipe.duration;
             }
-
-            // Add the direct super method's calls here as we don't want to call RecipeLogic#setupRecipe at all.
-            this.recipeCWUt = recipe.getTickInputContents(CWURecipeCapability.CAP).stream().map(Content::getContent).map(CWURecipeCapability.CAP::of).reduce(0, Integer::sum);
-            this.isDurationTotalCWU = recipe.data.getBoolean("duration_is_total_cwu");
         }
 
         // "replace" the items in the slots rather than outputting elsewhere

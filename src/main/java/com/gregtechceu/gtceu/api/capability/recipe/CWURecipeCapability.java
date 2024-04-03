@@ -35,11 +35,6 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public boolean doMatchInRecipe() {
-        return false;
-    }
-
-    @Override
     public void addXEIInfo(WidgetGroup group, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
         if (perTick && isInput) {
             int cwu = contents.stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();

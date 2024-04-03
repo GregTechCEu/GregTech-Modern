@@ -95,7 +95,7 @@ public class GTCapabilityHelper {
 
     @Nullable
     public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos, @Nullable Direction side) {
-        return getBlockEntityCapability(GTCapability.CABABILITY_COMPUTATION_PROVIDER, level, pos, side);
+        return getBlockEntityCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, level, pos, side);
     }
 
     @Nullable

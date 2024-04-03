@@ -3,11 +3,15 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationReceiver;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.AccessLevel;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
@@ -25,7 +29,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.IV];
 
-    private final MultipleComputationHandler computationHandler = new MultipleComputationHandler();
+    private final MultipleComputationHandler computationHandler = new MultipleComputationHandler(this);
 
     public NetworkSwitchMachine(IMachineBlockEntity holder) {
         super(holder);
@@ -121,15 +125,19 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     */
 
     /** Handles computation load across multiple receivers and to multiple transmitters. */
-    private static class MultipleComputationHandler implements IOpticalComputationProvider,
-        IOpticalComputationReceiver {
-
+    private static class MultipleComputationHandler extends NotifiableComputationContainer {
         // providers in the NS provide distributable computation to the NS
         private final Set<IOpticalComputationHatch> providers = new ObjectOpenHashSet<>();
         // transmitters in the NS give computation to other multis
         private final Set<IOpticalComputationHatch> transmitters = new ObjectOpenHashSet<>();
 
+        /** The EU/t cost of this Network Switch given the attached providers and transmitters. */
+        @Getter(value = AccessLevel.PRIVATE)
         private int EUt;
+
+        public MultipleComputationHandler(MetaMachine machine) {
+            super(machine, IO.IN, false);
+        }
 
         private void onStructureForm(Collection<IOpticalComputationHatch> providers,
                                      Collection<IOpticalComputationHatch> transmitters) {
@@ -198,11 +206,6 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                 }
             }
             return false;
-        }
-
-        /** The EU/t cost of this Network Switch given the attached providers and transmitters. */
-        private int getEUt() {
-            return EUt;
         }
 
         /** Test if any of the provider hatches do not allow bridging */

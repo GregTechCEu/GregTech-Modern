@@ -75,15 +75,15 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
             return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
         }
 
-        if (capability == GTCapability.CABABILITY_COMPUTATION_PROVIDER) {
+        if (capability == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
             if (level.isClientSide) {
-                return GTCapability.CABABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> clientComputationHandler));
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> clientComputationHandler));
             }
 
             if (handlers.isEmpty()) initHandlers();
 
             checkNetwork();
-            return GTCapability.CABABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
+            return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
         }
         return super.getCapability(capability, facing);
     }

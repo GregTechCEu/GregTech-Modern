@@ -4,10 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -20,93 +21,31 @@ import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Collection;
-import java.util.Iterator;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class OpticalComputationHatchMachine extends MultiblockPartMachine implements IOpticalComputationHatch {
+public class OpticalComputationHatchMachine extends MultiblockPartMachine {
 
     @Getter
-    private final boolean isTransmitter;
+    private final boolean transmitter;
 
-    public OpticalComputationHatchMachine(IMachineBlockEntity holder, boolean isTransmitter) {
+    protected NotifiableComputationContainer computationContainer;
+
+    public OpticalComputationHatchMachine(IMachineBlockEntity holder, boolean transmitter) {
         super(holder);
-        this.isTransmitter = isTransmitter;
+        this.transmitter = transmitter;
+        this.computationContainer = createComputationContainer(transmitter);
     }
 
-    @Override
-    public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        var controllers = getControllers();
-        if (controllers.isEmpty() || controllers.stream().noneMatch(IMultiController::isFormed)) return 0;
-        if (isTransmitter()) {
-            // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-            if (controllers.get(0) instanceof IOpticalComputationProvider provider) {
-                return provider.requestCWUt(cwut, simulate, seen);
-            } else {
-                GTCEu.LOGGER.error("Computation Transmission Hatch could not request CWU/t from its controller!");
-                return 0;
-            }
-        } else {
-            // Ask the attached Transmitter hatch, if it exists
-            IOpticalComputationProvider provider = getOpticalNetProvider();
-            if (provider == null) return 0;
-            return provider.requestCWUt(cwut, simulate, seen);
+    protected NotifiableComputationContainer createComputationContainer(Object... args) {
+        IO io = IO.IN;
+        if (args.length > 1 && args[args.length - 2] instanceof IO newIo) {
+            io = newIo;
         }
-    }
-
-    @Override
-    public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        var controllers = getControllers();
-        if (controllers.isEmpty() || controllers.stream().noneMatch(IMultiController::isFormed)) return 0;
-        if (isTransmitter()) {
-            // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-            if (controllers.get(0) instanceof IOpticalComputationProvider provider) {
-                return provider.getMaxCWUt(seen);
-            } else {
-                GTCEu.LOGGER.error("Computation Transmission Hatch could not get maximum CWU/t from its controller!");
-                return 0;
-            }
-        } else {
-            // Ask the attached Transmitter hatch, if it exists
-            IOpticalComputationProvider provider = getOpticalNetProvider();
-            if (provider == null) return 0;
-            return provider.getMaxCWUt(seen);
+        if (args.length > 0 && args[args.length - 1] instanceof Boolean transmitter) {
+            return new NotifiableComputationContainer(this, io, transmitter);
         }
-    }
-
-    @Override
-    public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
-        seen.add(this);
-        var controllers = getControllers();
-        // return true here so that unlinked hatches don't cause problems in multis like the Network Switch
-        if (controllers.isEmpty() || controllers.stream().noneMatch(IMultiController::isFormed)) return true;
-        if (isTransmitter()) {
-            // Ask the Multiblock controller, which *should* be an IOpticalComputationProvider
-            if (controllers.get(0) instanceof IOpticalComputationProvider provider) {
-                return provider.canBridge(seen);
-            } else {
-                GTCEu.LOGGER.error("Computation Transmission Hatch could not test bridge status of its controller!");
-                return false;
-            }
-        } else {
-            // Ask the attached Transmitter hatch, if it exists
-            IOpticalComputationProvider provider = getOpticalNetProvider();
-            if (provider == null) return true; // nothing found, so don't report a problem, just pass quietly
-            return provider.canBridge(seen);
-        }
-    }
-
-    @Nullable
-    private IOpticalComputationProvider getOpticalNetProvider() {
-        BlockEntity tileEntity = getLevel().getBlockEntity(getPos().relative(getFrontFacing()));
-        if (tileEntity == null) return null;
-
-        if (tileEntity instanceof OpticalPipeBlockEntity) {
-            return tileEntity.getCapability(GTCapability.CABABILITY_COMPUTATION_PROVIDER, getFrontFacing().getOpposite()).orElse(null);
-        }
-        return null;
+        throw new IllegalArgumentException();
     }
 
     @Override

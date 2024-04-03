@@ -89,12 +89,12 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
     @Override
     public Widget createUIWidget() {
-        return new WidgetGroup(new Position(0, 0)).addWidget(new LabelWidget(5, 5, getDefinition().getDescriptionId()))
-                .addWidget(new ImageWidget(46, 18, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
-                .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 39)
+        return new WidgetGroup(new Position(0, 0))
+                .addWidget(new ImageWidget(46, 15, 84, 60, GuiTextures.PROGRESS_BAR_RESEARCH_STATION_BASE))
+                .addWidget(new BlockableSlotWidget(heldItems, 0, 79, 36)
                         .setIsBlocked(this::isLocked)
                         .setBackground(GuiTextures.SLOT, GuiTextures.RESEARCH_STATION_OVERLAY))
-                .addWidget(new BlockableSlotWidget(heldItems, 1, 15, 39)
+                .addWidget(new BlockableSlotWidget(heldItems, 1, 15, 36)
                         .setIsBlocked(this::isLocked)
                         .setBackground(GuiTextures.SLOT, GuiTextures.DATA_ORB_OVERLAY));
     }
