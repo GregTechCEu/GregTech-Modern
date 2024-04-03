@@ -6,50 +6,45 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.client.TooltipHelper;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
 import com.gregtechceu.gtceu.utils.AssemblyLineManager;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectOpenCustomHashSet;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DataAccessHatchMachine extends TieredPartMachine implements IDataAccessHatch {
+public class DataAccessHatchMachine extends TieredPartMachine implements IMachineModifyDrops, IDataAccessHatch, IDataInfoProvider {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(DataAccessHatchMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     private final Set<GTRecipe> recipes;
+    @Getter
     private final boolean isCreative;
     @Persisted
     public final NotifiableItemStackHandler importItems;
@@ -94,7 +89,7 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IDataAc
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 group.addWidget(new SlotWidget(importItems, index,
-                    rowSize * 9 + x * 18, y * 18, true, true)
+                    rowSize * 9 + x * 18 - 27, y * 18, true, true)
                     .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
@@ -108,6 +103,11 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IDataAc
 
     protected int getInventorySize() {
         return getTier() == GTValues.LuV ? 16 : 9;
+    }
+
+    @Override
+    public void onDrops(List<ItemStack> drops, Player entity) {
+        clearInventory(drops, importItems.storage);
     }
 
     private void rebuildData(boolean isDataBank) {
@@ -132,31 +132,28 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IDataAc
         return recipes.contains(recipe);
     }
 
-    @Override
-    public boolean isCreative() {
-        return this.isCreative;
-    }
-
-    /*
     @NotNull
     @Override
-    public List<Component> getDataInfo() {
-        if (recipes.isEmpty()) return Collections.emptyList();
-        List<Component> list = new ArrayList<>();
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_RECIPE_INFO) {
+            if (recipes.isEmpty())
+                return Collections.emptyList();
+            List<Component> list = new ArrayList<>();
 
-        list.add(Component.translatable("behavior.data_item.assemblyline.title"));
-        list.add(Component.empty());
-        Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
-        for (GTRecipe recipe : recipes) {
-            ItemStack stack = ItemRecipeCapability.CAP.of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
-            if (!itemsAdded.contains(stack)) {
-                itemsAdded.add(stack);
-                list.add(Component.translatable("behavior.data_item.assemblyline.data", stack.getDisplayName()));
+            list.add(Component.translatable("behavior.data_item.assemblyline.title"));
+            list.add(Component.empty());
+            Collection<ItemStack> itemsAdded = new ObjectOpenCustomHashSet<>(ItemStackHashStrategy.comparingAll());
+            for (GTRecipe recipe : recipes) {
+                ItemStack stack = ItemRecipeCapability.CAP.of(recipe.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                if (!itemsAdded.contains(stack)) {
+                    itemsAdded.add(stack);
+                    list.add(Component.translatable("behavior.data_item.assemblyline.data", stack.getDisplayName()));
+                }
             }
+            return list;
         }
-        return list;
+        return new ArrayList<>();
     }
-    */
 
     @Override
     public boolean canShared() {
