@@ -3,23 +3,28 @@ package com.gregtechceu.gtceu.common.machine.storage;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistanceNetwork;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.LongDistancePipeType;
+import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public abstract class LongDistanceEndpointMachine extends MetaMachine implements ILDEndpoint {
+public abstract class LongDistanceEndpointMachine extends MetaMachine implements ILDEndpoint, IDataInfoProvider {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LongDistanceEndpointMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     @NotNull
@@ -162,5 +167,32 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
+    }
+
+    @Nonnull
+    @Override
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        List<Component> textComponents = new ArrayList<>();
+
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+            LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());
+            if (network == null) {
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_no_network"));
+            } else {
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_network_header"));
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_pipe_count", FormattingUtil.formatNumbers(network.getTotalSize())));
+                ILDEndpoint in = network.getActiveInputIndex(), out = network.getActiveOutputIndex();
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_input_pos", Component.literal(in == null ? "none" : in.getPos().toString())));
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_output_pos", Component.literal(out == null ? "none" : out.getPos().toString())));
+            }
+            if (isInput()) {
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_input_endpoint"));
+            }
+            if (isOutput()) {
+                textComponents.add(Component.translatable("block.gtceu.long_distance_item_pipeline_output_endpoint"));
+            }
+        }
+
+        return textComponents;
     }
 }

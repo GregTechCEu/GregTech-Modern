@@ -607,6 +607,13 @@ public class MachineLang {
             "Connect with §fLong Distance Pipe§7 blocks to create a pipeline.",
             "Pipelines must have exactly §f1 Input§7 and §f1 Output§7 endpoint.",
             "Only pipeline endpoints need to be §fchunk-loaded§7.");
+        provider.add("block.gtceu.long_distance_item_pipeline_no_network", "No network found");
+        provider.add("block.gtceu.long_distance_item_pipeline_input_endpoint", "Input Endpoint");
+        provider.add("block.gtceu.long_distance_item_pipeline_output_endpoint", "Output Endpoint");
+        provider.add("block.gtceu.long_distance_item_pipeline_network_header", "Network:");
+        provider.add("block.gtceu.long_distance_item_pipeline_pipe_count", " - Pipes: %s");
+        provider.add("block.gtceu.long_distance_item_pipeline_input_pos", " - Input: %s");
+        provider.add("block.gtceu.long_distance_item_pipeline_output_pos", " - Output: %s");
         provider.add("gtceu.machine.endpoint.tooltip.min_length", "§bMinimum Endpoint Distance: §f%d Blocks");
 
         provider.add("gtceu.bus.collapse_true", "Bus will collapse Items");

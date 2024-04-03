@@ -480,18 +480,17 @@ public class ToolRecipeHandler {
                     'B', batteryItem.asStack());
         }
 
-        // todo tricoder
-//        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
-//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, "tricorder_" + batteryItem.getId().getPath(), GTItems.TRICORDER_SCANNER.asStack(),
-//                    stack -> batteryItem.is(stack.getItem()), true, true,
-//                    "EPS", "CDC", "PBP",
-//                    'E', GTItems.EMITTER_MV.asStack(),
-//                    'P', new UnificationEntry(plate, GTMaterials.Aluminium),
-//                    'S', GTItems.SENSOR_MV.asStack(),
-//                    'D', GTItems.COVER_SCREEN.asStack(),
-//                    'C', CustomTags.MV_CIRCUITS,
-//                    'B', batteryItem.asStack());
-//        }
+        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "portable_scanner_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem),  GTItems.PORTABLE_SCANNER.asStack(),
+                    "EPS", "CDC", "PBP",
+                    'E', GTItems.EMITTER_MV.asStack(),
+                    'P', new UnificationEntry(plate, GTMaterials.Aluminium),
+                    'S', GTItems.SENSOR_MV.asStack(),
+                    'D', GTItems.COVER_SCREEN.asStack(),
+                    'C', CustomTags.MV_CIRCUITS,
+                    'B', batteryItem.asStack());
+        }
 
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(HV)) {
