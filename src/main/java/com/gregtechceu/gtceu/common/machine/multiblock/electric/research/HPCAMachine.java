@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
@@ -464,8 +465,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             }
             if (forceCoolWithActive || maxActiveCooling <= temperatureChange) {
                 // try to fully utilize active coolers
-                FluidStack coolantStack = coolantTank.drain(getCoolantStack(maxCoolantDrain), true);
-                if (coolantStack != null) {
+                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank, getCoolantStack(maxCoolantDrain), false);
+                if (!coolantStack.isEmpty()) {
                     long coolantDrained = coolantStack.getAmount();
                     if (coolantDrained == maxCoolantDrain) {
                         // coolant requirement was fully met
@@ -480,8 +481,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
                 // try to partially utilize active coolers to stabilize to zero
                 double temperatureToDecrease = Math.min(temperatureChange, maxActiveCooling);
                 long coolantToDrain = Math.max(1, (int) (maxCoolantDrain * (temperatureToDecrease / maxActiveCooling)));
-                FluidStack coolantStack = coolantTank.drain(getCoolantStack(coolantToDrain), true);
-                if (coolantStack != null) {
+                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank, getCoolantStack(coolantToDrain), false);
+                if (!coolantStack.isEmpty()) {
                     long coolantDrained = coolantStack.getAmount();
                     if (coolantDrained == coolantToDrain) {
                         // successfully stabilized to zero
