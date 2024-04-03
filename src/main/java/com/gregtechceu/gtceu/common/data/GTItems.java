@@ -1150,6 +1150,11 @@ public class GTItems {
     public static ItemEntry<Item> EMITTER_LuV= REGISTRATE.item("luv_emitter", Item::new).lang("LuV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register();
     public static ItemEntry<Item> EMITTER_ZPM= REGISTRATE.item("zpm_emitter", Item::new).lang("ZPM Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register();
     public static ItemEntry<Item> EMITTER_UV= REGISTRATE.item("uv_emitter", Item::new).lang("UV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register();
+    public static ItemEntry<Item> EMITTER_UHV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_emitter", Item::new).lang("UHV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_UEV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_emitter", Item::new).lang("UEV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_UIV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_emitter", Item::new).lang("UIV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_UXV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_emitter", Item::new).lang("UXV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_OpV= GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_emitter", Item::new).lang("OpV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
 
     public static ItemEntry<Item> SENSOR_LV= REGISTRATE.item("lv_sensor", Item::new).lang("LV Sensor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor")).register();
     public static ItemEntry<Item> SENSOR_MV= REGISTRATE.item("mv_sensor", Item::new).lang("MV Sensor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor")).register();
