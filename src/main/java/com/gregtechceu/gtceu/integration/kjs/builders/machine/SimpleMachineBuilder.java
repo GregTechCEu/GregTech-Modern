@@ -6,10 +6,7 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
@@ -52,12 +49,24 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
         return (SimpleMachineBuilder) super.tier(tier);
     }
 
-    private static SimpleMachineBuilder[] tieredMachines(String name,
+    private static SimpleMachineBuilder[] simpleMachines(String name,
                                                          BiConsumer<SimpleMachineBuilder, Integer> builderConsumer,
                                                          Integer... tiers) {
         SimpleMachineBuilder[] builders = new SimpleMachineBuilder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
             SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
+            builderConsumer.accept(register, tier);
+            builders[tier] = register;
+        }
+        return builders;
+    }
+
+    private static SimpleMachineBuilder[] simpleResearchMachines(String name,
+                                                                 BiConsumer<SimpleMachineBuilder, Integer> builderConsumer,
+                                                                 Integer... tiers) {
+        SimpleMachineBuilder[] builders = new SimpleMachineBuilder[GTValues.TIER_COUNT];
+        for (int tier : tiers) {
+            SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleTieredResearchMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[tier] = register;
         }
@@ -76,8 +85,13 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
         //.tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), true))
     }
 
-    public static MachineBuilder<MachineDefinition> createAll(String name, Object... args) {
-        SimpleMachineBuilder[] builders = tieredMachines(name, SimpleMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
+    public static MachineBuilder<MachineDefinition> create(String name, Object... args) {
+        SimpleMachineBuilder[] builders = simpleMachines(name, SimpleMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
+        return MachineFunctionPresets.builder(name, builders, SimpleMachineBuilder.class, MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
+    }
+
+    public static MachineBuilder<MachineDefinition> createResearch(String name, Object... args) {
+        SimpleMachineBuilder[] builders = simpleResearchMachines(name, SimpleMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
         return MachineFunctionPresets.builder(name, builders, SimpleMachineBuilder.class, MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
     }
 }
