@@ -38,17 +38,17 @@ public class GTTransferUtils {
             }
 
             currentFluid.setAmount(fluidLeftToTransfer);
-            FluidStack fluidStack = sourceHandler.drain(currentFluid, false);
+            FluidStack fluidStack = sourceHandler.drain(currentFluid, true);
             if (fluidStack == FluidStack.empty() || fluidStack.getAmount() == 0) {
                 continue;
             }
 
-            long canInsertAmount = destHandler.fill(fluidStack, false);
+            long canInsertAmount = destHandler.fill(fluidStack, true);
             if (canInsertAmount > 0) {
                 fluidStack.setAmount(canInsertAmount);
-                fluidStack = sourceHandler.drain(fluidStack, true);
+                fluidStack = sourceHandler.drain(fluidStack, false);
                 if (fluidStack != FluidStack.empty() && fluidStack.getAmount() > 0) {
-                    fillFluidAccountNotifiableList(destHandler, fluidStack, true);
+                    fillFluidAccountNotifiableList(destHandler, fluidStack, false);
 
                     fluidLeftToTransfer -= fluidStack.getAmount();
                     if (fluidLeftToTransfer == 0) {
@@ -156,7 +156,7 @@ public class GTTransferUtils {
         }
 
         for (FluidStack fluidStack : fluidStacks) {
-            fillFluidAccountNotifiableList(fluidHandler, fluidStack, true);
+            fillFluidAccountNotifiableList(fluidHandler, fluidStack, false);
         }
         return true;
     }
