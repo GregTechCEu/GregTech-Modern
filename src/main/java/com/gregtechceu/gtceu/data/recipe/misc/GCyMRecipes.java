@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -144,67 +145,67 @@ public class GCyMRecipes {
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_hsla_nonconducting")
                 .inputItems(plate, HSLASteel, 6).inputItems(frameGt, HSLASteel).circuitMeta(6)
-                .outputItems(CASING_NONCONDUCTING.asStack(2))
+                .outputItems(CASING_NONCONDUCTING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_incoloy_vibration_safe")
                 .inputItems(plate, IncoloyMA956, 6).inputItems(frameGt, IncoloyMA956).circuitMeta(6)
-                .outputItems(CASING_VIBRATION_SAFE.asStack(2))
+                .outputItems(CASING_VIBRATION_SAFE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .EUt(16).duration(50)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_watertight")
                 .inputItems(plate, WatertightSteel, 6).inputItems(frameGt, WatertightSteel).circuitMeta(6)
-                .outputItems(CASING_WATERTIGHT.asStack(2))
+                .outputItems(CASING_WATERTIGHT.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_secure_maceration")
                 .inputItems(plate, Zeron100, 6).inputItems(frameGt, Titanium).circuitMeta(6)
-                .outputItems(CASING_SECURE_MACERATION.asStack(2))
+                .outputItems(CASING_SECURE_MACERATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .EUt(16).duration(50)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_high_temperature_smelting")
                 .inputItems(plate, TitaniumCarbide, 4).inputItems(plate, HSLASteel, 2).inputItems(frameGt, TungstenCarbide).circuitMeta(6)
-                .outputItems(CASING_HIGH_TEMPERATURE_SMELTING.asStack(2))
+                .outputItems(CASING_HIGH_TEMPERATURE_SMELTING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_reaction_safe_mixing")
                 .inputItems(TagPrefix.plate, GTMaterials.HastelloyX, 6).inputItems(TagPrefix.frameGt, GTMaterials.MaragingSteel300).circuitMeta(6)
-                .outputItems(CASING_REACTION_SAFE.asStack(2))
+                .outputItems(CASING_REACTION_SAFE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_laser_safe_engraving")
                 .inputItems(plate, TitaniumTungstenCarbide, 6).inputItems(frameGt, Titanium).circuitMeta(6)
-                .outputItems(CASING_LASER_SAFE_ENGRAVING.asStack(2))
+                .outputItems(CASING_LASER_SAFE_ENGRAVING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_large_scale_assembling")
                 .inputItems(plate, Stellite100, 6).inputItems(frameGt, Tungsten).circuitMeta(6)
-                .outputItems(CASING_LARGE_SCALE_ASSEMBLING.asStack(2))
+                .outputItems(CASING_LARGE_SCALE_ASSEMBLING.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_shock_proof")
                 .inputItems(plate, HastelloyC276, 6).inputItems(frameGt, HastelloyC276).circuitMeta(6)
-                .outputItems(CASING_SHOCK_PROOF.asStack(2))
+                .outputItems(CASING_SHOCK_PROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_corrosion_proof")
                 .inputItems(plate, CobaltBrass, 6).inputItems(frameGt, HSLASteel).circuitMeta(6)
-                .outputItems(CASING_CORROSION_PROOF.asStack(2))
+                .outputItems(CASING_CORROSION_PROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_stress_proof")
                 .inputItems(plate, MaragingSteel300, 6).inputItems(frameGt, StainlessSteel).circuitMeta(6)
-                .outputItems(CASING_STRESS_PROOF.asStack(2))
+                .outputItems(CASING_STRESS_PROOF.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16)
                 .save(provider);
     }

@@ -97,6 +97,10 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether to remove Vanilla TNT Recipe from the Crafting Table.", "Default: true"})
         public boolean removeVanillaTNTRecipe = true; // default true
+        @Configurable
+        @Configurable.Comment({ "How many Multiblock Casings to make per craft. Either 1, 2, or 3.", "Default: 2" })
+        @Configurable.Range(min = 1, max = 3)
+        public int casingsPerCraft = 2;
     }
 
     public static class CompatibilityConfigs {

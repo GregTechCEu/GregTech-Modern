@@ -84,7 +84,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
-        clearInventory(drops, this.heldItems);
+        clearInventory(drops, this.heldItems.storage);
     }
 
     @Override

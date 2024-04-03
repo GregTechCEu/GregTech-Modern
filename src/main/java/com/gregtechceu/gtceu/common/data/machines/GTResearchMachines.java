@@ -192,7 +192,7 @@ public class GTResearchMachines {
         .register();
 
 
-    public static final MachineDefinition HPCA = REGISTRATE.multiblock("high_performance_computation_array", HPCAMachine::new)
+    public static final MachineDefinition HIGH_PERFORMANCE_COMPUTING_ARRAY = REGISTRATE.multiblock("high_performance_computation_array", HPCAMachine::new)
         .langValue("High Performance Computation Array (HPCA)")
         .rotationState(RotationState.NON_Y_AXIS)
         .appearanceBlock(ADVANCED_COMPUTER_CASING)
@@ -222,7 +222,7 @@ public class GTResearchMachines {
                 .aisle("VA", "7V", "4V", "1V", "VA")
                 .aisle("VA", "8V", "5V", "2V", "VA")
                 .aisle("SA", "CC", "CC", "OC", "AA")
-                .where('S', GTResearchMachines.HPCA, Direction.SOUTH)
+                .where('S', GTResearchMachines.HIGH_PERFORMANCE_COMPUTING_ARRAY, Direction.SOUTH)
                 .where('A', ADVANCED_COMPUTER_CASING)
                 .where('V', COMPUTER_HEAT_VENT)
                 .where('C', COMPUTER_CASING)
