@@ -422,8 +422,8 @@ public class GTResearchMachines {
             .abilities(PartAbility.HPCA_COMPONENT)
             .renderer(() -> new HPCAPartRenderer(
                 isAdvanced,
-                GTCEu.id("textures/block/overlay/machine/hpca/" + texture),
-                GTCEu.id("textures/block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))
+                GTCEu.id("block/overlay/machine/hpca/" + texture),
+                GTCEu.id("block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))
             ));
     }
 

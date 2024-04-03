@@ -26,11 +26,7 @@ public enum RelativeDirection {
     }
 
     public Direction getActualFacing(Direction facing) {
-        return actualFacing.apply(facing);
-    }
-
-    public Direction apply(Direction facing) {
-        return actualFacing.apply(facing);
+        return getRelativeFacing(facing, Direction.NORTH, false);
     }
 
     public boolean isSameAxis(RelativeDirection dir) {
@@ -38,7 +34,7 @@ public enum RelativeDirection {
     }
 
     public Vec3i applyVec3i(Direction facing) {
-        return apply(facing).getNormal();
+        return getActualFacing(facing).getNormal();
     }
 
     public Direction getRelativeFacing(Direction frontFacing, Direction upwardsFacing, boolean isFlipped) {
@@ -112,7 +108,7 @@ public enum RelativeDirection {
         // get the direction to go in for the part sorter
         Direction sorterDirection = getRelativeFacing(frontFacing, upwardsFacing, isFlipped);
 
-        // Determined by Direction Direction.Axis + Direction.AxisDirection
+        // Determined by Direction.Axis + Direction.AxisDirection
         return switch (sorterDirection) {
             case UP -> BlockPos::getY;
             case DOWN -> pos -> -pos.getY();

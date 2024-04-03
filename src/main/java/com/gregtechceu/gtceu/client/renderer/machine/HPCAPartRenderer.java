@@ -6,21 +6,17 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
-import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -66,20 +62,17 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                 }
             }
             if (texture != null) {
-                Direction facing = frontFacing;
-                // Always render this outwards in the HPCA, in case it is not placed outwards in structure.
-                // Check for HPCA specifically since these components could potentially be used in other multiblocks.
-                if (controller instanceof HPCAMachine hpca) {
-                    facing = RelativeDirection.RIGHT.getRelativeFacing(
-                        hpca.getFrontFacing(),
-                        Direction.UP,
-                        false
-                        /*hpca.getUpwardsFacing(), // TODO uncomment once new multi rotation system is ported
-                        hpca.isFlipped()*/);
-                }
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
-                if (emissiveTexture != null) {
-                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture), modelState, -101, 15, true, false));
+                if (side == frontFacing) {
+                    Direction facing = RelativeDirection.LEFT.getRelativeFacing(frontFacing, Direction.NORTH, false);
+                    // Always render this outwards in the HPCA, in case it is not placed outwards in structure.
+                    // Check for HPCA specifically since these components could potentially be used in other multiblocks.
+                    if (controller instanceof HPCAMachine hpca) {
+                        facing = hpca.getFrontFacing();
+                    }
+                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
+                    if (emissiveTexture != null && !ModelFactory.getBlockSprite(emissiveTexture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
+                        quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture), modelState, -101, 15, true, false));
+                    }
                 }
             }
         }
