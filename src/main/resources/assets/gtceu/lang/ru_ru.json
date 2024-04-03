@@ -6502,5 +6502,17 @@
     "block.gtceu.hv_item_collector": "§6Улучшенный собиратель предметов II§r",
     "block.gtceu.lv_item_collector": "Обычный собиратель предметов §r",
     "block.gtceu.mv_item_collector": "§bУлучшенный собиратель предметов §r",
-    "compass.node.gtceu.machines/item_collector": "Cобиратель предметов"
+    "compass.node.gtceu.machines/item_collector": "Cобиратель предметов",
+    "gtceu.multiblock.fluid_rig.drilled_fluid": "Жидкость: %s",
+    "gtceu.multiblock.fluid_rig.fluid_amount": "Скорость добычи: %s",
+    "gtceu.multiblock.fluid_rig.no_fluid_in_area": "Пусто.",
+    "gtceu.multiblock.fluid_rig.vein_depleted": "Жила опустошена.",
+    "gtceu.multiblock.max_energy_per_tick_hover": "Макс. EU/t, возможный для запуска рецептов или ускорения",
+    "gtceu.multiblock.max_recipe_tier": "Макс. уровень рецепта: %s",
+    "gtceu.multiblock.page_switcher.io.both": "§5Совмещенный Ввод + Вывод",
+    "gtceu.multiblock.page_switcher.io.export": "§4Вывод",
+    "gtceu.multiblock.page_switcher.io.import": "§2Ввод",
+    "gtceu.multiblock.fluid_rig.vein_depletion": "Размер: %s",
+    "gtceu.multiblock.max_energy_per_tick_amps": "Макс. EU/т: %s (%sA %s)",
+    "gtceu.multiblock.max_recipe_tier_hover": "Макс. уровень рецепта возможный для старта"
 }
