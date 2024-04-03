@@ -11,6 +11,7 @@
     "LevelRendererMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
+    "emi.ARecipeScreen",
     "rei.FluidEntryRendererMixin"
   ],
   "mixins": [
