@@ -192,12 +192,12 @@ public class GTResearchMachines {
         .register();
 
 
-    public static final MachineDefinition HPCA = REGISTRATE.multiblock("hpca", HPCAMachine::new)
+    public static final MachineDefinition HPCA = REGISTRATE.multiblock("high_performance_computation_array", HPCAMachine::new)
         .langValue("High Performance Computation Array (HPCA)")
         .rotationState(RotationState.NON_Y_AXIS)
         .appearanceBlock(ADVANCED_COMPUTER_CASING)
         .recipeType(GTRecipeTypes.DUMMY_RECIPES)
-        .tooltips(LangHandler.getMultiLang("gtceu.machine.hpca.tooltip").toArray(Component[]::new))
+        .tooltips(LangHandler.getMultiLang("gtceu.machine.high_performance_computation_array.tooltip").toArray(Component[]::new))
         .pattern(definition -> FactoryBlockPattern.start()
             .aisle("AA", "CC", "CC", "CC", "AA")
             .aisle("VA", "XV", "XV", "XV", "VA")

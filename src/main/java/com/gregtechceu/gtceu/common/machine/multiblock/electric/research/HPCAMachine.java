@@ -196,15 +196,6 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             // passively cool (slowly) if not active
             temperature = Math.max(IDLE_TEMPERATURE, temperature - 0.25);
         }
-        // we need to know what components we have on the client
-        if (getLevel().isClientSide) {
-            if (isFormed) {
-                hpcaHandler.tryGatherClientComponents(getLevel(), getPos(), getFrontFacing(), Direction.UP, // TODO swap to getUpwardsFacing() when free multiblock rotation is added
-                    false); // TODO swap to isFlipped() when -||-
-            } else {
-                hpcaHandler.clearClientComponents();
-            }
-        }
     }
 
     private void consumeEnergy() {
@@ -246,6 +237,16 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
             .setFillDirection(ProgressTexture.FillDirection.LEFT_TO_RIGHT));
         int startX = 76;
         int startY = 59;
+
+        // we need to know what components we have on the client
+        if (getLevel().isClientSide) {
+            // TODO swap Direction.NORTH to getUpwardsFacing() when free multiblock rotation is added
+            if (isFormed) {
+                hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(), Direction.NORTH, false);
+            } else {
+                hpcaHandler.clearClientComponents();
+            }
+        }
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 final int index = i * 3 + j;
