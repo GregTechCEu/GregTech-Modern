@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -54,6 +55,7 @@ public class PatternPreviewWidget extends WidgetGroup {
     private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
     private final SceneWidget sceneWidget;
+    private final DraggableScrollableWidgetGroup scrollableWidgetGroup;
     public final MultiblockMachineDefinition controllerDefinition;
     public final MBPattern[] patterns;
     private final List<SimplePredicate> predicates;
@@ -63,16 +65,24 @@ public class PatternPreviewWidget extends WidgetGroup {
     private SlotWidget[] candidates;
 
     protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
-        super(0, 0, 176, 176);
+        super(0, 0, 160, 160);
         setClientSideWidget();
         this.controllerDefinition = controllerDefinition;
         predicates = new ArrayList<>();
         layer = -1;
 
-        addWidget(sceneWidget = new SceneWidget(3, 3, 170, 170, LEVEL)
+        addWidget(sceneWidget = new SceneWidget(3, 3, 150, 150, LEVEL)
                 .setOnSelected(this::onPosSelected)
                 .setRenderFacing(false)
                 .setRenderFacing(false));
+
+        scrollableWidgetGroup = new DraggableScrollableWidgetGroup(3, 132, 154, 22)
+            .setXScrollBarHeight(4)
+            .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
+            .setScrollable(true)
+            .setDraggable(true);
+        scrollableWidgetGroup.setScrollYOffset(0);
+        addWidget(scrollableWidgetGroup);
 
         if (ConfigHolder.INSTANCE.client.useVBO) {
             if (!RenderSystem.isOnRenderThread()) {
@@ -82,7 +92,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
 
-        addWidget(new ImageWidget(3, 3, 170, 10,
+        addWidget(new ImageWidget(3, 3, 160, 10,
                 new TextTexture(controllerDefinition.getDescriptionId(), -1)
                         .setType(TextTexture.TextType.ROLL)
                         .setWidth(170)
@@ -97,13 +107,13 @@ public class PatternPreviewWidget extends WidgetGroup {
                     .toArray(MBPattern[]::new);
         });
 
-        addWidget(new ButtonWidget(150, 40, 18, 18, new GuiTextureGroup(
+        addWidget(new ButtonWidget(138, 30, 18, 18, new GuiTextureGroup(
                 ColorPattern.T_GRAY.rectTexture(),
                 new TextTexture("1").setSupplier(() -> "P:" + index)),
                 (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
                 .setHoverBorderTexture(1, -1));
 
-        addWidget(new ButtonWidget(150, 60, 18, 18, new GuiTextureGroup(
+        addWidget(new ButtonWidget(138, 50, 18, 18, new GuiTextureGroup(
                 ColorPattern.T_GRAY.rectTexture(),
                 new TextTexture("1").setSupplier(() -> layer >= 0 ? "L:" + layer : "ALL")),
                 cd -> updateLayer())
@@ -168,10 +178,10 @@ public class PatternPreviewWidget extends WidgetGroup {
         slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
         var itemHandler = new CycleItemStackHandler(pattern.parts);
         for (int i = 0; i < slotWidgets.length; i++) {
-            slotWidgets[i] = new SlotWidget(itemHandler, i, 7 + (i % 9) * 18, 173 - (((slotWidgets.length - 1) / 9 + 1) * 18)  + (i / 9) * 18, false, false)
+            slotWidgets[i] = new SlotWidget(itemHandler, i, 4 + i * 18, 0, false, false)
                     .setBackgroundTexture(ColorPattern.T_GRAY.rectTexture())
                     .setIngredientIO(IngredientIO.INPUT);
-            addWidget(slotWidgets[i]);
+            scrollableWidgetGroup.addWidget(slotWidgets[i]);
         }
     }
 
@@ -211,10 +221,10 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
             candidates = new SlotWidget[candidateStacks.size()];
             CycleItemStackHandler itemHandler = new CycleItemStackHandler(candidateStacks);
-            int maxCol = (173 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
+            int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
-                candidates[i] = new SlotWidget(itemHandler, i, 9 + (i / maxCol) * 18, 33 + (i % maxCol) * 18, false, false)
+                candidates[i] = new SlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18, false, false)
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
                         .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));
