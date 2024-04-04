@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.google.common.collect.ArrayTable;
-import com.google.common.collect.HashMultimap;
 import com.google.common.collect.ImmutableTable;
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
@@ -59,7 +58,6 @@ import net.minecraft.core.cauldron.CauldronInteraction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
@@ -346,6 +344,20 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNode(GTCompassSections.ITEMS))
             .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, -1))).register();
+
+    public static ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE.item("portable_scanner", ComponentItem::create)
+            .lang("Portable Scanner")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.TOOLS))
+            .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.MV), new PortableScannerBehavior(0)))
+            .register();
+
+    public static ItemEntry<ComponentItem> PORTABLE_DEBUG_SCANNER = REGISTRATE.item("portable_debug_scanner", ComponentItem::create)
+        .lang("Portable Scanner")
+        .properties(p -> p.stacksTo(1))
+        .onRegister(compassNode(GTCompassSections.TOOLS))
+        .onRegister(attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
+        .register();
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor cellColor() {
@@ -1138,6 +1150,11 @@ public class GTItems {
     public static ItemEntry<Item> EMITTER_LuV= REGISTRATE.item("luv_emitter", Item::new).lang("LuV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register();
     public static ItemEntry<Item> EMITTER_ZPM= REGISTRATE.item("zpm_emitter", Item::new).lang("ZPM Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register();
     public static ItemEntry<Item> EMITTER_UV= REGISTRATE.item("uv_emitter", Item::new).lang("UV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register();
+    public static ItemEntry<Item> EMITTER_UHV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_emitter", Item::new).lang("UHV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_UEV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_emitter", Item::new).lang("UEV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_UIV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_emitter", Item::new).lang("UIV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_UXV= GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_emitter", Item::new).lang("UXV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
+    public static ItemEntry<Item> EMITTER_OpV= GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_emitter", Item::new).lang("OpV Emitter").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "emitter")).register() : null;
 
     public static ItemEntry<Item> SENSOR_LV= REGISTRATE.item("lv_sensor", Item::new).lang("LV Sensor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor")).register();
     public static ItemEntry<Item> SENSOR_MV= REGISTRATE.item("mv_sensor", Item::new).lang("MV Sensor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor")).register();
@@ -1571,9 +1588,6 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
             .onRegister(attach(ElectricStats.createElectricItem(1_000_000_000L, GTValues.LuV), new ProspectorScannerBehavior(5, GTValues.V[GTValues.LuV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID, ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null))).register();
-
-    public static ItemEntry<Item> TRICORDER_SCANNER;
-    public static ItemEntry<Item> DEBUG_SCANNER;
 
     public static ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_item_magnet", ComponentItem::create)
         .lang("LV Item Magnet")

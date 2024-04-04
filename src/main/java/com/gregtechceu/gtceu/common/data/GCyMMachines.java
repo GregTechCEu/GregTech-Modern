@@ -577,7 +577,7 @@ public class GCyMMachines {
                         .aisle("#####", "#ZZZ#", "#ZCZ#", "#ZZZ#", "#####")
                         .where('S', controller(blocks(definition.get())))
                         .where('Y', casingPredicate.or(abilities(IMPORT_ITEMS))
-                                .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1))
+                                .or(abilities(INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2))
                                 .or(abilities(IMPORT_FLUIDS).setMinGlobalLimited(1))
                                 .or(abilities(EXPORT_ITEMS))
                                 .or(autoAbilities(true, false, true)))

@@ -1,15 +1,15 @@
 {
   "button_texture": {
     "type": "item",
-    "res": "gtceu:aluminium_buzzsaw"
+    "res": "gtceu:portable_scanner"
   },
   "items": [
-    "#forge:tools/saws"
+    "gtceu:portable_scanner"
   ],
-  "page": "gtceu:tools/buzzsaw",
+  "page": "gtceu:tools/portable_scanner",
   "position": [
     -300,
-    100
+    0
   ],
   "section": "gtceu:tools"
 }
