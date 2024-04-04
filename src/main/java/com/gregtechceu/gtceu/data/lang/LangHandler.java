@@ -49,7 +49,7 @@ public class LangHandler {
         provider.add("recipe.capability.item.name", "Item");
         provider.add("recipe.capability.su.name", "Create Stress");
         multiLang(provider, "gtceu.oc.tooltip", "Min: %s",
-            "Left click to increase the OC", "Right click to reduce the OC", "Middle click to reset the OC");
+            "Left click to increase the OC", "Right click to decrease the OC", "Middle click to reset the OC");
 
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");

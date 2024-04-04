@@ -3141,7 +3141,7 @@
   "gtceu.multiblock.work_paused": "Work Paused.",
   "gtceu.oc.tooltip.0": "Min: %s",
   "gtceu.oc.tooltip.1": "Left click to increase the OC",
-  "gtceu.oc.tooltip.2": "Right click to reduce the OC",
+  "gtceu.oc.tooltip.2": "Right click to decrease the OC",
   "gtceu.oc.tooltip.3": "Middle click to reset the OC",
   "gtceu.ore_washer": "Ore Washer",
   "gtceu.packer": "Packer",
