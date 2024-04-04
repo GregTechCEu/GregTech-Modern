@@ -3143,6 +3143,7 @@
   "gtceu.oc.tooltip.1": "Left click to increase the OC",
   "gtceu.oc.tooltip.2": "Right click to decrease the OC",
   "gtceu.oc.tooltip.3": "Middle click to reset the OC",
+  "gtceu.oc.tooltip.4": "Hold Shift to change by Perfect OC",
   "gtceu.ore_washer": "Ore Washer",
   "gtceu.packer": "Packer",
   "gtceu.parallel_hatch_mk5": "Allows to run up to 4 recipes in parallel.",

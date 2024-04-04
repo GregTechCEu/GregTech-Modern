@@ -13,7 +13,6 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -224,18 +223,19 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (inputEUt != 0) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10, tierText).setTextColor(-1).setDropShadow(false);
-            if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES || recipe.recipeType == GTRecipeTypes.GAS_COLLECTOR_RECIPES) {
-                voltageTextWidget.setSelfPositionY(getSize().height - 20);
+            if (recipe.recipeType.isUpwardVoltageText()) {
+                voltageTextWidget.setSelfPositionY(getSize().height - recipe.recipeType.getUpwardVoltageTextHeight());
             }
             // make it clickable
             // voltageTextWidget.setBackground(new GuiTextureGroup(GuiTextures.BUTTON));
             addWidget(new ButtonWidget(voltageTextWidget.getPositionX(), voltageTextWidget.getPositionY(),
-                voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(), cd -> setRecipeOC(cd.button))
+                voltageTextWidget.getSizeWidth(), voltageTextWidget.getSizeHeight(), cd -> setRecipeOC(cd.button, cd.isShiftClick))
                 .setHoverTooltips(
                     Component.translatable("gtceu.oc.tooltip.0", GTValues.VNF[getMinTier()]),
                     Component.translatable("gtceu.oc.tooltip.1"),
                     Component.translatable("gtceu.oc.tooltip.2"),
-                    Component.translatable("gtceu.oc.tooltip.3")
+                    Component.translatable("gtceu.oc.tooltip.3"),
+                    Component.translatable("gtceu.oc.tooltip.4")
                 ));
             addWidget(this.voltageTextWidget = voltageTextWidget);
         }
@@ -281,7 +281,8 @@ public class GTRecipeWidget extends WidgetGroup {
         return x;
     }
 
-    public void setRecipeOC(int button) {
+    public void setRecipeOC(int button, boolean isShiftClick) {
+        OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             setTier(tier + 1);
         } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
@@ -289,15 +290,18 @@ public class GTRecipeWidget extends WidgetGroup {
         } else if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
             setTierToMin();
         }
-        setRecipeTextWidget();
+        if (isShiftClick) {
+            oc = OverclockingLogic.PERFECT_OVERCLOCK;
+        }
+        setRecipeTextWidget(oc);
     }
 
-    private void setRecipeTextWidget() {
+    private void setRecipeTextWidget(OverclockingLogic logic) {
         long inputEUt = RecipeHelper.getInputEUt(recipe);
         int duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > getMinTier() && inputEUt != 0) {
-            LongIntPair pair = OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic().runOverclockingLogic(
+            LongIntPair pair = logic.getLogic().runOverclockingLogic(
                 recipe, inputEUt, GTValues.V[tier], duration, GTValues.MAX);
             duration = pair.rightInt();
             inputEUt = pair.firstLong();

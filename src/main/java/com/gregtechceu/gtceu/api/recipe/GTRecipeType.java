@@ -40,7 +40,6 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -84,6 +83,12 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private CompoundTag customUICache;
     @Getter
     private final GTRecipeLookup lookup = new GTRecipeLookup(this);
+    @Setter
+    @Getter
+    private boolean upwardVoltageText = false;
+    @Setter
+    @Getter
+    private int upwardVoltageTextHeight = 20;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;
