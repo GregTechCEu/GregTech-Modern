@@ -61,14 +61,18 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                     texture = this.texture;
                 }
             }
-            if (texture != null) {
+            if (ModelFactory.getBlockSprite(texture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
+                texture = this.texture;
+            }
+            if (texture != null && !ModelFactory.getBlockSprite(texture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
                 if (side == frontFacing) {
-                    Direction facing = RelativeDirection.LEFT.getRelativeFacing(frontFacing, Direction.NORTH, false);
+                    Direction facing = frontFacing;
                     // Always render this outwards in the HPCA, in case it is not placed outwards in structure.
                     // Check for HPCA specifically since these components could potentially be used in other multiblocks.
                     if (controller instanceof HPCAMachine hpca) {
-                        facing = hpca.getFrontFacing();
+                        facing = RelativeDirection.RIGHT.getRelativeFacing(hpca.getFrontFacing(), Direction.NORTH, false);
                     }
+                    facing = ModelFactory.modelFacing(side, facing);
                     quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
                     if (emissiveTexture != null && !ModelFactory.getBlockSprite(emissiveTexture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
                         quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture), modelState, -101, 15, true, false));
