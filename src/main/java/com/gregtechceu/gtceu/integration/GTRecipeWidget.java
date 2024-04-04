@@ -13,8 +13,10 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -50,35 +52,58 @@ import static com.gregtechceu.gtceu.api.GTValues.IV;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
+    private final int xOffset;
     private final GTRecipe recipe;
+    private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
     @Getter
     private int tier;
     @Getter
     private int yOffset;
-    private static int xOffset;
     private LabelWidget voltageTextWidget;
-    private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
 
     public GTRecipeWidget(GTRecipe recipe) {
-        super(getXOffset(recipe), 0, Math.max(recipe.recipeType.getRecipeUI().getJEISize().width, 140), recipe.recipeType.getRecipeUI().getJEISize().height);
+        super(getXOffSet(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
         this.recipe = recipe;
+        this.xOffset = getXOffSet(recipe);
         setRecipeWidget();
         setTierToMin();
         initializeRecipeTextWidget();
-
-        // add recipe id getter
-        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
-            Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString());
-        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+        addButtons();
     }
 
-    private static int getXOffset(GTRecipe recipe) {
-        xOffset = 0;
-        int x = recipe.recipeType.getRecipeUI().getJEISize().width;
-        if (x < 140) {
-            xOffset = (140 - x) / 2;
+    private static int getXOffSet(GTRecipe recipe) {
+        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width) {
+            return (recipe.recipeType.getRecipeUI().getJEISize().width - recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
-        return xOffset;
+        return 0;
+    }
+
+    @NotNull
+    private static List<Component> getRecipeParaText(int duration, long inputEUt, long outputEUt) {
+        List<Component> texts = new ArrayList<>();
+        texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.duration", duration / 20f)));
+        if (inputEUt != 0) {
+            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.eu", inputEUt)));
+            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.total", (inputEUt * duration))));
+        }
+        if (outputEUt != 0) {
+            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.eu_inverted", outputEUt)));
+            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.total", (outputEUt * duration))));
+        }
+        return texts;
+    }
+
+        private void addButtons() {
+        // add recipe id getter
+        addWidget(new PredicatedButtonWidget(getSize().width + 3 - xOffset, 23, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd ->
+            Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()), () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+
+        // add recipe oc button
+        addWidget(new PredicatedButtonWidget(getSize().width + 3 - xOffset, 3, 15, 15,
+            new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("OC")), cd -> setRecipeOC(cd.button), () -> RecipeHelper.getInputEUt(recipe) > 0));
+
+        detectAndSendChanges();
+        updateScreen();
     }
 
     private void setRecipeWidget() {
@@ -221,42 +246,34 @@ public class GTRecipeWidget extends WidgetGroup {
         List<Component> texts = getRecipeParaText(duration, inputEUt, outputEUt);
         for (Component text : texts) {
             textsY += 10;
-            LabelWidget labelWidget = new LabelWidget(3, textsY, text).setTextColor(-1).setDropShadow(true);
+            LabelWidget labelWidget = new LabelWidget(3 - xOffset, textsY, text).setTextColor(-1).setDropShadow(true);
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
         if (inputEUt != 0) {
-            int x = getVoltageXOffset();
-            addWidget(voltageTextWidget = new LabelWidget(x, getSize().height - 10, Component.literal(tierText)).setTextColor(-1).setDropShadow(false));
+            LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10, tierText).setTextColor(-1).setDropShadow(false);
+            if (recipe.recipeType == GTRecipeTypes.FUSION_RECIPES || recipe.recipeType == GTRecipeTypes.GAS_COLLECTOR_RECIPES) {
+                voltageTextWidget.setSelfPositionY(getSize().height - 20);
+            }
+            addWidget(this.voltageTextWidget = voltageTextWidget);
         }
-    }
-
-    @NotNull
-    private static List<Component> getRecipeParaText(int duration, long inputEUt, long outputEUt) {
-        List<Component> texts = new ArrayList<>();
-        texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.duration", duration / 20f)));
-        if (inputEUt != 0) {
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.eu", inputEUt)));
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.total", (inputEUt * duration))));
-        }
-        if (outputEUt != 0) {
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.eu_inverted", outputEUt)));
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.total", (outputEUt * duration))));
-        }
-        return texts;
     }
 
     private int getVoltageXOffset() {
-        return getSize().width - switch (tier) {
+        int x = getSize().width - switch (tier) {
             case ULV, LuV, ZPM, UHV, UEV, UXV -> 20;
             case OpV, MAX -> 22;
             case UIV -> 18;
             case IV -> 12;
             default -> 14;
         };
+        if (!LDLib.isEmiLoaded()) {
+            x -= 3;
+        }
+        return x;
     }
 
-    public void setRecipeOC(int button){
+    public void setRecipeOC(int button) {
         if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
             setTier(tier + 1);
         } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
@@ -283,6 +300,8 @@ public class GTRecipeWidget extends WidgetGroup {
             recipeParaTexts.get(i).setComponent(texts.get(i));
         }
         voltageTextWidget.setText(tierText);
+        voltageTextWidget.setSelfPositionX(getVoltageXOffset() - xOffset);
+        detectAndSendChanges();
         updateScreen();
     }
 
