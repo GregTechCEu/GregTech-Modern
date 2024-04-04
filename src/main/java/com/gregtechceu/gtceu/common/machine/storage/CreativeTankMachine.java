@@ -77,7 +77,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public WidgetGroup createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomFluidWidget(this.cache.storages[0], 36, 6, 18, 18).setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
+        group.addWidget(new PhantomFluidWidget(this.cache.getStorages()[0], 36, 6, 18, 18).setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
         group.addWidget(new ImageWidget(7, 45, 154, 14, GuiTextures.DISPLAY));
         group.addWidget(new TextFieldWidget(9, 47, 152, 10, () -> String.valueOf(mBPerCycle), value -> {
@@ -105,12 +105,12 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     public void updateFluidTick() {
-        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 || cache.storages[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
+        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 || cache.getStorages()[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
             return;
 
         IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
         if (transfer != null) {
-            FluidStack stack = cache.storages[0].getFluid().copy();
+            FluidStack stack = cache.getStorages()[0].getFluid().copy();
             stack.setAmount(mBPerCycle);
             long canInsertAmount = transfer.fill(stack, true);
             stack.setAmount(Math.min(mBPerCycle, canInsertAmount));

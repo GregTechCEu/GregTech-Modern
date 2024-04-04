@@ -47,7 +47,7 @@ public class SteamHatchPartMachine extends FluidHatchPartMachine {
                 .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
                 .widget(new LabelWidget(11, 30, () -> tank.getFluidInTank(0).getAmount() + "").setTextColor(-1).setDropShadow(true))
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(tank.storages[0], 90, 35, true, true)
+                .widget(new TankWidget(tank.getStorages()[0], 90, 35, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(IS_STEEL), 7, 84, true));
     }
