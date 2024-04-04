@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
@@ -274,7 +275,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             return itemStack.getItem().use(world, player, hand).getResult();
         }
 
-        if (itemStack.getItem() instanceof GTToolItem gtToolItem) {
+        if (itemStack.getItem() instanceof IGTTool gtToolItem) {
             shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
         }
 
