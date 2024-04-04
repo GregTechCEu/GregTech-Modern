@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:portable_debug_scanner"
+  },
+  "items": [
+    "gtceu:portable_debug_scanner"
+  ],
+  "page": "gtceu:tools/portable_debug_scanner",
+  "position": [
+    -250,
+    0
+  ],
+  "section": "gtceu:tools"
+}

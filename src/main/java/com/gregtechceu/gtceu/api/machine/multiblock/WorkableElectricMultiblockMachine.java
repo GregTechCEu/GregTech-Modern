@@ -20,10 +20,8 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -40,7 +38,7 @@ import java.util.Optional;
 @MethodsReturnNonnullByDefault
 public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, ITieredMachine, IOverclockMachine {
     // runtime
-    protected IEnergyContainer energyContainer;
+    protected EnergyContainerList energyContainer;
 
     public WorkableElectricMultiblockMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
@@ -97,6 +95,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
                 .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
                 .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
+                        .textSupplier(this.getLevel().isClientSide ? null : this::addDisplayText)
                         .setMaxWidthLimit(150)
                         .clickHandler(this::handleDisplayClick)));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
@@ -146,31 +145,29 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
 
     @Override
     public long getOverclockVoltage() {
-        IEnergyContainer energyContainer = this.energyContainer;
-        if (energyContainer instanceof EnergyContainerList) {
-            long voltage;
-            long amperage;
-            if (energyContainer.getInputVoltage() > energyContainer.getOutputVoltage()) {
-                voltage = energyContainer.getInputVoltage();
-                amperage = energyContainer.getInputAmperage();
-            } else {
-                voltage = energyContainer.getOutputVoltage();
-                amperage = energyContainer.getOutputAmperage();
-            }
-
-            if (amperage == 1) {
-                // amperage is 1 when the energy is not exactly on a tier
-
-                // the voltage for recipe search is always on tier, so take the closest lower tier
-                return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
-            } else {
-                // amperage != 1 means the voltage is exactly on a tier
-                // ignore amperage, since only the voltage is relevant for recipe search
-                // amps are never > 3 in an EnergyContainerList
-                return voltage;
-            }
+        if (this.energyContainer == null) {
+            this.energyContainer = getEnergyContainer();
         }
-        return Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage());
+        long voltage;
+        long amperage;
+        if (energyContainer.getInputVoltage() > energyContainer.getOutputVoltage()) {
+            voltage = energyContainer.getInputVoltage();
+            amperage = energyContainer.getInputAmperage();
+        } else {
+            voltage = energyContainer.getOutputVoltage();
+            amperage = energyContainer.getOutputAmperage();
+        }
+
+        if (amperage == 1) {
+            // amperage is 1 when the energy is not exactly on a tier
+            // the voltage for recipe search is always on tier, so take the closest lower tier
+            return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+        } else {
+            // amperage != 1 means the voltage is exactly on a tier
+            // ignore amperage, since only the voltage is relevant for recipe search
+            // amps are never > 3 in an EnergyContainerList
+            return voltage;
+        }
     }
 
     //////////////////////////////////////
@@ -185,7 +182,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         return GTUtil.getFloorTierByVoltage(getMaxVoltage());
     }
 
-    public IEnergyContainer getEnergyContainer() {
+    public EnergyContainerList getEnergyContainer() {
         List<IEnergyContainer> containers = new ArrayList<>();
         var capabilities = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
         if (capabilities != null) {
@@ -204,11 +201,10 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 }
             }
         }
-        return containers.size() == 1 ? containers.get(0) : new EnergyContainerList(containers);
+        return new EnergyContainerList(containers);
     }
 
     public long getMaxVoltage() {
-        IEnergyContainer energyContainer = this.energyContainer;
         if (this.energyContainer == null) {
             this.energyContainer = getEnergyContainer();
         }
@@ -216,27 +212,24 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
             // Generators
             long voltage = energyContainer.getOutputVoltage();
             long amperage = energyContainer.getOutputAmperage();
-            if (energyContainer instanceof EnergyContainerList && amperage == 1) {
+            if (amperage == 1) {
                 // Amperage is 1 when the energy is not exactly on a tier.
                 // The voltage for recipe search is always on tier, so take the closest lower tier.
                 // List check is done because single hatches will always be a "clean voltage," no need
                 // for any additional checks.
                 return GTValues.V[GTUtil.getFloorTierByVoltage(voltage)];
+            } else {
+                return voltage;
             }
-            return voltage;
         } else {
             // Machines
-            if (energyContainer instanceof EnergyContainerList energyList) {
-                long highestVoltage = energyList.getHighestInputVoltage();
-                if (energyList.getNumHighestInputContainers() > 1) {
-                    // allow tier + 1 if there are multiple hatches present at the highest tier
-                    int tier = GTUtil.getTierByVoltage(highestVoltage);
-                    return GTValues.V[Math.min(tier + 1, GTValues.MAX)];
-                } else {
-                    return highestVoltage;
-                }
+            long highestVoltage = energyContainer.getHighestInputVoltage();
+            if (energyContainer.getNumHighestInputContainers() > 1) {
+                // allow tier + 1 if there are multiple hatches present at the highest tier
+                int tier = GTUtil.getTierByVoltage(highestVoltage);
+                return GTValues.V[Math.min(tier + 1, GTValues.MAX)];
             } else {
-                return energyContainer.getInputVoltage();
+                return highestVoltage;
             }
         }
     }
