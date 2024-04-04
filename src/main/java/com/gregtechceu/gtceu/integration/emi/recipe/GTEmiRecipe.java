@@ -14,7 +14,7 @@ public class GTEmiRecipe extends ModularEmiRecipe<WidgetGroup> {
     final GTRecipeTypeEmiCategory category;
     final GTRecipe recipe;
     private final GTRecipeWidget gtRecipeWidget;
-    private static final ResourceLocation BUTTONS = GTCEu.id("textures/gui/widget/oc_button_emi.png");
+    private static final ResourceLocation BUTTONS = GTCEu.id("textures/gui/widget/button_oc.png");
 
     public GTEmiRecipe(GTRecipeTypeEmiCategory category, GTRecipe recipe) {
         super(() -> new GTRecipeWidget(recipe));
