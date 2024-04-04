@@ -85,10 +85,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private final GTRecipeLookup lookup = new GTRecipeLookup(this);
     @Setter
     @Getter
-    private boolean upwardVoltageText = false;
+    private boolean offsetVoltageText = false;
     @Setter
     @Getter
-    private int upwardVoltageTextHeight = 20;
+    private int voltageTextOffset = 20;
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;

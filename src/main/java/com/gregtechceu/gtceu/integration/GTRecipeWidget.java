@@ -223,8 +223,8 @@ public class GTRecipeWidget extends WidgetGroup {
         }
         if (inputEUt != 0) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10, tierText).setTextColor(-1).setDropShadow(false);
-            if (recipe.recipeType.isUpwardVoltageText()) {
-                voltageTextWidget.setSelfPositionY(getSize().height - recipe.recipeType.getUpwardVoltageTextHeight());
+            if (recipe.recipeType.isOffsetVoltageText()) {
+                voltageTextWidget.setSelfPositionY(getSize().height - recipe.recipeType.getVoltageTextOffset());
             }
             // make it clickable
             // voltageTextWidget.setBackground(new GuiTextureGroup(GuiTextures.BUTTON));
