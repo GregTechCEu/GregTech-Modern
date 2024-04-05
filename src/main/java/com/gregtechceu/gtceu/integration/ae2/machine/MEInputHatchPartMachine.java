@@ -50,7 +50,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
     @Override
     @NotNull
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-
         this.aeFluidTanks = new ExportOnlyAEFluidList(this, slots, 0, IO.IN);
         return aeFluidTanks;
     }
@@ -105,7 +104,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                         aeTank.addStack(new GenericStack(reqFluid.what(), extracted));
                     }
                 }
-                aeTank.onContentsChanged();
             }
             this.updateTankSubscription();
         }
@@ -121,7 +119,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Persisted
         private final ExportOnlyAEFluid[] tanks;
-        @Persisted
         private FluidStorage[] fluidStorages;
 
 
