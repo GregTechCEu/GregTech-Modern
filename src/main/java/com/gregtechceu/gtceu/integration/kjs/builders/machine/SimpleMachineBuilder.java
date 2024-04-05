@@ -61,18 +61,6 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
         return builders;
     }
 
-    private static SimpleMachineBuilder[] simpleResearchMachines(String name,
-                                                                 BiConsumer<SimpleMachineBuilder, Integer> builderConsumer,
-                                                                 Integer... tiers) {
-        SimpleMachineBuilder[] builders = new SimpleMachineBuilder[GTValues.TIER_COUNT];
-        for (int tier : tiers) {
-            SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleTieredResearchMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
-            builderConsumer.accept(register, tier);
-            builders[tier] = register;
-        }
-        return builders;
-    }
-
     public static void simple(SimpleMachineBuilder builder, int tier) {
         builder.tier(tier)
                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(builder.name), VLVT[tier]))
@@ -87,11 +75,6 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
 
     public static MachineBuilder<MachineDefinition> create(String name, Object... args) {
         SimpleMachineBuilder[] builders = simpleMachines(name, SimpleMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
-        return MachineFunctionPresets.builder(name, builders, SimpleMachineBuilder.class, MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
-    }
-
-    public static MachineBuilder<MachineDefinition> createResearch(String name, Object... args) {
-        SimpleMachineBuilder[] builders = simpleResearchMachines(name, SimpleMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
         return MachineFunctionPresets.builder(name, builders, SimpleMachineBuilder.class, MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
     }
 }

@@ -104,7 +104,6 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.RECIPE_TYPE.addType("basic", GTRecipeTypeBuilder.class, GTRecipeTypeBuilder::new, true);
 
         GTRegistryInfo.MACHINE.addType("simple", SimpleMachineBuilder.class, (id, args) -> SimpleMachineBuilder.create(id.getPath(), args), true);
-        GTRegistryInfo.MACHINE.addType("simple_research", SimpleMachineBuilder.class, (id, args) -> SimpleMachineBuilder.createResearch(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("custom", CustomTieredMachineBuilder.class, (id, args) -> CustomTieredMachineBuilder.createAll(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("steam", SteamMachineBuilder.class, (id, args) -> SteamMachineBuilder.createBoth(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("generator", GeneratorBuilder.class, (id, args) -> GeneratorBuilder.createAll(id.getPath(), args), false);
