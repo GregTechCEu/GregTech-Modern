@@ -587,6 +587,16 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return InteractionResultHolder.pass(stack);
     }
 
+    default boolean definition$shouldOpenUIAfterUse(UseOnContext context) {
+        for (IToolBehavior behavior : getToolStats().getBehaviors()) {
+            if (!behavior.shouldOpenUIAfterUse(context))  {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
     default void definition$fillItemCategory(CreativeModeTab category, @Nonnull NonNullList<ItemStack> items) {
         if (category != GTCreativeModeTabs.TOOL && category != CreativeModeTab.TAB_SEARCH)
             return;

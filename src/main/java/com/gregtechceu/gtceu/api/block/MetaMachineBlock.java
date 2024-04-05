@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.RotationState;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
@@ -251,6 +251,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = getMachine(world, pos);
         ItemStack itemStack = player.getItemInHand(hand);
+        boolean shouldOpenUi = true;
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
@@ -269,14 +270,18 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             return itemStack.getItem().use(world, player, hand).getResult();
         }
 
+        if (itemStack.getItem() instanceof IGTTool gtToolItem) {
+            shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
+        }
+
         if (machine instanceof IInteractedMachine interactedMachine) {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;
         }
-        if (machine instanceof IUIMachine uiMachine) {
+        if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
-        return InteractionResult.PASS;
+        return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
 
