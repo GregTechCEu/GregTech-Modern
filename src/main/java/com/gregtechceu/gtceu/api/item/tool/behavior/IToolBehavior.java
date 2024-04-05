@@ -116,6 +116,16 @@ public interface IToolBehavior {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
 
+    /**
+     * Called when a block is right-clicked with this Item
+     *
+     * @param context The UseOnContext used to determine the result.
+     * @return True if the UI of the MetaMachine should open after using this tool.
+     */
+    default boolean shouldOpenUIAfterUse(UseOnContext context) {
+        return true;
+    }
+
     @OnlyIn(Dist.CLIENT)
     default void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
     }

@@ -221,9 +221,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         var currentStack = player.getMainHandItem();
         if (hit.getDirection() == getFrontFacing() && !currentStack.isEmpty()) {
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
-            var fluidTank = cache.storages[0];
+            var fluidTank = cache.getStorages()[0];
             if (handler != null && !isRemote()) {
-                if (cache.storages[0].getFluidAmount() > 0) {
+                if (cache.getStorages()[0].getFluidAmount() > 0) {
                     FluidStack initialFluid = fluidTank.getFluid();
                     FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, false);
                     if (result.isSuccess()) {
@@ -316,7 +316,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 .addWidget(new LabelWidget(8, 18, () ->
                         String.valueOf(cache.getFluidInTank(0).getAmount() / (FluidHelper.getBucket() / 1000))
                 ).setTextColor(-1).setDropShadow(true))
-                .addWidget(new TankWidget(cache.storages[0], 68, 23, true, true)
+                .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .addWidget(new PhantomFluidWidget(lockedFluid, 68, 41, 18, 18)
                         .setShowAmount(false)

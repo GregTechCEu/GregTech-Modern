@@ -92,8 +92,13 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     private CompoundTag customUICache;
     @Getter
     private final GTRecipeLookup lookup = new GTRecipeLookup(this);
+    @Setter
+    @Getter
+    private boolean offsetVoltageText = false;
+    @Setter
+    @Getter
+    private int voltageTextOffset = 20;
     private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
-
 
     public GTRecipeType(ResourceLocation registryName, String group, RecipeType<?>... proxyRecipes) {
         this.registryName = registryName;

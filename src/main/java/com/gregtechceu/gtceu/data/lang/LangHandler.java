@@ -47,6 +47,8 @@ public class LangHandler {
         provider.add("recipe.capability.fluid.name", "Fluid");
         provider.add("recipe.capability.item.name", "Item");
         provider.add("recipe.capability.su.name", "Create Stress");
+        multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
+            "Right click to decrease the OC", "Middle click to reset the OC", "Hold Shift to change by Perfect OC");
 
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
@@ -764,7 +766,7 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.deprecated", "§5WARNING: DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r");
         provider.add("gtceu.recipe.total", "Total: %,d EU");
         provider.add("gtceu.recipe.max_eu", "Max. EU: %,d EU");
-        provider.add("gtceu.recipe.eu", "Usage: %,d EU/t (%s§r)");
+        provider.add("gtceu.recipe.eu", "Usage: %,d EU/t");
         provider.add("gtceu.recipe.eu_inverted", "Generation: %,d EU/t");
         provider.add("gtceu.recipe.duration", "Duration: %,.2f secs");
         provider.add("gtceu.recipe.amperage", "Amperage: %,d");

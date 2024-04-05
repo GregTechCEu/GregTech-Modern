@@ -41,12 +41,12 @@ public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<Mult
 
     @Override
     public int getDisplayHeight() {
-        return 176 + 8;
+        return 160 + 8;
     }
 
     @Override
     public int getDisplayWidth(MultiblockInfoDisplay display) {
-        return 176 + 8;
+        return 160 + 8;
     }
 
     @Override
