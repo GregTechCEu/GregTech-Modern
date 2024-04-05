@@ -37,13 +37,13 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
 
     @Override
     public boolean shouldOpenUIAfterUse(UseOnContext context) {
-        return !(context.getPlayer() != null && context.getPlayer().isCrouching());
+        return !(context.getPlayer() != null && context.getPlayer().isShiftKeyDown());
     }
 
     @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
 
-        if (context.getPlayer() == null || !context.getPlayer().isCrouching()) {
+        if (context.getPlayer() == null || !context.getPlayer().isShiftKeyDown()) {
             return InteractionResult.PASS;
         }
 
