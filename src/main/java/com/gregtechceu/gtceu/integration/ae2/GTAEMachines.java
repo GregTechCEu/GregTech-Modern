@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.integration.ae2.machine.*;
 import net.minecraft.network.chat.Component;
 
+import static com.gregtechceu.gtceu.api.GTValues.EV;
 import static com.gregtechceu.gtceu.api.GTValues.UHV;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -14,7 +15,7 @@ public class GTAEMachines {
 
     public final static MachineDefinition ITEM_IMPORT_BUS = REGISTRATE.machine("me_input_bus", MEInputBusPartMachine::new)
             .langValue("ME Stocking Input Bus")
-            .tier(UHV)
+            .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .overlayTieredHullRenderer("me_item_bus.import")
@@ -24,7 +25,7 @@ public class GTAEMachines {
 
     public final static MachineDefinition ITEM_EXPORT_BUS = REGISTRATE.machine("me_output_bus", MEOutputBusPartMachine::new)
             .langValue("ME Output Bus")
-            .tier(UHV)
+            .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_ITEMS)
             .overlayTieredHullRenderer("me_item_bus.export")
@@ -37,7 +38,7 @@ public class GTAEMachines {
 
     public final static MachineDefinition FLUID_IMPORT_HATCH = REGISTRATE.machine("me_input_hatch", MEInputHatchPartMachine::new)
             .langValue("ME Stocking Input Hatch")
-            .tier(UHV)
+            .tier(EV)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.IMPORT_FLUIDS)
             .overlayTieredHullRenderer("me_fluid_hatch.import")
@@ -47,7 +48,7 @@ public class GTAEMachines {
 
     public final static MachineDefinition FLUID_EXPORT_HATCH = REGISTRATE.machine("me_output_hatch", MEOutputHatchPartMachine::new)
             .langValue("ME Output Hatch")
-            .tier(UHV)
+            .tier(EV)
             .rotationState(RotationState.ALL)
                     .abilities(PartAbility.EXPORT_FLUIDS)
                     .overlayTieredHullRenderer("me_fluid_hatch.export")
