@@ -11,8 +11,7 @@ import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
-import com.gregtechceu.gtceu.utils.AssemblyLineManager;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -77,7 +76,7 @@ public class GTRecipeWidget extends WidgetGroup {
             // Scanner Output replacing, used for cycling research outputs
             Pair<GTRecipeType, String> researchData = null;
             for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
-                researchData = AssemblyLineManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+                researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
                 if (researchData != null) break;
             }
             if (researchData != null) {

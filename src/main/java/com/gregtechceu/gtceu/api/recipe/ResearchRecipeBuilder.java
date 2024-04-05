@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.utils.AssemblyLineManager;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
 import lombok.NoArgsConstructor;
 import net.minecraft.world.item.ItemStack;
@@ -91,7 +91,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
         @Override
         public ItemStack getDefaultDataItem() {
-            return AssemblyLineManager.getDefaultScannerItem();
+            return ResearchManager.getDefaultScannerItem();
         }
 
         @Override
@@ -128,7 +128,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
 
         @Override
         public ItemStack getDefaultDataItem() {
-            return AssemblyLineManager.getDefaultResearchStationItem(cwut);
+            return ResearchManager.getDefaultResearchStationItem(cwut);
         }
 
         @Override

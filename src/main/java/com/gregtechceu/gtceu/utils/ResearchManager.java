@@ -30,7 +30,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public final class AssemblyLineManager {
+public final class ResearchManager {
 
     public static final String RESEARCH_NBT_TAG = "assembly_line_research";
     public static final String RESEARCH_ID_NBT_TAG = "research_id";
@@ -49,7 +49,7 @@ public final class AssemblyLineManager {
         return GTItems.TOOL_DATA_ORB.asStack();
     }
 
-    private AssemblyLineManager() {}
+    private ResearchManager() {}
 
     @ApiStatus.Internal
     public static void registerScannerLogic() {

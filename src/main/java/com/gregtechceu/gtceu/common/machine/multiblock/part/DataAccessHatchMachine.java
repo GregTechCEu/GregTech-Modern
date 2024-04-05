@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.DataBankMachine;
-import com.gregtechceu.gtceu.utils.AssemblyLineManager;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -71,8 +71,8 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
             public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
                 var controller = DataAccessHatchMachine.this.getControllers().isEmpty() ? null : DataAccessHatchMachine.this.getControllers().get(0);
                 boolean isDataBank = controller instanceof DataBankMachine;
-                if (AssemblyLineManager.isStackDataItem(stack, isDataBank) &&
-                    AssemblyLineManager.hasResearchTag(stack)) {
+                if (ResearchManager.isStackDataItem(stack, isDataBank) &&
+                    ResearchManager.hasResearchTag(stack)) {
                     return super.insertItem(slot, stack, simulate);
                 }
                 return stack;
@@ -115,8 +115,8 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
         recipes.clear();
         for (int i = 0; i < this.importItems.getSlots(); i++) {
             ItemStack stack = this.importItems.getStackInSlot(i);
-            Pair<GTRecipeType, String> researchData = AssemblyLineManager.readResearchId(stack);
-            boolean isValid = AssemblyLineManager.isStackDataItem(stack, isDataBank);
+            Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
+            boolean isValid = ResearchManager.isStackDataItem(stack, isDataBank);
             if (researchData != null && isValid) {
                 Collection<GTRecipe> collection = researchData.getFirst().getDataStickEntry(researchData.getSecond());
                 if (collection != null) {

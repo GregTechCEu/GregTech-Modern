@@ -15,8 +15,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
-import com.gregtechceu.gtceu.utils.AssemblyLineManager;
-import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -246,7 +245,7 @@ public class GTRecipeTypeUI {
                         List<ItemStack> dataItems = new ArrayList<>();
                         for (ResearchData.ResearchEntry entry : data) {
                             ItemStack dataStick = entry.getDataItem().copy();
-                            AssemblyLineManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), this.recipeType);
+                            ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), this.recipeType);
                             dataItems.add(dataStick);
                         }
                         CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
