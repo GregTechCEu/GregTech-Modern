@@ -78,6 +78,8 @@ public class GTRecipeTypeUI {
 
     private CompoundTag customUICache;
     private Size jeiSize;
+    @Getter
+    private int originalWidth;
 
     /**
      * @param recipeType the recipemap corresponding to this ui
@@ -128,7 +130,8 @@ public class GTRecipeTypeUI {
         Size size = this.jeiSize;
         if(size == null) {
             var originalSize = createEditableUITemplate(false, false).createDefault().getSize();
-            this.jeiSize = size = new Size(originalSize.width, getPropertyHeightShift() + 5 + originalSize.height);
+            this.originalWidth = originalSize.width;
+            this.jeiSize = size = new Size(Math.max(originalWidth, 150), getPropertyHeightShift() + 5 + originalSize.height);
         }
         return size;
     }
