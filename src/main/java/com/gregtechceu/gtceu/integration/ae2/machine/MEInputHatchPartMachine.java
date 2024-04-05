@@ -77,7 +77,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
     @Override
     protected void autoIO() {
-         if (getLevel().isClientSide) return;
+        if (getLevel().isClientSide) return;
         if (!this.isWorkingEnabled()) return;
         if (!this.shouldSyncME()) return;
 
@@ -149,7 +149,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new));
+            return handleIngredient(io, left, simulate, this.handlerIO, getStorages());
         }
 
         public FluidStack drainInternal(long maxDrain, boolean simulate) {
@@ -236,7 +236,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
     }
 
-        public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidStorage, IFluidTransfer {
+    public static class ExportOnlyAEFluid extends ExportOnlyAESlot implements IFluidStorage, IFluidTransfer {
 
         public ExportOnlyAEFluid(GenericStack config, GenericStack stock) {
             super(config, stock);
