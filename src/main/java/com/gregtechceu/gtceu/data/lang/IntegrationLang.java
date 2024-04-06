@@ -70,5 +70,15 @@ public class IntegrationLang {
         provider.add("gtceu.top.unit.items", "Items");
         provider.add("gtceu.top.unit.fluid_milibuckets", "L");
         provider.add("gtceu.top.unit.fluid_buckets", "kL");
+
+        provider.add("gtceu.jade.energy_stored", "%d / %d EU");
+        provider.add("gtceu.jade.progress_computation", "Computation: %s / %s");
+        provider.add("gtceu.jade.progress_sec", "%s / %s s");
+        provider.add("gtceu.jade.progress_tick", "%s / %s t");
+
+        provider.add("gtceu.top.energy_stored", " / %d EU");
+        provider.add("gtceu.top.progress_computation", " / %s CWU");
+        provider.add("gtceu.top.progress_sec", " / %s s");
+        provider.add("gtceu.top.progress_tick", " / %s t");
     }
 }

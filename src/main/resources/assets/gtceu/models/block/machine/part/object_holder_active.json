@@ -1,0 +1,6 @@
+{
+  "parent": "gtceu:block/overlay_model_front",
+  "textures": {
+    "front": "gtceu:block/machines/object_holder/overlay_front_active"
+  }
+}

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.data.chemical.material.stack;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 public class UnificationEntry {

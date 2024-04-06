@@ -44,7 +44,7 @@ import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
@@ -333,8 +333,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return maxTransferAmount - itemsLeftToTransfer;
     }
 
-    @Nonnull
-    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@Nonnull IItemTransfer inventory) {
+    @NotNull
+    protected Map<ItemStack, TypeItemInfo> countInventoryItemsByType(@NotNull IItemTransfer inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, TypeItemInfo> result = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
 
@@ -353,8 +353,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return result;
     }
 
-    @Nonnull
-    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@Nonnull IItemTransfer inventory) {
+    @NotNull
+    protected Map<ItemStack, GroupItemInfo> countInventoryItemsByMatchSlot(@NotNull IItemTransfer inventory) {
         ItemFilter filter = filterHandler.getFilter();
         Map<ItemStack, GroupItemInfo> result = new Object2ObjectOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
 

@@ -7,7 +7,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -22,7 +22,7 @@ public class TooltipBehavior implements IAddInformation {
     /**
      * @param tooltips a consumer adding translated tooltips to the tooltip list
      */
-    public TooltipBehavior(@Nonnull Consumer<List<Component>> tooltips) {
+    public TooltipBehavior(@NotNull Consumer<List<Component>> tooltips) {
         this.tooltips = tooltips;
     }
     @Override

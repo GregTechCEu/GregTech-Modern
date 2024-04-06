@@ -21,8 +21,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     //******     Recipe Logic    *******//
     //////////////////////////////////////
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof LargeTurbineMachine turbineMachine) {
             var rotorHolder = turbineMachine.getRotorHolder();
             var EUt = RecipeHelper.getOutputEUt(recipe);

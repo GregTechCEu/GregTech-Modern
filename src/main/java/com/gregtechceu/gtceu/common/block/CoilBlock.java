@@ -18,7 +18,7 @@ import net.minecraft.world.level.BlockGetter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
@@ -97,14 +97,14 @@ public class CoilBlock extends ActiveBlock {
             return this.ordinal();
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String toString() {
             return getName();
         }
 
         @Override
-        @Nonnull
+        @NotNull
         public String getSerializedName() {
             return name;
         }

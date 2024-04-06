@@ -103,7 +103,7 @@ public class GTRecipeLookup {
      * @return the Recipe Iterator
      */
     @NotNull
-    public Iterator<GTRecipe> getRecipeIterator(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> canHandle) {
+    public RecipeIterator getRecipeIterator(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> canHandle) {
         List<List<AbstractMapIngredient>> list = prepareRecipeFind(holder);
         return new RecipeIterator(this.recipeType, list, canHandle);
     }

@@ -15,7 +15,7 @@ import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.energy.IEnergyStorage;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class EUToFEProvider extends CapabilityCompatProvider {
 
@@ -31,7 +31,7 @@ public class EUToFEProvider extends CapabilityCompatProvider {
     }
 
     @Override
-    public <T> LazyOptional<T> getCapability(@Nonnull Capability<T> capability, Direction facing) {
+    public <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, Direction facing) {
         if (!ConfigHolder.INSTANCE.compat.energy.nativeEUToPlatformNative || capability != GTCapability.CAPABILITY_ENERGY_CONTAINER)
             return LazyOptional.empty();
 

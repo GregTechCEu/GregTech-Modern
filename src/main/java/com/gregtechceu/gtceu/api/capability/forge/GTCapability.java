@@ -25,6 +25,8 @@ public class GTCapability {
     public static final Capability<ICleanroomReceiver> CAPABILITY_CLEANROOM_RECEIVER = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<IMaintenanceMachine> CAPABILITY_MAINTENANCE_MACHINE = CapabilityManager.get(new CapabilityToken<>() {});
     public static final Capability<ILaserContainer> CAPABILITY_LASER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IOpticalComputationProvider> CAPABILITY_COMPUTATION_PROVIDER = CapabilityManager.get(new CapabilityToken<>() {});
+    public static final Capability<IDataAccessHatch> CAPABILITY_DATA_ACCESS = CapabilityManager.get(new CapabilityToken<>() {});
 
     public static void register(RegisterCapabilitiesEvent event) {
         event.register(IEnergyContainer.class);
@@ -38,6 +40,8 @@ public class GTCapability {
         event.register(ICleanroomReceiver.class);
         event.register(IMaintenanceMachine.class);
         event.register(ILaserContainer.class);
+        event.register(IOpticalComputationProvider.class);
+        event.register(IDataAccessHatch.class);
     }
 
 }

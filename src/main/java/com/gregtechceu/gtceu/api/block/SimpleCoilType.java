@@ -5,7 +5,7 @@ import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class SimpleCoilType implements ICoilType, StringRepresentable {
 
@@ -36,14 +36,14 @@ public class SimpleCoilType implements ICoilType, StringRepresentable {
         this.texture = texture;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public String toString() {
         return getName();
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public String getSerializedName() {
         return name;
     }

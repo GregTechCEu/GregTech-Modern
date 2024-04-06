@@ -18,7 +18,7 @@ import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBedrockFluidDisplay> {
@@ -48,7 +48,7 @@ public class GTBedrockFluidDisplayCategory extends ModularUIDisplayCategory<GTBe
         return getSize().width;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.jei.bedrock_fluid_diagram");

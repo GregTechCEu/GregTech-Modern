@@ -15,7 +15,7 @@ import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class IntCircuitIngredient extends StrictNBTIngredient {
     public static final ResourceLocation TYPE = GTCEu.id("circuit");
@@ -71,7 +71,7 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public IIngredientSerializer<? extends Ingredient> getSerializer() {
         return SERIALIZER;
     }

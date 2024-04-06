@@ -7,8 +7,8 @@ import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -57,8 +57,8 @@ public class OreVeinWorldEntry {
         return tag;
     }
 
-    @Nonnull
-    public static OreVeinWorldEntry readFromNBT(@Nonnull CompoundTag tag) {
+    @NotNull
+    public static OreVeinWorldEntry readFromNBT(@NotNull CompoundTag tag) {
         OreVeinWorldEntry info = new OreVeinWorldEntry();
         info.oreYield = tag.getInt("oreYield");
         info.operationsRemaining = tag.getInt("operationsRemaining");

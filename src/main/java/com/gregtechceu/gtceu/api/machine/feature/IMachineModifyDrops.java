@@ -10,7 +10,7 @@ import java.util.List;
  * @date 2022/9/23
  * @implNote IBlockEntityModifyDrops
  */
-public interface IMachineModifyDrops extends IMachineFeature{
+public interface IMachineModifyDrops extends IMachineFeature {
 
     /**
      * Modify or append drops.

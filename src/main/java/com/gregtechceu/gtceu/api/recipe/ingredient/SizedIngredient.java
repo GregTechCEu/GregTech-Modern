@@ -15,7 +15,7 @@ import net.minecraftforge.common.crafting.IIngredientSerializer;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.stream.Stream;
 
@@ -78,7 +78,7 @@ public class SizedIngredient extends Ingredient {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public IIngredientSerializer<? extends Ingredient> getSerializer() {
         return SERIALIZER;
     }
