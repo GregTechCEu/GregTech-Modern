@@ -14,7 +14,7 @@ import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -51,7 +51,7 @@ public class BiomeCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@Nonnull GTRecipe recipe, @Nonnull RecipeLogic recipeLogic) {
+    public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
         if (level == null) return false;
         Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getPos());
@@ -63,7 +63,7 @@ public class BiomeCondition extends RecipeCondition {
         return new BiomeCondition();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
@@ -72,7 +72,7 @@ public class BiomeCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition deserialize(@Nonnull JsonObject config) {
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         biome = new ResourceLocation(
                 GsonHelper.getAsString(config, "biome", "dummy"));

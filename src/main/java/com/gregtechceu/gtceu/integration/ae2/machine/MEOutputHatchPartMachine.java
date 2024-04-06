@@ -33,7 +33,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -130,7 +130,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
             GenericStack stack1 = GenericStack.fromItemStack(stack);
             this.internalBuffer.insert(slot, stack1.what(), stack1.amount(), Actionable.MODULATE);
             this.machine.onChanged();
@@ -165,7 +165,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
             return 1;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;

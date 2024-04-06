@@ -18,7 +18,7 @@ import lombok.AllArgsConstructor;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor
 public class CoverConfigurator implements IFancyConfigurator {

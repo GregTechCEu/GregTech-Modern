@@ -97,6 +97,15 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether to remove Vanilla TNT Recipe from the Crafting Table.", "Default: true"})
         public boolean removeVanillaTNTRecipe = true; // default true
+        @Configurable
+        @Configurable.Comment({ "How many Multiblock Casings to make per craft. Either 1, 2, or 3.", "Default: 2" })
+        @Configurable.Range(min = 1, max = 3)
+        public int casingsPerCraft = 2;
+        @Configurable
+        @Configurable.Comment({
+            "Whether to nerf the output amounts of the first circuit in a set to 1 (from 2) and SoC to 2 (from 4).",
+            "Default: false" })
+        public boolean harderCircuitRecipes = false;
     }
 
     public static class CompatibilityConfigs {
@@ -266,6 +275,9 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Block to replace mined ores with in the miner and multiblock miner.", "Default: minecraft:cobblestone"})
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
+        @Configurable
+        @Configurable.Comment({"Whether to enable Assembly Line research for recipes.", "Default: true"})
+        public boolean enableResearch = true;
         @Configurable
         @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
         public boolean enableMaintenance = true;

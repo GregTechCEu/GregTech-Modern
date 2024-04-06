@@ -9,6 +9,14 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
+import com.tterrag.registrate.util.entry.RegistryEntry;
+import net.minecraft.core.NonNullList;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.world.item.*;
+
+import org.jetbrains.annotations.NotNull;
+
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import com.lowdragmc.lowdraglib.utils.LDLItemGroup;
 
 /**

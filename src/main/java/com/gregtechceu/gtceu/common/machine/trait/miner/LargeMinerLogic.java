@@ -20,7 +20,7 @@ import net.minecraft.world.level.storage.loot.functions.ApplyBonusCount;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class LargeMinerLogic extends MinerLogic {
@@ -57,7 +57,7 @@ public class LargeMinerLogic extends MinerLogic {
     }
 
     @Override
-    public void initPos(@Nonnull BlockPos pos, int currentRadius) {
+    public void initPos(@NotNull BlockPos pos, int currentRadius) {
         if (!isChunkMode) {
             super.initPos(pos, currentRadius);
         } else {

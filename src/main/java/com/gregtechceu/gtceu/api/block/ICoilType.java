@@ -4,8 +4,8 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -14,7 +14,7 @@ public interface ICoilType {
     /**
      * @return The Unique Name of the Heating Coil
      */
-    @Nonnull
+    @NotNull
     String getName();
 
     /**

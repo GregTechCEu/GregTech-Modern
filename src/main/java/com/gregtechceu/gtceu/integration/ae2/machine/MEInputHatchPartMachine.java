@@ -30,7 +30,7 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -220,7 +220,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             }
 
             @Override
-            @Nonnull
+            @NotNull
             public FluidStack getFluid() {
                 return this.fluid.getFluid();
             }
@@ -321,7 +321,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             return 0;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public FluidStack drain(FluidStack resource, boolean doDrain, boolean notifyChanges) {
             if (this.getFluid().isFluidEqual(resource)) {

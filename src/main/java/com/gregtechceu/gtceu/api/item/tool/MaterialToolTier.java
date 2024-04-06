@@ -10,7 +10,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -56,7 +56,7 @@ public class MaterialToolTier implements Tier {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public Ingredient getRepairIngredient() {
         return Ingredient.EMPTY;
     }

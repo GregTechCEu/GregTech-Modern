@@ -6,7 +6,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 
@@ -35,7 +35,7 @@ public abstract class FluidTransferDelegate implements IFluidTransfer {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public FluidStack getFluidInTank(int tank) {
         return delegate.getFluidInTank(tank);
     }
@@ -69,7 +69,7 @@ public abstract class FluidTransferDelegate implements IFluidTransfer {
 
     @Override
     @ApiStatus.Internal
-    @Nonnull
+    @NotNull
     public FluidStack drain(int tank, FluidStack resource, boolean simulate, boolean notifyChanges) {
         return delegate.drain(tank, resource, simulate, notifyChanges);
     }
@@ -81,7 +81,7 @@ public abstract class FluidTransferDelegate implements IFluidTransfer {
 
     @Override
     @ApiStatus.Internal
-    @Nonnull
+    @NotNull
     public Object createSnapshot() {
         return delegate.createSnapshot();
     }

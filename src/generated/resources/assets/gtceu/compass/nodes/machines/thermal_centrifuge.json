@@ -20,8 +20,8 @@
   ],
   "page": "gtceu:machines/thermal_centrifuge",
   "position": [
-    -50,
-    150
+    -400,
+    200
   ],
   "section": "gtceu:machines"
 }

@@ -33,7 +33,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.level.material.Fluids;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -183,7 +183,7 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof LargeBoilerMachine largeBoilerMachine) {
             if (largeBoilerMachine.throttle < 100) {
                 var copied = recipe.copy();

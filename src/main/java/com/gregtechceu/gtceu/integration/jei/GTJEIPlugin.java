@@ -23,7 +23,7 @@ import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeType;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -41,7 +41,7 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerCategories(@Nonnull IRecipeCategoryRegistration registry) {
+    public void registerCategories(@NotNull IRecipeCategoryRegistration registry) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
@@ -57,7 +57,7 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipeCatalysts(@Nonnull IRecipeCatalystRegistration registration) {
+    public void registerRecipeCatalysts(@NotNull IRecipeCatalystRegistration registration) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
@@ -76,7 +76,7 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerRecipes(@Nonnull IRecipeRegistration registration) {
+    public void registerRecipes(@NotNull IRecipeRegistration registration) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
@@ -87,7 +87,7 @@ public class GTJEIPlugin implements IModPlugin {
     }
 
     @Override
-    public void registerIngredients(@Nonnull IModIngredientRegistration registry) {
+    public void registerIngredients(@NotNull IModIngredientRegistration registry) {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         GTCEu.LOGGER.info("JEI register ingredients");
     }

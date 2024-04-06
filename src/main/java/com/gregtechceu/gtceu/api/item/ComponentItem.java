@@ -29,7 +29,7 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -245,7 +245,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         return super.hasCraftingRemainingItem(stack);
     }
 
-    public <T> LazyOptional<T> getCapability(@Nonnull final ItemStack itemStack, @Nonnull final Capability<T> cap) {
+    public <T> LazyOptional<T> getCapability(@NotNull final ItemStack itemStack, @NotNull final Capability<T> cap) {
         for (IItemComponent component : components) {
             if (component instanceof IComponentCapability componentCapability) {
                 var value = componentCapability.getCapability(itemStack, cap);
