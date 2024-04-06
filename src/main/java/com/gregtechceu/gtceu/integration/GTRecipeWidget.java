@@ -316,8 +316,8 @@ public class GTRecipeWidget extends WidgetGroup {
         if (EUt > 0) {
             long euTotal = EUt * recipe.duration;
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
-            if (recipe.data.getBoolean("duration_is_total_cwu")) {
-                int minimumCWUt = Math.min(recipe.inputs.get(CWURecipeCapability.CAP).stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
+            if (recipe.data.getBoolean("duration_is_total_cwu") && recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
+                int minimumCWUt = Math.min(recipe.tickInputs.get(CWURecipeCapability.CAP).stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
                 texts.add(Component.translatable("gtceu.recipe.max_eu", euTotal / minimumCWUt));
             } else {
                 texts.add(Component.translatable("gtceu.recipe.total", euTotal));
