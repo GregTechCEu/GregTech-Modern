@@ -59,6 +59,7 @@ public class BlockableSlotWidget extends SlotWidget {
 
     @Override
     public boolean isMouseOverElement(double mouseX, double mouseY) {
+        // prevent slot removal and hover highlighting when slot is blocked
         return super.isMouseOverElement(mouseX, mouseY) && !isBlocked.getAsBoolean();
     }
 }

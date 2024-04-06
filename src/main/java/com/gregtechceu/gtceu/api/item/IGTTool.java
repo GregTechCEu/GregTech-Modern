@@ -75,8 +75,8 @@ import net.minecraftforge.common.capabilities.ICapabilityProvider;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -459,7 +459,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return getToolStats().getBehaviors().stream().anyMatch(behavior -> behavior.canDisableShield(stack, shield, entity, attacker));
     }
 
-    default boolean definition$doesSneakBypassUse(@Nonnull ItemStack stack, @Nonnull BlockGetter world, @Nonnull BlockPos pos, @Nonnull Player player) {
+    default boolean definition$doesSneakBypassUse(@NotNull ItemStack stack, @NotNull BlockGetter world, @NotNull BlockPos pos, @NotNull Player player) {
         return getToolStats().doesSneakBypassUse();
     }
 
@@ -597,7 +597,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
         return true;
     }
 
-    default void definition$fillItemCategory(CreativeModeTab category, @Nonnull NonNullList<ItemStack> items) {
+    default void definition$fillItemCategory(CreativeModeTab category, @NotNull NonNullList<ItemStack> items) {
         if (category != GTCreativeModeTabs.TOOL && category != CreativeModeTab.TAB_SEARCH)
             return;
 
@@ -611,7 +611,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     // Client-side methods
 
     @OnlyIn(Dist.CLIENT)
-    default void definition$appendHoverText(@Nonnull ItemStack stack, @Nullable Level world, @Nonnull List<Component> tooltip, TooltipFlag flag) {
+    default void definition$appendHoverText(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, TooltipFlag flag) {
         if (!(stack.getItem() instanceof IGTTool tool)) return;
 
         CompoundTag tagCompound = stack.getTag();
@@ -729,7 +729,7 @@ public interface IGTTool extends HeldItemUIFactory.IHeldItemUIHolder, ItemLike {
     
     
 
-    default boolean definition$canApplyAtEnchantingTable(@Nonnull ItemStack stack, Enchantment enchantment) {
+    default boolean definition$canApplyAtEnchantingTable(@NotNull ItemStack stack, Enchantment enchantment) {
         if (stack.isEmpty()) return false;
 
         // special case enchants from other mods

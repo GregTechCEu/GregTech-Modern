@@ -6,8 +6,8 @@ import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -56,8 +56,8 @@ public class FluidVeinWorldEntry {
         return tag;
     }
 
-    @Nonnull
-    public static FluidVeinWorldEntry readFromNBT(@Nonnull CompoundTag tag) {
+    @NotNull
+    public static FluidVeinWorldEntry readFromNBT(@NotNull CompoundTag tag) {
         FluidVeinWorldEntry info = new FluidVeinWorldEntry();
         info.fluidYield = tag.getInt("fluidYield");
         info.operationsRemaining = tag.getInt("operationsRemaining");

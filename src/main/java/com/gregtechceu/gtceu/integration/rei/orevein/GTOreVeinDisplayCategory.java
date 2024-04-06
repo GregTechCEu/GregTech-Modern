@@ -18,7 +18,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVeinDisplay> {
@@ -48,7 +48,7 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
         return getSize().width;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.jei.ore_vein_diagram");

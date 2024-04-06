@@ -7,7 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.function.Predicate;
 
 

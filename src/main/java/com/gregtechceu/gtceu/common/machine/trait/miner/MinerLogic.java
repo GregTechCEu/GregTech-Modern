@@ -44,7 +44,7 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
@@ -122,7 +122,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @param speed          the speed in ticks per block mined
      * @param maximumRadius  the maximum radius (square shaped) the miner can mine in
      */
-    public MinerLogic(@Nonnull IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius) {
+    public MinerLogic(@NotNull IRecipeLogicMachine machine, int fortune, int speed, int maximumRadius) {
         super(machine);
         this.miner = (IMiner) machine;
         this.fortune = fortune;
@@ -420,7 +420,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @param pos           the {@link BlockPos} of the miner itself
      * @param currentRadius the currently set mining radius
      */
-    public void initPos(@Nonnull BlockPos pos, int currentRadius) {
+    public void initPos(@NotNull BlockPos pos, int currentRadius) {
         x = pos.getX() - currentRadius;
         z = pos.getZ() - currentRadius;
         y = pos.getY() - 1;
@@ -518,7 +518,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @param values to find the mean of
      * @return the mean value
      */
-    private static long mean(@Nonnull long[] values) {
+    private static long mean(@NotNull long[] values) {
         if (values.length == 0L)
             return 0L;
 
@@ -532,7 +532,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
      * @param world the {@link Level} to get the average tick time of
      * @return the mean tick time
      */
-    private static double getMeanTickTime(@Nonnull Level world) {
+    private static double getMeanTickTime(@NotNull Level world) {
         return mean(Objects.requireNonNull(world.getServer()).tickTimes) * 1.0E-6D;
     }
 

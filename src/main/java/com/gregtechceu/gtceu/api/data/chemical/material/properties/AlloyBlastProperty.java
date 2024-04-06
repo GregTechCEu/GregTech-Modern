@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.level.material.Fluid;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.function.Supplier;
 
 public class AlloyBlastProperty implements IMaterialProperty<AlloyBlastProperty> {
@@ -19,7 +19,7 @@ public class AlloyBlastProperty implements IMaterialProperty<AlloyBlastProperty>
 
     @Getter
     @Setter
-    @Nonnull
+    @NotNull
     private AlloyBlastRecipeProducer recipeProducer = AlloyBlastRecipeProducer.DEFAULT_PRODUCER;
 
     public AlloyBlastProperty(int temperature) {
@@ -36,7 +36,7 @@ public class AlloyBlastProperty implements IMaterialProperty<AlloyBlastProperty>
     /**
      * internal usage only
      */
-    public void setFluid(@Nonnull Supplier<? extends Fluid> materialFluid) {
+    public void setFluid(@NotNull Supplier<? extends Fluid> materialFluid) {
         Preconditions.checkNotNull(materialFluid);
         this.fluidSupplier = materialFluid;
     }

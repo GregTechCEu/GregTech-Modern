@@ -15,7 +15,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
@@ -50,24 +50,24 @@ public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOrePr
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public RecipeType<GTOreProcessingInfoWrapper> getRecipeType() {
         return RECIPE_TYPE;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.jei.ore_processing_diagram");
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IDrawable getBackground() {
         return background;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IDrawable getIcon() {
         return icon;

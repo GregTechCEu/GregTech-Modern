@@ -29,7 +29,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
@@ -247,7 +247,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         }
     }
 
-    @Nonnull
+    @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
     }

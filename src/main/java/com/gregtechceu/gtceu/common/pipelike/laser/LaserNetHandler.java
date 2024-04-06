@@ -6,8 +6,8 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class LaserNetHandler implements ILaserContainer {
     private LaserPipeNet net;
@@ -15,7 +15,7 @@ public class LaserNetHandler implements ILaserContainer {
     private final Direction facing;
     private final Level world;
 
-    public LaserNetHandler(LaserPipeNet net, @Nonnull LaserPipeBlockEntity pipe, @Nullable Direction facing) {
+    public LaserNetHandler(LaserPipeNet net, @NotNull LaserPipeBlockEntity pipe, @Nullable Direction facing) {
         this.net = net;
         this.pipe = pipe;
         this.facing = facing;

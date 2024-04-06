@@ -38,20 +38,29 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Setter
     private Predicate<Direction> sideInputCondition, sideOutputCondition;
 
-    protected long amps, lastTS;
+    protected long amps, lastTimeStamp;
+    @Nullable
     protected TickableSubscription outputSubs;
+    @Nullable
+    protected TickableSubscription updateSubs;
+
+
+    protected long lastEnergyInputPerSec = 0;
+    protected long lastEnergyOutputPerSec = 0;
+    protected long energyInputPerSec = 0;
+    protected long energyOutputPerSec = 0;
 
     public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
         super(machine);
-        this.lastTS = Long.MIN_VALUE;
+        this.lastTimeStamp = Long.MIN_VALUE;
         this.energyCapacity = maxCapacity;
         this.inputVoltage = maxInputVoltage;
         this.inputAmperage = maxInputAmperage;
         this.outputVoltage = maxOutputVoltage;
         this.outputAmperage = maxOutputAmperage;
-        var isIN = (inputVoltage != 0 && inputAmperage != 0);
-        var isOUT = (outputVoltage != 0 && outputAmperage != 0);
-        this.handlerIO = (isIN && isOUT) ? IO.BOTH : isIN ? IO.IN : isOUT ? IO.OUT : IO.NONE;
+        var isIn = (inputVoltage != 0 && inputAmperage != 0);
+        var isOut = (outputVoltage != 0 && outputAmperage != 0);
+        this.handlerIO = (isIn && isOut) ? IO.BOTH : isIn ? IO.IN : isOut ? IO.OUT : IO.NONE;
     }
 
     public static NotifiableEnergyContainer emitterContainer(MetaMachine machine, long maxCapacity, long maxOutputVoltage, long maxOutputAmperage) {
@@ -83,24 +92,58 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     public void onMachineLoad() {
         super.onMachineLoad();
         checkOutputSubscription();
+        updateSubs = getMachine().subscribeServerTick(updateSubs, this::updateTick);
+    }
+
+    @Override
+    public void onMachineUnLoad() {
+        super.onMachineUnLoad();
+        if (updateSubs != null) {
+            updateSubs.unsubscribe();
+            updateSubs = null;
+        }
     }
 
     public void checkOutputSubscription() {
         if (getOutputVoltage() > 0 && getOutputAmperage() > 0) {
             if (getEnergyStored() >= getOutputVoltage()) {
                 outputSubs = getMachine().subscribeServerTick(outputSubs, this::serverTick);
-            } else if (outputSubs != null){
+            } else if (outputSubs != null) {
                 outputSubs.unsubscribe();
                 outputSubs = null;
             }
         }
     }
 
+    @Override
+    public long getInputPerSec() {
+        return lastEnergyInputPerSec;
+    }
+
+    @Override
+    public long getOutputPerSec() {
+        return lastEnergyOutputPerSec;
+    }
+
     public void setEnergyStored(long energyStored) {
         if (this.energyStored == energyStored) return;
+        if (energyStored > this.energyStored) {
+            energyInputPerSec += energyStored - this.energyStored;
+        } else {
+            energyOutputPerSec += this.energyStored - energyStored;
+        }
         this.energyStored = energyStored;
         checkOutputSubscription();
         notifyListeners();
+    }
+
+    public void updateTick() {
+        if (getMachine().getOffsetTimer() % 20 == 0) {
+            lastEnergyOutputPerSec = energyOutputPerSec;
+            lastEnergyInputPerSec = energyInputPerSec;
+            energyOutputPerSec = 0;
+            energyInputPerSec = 0;
+        }
     }
 
     public void serverTick() {
@@ -177,10 +220,10 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
-        var latestTS = getMachine().getOffsetTimer();
-        if (lastTS < latestTS) {
+        var latestTimeStamp = getMachine().getOffsetTimer();
+        if (lastTimeStamp < latestTimeStamp) {
             amps = 0;
-            lastTS = latestTS;
+            lastTimeStamp = latestTimeStamp;
         }
         if (amps >= getInputAmperage()) return 0;
         long canAccept = getEnergyCapacity() - getEnergyStored();

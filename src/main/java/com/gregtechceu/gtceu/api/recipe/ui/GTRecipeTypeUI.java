@@ -7,11 +7,15 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
+import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.ResearchData;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
@@ -26,11 +30,13 @@ import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
@@ -38,15 +44,19 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
@@ -80,6 +90,7 @@ public class GTRecipeTypeUI {
     private Size jeiSize;
     @Getter
     private int originalWidth;
+    private final Map<String, Collection<GTRecipe>> researchEntries = new Object2ObjectOpenHashMap<>();
 
     /**
      * @param recipeType the recipemap corresponding to this ui
@@ -136,21 +147,21 @@ public class GTRecipeTypeUI {
         return size;
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
+    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, boolean isSteam, boolean isHighPressure) {}
 
     /**
      * Auto layout UI template for recipes.
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, boolean isSteam, boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
-        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, isSteam, isHighPressure));
+        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, data, isSteam, isHighPressure));
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids) {
-        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, false, false);
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data) {
+        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, data, false, false);
     }
 
     /**
@@ -194,9 +205,15 @@ public class GTRecipeTypeUI {
 
             // bind progress
             List<Widget> progress = new ArrayList<>();
+            // First set the progress suppliers separately.
             WidgetUtils.widgetByIdForEach(template, "^progress$", ProgressWidget.class, progressWidget -> {
                 progressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(progressWidget);
+            });
+            // Then set the dual progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
+            WidgetUtils.widgetByIdForEach(template, "^progress$", DualProgressWidget.class, dualProgressWidget -> {
+                dualProgressWidget.setProgressSupplier(recipeHolder.progressSupplier);
+                progress.add(dualProgressWidget);
             });
             // add recipe button
             if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
@@ -222,6 +239,25 @@ public class GTRecipeTypeUI {
                     slot.setIngredientIO(IngredientIO.INPUT);
                     slot.setCanTakeItems(!isJEI);
                     slot.setCanPutItems(!isJEI);
+                }
+                // 1 over container size.
+                // If in a recipe viewer and a research slot can be added, add it.
+                if (isJEI && recipeType.isHasResearchSlot() && index == recipeHolder.importItems.getSlots()) {
+                    if (ConfigHolder.INSTANCE.machines.enableResearch && recipeHolder.data.contains("research", Tag.TAG_LIST)) {
+                        ResearchData data = ResearchData.fromNBT(recipeHolder.data.getList("research", Tag.TAG_COMPOUND));
+                        List<ItemStack> dataItems = new ArrayList<>();
+                        for (ResearchData.ResearchEntry entry : data) {
+                            ItemStack dataStick = entry.getDataItem().copy();
+                            ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), this.recipeType);
+                            dataItems.add(dataStick);
+                        }
+                        CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
+                        slot.setHandlerSlot(handler, 0);
+                        slot.setIngredientIO(IngredientIO.INPUT);
+                        slot.setCanTakeItems(false);
+                        slot.setCanPutItems(false);
+                    }
+
                 }
             });
             // bind item out
@@ -352,7 +388,7 @@ public class GTRecipeTypeUI {
      */
     public int getPropertyHeightShift() {
         int maxPropertyCount = recipeType.getMaxTooltips() + recipeType.getDataInfos().size();
-        return maxPropertyCount * 10; // GTRecipeWrapper#LINE_HEIGHT
+        return maxPropertyCount * 10; // GTRecipeWidget#LINE_HEIGHT
     }
 
     public void appendJEIUI(GTRecipe recipe, WidgetGroup widgetGroup) {

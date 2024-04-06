@@ -16,7 +16,7 @@ import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfoWrapper> {
     public final static RecipeType<GTOreVeinInfoWrapper> Recipe_Type = new RecipeType<>(GTCEu.id("ore_vein_diagram"), GTOreVeinInfoWrapper.class);
@@ -41,25 +41,25 @@ public class GTOreVeinInfoCategory extends ModularUIRecipeCategory<GTOreVeinInfo
         registration.addRecipeCatalyst(GTItems.PROSPECTOR_LUV.asStack(), Recipe_Type);
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public RecipeType<GTOreVeinInfoWrapper> getRecipeType() {
         return Recipe_Type;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.jei.ore_vein_diagram");
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IDrawable getBackground() {
         return background;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public IDrawable getIcon() {
         return icon;
