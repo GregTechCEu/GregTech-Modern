@@ -18,7 +18,7 @@ public class GTEmiRecipeHandler implements StandardRecipeHandler<AbstractContain
 
         return ((ModularUIContainer) handler).getModularUI().getSlotMap().values().stream()
                 .filter(e -> e.getIngredientIO() == IngredientIO.INPUT || e.isPlayerContainer || e.isPlayerHotBar)
-                .map(SlotWidget::getHandle)
+                .map(SlotWidget::getHandler)
                 .toList();
     }
 
@@ -29,7 +29,7 @@ public class GTEmiRecipeHandler implements StandardRecipeHandler<AbstractContain
 
         return ((ModularUIContainer) handler).getModularUI().getSlotMap().values().stream()
                 .filter(e -> e.getIngredientIO() == IngredientIO.INPUT)
-                .map(SlotWidget::getHandle)
+                .map(SlotWidget::getHandler)
                 .toList();
     }
 

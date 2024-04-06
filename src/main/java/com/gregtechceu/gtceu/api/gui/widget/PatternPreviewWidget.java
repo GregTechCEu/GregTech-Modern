@@ -37,6 +37,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
 import java.util.*;
@@ -293,7 +294,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             if (two.isTile && !one.isTile) return +1;
             if (one.blockId != two.blockId) return two.blockId - one.blockId;
             return two.amount - one.amount;
-        }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).toList(), predicateMap, controllerBase);
+        }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).collect(Collectors.toList()), predicateMap, controllerBase);
     }
 
     private void loadControllerFormed(Collection<BlockPos> poses, IMultiController controllerBase) {
@@ -371,7 +372,7 @@ public class PatternPreviewWidget extends WidgetGroup {
         final IMultiController controllerBase;
         final int maxY, minY;
 
-        public MBPattern(@Nonnull Map<BlockPos, BlockInfo> blockMap, List<List<ItemStack>> parts, @Nonnull Map<BlockPos, TraceabilityPredicate> predicateMap, @Nonnull IMultiController controllerBase) {
+        public MBPattern(@Nonnull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts, @Nonnull Map<BlockPos, TraceabilityPredicate> predicateMap, @Nonnull IMultiController controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;

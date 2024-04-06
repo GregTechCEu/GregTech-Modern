@@ -4,17 +4,25 @@ import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.NonNullList;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 
 public class GTOreByProductWidget extends WidgetGroup {
 
@@ -106,8 +114,8 @@ public class GTOreByProductWidget extends WidgetGroup {
             addWidget(new ImageWidget(0, 0, 176, 166, GuiTextures.OREBY_SIFT));
         }
 
-        List<List<ItemStack>> itemInputs = recipeWrapper.itemInputs;
-        CycleItemStackHandler itemInputsHandler = new CycleItemStackHandler(itemInputs);
+        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> itemInputs = recipeWrapper.itemInputs;
+        TagOrCycleItemStackTransfer itemInputsHandler = new TagOrCycleItemStackTransfer(itemInputs);
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
             itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i), ITEM_INPUT_LOCATIONS.get(i + 1))
@@ -116,8 +124,8 @@ public class GTOreByProductWidget extends WidgetGroup {
                 .setHoverTooltips(recipeWrapper.getTooltip(i / 2)).setBackground((IGuiTexture) null));
         }
 
-        List<List<ItemStack>> itemOutputs = recipeWrapper.itemOutputs;
-        CycleItemStackHandler itemOutputsHandler = new CycleItemStackHandler(itemOutputs);
+        NonNullList<ItemStack> itemOutputs = recipeWrapper.itemOutputs;
+        ItemStackTransfer itemOutputsHandler = new ItemStackTransfer(itemOutputs);
         for (int i = 0; i < ITEM_OUTPUT_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             float xeiChance = 1.0f;
@@ -127,7 +135,7 @@ public class GTOreByProductWidget extends WidgetGroup {
                 xeiChance = chance.chance;
                 overlay = chance.createOverlay(false);
             }
-            if (itemOutputs.get(slotIndex).isEmpty() || itemOutputs.get(slotIndex).get(0).isEmpty()) {
+            if (itemOutputs.get(slotIndex).isEmpty()) {
                 itemOutputExists.add(false);
                 continue;
             }
@@ -139,12 +147,12 @@ public class GTOreByProductWidget extends WidgetGroup {
             itemOutputExists.add(true);
         }
 
-        List<List<FluidStack>> fluidInputs = recipeWrapper.fluidInputs;
-        CycleFluidStorage fluidInputsHandler = new CycleFluidStorage(fluidInputs);
+        List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
+        TagOrCycleFluidTransfer fluidInputsHandler = new TagOrCycleFluidTransfer(fluidInputs);
         WidgetGroup fluidStackGroup = new WidgetGroup();
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
-            if (!fluidInputs.get(slotIndex).isEmpty()) {
+            if (!fluidInputs.get(slotIndex).map(Function.identity(), Function.identity()).isEmpty()) {
                 fluidStackGroup.addWidget(new TankWidget(new FluidStorage(fluidInputsHandler.getFluidInTank(slotIndex)), FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
                     .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT));
             }
