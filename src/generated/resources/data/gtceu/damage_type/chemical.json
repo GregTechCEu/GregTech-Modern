@@ -1,5 +1,5 @@
 {
   "exhaustion": 0.0,
-  "message_id": "gtceu.death.chemical",
+  "message_id": "death.attack.gtceu.chemical",
   "scaling": "when_caused_by_living_non_player"
 }
