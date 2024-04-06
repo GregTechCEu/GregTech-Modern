@@ -723,6 +723,8 @@ public class LangHandler {
 
         provider.add("gtceu.universal.disabled", "Multiblock Sharing §4Disabled");
         provider.add("gtceu.universal.enabled", "Multiblock Sharing §aEnabled");
+        provider.add("gtceu.universal.liters", "%s L");
+        provider.add("gtceu.universal.kiloliters", "%s kL");
         provider.add("gtceu.universal.tooltip.voltage_in", "§aVoltage IN: §f%d EU/t (%s§f)");
         provider.add("gtceu.universal.tooltip.max_voltage_in", "§aMax Voltage IN: §f%d (%s§f)");
         provider.add("gtceu.universal.tooltip.voltage_out", "§aVoltage OUT: §f%d EU/t (%s§f)");
@@ -742,10 +744,10 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d L");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult", "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
-        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
+        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d L/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.chunk_mode", "Chunk Mode: ");
@@ -808,7 +810,7 @@ public class LangHandler {
         provider.add("gtceu.fluid.plasma", "%s Plasma");
         provider.add("gtceu.fluid.molten", "Molten %s");
         provider.add("gtceu.fluid.empty", "Empty");
-        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d mB");
+        provider.add("gtceu.fluid.amount", "§9Amount: %d/%d L");
         provider.add("gtceu.fluid.temperature", "§cTemperature: %d K");
         provider.add("gtceu.fluid.temperature.cryogenic", "§bCryogenic! Handle with care!");
         provider.add("gtceu.fluid.state_gas", "§aState: Gaseous");
@@ -885,7 +887,7 @@ public class LangHandler {
         provider.add("gtceu.cable.amperage", "Max Amperage: §e%d");
         provider.add("gtceu.cable.loss_per_block", "Loss/Meter/Ampere: §c%d§7 EU-Volt");
         provider.add("gtceu.cable.superconductor", "§d%s Superconductor");
-        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d mB");
+        provider.add("gtceu.fluid_pipe.capacity", "§9Capacity: §f%d L");
         provider.add("gtceu.fluid_pipe.max_temperature", "§cTemperature Limit: §f%d K");
         provider.add("gtceu.fluid_pipe.channels", "§eChannels: §f%d");
         provider.add("gtceu.fluid_pipe.gas_proof", "§6Can handle Gases");

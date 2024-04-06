@@ -28,7 +28,7 @@ public class TimedProgressSupplier implements DoubleSupplier {
         private double calculateTime() {
             long currentTime = System.currentTimeMillis();
             long msPassed = (currentTime - startTime) % msPerCycle;
-            double currentValue = 1.0 * msPassed * maxValue / msPerCycle;
+            double currentValue = (1.0 * msPassed * maxValue) / msPerCycle;
             if (countDown) {
                 return (maxValue - currentValue) / maxValue;
             }

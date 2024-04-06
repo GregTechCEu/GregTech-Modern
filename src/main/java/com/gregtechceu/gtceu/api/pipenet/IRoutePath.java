@@ -22,13 +22,13 @@ public interface IRoutePath<T> {
     T getHandler(Level world);
 
     @Nullable
-    default BlockEntity getTargetTileEntity(Level level) {
+    default BlockEntity getTargetBlockEntity(Level level) {
         return level.getBlockEntity(getTargetPipePos().relative(getTargetFacing()));
     }
 
     @Nullable
     default <I> I getTargetCapability(Capability<I> capability, Level level) {
-        BlockEntity tile = getTargetTileEntity(level);
-        return tile == null ? null : tile.getCapability(capability, getTargetFacing().getOpposite()).resolve().orElse(null);
+        BlockEntity blockEntity = getTargetBlockEntity(level);
+        return blockEntity == null ? null : blockEntity.getCapability(capability, getTargetFacing().getOpposite()).resolve().orElse(null);
     }
 }

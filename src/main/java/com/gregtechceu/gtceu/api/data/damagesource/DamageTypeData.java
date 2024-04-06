@@ -113,7 +113,7 @@ public class DamageTypeData {
          */
         public DamageTypeData.Builder simpleId(ResourceLocation location) {
             location(location);
-            return msgId(location.getNamespace() + '.' + location.getPath());
+            return msgId(location.getNamespace() + ".death." + location.getPath());
         }
 
         public DamageTypeData.Builder simpleId(String path) {

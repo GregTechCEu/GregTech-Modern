@@ -7,6 +7,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -33,7 +34,7 @@ public class ElectricContainerInfoProvider extends CapabilityInfoProvider<IEnerg
         long maxStorage = capability.getEnergyCapacity();
         if (maxStorage == 0) return; // do not add empty max storage progress bar
         probeInfo.progress(capability.getEnergyStored(), maxStorage, probeInfo.defaultProgressStyle()
-                .suffix(" / " + maxStorage + " EU")
+                .suffix(Component.translatable("gtceu.top.energy_stored", maxStorage))
                 .filledColor(0xFFEEE600)
                 .alternateFilledColor(0xFFEEE600)
                 .borderColor(0xFF555555));

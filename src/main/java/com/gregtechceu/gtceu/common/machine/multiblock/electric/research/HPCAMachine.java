@@ -437,7 +437,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
          */
         public double calculateTemperatureChange(IFluidTransfer coolantTank, boolean forceCoolWithActive) {
             // calculate temperature increase
-            int maxCWUt = Math.max(1, getMaxCWUt()); // behavior is no different setting this to 1 if it is 0
+            int maxCWUt = Math.max(1, getMaxCWUt()); // avoids dividing by 0 and the behavior is no different
             int maxCoolingDemand = getMaxCoolingDemand();
 
             // temperature increase is proportional to the amount of actively used computation
@@ -637,7 +637,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine implements IO
 
             // Coolant Required
             if (getMaxCoolantDemand() > 0) {
-                data = Component.literal(getMaxCoolantDemand() + "L ").withStyle(ChatFormatting.YELLOW);
+                data = Component.translatable("gtceu.universal.liters", getMaxCoolantDemand()).withStyle(ChatFormatting.YELLOW).append(" ");
                 Component coolantName = Component.translatable("gtceu.multiblock.hpca.info_coolant_name").withStyle(ChatFormatting.YELLOW);
                 data.append(coolantName);
             } else {

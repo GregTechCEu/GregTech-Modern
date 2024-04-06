@@ -8,6 +8,7 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -33,7 +34,7 @@ public class WorkableInfoProvider extends CapabilityInfoProvider<IWorkable> {
 
         int currentProgress = capability.getProgress();
         int maxProgress = capability.getMaxProgress();
-        String text;
+        Component text;
 
         if (capability instanceof RecipeLogic logic &&
             logic.getLastRecipe() != null &&
@@ -41,7 +42,7 @@ public class WorkableInfoProvider extends CapabilityInfoProvider<IWorkable> {
             // show as total computation instead
             int color = capability.isWorkingEnabled() ? 0xFF00D4CE : 0xFFBB1C28;
             probeInfo.progress(currentProgress, maxProgress, probeInfo.defaultProgressStyle()
-                    .suffix(" / " + maxProgress + " CWU")
+                    .suffix(Component.translatable("gtceu.top.progress_computation", maxProgress))
                     .filledColor(color)
                     .alternateFilledColor(color)
                     .borderColor(0xFF555555));
@@ -49,11 +50,11 @@ public class WorkableInfoProvider extends CapabilityInfoProvider<IWorkable> {
         }
 
         if (maxProgress < 20) {
-            text = " / " + maxProgress + " t";
+            text = Component.translatable("gtceu.top.progress_tick", maxProgress);
         } else {
             currentProgress = Math.round(currentProgress / 20.0F);
             maxProgress = Math.round(maxProgress / 20.0F);
-            text = " / " + maxProgress + " s";
+            text = Component.translatable("gtceu.top.progress_sec", maxProgress);
         }
 
         if (maxProgress > 0) {
