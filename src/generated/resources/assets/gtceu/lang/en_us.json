@@ -3401,7 +3401,7 @@
   "gtceu.universal.tooltip.base_production_eut": "§eBase Production: §f%d EU/t",
   "gtceu.universal.tooltip.base_production_fluid": "§eBase Production: §f%d L/t",
   "gtceu.universal.tooltip.chunk_mode": "Chunk Mode: ",
-  "gtceu.universal.tooltip.deprecated": "§5WARNING: DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r",
+  "gtceu.universal.tooltip.deprecated": "§4§lWARNING:§r§4 DEPRECATED. WILL BE REMOVED IN A FUTURE VERSION.§r",
   "gtceu.universal.tooltip.energy_storage_capacity": "§cEnergy Capacity: §r%d EU",
   "gtceu.universal.tooltip.energy_tier_range": "§aAllowed Voltage Tiers: §f%s §f- %s",
   "gtceu.universal.tooltip.fluid_storage_capacity": "§9Fluid Capacity: §f%d L",
