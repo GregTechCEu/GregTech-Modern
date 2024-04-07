@@ -21,6 +21,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -28,19 +29,19 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 public class MultiblockTankMachine extends MultiblockControllerMachine implements IFancyUIMachine {
     @Persisted @Getter @NotNull
-    private NotifiableFluidTank tank;
+    private final NotifiableFluidTank tank;
 
-    public MultiblockTankMachine(IMachineBlockEntity holder, boolean isMetal, int capacity, Object... args) {
+    public MultiblockTankMachine(IMachineBlockEntity holder, int capacity, @Nullable PropertyFluidFilter filter, Object... args) {
         super(holder);
 
-        this.tank = createTank(capacity, isMetal, args);
+        this.tank = createTank(capacity, filter, args);
     }
 
-    protected NotifiableFluidTank createTank(int capacity, boolean isMetal, Object... args) {
+    protected NotifiableFluidTank createTank(int capacity, @Nullable PropertyFluidFilter filter, Object... args) {
         var fluidTank = new NotifiableFluidTank(this, 1, capacity, IO.BOTH);
 
-        if (!isMetal)
-            fluidTank.setFilter(new PropertyFluidFilter(340, false, false, false, false));
+        if (filter != null)
+            fluidTank.setFilter(filter);
 
         return fluidTank;
     }

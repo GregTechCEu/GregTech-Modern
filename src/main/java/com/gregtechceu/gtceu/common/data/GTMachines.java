@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.fluids.PropertyFluidFilter;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IRotorHolderMachine;
@@ -83,6 +84,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraftforge.fml.ModLoader;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -534,8 +536,9 @@ public class GTMachines {
         (builder, overlay) -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", overlay, false)
     );
     public static final MultiblockMachineDefinition WOODEN_MULTIBLOCK_TANK = registerMultiblockTank(
-        "wooden_multiblock_tank", "Wooden Multiblock Tank", false, 250 * 1000,
+        "wooden_multiblock_tank", "Wooden Multiblock Tank", 250 * 1000,
         CASING_WOOD_WALL, WOODEN_TANK_VALVE::getBlock,
+        new PropertyFluidFilter(340, false, false, false, false),
         (builder, overlay) -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", overlay, false)
     );
 
@@ -544,8 +547,9 @@ public class GTMachines {
         (builder, overlay) -> builder.workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay, false)
     );
     public static final MultiblockMachineDefinition STEEL_MULTIBLOCK_TANK = registerMultiblockTank(
-        "steel_multiblock_tank", "Steel Multiblock Tank", true, 1000 * 1000,
+        "steel_multiblock_tank", "Steel Multiblock Tank", 1000 * 1000,
         CASING_STEEL_SOLID, STEEL_TANK_VALVE::getBlock,
+        null,
         (builder, overlay) -> builder.workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay, false)
     );
 
@@ -1942,11 +1946,12 @@ public class GTMachines {
     }
 
     private static MultiblockMachineDefinition registerMultiblockTank(
-        String name, String displayName, boolean isMetal, int capacity,
+        String name, String displayName, int capacity,
         Supplier<? extends Block> casing, Supplier<? extends Block> valve,
+        @Nullable PropertyFluidFilter filter,
         BiConsumer<MultiblockMachineBuilder, ResourceLocation> rendererSetup
     ) {
-        MultiblockMachineBuilder builder = REGISTRATE.multiblock(name, holder -> new MultiblockTankMachine(holder, isMetal, capacity))
+        MultiblockMachineBuilder builder = REGISTRATE.multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
             .langValue(displayName)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(DUMMY_RECIPES)
