@@ -1,28 +1,28 @@
 package com.gregtechceu.gtceu.integration;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.ResearchManager;
-import com.gregtechceu.gtceu.utils.CycleFluidStorage;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
 import com.mojang.datafixers.util.Either;
@@ -30,7 +30,6 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -40,9 +39,9 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import org.apache.commons.lang3.mutable.MutableInt;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
+import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
@@ -51,7 +50,6 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.GTValues.IV;
 
 /**
  * @author KilaBash

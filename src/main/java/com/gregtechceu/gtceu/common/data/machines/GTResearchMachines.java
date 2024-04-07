@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCABridgePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCACoolerPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAEmptyPartMachine;
@@ -397,7 +398,7 @@ public class GTResearchMachines {
         .register();
     public static final MachineDefinition HPCA_BRIDGE_COMPONENT = registerHPCAPart(
         "hpca_bridge_component", "HPCA Bridge Component",
-        HPCAEmptyPartMachine::new, "bridge", false
+        HPCABridgePartMachine::new, "bridge", false
     ).tooltips(Component.translatable("gtceu.machine.hpca.component_type.bridge"),
             Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]))
         .register();
