@@ -12,12 +12,11 @@ import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 import javax.annotation.Nonnull;
 
 public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockInfoWrapper> {
-    public final static RecipeType<MultiblockInfoWrapper> RECIPE_TYPE = new RecipeType<>(new ResourceLocation(GTCEu.MOD_ID + ":multiblock_info"), MultiblockInfoWrapper.class);
+    public final static RecipeType<MultiblockInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("multiblock_info"), MultiblockInfoWrapper.class);
     private final IDrawable background;
     private final IDrawable icon;
 

@@ -142,7 +142,7 @@ public class GTOreByProductWidget extends WidgetGroup {
 
             itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i), ITEM_OUTPUT_LOCATIONS.get(i + 1))
                 .setCanTakeItems(false).setCanPutItems(false)
-                .setIngredientIO(IngredientIO.OUTPUT).setOverlay(overlay).setXEIChance(xeiChance)
+                .setIngredientIO(IngredientIO.OUTPUT).setXEIChance(xeiChance).setOverlay(overlay)
                 .setHoverTooltips(recipeWrapper.getTooltip(slotIndex + itemInputs.size())).setBackground((IGuiTexture) null));
             itemOutputExists.add(true);
         }
