@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.machine.multiblock.part.DataAccessHatchMachi
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ObjectHolderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalComputationHatchMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.OpticalDataHatchMachine;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCABridgePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComputationPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCACoolerPartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAEmptyPartMachine;
@@ -132,20 +133,9 @@ public class GTResearchMachines {
             .where('A', blocks(COMPUTER_CASING.get()))
             .where('C', blocks(HIGH_POWER_CASING.get())
                 .setMinGlobalLimited(4)
-                .or(autoAbilities()))
-            .build())
-        .shapeInfo(definition -> MultiblockShapeInfo.builder()
-            .aisle("XDDDX", "XDHDX", "XTTTX")
-            .aisle("XDDDX", "XAAAX", "XRRRX")
-            .aisle("XCCCX", "XCSCX", "XCCCX")
-            .where('S', GTResearchMachines.DATA_BANK, Direction.SOUTH)
-            .where('X', COMPUTER_HEAT_VENT)
-            .where('D', COMPUTER_CASING)
-            .where('A', COMPUTER_CASING)
-            .where('C', HIGH_POWER_CASING)
-            .where('R', GTResearchMachines.DATA_HATCH_RECEIVER, Direction.UP)
-            .where('T', GTResearchMachines.DATA_HATCH_TRANSMITTER, Direction.NORTH)
-            .where('H', GTResearchMachines.ADVANCED_DATA_ACCESS_HATCH, Direction.NORTH)
+                .or(autoAbilities())
+                .or(autoAbilities(true, false, false))
+                .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1)))
             .build())
         .workableCasingRenderer(GTCEu.id("block/casings/hpca/high_power_casing"),
             GTCEu.id("block/multiblock/data_bank"), false)
@@ -397,7 +387,7 @@ public class GTResearchMachines {
         .register();
     public static final MachineDefinition HPCA_BRIDGE_COMPONENT = registerHPCAPart(
         "hpca_bridge_component", "HPCA Bridge Component",
-        HPCAEmptyPartMachine::new, "bridge", false
+        HPCABridgePartMachine::new, "bridge", false
     ).tooltips(Component.translatable("gtceu.machine.hpca.component_type.bridge"),
             Component.translatable("gtceu.machine.hpca.component_general.max_eut", GTValues.VA[GTValues.IV]))
         .register();
