@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -16,19 +15,16 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
-import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
@@ -41,24 +37,17 @@ import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DataBankMachine extends MultiblockControllerMachine implements IFancyUIMachine, IDisplayUIMachine, IControllable, IWorkable {
+public class DataBankMachine extends WorkableElectricMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, IControllable {
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.EV];
     public static final int EUT_PER_HATCH_CHAINED = GTValues.VA[GTValues.LuV];
 
     private IMaintenanceMachine maintenance;
     private IEnergyContainer energyContainer;
-
-    @Getter @Setter
-    @Persisted @DescSynced @RequireRerender
-    private boolean isActive = false;
-    @Getter @Setter
-    @Persisted @DescSynced @RequireRerender
-    private boolean isWorkingEnabled = true;
-    protected boolean hasNotEnoughEnergy;
 
     @Getter
     private int energyUsage = 0;
@@ -92,6 +81,11 @@ public class DataBankMachine extends MultiblockControllerMachine implements IFan
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
         this.energyUsage = calculateEnergyUsage();
+
+        if (this.maintenance == null) {
+            onStructureInvalid();
+            return;
+        }
 
         if (getLevel() instanceof ServerLevel serverLevel) {
             serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
@@ -161,23 +155,21 @@ public class DataBankMachine extends MultiblockControllerMachine implements IFan
             energyToConsume += maintenance.getNumMaintenanceProblems() * energyToConsume / 10;
         }
 
-        if (this.hasNotEnoughEnergy && energyContainer.getInputPerSec() > 19L * energyToConsume) {
-            this.hasNotEnoughEnergy = false;
+        if (getRecipeLogic().isWaiting() && energyContainer.getInputPerSec() > 19L * energyToConsume) {
+            getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
         }
 
         if (this.energyContainer.getEnergyStored() >= energyToConsume) {
-            if (!hasNotEnoughEnergy) {
+            if (!getRecipeLogic().isWaiting()) {
                 long consumed = this.energyContainer.removeEnergy(energyToConsume);
-                if (consumed == -energyToConsume) {
-                    setActive(true);
+                if (consumed == energyToConsume) {
+                    getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                 } else {
-                    this.hasNotEnoughEnergy = true;
-                    setActive(false);
+                    getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(EURecipeCapability.CAP.getName()));
                 }
             }
         } else {
-            this.hasNotEnoughEnergy = true;
-            setActive(false);
+            getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(EURecipeCapability.CAP.getName()));
         }
         updateTickSubscription();
     }
@@ -202,36 +194,6 @@ public class DataBankMachine extends MultiblockControllerMachine implements IFan
             .addMaintenanceProblemLines(maintenance.getMaintenanceProblems());
     }
     */
-
-    @Override
-    public Widget createUIWidget() {
-        var group = new WidgetGroup(0, 0, 182 + 8, 117 + 8);
-        group.addWidget(new DraggableScrollableWidgetGroup(4, 4, 182, 117).setBackground(getScreenTexture())
-            .addWidget(new LabelWidget(4, 5, self().getBlockState().getBlock().getDescriptionId()))
-            .addWidget(new ComponentPanelWidget(4, 17, this::addDisplayText)
-                .textSupplier(this.self().getLevel().isClientSide ? null : this::addDisplayText)
-                .setMaxWidthLimit(150)
-                .clickHandler(this::handleDisplayClick)));
-        group.setBackground(GuiTextures.BACKGROUND_INVERSE);
-        return group;
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer) {
-        return new ModularUI(198, 208, this, entityPlayer).widget(new FancyMachineUIWidget(this, 198, 208));
-    }
-
-    @Override
-    public List<IFancyUIProvider> getSubTabs() {
-        return getParts().stream().filter(IFancyUIProvider.class::isInstance).map(IFancyUIProvider.class::cast).toList();
-    }
-
-    @Override
-    public void attachTooltips(TooltipsPanel tooltipsPanel) {
-        for (IMultiPart part : getParts()) {
-            part.attachFancyTooltipsToController(this, tooltipsPanel);
-        }
-    }
 
     @Override
     public int getProgress() {
