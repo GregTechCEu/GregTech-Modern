@@ -1937,6 +1937,7 @@ public class GTMachines {
     ) {
         MachineBuilder<MachineDefinition> builder = REGISTRATE.machine(name, holder -> new TankValvePartMachine(holder, isMetal))
             .langValue(displayName)
+            .tooltips(Component.translatable("gtceu.machine.tank_valve.tooltip"))
             .rotationState(RotationState.ALL)
             .compassSections(GTCompassSections.MULTIBLOCK)
             .compassNode("tank_valve");
@@ -1953,6 +1954,10 @@ public class GTMachines {
     ) {
         MultiblockMachineBuilder builder = REGISTRATE.multiblock(name, holder -> new MultiblockTankMachine(holder, capacity, filter))
             .langValue(displayName)
+            .tooltips(
+                Component.translatable("gtceu.machine.multiblock.tank.tooltip"),
+                Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", capacity)
+            )
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(DUMMY_RECIPES)
             .pattern(definition -> FactoryBlockPattern.start()
