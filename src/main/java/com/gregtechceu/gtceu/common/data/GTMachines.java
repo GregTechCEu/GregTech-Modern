@@ -90,6 +90,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -525,6 +526,28 @@ public class GTMachines {
                     .compassNode("super_tank")
                     .register(),
             HIGH_TIERS);
+
+
+    // Multiblock Tanks
+    public static final MachineDefinition WOODEN_TANK_VALVE = registerTankValve(
+        "wooden_tank_valve", "Wooden Tank Valve", false,
+        "block/casings/wood_wall"
+    );
+    public static final MultiblockMachineDefinition WOODEN_MULTIBLOCK_TANK = registerMultiblockTank(
+        "wooden_multiblock_tank", "Wooden Multiblock Tank", false, 250 * 1000,
+        CASING_WOOD_WALL, WOODEN_TANK_VALVE::getBlock,
+        builder -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", GTCEu.id("block/multiblock/multiblock_tank"), false)
+    );
+
+    public static final MachineDefinition STEEL_TANK_VALVE = registerTankValve(
+        "steel_tank_valve", "Steel Tank Valve", true,
+        "block/casings/solid/machine_casing_solid_steel"
+    );
+    public static final MultiblockMachineDefinition STEEL_MULTIBLOCK_TANK = registerMultiblockTank(
+        "steel_multiblock_tank", "Steel Multiblock Tank", true, 1000 * 1000,
+        CASING_STEEL_SOLID, STEEL_TANK_VALVE::getBlock,
+        builder -> builder.workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/multiblock_tank"), false)
+    );
 
     public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
     public static MachineDefinition BRONZE_CRATE = registerCrate(GTMaterials.Bronze, 54, "Bronze Crate");
@@ -1903,6 +1926,48 @@ public class GTMachines {
         }
         return definitions;
     }
+
+    private static MachineDefinition registerTankValve(
+        String name, String displayName, boolean isMetal,
+        String baseTexture
+    ) {
+        return REGISTRATE.machine(name, holder -> new TankValvePartMachine(holder, isMetal))
+            .langValue(displayName)
+            .sidedWorkableCasingRenderer(baseTexture, GTCEu.id("block/multiblock/tank_valve"), false)
+            .compassSections(GTCompassSections.MULTIBLOCK)
+            .compassNode("tank_valve")
+            .register();
+    }
+
+    private static MultiblockMachineDefinition registerMultiblockTank(
+        String name, String displayName, boolean isMetal, int capacity,
+        Supplier<? extends Block> casing, Supplier<? extends Block> valve,
+        Consumer<MultiblockMachineBuilder> rendererSetup
+    ) {
+        MultiblockMachineBuilder builder = REGISTRATE.multiblock(name, holder -> new MultiblockTankMachine(holder, isMetal, capacity))
+            .langValue(displayName)
+            .rotationState(RotationState.NON_Y_AXIS)
+            .recipeType(DUMMY_RECIPES)
+            .pattern(definition -> FactoryBlockPattern.start()
+                .aisle("CCC", "CCC", "CCC")
+                .aisle("CCC", "C#C", "CCC")
+                .aisle("CCC", "CSC", "CCC")
+                .where('S', controller(blocks(definition.get())))
+                .where('C', blocks(casing.get())
+                    .or(blocks(valve.get()).setMaxGlobalLimited(2, 0))
+                )
+                .where('#', air())
+                .build()
+            )
+
+            .appearanceBlock(casing)
+            .compassSections(GTCompassSections.MULTIBLOCK)
+            .compassNode("multiblock_tank");
+
+        rendererSetup.accept(builder);
+        return builder.register();
+    }
+
 
     public static MultiblockMachineDefinition registerLargeBoiler(String name, Supplier<? extends Block> casing, Supplier<? extends Block> pipe, Supplier<? extends Block> fireBox, ResourceLocation texture, BoilerFireboxType firebox, int maxTemperature, int heatSpeed) {
         return REGISTRATE.multiblock("%s_large_boiler".formatted(name), holder -> new LargeBoilerMachine(holder, maxTemperature, heatSpeed))
