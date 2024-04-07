@@ -531,22 +531,22 @@ public class GTMachines {
     // Multiblock Tanks
     public static final MachineDefinition WOODEN_TANK_VALVE = registerTankValve(
         "wooden_tank_valve", "Wooden Tank Valve", false,
-        "block/casings/wood_wall"
+        (builder, overlay) -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", overlay, false)
     );
     public static final MultiblockMachineDefinition WOODEN_MULTIBLOCK_TANK = registerMultiblockTank(
         "wooden_multiblock_tank", "Wooden Multiblock Tank", false, 250 * 1000,
         CASING_WOOD_WALL, WOODEN_TANK_VALVE::getBlock,
-        builder -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", GTCEu.id("block/multiblock/multiblock_tank"), false)
+        (builder, overlay) -> builder.sidedWorkableCasingRenderer("block/casings/wood_wall", overlay, false)
     );
 
     public static final MachineDefinition STEEL_TANK_VALVE = registerTankValve(
         "steel_tank_valve", "Steel Tank Valve", true,
-        "block/casings/solid/machine_casing_solid_steel"
+        (builder, overlay) -> builder.workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay, false)
     );
     public static final MultiblockMachineDefinition STEEL_MULTIBLOCK_TANK = registerMultiblockTank(
         "steel_multiblock_tank", "Steel Multiblock Tank", true, 1000 * 1000,
         CASING_STEEL_SOLID, STEEL_TANK_VALVE::getBlock,
-        builder -> builder.workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), GTCEu.id("block/multiblock/multiblock_tank"), false)
+        (builder, overlay) -> builder.workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"), overlay, false)
     );
 
     public static MachineDefinition WOODEN_CRATE = registerCrate(GTMaterials.Wood, 27, "Wooden Crate");
@@ -1929,20 +1929,21 @@ public class GTMachines {
 
     private static MachineDefinition registerTankValve(
         String name, String displayName, boolean isMetal,
-        String baseTexture
+        BiConsumer<MachineBuilder, ResourceLocation> rendererSetup
     ) {
-        return REGISTRATE.machine(name, holder -> new TankValvePartMachine(holder, isMetal))
+        MachineBuilder<MachineDefinition> builder = REGISTRATE.machine(name, holder -> new TankValvePartMachine(holder, isMetal))
             .langValue(displayName)
-            .sidedWorkableCasingRenderer(baseTexture, GTCEu.id("block/multiblock/tank_valve"), false)
             .compassSections(GTCompassSections.MULTIBLOCK)
-            .compassNode("tank_valve")
-            .register();
+            .compassNode("tank_valve");
+
+        rendererSetup.accept(builder, GTCEu.id("block/multiblock/tank_valve"));
+        return builder.register();
     }
 
     private static MultiblockMachineDefinition registerMultiblockTank(
         String name, String displayName, boolean isMetal, int capacity,
         Supplier<? extends Block> casing, Supplier<? extends Block> valve,
-        Consumer<MultiblockMachineBuilder> rendererSetup
+        BiConsumer<MultiblockMachineBuilder, ResourceLocation> rendererSetup
     ) {
         MultiblockMachineBuilder builder = REGISTRATE.multiblock(name, holder -> new MultiblockTankMachine(holder, isMetal, capacity))
             .langValue(displayName)
@@ -1964,7 +1965,7 @@ public class GTMachines {
             .compassSections(GTCompassSections.MULTIBLOCK)
             .compassNode("multiblock_tank");
 
-        rendererSetup.accept(builder);
+        rendererSetup.accept(builder, GTCEu.id("block/multiblock/multiblock_tank"));
         return builder.register();
     }
 
