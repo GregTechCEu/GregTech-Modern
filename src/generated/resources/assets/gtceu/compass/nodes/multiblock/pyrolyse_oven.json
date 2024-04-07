@@ -8,8 +8,8 @@
   ],
   "page": "gtceu:multiblock/pyrolyse_oven",
   "position": [
-    -50,
-    0
+    -400,
+    50
   ],
   "section": "gtceu:multiblock"
 }
