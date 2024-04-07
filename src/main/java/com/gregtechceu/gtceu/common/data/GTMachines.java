@@ -1933,6 +1933,7 @@ public class GTMachines {
     ) {
         MachineBuilder<MachineDefinition> builder = REGISTRATE.machine(name, holder -> new TankValvePartMachine(holder, isMetal))
             .langValue(displayName)
+            .rotationState(RotationState.ALL)
             .compassSections(GTCompassSections.MULTIBLOCK)
             .compassNode("tank_valve");
 
