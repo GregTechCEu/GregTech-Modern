@@ -7,7 +7,7 @@ import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.Getter;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * A class for holding all the various Overclocking logics
@@ -27,7 +27,7 @@ public class OverclockingLogic {
          * @param amountOC        the maximum amount of overclocks to perform
          * @return an int array of {OverclockedEUt, OverclockedDuration}
          */
-        LongIntPair runOverclockingLogic(@Nonnull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC);
+        LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC);
     }
 
     public static final double STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER = 4.0;
@@ -66,7 +66,7 @@ public class OverclockingLogic {
      * @param numberOfOCs       the maximum amount of overclocks allowed
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
-    @Nonnull
+    @NotNull
     public static LongIntPair standardOverclockingLogic(long recipeEUt, long maxVoltage, int recipeDuration, int numberOfOCs, double durationDivisor, double voltageMultiplier) {
         double resultDuration = recipeDuration;
         double resultVoltage = recipeEUt;
@@ -92,7 +92,7 @@ public class OverclockingLogic {
         return LongIntMutablePair.of((long) resultVoltage, (int) resultDuration);
     }
 
-    @Nonnull
+    @NotNull
     public static LongIntPair heatingCoilOverclockingLogic(long recipeEUt, long maximumVoltage, int recipeDuration, int maxOverclocks, int currentTemp, int recipeRequiredTemp) {
         int amountEUDiscount = Math.max(0, (currentTemp - recipeRequiredTemp) / 900);
         int amountPerfectOC = amountEUDiscount / 2;

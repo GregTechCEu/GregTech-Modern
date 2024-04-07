@@ -16,8 +16,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -91,7 +91,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     /**
      * Get MultiblockState. It records all structure-related information.
      */
-    @Nonnull
+    @NotNull
     MultiblockState getMultiblockState();
 
     /**
@@ -167,7 +167,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      */
     @Override
     default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (!self().isFormed() && player.isCrouching() && player.getItemInHand(hand).isEmpty()) {
+        if (!self().isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             if (world.isClientSide()) {
                 MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(), self().getDefinition().getMatchingShapes().get(0), ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
             }

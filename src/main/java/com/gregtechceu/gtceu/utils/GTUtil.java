@@ -17,12 +17,14 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
@@ -30,8 +32,8 @@ import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -140,7 +142,7 @@ public class GTUtil {
      * @return Index of the nearest value lesser or equal than {@code value},
      * or {@code -1} if there's no entry matching the condition
      */
-    public static int nearestLesserOrEqual(@Nonnull long[] array, long value) {
+    public static int nearestLesserOrEqual(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
         while (true) {
             int median = (low + high) / 2;
@@ -160,7 +162,7 @@ public class GTUtil {
      * @return Index of the nearest value lesser than {@code value},
      * or {@code -1} if there's no entry matching the condition
      */
-    public static int nearestLesser(@Nonnull long[] array, long value) {
+    public static int nearestLesser(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
         while (true) {
             int median = (low + high) / 2;
@@ -369,7 +371,7 @@ public class GTUtil {
      * @return the correct "molten" fluid for a material
      */
     @Nullable
-    public static Fluid getMoltenFluid(@Nonnull Material material) {
+    public static Fluid getMoltenFluid(@NotNull Material material) {
         if (material.hasProperty(PropertyKey.ALLOY_BLAST))
             return material.getProperty(PropertyKey.FLUID).getStorage().get(FluidStorageKeys.MOLTEN);
         if (!TagPrefix.ingotHot.doGenerateItem(material) && material.hasProperty(PropertyKey.FLUID))

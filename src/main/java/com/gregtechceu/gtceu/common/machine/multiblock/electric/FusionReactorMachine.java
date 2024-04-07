@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +135,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof FusionReactorMachine fusionReactorMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                     !recipe.data.contains("eu_to_start") ||

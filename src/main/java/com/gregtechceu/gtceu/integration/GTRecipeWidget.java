@@ -1,22 +1,20 @@
 package com.gregtechceu.gtceu.integration;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
+import com.gregtechceu.gtceu.utils.GTUtil;
+import com.gregtechceu.gtceu.utils.ResearchManager;
+import com.gregtechceu.gtceu.utils.CycleFluidStorage;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
@@ -32,6 +30,7 @@ import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -41,6 +40,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import org.apache.commons.lang3.mutable.MutableInt;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -59,6 +59,8 @@ import static com.gregtechceu.gtceu.api.GTValues.IV;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
+    public static final int LINE_HEIGHT = 10;
+
     private final int xOffset;
     private final GTRecipe recipe;
     private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
@@ -105,6 +107,50 @@ public class GTRecipeWidget extends WidgetGroup {
             .collect(Collectors.toList());
         while (outputStacks.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) outputStacks.add(null);
 
+
+        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> scannerPossibilities = null;
+        if (recipe.recipeType.isScanner()) {
+            scannerPossibilities = new ArrayList<>();
+            // Scanner Output replacing, used for cycling research outputs
+            Pair<GTRecipeType, String> researchData = null;
+            for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+                if (researchData != null) break;
+            }
+            if (researchData != null) {
+                Collection<GTRecipe> possibleRecipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+                if (possibleRecipes != null) {
+                    for (GTRecipe r : possibleRecipes) {
+                        ItemStack researchItem = ItemRecipeCapability.CAP.of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        researchItem = researchItem.copy();
+                        researchItem.setCount(1);
+                        boolean didMatch = false;
+                        for (Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> stacks : scannerPossibilities) {
+                            for (ItemStack stack : stacks.map(
+                                tag -> tag
+                                    .stream()
+                                    .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
+                                    .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.get())))
+                                    .collect(Collectors.toList()),
+                                Function.identity())) {
+                                if (ItemStack.isSameItem(stack, researchItem)) {
+                                    didMatch = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!didMatch) scannerPossibilities.add(Either.right(List.of(researchItem)));
+                    }
+                }
+                scannerPossibilities.add(outputStacks.get(0));
+            }
+        }
+
+        if (scannerPossibilities != null && !scannerPossibilities.isEmpty()) {
+            outputStacks = scannerPossibilities;
+        }
+        while (outputStacks.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) outputStacks.add(null);
+
         List<Content> inputFluidContents = new ArrayList<>();
         inputFluidContents.addAll(recipe.getInputContents(FluidRecipeCapability.CAP));
         inputFluidContents.addAll(recipe.getTickInputContents(FluidRecipeCapability.CAP));
@@ -127,7 +173,8 @@ public class GTRecipeWidget extends WidgetGroup {
             new TagOrCycleItemStackTransfer(inputStacks),
             new TagOrCycleItemStackTransfer(outputStacks),
             new TagOrCycleFluidTransfer(inputFluids),
-            new TagOrCycleFluidTransfer(outputFluids)
+            new TagOrCycleFluidTransfer(outputFluids),
+            recipe.data.copy()
         );
         // bind item in overlay
         WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
@@ -198,12 +245,29 @@ public class GTRecipeWidget extends WidgetGroup {
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
         yOffset += EUt > 0 ? 20 : 0;
+
+        /// add text based on i/o's
+        MutableInt yOff = new MutableInt(yOffset);
+        for (var capability : recipe.inputs.entrySet()) {
+            capability.getKey().addXEIInfo(this, capability.getValue(), false, true, yOff);
+        }
+        for (var capability : recipe.tickInputs.entrySet()) {
+            capability.getKey().addXEIInfo(this, capability.getValue(), true, true, yOff);
+        }
+        for (var capability : recipe.outputs.entrySet()) {
+            capability.getKey().addXEIInfo(this, capability.getValue(), false, false, yOff);
+        }
+        for (var capability : recipe.tickOutputs.entrySet()) {
+            capability.getKey().addXEIInfo(this, capability.getValue(), true, false, yOff);
+        }
+
+        yOffset = yOff.getValue();
         for (RecipeCondition condition : recipe.conditions) {
             if (condition.getTooltips() == null) continue;
-            addWidget(new LabelWidget(3 - xOffset, yOffset += 10, condition.getTooltips().getString()));
+            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, condition.getTooltips().getString()));
         }
         for (Function<CompoundTag, String> dataInfo : recipe.recipeType.getDataInfos()) {
-            addWidget(new LabelWidget(3 - xOffset, yOffset += 10, dataInfo.apply(recipe.data)));
+            addWidget(new LabelWidget(3 - xOffset, yOffset += LINE_HEIGHT, dataInfo.apply(recipe.data)));
         }
         recipe.recipeType.getRecipeUI().appendJEIUI(recipe, this);
     }
@@ -214,14 +278,14 @@ public class GTRecipeWidget extends WidgetGroup {
         int duration = recipe.duration;
         long inputEUt = RecipeHelper.getInputEUt(recipe);
         long outputEUt = RecipeHelper.getOutputEUt(recipe);
-        List<Component> texts = getRecipeParaText(duration, inputEUt, outputEUt);
+        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, outputEUt);
         for (Component text : texts) {
             textsY += 10;
             LabelWidget labelWidget = new LabelWidget(3 - xOffset, textsY, text).setTextColor(-1).setDropShadow(true);
             addWidget(labelWidget);
             recipeParaTexts.add(labelWidget);
         }
-        if (inputEUt != 0) {
+        if (inputEUt > 0) {
             LabelWidget voltageTextWidget = new LabelWidget(getVoltageXOffset() - xOffset, getSize().height - 10, tierText).setTextColor(-1).setDropShadow(false);
             if (recipe.recipeType.isOffsetVoltageText()) {
                 voltageTextWidget.setSelfPositionY(getSize().height - recipe.recipeType.getVoltageTextOffset());
@@ -242,17 +306,29 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     @NotNull
-    private static List<Component> getRecipeParaText(int duration, long inputEUt, long outputEUt) {
+    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration, long inputEUt, long outputEUt) {
         List<Component> texts = new ArrayList<>();
-        texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.duration", duration / 20f)));
-        if (inputEUt != 0) {
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.eu", inputEUt)));
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.total", (inputEUt * duration))));
+        if (!recipe.data.getBoolean("hide_duration")) {
+            texts.add(Component.translatable("gtceu.recipe.duration", duration / 20f));
         }
-        if (outputEUt != 0) {
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.eu_inverted", outputEUt)));
-            texts.add(Component.literal(LocalizationUtils.format("gtceu.recipe.total", (outputEUt * duration))));
+        var EUt = inputEUt;
+        boolean isOutput = false;
+        if (EUt == 0) {
+            EUt = outputEUt;
+            isOutput = true;
         }
+        if (EUt > 0) {
+            long euTotal = EUt * recipe.duration;
+            // sadly we still need a custom override here, since computation uses duration and EU/t very differently
+            if (recipe.data.getBoolean("duration_is_total_cwu") && recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
+                int minimumCWUt = Math.min(recipe.tickInputs.get(CWURecipeCapability.CAP).stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
+                texts.add(Component.translatable("gtceu.recipe.max_eu", euTotal / minimumCWUt));
+            } else {
+                texts.add(Component.translatable("gtceu.recipe.total", euTotal));
+            }
+            texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt));
+        }
+
         return texts;
     }
 
@@ -307,7 +383,7 @@ public class GTRecipeWidget extends WidgetGroup {
             inputEUt = pair.firstLong();
             tierText = tierText.formatted(ChatFormatting.ITALIC);
         }
-        List<Component> texts = getRecipeParaText(duration, inputEUt, 0);
+        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);
         for (int i = 0; i < texts.size(); i++) {
             recipeParaTexts.get(i).setComponent(texts.get(i));
         }

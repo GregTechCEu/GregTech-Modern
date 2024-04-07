@@ -222,6 +222,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
                         dropSaveMachine.saveToItem(drop.getOrCreateTag());
+                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                        break;
                     }
                 }
             }

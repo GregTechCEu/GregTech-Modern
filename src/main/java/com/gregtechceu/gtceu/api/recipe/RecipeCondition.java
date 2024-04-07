@@ -9,8 +9,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -61,11 +61,11 @@ public abstract class RecipeCondition {
 
     public abstract Component getTooltips();
 
-    public abstract boolean test(@Nonnull GTRecipe recipe, @Nonnull RecipeLogic recipeLogic);
+    public abstract boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic);
 
     public abstract RecipeCondition createTemplate();
 
-    @Nonnull
+    @NotNull
     public JsonObject serialize() {
         JsonObject jsonObject = new JsonObject();
         if (isReverse) {
@@ -74,7 +74,7 @@ public abstract class RecipeCondition {
         return jsonObject;
     }
 
-    public RecipeCondition deserialize(@Nonnull JsonObject config) {
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
         isReverse = GsonHelper.getAsBoolean(config, "reverse", false);
         return this;
     }

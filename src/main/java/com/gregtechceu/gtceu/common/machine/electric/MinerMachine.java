@@ -52,7 +52,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -279,7 +279,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         });
     }
 
-    private void addDisplayText(@Nonnull List<Component> textList) {
+    private void addDisplayText(@NotNull List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
         textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()).append(" ").append(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX())));
         textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY()).append(" ").append(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY())));
@@ -320,7 +320,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
             int currentRadius = getRecipeLogic().getCurrentRadius();
             if (currentRadius == 1)
                 getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
-            else if (playerIn.isCrouching())
+            else if (playerIn.isShiftKeyDown())
                 getRecipeLogic().setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
             else
                 getRecipeLogic().setCurrentRadius(Math.max(1, currentRadius - 1));
