@@ -440,6 +440,7 @@ public class GTBlocks {
     //////////////////////////////////////
 
     // Multiblock Machine Casing Blocks
+    public static final BlockEntry<Block> CASING_WOOD_WALL = createSidedCasingBlock("wood_wall", "block/casings/wood_wall");
     public static final BlockEntry<Block> CASING_COKE_BRICKS = createCasingBlock("coke_oven_bricks", GTCEu.id("block/casings/solid/machine_coke_bricks"));
     public static final BlockEntry<Block> CASING_PRIMITIVE_BRICKS = createCasingBlock("firebricks", GTCEu.id("block/casings/solid/machine_primitive_bricks"));
     public static final BlockEntry<Block> CASING_BRONZE_BRICKS = createCasingBlock("steam_machine_casing", GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
@@ -683,6 +684,17 @@ public class GTBlocks {
     // THIS IS JUST FOR PTFE PIPE CASING
     public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
         return createCasingBlock(name, RendererBlock::new, texture, () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
+    }
+
+    private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
+        return createCasingBlock(
+            name, (properties, iRenderer) -> new RendererBlock(properties,
+                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                    Map.of("bottom", GTCEu.id(texture + "/bottom"),
+                        "top", GTCEu.id(texture + "/top"),
+                        "side", GTCEu.id(texture + "/side"))) : null),
+            GTCEu.id(texture), () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
+        );
     }
 
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture, Supplier<Supplier<RenderType>> type) {

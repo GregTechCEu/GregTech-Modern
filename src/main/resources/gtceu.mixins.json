@@ -44,7 +44,6 @@
     "TagValueAccessor",
     "ae2.GenericStackInvAccessor",
     "create.RotationPropagatorMixin",
-    "emi.EmiRecipeHandlerMixin",
     "emi.FluidEmiStackMixin",
     "jei.FluidHelperMixin",
     "rei.InputSlotCrafterMixin",
