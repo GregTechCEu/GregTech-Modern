@@ -42,11 +42,11 @@ dependencies {
     // REI
     modCompileOnly forge.rei.plugin
     modCompileOnly forge.rei.api
-    modCompileOnly forge.rei.forge
+    modImplementation forge.rei.forge
 
     // EMI
     modCompileOnly("dev.emi:emi-forge:${forge.versions.emi.get()}:api")
-    modImplementation forge.emi
+    modCompileOnly forge.emi
 
     // TOP
     modCompileOnly(forge.theoneprobe) { transitive = false }
