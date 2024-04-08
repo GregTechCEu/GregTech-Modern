@@ -482,7 +482,7 @@ public class ToolRecipeHandler {
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "portable_scanner_" + batteryItem.getId().getPath(),
-                    Ingredient.of(batteryItem),  GTItems.PORTABLE_SCANNER.asStack(),
+                    Ingredient.of(batteryItem.get()),  GTItems.PORTABLE_SCANNER.asStack(),
                     "EPS", "CDC", "PBP",
                     'E', GTItems.EMITTER_MV.asStack(),
                     'P', new UnificationEntry(plate, GTMaterials.Aluminium),
