@@ -420,9 +420,7 @@ public class GTRecipeWidget extends WidgetGroup {
     private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             final int amount = sizedIngredient.getAmount();
-            if (((IngredientAccessor)sizedIngredient.getInner()).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), amount)));
-            } else if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
+             if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
                 List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
                 if (children.isEmpty()) {
                     return Either.right(null);
@@ -460,6 +458,8 @@ public class GTRecipeWidget extends WidgetGroup {
                     }
                     return items;
                 }));
+            } else if (((IngredientAccessor)sizedIngredient.getInner()).getValues().length > 0 && ((IngredientAccessor)sizedIngredient.getInner()).getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), amount)));
             }
         } else if (ingredient instanceof IntersectionIngredient intersection) {
             // Map intersection ingredients to the items inside, as recipe viewers don't support them.
