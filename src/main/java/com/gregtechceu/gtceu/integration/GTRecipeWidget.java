@@ -69,16 +69,16 @@ public class GTRecipeWidget extends WidgetGroup {
     private LabelWidget voltageTextWidget;
 
     public GTRecipeWidget(GTRecipe recipe) {
-        super(getXOffSet(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
+        super(getXOffset(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
         this.recipe = recipe;
-        this.xOffset = getXOffSet(recipe);
+        this.xOffset = getXOffset(recipe);
         setRecipeWidget();
         setTierToMin();
         initializeRecipeTextWidget();
         addButtons();
     }
 
-    private static int getXOffSet(GTRecipe recipe) {
+    private static int getXOffset(GTRecipe recipe) {
         if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width) {
             return (recipe.recipeType.getRecipeUI().getJEISize().width - recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
@@ -247,16 +247,16 @@ public class GTRecipeWidget extends WidgetGroup {
         /// add text based on i/o's
         MutableInt yOff = new MutableInt(yOffset);
         for (var capability : recipe.inputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, capability.getValue(), false, true, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), false, true, yOff);
         }
         for (var capability : recipe.tickInputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, capability.getValue(), true, true, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), true, true, yOff);
         }
         for (var capability : recipe.outputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, capability.getValue(), false, false, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), false, false, yOff);
         }
         for (var capability : recipe.tickOutputs.entrySet()) {
-            capability.getKey().addXEIInfo(this, capability.getValue(), true, false, yOff);
+            capability.getKey().addXEIInfo(this, xOffset, capability.getValue(), true, false, yOff);
         }
 
         yOffset = yOff.getValue();
