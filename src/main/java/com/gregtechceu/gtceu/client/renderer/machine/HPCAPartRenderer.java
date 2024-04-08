@@ -33,11 +33,11 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
         super(GTValues.ZPM, isAdvanced ? GTCEu.id("block/computer_casing") : GTCEu.id("block/advanced_computer_casing"));
         this.isAdvanced = isAdvanced;
         this.texture = texture;
-        this.activeTexture = texture.withSuffix("_active");
-        this.activeEmissiveTexture = activeTexture.withSuffix("_emissive");
+        this.activeTexture = new ResourceLocation(texture.getNamespace(), texture.getPath() + "_active");
+        this.activeEmissiveTexture = new ResourceLocation(activeTexture.getNamespace(), activeTexture.getPath() + "_emissive");
         this.damagedTexture = damagedTexture;
-        this.damagedActiveTexture = damagedTexture.withSuffix("_active");
-        this.damagedActiveEmissiveTexture = damagedActiveTexture.withSuffix("_emissive");
+        this.damagedActiveTexture = new ResourceLocation(damagedTexture.getNamespace(), damagedTexture.getPath() + "_active");
+        this.damagedActiveEmissiveTexture = new ResourceLocation(damagedActiveTexture.getNamespace(), damagedActiveTexture.getPath() + "_emissive");
     }
 
     @Override
@@ -61,10 +61,10 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                     texture = this.texture;
                 }
             }
-            if (ModelFactory.getBlockSprite(texture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
+            if (ModelFactory.getBlockSprite(texture).getName().equals(MissingTextureAtlasSprite.getLocation())) {
                 texture = this.texture;
             }
-            if (texture != null && !ModelFactory.getBlockSprite(texture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
+            if (texture != null && !ModelFactory.getBlockSprite(texture).getName().equals(MissingTextureAtlasSprite.getLocation())) {
                 if (side == frontFacing) {
                     Direction facing = frontFacing;
                     // Always render this outwards in the HPCA, in case it is not placed outwards in structure.
@@ -74,7 +74,7 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                     }
                     facing = ModelFactory.modelFacing(side, facing);
                     quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
-                    if (emissiveTexture != null && !ModelFactory.getBlockSprite(emissiveTexture).atlasLocation().equals(MissingTextureAtlasSprite.getLocation())) {
+                    if (emissiveTexture != null && !ModelFactory.getBlockSprite(emissiveTexture).getName().equals(MissingTextureAtlasSprite.getLocation())) {
                         quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture), modelState, -101, 15, true, false));
                     }
                 }

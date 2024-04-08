@@ -154,7 +154,7 @@ public class ComputerRecipes {
             .inputFluids(Polybenzimidazole.getFluid(L * 4))
             .outputItems(NETWORK_SWITCH)
             .stationResearch(b -> b
-                .researchStack(new ItemStack(OPTICAL_PIPES[0]))
+                .researchStack(new ItemStack(OPTICAL_PIPES[0].get()))
                 .CWUt(32)
                 .EUt(VA[ZPM]))
             .duration(1200).EUt(100000).save(provider);
