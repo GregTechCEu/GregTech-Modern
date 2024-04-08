@@ -33,6 +33,7 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
@@ -210,7 +211,7 @@ public class GTRecipeTypeUI {
                 progressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(progressWidget);
             });
-            // Then set the dual progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
+            // Then set the dual-progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
             WidgetUtils.widgetByIdForEach(template, "^progress$", DualProgressWidget.class, dualProgressWidget -> {
                 dualProgressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(dualProgressWidget);
@@ -274,7 +275,11 @@ public class GTRecipeTypeUI {
             WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.IN)), TankWidget.class, tank -> {
                 var index = WidgetUtils.widgetIdIndex(tank);
                 if (index >= 0 && index < recipeHolder.importFluids.getTanks()) {
-                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.importFluids, index));
+                    if (recipeHolder.importFluids instanceof TagOrCycleFluidTransfer fluidTransfer) {
+                        tank.setFluidTank(fluidTransfer, index);
+                    } else {
+                        tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.importFluids, index));
+                    }
                     tank.setIngredientIO(IngredientIO.INPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(!isJEI);
@@ -284,7 +289,11 @@ public class GTRecipeTypeUI {
             WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.OUT)), TankWidget.class, tank -> {
                 var index = WidgetUtils.widgetIdIndex(tank);
                 if (index >= 0 && index < recipeHolder.exportFluids.getTanks()) {
-                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.exportFluids, index));
+                    if (recipeHolder.exportFluids instanceof TagOrCycleFluidTransfer fluidTransfer) {
+                        tank.setFluidTank(fluidTransfer, index);
+                    } else {
+                        tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.exportFluids, index));
+                    }
                     tank.setIngredientIO(IngredientIO.OUTPUT);
                     tank.setAllowClickFilled(!isJEI);
                     tank.setAllowClickDrained(false);

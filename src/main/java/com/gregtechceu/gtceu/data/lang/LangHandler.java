@@ -783,7 +783,7 @@ public class LangHandler {
         provider.add("gtceu.recipe.max_eu", "Max. EU: %s EU");
         provider.add("gtceu.recipe.eu", "Usage: %s EU/t");
         provider.add("gtceu.recipe.eu_inverted", "Generation: %s EU/t");
-        provider.add("gtceu.recipe.duration", "Duration: %,.2f secs");
+        provider.add("gtceu.recipe.duration", "Duration: %s secs");
         provider.add("gtceu.recipe.amperage", "Amperage: %s");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");

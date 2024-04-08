@@ -1,53 +1,55 @@
 package com.gregtechceu.gtceu.integration;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.recipe.*;
+import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.utils.GTUtil;
-import com.gregtechceu.gtceu.utils.ResearchManager;
-import com.gregtechceu.gtceu.utils.CycleFluidStorage;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
+import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
-import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.Minecraft;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraftforge.common.crafting.IntersectionIngredient;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.GTValues.IV;
 
 /**
  * @author KilaBash
@@ -88,25 +90,23 @@ public class GTRecipeWidget extends WidgetGroup {
         List<Content> inputStackContents = new ArrayList<>();
         inputStackContents.addAll(recipe.getInputContents(ItemRecipeCapability.CAP));
         inputStackContents.addAll(recipe.getTickInputContents(ItemRecipeCapability.CAP));
-        List<List<ItemStack>> inputStacks = inputStackContents.stream().map(content -> content.content)
+        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> inputStacks = inputStackContents.stream().map(content -> content.content)
             .map(ItemRecipeCapability.CAP::of)
-            .map(Ingredient::getItems)
-            .map(Arrays::stream)
-            .map(Stream::toList)
+            .map(GTRecipeWidget::mapItem)
             .collect(Collectors.toList());
         while (inputStacks.size() < recipe.recipeType.getMaxInputs(ItemRecipeCapability.CAP)) inputStacks.add(null);
 
         List<Content> outputStackContents = new ArrayList<>();
         outputStackContents.addAll(recipe.getOutputContents(ItemRecipeCapability.CAP));
         outputStackContents.addAll(recipe.getTickOutputContents(ItemRecipeCapability.CAP));
-        List<List<ItemStack>> outputStacks = outputStackContents.stream().map(content -> content.content)
+        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> outputStacks = outputStackContents.stream().map(content -> content.content)
             .map(ItemRecipeCapability.CAP::of)
-            .map(Ingredient::getItems)
-            .map(Arrays::stream)
-            .map(Stream::toList)
+            .map(GTRecipeWidget::mapItem)
             .collect(Collectors.toList());
+        while (outputStacks.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) outputStacks.add(null);
 
-        List<List<ItemStack>> scannerPossibilities = null;
+
+        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> scannerPossibilities = null;
         if (recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
@@ -123,15 +123,21 @@ public class GTRecipeWidget extends WidgetGroup {
                         researchItem = researchItem.copy();
                         researchItem.setCount(1);
                         boolean didMatch = false;
-                        for (List<ItemStack> stacks : scannerPossibilities) {
-                            for (ItemStack stack : stacks) {
+                        for (Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> stacks : scannerPossibilities) {
+                            for (ItemStack stack : stacks.map(
+                                tag -> tag
+                                    .stream()
+                                    .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
+                                    .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.get())))
+                                    .collect(Collectors.toList()),
+                                Function.identity())) {
                                 if (ItemStack.isSameItem(stack, researchItem)) {
                                     didMatch = true;
                                     break;
                                 }
                             }
                         }
-                        if (!didMatch) scannerPossibilities.add(List.of(researchItem));
+                        if (!didMatch) scannerPossibilities.add(Either.right(List.of(researchItem)));
                     }
                 }
                 scannerPossibilities.add(outputStacks.get(0));
@@ -146,30 +152,26 @@ public class GTRecipeWidget extends WidgetGroup {
         List<Content> inputFluidContents = new ArrayList<>();
         inputFluidContents.addAll(recipe.getInputContents(FluidRecipeCapability.CAP));
         inputFluidContents.addAll(recipe.getTickInputContents(FluidRecipeCapability.CAP));
-        List<List<FluidStack>> inputFluids = inputFluidContents.stream().map(content -> content.content)
+        List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> inputFluids = inputFluidContents.stream().map(content -> content.content)
             .map(FluidRecipeCapability.CAP::of)
-            .map(FluidIngredient::getStacks)
-            .map(Arrays::stream)
-            .map(Stream::toList)
+            .map(GTRecipeWidget::mapFluid)
             .collect(Collectors.toList());
         while (inputFluids.size() < recipe.recipeType.getMaxInputs(FluidRecipeCapability.CAP)) inputFluids.add(null);
 
         List<Content> outputFluidContents = new ArrayList<>();
         outputFluidContents.addAll(recipe.getOutputContents(FluidRecipeCapability.CAP));
         outputFluidContents.addAll(recipe.getTickOutputContents(FluidRecipeCapability.CAP));
-        List<List<FluidStack>> outputFluids = outputFluidContents.stream().map(content -> content.content)
+        List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> outputFluids = outputFluidContents.stream().map(content -> content.content)
             .map(FluidRecipeCapability.CAP::of)
-            .map(FluidIngredient::getStacks)
-            .map(Arrays::stream)
-            .map(Stream::toList)
+            .map(GTRecipeWidget::mapFluid)
             .collect(Collectors.toList());
         while (outputFluids.size() < recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)) outputFluids.add(null);
 
         WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress,
-            new CycleItemStackHandler(inputStacks),
-            new CycleItemStackHandler(outputStacks),
-            new CycleFluidStorage(inputFluids),
-            new CycleFluidStorage(outputFluids),
+            new TagOrCycleItemStackTransfer(inputStacks),
+            new TagOrCycleItemStackTransfer(outputStacks),
+            new TagOrCycleFluidTransfer(inputFluids),
+            new TagOrCycleFluidTransfer(outputFluids),
             recipe.data.copy()
         );
         // bind item in overlay
@@ -324,7 +326,7 @@ public class GTRecipeWidget extends WidgetGroup {
             }
             texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt));
         }
-        
+
         return texts;
     }
 
@@ -411,5 +413,115 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void setTierToMin() {
         setTier(getMinTier());
+    }
+
+    // Maps ingredients to Either <(Tag with count), ItemStack>s
+    @SuppressWarnings("deprecation")
+    private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            final int amount = sizedIngredient.getAmount();
+            if (((IngredientAccessor)sizedIngredient.getInner()).getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), amount)));
+            } else if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
+                List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
+                if (children.isEmpty()) {
+                    return Either.right(null);
+                }
+                var childEither = mapItem(children.get(0));
+                return Either.right(childEither.map(tags -> {
+                    List<ItemStack> tagItems = tags.stream()
+                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                        .collect(Collectors.toList());
+                    ListIterator<ItemStack> iterator = tagItems.listIterator();
+                    while (iterator.hasNext()) {
+                        var item = iterator.next();
+                        for (int i = 1; i < children.size(); ++i) {
+                            if (!children.get(i).test(item)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
+                        iterator.set(item.copyWithCount(amount));
+                    }
+                    return tagItems;
+                }, items -> {
+                    items = new ArrayList<>(items);
+                    ListIterator<ItemStack> iterator = items.listIterator();
+                    while (iterator.hasNext()) {
+                        var item = iterator.next();
+                        for (int i = 1; i < children.size(); ++i) {
+                            if (!children.get(i).test(item)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
+                        iterator.set(item.copyWithCount(amount));
+                    }
+                    return items;
+                }));
+            }
+        } else if (ingredient instanceof IntersectionIngredient intersection) {
+            // Map intersection ingredients to the items inside, as recipe viewers don't support them.
+            List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
+            if (children.isEmpty()) {
+                return Either.right(null);
+            }
+            var childEither = mapItem(children.get(0));
+            return Either.right(childEither.map(tags -> {
+                List<ItemStack> tagItems = tags.stream()
+                    .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                    .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                    .collect(Collectors.toList());
+                ListIterator<ItemStack> iterator = tagItems.listIterator();
+                while (iterator.hasNext()) {
+                    var item = iterator.next();
+                    for (int i = 1; i < children.size(); ++i) {
+                        if (!children.get(i).test(item)) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                }
+                return tagItems;
+            }, items -> {
+                items = new ArrayList<>(items);
+                ListIterator<ItemStack> iterator = items.listIterator();
+                while (iterator.hasNext()) {
+                    var item = iterator.next();
+                    for (int i = 1; i < children.size(); ++i) {
+                        if (!children.get(i).test(item)) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                }
+                return items;
+            }));
+        } else if (((IngredientAccessor)ingredient).getValues().length > 0 && ((IngredientAccessor)ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
+            return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), 1)));
+        }
+        return Either.right(Arrays.stream(ingredient.getItems()).toList());
+    }
+
+    // Maps fluids to Either <(tag with count), ItemStack>s
+    private static Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+        long amount = ingredient.getAmount();
+        CompoundTag tag = ingredient.getNbt();
+
+        List<Pair<TagKey<Fluid>, Long>> tags = new ArrayList<>();
+        List<FluidStack> fluids = new ArrayList<>();
+        for (FluidIngredient.Value value : ingredient.values) {
+            if (value instanceof FluidIngredient.TagValue tagValue) {
+                tags.add(Pair.of(tagValue.getTag(), amount));
+            } else {
+                fluids.addAll(value.getFluids().stream().map(fluid -> FluidStack.create(fluid, amount, tag)).toList());
+            }
+        }
+        if (!tags.isEmpty()) {
+            return Either.left(tags);
+        }else {
+            return Either.right(fluids);
+        }
     }
 }
