@@ -21,7 +21,7 @@ import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -39,7 +39,6 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -52,6 +51,7 @@ import java.util.stream.Stream;
  */
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
+    private int i;
     private static TrackedDummyWorld LEVEL;
     private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
@@ -243,6 +243,11 @@ public class PatternPreviewWidget extends WidgetGroup {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        // I can only think of this way
+        if (LDLib.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen && i == 0) {
+            setPage(i);
+            ++i;
+        }
     }
 
     @Override
