@@ -6,6 +6,8 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.IGridConnectedBlockEntity;
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -25,10 +27,12 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.network.chat.Component;
+import net.minecraftforge.server.command.TextComponentHelper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -60,9 +64,15 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 "gtceu.gui.me_network.offline"));
 
         // Config slots
-        group.addWidget(new AEFluidConfigWidget(3, 10, this.aeFluidTanks.tanks));
+        group.addWidget(new AEFluidConfigWidget(3, 0, this.aeFluidTanks.tanks));
 
         return group;
+    }
+
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        tankSubs = this.aeFluidTanks.addChangedListener(this::updateTankSubscription);
     }
 
     @Override
@@ -109,6 +119,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Persisted
         private final ExportOnlyAEFluid[] tanks;
+        private FluidStorage[] fluidStorages;
+
 
         public ExportOnlyAEFluidList(MetaMachine machine, int slots, long capacity, IO io) {
             super(machine, slots, capacity, io);
@@ -116,6 +128,17 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             for (int i = 0; i < slots; i ++) {
                 this.tanks[i] = new ExportOnlyAEFluid(null, null);
                 this.tanks[i].setOnContentsChanged(this::onContentsChanged);
+            }
+            this.fluidStorages = null;
+        }
+
+        @Override
+        public FluidStorage[] getStorages() {
+            if(this.fluidStorages == null) {
+                this.fluidStorages = Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new);
+                return this.fluidStorages;
+            } else {
+                return this.fluidStorages;
             }
         }
 
@@ -126,7 +149,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new));
+            return handleIngredient(io, left, simulate, this.handlerIO, getStorages());
         }
 
         public FluidStack drainInternal(long maxDrain, boolean simulate) {
@@ -188,7 +211,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             }
 
             @Override
-            @Nonnull
+            @NotNull
             public FluidStack getFluid() {
                 return this.fluid.getFluid();
             }
@@ -217,7 +240,6 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         public ExportOnlyAEFluid(GenericStack config, GenericStack stock) {
             super(config, stock);
-            //this.setOnContentsChanged(holder::onChanged);
         }
 
         public ExportOnlyAEFluid() {
@@ -231,7 +253,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             } else {
                 this.stock = GenericStack.sum(this.stock, stack);
             }
-            trigger();
+            onContentsChanged();
         }
 
         @Override
@@ -290,7 +312,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             return 0;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public FluidStack drain(FluidStack resource, boolean doDrain, boolean notifyChanges) {
             if (this.getFluid().isFluidEqual(resource)) {
@@ -312,7 +334,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 if (this.stock.amount() == 0) {
                     this.stock = null;
                 }
-                if (notifyChanges) trigger();
+                if (notifyChanges) onContentsChanged();
             }
             return result;
         }
@@ -331,7 +353,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
             }
         }
 
-        private void trigger() {
+        @Override
+        public void onContentsChanged() {
             if (onContentsChanged != null) {
                 onContentsChanged.run();
             }

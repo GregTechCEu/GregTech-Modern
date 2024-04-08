@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -26,7 +26,7 @@ public record BoilerFireboxType(@Getter String name, @Getter ResourceLocation bo
             , GTCEu.id("block/casings/solid/machine_casing_robust_tungstensteel")
             , GTCEu.id("block/casings/firebox/machine_casing_firebox_tungstensteel"));
 
-    @Nonnull
+    @NotNull
     @Override
     public String toString() {
         return name();

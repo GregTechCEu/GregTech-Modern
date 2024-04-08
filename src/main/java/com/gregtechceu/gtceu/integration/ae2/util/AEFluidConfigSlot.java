@@ -27,7 +27,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -210,14 +210,14 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         rectangle.setHeight(rectangle.getHeight() / 2);
         return Lists.newArrayList(new Target() {
 
-            @Nonnull
+            @NotNull
             @Override
             public Rect2i getArea() {
                 return rectangle;
             }
 
             @Override
-            public void accept(@Nonnull Object ingredient) {
+            public void accept(@NotNull Object ingredient) {
                 FluidStack stack = getFluidFromContainer(ingredient);
 
                 if (stack != null) {

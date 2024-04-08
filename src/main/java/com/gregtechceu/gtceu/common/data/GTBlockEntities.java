@@ -1,9 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
-import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
-import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.blockentity.*;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 
@@ -41,6 +38,11 @@ public class GTBlockEntities {
             .onRegister(LaserPipeBlockEntity::onBlockEntityRegister)
             .validBlocks(GTBlocks.LASER_PIPES)
             .register();
+
+    public static final BlockEntityEntry<OpticalPipeBlockEntity> OPTICAL_PIPE = REGISTRATE
+        .blockEntity("optical_pipe", OpticalPipeBlockEntity::new)
+        .validBlocks(GTBlocks.OPTICAL_PIPES)
+        .register();
 
     public static void init() {
 

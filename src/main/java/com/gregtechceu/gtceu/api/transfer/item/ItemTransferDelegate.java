@@ -6,7 +6,7 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 
@@ -34,19 +34,19 @@ public abstract class ItemTransferDelegate implements IItemTransfer {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public ItemStack getStackInSlot(int slot) {
         return delegate.getStackInSlot(slot);
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
         return delegate.insertItem(slot, stack, simulate, notifyChanges);
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
         return delegate.extractItem(slot, amount, simulate, notifyChanges);
     }
@@ -63,7 +63,7 @@ public abstract class ItemTransferDelegate implements IItemTransfer {
 
     @Override
     @ApiStatus.Internal
-    @Nonnull
+    @NotNull
     public Object createSnapshot() {
         return delegate.createSnapshot();
     }

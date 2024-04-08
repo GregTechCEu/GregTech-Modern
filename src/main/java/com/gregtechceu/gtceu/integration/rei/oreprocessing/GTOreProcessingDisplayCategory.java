@@ -18,7 +18,7 @@ import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.ORE;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
@@ -51,7 +51,7 @@ public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTO
         return getSize().width;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public Component getTitle() {
         return Component.translatable("gtceu.jei.ore_processing_diagram");

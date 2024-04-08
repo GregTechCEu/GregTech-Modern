@@ -11,7 +11,7 @@ import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class SteamItemBusPartMachine extends ItemBusPartMachine {
 
@@ -19,9 +19,9 @@ public class SteamItemBusPartMachine extends ItemBusPartMachine {
         super(holder, 1, io, args);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public ModularUI createUI(@Nonnull Player entityPlayer) {
+    public ModularUI createUI(@NotNull Player entityPlayer) {
         int rowSize = (int) Math.sqrt(getInventorySize());
         int xOffset = rowSize == 10 ? 9 : 0;
         var modular = new ModularUI(176 + xOffset * 2,

@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 @NoArgsConstructor
 public class FluidProperty implements IMaterialProperty<FluidProperty> {

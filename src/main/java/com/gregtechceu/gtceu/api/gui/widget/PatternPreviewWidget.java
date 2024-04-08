@@ -21,7 +21,7 @@ import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -37,8 +37,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -51,6 +51,7 @@ import java.util.stream.Stream;
  */
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
+    private int i;
     private static TrackedDummyWorld LEVEL;
     private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
@@ -242,10 +243,15 @@ public class PatternPreviewWidget extends WidgetGroup {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        // I can only think of this way
+        if (LDLib.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen && i == 0) {
+            setPage(i);
+            ++i;
+        }
     }
 
     @Override
-    public void drawInBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.enableBlend();
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
     }
@@ -293,7 +299,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             if (two.isTile && !one.isTile) return +1;
             if (one.blockId != two.blockId) return two.blockId - one.blockId;
             return two.amount - one.amount;
-        }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).toList(), predicateMap, controllerBase);
+        }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).collect(Collectors.toList()), predicateMap, controllerBase);
     }
 
     private void loadControllerFormed(Collection<BlockPos> poses, IMultiController controllerBase) {
@@ -361,17 +367,17 @@ public class PatternPreviewWidget extends WidgetGroup {
     }
 
     private static class MBPattern {
-        @Nonnull
+        @NotNull
         final List<List<ItemStack>> parts;
-        @Nonnull
+        @NotNull
         final Map<BlockPos, TraceabilityPredicate> predicateMap;
-        @Nonnull
+        @NotNull
         final Map<BlockPos, BlockInfo> blockMap;
-        @Nonnull
+        @NotNull
         final IMultiController controllerBase;
         final int maxY, minY;
 
-        public MBPattern(@Nonnull Map<BlockPos, BlockInfo> blockMap, List<List<ItemStack>> parts, @Nonnull Map<BlockPos, TraceabilityPredicate> predicateMap, @Nonnull IMultiController controllerBase) {
+        public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts, @NotNull Map<BlockPos, TraceabilityPredicate> predicateMap, @NotNull IMultiController controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;
