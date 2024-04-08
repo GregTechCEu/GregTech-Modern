@@ -132,7 +132,7 @@ public class GTRecipeModifiers {
                     pair.first((long) Math.max(1, eu));
                 }
                 return pair;
-            }), recipe, coilMachine.getMaxVoltage());
+            }), recipe, coilMachine.getOverclockVoltage());
         }
         return null;
     }
@@ -152,8 +152,8 @@ public class GTRecipeModifiers {
                     duration,
                     amountOC,
                     blastFurnaceTemperature,
-                    recipe.data.contains("ebf_temp") ? 0 : recipe.data.getInt("ebf_temp")
-            )), recipe, coilMachine.getMaxVoltage());
+                    recipe.data.contains("ebf_temp") ? recipe.data.getInt("ebf_temp") : 0
+            )), recipe, coilMachine.getOverclockVoltage());
         }
         return null;
     }
@@ -172,7 +172,7 @@ public class GTRecipeModifiers {
                 }
                 pair.second(Math.max(1, pair.secondInt()));
                 return pair;
-            }), recipe, coilMachine.getMaxVoltage());
+            }), recipe, coilMachine.getOverclockVoltage());
         }
         return null;
     }
@@ -181,7 +181,7 @@ public class GTRecipeModifiers {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             var energyCost = Math.max(1L, 16 / coilMachine.getCoilType().getEnergyDiscount());
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
-            var parallelLimit = Math.min(maxParallel, (int) (coilMachine.getMaxVoltage() / energyCost));
+            var parallelLimit = Math.min(maxParallel, (int) (coilMachine.getOverclockVoltage() / energyCost));
 
             var result = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
             recipe = result.getA() == recipe ? result.getA().copy() : result.getA();
