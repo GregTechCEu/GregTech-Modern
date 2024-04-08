@@ -211,7 +211,7 @@ public class GTRecipeTypeUI {
                 progressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(progressWidget);
             });
-            // Then set the dual progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
+            // Then set the dual-progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
             WidgetUtils.widgetByIdForEach(template, "^progress$", DualProgressWidget.class, dualProgressWidget -> {
                 dualProgressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(dualProgressWidget);

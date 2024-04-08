@@ -415,7 +415,7 @@ public class GTRecipeWidget extends WidgetGroup {
         setTier(getMinTier());
     }
 
-    // Maps ingredients to Either<(Tag with count), ItemStack>s
+    // Maps ingredients to Either <(Tag with count), ItemStack>s
     @SuppressWarnings("deprecation")
     private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
@@ -504,7 +504,7 @@ public class GTRecipeWidget extends WidgetGroup {
         return Either.right(Arrays.stream(ingredient.getItems()).toList());
     }
 
-    // Maps fluids to Either<(tag with count), ItemStack>s
+    // Maps fluids to Either <(tag with count), ItemStack>s
     private static Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
         long amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
