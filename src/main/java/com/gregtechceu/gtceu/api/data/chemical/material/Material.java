@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
@@ -28,6 +29,7 @@ import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
@@ -241,6 +243,14 @@ public class Material implements Comparable<Material> {
      */
     public FluidStack getFluid(@NotNull FluidStorageKey key, long amount) {
         return FluidStack.create(getFluid(key), amount);
+    }
+
+    /**
+     * @return a {@code TagKey<Fluid>} with the material's name as the tag key
+     * @see #getFluid(FluidStorageKey, long)
+     */
+    public TagKey<Fluid> getFluidTag() {
+        return TagUtil.createFluidTag(this.getName());
     }
 
     /**
