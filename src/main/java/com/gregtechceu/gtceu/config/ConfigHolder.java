@@ -311,7 +311,7 @@ public class ConfigHolder {
         public String bedrockOreDropTagPrefix = "raw";
         @Configurable
         @Configurable.Comment({"Wether to add a \"Processing Array\"", "Default: true"})
-        public boolean doProcessingArray = true;
+        public boolean doProcessingArray = false;
         @Configurable
         @Configurable.Comment({"Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false"})
