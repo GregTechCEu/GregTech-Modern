@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.emi.recipe;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.lowdragmc.lowdraglib.emi.ModularUIEmiRecipeCategory;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.crafting.RecipeType;
 
 import java.util.function.Function;
 
-public class GTRecipeTypeEmiCategory extends ModularUIEmiRecipeCategory {
+public class GTRecipeTypeEmiCategory extends EmiRecipeCategory {
     public static final Function<GTRecipeType, GTRecipeTypeEmiCategory> CATEGORIES = Util.memoize(GTRecipeTypeEmiCategory::new);
     public final GTRecipeType recipeType;
 

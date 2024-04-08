@@ -3132,7 +3132,7 @@
     "gtceu.recipe.cleanroom.display_name":"超净间",
     "gtceu.recipe.cleanroom_sterile.display_name":"无菌超净间",
     "gtceu.recipe.dimensions":"维度：%s",
-    "gtceu.recipe.duration":"耗时：%,.2f秒",
+    "gtceu.recipe.duration":"耗时：%s秒",
     "gtceu.recipe.eu":"耗能功率：%s EU/t",
     "gtceu.recipe.eu_inverted":"产能功率：%s EU/t",
     "gtceu.recipe.eu_to_start":"启动耗能：%s EU",

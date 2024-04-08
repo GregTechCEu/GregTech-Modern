@@ -3292,7 +3292,7 @@
   "gtceu.recipe.cleanroom_sterile.display_name": "Sterile Cleanroom",
   "gtceu.recipe.computation_per_tick": "Min. Computation: %s CWU/t",
   "gtceu.recipe.dimensions": "Dimensions: %s",
-  "gtceu.recipe.duration": "Duration: %,.2f secs",
+  "gtceu.recipe.duration": "Duration: %s secs",
   "gtceu.recipe.eu": "Usage: %s EU/t",
   "gtceu.recipe.eu_inverted": "Generation: %s EU/t",
   "gtceu.recipe.eu_to_start": "Energy To Start: %sEU",
