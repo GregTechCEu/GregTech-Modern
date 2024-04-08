@@ -55,7 +55,7 @@ import java.util.stream.Collectors;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @Deprecated(forRemoval = true)
-@ApiStatus.ScheduledForRemoval(inVersion = "1.2.0")
+@ApiStatus.ScheduledForRemoval(inVersion = "1.3.0")
 public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine implements IMachineModifyDrops {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
