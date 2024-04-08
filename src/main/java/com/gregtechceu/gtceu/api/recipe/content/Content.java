@@ -4,20 +4,14 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import dev.emi.emi.screen.RecipeScreen;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import org.jetbrains.annotations.Nullable;
 
 public class Content {
@@ -53,7 +47,7 @@ public class Content {
             public void draw(PoseStack stack, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(stack, x, y, width, height);
                 if (LDLib.isEmiLoaded()) {
-                    drawEmiAmount(graphics, x, y, width, height);
+                    drawEmiAmount(stack, x, y, width, height);
                 }
                 if (perTick) {
                     drawTick(stack, x, y, width, height);
@@ -63,11 +57,11 @@ public class Content {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void drawEmiAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+    public void drawEmiAmount(PoseStack stack, float x, float y, int width, int height) {
         if (content instanceof FluidIngredient ingredient) {
-            graphics.pose().pushPose();
-            graphics.pose().translate(0, 0, 400);
-            graphics.pose().scale(0.5f, 0.5f, 1);
+            stack.pushPose();
+            stack.translate(0, 0, 400);
+            stack.scale(0.5f, 0.5f, 1);
             long amount = ingredient.getAmount();
             String s;
             if (amount >= 1000) {
@@ -77,8 +71,8 @@ public class Content {
                 s = amount + "mB";
             }
             Font fontRenderer = Minecraft.getInstance().font;
-            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21), (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
-            graphics.pose().popPose();
+            fontRenderer.drawShadow(stack, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21), (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF);
+            stack.popPose();
         }
     }
 

@@ -31,7 +31,8 @@ import it.unimi.dsi.fastutil.longs.LongIntPair;
 import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.DefaultedRegistry;
+import net.minecraft.core.Registry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
@@ -127,7 +128,7 @@ public class GTRecipeWidget extends WidgetGroup {
                             for (ItemStack stack : stacks.map(
                                 tag -> tag
                                     .stream()
-                                    .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
+                                    .flatMap(key -> Registry.ITEM.getTag(key.getFirst()).stream())
                                     .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.get())))
                                     .collect(Collectors.toList()),
                                 Function.identity())) {
@@ -430,7 +431,7 @@ public class GTRecipeWidget extends WidgetGroup {
                 var childEither = mapItem(children.get(0));
                 return Either.right(childEither.map(tags -> {
                     List<ItemStack> tagItems = tags.stream()
-                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .map(pair -> Pair.of(Registry.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
                         .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
                         .collect(Collectors.toList());
                     ListIterator<ItemStack> iterator = tagItems.listIterator();
@@ -442,7 +443,10 @@ public class GTRecipeWidget extends WidgetGroup {
                                 break;
                             }
                         }
-                        iterator.set(item.copyWithCount(amount));
+                        ItemStack copy = item.copy();
+                        copy.setCount(amount);
+
+                        iterator.set(copy);
                     }
                     return tagItems;
                 }, items -> {
@@ -456,7 +460,10 @@ public class GTRecipeWidget extends WidgetGroup {
                                 break;
                             }
                         }
-                        iterator.set(item.copyWithCount(amount));
+                        ItemStack copy = item.copy();
+                        copy.setCount(amount);
+
+                        iterator.set(copy);
                     }
                     return items;
                 }));
@@ -470,7 +477,7 @@ public class GTRecipeWidget extends WidgetGroup {
             var childEither = mapItem(children.get(0));
             return Either.right(childEither.map(tags -> {
                 List<ItemStack> tagItems = tags.stream()
-                    .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                    .map(pair -> Pair.of(Registry.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
                     .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
                     .collect(Collectors.toList());
                 ListIterator<ItemStack> iterator = tagItems.listIterator();
