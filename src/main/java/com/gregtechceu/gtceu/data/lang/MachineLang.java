@@ -726,8 +726,10 @@ public class MachineLang {
         provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");
         provider.add("gtceu.multiblock.power_substation.capacity", "Capacity: %s EU");
         provider.add("gtceu.multiblock.power_substation.passive_drain", "Passive Drain: %s EU/t");
-        provider.add("gtceu.multiblock.power_substation.average_io", "Avg. I/O: %s EU/t");
-        provider.add("gtceu.multiblock.power_substation.average_io_hover", "The average change in energy of the Power Substation's internal energy bank");
+        provider.add("gtceu.multiblock.power_substation.average_in", "Avg. Input: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_in_hover", "The average inserted EU into the Power Substation's internal energy bank");
+        provider.add("gtceu.multiblock.power_substation.average_out", "Avg. Output: %s EU/t");
+        provider.add("gtceu.multiblock.power_substation.average_out_hover", "The average extracted EU out of the Power Substation's internal energy bank");
         provider.add("gtceu.multiblock.power_substation.time_to_fill", "Time to fill: %s");
         provider.add("gtceu.multiblock.power_substation.time_to_drain", "Time to drain: %s");
         provider.add("gtceu.multiblock.power_substation.time_seconds", "%s Seconds");
