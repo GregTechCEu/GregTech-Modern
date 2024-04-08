@@ -103,7 +103,7 @@ public abstract class RecipeCapability<T> {
         return isRecipeSearchFilter();
     }
 
-    public void addXEIInfo(WidgetGroup group, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
+    public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
 
     }
 
