@@ -34,8 +34,10 @@ import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -350,7 +352,7 @@ public class GTResearchMachines {
 
     public static final MachineDefinition HPCA_EMPTY_COMPONENT = registerHPCAPart(
         "hpca_empty_component", "Empty HPCA Component",
-        HPCAEmptyPartMachine::new, "empty", false
+        HPCAEmptyPartMachine::new, "empty", null, null, false
     ).register();
     public static final MachineDefinition HPCA_COMPUTATION_COMPONENT = registerHPCAPart(
         "hpca_computation_component", "HPCA Computation Component",
@@ -412,6 +414,29 @@ public class GTResearchMachines {
                 isAdvanced,
                 GTCEu.id("block/overlay/machine/hpca/" + texture),
                 GTCEu.id("block/overlay/machine/hpca/" + (isAdvanced ? "damaged_advanced" : "damaged"))
+            ));
+    }
+
+    @SuppressWarnings("SameParameterValue")
+    private static MachineBuilder<MachineDefinition> registerHPCAPart(String name,
+                                                                      String displayName,
+                                                                      Function<IMachineBlockEntity, MetaMachine> constructor,
+                                                                      String texture,
+                                                                      @Nullable String activeTexture,
+                                                                      @Nullable String damagedTexture,
+                                                                      boolean isAdvanced) {
+        return REGISTRATE.machine(name, constructor)
+            .langValue(displayName)
+            .rotationState(RotationState.ALL)
+            .abilities(PartAbility.HPCA_COMPONENT)
+            .renderer(() -> new HPCAPartRenderer(
+                isAdvanced,
+                GTCEu.id("block/overlay/machine/hpca/" + texture),
+                activeTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + activeTexture),
+                activeTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + activeTexture + "_emissive"),
+                damagedTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + damagedTexture),
+                damagedTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + damagedTexture + "_active"),
+                damagedTexture == null ? null : GTCEu.id("block/overlay/machine/hpca/" + damagedTexture + "_emissive")
             ));
     }
 
