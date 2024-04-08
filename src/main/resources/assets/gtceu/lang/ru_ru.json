@@ -3067,7 +3067,7 @@
     "gtceu.recipe.cleanroom.display_name": "Чистая комната",
     "gtceu.recipe.cleanroom_sterile.display_name": "Стерильная чистая комната",
     "gtceu.recipe.dimensions": "Измерение: %s",
-    "gtceu.recipe.duration": "Длительность: %,.2f secs",
+    "gtceu.recipe.duration": "Длительность: %s secs",
     "gtceu.recipe.eu": "Потребление: %d EU/т (%s§r)",
     "gtceu.recipe.eu_inverted": "Производство: %d EU/т",
     "gtceu.recipe.eu_to_start": "Энергии для запуска: %sEU",

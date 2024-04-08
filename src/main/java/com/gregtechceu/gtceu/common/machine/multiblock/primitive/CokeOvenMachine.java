@@ -46,9 +46,9 @@ public class CokeOvenMachine extends PrimitiveWorkableMachine implements IUIMach
                         .setBackgroundTexture(new GuiTextureGroup(GuiTextures.PRIMITIVE_SLOT, GuiTextures.PRIMITIVE_FURNACE_OVERLAY)))
                 .widget(new TankWidget(exportFluids.getStorages()[0], 134, 13, 20, 58, true, false)
                         .setBackground(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK)
-                        .setOverlay(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
-                        .setShowAmount(false))
+                        .setShowAmount(false)
+                        .setOverlay(GuiTextures.PRIMITIVE_LARGE_FLUID_TANK_OVERLAY))
                 .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.PRIMITIVE_SLOT, 7, 84, true));
     }
 

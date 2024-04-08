@@ -5,6 +5,7 @@ import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.util.Mth;
 import net.minecraftforge.api.distmarker.Dist;
@@ -63,21 +64,20 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
     }
 
     private void handleScrollAction(long delta) {
-        IFluidStorage tank = getFluidTank();
-        if (tank == null)
+        IFluidTransfer fluidTank = getFluidTank();
+        if (fluidTank == null)
             return;
 
-        FluidStack fluid = tank.getFluid();
+        FluidStack fluid = fluidTank.getFluidInTank(tank);
         if (fluid.isEmpty())
             return;
 
         if (fluid.isEmpty())
             return;
 
-        fluid.setAmount(Mth.clamp(fluid.getAmount() + delta, 0L, tank.getCapacity()));
-
+        fluid.setAmount(Mth.clamp(fluid.getAmount() + delta, 0L, fluidTank.getTankCapacity(tank)));
         if (fluid.getAmount() <= 0L) {
-            tank.setFluid(FluidStack.empty());
+            fluidTank.setFluidInTank(tank, FluidStack.empty());
         }
     }
 }
