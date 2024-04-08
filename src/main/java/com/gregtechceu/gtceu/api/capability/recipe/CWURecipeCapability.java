@@ -35,10 +35,10 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     }
 
     @Override
-    public void addXEIInfo(WidgetGroup group, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
+    public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
         if (perTick && isInput) {
             int cwu = contents.stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum();
-            group.addWidget(new LabelWidget(3, yOffset.addAndGet(10), LocalizationUtils.format("gtceu.recipe.computation_per_tick", cwu)));
+            group.addWidget(new LabelWidget(3 - xOffset, yOffset.getAndAdd(10), LocalizationUtils.format("gtceu.recipe.computation_per_tick", cwu)));
         }
     }
 }
