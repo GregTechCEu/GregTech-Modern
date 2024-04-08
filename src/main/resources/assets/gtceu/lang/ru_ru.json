@@ -6471,7 +6471,7 @@
     "tagprefix.plank": "Доска (%s)",
     "config.gtceu.option.gt6StylePipesCables": "gt6StylePipesCables",
     "config.gtceu.option.defaultUIColor": "defaultUIColor",
-    "gtceu.universal.tooltip.deprecated": "§5ВНИМАНИЕ: УСТАРЕЛО. БУДЕТ УДАЛЕН В БУДУЩЕЙ ВЕРСИИ.§r",
+    "gtceu.universal.tooltip.deprecated": "§4§lВНИМАНИЕ:§r§4 УСТАРЕЛО. БУДЕТ УДАЛЕН В БУДУЩЕЙ ВЕРСИИ.§r",
     "gtceu.gui.machinemode": "Режим машины:%s",
     "tagprefix.planks": "Доска (%s)",
     "block.gtceu.creative_energy": "Творческий источник энергии",
