@@ -125,7 +125,7 @@ public class GTRecipeWidget extends WidgetGroup {
                         boolean didMatch = false;
                         for (List<ItemStack> stacks : scannerPossibilities) {
                             for (ItemStack stack : stacks) {
-                                if (ItemStack.isSame(stack, researchItem)) {
+                                if (stack.sameItem(researchItem)) {
                                     didMatch = true;
                                     break;
                                 }
