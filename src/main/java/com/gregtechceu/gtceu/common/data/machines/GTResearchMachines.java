@@ -374,7 +374,7 @@ public class GTResearchMachines {
         .register();
     public static final MachineDefinition HPCA_HEAT_SINK_COMPONENT = registerHPCAPart(
         "hpca_heat_sink_component", "HPCA Heat Sink Component",
-        holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", false
+        holder -> new HPCACoolerPartMachine(holder, false), "heat_sink", null, null, false
     ).tooltips(Component.translatable("gtceu.machine.hpca.component_type.cooler_passive"),
             Component.translatable("gtceu.machine.hpca.component_type.cooler_cooling", 1))
         .register();
