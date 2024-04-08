@@ -208,7 +208,7 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.average_in", FormattingUtil.formatNumbers(averageInLastSec))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                 Component.translatable("gtceu.multiblock.power_substation.average_in_hover")))));
-                textList.add(Component.translatable("gtceu.multiblock.power_substation.average_out", FormattingUtil.formatNumbers(averageOutLastSec))
+                textList.add(Component.translatable("gtceu.multiblock.power_substation.average_out", FormattingUtil.formatNumbers(Math.abs(averageOutLastSec)))
                     .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                         Component.translatable("gtceu.multiblock.power_substation.average_out_hover")))));
 
