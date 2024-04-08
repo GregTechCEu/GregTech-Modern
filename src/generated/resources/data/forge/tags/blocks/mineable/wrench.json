@@ -2,6 +2,7 @@
   "values": [
     "gtceu:long_distance_item_pipeline",
     "gtceu:long_distance_fluid_pipeline",
+    "gtceu:wood_wall",
     "gtceu:coke_oven_bricks",
     "gtceu:firebricks",
     "gtceu:steam_machine_casing",

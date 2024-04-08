@@ -65,7 +65,17 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
                 if (PartAbility.COMPUTATION_DATA_TRANSMISSION.isApplicable(block)) {
                     transmitters.add(hatch);
                 }
-
+            } else if (part.getRecipeHandlers().stream().anyMatch(IOpticalComputationHatch.class::isInstance)) {
+                var hatch = part.getRecipeHandlers().stream().filter(IOpticalComputationHatch.class::isInstance).map(IOpticalComputationHatch.class::cast).findFirst().orElse(null);
+                if (hatch != null) {
+                    Block block = part.self().getBlockState().getBlock();
+                    if (PartAbility.COMPUTATION_DATA_RECEPTION.isApplicable(block)) {
+                        receivers.add(hatch);
+                    }
+                    if (PartAbility.COMPUTATION_DATA_TRANSMISSION.isApplicable(block)) {
+                        transmitters.add(hatch);
+                    }
+                }
             }
         }
         computationHandler.onStructureForm(receivers, transmitters);
@@ -85,7 +95,7 @@ public class NetworkSwitchMachine extends DataBankMachine implements IOpticalCom
     @Override
     public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
-        return isActive() && !hasNotEnoughEnergy ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
+        return isActive() && !getRecipeLogic().isWaiting() ? computationHandler.requestCWUt(cwut, simulate, seen) : 0;
     }
 
     @Override
