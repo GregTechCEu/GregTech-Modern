@@ -601,42 +601,42 @@ public class GTMachines {
             ALL_TIERS);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH = registerFluidHatches(
-            "input_hatch", "Input Hatch", "fluid_hatch.import",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1, ALL_TIERS,
-            PartAbility.IMPORT_FLUIDS, PartAbility.IMPORT_FLUIDS_1X
-    );
+            "input_hatch", "Input Hatch", "fluid_hatch.import", "fluid_hatch.import",
+        IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
+        ALL_TIERS, PartAbility.IMPORT_FLUIDS,
+        PartAbility.IMPORT_FLUIDS_1X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_4X = registerFluidHatches(
-            "input_hatch_4x", "Quadruple Input Hatch", "fluid_hatch.import_4x",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4, MULTI_HATCH_TIERS,
-            PartAbility.IMPORT_FLUIDS, PartAbility.IMPORT_FLUIDS_4X
-    );
+            "input_hatch_4x", "Quadruple Input Hatch", "fluid_hatch.import_4x", "fluid_hatch.import",
+        IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
+        MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
+        PartAbility.IMPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_IMPORT_HATCH_9X = registerFluidHatches(
-            "input_hatch_9x", "Nonuple Input Hatch", "fluid_hatch.import_9x",
-            IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9, MULTI_HATCH_TIERS,
-            PartAbility.IMPORT_FLUIDS, PartAbility.IMPORT_FLUIDS_9X
-    );
+            "input_hatch_9x", "Nonuple Input Hatch", "fluid_hatch.import_9x", "fluid_hatch.import",
+        IO.IN, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
+        MULTI_HATCH_TIERS, PartAbility.IMPORT_FLUIDS,
+        PartAbility.IMPORT_FLUIDS_9X);
 
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH = registerFluidHatches(
-            "output_hatch", "Output Hatch", "fluid_hatch.export",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1, ALL_TIERS,
-            PartAbility.EXPORT_FLUIDS, PartAbility.EXPORT_FLUIDS_1X
-    );
+            "output_hatch", "Output Hatch", "fluid_hatch.export", "fluid_hatch.export",
+        IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_1X, 1,
+        ALL_TIERS, PartAbility.EXPORT_FLUIDS,
+        PartAbility.EXPORT_FLUIDS_1X);
 
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_4X = registerFluidHatches(
-            "output_hatch_4x", "Quadruple Output Hatch", "fluid_hatch.export_4x",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4, MULTI_HATCH_TIERS,
-            PartAbility.EXPORT_FLUIDS, PartAbility.EXPORT_FLUIDS_4X
-    );
+            "output_hatch_4x", "Quadruple Output Hatch", "fluid_hatch.export_4x", "fluid_hatch.export",
+        IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_4X, 4,
+        MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
+        PartAbility.EXPORT_FLUIDS_4X);
 
     public final static MachineDefinition[] FLUID_EXPORT_HATCH_9X = registerFluidHatches(
-            "output_hatch_9x", "Nonuple Output Hatch", "fluid_hatch.export_9x",
-            IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9, MULTI_HATCH_TIERS,
-            PartAbility.EXPORT_FLUIDS, PartAbility.EXPORT_FLUIDS_9X
-    );
+            "output_hatch_9x", "Nonuple Output Hatch", "fluid_hatch.export_9x", "fluid_hatch.export",
+        IO.OUT, FluidHatchPartMachine.INITIAL_TANK_CAPACITY_9X, 9,
+        MULTI_HATCH_TIERS, PartAbility.EXPORT_FLUIDS,
+        PartAbility.EXPORT_FLUIDS_9X);
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH = registerTieredMachines("energy_input_hatch",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 2),
@@ -1784,7 +1784,7 @@ public class GTMachines {
         return definitions;
     }
 
-    private static MachineDefinition[] registerFluidHatches(String name, String displayname, String model, IO io, long initialCapacity, int slots, int[] tiers, PartAbility... abilities) {
+    private static MachineDefinition[] registerFluidHatches(String name, String displayname, String model, String tooltip, IO io, long initialCapacity, int slots, int[] tiers, PartAbility... abilities) {
         return registerTieredMachines(name,
                 (holder, tier) -> new FluidHatchPartMachine(holder, tier, io, initialCapacity, slots),
                 (tier, builder) -> {
@@ -1793,7 +1793,7 @@ public class GTMachines {
                             .overlayTieredHullRenderer(model)
                             .abilities(abilities)
                             .compassNode("fluid_hatch")
-                            .tooltips(Component.translatable("gtceu.machine." + model + ".tooltip"));
+                            .tooltips(Component.translatable("gtceu.machine." + tooltip + ".tooltip"));
 
                     if (slots == 1) {
                         builder.tooltips(Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", FluidHatchPartMachine.getTankCapacity(initialCapacity, tier)));
