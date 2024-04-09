@@ -245,8 +245,8 @@ public class PatternPreviewWidget extends WidgetGroup {
     public void updateScreen() {
         super.updateScreen();
         // I can only think of this way
-        if (!LDLib.isEmiLoaded() || !(Minecraft.getInstance().screen instanceof RecipeScreen) || i != 0) return;
-        if (!LDLib.isReiLoaded() || !(Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) || i != 0) return;
+        if (i != 0 || !LDLib.isEmiLoaded() || !(Minecraft.getInstance().screen instanceof RecipeScreen)) return;
+        if (i != 0 || !LDLib.isReiLoaded() || !(Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen)) return;
         setPage(i);
         ++i;
     }
