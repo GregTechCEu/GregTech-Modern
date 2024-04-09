@@ -12,15 +12,18 @@ import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.inventory.InventoryMenu;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.function.Consumer;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -33,11 +36,11 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
         super(GTValues.ZPM, isAdvanced ? GTCEu.id("block/computer_casing") : GTCEu.id("block/advanced_computer_casing"));
         this.isAdvanced = isAdvanced;
         this.texture = texture;
-        this.activeTexture = texture.withSuffix("_active");
-        this.activeEmissiveTexture = activeTexture.withSuffix("_emissive");
+        this.activeTexture = new ResourceLocation(texture.getNamespace(), texture.getPath() + "_active");
+        this.activeEmissiveTexture = new ResourceLocation(activeTexture.getNamespace(), activeTexture.getPath() + "_emissive");
         this.damagedTexture = damagedTexture;
-        this.damagedActiveTexture = damagedTexture.withSuffix("_active");
-        this.damagedActiveEmissiveTexture = damagedActiveTexture.withSuffix("_emissive");
+        this.damagedActiveTexture = new ResourceLocation(damagedTexture.getNamespace(), damagedTexture.getPath() + "_active");
+        this.damagedActiveEmissiveTexture = new ResourceLocation(damagedActiveTexture.getNamespace(), damagedActiveTexture.getPath() + "_emissive");
     }
 
     public HPCAPartRenderer(boolean isAdvanced,
@@ -98,6 +101,32 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
             ResourceLocation texture = this.texture;
             if (texture != null) {
                 quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
+            }
+        }
+    }
+
+    @Override
+    @OnlyIn(Dist.CLIENT)
+    public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
+        super.onPrepareTextureAtlas(atlasName, register);
+        if (atlasName.equals(InventoryMenu.BLOCK_ATLAS)) {
+            if (texture != null) {
+                register.accept(texture);
+            }
+            if (activeTexture != null) {
+                register.accept(activeTexture);
+            }
+            if (activeEmissiveTexture != null) {
+                register.accept(activeEmissiveTexture);
+            }
+            if (damagedTexture != null) {
+                register.accept(damagedTexture);
+            }
+            if (damagedActiveTexture != null) {
+                register.accept(damagedActiveTexture);
+            }
+            if (damagedActiveEmissiveTexture != null) {
+                register.accept(damagedActiveEmissiveTexture);
             }
         }
     }

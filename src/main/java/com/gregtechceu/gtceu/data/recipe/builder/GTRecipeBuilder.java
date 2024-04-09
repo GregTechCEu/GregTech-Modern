@@ -758,7 +758,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe buildRawRecipe() {
-        return new GTRecipe(recipeType, id.withPrefix(recipeType.registryName.getPath() + "/"), input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
+        return new GTRecipe(recipeType, new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath()), input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
     }
 
     //////////////////////////////////////

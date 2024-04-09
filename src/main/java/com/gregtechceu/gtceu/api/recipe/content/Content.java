@@ -76,7 +76,7 @@ public class Content {
                 s = amount + "mB";
             }
             Font fontRenderer = Minecraft.getInstance().font;
-            fontRenderer.drawShadow(s, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21), (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF);
+            fontRenderer.drawShadow(stack, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21), (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF);
             stack.popPose();
         }
     }

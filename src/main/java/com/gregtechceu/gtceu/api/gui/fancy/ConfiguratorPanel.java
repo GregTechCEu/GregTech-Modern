@@ -99,7 +99,7 @@ public class ConfiguratorPanel extends WidgetGroup {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    protected void drawWidgetsBackground(@Nonnull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
+    protected void drawWidgetsBackground(@NotNull PoseStack poseStack, int mouseX, int mouseY, float partialTicks) {
         for (Widget widget : widgets) {
             if (widget.isVisible() && widget != expanded) {
                 RenderSystem.setShaderColor(1, 1, 1, 1);

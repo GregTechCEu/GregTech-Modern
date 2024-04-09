@@ -34,7 +34,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.function.TriFunction;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Locale;
@@ -58,7 +57,7 @@ public class GTRegistrate extends Registrate {
         super(modId);
     }
 
-    @Nonnull
+    @NotNull
     public static GTRegistrate create(String modId) {
         return new GTRegistrate(modId);
     }
