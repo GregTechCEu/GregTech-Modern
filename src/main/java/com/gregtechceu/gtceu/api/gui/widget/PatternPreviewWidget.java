@@ -25,6 +25,7 @@ import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import me.shedaniel.rei.impl.client.gui.screen.AbstractDisplayViewingScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -244,10 +245,10 @@ public class PatternPreviewWidget extends WidgetGroup {
     public void updateScreen() {
         super.updateScreen();
         // I can only think of this way
-        if (LDLib.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen && i == 0) {
-            setPage(i);
-            ++i;
-        }
+        if (!LDLib.isEmiLoaded() || !(Minecraft.getInstance().screen instanceof RecipeScreen) || i != 0) return;
+        if (!LDLib.isReiLoaded() || !(Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) || i != 0) return;
+        setPage(i);
+        ++i;
     }
 
     @Override
