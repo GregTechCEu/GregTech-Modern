@@ -21,6 +21,7 @@ import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
 import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
@@ -51,7 +52,7 @@ import java.util.stream.Stream;
  */
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
-    private int i;
+    private boolean isLoaded;
     private static TrackedDummyWorld LEVEL;
     private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
@@ -244,10 +245,13 @@ public class PatternPreviewWidget extends WidgetGroup {
     public void updateScreen() {
         super.updateScreen();
         // I can only think of this way
-        if (i != 0 || !LDLib.isEmiLoaded() || !(Minecraft.getInstance().screen instanceof RecipeScreen)) return;
-        if (i != 0 || !LDLib.isReiLoaded() || !(Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen)) return;
-        setPage(i);
-        ++i;
+        if (!isLoaded && LDLib.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen) {
+            setPage(0);
+            isLoaded = true;
+        } else if (!isLoaded && LDLib.isReiLoaded() && Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) {
+            setPage(0);
+            isLoaded = true;
+        }
     }
 
     @Override
