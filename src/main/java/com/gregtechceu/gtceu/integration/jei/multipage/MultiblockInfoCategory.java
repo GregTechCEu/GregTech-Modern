@@ -22,7 +22,7 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
 
     public MultiblockInfoCategory(IJeiHelpers helpers) {
         IGuiHelper guiHelper = helpers.getGuiHelper();
-        this.background = guiHelper.createBlankDrawable(176, 176);
+        this.background = guiHelper.createBlankDrawable(160, 160);
         this.icon = helpers.getGuiHelper().createDrawableItemStack(GTMachines.ELECTRIC_BLAST_FURNACE.asStack());
     }
 
