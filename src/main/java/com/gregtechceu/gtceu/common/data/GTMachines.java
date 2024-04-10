@@ -1989,20 +1989,27 @@ public class GTMachines {
                 .recipeModifier(LargeBoilerMachine::recipeModifier, true)
                 .appearanceBlock(casing)
                 .partAppearance((controller, part, side) -> controller.self().getPos().below().getY() == part.self().getPos().getY() ? fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
-                .pattern(definition -> FactoryBlockPattern.start()
+                .pattern((definition) -> {
+                    TraceabilityPredicate fireboxPred = states(ALL_FIREBOXES.get(firebox).getDefaultState()).setMinGlobalLimited(3)
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
+                        .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
+
+                    if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
+                        fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
+                    }
+
+                    return FactoryBlockPattern.start()
                         .aisle("XXX", "CCC", "CCC", "CCC")
                         .aisle("XXX", "CPC", "CPC", "CCC")
                         .aisle("XXX", "CSC", "CCC", "CCC")
                         .where('S', Predicates.controller(blocks(definition.getBlock())))
                         .where('P', blocks(pipe.get()))
-                        .where('X', states(ALL_FIREBOXES.get(firebox).getDefaultState()).setMinGlobalLimited(3)
-                                .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1))
-                                .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
-                                .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1))
-                                .or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1)))
+                        .where('X', fireboxPred)
                         .where('C', blocks(casing.get()).setMinGlobalLimited(20)
-                                .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1)))
-                        .build())
+                            .or(Predicates.abilities(PartAbility.EXPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1)))
+                        .build();
+                })
                 .recoveryItems(() -> new ItemLike[]{GTItems.MATERIAL_ITEMS.get(TagPrefix.dustTiny, GTMaterials.Ash).get()})
                 .renderer(() -> new LargeBoilerRenderer(texture, firebox, GTCEu.id("block/multiblock/generator/large_%s_boiler".formatted(name))))
                 .tooltips(
