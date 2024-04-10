@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -56,7 +57,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter @Setter
     private int defaultPaintingColor;
     @Getter @Setter
-    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier;
+    private RecipeModifier recipeModifier;
     @Getter @Setter
     private boolean alwaysTryModifyRecipe;
     @Getter @Setter

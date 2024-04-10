@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
@@ -337,7 +338,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             }
 
             @Override
-            public CustomMultiblockBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
+            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.recipeModifier(recipeModifier);
@@ -381,7 +382,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
-            public CustomMultiblockBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
                 recipeModifier(recipeModifier);
                 alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 return this;

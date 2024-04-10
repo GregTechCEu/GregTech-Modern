@@ -16,6 +16,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTCompassNodes;
 import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
@@ -256,13 +257,23 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     }
 
     @Override
-    public MultiblockMachineBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
+    public MultiblockMachineBuilder recipeModifier(RecipeModifier recipeModifier) {
         return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier);
     }
 
     @Override
-    public MultiblockMachineBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+    public MultiblockMachineBuilder recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
         return (MultiblockMachineBuilder) super.recipeModifier(recipeModifier, alwaysTryModifyRecipe);
+    }
+
+    @Override
+    public MultiblockMachineBuilder recipeModifiers(RecipeModifier... recipeModifiers) {
+        return (MultiblockMachineBuilder) super.recipeModifiers(recipeModifiers);
+    }
+
+    @Override
+    public MultiblockMachineBuilder recipeModifiers(boolean alwaysTryModifyRecipe, RecipeModifier... recipeModifiers) {
+        return (MultiblockMachineBuilder) super.recipeModifiers(alwaysTryModifyRecipe, recipeModifiers);
     }
 
     public MultiblockMachineBuilder noRecipeModifier() {
