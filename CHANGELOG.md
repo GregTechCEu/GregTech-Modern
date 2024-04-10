@@ -12,6 +12,10 @@ Version: 1.2.0
 ### CHANGES:
 - Improved recipe viewer widgets
 - Updated Power Substation UI to show separate values for input and output
+- Removed the recipes for Processing Arrays
+  - **IMPORTANT:** Your existing PAs will only continue to work until 1.3.0, at which point we will remove them entirely.  
+    Please replace them with the appropriate specialized multiblocks until then!
+- Updated Russian and Chinese translations
 
 ### FIXES:
 - Fixed Multiblocks with only 1 Energy/Dynamo Hatch not overclocking
@@ -21,3 +25,4 @@ Version: 1.2.0
 - Fixed plungers not working
 - Fixed ME Input Hatch and ME Output Bus
 - Fixed number formatting in certain places
+- Fixed Large Boilers requiring a Maintenance Hatch when maintenance is disabled in the config
