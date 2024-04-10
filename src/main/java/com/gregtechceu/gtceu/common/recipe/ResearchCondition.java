@@ -11,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 public class ResearchCondition extends RecipeCondition {
+    public final static ResearchCondition INSTANCE = new ResearchCondition();
     public ResearchData data;
 
     public ResearchCondition() {

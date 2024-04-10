@@ -81,7 +81,7 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         public JsonObject toJson() {
             JsonObject json = new JsonObject();
             json.addProperty("researchId", researchId);
-            json.addProperty("dataItem", dataItem.save(new CompoundTag()).toString());
+            json.add("dataItem", ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, dataItem).getOrThrow(false, GTCEu.LOGGER::error));
             return json;
         }
     }

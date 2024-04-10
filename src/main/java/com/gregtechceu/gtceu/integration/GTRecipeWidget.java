@@ -172,7 +172,8 @@ public class GTRecipeWidget extends WidgetGroup {
             new TagOrCycleItemStackTransfer(outputStacks),
             new TagOrCycleFluidTransfer(inputFluids),
             new TagOrCycleFluidTransfer(outputFluids),
-            recipe.data.copy()
+            recipe.data.copy(),
+            recipe.conditions
         );
         // bind item in overlay
         WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
