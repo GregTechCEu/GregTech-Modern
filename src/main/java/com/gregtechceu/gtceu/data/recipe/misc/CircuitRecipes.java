@@ -1488,5 +1488,18 @@ public class CircuitRecipes {
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(400).EUt(1200).save(provider);
+
+        // Data Module
+        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_module")
+            .inputItems(WETWARE_CIRCUIT_BOARD)
+            .inputItems(CustomTags.ZPM_CIRCUITS, 2)
+            .inputItems(RANDOM_ACCESS_MEMORY, 32)
+            .inputItems(NOR_MEMORY_CHIP, 64)
+            .inputItems(NAND_MEMORY_CHIP, 64)
+            .inputItems(wireFine, YttriumBariumCuprate, 32)
+            .outputItems(TOOL_DATA_MODULE)
+            .solderMultiplier(2)
+            .cleanroom(CleanroomType.STERILE_CLEANROOM)
+            .duration(400).EUt(38400).save(provider);
     }
 }
