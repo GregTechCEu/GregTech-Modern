@@ -27,8 +27,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -101,7 +101,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof LargeCombustionEngineMachine engineMachine) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             // has lubricant

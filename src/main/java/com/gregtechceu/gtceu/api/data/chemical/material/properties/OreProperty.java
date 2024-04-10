@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.util.Mth;
-import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -17,7 +19,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: none, meaning only this property's Material.
      */
-    //@ZenProperty
+    @Getter
     private final List<Material> oreByProducts = new ArrayList<>();
 
     /**
@@ -25,7 +27,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: 1 (no multiplier).
      */
-    //@ZenProperty
+    @Getter @Setter
     private int oreMultiplier;
 
     /**
@@ -33,7 +35,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: 1 (no multiplier).
      */
-    //@ZenProperty
+    @Getter @Setter
     private int byProductMultiplier;
 
     /**
@@ -41,7 +43,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: false.
      */
-    //@ZenProperty
+    @Getter @Setter
     private boolean emissive;
 
     /**
@@ -50,7 +52,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * Material will have a Dust Property.
      * Default: none.
      */
-    //@ZenProperty
+    @Getter @Setter
     @Nullable
     private Material directSmeltResult;
 
@@ -60,7 +62,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * Material will have a Fluid Property.
      * Default: none.
      */
-    //@ZenProperty
+    @Setter
     @Nullable
     private Material washedIn;
 
@@ -80,7 +82,7 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * Material will have a Dust Property.
      * Default: none.
      */
-    //@ZenProperty
+    @Getter
     private final List<Material> separatedInto = new ArrayList<>();
 
     public OreProperty(int oreMultiplier, int byProductMultiplier) {
@@ -102,43 +104,6 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
         this(1, 1);
     }
 
-    public void setOreMultiplier(int multiplier) {
-        this.oreMultiplier = multiplier;
-    }
-
-    public int getOreMultiplier() {
-        return this.oreMultiplier;
-    }
-
-    public void setByProductMultiplier(int multiplier) {
-        this.byProductMultiplier = multiplier;
-    }
-
-    public int getByProductMultiplier() {
-        return this.byProductMultiplier;
-    }
-
-    public boolean isEmissive() {
-        return emissive;
-    }
-
-    public void setEmissive(boolean emissive) {
-        this.emissive = emissive;
-    }
-
-    public void setDirectSmeltResult(@Nullable Material m) {
-        this.directSmeltResult = m;
-    }
-
-    @Nullable
-    public Material getDirectSmeltResult() {
-        return this.directSmeltResult;
-    }
-
-    public void setWashedIn(@Nullable Material m) {
-        this.washedIn = m;
-    }
-
     public void setWashedIn(@Nullable Material m, int washedAmount) {
         this.washedIn = m;
         this.washedAmount = washedAmount;
@@ -152,17 +117,8 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
         this.separatedInto.addAll(Arrays.asList(materials));
     }
 
-    @Nullable
-    public List<Material> getSeparatedInto() {
-        return this.separatedInto;
-    }
-
     public void setOreByProducts(Material... materials) {
         this.oreByProducts.addAll(Arrays.asList(materials));
-    }
-
-    public List<Material> getOreByProducts() {
-        return this.oreByProducts;
     }
 
     @Nullable

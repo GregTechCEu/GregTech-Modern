@@ -132,7 +132,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             stored = FluidStack.empty();
         }
         // "stored" may not be same as cache (due to item's fluid cap). we should update it.
-        cache.storages[0].setFluid(stored.copy());
+        cache.getStorages()[0].setFluid(stored.copy());
     }
 
     @Override
@@ -194,9 +194,9 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
         var currentStack = player.getMainHandItem();
         if (!currentStack.isEmpty()) {
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
-            var fluidTank = cache.storages[0];
+            var fluidTank = cache.getStorages()[0];
             if (handler != null && !isRemote()) {
-                if (cache.storages[0].getFluidAmount() > 0) {
+                if (cache.getStorages()[0].getFluidAmount() > 0) {
                     FluidStack initialFluid = fluidTank.getFluid();
                     FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, false);
                     if (result.isSuccess()) {
@@ -234,7 +234,7 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     @Override
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!isRemote()) {
-            if (!playerIn.isCrouching()) {
+            if (!playerIn.isShiftKeyDown()) {
                 setAutoOutputFluids(!isAutoOutputFluids());
                 playerIn.sendSystemMessage(Component.translatable("gtceu.machine.drum." + (autoOutputFluids ? "enable" : "disable") + "_output"));
                 return InteractionResult.SUCCESS;

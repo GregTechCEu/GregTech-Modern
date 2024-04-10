@@ -22,7 +22,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,7 +47,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     private final Set<Object> items = new CopyOnWriteArraySet<>();
     private final Map<String, SelectableWidgetGroup> selectedMap = new ConcurrentHashMap<>();
 
-    public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius, @Nonnull ProspectorMode mode, int scanTick) {
+    public ProspectingMapWidget(int xPosition, int yPosition, int width, int height, int chunkRadius, @NotNull ProspectorMode mode, int scanTick) {
         super(xPosition, yPosition, width, height);
         this.chunkRadius = chunkRadius;
         this.mode = mode;

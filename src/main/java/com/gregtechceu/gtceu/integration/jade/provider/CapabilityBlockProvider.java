@@ -16,7 +16,7 @@ import snownee.jade.api.IServerDataProvider;
 import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public abstract class CapabilityBlockProvider<C> implements IBlockComponentProvider, IServerDataProvider<BlockEntity> {
 

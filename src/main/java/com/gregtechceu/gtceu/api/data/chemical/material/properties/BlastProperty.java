@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class BlastProperty implements IMaterialProperty<BlastProperty> {
 
@@ -66,7 +66,7 @@ public class BlastProperty implements IMaterialProperty<BlastProperty> {
         return gasTier;
     }
 
-    public void setGasTier(@Nonnull GasTier tier) {
+    public void setGasTier(@NotNull GasTier tier) {
         this.gasTier = tier;
     }
 

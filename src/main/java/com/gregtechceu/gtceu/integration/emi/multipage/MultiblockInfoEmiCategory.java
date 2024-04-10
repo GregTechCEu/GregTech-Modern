@@ -4,17 +4,16 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.lowdragmc.lowdraglib.emi.ModularUIEmiRecipeCategory;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
-public class MultiblockInfoEmiCategory extends ModularUIEmiRecipeCategory {
+public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
     public static final MultiblockInfoEmiCategory CATEGORY = new MultiblockInfoEmiCategory();
 
     private MultiblockInfoEmiCategory() {
-        super(new ResourceLocation(GTCEu.MOD_ID + ":multiblock_info"), EmiStack.of(GTMachines.ELECTRIC_BLAST_FURNACE.getItem()));
+        super(GTCEu.id("multiblock_info"), EmiStack.of(GTMachines.ELECTRIC_BLAST_FURNACE.getItem()));
     }
 
     public static void registerDisplays(EmiRegistry registry) {

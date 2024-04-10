@@ -25,7 +25,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
         super(new Position(x, y), new Size(config.length / 2 * 18, 18 * 4 + 2));
         this.config = config;
         this.init();
-        this.amountSetWidget = new AmountSetSlot(80, -40, this);
+        this.amountSetWidget = new AmountSetSlot(31, -50, this);
         this.addWidget(this.amountSetWidget);
         this.addWidget(this.amountSetWidget.getAmountText());
         this.amountSetWidget.setVisible(false);

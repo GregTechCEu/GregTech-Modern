@@ -32,7 +32,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -331,7 +331,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+    public static void addToolRecipe(Consumer<FinishedRecipe> provider, @NotNull Material material, @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
         if (mirrored) { // todo mirrored
@@ -346,7 +346,7 @@ public class ToolRecipeHandler {
     /**
      * {@code D} is inferred as the dye key
      */
-    public static void addDyeableToolRecipe(Consumer<FinishedRecipe> provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+    public static void addDyeableToolRecipe(Consumer<FinishedRecipe> provider, @NotNull Material material, @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
         for (var color : MarkerMaterials.Color.COLORS.entrySet()) {
@@ -480,18 +480,17 @@ public class ToolRecipeHandler {
                     'B', batteryItem.asStack());
         }
 
-        // todo tricoder
-//        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
-//            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, "tricorder_" + batteryItem.getId().getPath(), GTItems.TRICORDER_SCANNER.asStack(),
-//                    stack -> batteryItem.is(stack.getItem()), true, true,
-//                    "EPS", "CDC", "PBP",
-//                    'E', GTItems.EMITTER_MV.asStack(),
-//                    'P', new UnificationEntry(plate, GTMaterials.Aluminium),
-//                    'S', GTItems.SENSOR_MV.asStack(),
-//                    'D', GTItems.COVER_SCREEN.asStack(),
-//                    'C', CustomTags.MV_CIRCUITS,
-//                    'B', batteryItem.asStack());
-//        }
+        for (ItemEntry<? extends Item> batteryItem : batteryItems.get(MV)) {
+            VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider, true, false, true, "portable_scanner_" + batteryItem.getId().getPath(),
+                    Ingredient.of(batteryItem.get()), GTItems.PORTABLE_SCANNER.asStack(),
+                    "EPS", "CDC", "PBP",
+                    'E', GTItems.EMITTER_MV.asStack(),
+                    'P', new UnificationEntry(plate, GTMaterials.Aluminium),
+                    'S', GTItems.SENSOR_MV.asStack(),
+                    'D', GTItems.COVER_SCREEN.asStack(),
+                    'C', CustomTags.MV_CIRCUITS,
+                    'B', batteryItem.asStack());
+        }
 
 
         for (ItemEntry<? extends Item> batteryItem : batteryItems.get(HV)) {

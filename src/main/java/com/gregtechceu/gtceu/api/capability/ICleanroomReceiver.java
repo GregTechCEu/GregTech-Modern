@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Implement this interface in order to make a BlockEntity into a block that recieves a cleanroom from other blocks

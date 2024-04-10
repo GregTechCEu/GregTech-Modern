@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
+import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMufflerMachine;
@@ -28,6 +29,7 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.DiodePartMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
@@ -55,8 +57,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
@@ -65,7 +67,7 @@ import static com.gregtechceu.gtceu.api.pattern.Predicates.states;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class CleanroomMachine extends WorkableElectricMultiblockMachine implements ICleanroomProvider, IDisplayUIMachine {
+public class CleanroomMachine extends WorkableElectricMultiblockMachine implements ICleanroomProvider, IDisplayUIMachine, IDataInfoProvider {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CleanroomMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     public static final int CLEAN_AMOUNT_THRESHOLD = 90;
@@ -105,7 +107,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public CleanroomLogic getRecipeLogic() {
         return (CleanroomLogic) super.getRecipeLogic();
     }
@@ -250,7 +252,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
      * @param direction the direction to move
      * @return if a block is a valid wall block at pos moved in direction
      */
-    public boolean isBlockEdge(@Nonnull Level world, @Nonnull BlockPos.MutableBlockPos pos, @Nonnull Direction direction) {
+    public boolean isBlockEdge(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos, @NotNull Direction direction) {
         return world.getBlockState(pos.move(direction)) == GTBlocks.PLASTCRETE.getDefaultState();
     }
 
@@ -260,11 +262,11 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
      * @param direction the direction to move
      * @return if a block is a valid floor block at pos moved in direction
      */
-    public boolean isBlockFloor(@Nonnull Level world, @Nonnull BlockPos.MutableBlockPos pos, @Nonnull Direction direction) {
+    public boolean isBlockFloor(@NotNull Level world, @NotNull BlockPos.MutableBlockPos pos, @NotNull Direction direction) {
         return isBlockEdge(world, pos, direction) || world.getBlockState(pos) == GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public BlockPattern getPattern() {
         // return the default structure, even if there is no valid size found
@@ -358,7 +360,7 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
 
         TraceabilityPredicate wallPredicate = states(getCasingState(), getGlassState());
         TraceabilityPredicate basePredicate = Predicates.autoAbilities(true, false, false)
-                .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(3));
+                .or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2));
 
         // layer the slices one behind the next
         return FactoryBlockPattern.start()
@@ -379,23 +381,23 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
     }
 
     // protected to allow easy addition of addon "cleanrooms"
-    @Nonnull
+    @NotNull
     protected BlockState getCasingState() {
         return GTBlocks.PLASTCRETE.getDefaultState();
     }
 
-    @Nonnull
+    @NotNull
     protected BlockState getGlassState() {
         return GTBlocks.CLEANROOM_GLASS.getDefaultState();
     }
 
-    @Nonnull
+    @NotNull
     protected static TraceabilityPredicate doorPredicate() {
         return Predicates.custom(blockWorldState -> blockWorldState.getBlockState().getBlock() instanceof DoorBlock,
                 () -> new BlockInfo[]{new BlockInfo(Blocks.IRON_DOOR.defaultBlockState()), new BlockInfo(Blocks.IRON_DOOR.defaultBlockState().setValue(DoorBlock.HALF, DoubleBlockHalf.UPPER))});
     }
 
-    @Nonnull
+    @NotNull
     protected TraceabilityPredicate innerPredicate() {
         return new TraceabilityPredicate(blockWorldState -> {
             Set<ICleanroomReceiver> receivers = blockWorldState.getMatchContext().getOrCreate("cleanroomReceiver", Sets::newHashSet);
@@ -501,9 +503,13 @@ public class CleanroomMachine extends WorkableElectricMultiblockMachine implemen
         return this.cleanAmount >= CLEAN_AMOUNT_THRESHOLD;
     }
 
-    @Nonnull
-    public List<Component> getDataInfo() {
-        return Collections.singletonList(Component.translatable(isClean() ? "gtceu.multiblock.cleanroom.clean_state" : "gtceu.multiblock.cleanroom.dirty_state"));
+    @NotNull
+    @Override
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+            return Collections.singletonList(Component.translatable(isClean() ? "gtceu.multiblock.cleanroom.clean_state" : "gtceu.multiblock.cleanroom.dirty_state"));
+        }
+        return new ArrayList<>();
     }
 
     @Override

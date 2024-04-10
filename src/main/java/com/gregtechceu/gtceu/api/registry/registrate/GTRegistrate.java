@@ -33,7 +33,7 @@ import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import org.apache.commons.lang3.function.TriFunction;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.Locale;
@@ -57,7 +57,7 @@ public class GTRegistrate extends Registrate {
         super(modId);
     }
 
-    @Nonnull
+    @NotNull
     public static GTRegistrate create(String modId) {
         return new GTRegistrate(modId);
     }
@@ -119,7 +119,7 @@ public class GTRegistrate extends Registrate {
     }
 
     @Override
-    public <T extends Item> @Nonnull ItemBuilder<T, Registrate> item(String name, NonNullFunction<Item.Properties, T> factory) {
+    public <T extends Item> @NotNull ItemBuilder<T, Registrate> item(String name, NonNullFunction<Item.Properties, T> factory) {
         return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("\\.", "_")));
     }
 

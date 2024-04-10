@@ -35,7 +35,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
@@ -159,7 +159,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
             // NO-OP
         }
 
@@ -168,7 +168,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
             return MEInputBusPartMachine.CONFIG_SIZE;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {
             if (slot >= 0 && slot < CONFIG_SIZE) {
@@ -177,13 +177,13 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
             return ItemStack.EMPTY;
         }
 
-        @Nonnull
+        @NotNull
         @Override
-        public ItemStack insertItem(int slot, @Nonnull ItemStack stack, boolean simulate) {
+        public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
             return stack;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate) {
             if (slot >= 0 && slot < CONFIG_SIZE) {
@@ -238,7 +238,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
             // NO-OP
         }
 
@@ -253,7 +253,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
             return 1;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {
             if (slot == 0 && this.stock != null) {
@@ -262,7 +262,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
             return ItemStack.EMPTY;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
             if (slot == 0 && this.stock != null) {

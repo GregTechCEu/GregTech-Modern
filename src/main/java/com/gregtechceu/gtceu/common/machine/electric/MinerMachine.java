@@ -12,10 +12,12 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
@@ -47,16 +49,19 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiFunction;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MinerMachine extends WorkableTieredMachine implements IMiner, IControllable, IFancyUIMachine {
+public class MinerMachine extends WorkableTieredMachine implements IMiner, IControllable, IFancyUIMachine, IDataInfoProvider {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MinerMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
@@ -274,7 +279,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         });
     }
 
-    private void addDisplayText(@Nonnull List<Component> textList) {
+    private void addDisplayText(@NotNull List<Component> textList) {
         int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
         textList.add(Component.translatable("gtceu.machine.miner.startx", getRecipeLogic().getX()).append(" ").append(Component.translatable("gtceu.machine.miner.minex", getRecipeLogic().getMineX())));
         textList.add(Component.translatable("gtceu.machine.miner.starty", getRecipeLogic().getY()).append(" ").append(Component.translatable("gtceu.machine.miner.miney", getRecipeLogic().getMineY())));
@@ -315,7 +320,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
             int currentRadius = getRecipeLogic().getCurrentRadius();
             if (currentRadius == 1)
                 getRecipeLogic().setCurrentRadius(getRecipeLogic().getMaximumRadius());
-            else if (playerIn.isCrouching())
+            else if (playerIn.isShiftKeyDown())
                 getRecipeLogic().setCurrentRadius(Math.max(1, Math.round(currentRadius / 2.0f)));
             else
                 getRecipeLogic().setCurrentRadius(Math.max(1, currentRadius - 1));
@@ -330,4 +335,14 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
         return InteractionResult.SUCCESS;
     }
 
+    @NotNull
+    @Override
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_MACHINE_INFO) {
+            int workingArea = IMiner.getWorkingArea(getRecipeLogic().getCurrentRadius());
+            return Collections.singletonList(
+                Component.translatable("gtceu.universal.tooltip.working_area", workingArea, workingArea));
+        }
+        return new ArrayList<>();
+    }
 }

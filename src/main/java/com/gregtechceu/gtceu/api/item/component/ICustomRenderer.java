@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -10,6 +10,6 @@ import javax.annotation.Nonnull;
  * @implNote ICustomRenderer
  */
 public interface ICustomRenderer extends IItemComponent {
-    @Nonnull
+    @NotNull
     IRenderer getRenderer();
 }

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -17,20 +17,20 @@ public final class DummyCleanroom implements ICleanroomProvider {
      * Create a Dummy Cleanroom that provides specific types
      * @param types the types to provide
      */
-    @Nonnull
-    public static DummyCleanroom createForTypes(@Nonnull Collection<CleanroomType> types) {
+    @NotNull
+    public static DummyCleanroom createForTypes(@NotNull Collection<CleanroomType> types) {
         return new DummyCleanroom(types, false);
     }
 
     /**
      * Create a Dummy Cleanroom that provides all types
      */
-    @Nonnull
+    @NotNull
     public static DummyCleanroom createForAllTypes() {
         return new DummyCleanroom(Collections.emptyList(), true);
     }
 
-    private DummyCleanroom(@Nonnull Collection<CleanroomType> allowedTypes, boolean allowsAllTypes) {
+    private DummyCleanroom(@NotNull Collection<CleanroomType> allowedTypes, boolean allowsAllTypes) {
         this.allowedTypes = allowedTypes;
         this.allowsAllTypes = allowsAllTypes;
     }

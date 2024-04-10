@@ -197,7 +197,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var stack = context.getItemInHand();
         var block = level.getBlockState(pos).getBlock();
 
-        int maxBlocksToRecolor = Math.max(1, player != null && player.isCrouching() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
+        int maxBlocksToRecolor = Math.max(1, player != null && player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
 
         if (player != null) {
             for (int i = 0; i < maxBlocksToRecolor; i++) {

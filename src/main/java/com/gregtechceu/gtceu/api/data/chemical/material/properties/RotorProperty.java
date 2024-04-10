@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class RotorProperty implements IMaterialProperty<RotorProperty> {
 
@@ -59,7 +59,7 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
     }
 
     @Override
-    public void verifyProperty(@Nonnull MaterialProperties properties) {
+    public void verifyProperty(@NotNull MaterialProperties properties) {
         properties.ensureSet(PropertyKey.INGOT, true);
     }
 }
