@@ -608,17 +608,15 @@ public class GTRecipeBuilder {
             return false;
         }
 
-        if (this.data.contains("research", Tag.TAG_LIST)) {
-            ResearchData property = ResearchData.fromNBT(data.getList("research", Tag.TAG_COMPOUND));
-            property.add(researchEntry);
-            this.data.put("research", property.toNBT());
-            return true;
+        ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+        if (condition != null) {
+            condition.data.add(researchEntry);
         } else {
-            ResearchData property = new ResearchData();
-            property.add(researchEntry);
-            this.data.put("research", property.toNBT());
-            return true;
+            condition = new ResearchCondition();
+            condition.data.add(researchEntry);
+            this.addCondition(condition);
         }
+        return true;
     }
 
     /**
@@ -748,9 +746,9 @@ public class GTRecipeBuilder {
         if (onSave != null) {
             onSave.accept(this, consumer);
         }
-        if (this.data.contains("research", Tag.TAG_LIST)) {
-            ResearchData data = ResearchData.fromNBT(this.data.getList("research", Tag.TAG_COMPOUND));
-            for (ResearchData.ResearchEntry entry : data) {
+        ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+        if (condition != null) {
+            for (ResearchData.ResearchEntry entry : condition.data) {
                 this.recipeType.addDataStickEntry(entry.getResearchId(), buildRawRecipe());
             }
         }

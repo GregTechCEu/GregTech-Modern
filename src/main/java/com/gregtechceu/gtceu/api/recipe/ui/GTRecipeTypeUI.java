@@ -10,7 +10,9 @@ import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
 import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
+import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
@@ -148,21 +150,21 @@ public class GTRecipeTypeUI {
         return size;
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, boolean isSteam, boolean isHighPressure) {}
+    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, List<RecipeCondition> conditions, boolean isSteam, boolean isHighPressure) {}
 
     /**
      * Auto layout UI template for recipes.
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, boolean isSteam, boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, List<RecipeCondition> conditions, boolean isSteam, boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
-        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, data, isSteam, isHighPressure));
+        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, data, conditions, isSteam, isHighPressure));
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data) {
-        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, data, false, false);
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, CompoundTag data, List<RecipeCondition> conditions) {
+        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, data, conditions, false, false);
     }
 
     /**
@@ -245,9 +247,12 @@ public class GTRecipeTypeUI {
                 // If in a recipe viewer and a research slot can be added, add it.
                 if (isJEI && recipeType.isHasResearchSlot() && index == recipeHolder.importItems.getSlots()) {
                     if (ConfigHolder.INSTANCE.machines.enableResearch && recipeHolder.data.contains("research", Tag.TAG_LIST)) {
-                        ResearchData data = ResearchData.fromNBT(recipeHolder.data.getList("research", Tag.TAG_COMPOUND));
+                        ResearchCondition condition = recipeHolder.conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+                        if (condition == null) {
+                            return;
+                        }
                         List<ItemStack> dataItems = new ArrayList<>();
-                        for (ResearchData.ResearchEntry entry : data) {
+                        for (ResearchData.ResearchEntry entry : condition.data) {
                             ItemStack dataStick = entry.getDataItem().copy();
                             ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), this.recipeType);
                             dataItems.add(dataStick);
