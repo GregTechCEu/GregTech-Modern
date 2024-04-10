@@ -244,6 +244,9 @@ public class GTRecipeWidget extends WidgetGroup {
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
         yOffset += EUt > 0 ? 20 : 0;
+        if (recipe.data.getBoolean("duration_is_total_cwu")) {
+            yOffset -= 10;
+        }
 
         /// add text based on i/o's
         MutableInt yOff = new MutableInt(yOffset);

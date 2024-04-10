@@ -246,7 +246,7 @@ public class GTRecipeTypeUI {
                 // 1 over container size.
                 // If in a recipe viewer and a research slot can be added, add it.
                 if (isJEI && recipeType.isHasResearchSlot() && index == recipeHolder.importItems.getSlots()) {
-                    if (ConfigHolder.INSTANCE.machines.enableResearch && recipeHolder.data.contains("research", Tag.TAG_LIST)) {
+                    if (ConfigHolder.INSTANCE.machines.enableResearch) {
                         ResearchCondition condition = recipeHolder.conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
                         if (condition == null) {
                             return;
