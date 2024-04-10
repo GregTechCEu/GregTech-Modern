@@ -1427,17 +1427,20 @@ public class CircuitRecipes {
 
         // UV
         ASSEMBLY_LINE_RECIPES.recipeBuilder("wetware_super_computer_uv").EUt(38400).duration(400)
-                .inputItems(WETWARE_CIRCUIT_BOARD)
-                .inputItems(WETWARE_PROCESSOR_ASSEMBLY_ZPM, 2)
-                .inputItems(ADVANCED_SMD_DIODE, 8)
-                .inputItems(NOR_MEMORY_CHIP, 16)
-                .inputItems(RANDOM_ACCESS_MEMORY, 32)
-                .inputItems(wireFine, YttriumBariumCuprate, 24)
-                .inputItems(foil, Polybenzimidazole, 32)
-                .inputItems(plate, Europium, 4)
-                .inputFluids(SolderingAlloy.getFluid(1152))
-                .outputItems(WETWARE_SUPER_COMPUTER_UV)
-                .save(provider);
+            .inputItems(WETWARE_CIRCUIT_BOARD)
+            .inputItems(WETWARE_PROCESSOR_ASSEMBLY_ZPM, 2)
+            .inputItems(ADVANCED_SMD_DIODE, 8)
+            .inputItems(NOR_MEMORY_CHIP, 16)
+            .inputItems(RANDOM_ACCESS_MEMORY, 32)
+            .inputItems(wireFine, YttriumBariumCuprate, 24)
+            .inputItems(foil, Polybenzimidazole, 32)
+            .inputItems(plate, Europium, 4)
+            .inputFluids(SolderingAlloy.getFluid(1152))
+            .outputItems(WETWARE_SUPER_COMPUTER_UV)
+            .stationResearch(b -> b
+                .researchStack(WETWARE_PROCESSOR_ASSEMBLY_ZPM.asStack())
+                .CWUt(16))
+            .save(provider);
 
         // UHV
         ASSEMBLY_LINE_RECIPES.recipeBuilder("wetware_mainframe_uhv")
