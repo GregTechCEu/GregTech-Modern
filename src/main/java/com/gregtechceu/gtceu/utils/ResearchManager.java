@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
@@ -23,6 +24,9 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
+import org.jetbrains.annotations.ApiStatus;
 
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.ApiStatus;
@@ -205,7 +209,7 @@ public final class ResearchManager {
 
         @Nullable
         @Override
-        public List<GTRecipe> getRepresentativeRecipes() {
+        public List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
             ItemStack copiedStick = GTItems.TOOL_DATA_STICK.asStack();
             copiedStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_from"));
             ItemStack emptyStick = GTItems.TOOL_DATA_STICK.asStack();
@@ -213,12 +217,12 @@ public final class ResearchManager {
             ItemStack resultStick = GTItems.TOOL_DATA_STICK.asStack();
             resultStick.setHoverName(Component.translatable("gtceu.scanner.copy_stick_to"));
             return Collections.singletonList(
-                    GTRecipeTypes.SCANNER_RECIPES.recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
-                            .inputItems(emptyStick)
-                            .notConsumable(copiedStick)
-                            .outputItems(resultStick)
-                            .duration(DURATION).EUt(EUT)
-                            .buildRawRecipe());
+                    new RecipeHolder<>(GTCEu.id("copy_" + GTStringUtils.itemStackToString(copiedStick)), GTRecipeTypes.SCANNER_RECIPES.recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
+                        .inputItems(emptyStick)
+                        .notConsumable(copiedStick)
+                        .outputItems(resultStick)
+                        .duration(DURATION).EUt(EUT)
+                        .buildRecipe()));
         }
     }
 }

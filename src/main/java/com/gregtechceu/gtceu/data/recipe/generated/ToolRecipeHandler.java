@@ -340,7 +340,7 @@ public class ToolRecipeHandler {
         }
     }
 
-    public static void addToolRecipe(RecipeOutput provider, @Nonnull Material material, @Nonnull GTToolType tool, boolean mirrored, Object... recipe) {
+    public static void addToolRecipe(RecipeOutput provider, @NotNull Material material, @NotNull GTToolType tool, boolean mirrored, Object... recipe) {
         ItemStack toolStack = ToolHelper.get(tool, material);
         if (toolStack.isEmpty()) return;
         if (mirrored) { // todo mirrored

@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
@@ -18,21 +20,26 @@ import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.longs.LongIntPair;
+import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.util.Mth;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
+import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -48,9 +55,37 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
+    public static final int LINE_HEIGHT = 10;
+
+    private final int xOffset;
+    private final GTRecipe recipe;
+    private final ResourceLocation recipeId;
+    private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
+    @Getter
+    private int tier;
+    @Getter
+    private int yOffset;
+    private LabelWidget voltageTextWidget;
+
     public GTRecipeWidget(RecipeHolder<GTRecipe> recipeHolder) {
-        super(0, 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width, recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
-        GTRecipe recipe = recipeHolder.value();
+        super(getXOffset(recipeHolder.value()), 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width, recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
+        this.recipe = recipeHolder.value();
+        this.recipeId = recipeHolder.id();
+        this.xOffset = getXOffset(recipe);
+        setRecipeWidget();
+        setTierToMin();
+        initializeRecipeTextWidget();
+        addButtons();
+    }
+
+    private static int getXOffset(GTRecipe recipe) {
+        if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width) {
+            return (recipe.recipeType.getRecipeUI().getJEISize().width - recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
+        }
+        return 0;
+    }
+
+    private void setRecipeWidget() {
         setClientSideWidget();
 
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
@@ -62,6 +97,135 @@ public class GTRecipeWidget extends WidgetGroup {
                 recipe.data.copy(), recipe.conditions);
         addSlots(contents, group, recipe);
 
+        List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> scannerPossibilities = null;
+        if (recipe.recipeType.isScanner()) {
+            scannerPossibilities = new ArrayList<>();
+            // Scanner Output replacing, used for cycling research outputs
+            Pair<GTRecipeType, String> researchData = null;
+            for (Content stack : recipe.getOutputContents(ItemRecipeCapability.CAP)) {
+                researchData = ResearchManager.readResearchId(ItemRecipeCapability.CAP.of(stack.content).getItems()[0]);
+                if (researchData != null) break;
+            }
+            if (researchData != null) {
+                Collection<GTRecipe> possibleRecipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());
+                if (possibleRecipes != null) {
+                    for (GTRecipe r : possibleRecipes) {
+                        ItemStack researchItem = ItemRecipeCapability.CAP.of(r.getOutputContents(ItemRecipeCapability.CAP).get(0).content).getItems()[0];
+                        researchItem = researchItem.copy();
+                        researchItem.setCount(1);
+                        boolean didMatch = false;
+                        for (Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> stacks : scannerPossibilities) {
+                            for (ItemStack stack : stacks.map(
+                                tag -> tag
+                                    .stream()
+                                    .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
+                                    .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.value())))
+                                    .collect(Collectors.toList()),
+                                Function.identity())) {
+                                if (ItemStack.isSameItem(stack, researchItem)) {
+                                    didMatch = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!didMatch) scannerPossibilities.add(Either.right(List.of(researchItem)));
+                    }
+                }
+                scannerPossibilities.add(outputStacks.get(0));
+            }
+        }
+
+        if (scannerPossibilities != null && !scannerPossibilities.isEmpty()) {
+            outputStacks = scannerPossibilities;
+        }
+        while (outputStacks.size() < recipe.recipeType.getMaxOutputs(ItemRecipeCapability.CAP)) outputStacks.add(null);
+
+        List<Content> inputFluidContents = new ArrayList<>();
+        inputFluidContents.addAll(recipe.getInputContents(FluidRecipeCapability.CAP));
+        inputFluidContents.addAll(recipe.getTickInputContents(FluidRecipeCapability.CAP));
+        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> inputFluids = inputFluidContents.stream().map(content -> content.content)
+            .map(FluidRecipeCapability.CAP::of)
+            .map(GTRecipeWidget::mapFluid)
+            .collect(Collectors.toList());
+        while (inputFluids.size() < recipe.recipeType.getMaxInputs(FluidRecipeCapability.CAP)) inputFluids.add(null);
+
+        List<Content> outputFluidContents = new ArrayList<>();
+        outputFluidContents.addAll(recipe.getOutputContents(FluidRecipeCapability.CAP));
+        outputFluidContents.addAll(recipe.getTickOutputContents(FluidRecipeCapability.CAP));
+        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<net.neoforged.neoforge.fluids.FluidStack>>> outputFluids = outputFluidContents.stream().map(content -> content.content)
+            .map(FluidRecipeCapability.CAP::of)
+            .map(GTRecipeWidget::mapFluid)
+            .collect(Collectors.toList());
+        while (outputFluids.size() < recipe.recipeType.getMaxOutputs(FluidRecipeCapability.CAP)) outputFluids.add(null);
+
+        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress,
+            new TagOrCycleItemStackTransfer(inputStacks),
+            new TagOrCycleItemStackTransfer(outputStacks),
+            new TagOrCycleFluidTransfer(inputFluids),
+            new TagOrCycleFluidTransfer(outputFluids),
+            recipe.data.copy(),
+            recipe.conditions
+        );
+        // bind item in overlay
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
+            var index = WidgetUtils.widgetIdIndex(slot);
+            if (index >= 0 && index < inputStackContents.size()) {
+                var content = inputStackContents.get(index);
+                slot.setXEIChance(content.chance);
+                slot.setOverlay(content.createOverlay(index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()));
+                slot.setOnAddedTooltips((w, tooltips) -> {
+                    setConsumedChance(content, tooltips);
+                    if (index >= recipe.getInputContents(ItemRecipeCapability.CAP).size()) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
+                    }
+                });
+            }
+        });
+        // bind item out overlay
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.OUT)), SlotWidget.class, slot -> {
+            var index = WidgetUtils.widgetIdIndex(slot);
+            if (index >= 0 && index < outputStackContents.size()) {
+                var content = outputStackContents.get(index);
+                slot.setXEIChance(content.chance);
+                slot.setOverlay(content.createOverlay(index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()));
+                slot.setOnAddedTooltips((w, tooltips) -> {
+                    setConsumedChance(content, tooltips);
+                    if (index >= recipe.getOutputContents(ItemRecipeCapability.CAP).size()) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
+                    }
+                });
+            }
+        });
+        // bind fluid in overlay
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.IN)), TankWidget.class, tank -> {
+            var index = WidgetUtils.widgetIdIndex(tank);
+            if (index >= 0 && index < inputFluidContents.size()) {
+                var content = inputFluidContents.get(index);
+                tank.setXEIChance(content.chance);
+                tank.setOverlay(content.createOverlay(index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()));
+                tank.setOnAddedTooltips((w, tooltips) -> {
+                    setConsumedChance(content, tooltips);
+                    if (index >= recipe.getInputContents(FluidRecipeCapability.CAP).size()) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
+                    }
+                });
+            }
+        });
+        // bind fluid out overlay
+        WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.OUT)), TankWidget.class, tank -> {
+            var index = WidgetUtils.widgetIdIndex(tank);
+            if (index >= 0 && index < outputFluidContents.size()) {
+                var content = outputFluidContents.get(index);
+                tank.setXEIChance(content.chance);
+                tank.setOverlay(content.createOverlay(index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()));
+                tank.setOnAddedTooltips((w, tooltips) -> {
+                    setConsumedChance(content, tooltips);
+                    if (index >= recipe.getOutputContents(FluidRecipeCapability.CAP).size()) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
+                    }
+                });
+            }
+        });
         var size = group.getSize();
         addWidget(group);
         var EUt = RecipeHelper.getInputEUt(recipe);
@@ -163,9 +327,200 @@ public class GTRecipeWidget extends WidgetGroup {
                     FormattingUtil.formatNumbers(EUt)));
         }
 
-        // add recipe id getter
-        addWidget(new PredicatedButtonWidget(getSize().width + 3,3, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd -> {
-            Minecraft.getInstance().keyboardHandler.setClipboard(recipeHolder.id().toString());
-        }, () -> CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipeHolder.id()));
+        return texts;
+    }
+
+    private void addButtons() {
+        // add a recipe id getter, btw all the things can only click within the WidgetGroup while using EMI
+        int x = getSize().width + 3 - this.xOffset, y = 3;
+        if (LDLib.isEmiLoaded()) {
+            x = getSize().width - xOffset - 18;
+            y = getSize().height - 30;
+        }
+        addWidget(new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd ->
+            Minecraft.getInstance().keyboardHandler.setClipboard(recipeId.toString()), () -> CompassManager.INSTANCE.devMode, CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipeId));
+    }
+
+    private int getVoltageXOffset() {
+        int x = getSize().width - switch (tier) {
+            case ULV, LuV, ZPM, UHV, UEV, UXV -> 20;
+            case OpV, MAX -> 22;
+            case UIV -> 18;
+            case IV -> 12;
+            default -> 14;
+        };
+        if (!LDLib.isEmiLoaded()) {
+            x -= 3;
+        }
+        return x;
+    }
+
+    public void setRecipeOC(int button, boolean isShiftClick) {
+        OverclockingLogic oc = OverclockingLogic.NON_PERFECT_OVERCLOCK;
+        if (button == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            setTier(tier + 1);
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_RIGHT) {
+            setTier(tier - 1);
+        } else if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE) {
+            setTierToMin();
+        }
+        if (isShiftClick) {
+            oc = OverclockingLogic.PERFECT_OVERCLOCK;
+        }
+        setRecipeTextWidget(oc);
+    }
+
+    private void setRecipeTextWidget(OverclockingLogic logic) {
+        long inputEUt = RecipeHelper.getInputEUt(recipe);
+        int duration = recipe.duration;
+        String tierText = GTValues.VNF[tier];
+        if (tier > getMinTier() && inputEUt != 0) {
+            LongIntPair pair = logic.getLogic().runOverclockingLogic(
+                recipe, inputEUt, GTValues.V[tier], duration, GTValues.MAX);
+            duration = pair.rightInt();
+            inputEUt = pair.firstLong();
+            tierText = tierText.formatted(ChatFormatting.ITALIC);
+        }
+        List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, 0);
+        for (int i = 0; i < texts.size(); i++) {
+            recipeParaTexts.get(i).setComponent(texts.get(i));
+        }
+        voltageTextWidget.setText(tierText);
+        voltageTextWidget.setSelfPositionX(getVoltageXOffset() - xOffset);
+        detectAndSendChanges();
+        updateScreen();
+    }
+
+    private void setConsumedChance(Content content, List<Component> tooltips) {
+        var chance = content.chance;
+        if (chance < 1) {
+            tooltips.add(chance == 0 ?
+                Component.translatable("gtceu.gui.content.chance_0") :
+                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
+            if (content.tierChanceBoost != 0) {
+                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
+            }
+        }
+    }
+
+    private int getMinTier() {
+        return RecipeHelper.getRecipeEUtTier(recipe);
+    }
+
+    private void setTier(int tier) {
+        this.tier = Mth.clamp(tier, getMinTier(), GTValues.MAX);
+    }
+
+    private void setTierToMin() {
+        setTier(getMinTier());
+    }
+
+    // Maps ingredients to Either <(Tag with count), ItemStack>s
+    private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
+        if (ingredient instanceof SizedIngredient sizedIngredient) {
+            final int amount = sizedIngredient.getAmount();
+             if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
+                List<Ingredient> children = intersection.getChildren();
+                if (children.isEmpty()) {
+                    return Either.right(null);
+                }
+                var childEither = mapItem(children.get(0));
+                return Either.right(childEither.map(tags -> {
+                    List<ItemStack> tagItems = tags.stream()
+                        .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                        .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                        .collect(Collectors.toList());
+                    ListIterator<ItemStack> iterator = tagItems.listIterator();
+                    while (iterator.hasNext()) {
+                        var item = iterator.next();
+                        for (int i = 1; i < children.size(); ++i) {
+                            if (!children.get(i).test(item)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
+                        iterator.set(item.copyWithCount(amount));
+                    }
+                    return tagItems;
+                }, items -> {
+                    items = new ArrayList<>(items);
+                    ListIterator<ItemStack> iterator = items.listIterator();
+                    while (iterator.hasNext()) {
+                        var item = iterator.next();
+                        for (int i = 1; i < children.size(); ++i) {
+                            if (!children.get(i).test(item)) {
+                                iterator.remove();
+                                break;
+                            }
+                        }
+                        iterator.set(item.copyWithCount(amount));
+                    }
+                    return items;
+                }));
+            } else if (sizedIngredient.getInner().getValues().length > 0 && sizedIngredient.getInner().getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
+            }
+        } else if (ingredient instanceof IntersectionIngredient intersection) {
+            // Map intersection ingredients to the items inside, as recipe viewers don't support them.
+            List<Ingredient> children = intersection.getChildren();
+            if (children.isEmpty()) {
+                return Either.right(null);
+            }
+            var childEither = mapItem(children.get(0));
+            return Either.right(childEither.map(tags -> {
+                List<ItemStack> tagItems = tags.stream()
+                    .map(pair -> Pair.of(BuiltInRegistries.ITEM.getTag(pair.getFirst()).stream(), pair.getSecond()))
+                    .flatMap(pair -> pair.getFirst().flatMap(tag -> tag.stream().map(holder -> new ItemStack(holder.value(), pair.getSecond()))))
+                    .collect(Collectors.toList());
+                ListIterator<ItemStack> iterator = tagItems.listIterator();
+                while (iterator.hasNext()) {
+                    var item = iterator.next();
+                    for (int i = 1; i < children.size(); ++i) {
+                        if (!children.get(i).test(item)) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                }
+                return tagItems;
+            }, items -> {
+                items = new ArrayList<>(items);
+                ListIterator<ItemStack> iterator = items.listIterator();
+                while (iterator.hasNext()) {
+                    var item = iterator.next();
+                    for (int i = 1; i < children.size(); ++i) {
+                        if (!children.get(i).test(item)) {
+                            iterator.remove();
+                            break;
+                        }
+                    }
+                }
+                return items;
+            }));
+        } else if (ingredient.getValues().length > 0 && ingredient.getValues()[0] instanceof Ingredient.TagValue tagValue) {
+            return Either.left(List.of(Pair.of(tagValue.tag(), 1)));
+        }
+        return Either.right(Arrays.stream(ingredient.getItems()).toList());
+    }
+
+    // Maps fluids to Either <(tag with count), ItemStack>s
+    private static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+        int amount = ingredient.getAmount();
+        CompoundTag tag = ingredient.getNbt();
+
+        List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
+        List<FluidStack> fluids = new ArrayList<>();
+        for (FluidIngredient.Value value : ingredient.values) {
+            if (value instanceof FluidIngredient.TagValue tagValue) {
+                tags.add(Pair.of(tagValue.getTag(), amount));
+            } else {
+                fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, tag)).toList());
+            }
+        }
+        if (!tags.isEmpty()) {
+            return Either.left(tags);
+        }else {
+            return Either.right(fluids);
+        }
     }
 }

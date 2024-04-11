@@ -260,7 +260,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * @return a {@code TagKey<Fluid>} with the material's name as the tag key
-     * @see #getFluid(FluidStorageKey, long)
+     * @see #getFluid(FluidStorageKey, int)
      */
     public TagKey<Fluid> getFluidTag() {
         return TagUtil.createFluidTag(this.getName());

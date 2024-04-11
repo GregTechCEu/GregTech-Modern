@@ -16,10 +16,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 @AllArgsConstructor

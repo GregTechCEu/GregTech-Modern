@@ -41,11 +41,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.fluids.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandler;
-
-import lombok.Getter;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.fluids.FluidStack;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -211,10 +209,9 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Fluid tanks
-                Optional<IFluidHandler> fluidCap = tileEntity.getCapability(ForgeCapabilities.FLUID_HANDLER).resolve();
-                if (fluidCap.isPresent()) {
+                IFluidHandler fluidHandler = tileEntity.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, tileEntity.getBlockPos(), null);
+                if (fluidHandler != null) {
                     list.add(Component.translatable("behavior.portable_scanner.divider"));
-                    IFluidHandler fluidHandler = fluidCap.get();
                     boolean allTanksEmpty = true;
 
                     for (int i = 0; i < fluidHandler.getTanks(); i++) {
@@ -255,10 +252,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_ELECTRICAL_INFO) {
 
                 // Energy container
-                Optional<IEnergyContainer> energyCap = tileEntity
-                        .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER).resolve();
-                if (energyCap.isPresent()) {
-                    IEnergyContainer energyContainer = energyCap.get();
+                IEnergyContainer energyContainer = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, tileEntity.getBlockPos(), null);
+                if (energyContainer != null) {
                     if (energyContainer.getInputVoltage() > 0) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("behavior.portable_scanner.energy_container_in",
@@ -312,10 +307,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 }
 
                 // Recipe logic for EU production/consumption
-                Optional<RecipeLogic> recipeLogicCap = tileEntity.getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC)
-                        .resolve();
-                if (recipeLogicCap.isPresent()) {
-                    RecipeLogic recipeLogic = recipeLogicCap.get();
+                RecipeLogic recipeLogic = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, tileEntity.getBlockPos(), null);
+                if (recipeLogic != null) {
                     GTRecipe recipe = recipeLogic.getLastRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));

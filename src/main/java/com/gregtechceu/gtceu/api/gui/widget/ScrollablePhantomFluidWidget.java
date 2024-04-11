@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.PhantomFluidWidget;
+import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import net.minecraft.network.FriendlyByteBuf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -23,11 +25,11 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
     public ScrollablePhantomFluidWidget() {
     }
 
-    public ScrollablePhantomFluidWidget(IFluidHandler fluidTank, int x, int y) {
+    public ScrollablePhantomFluidWidget(IFluidHandlerModifiable fluidTank, int x, int y) {
         super(fluidTank, x, y);
     }
 
-    public ScrollablePhantomFluidWidget(@Nullable IFluidHandler fluidTank, int x, int y, int width, int height) {
+    public ScrollablePhantomFluidWidget(@Nullable IFluidHandlerModifiable fluidTank, int x, int y, int width, int height) {
         super(fluidTank, x, y, width, height);
     }
 
@@ -67,8 +69,8 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
     }
 
     private void handleScrollAction(int delta) {
-        IFluidHandler tank = getFluidTank();
-        if (tank == null)
+        IFluidHandlerModifiable fluidTank = (IFluidHandlerModifiable) getFluidTank();
+        if (fluidTank == null)
             return;
 
         FluidStack fluid = tank.getFluidInTank(0);

@@ -1,5 +1,11 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
+import appeng.api.config.Actionable;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -114,7 +120,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
         @Persisted
         private final ExportOnlyAEFluid[] tanks;
-        private FluidStorage[] fluidStorages;
+        private CustomFluidTank[] fluidStorages;
 
         public ExportOnlyAEFluidList(MetaMachine machine, int slots, int capacity, IO io) {
             super(machine, slots, capacity, io);
@@ -127,10 +133,9 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         }
 
         @Override
-        public FluidStorage[] getStorages() {
-            if (this.fluidStorages == null) {
-                this.fluidStorages = Arrays.stream(this.tanks)
-                        .map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new);
+        public CustomFluidTank[] getStorages() {
+            if(this.fluidStorages == null) {
+                this.fluidStorages = Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(CustomFluidTank[]::new);
                 return this.fluidStorages;
             } else {
                 return this.fluidStorages;
@@ -302,11 +307,14 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 if (this.stock.amount() == 0) {
                     this.stock = null;
                 }
+                onContentsChanged();
             }
             return result;
         }
 
-        private void trigger() {
+
+        //@Override
+        public void onContentsChanged() {
             if (onContentsChanged != null) {
                 onContentsChanged.run();
             }

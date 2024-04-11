@@ -45,12 +45,9 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
             return InteractionResult.PASS;
         }
 
-        IFluidHandler handlerToRemoveFrom = fluidHandler;
-//                player.isCrouching() ?
-//                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).input : null) :
-//                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).output : fluidHandler);
-
-        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(FluidHelper.getBucket(), IFluidHandler.FluidAction.EXECUTE) != null) {
+        FluidStack drained = fluidHandler.drain(1000, IFluidHandler.FluidAction.SIMULATE);
+        if (!drained.isEmpty()) {
+            fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
             return InteractionResult.CONSUME;
         }
