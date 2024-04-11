@@ -40,7 +40,7 @@ dependencies {
     compileOnly(forge.almostUnified.forge)
 
     // KJS
-    compileOnly forge.kubejs
+    implementation forge.kubejs
 
     // Configuration
     implementation(forge.configuration)

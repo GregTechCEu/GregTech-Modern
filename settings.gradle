@@ -26,7 +26,7 @@ dependencyResolutionManagement {
         def reiVersion = "14.0.688"
         def emiVersion = "1.1.0"
         def ae2Version = "17.0.6-beta"
-        def kjsVersion = "2001.6.4-build.120"
+        def kjsVersion = "2004.7.0-build.14"
         def auVersion = "1.20.1-0.6.0"
 
         // NeoForge
@@ -91,7 +91,7 @@ dependencyResolutionManagement {
             library("jade", "curse.maven", "jade-324717").versionRef(jade)
 
             def kubejs = version("kubejs", kjsVersion)
-            library("kubejs", "dev.latvian.mods", "kubejs-forge").versionRef(kubejs)
+            library("kubejs", "dev.latvian.mods", "kubejs-neoforge").versionRef(kubejs)
 
             def configuration = version("configuration", configurationVersion)
             library("configuration", "dev.toma", "configuration-neoforge-${minecraftVersion}").versionRef(configuration)

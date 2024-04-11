@@ -25,6 +25,8 @@ public class GTCapability {
     public static final BlockCapability<ICleanroomReceiver, Direction> CAPABILITY_CLEANROOM_RECEIVER = BlockCapability.createSided(GTCEu.id("cleanroom_receiver"), ICleanroomReceiver.class);
     public static final BlockCapability<IMaintenanceMachine, Direction> CAPABILITY_MAINTENANCE_MACHINE = BlockCapability.createSided(GTCEu.id("maintenance"), IMaintenanceMachine.class);
     public static final BlockCapability<ILaserContainer, Direction> CAPABILITY_LASER = BlockCapability.createSided(GTCEu.id("laser_container"), ILaserContainer.class);
+    public static final BlockCapability<IOpticalComputationProvider, Direction> CAPABILITY_COMPUTATION_PROVIDER = BlockCapability.createSided(GTCEu.id("computation_provider"), IOpticalComputationProvider.class);
+    public static final BlockCapability<IDataAccessHatch, Direction> CAPABILITY_DATA_ACCESS = BlockCapability.createSided(GTCEu.id("data_access"), IDataAccessHatch.class);
 
     /*
     public static void register(RegisterCapabilitiesEvent event) {

@@ -264,6 +264,30 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
             }
             return null;
         }, this.self());
+        event.registerBlock(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, (level, pos, state, blockEntity, side) -> {
+            if (blockEntity instanceof IMachineBlockEntity machine) {
+                if (machine.getMetaMachine() instanceof IOpticalComputationProvider computationProvider) {
+                    return computationProvider;
+                }
+                var list = machine.getMetaMachine().getTraits().stream().filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IOpticalComputationProvider.class::cast).toList();
+                if (!list.isEmpty()) {
+                    return list.get(0);
+                }
+            }
+            return null;
+        }, this.self());
+        event.registerBlock(GTCapability.CAPABILITY_DATA_ACCESS, (level, pos, state, blockEntity, side) -> {
+            if (blockEntity instanceof IMachineBlockEntity machine) {
+                if (machine.getMetaMachine() instanceof IDataAccessHatch dataAccess) {
+                    return dataAccess;
+                }
+                var list = machine.getMetaMachine().getTraits().stream().filter(IDataAccessHatch.class::isInstance).filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
+                if (!list.isEmpty()) {
+                    return list.get(0);
+                }
+            }
+            return null;
+        }, this.self());
         if (GTCEu.isAE2Loaded()) {
             event.registerBlock(AppEngCapabilities.IN_WORLD_GRID_NODE_HOST, (level, pos, state, blockEntity, side) -> {
                 if (blockEntity instanceof IMachineBlockEntity machine) {
