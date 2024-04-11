@@ -1,13 +1,19 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
+import com.mojang.serialization.JsonOps;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
-
 import org.jetbrains.annotations.NotNull;
-import java.util.*;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
+import java.util.List;
 
 @AllArgsConstructor
 public final class ResearchData implements Iterable<ResearchData.ResearchEntry> {
@@ -31,18 +37,18 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         return this.entries.iterator();
     }
 
-    public static ResearchData fromNBT(ListTag tag) {
+    public static ResearchData fromJson(JsonArray array) {
         List<ResearchEntry> entries = new ArrayList<>();
-        for (int i = 0; i < tag.size(); ++i) {
-            entries.add(ResearchEntry.fromNBT(tag.getCompound(i)));
+        for (int i = 0; i < array.size(); ++i) {
+            entries.add(ResearchEntry.fromJson(array.get(i).getAsJsonObject()));
         }
         return new ResearchData(entries);
     }
 
-    public ListTag toNBT() {
-        ListTag tag = new ListTag();
-        this.entries.forEach(entry -> tag.add(entry.toNBT()));
-        return tag;
+    public JsonArray toJson() {
+        JsonArray json = new JsonArray();
+        this.entries.forEach(entry -> json.add(entry.toJson()));
+        return json;
     }
 
     /**
@@ -68,15 +74,15 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
             this.dataItem = dataItem;
         }
 
-        public static ResearchEntry fromNBT(CompoundTag tag) {
-            return new ResearchEntry(tag.getString("researchId"), ItemStack.of(tag.getCompound("dataItem")));
+        public static ResearchEntry fromJson(JsonObject tag) {
+            return new ResearchEntry(tag.get("researchId").getAsString(), ItemStack.CODEC.parse(JsonOps.INSTANCE, tag.get("dataItem")).getOrThrow(false, GTCEu.LOGGER::error));
         }
 
-        public CompoundTag toNBT() {
-            CompoundTag tag = new CompoundTag();
-            tag.putString("researchId", researchId);
-            tag.put("dataItem", dataItem.save(new CompoundTag()));
-            return tag;
+        public JsonObject toJson() {
+            JsonObject json = new JsonObject();
+            json.addProperty("researchId", researchId);
+            json.add("dataItem", ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, dataItem).getOrThrow(false, GTCEu.LOGGER::error));
+            return json;
         }
     }
 }

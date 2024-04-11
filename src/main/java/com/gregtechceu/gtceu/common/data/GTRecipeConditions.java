@@ -30,6 +30,7 @@ public final class GTRecipeConditions {
         GTRegistries.RECIPE_CONDITIONS.register(ThunderCondition.INSTANCE.getType(), ThunderCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(VentCondition.INSTANCE.getType(), VentCondition.class);
         GTRegistries.RECIPE_CONDITIONS.register(CleanroomCondition.INSTANCE.getType(), CleanroomCondition.class);
+        GTRegistries.RECIPE_CONDITIONS.register(ResearchCondition.INSTANCE.getType(), ResearchCondition.class);
         if (GTCEu.isCreateLoaded()) {
             GTRegistries.RECIPE_CONDITIONS.register(RPMCondition.INSTANCE.getType(), RPMCondition.class);
         }

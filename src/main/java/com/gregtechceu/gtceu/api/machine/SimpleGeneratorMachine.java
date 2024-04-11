@@ -25,6 +25,8 @@ import org.jetbrains.annotations.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -117,6 +119,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                             generatorMachine.importFluids,
                             generatorMachine.exportFluids,
                             new CompoundTag(),
+                            Collections.emptyList(),
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }
