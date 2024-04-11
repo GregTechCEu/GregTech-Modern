@@ -81,7 +81,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
     public static MachineBuilder<MultiblockMachineDefinition> createMultiblock(String name, Object... args) {
         CustomMultiblockBuilder[] builders;
         int start = 0;
-        while (start < args.length && (!(args[start] instanceof Number) || !(args[start] instanceof Number[]) || !(args[start] instanceof int[]))) {
+        while (start < args.length && (!(args[start] instanceof Number || args[start] instanceof Number[] || args[start] instanceof int[]))) {
             ++start;
         }
         Object[] tierObjects = MachineFunctionPresets.copyArgs(args, start);
