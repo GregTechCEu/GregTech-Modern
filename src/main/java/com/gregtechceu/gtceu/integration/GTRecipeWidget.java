@@ -172,7 +172,8 @@ public class GTRecipeWidget extends WidgetGroup {
             new TagOrCycleItemStackTransfer(outputStacks),
             new TagOrCycleFluidTransfer(inputFluids),
             new TagOrCycleFluidTransfer(outputFluids),
-            recipe.data.copy()
+            recipe.data.copy(),
+            recipe.conditions
         );
         // bind item in overlay
         WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
@@ -243,6 +244,9 @@ public class GTRecipeWidget extends WidgetGroup {
         int yOffset = 5 + size.height;
         this.yOffset = yOffset;
         yOffset += EUt > 0 ? 20 : 0;
+        if (recipe.data.getBoolean("duration_is_total_cwu")) {
+            yOffset -= 10;
+        }
 
         /// add text based on i/o's
         MutableInt yOff = new MutableInt(yOffset);
