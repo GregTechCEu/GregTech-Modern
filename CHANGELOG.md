@@ -11,4 +11,3 @@ Version: 1.2.0.a
 - Fixed assembly line recipes with no data not working
 - Fixed data module recipe being missing
 - Fixed tiered multiblock builders not working
-  - undocumented feature.
