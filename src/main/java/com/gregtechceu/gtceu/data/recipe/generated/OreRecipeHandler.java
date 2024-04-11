@@ -17,7 +17,6 @@ import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
-import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
 import java.util.function.Consumer;

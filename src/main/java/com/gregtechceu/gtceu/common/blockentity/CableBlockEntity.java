@@ -31,6 +31,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -317,8 +318,9 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         return MANAGED_FIELD_HOLDER;
     }
 
+    @NotNull
     @Override
-    public @NotNull List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
+    public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         List<Component> list = new ArrayList<>();
 
         if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_ELECTRICAL_INFO) {

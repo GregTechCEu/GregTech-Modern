@@ -9,12 +9,11 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.IntersectionIngredientAccessor;
-import com.gregtechceu.gtceu.core.mixins.TagValueAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -22,7 +21,6 @@ import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
 import com.mojang.datafixers.util.Either;
@@ -34,13 +32,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.material.Fluid;
-import net.minecraftforge.common.crafting.IntersectionIngredient;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -61,6 +62,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private final int xOffset;
     private final GTRecipe recipe;
+    private final ResourceLocation recipeId;
     private final List<LabelWidget> recipeParaTexts = new ArrayList<>();
     @Getter
     private int tier;
@@ -68,9 +70,10 @@ public class GTRecipeWidget extends WidgetGroup {
     private int yOffset;
     private LabelWidget voltageTextWidget;
 
-    public GTRecipeWidget(GTRecipe recipe) {
-        super(getXOffset(recipe), 0, recipe.recipeType.getRecipeUI().getJEISize().width, recipe.recipeType.getRecipeUI().getJEISize().height);
-        this.recipe = recipe;
+    public GTRecipeWidget(RecipeHolder<GTRecipe> recipeHolder) {
+        super(getXOffset(recipeHolder.value()), 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width, recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
+        this.recipe = recipeHolder.value();
+        this.recipeId = recipeHolder.id();
         this.xOffset = getXOffset(recipe);
         setRecipeWidget();
         setTierToMin();
@@ -128,7 +131,7 @@ public class GTRecipeWidget extends WidgetGroup {
                                 tag -> tag
                                     .stream()
                                     .flatMap(key -> BuiltInRegistries.ITEM.getTag(key.getFirst()).stream())
-                                    .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.get())))
+                                    .flatMap(holders -> holders.stream().map(holder -> new ItemStack(holder.value())))
                                     .collect(Collectors.toList()),
                                 Function.identity())) {
                                 if (ItemStack.isSameItem(stack, researchItem)) {
@@ -152,7 +155,7 @@ public class GTRecipeWidget extends WidgetGroup {
         List<Content> inputFluidContents = new ArrayList<>();
         inputFluidContents.addAll(recipe.getInputContents(FluidRecipeCapability.CAP));
         inputFluidContents.addAll(recipe.getTickInputContents(FluidRecipeCapability.CAP));
-        List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> inputFluids = inputFluidContents.stream().map(content -> content.content)
+        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> inputFluids = inputFluidContents.stream().map(content -> content.content)
             .map(FluidRecipeCapability.CAP::of)
             .map(GTRecipeWidget::mapFluid)
             .collect(Collectors.toList());
@@ -161,7 +164,7 @@ public class GTRecipeWidget extends WidgetGroup {
         List<Content> outputFluidContents = new ArrayList<>();
         outputFluidContents.addAll(recipe.getOutputContents(FluidRecipeCapability.CAP));
         outputFluidContents.addAll(recipe.getTickOutputContents(FluidRecipeCapability.CAP));
-        List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> outputFluids = outputFluidContents.stream().map(content -> content.content)
+        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<net.neoforged.neoforge.fluids.FluidStack>>> outputFluids = outputFluidContents.stream().map(content -> content.content)
             .map(FluidRecipeCapability.CAP::of)
             .map(GTRecipeWidget::mapFluid)
             .collect(Collectors.toList());
@@ -342,7 +345,7 @@ public class GTRecipeWidget extends WidgetGroup {
             y = getSize().height - 30;
         }
         addWidget(new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd ->
-            Minecraft.getInstance().keyboardHandler.setClipboard(recipe.id.toString()), () -> CompassManager.INSTANCE.devMode, CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipe.id));
+            Minecraft.getInstance().keyboardHandler.setClipboard(recipeId.toString()), () -> CompassManager.INSTANCE.devMode, CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipeId));
     }
 
     private int getVoltageXOffset() {
@@ -420,12 +423,11 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     // Maps ingredients to Either <(Tag with count), ItemStack>s
-    @SuppressWarnings("deprecation")
     private static Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>> mapItem(Ingredient ingredient) {
         if (ingredient instanceof SizedIngredient sizedIngredient) {
             final int amount = sizedIngredient.getAmount();
              if (sizedIngredient.getInner() instanceof IntersectionIngredient intersection) {
-                List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
+                List<Ingredient> children = intersection.getChildren();
                 if (children.isEmpty()) {
                     return Either.right(null);
                 }
@@ -462,12 +464,12 @@ public class GTRecipeWidget extends WidgetGroup {
                     }
                     return items;
                 }));
-            } else if (((IngredientAccessor)sizedIngredient.getInner()).getValues().length > 0 && ((IngredientAccessor)sizedIngredient.getInner()).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-                return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), amount)));
+            } else if (sizedIngredient.getInner().getValues().length > 0 && sizedIngredient.getInner().getValues()[0] instanceof Ingredient.TagValue tagValue) {
+                return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
             }
         } else if (ingredient instanceof IntersectionIngredient intersection) {
             // Map intersection ingredients to the items inside, as recipe viewers don't support them.
-            List<Ingredient> children = ((IntersectionIngredientAccessor)intersection).getChildren();
+            List<Ingredient> children = intersection.getChildren();
             if (children.isEmpty()) {
                 return Either.right(null);
             }
@@ -502,24 +504,24 @@ public class GTRecipeWidget extends WidgetGroup {
                 }
                 return items;
             }));
-        } else if (((IngredientAccessor)ingredient).getValues().length > 0 && ((IngredientAccessor)ingredient).getValues()[0] instanceof Ingredient.TagValue tagValue) {
-            return Either.left(List.of(Pair.of(((TagValueAccessor)tagValue).getTag(), 1)));
+        } else if (ingredient.getValues().length > 0 && ingredient.getValues()[0] instanceof Ingredient.TagValue tagValue) {
+            return Either.left(List.of(Pair.of(tagValue.tag(), 1)));
         }
         return Either.right(Arrays.stream(ingredient.getItems()).toList());
     }
 
     // Maps fluids to Either <(tag with count), ItemStack>s
-    private static Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
-        long amount = ingredient.getAmount();
+    private static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+        int amount = ingredient.getAmount();
         CompoundTag tag = ingredient.getNbt();
 
-        List<Pair<TagKey<Fluid>, Long>> tags = new ArrayList<>();
+        List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
         List<FluidStack> fluids = new ArrayList<>();
         for (FluidIngredient.Value value : ingredient.values) {
             if (value instanceof FluidIngredient.TagValue tagValue) {
                 tags.add(Pair.of(tagValue.getTag(), amount));
             } else {
-                fluids.addAll(value.getFluids().stream().map(fluid -> FluidStack.create(fluid, amount, tag)).toList());
+                fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, tag)).toList());
             }
         }
         if (!tags.isEmpty()) {

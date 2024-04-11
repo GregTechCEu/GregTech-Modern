@@ -543,17 +543,44 @@ public class GTRecipe implements Recipe<Container> {
         return true;
     }
 
-    // Just check id as there *should* only ever be 1 instance of a recipe with this id.
-    // If this doesn't work, fix.
     @Override
-    public boolean equals(Object obj) {
-        if (!(obj instanceof GTRecipe recipe)) return false;
-        return this.id.equals(recipe.id);
+    public boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof GTRecipe recipe))
+            return false;
+
+        if (duration != recipe.duration)
+            return false;
+        if (isFuel != recipe.isFuel)
+            return false;
+        if (!recipeType.equals(recipe.recipeType))
+            return false;
+        if (!inputs.equals(recipe.inputs))
+            return false;
+        if (!outputs.equals(recipe.outputs))
+            return false;
+        if (!tickInputs.equals(recipe.tickInputs))
+            return false;
+        if (!tickOutputs.equals(recipe.tickOutputs))
+            return false;
+        if (!conditions.equals(recipe.conditions))
+            return false;
+        return data.equals(recipe.data);
     }
 
     @Override
     public int hashCode() {
-        return id.hashCode();
+        int result = recipeType.hashCode();
+        result = 31 * result + inputs.hashCode();
+        result = 31 * result + outputs.hashCode();
+        result = 31 * result + tickInputs.hashCode();
+        result = 31 * result + tickOutputs.hashCode();
+        result = 31 * result + conditions.hashCode();
+        result = 31 * result + data.hashCode();
+        result = 31 * result + duration;
+        result = 31 * result + (isFuel ? 1 : 0);
+        return result;
     }
 
     @Override

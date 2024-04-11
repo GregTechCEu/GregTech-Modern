@@ -306,10 +306,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
         return new RecipeHolder<>(builder.id, builder.build());
     }
 
-    public @NotNull List<GTRecipe> getRepresentativeRecipes() {
-        List<GTRecipe> recipes = new ArrayList<>();
+    public @NotNull List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
+        List<RecipeHolder<GTRecipe>> recipes = new ArrayList<>();
         for (ICustomScannerLogic logic : CUSTOM_SCANNER_LOGICS) {
-            List<GTRecipe> logicRecipes = logic.getRepresentativeRecipes();
+            List<RecipeHolder<GTRecipe>> logicRecipes = logic.getRepresentativeRecipes();
             if (logicRecipes != null && !logicRecipes.isEmpty()) {
                 recipes.addAll(logicRecipes);
             }
@@ -339,7 +339,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
          *         Not required, can return empty or null to not add any.
          */
         @Nullable
-        default List<GTRecipe> getRepresentativeRecipes() {
+        default List<RecipeHolder<GTRecipe>> getRepresentativeRecipes() {
             return null;
         }
     }

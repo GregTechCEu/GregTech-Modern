@@ -346,7 +346,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
     }
 
     @Override
-    public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager, Map<ResourceLocation, Recipe<?>> recipesByName) {
+    public void injectRuntimeRecipes(RecipesEventJS event, RecipeManager manager, Map<ResourceLocation, RecipeHolder<?>> recipesByName) {
         // (jankily) parse all GT recipes for extra ones to add, modify
         RecipesEventJS.runInParallel((() -> event.addedRecipes.forEach(recipe -> {
             if (recipe instanceof GTRecipeSchema.GTRecipeJS gtRecipe) {
@@ -404,7 +404,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
                     @Override
                     public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
-                        recipesByName.put(id, recipe);
+                        recipesByName.put(id, new RecipeHolder<>(id, recipe));
                     }
                 });
             }
@@ -420,16 +420,15 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
                     var type = entry.getKey();
                     var recipes = entry.getValue();
                     recipes.clear();
-                    for (var recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().getType() == type).collect(Collectors.toSet())) {
-                        recipes.add(gtRecipeType.toGTrecipe(new RecipeHolder<>(recipe.getKey(), recipe.getValue())));
+                    for (var recipe : recipesByName.entrySet().stream().filter(recipe -> recipe.getValue().value().getType() == type).collect(Collectors.toSet())) {
+                        recipes.add(gtRecipeType.toGTrecipe(recipe.getValue()));
                     }
                 }
 
                 //noinspection unchecked
                 Stream.concat(
-                        recipesByName.entrySet().stream()
-                            .filter(entry -> entry.getValue().getType() == gtRecipeType)
-                            .map(entry -> new RecipeHolder<>(entry.getKey(), entry.getValue())),
+                        recipesByName.values().stream()
+                            .filter(recipeHolder -> recipeHolder.value().getType() == gtRecipeType),
                         proxyRecipes.entrySet().stream()
                             .flatMap(entry -> entry.getValue().stream())
                     ).filter(holder -> holder != null && holder.value() instanceof GTRecipe)

@@ -18,6 +18,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,7 +71,7 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
                             .collect(Collectors.toList()));
 
                     if (gtRecipeType.isScanner()) {
-                        List<GTRecipe> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
+                        List<RecipeHolder<GTRecipe>> scannerRecipes = gtRecipeType.getRepresentativeRecipes();
                         if (!scannerRecipes.isEmpty()) {
                             registration.addRecipes(GTRecipeTypeCategory.TYPES.apply(gtRecipeType),
                                 scannerRecipes.stream()

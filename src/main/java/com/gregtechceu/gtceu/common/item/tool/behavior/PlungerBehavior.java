@@ -59,8 +59,8 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability, IIn
             return InteractionResult.PASS;
         }
 
-        FluidStack drained = fluidHandler.drain(1000, true);
-        if (drained != null && !drained.isEmpty()) {
+        FluidStack drained = fluidHandler.drain(1000, IFluidHandler.FluidAction.SIMULATE);
+        if (!drained.isEmpty()) {
             fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
             return InteractionResult.CONSUME;

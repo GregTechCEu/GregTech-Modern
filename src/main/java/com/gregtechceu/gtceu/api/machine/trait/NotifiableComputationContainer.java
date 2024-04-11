@@ -233,7 +233,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(direction));
             if (blockEntity == null) continue;
 
-            return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).orElse(null);
+            return machine.getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, machine.getPos().relative(direction), direction.getOpposite());
         }
         return null;
     }

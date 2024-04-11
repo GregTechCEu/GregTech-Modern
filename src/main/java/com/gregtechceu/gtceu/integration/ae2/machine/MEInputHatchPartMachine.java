@@ -6,8 +6,6 @@ import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import appeng.api.storage.MEStorage;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -23,16 +21,12 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.datafixers.util.Pair;
-import net.minecraft.network.chat.Component;
-import net.minecraftforge.server.command.TextComponentHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -119,7 +113,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Persisted
         private final ExportOnlyAEFluid[] tanks;
-        private FluidStorage[] fluidStorages;
+        private CustomFluidTank[] fluidStorages;
 
 
         public ExportOnlyAEFluidList(MetaMachine machine, int slots, int capacity, IO io) {
@@ -133,9 +127,9 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         }
 
         @Override
-        public FluidStorage[] getStorages() {
+        public CustomFluidTank[] getStorages() {
             if(this.fluidStorages == null) {
-                this.fluidStorages = Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(FluidStorage[]::new);
+                this.fluidStorages = Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(CustomFluidTank[]::new);
                 return this.fluidStorages;
             } else {
                 return this.fluidStorages;
@@ -307,12 +301,13 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 if (this.stock.amount() == 0) {
                     this.stock = null;
                 }
-                if (notifyChanges) onContentsChanged();
+                onContentsChanged();
             }
             return result;
         }
 
-        @Override
+
+        //@Override
         public void onContentsChanged() {
             if (onContentsChanged != null) {
                 onContentsChanged.run();

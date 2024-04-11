@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -19,6 +20,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.ArrayList;
@@ -126,7 +128,7 @@ public class GTOreByProductWidget extends WidgetGroup {
         }
 
         NonNullList<ItemStack> itemOutputs = recipeWrapper.itemOutputs;
-        ItemStackTransfer itemOutputsHandler = new ItemStackTransfer(itemOutputs);
+        CustomItemStackHandler itemOutputsHandler = new CustomItemStackHandler(itemOutputs);
         for (int i = 0; i < ITEM_OUTPUT_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
             float xeiChance = 1.0f;
@@ -148,7 +150,7 @@ public class GTOreByProductWidget extends WidgetGroup {
             itemOutputExists.add(true);
         }
 
-        List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
+        List<Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>>> fluidInputs = recipeWrapper.fluidInputs;
         TagOrCycleFluidTransfer fluidInputsHandler = new TagOrCycleFluidTransfer(fluidInputs);
         WidgetGroup fluidStackGroup = new WidgetGroup();
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {

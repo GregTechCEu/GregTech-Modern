@@ -65,9 +65,8 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
 
                 if (tileEntity instanceof OpticalPipeBlockEntity) {
                     //noinspection DataFlowIssue
-                    IDataAccessHatch cap = tileEntity.getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
-                        getFrontFacing().getOpposite()).orElse(null);
-                    //noinspection ConstantValue
+                    IDataAccessHatch cap = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
+                        tileEntity.getBlockPos(), getFrontFacing().getOpposite());
                     return cap != null && cap.isRecipeAvailable(recipe, seen);
                 }
             }

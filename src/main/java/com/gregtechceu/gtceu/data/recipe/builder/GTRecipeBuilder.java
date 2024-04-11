@@ -683,7 +683,7 @@ public class GTRecipeBuilder {
         ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
         if (condition != null) {
             for (ResearchData.ResearchEntry entry : condition.data) {
-                this.recipeType.addDataStickEntry(entry.getResearchId(), buildRawRecipe());
+                this.recipeType.addDataStickEntry(entry.getResearchId(), buildRecipe());
             }
         }
         consumer.accept(new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath()), build(), null);

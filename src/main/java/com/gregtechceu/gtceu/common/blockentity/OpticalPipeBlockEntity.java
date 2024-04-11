@@ -21,8 +21,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,11 +31,15 @@ import java.util.EnumMap;
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(OpticalPipeBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
 
+    @Getter
     private final EnumMap<Direction, OpticalNetHandler> handlers = new EnumMap<>(Direction.class);
     // the OpticalNetHandler can only be created on the server, so we have an empty placeholder for the client
+    @Getter
     private final IDataAccessHatch clientDataHandler = new DefaultDataHandler();
+    @Getter
     private final IOpticalComputationProvider clientComputationHandler = new DefaultComputationHandler();
     private WeakReference<OpticalPipeNet> currentPipeNet = new WeakReference<>(null);
+    @Getter
     private OpticalNetHandler defaultHandler;
 
     @Getter
@@ -53,39 +55,13 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
         return false;
     }
 
-    private void initHandlers() {
+    public void initHandlers() {
         OpticalPipeNet net = getOpticalPipeNet();
         if (net == null) return;
         for (Direction facing : GTUtil.DIRECTIONS) {
             handlers.put(facing, new OpticalNetHandler(net, this, facing));
         }
         defaultHandler = new OpticalNetHandler(net, this, null);
-    }
-
-    @Override
-    public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
-        if (capability == GTCapability.CAPABILITY_DATA_ACCESS) {
-            if (level.isClientSide) {
-                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability, LazyOptional.of(() -> clientDataHandler));
-            }
-
-            if (handlers.isEmpty()) initHandlers();
-
-            checkNetwork();
-            return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
-        }
-
-        if (capability == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
-            if (level.isClientSide) {
-                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> clientComputationHandler));
-            }
-
-            if (handlers.isEmpty()) initHandlers();
-
-            checkNetwork();
-            return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
-        }
-        return super.getCapability(capability, facing);
     }
 
     public void checkNetwork() {

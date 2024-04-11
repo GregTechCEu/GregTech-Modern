@@ -44,7 +44,7 @@ public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTa
     @Override
     public @NotNull FluidStack drain(FluidStack resource, FluidAction action) {
         if (transfer instanceof NotifiableFluidTank notifiable) {
-            return notifiable.storages[this.tank].drain(resource, action);
+            return notifiable.getStorages()[this.tank].drain(resource, action);
         }
         return transfer.drain(resource, action);
     }

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;

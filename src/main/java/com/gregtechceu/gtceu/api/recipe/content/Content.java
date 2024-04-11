@@ -4,13 +4,10 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.mojang.blaze3d.vertex.PoseStack;
-import dev.emi.emi.screen.RecipeScreen;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
@@ -18,9 +15,6 @@ import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.util.ExtraCodecs;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.material.Fluid;
-
 import org.jetbrains.annotations.Nullable;
 
 public class Content {
