@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.utils;
 import it.unimi.dsi.fastutil.Hash;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Objects;
 
 /**

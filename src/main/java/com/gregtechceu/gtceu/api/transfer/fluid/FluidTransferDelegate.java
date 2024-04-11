@@ -6,7 +6,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 
@@ -35,7 +35,7 @@ public abstract class FluidTransferDelegate implements IFluidHandlerModifiable {
     }
 
     @Override
-    @Nonnull
+    @NotNull
     public FluidStack getFluidInTank(int tank) {
         return delegate.getFluidInTank(tank);
     }

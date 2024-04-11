@@ -25,7 +25,7 @@ import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 public class ItemNetHandler implements IItemHandlerModifiable {
@@ -416,7 +416,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
         return 1;
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack getStackInSlot(int i) {
         return ItemStack.EMPTY;
@@ -427,7 +427,7 @@ public class ItemNetHandler implements IItemHandlerModifiable {
 
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public ItemStack extractItem(int slot, int amount, boolean simulate) {
         return ItemStack.EMPTY;

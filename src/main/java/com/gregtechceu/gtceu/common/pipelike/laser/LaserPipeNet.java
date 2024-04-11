@@ -11,8 +11,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.Map;
 
 public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
@@ -83,7 +83,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
         /**
          * @return The position of where the handler would be
          */
-        @Nonnull
+        @NotNull
         public BlockPos getHandlerPos() {
             return pipePos.relative(faceToHandler);
         }
@@ -94,7 +94,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
          * @return the handler
          */
         @Nullable
-        public ILaserContainer getHandler(@Nonnull Level world) {
+        public ILaserContainer getHandler(@NotNull Level world) {
             return GTCapabilityHelper.getLaser(world, getHandlerPos(), faceToHandler.getOpposite());
         }
     }

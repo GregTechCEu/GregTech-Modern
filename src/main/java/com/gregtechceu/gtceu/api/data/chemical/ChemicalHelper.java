@@ -30,8 +30,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -319,7 +319,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @Nonnull Material material) {
+    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (tags.length > 0) {
             return tags[0];
@@ -328,7 +328,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Item> getTag(TagPrefix orePrefix, @Nonnull Material material) {
+    public static TagKey<Item> getTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getItemTags(material);
         if (tags.length > 0) {
             return tags[0];
@@ -336,7 +336,7 @@ public class ChemicalHelper {
         return null;
     }
 
-    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @Nonnull Material material) {
+    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @NotNull Material material) {
         return orePrefix.getItemTags(material);
     }
 

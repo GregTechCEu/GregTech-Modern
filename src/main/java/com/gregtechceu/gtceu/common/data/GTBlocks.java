@@ -35,12 +35,14 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidPipeT
 import com.gregtechceu.gtceu.common.pipelike.item.ItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemPipeType;
 import com.gregtechceu.gtceu.common.pipelike.laser.LaserPipeType;
+import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
 import com.gregtechceu.gtceu.core.mixins.BlockPropertiesAccessor;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.providers.ProviderType;
@@ -72,7 +74,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -112,6 +114,7 @@ public class GTBlocks {
     public static Table<TagPrefix, Material, BlockEntry<FluidPipeBlock>> FLUID_PIPE_BLOCKS;
     public static Table<TagPrefix, Material, BlockEntry<ItemPipeBlock>> ITEM_PIPE_BLOCKS;
     public static final BlockEntry<LaserPipeBlock>[] LASER_PIPES = new BlockEntry[LaserPipeType.values().length];
+    public static final BlockEntry<OpticalPipeBlock>[] OPTICAL_PIPES = new BlockEntry[OpticalPipeType.values().length];
 
 
     //////////////////////////////////////
@@ -366,8 +369,8 @@ public class GTBlocks {
         }
         GTCEu.LOGGER.debug("Generating GTCEu Laser Pipe Blocks... Complete!");
     }
-    private static void registerLaserPipeBlock(int slot) {
-        var type = LaserPipeType.values()[slot];
+    private static void registerLaserPipeBlock(int index) {
+        var type = LaserPipeType.values()[index];
         var entry = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
             .initialProperties(() -> Blocks.IRON_BLOCK)
             .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
@@ -381,7 +384,31 @@ public class GTBlocks {
             .color(() -> LaserPipeBlockItem::tintColor)
             .build()
             .register();
-        LASER_PIPES[slot] = entry;
+        LASER_PIPES[index] = entry;
+    }
+
+    // Optical Pipe Blocks
+    private static void generateOpticalPipeBlocks() {
+        GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks...");
+        for (int i = 0; i < OpticalPipeType.values().length; ++i) {
+            registerOpticalPipeBlock(i);
+        }
+        GTCEu.LOGGER.debug("Generating GTCEu Optical Pipe Blocks... Complete!");
+    }
+    private static void registerOpticalPipeBlock(int index) {
+        var type = OpticalPipeType.values()[index];
+        var entry = REGISTRATE.block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+            .blockstate(NonNullBiConsumer.noop())
+            .defaultLoot()
+            .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
+            .addLayer(() -> RenderType::cutoutMipped)
+            .item(OpticalPipeBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+        OPTICAL_PIPES[index] = entry;
     }
 
 
@@ -415,6 +442,7 @@ public class GTBlocks {
     //////////////////////////////////////
 
     // Multiblock Machine Casing Blocks
+    public static final BlockEntry<Block> CASING_WOOD_WALL = createSidedCasingBlock("wood_wall", "block/casings/wood_wall");
     public static final BlockEntry<Block> CASING_COKE_BRICKS = createCasingBlock("coke_oven_bricks", GTCEu.id("block/casings/solid/machine_coke_bricks"));
     public static final BlockEntry<Block> CASING_PRIMITIVE_BRICKS = createCasingBlock("firebricks", GTCEu.id("block/casings/solid/machine_primitive_bricks"));
     public static final BlockEntry<Block> CASING_BRONZE_BRICKS = createCasingBlock("steam_machine_casing", GTCEu.id("block/casings/solid/machine_casing_bronze_plated_bricks"));
@@ -601,6 +629,36 @@ public class GTBlocks {
 
 
     // HPCA, AT
+    public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE.block("computer_casing", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/computer_casing")) : null))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+    public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE.block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new IModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();
+    public static final BlockEntry<Block> COMPUTER_HEAT_VENT = REGISTRATE.block("computer_heat_vent", p -> (Block) new RendererBlock(p,
+                    Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_column"),
+                            Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
+                                    "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) : null))
+            .initialProperties(() -> Blocks.IRON_BLOCK)
+            .addLayer(() -> RenderType::cutoutMipped)
+            .blockstate(NonNullBiConsumer.noop())
+            .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
+            .item(RendererBlockItem::new)
+            .model(NonNullBiConsumer.noop())
+            .build()
+            .register();;
     public static final BlockEntry<Block> HIGH_POWER_CASING = createCasingBlock("high_power_casing", GTCEu.id("block/casings/hpca/high_power_casing"));
 
 
@@ -628,6 +686,17 @@ public class GTBlocks {
     // THIS IS JUST FOR PTFE PIPE CASING
     public static BlockEntry<Block> createCasingBlock(String name, ResourceLocation texture) {
         return createCasingBlock(name, RendererBlock::new, texture, () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
+    }
+
+    private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
+        return createCasingBlock(
+            name, (properties, iRenderer) -> new RendererBlock(properties,
+                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                    Map.of("bottom", GTCEu.id(texture + "/bottom"),
+                        "top", GTCEu.id(texture + "/top"),
+                        "side", GTCEu.id(texture + "/side"))) : null),
+            GTCEu.id(texture), () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
+        );
     }
 
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture, Supplier<Supplier<RenderType>> type) {
@@ -777,7 +846,7 @@ public class GTBlocks {
         return filterBlock;
     }
 
-    private static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
+    protected static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
         String finalName = "%s".formatted(name);
         return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
                 Platform.isClient() ? new CTMModelRenderer(GTCEu.id(baseModelPath)) : null,
@@ -912,7 +981,7 @@ public class GTBlocks {
         .register();
 
 
-    public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@Nonnull TagPrefix tagPrefix, @Nonnull Material mat) {
+    public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@NotNull TagPrefix tagPrefix, @NotNull Material mat) {
         return builder -> {
             builder.onRegister(block -> {
                 Supplier<Block> blockSupplier = SupplierMemoizer.memoizeBlockSupplier(() -> block);
@@ -943,10 +1012,11 @@ public class GTBlocks {
 
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
-        generateCableBlocks();      // Cable & Wire Blocks
-        generateFluidPipeBlocks();  // Fluid Pipe Blocks
-        generateItemPipeBlocks();   // Item Pipe Blocks
-        generateLaserPipeBlocks();  // Laser Pipe Blocks
+        generateCableBlocks();        // Cable & Wire Blocks
+        generateFluidPipeBlocks();    // Fluid Pipe Blocks
+        generateItemPipeBlocks();     // Item Pipe Blocks
+        generateLaserPipeBlocks();    // Laser Pipe Blocks
+        generateOpticalPipeBlocks();  // Optical Pipe Blocks
 
         // Remove Builder Tables
         MATERIAL_BLOCKS_BUILDER = null;

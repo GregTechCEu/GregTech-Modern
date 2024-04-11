@@ -14,7 +14,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -63,7 +63,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@Nonnull GTRecipe recipe, @Nonnull RecipeLogic recipeLogic) {
+    public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         int y = recipeLogic.machine.self().getPos().getY();
         return y >= this.min && y <= this.max;
     }
@@ -73,7 +73,7 @@ public class PositionYCondition extends RecipeCondition {
         return new PositionYCondition();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
@@ -83,7 +83,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition deserialize(@Nonnull JsonObject config) {
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         min = GsonHelper.getAsInt(config, "min", Integer.MIN_VALUE);
         max = GsonHelper.getAsInt(config, "max", Integer.MAX_VALUE);

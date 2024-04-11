@@ -6,11 +6,13 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -112,8 +114,19 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
         return false;
     }
 
+    /**
+     * Does the recipe test if this capability is workable? if not, you should test validity somewhere later.
+     */
+    public boolean doMatchInRecipe() {
+        return true;
+    }
+
     public boolean doAddGuiSlots() {
         return isRecipeSearchFilter();
+    }
+
+    public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
+
     }
 
      //TODO

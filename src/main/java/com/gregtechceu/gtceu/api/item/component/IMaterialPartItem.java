@@ -15,8 +15,8 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 /**
@@ -51,7 +51,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         return material;
     }
 
-    default void setPartMaterial(ItemStack itemStack, @Nonnull Material material) {
+    default void setPartMaterial(ItemStack itemStack, @NotNull Material material) {
         if (!material.hasProperty(PropertyKey.INGOT))
             throw new IllegalArgumentException("Part material must have an Ingot!");
         var compound = getOrCreatePartStatsTag(itemStack);

@@ -15,7 +15,7 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -90,7 +90,7 @@ public class GTCreativeModeTabs {
         }
 
         @Override
-        public void accept(@Nonnull CreativeModeTab.ItemDisplayParameters itemDisplayParameters, @Nonnull CreativeModeTab.Output output) {
+        public void accept(@NotNull CreativeModeTab.ItemDisplayParameters itemDisplayParameters, @NotNull CreativeModeTab.Output output) {
             var tab = registrate.get(name, Registries.CREATIVE_MODE_TAB);
             for (var entry : registrate.getAll(Registries.BLOCK)) {
                 if (!registrate.isInCreativeTab(entry, tab))

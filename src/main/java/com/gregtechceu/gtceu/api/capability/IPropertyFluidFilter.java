@@ -11,7 +11,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
@@ -21,7 +21,7 @@ import static com.gregtechceu.gtceu.api.fluids.FluidConstants.CRYOGENIC_FLUID_TH
 public interface IPropertyFluidFilter extends Predicate<FluidStack> {
 
     @Override
-    default boolean test(@Nonnull FluidStack stack) {
+    default boolean test(@NotNull FluidStack stack) {
         Fluid fluid = stack.getFluid();
         if (FluidHelper.getTemperature(stack) < CRYOGENIC_FLUID_THRESHOLD && !isCryoProof()) return false;
 

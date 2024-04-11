@@ -1,48 +1,291 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ItemStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.LASER_PIPES;
-import static com.gregtechceu.gtceu.common.data.GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT;
-import static com.gregtechceu.gtceu.common.data.GTMachines.ACTIVE_TRANSFORMER;
-import static com.gregtechceu.gtceu.common.data.GTMachines.POWER_TRANSFORMER;
+import static com.gregtechceu.gtceu.common.data.GTItems.*;
+import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.common.data.machines.GTResearchMachines.*;
 
 public class ComputerRecipes {
 
     public static void init(RecipeOutput provider) {
+        ASSEMBLER_RECIPES.recipeBuilder("data_access_hatch")
+            .inputItems(ITEM_IMPORT_BUS[EV])
+            .inputItems(TOOL_DATA_STICK, 4)
+            .inputItems(CustomTags.EV_CIRCUITS, 4)
+            .outputItems(DATA_ACCESS_HATCH)
+            .inputFluids(Polytetrafluoroethylene.getFluid(L * 2))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[EV]).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("advanced_data_access_hatch")
+            .inputItems(ITEM_IMPORT_BUS[LuV])
+            .inputItems(TOOL_DATA_ORB, 4)
+            .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+            .outputItems(ADVANCED_DATA_ACCESS_HATCH)
+            .inputFluids(SolderingAlloy.getFluid(L * 4))
+            .inputFluids(Polybenzimidazole.getFluid(L * 4))
+            .stationResearch(b -> b.researchStack(DATA_BANK.asStack()).CWUt(4))
+            .duration(400).EUt(6000).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
-                .inputItems(frameGt, Iridium)
-                .inputItems(plate, Iridium, 6)
-                .inputItems(CustomTags.IV_CIRCUITS)
-                .inputItems(wireFine, Cobalt, 16)
-                .inputItems(wireFine, Copper, 16)
-                .inputItems(wireGtSingle, NiobiumTitanium, 2)
-                .outputItems(GTBlocks.HIGH_POWER_CASING.asStack(2))
-                .duration(100).EUt(VA[IV]).save(provider);
+            .inputItems(frameGt, Iridium)
+            .inputItems(plate, Iridium, 6)
+            .inputItems(CustomTags.IV_CIRCUITS)
+            .inputItems(wireFine, Cobalt, 16)
+            .inputItems(wireFine, Copper, 16)
+            .inputItems(wireGtSingle, NiobiumTitanium, 2)
+            .outputItems(HIGH_POWER_CASING,
+                ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+            .duration(100).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("computer_casing")
+            .inputItems(frameGt, Iridium)
+            .inputItems(plate, Iridium, 6)
+            .inputItems(CustomTags.LuV_CIRCUITS)
+            .inputItems(wireFine, Cobalt, 32)
+            .inputItems(wireFine, Copper, 32)
+            .inputItems(wireGtSingle, VanadiumGallium, 2)
+            .outputItems(COMPUTER_CASING,
+                ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("advanced_computer_casing")
+            .inputItems(COMPUTER_CASING.asStack())
+            .inputItems(CustomTags.ZPM_CIRCUITS)
+            .inputItems(wireFine, Cobalt, 64)
+            .inputItems(wireFine, Electrum, 64)
+            .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 4)
+            .outputItems(ADVANCED_COMPUTER_CASING)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("computer_heat_vent")
+            .inputItems(frameGt, StainlessSteel)
+            .inputItems(ELECTRIC_MOTOR_IV, 2)
+            .inputItems(rotor, StainlessSteel, 2)
+            .inputItems(pipeTinyFluid, StainlessSteel, 16)
+            .inputItems(plate, Copper, 16)
+            .inputItems(wireGtSingle, SamariumIronArsenicOxide)
+            .outputItems(COMPUTER_HEAT_VENT,
+                ConfigHolder.INSTANCE.recipes.casingsPerCraft)
+            .duration(100).EUt(VA[EV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("optical_pipe")
+            .inputItems(wireFine, BorosilicateGlass, 8)
+            .inputItems(foil, Silver, 8)
+            .inputFluids(Polytetrafluoroethylene.getFluid(L))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .outputItems(OPTICAL_PIPES[0])
+            .duration(100).EUt(VA[IV]).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("data_bank")
+            .inputItems(COMPUTER_CASING.asStack())
+            .inputItems(CustomTags.LuV_CIRCUITS, 8)
+            .inputItems(TOOL_DATA_ORB)
+            .inputItems(wireFine, Cobalt, 64)
+            .inputItems(wireFine, Copper, 64)
+            .inputItems(OPTICAL_PIPES[0].asStack(4))
+            .inputItems(wireGtDouble, IndiumTinBariumTitaniumCuprate, 16)
+            .inputFluids(SolderingAlloy.getFluid(L * 2))
+            .inputFluids(Lubricant.getFluid(500))
+            .outputItems(DATA_BANK)
+            .scannerResearch(b -> b
+                .researchStack(DATA_ACCESS_HATCH.asStack())
+                .duration(2400)
+                .EUt(VA[EV]))
+            .duration(1200).EUt(6000).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("research_station")
+            .inputItems(DATA_BANK)
+            .inputItems(SENSOR_LuV, 8)
+            .inputItems(CustomTags.ZPM_CIRCUITS, 8)
+            .inputItems(FIELD_GENERATOR_LuV, 2)
+            .inputItems(ELECTRIC_MOTOR_ZPM, 2)
+            .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 32)
+            .inputItems(foil, Trinium, 32)
+            .inputItems(OPTICAL_PIPES[0].asStack(16))
+            .inputFluids(SolderingAlloy.getFluid(L * 8))
+            .inputFluids(VanadiumGallium.getFluid(L * 8))
+            .outputItems(RESEARCH_STATION)
+            .scannerResearch(b -> b
+                .researchStack(SCANNER[LuV].asStack())
+                .duration(2400)
+                .EUt(VA[IV]))
+            .duration(1200).EUt(100000).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("object_holder")
+            .inputItems(ITEM_IMPORT_BUS[ZPM])
+            .inputItems(EMITTER_LuV, 8)
+            .inputItems(CustomTags.ZPM_CIRCUITS)
+            .inputItems(ROBOT_ARM_ZPM, 2)
+            .inputItems(ELECTRIC_MOTOR_ZPM, 2)
+            .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 16)
+            .inputItems(OPTICAL_PIPES[0].asStack(2))
+            .inputFluids(SolderingAlloy.getFluid(L * 4))
+            .inputFluids(Polybenzimidazole.getFluid(L * 2))
+            .outputItems(OBJECT_HOLDER)
+            .scannerResearch(b -> b
+                .researchStack(ITEM_IMPORT_BUS[ZPM].asStack())
+                .duration(2400)
+                .EUt(VA[IV]))
+            .duration(1200).EUt(100000).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("network_switch")
+            .inputItems(COMPUTER_CASING.asStack())
+            .inputItems(EMITTER_ZPM, 4)
+            .inputItems(SENSOR_ZPM, 4)
+            .inputItems(CustomTags.UV_CIRCUITS, 4)
+            .inputItems(wireGtDouble, EnrichedNaquadahTriniumEuropiumDuranide, 32)
+            .inputItems(foil, Tritanium, 64)
+            .inputItems(foil, Tritanium, 64)
+            .inputItems(OPTICAL_PIPES[0].asStack(8))
+            .inputFluids(SolderingAlloy.getFluid(L * 4))
+            .inputFluids(Polybenzimidazole.getFluid(L * 4))
+            .outputItems(NETWORK_SWITCH)
+            .stationResearch(b -> b
+                .researchStack(new ItemStack(OPTICAL_PIPES[0]))
+                .CWUt(32)
+                .EUt(VA[ZPM]))
+            .duration(1200).EUt(100000).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("high_performance_computing_array")
+            .inputItems(DATA_BANK)
+            .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+            .inputItems(FIELD_GENERATOR_LuV, 8)
+            .inputItems(TOOL_DATA_ORB)
+            .inputItems(COVER_SCREEN)
+            .inputItems(wireGtDouble, UraniumRhodiumDinaquadide, 64)
+            .inputItems(OPTICAL_PIPES[0].asStack(16))
+            .inputFluids(SolderingAlloy.getFluid(L * 8))
+            .inputFluids(VanadiumGallium.getFluid(L * 8))
+            .inputFluids(PCBCoolant.getFluid(4000))
+            .outputItems(HIGH_PERFORMANCE_COMPUTING_ARRAY)
+            .scannerResearch(b -> b
+                .researchStack(COVER_SCREEN.asStack())
+                .duration(2400)
+                .EUt(VA[IV]))
+            .duration(1200).EUt(100000).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("hpca_empty_component")
+            .inputItems(COMPUTER_CASING.asStack())
+            .inputItems(CustomTags.IV_CIRCUITS)
+            .inputItems(TOOL_DATA_STICK)
+            .outputItems(HPCA_EMPTY_COMPONENT)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("hpca_heat_sink_component")
+            .inputItems(HPCA_EMPTY_COMPONENT)
+            .inputItems(plate, Aluminium, 32)
+            .inputItems(screw, StainlessSteel, 8)
+            .outputItems(HPCA_HEAT_SINK_COMPONENT)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("hpca_active_cooler_component")
+            .inputItems(ADVANCED_COMPUTER_CASING.asStack())
+            .inputItems(plate, Aluminium, 16)
+            .inputItems(pipeTinyFluid, StainlessSteel, 16)
+            .inputItems(screw, StainlessSteel, 8)
+            .outputItems(HPCA_ACTIVE_COOLER_COMPONENT)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[IV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("hpca_bridge_component")
+            .inputItems(ADVANCED_COMPUTER_CASING.asStack())
+            .inputItems(CustomTags.UV_CIRCUITS)
+            .inputItems(EMITTER_ZPM)
+            .inputItems(OPTICAL_PIPES[0].asStack(2))
+            .outputItems(HPCA_BRIDGE_COMPONENT)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("hpca_computation_component")
+            .inputItems(HPCA_EMPTY_COMPONENT)
+            .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+            .inputItems(FIELD_GENERATOR_LuV)
+            .outputItems(HPCA_COMPUTATION_COMPONENT)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("hpca_advanced_computation_component")
+            .inputItems(HPCA_COMPUTATION_COMPONENT)
+            .inputItems(CustomTags.UV_CIRCUITS, 4)
+            .inputItems(FIELD_GENERATOR_ZPM)
+            .outputItems(HPCA_ADVANCED_COMPUTATION_COMPONENT)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[ZPM]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("data_receiver_hatch")
+            .inputItems(COMPUTER_CASING.asStack())
+            .inputItems(ITEM_IMPORT_BUS[LuV])
+            .inputItems(CustomTags.LuV_CIRCUITS)
+            .inputItems(SENSOR_IV)
+            .inputItems(OPTICAL_PIPES[0].asStack(2))
+            .inputFluids(Polybenzimidazole.getFluid(L * 2))
+            .outputItems(DATA_HATCH_RECEIVER)
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("data_transmitter_hatch")
+            .inputItems(COMPUTER_CASING.asStack())
+            .inputItems(ITEM_EXPORT_BUS[LuV])
+            .inputItems(CustomTags.LuV_CIRCUITS)
+            .inputItems(EMITTER_IV)
+            .inputItems(OPTICAL_PIPES[0].asStack(2))
+            .inputFluids(Polybenzimidazole.getFluid(L * 2))
+            .outputItems(DATA_HATCH_TRANSMITTER)
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("computation_receiver_hatch")
+            .inputItems(DATA_HATCH_RECEIVER)
+            .inputItems(CustomTags.ZPM_CIRCUITS)
+            .inputItems(SENSOR_LuV)
+            .inputFluids(Polybenzimidazole.getFluid(L * 2))
+            .outputItems(COMPUTATION_HATCH_RECEIVER)
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[LuV]).save(provider);
+
+        ASSEMBLER_RECIPES.recipeBuilder("computation_transmitter_hatch")
+            .inputItems(DATA_HATCH_TRANSMITTER)
+            .inputItems(CustomTags.ZPM_CIRCUITS)
+            .inputItems(EMITTER_LuV)
+            .inputFluids(Polybenzimidazole.getFluid(L * 2))
+            .outputItems(COMPUTATION_HATCH_TRANSMITTER)
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(200).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("active_transformer")
-                .inputItems(POWER_TRANSFORMER[LuV])
-                .inputItems(CustomTags.LuV_CIRCUITS, 2)
-                .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 8)
-                .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
-                .inputFluids(PCBCoolant.getFluid(1000))
-                .outputItems(ACTIVE_TRANSFORMER)
-                .duration(300).EUt(VA[LuV]).save(provider);
+            .inputItems(POWER_TRANSFORMER[LuV])
+            .inputItems(CustomTags.LuV_CIRCUITS, 2)
+            .inputItems(wireGtSingle, IndiumTinBariumTitaniumCuprate, 8)
+            .inputItems(ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT, 2)
+            .inputFluids(PCBCoolant.getFluid(1000))
+            .outputItems(ACTIVE_TRANSFORMER)
+            .duration(300).EUt(VA[LuV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("laser_cable")
-                .inputItems(GTBlocks.CASING_LAMINATED_GLASS.get().asItem(), 1)
-                .inputItems(foil, Osmiridium, 2)
-                .inputFluids(Polytetrafluoroethylene.getFluid(L))
-                .outputItems(LASER_PIPES[0])
-                .cleanroom(CleanroomType.CLEANROOM)
-                .duration(100).EUt(VA[IV]).save(provider);
+            .inputItems(CASING_LAMINATED_GLASS.asStack(1))
+            .inputItems(foil, Osmiridium, 2)
+            .inputFluids(Polytetrafluoroethylene.getFluid(L))
+            .outputItems(LASER_PIPES[0])
+            .cleanroom(CleanroomType.CLEANROOM)
+            .duration(100).EUt(VA[IV]).save(provider);
     }
 }

@@ -27,7 +27,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -232,10 +232,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
 
         @Override
         public long acceptEnergyFromNetwork(@Nullable Direction side, long voltage, long amperage) {
-            var latestTS = getMachine().getOffsetTimer();
-            if (lastTS < latestTS) {
+            var latestTimeStamp = getMachine().getOffsetTimer();
+            if (lastTimeStamp < latestTimeStamp) {
                 amps = 0;
-                lastTS = latestTS;
+                lastTimeStamp = latestTimeStamp;
             }
             if (amperage <= 0 || voltage <= 0)
                 return 0;

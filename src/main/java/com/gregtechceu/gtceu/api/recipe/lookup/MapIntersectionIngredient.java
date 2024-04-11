@@ -56,6 +56,11 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
     }
 
     @Override
+    public boolean isSpecialIngredient() {
+        return true;
+    }
+
+    @Override
     public String toString() {
         return "MapIntersectionIngredient{" + "ingredient=" + intersectionIngredient + "}";
     }

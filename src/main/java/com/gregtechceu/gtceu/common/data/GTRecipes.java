@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.data.recipe.generated.*;
 import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import net.minecraft.data.recipes.RecipeOutput;
+import com.gregtechceu.gtceu.utils.ResearchManager;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
 
@@ -27,6 +28,8 @@ public class GTRecipes {
      */
     public static void recipeAddition(RecipeOutput consumer) {
         ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
+        ResearchManager.registerScannerLogic();
+
         // Decomposition info loading
         MaterialInfoLoader.init();
 

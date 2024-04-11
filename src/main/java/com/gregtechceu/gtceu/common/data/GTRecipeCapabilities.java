@@ -21,6 +21,7 @@ public class GTRecipeCapabilities {
     public final static RecipeCapability<FluidIngredient> FLUID = FluidRecipeCapability.CAP;
     public final static RecipeCapability<BlockState> BLOCK_STATE = BlockStateRecipeCapability.CAP;
     public final static RecipeCapability<Long> EU = EURecipeCapability.CAP;
+    public final static RecipeCapability<Integer> CWU = CWURecipeCapability.CAP;
     public final static RecipeCapability<Float> SU = StressRecipeCapability.CAP;
 
     public static void init() {
@@ -30,6 +31,7 @@ public class GTRecipeCapabilities {
         GTRegistries.RECIPE_CAPABILITIES.register(FLUID.name, FLUID);
         GTRegistries.RECIPE_CAPABILITIES.register(BLOCK_STATE.name, BLOCK_STATE);
         GTRegistries.RECIPE_CAPABILITIES.register(EU.name, EU);
+        GTRegistries.RECIPE_CAPABILITIES.register(CWU.name, CWU);
         GTRegistries.RECIPE_CAPABILITIES.register(SU.name, SU);
 
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeCapabilities);

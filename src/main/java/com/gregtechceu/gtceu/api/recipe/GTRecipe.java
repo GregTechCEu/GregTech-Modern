@@ -25,7 +25,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
@@ -45,12 +45,13 @@ public class GTRecipe implements Recipe<Container> {
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
     public final Map<RecipeCapability<?>, List<Content>> tickOutputs;
     public final List<RecipeCondition> conditions;
+    @NotNull
     public CompoundTag data;
     public int duration;
     @Getter
     public boolean isFuel;
 
-    public GTRecipe(GTRecipeType recipeType, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, CompoundTag data, int duration, boolean isFuel) {
+    public GTRecipe(GTRecipeType recipeType, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, @NotNull CompoundTag data, int duration, boolean isFuel) {
         this.recipeType = recipeType;
         this.inputs = inputs;
         this.outputs = outputs;
@@ -178,6 +179,10 @@ public class GTRecipe implements Recipe<Container> {
                 }
             }
             RecipeCapability<?> capability = entry.getKey();
+            if (!capability.doMatchInRecipe()) {
+                continue;
+            }
+
             List newContent = new ArrayList();
             for (Object cont : content) {
                 newContent.add(capability.copyContent(cont));
@@ -248,6 +253,10 @@ public class GTRecipe implements Recipe<Container> {
                 }
             }
             RecipeCapability<?> capability = entry.getKey();
+            if (!capability.doMatchInRecipe()) {
+                continue;
+            }
+
             content = content.stream().map(capability::copyContent).toList();
             if (content.isEmpty() && contentSlot.isEmpty()) continue;
             if (content.isEmpty()) content = null;
@@ -267,7 +276,7 @@ public class GTRecipe implements Recipe<Container> {
     private Tuple<List, Map<String, List>> handlerContentsInternal(
             IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
             RecipeCapability<?> capability, Set<IRecipeHandler<?>> used,
-            List content, Map<String, List> contentSlot,
+            @Nullable List content, Map<String, List> contentSlot,
             List contentSearch, Map<String, List> contentSlotSearch,
             boolean simulate
     ) {
@@ -376,7 +385,7 @@ public class GTRecipe implements Recipe<Container> {
         }));
     }
 
-    public ActionResult checkConditions(@Nonnull RecipeLogic recipeLogic) {
+    public ActionResult checkConditions(@NotNull RecipeLogic recipeLogic) {
         if (conditions.isEmpty()) return ActionResult.SUCCESS;
         Map<RecipeConditionType<?>, List<RecipeCondition>> or = new HashMap<>();
         for (RecipeCondition condition : conditions) {
@@ -532,6 +541,19 @@ public class GTRecipe implements Recipe<Container> {
             }
         }
         return true;
+    }
+
+    // Just check id as there *should* only ever be 1 instance of a recipe with this id.
+    // If this doesn't work, fix.
+    @Override
+    public boolean equals(Object obj) {
+        if (!(obj instanceof GTRecipe recipe)) return false;
+        return this.id.equals(recipe.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return id.hashCode();
     }
 
     @Override

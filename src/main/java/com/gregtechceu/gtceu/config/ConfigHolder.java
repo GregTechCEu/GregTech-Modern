@@ -97,6 +97,15 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether to remove Vanilla TNT Recipe from the Crafting Table.", "Default: true"})
         public boolean removeVanillaTNTRecipe = true; // default true
+        @Configurable
+        @Configurable.Comment({ "How many Multiblock Casings to make per craft. Either 1, 2, or 3.", "Default: 2" })
+        @Configurable.Range(min = 1, max = 3)
+        public int casingsPerCraft = 2;
+        @Configurable
+        @Configurable.Comment({
+            "Whether to nerf the output amounts of the first circuit in a set to 1 (from 2) and SoC to 2 (from 4).",
+            "Default: false" })
+        public boolean harderCircuitRecipes = false;
     }
 
     public static class CompatibilityConfigs {
@@ -267,6 +276,9 @@ public class ConfigHolder {
         @Configurable.Comment({"Block to replace mined ores with in the miner and multiblock miner.", "Default: minecraft:cobblestone"})
         public String replaceMinedBlocksWith = "minecraft:cobblestone";
         @Configurable
+        @Configurable.Comment({"Whether to enable Assembly Line research for recipes.", "Default: true"})
+        public boolean enableResearch = true;
+        @Configurable
         @Configurable.Comment({"Whether to enable the Maintenance Hatch, required for Multiblocks.", "Default: true"})
         public boolean enableMaintenance = true;
 
@@ -298,8 +310,8 @@ public class ConfigHolder {
         @Configurable.Comment({"What Kind of material should the bedrock ore miner output?", "Default: \"raw\""})
         public String bedrockOreDropTagPrefix = "raw";
         @Configurable
-        @Configurable.Comment({"Wether to add a \"Processing Array\"", "Default: true"})
-        public boolean doProcessingArray = true;
+        @Configurable.Comment({"WARNING: THIS IS NO LONGER SUPPORTED AND WILL BE REMOVED!", "This option only exists to provide backwards compatibility until the Processing Array will be removed in 1.3.0", "Default: false"})
+        public boolean doProcessingArray = false;
         @Configurable
         @Configurable.Comment({"Makes nearly every GCYM Multiblock require blocks which set their maximum voltages.",
                 "Default: false"})

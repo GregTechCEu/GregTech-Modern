@@ -16,7 +16,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -55,7 +55,7 @@ public class RPMCondition extends RecipeCondition {
     }
 
     @Override
-    public boolean test(@Nonnull GTRecipe recipe, @Nonnull RecipeLogic recipeLogic) {
+    public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         if (recipeLogic.machine instanceof IKineticMachine kineticMachine && Math.abs(kineticMachine.getKineticHolder().getSpeed()) >= rpm) {
             return true;
         }
@@ -74,7 +74,7 @@ public class RPMCondition extends RecipeCondition {
         return new RPMCondition();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
@@ -83,7 +83,7 @@ public class RPMCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition deserialize(@Nonnull JsonObject config) {
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         rpm = GsonHelper.getAsFloat(config, "rpm", 0);
         return this;

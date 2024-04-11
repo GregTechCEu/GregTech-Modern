@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.DummyCleanroom;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Set;
 
@@ -58,7 +58,7 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
      * @param type the type to add
      */
     @SuppressWarnings("unused")
-    public static void addCleanroomType(@Nonnull CleanroomType type) {
+    public static void addCleanroomType(@NotNull CleanroomType type) {
         CLEANED_TYPES.add(type);
     }
 

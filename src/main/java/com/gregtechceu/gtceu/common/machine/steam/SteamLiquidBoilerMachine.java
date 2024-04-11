@@ -72,7 +72,7 @@ public class SteamLiquidBoilerMachine extends SteamBoilerMachine {
     @Override
     public ModularUI createUI(Player entityPlayer) {
         return super.createUI(entityPlayer)
-                .widget(new TankWidget(fuelTank.storages[0], 119, 26, 10, 54, true, true)
+                .widget(new TankWidget(fuelTank.getStorages()[0], 119, 26, 10, 54, true, true)
                         .setShowAmount(false)
                         .setFillDirection(ProgressTexture.FillDirection.DOWN_TO_UP)
                         .setBackground(GuiTextures.PROGRESS_BAR_BOILER_EMPTY.get(isHighPressure)));

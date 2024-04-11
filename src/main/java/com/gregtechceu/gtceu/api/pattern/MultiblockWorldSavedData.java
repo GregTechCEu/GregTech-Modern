@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.concurrent.*;
 
@@ -58,10 +58,10 @@ public class MultiblockWorldSavedData extends SavedData {
         setDirty(true);
     }
 
-    @Nonnull
+    @NotNull
     @Override
-    public CompoundTag save(@Nonnull CompoundTag tag) {
-        return tag;
+    public CompoundTag save(@NotNull CompoundTag compound) {
+        return compound;
     }
 
     // ********************************* thread for searching ********************************* //

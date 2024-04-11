@@ -46,4 +46,8 @@ public class RecipeIterator implements Iterator<GTRecipe> {
         }
         return r == null ? null : r.value();
     }
+
+    public void reset() {
+        index = 0;
+    }
 }

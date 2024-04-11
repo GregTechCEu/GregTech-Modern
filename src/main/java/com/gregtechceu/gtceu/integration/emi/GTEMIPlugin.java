@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.integration.emi.orevein.GTOreVeinEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.recipe.Ae2PatternTerminalHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
+import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
@@ -41,7 +42,7 @@ public class GTEMIPlugin implements EmiPlugin {
                 }
             }
         }
-        registry.addRecipeHandler(null, new GTEmiRecipeHandler());
+        registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
         if(GTCEu.isAE2Loaded()){
             registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }

@@ -23,8 +23,8 @@ import net.minecraft.util.Tuple;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Function;
@@ -309,7 +309,7 @@ public class RecyclingRecipes {
         return materialStack;
     }
 
-    private static ItemStack getArcIngotOrDust(@Nonnull MaterialStack stack) {
+    private static ItemStack getArcIngotOrDust(@NotNull MaterialStack stack) {
         if (stack.material() == GTMaterials.Carbon) {
             return ChemicalHelper.getDust(stack);
         }

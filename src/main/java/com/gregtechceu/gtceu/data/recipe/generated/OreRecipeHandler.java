@@ -13,12 +13,14 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.RecipeOutput;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.List;
+import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.HIGH_SIFTER_OUTPUT;
@@ -240,12 +242,12 @@ public class OreRecipeHandler {
                 .outputItems(TagPrefix.dust, GTMaterials.Stone)
                 .save(provider);
 
-        if (property.getWashedIn().getKey() != null) {
+        if (property.getWashedIn().getFirst() != null) {
             Material washingByproduct = GTUtil.selectItemInList(3, material, property.getOreByProducts(), Material.class);
             Pair<Material, Integer> washedInTuple = property.getWashedIn();
             CHEMICAL_BATH_RECIPES.recipeBuilder("bathe_" + material.getName() + "_crushed_ore_to_purified_ore")
                     .inputItems(crushedPrefix, material)
-                    .inputFluids(washedInTuple.getKey().getFluid(washedInTuple.getValue()))
+                    .inputFluids(washedInTuple.getFirst().getFluid(washedInTuple.getSecond()))
                     .outputItems(crushedPurifiedOre)
                     .chancedOutput(ChemicalHelper.get(dust, washingByproduct, property.getByProductMultiplier()), 7000, 580)
                     .chancedOutput(ChemicalHelper.get(dust, Stone), 4000, 650)

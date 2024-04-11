@@ -22,7 +22,7 @@ import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -56,13 +56,11 @@ public class TagPrefixItem extends Item {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public static ItemColor tintColor() {
-        return (itemStack, index) -> {
-            if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
-                return tagPrefixItem.material.getLayerARGB(index);
-            }
-            return -1;
-        };
+    public static int tintColor(ItemStack itemStack, int index) {
+        if (itemStack.getItem() instanceof TagPrefixItem tagPrefixItem) {
+            return tagPrefixItem.material.getLayerARGB(index);
+        }
+        return -1;
     }
 
     @Override

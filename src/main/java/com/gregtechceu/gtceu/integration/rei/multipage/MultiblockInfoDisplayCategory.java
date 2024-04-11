@@ -13,10 +13,9 @@ import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
 
 public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<MultiblockInfoDisplay> {
-    public static final CategoryIdentifier<MultiblockInfoDisplay> CATEGORY = CategoryIdentifier.of(new ResourceLocation(GTCEu.MOD_ID + ":multiblock_info"));
+    public static final CategoryIdentifier<MultiblockInfoDisplay> CATEGORY = CategoryIdentifier.of(GTCEu.id("multiblock_info"));
     private final Renderer icon;
 
     public MultiblockInfoDisplayCategory() {
@@ -41,12 +40,12 @@ public class MultiblockInfoDisplayCategory extends ModularUIDisplayCategory<Mult
 
     @Override
     public int getDisplayHeight() {
-        return 176 + 8;
+        return 160 + 8;
     }
 
     @Override
     public int getDisplayWidth(MultiblockInfoDisplay display) {
-        return 176 + 8;
+        return 160 + 8;
     }
 
     @Override

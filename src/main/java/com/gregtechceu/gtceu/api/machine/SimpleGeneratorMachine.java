@@ -19,11 +19,14 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import net.minecraft.Util;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
+import java.util.List;
 import java.util.function.BiFunction;
 
 /**
@@ -73,7 +76,7 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
     //////////////////////////////////////
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof SimpleGeneratorMachine generator) {
             var EUt = RecipeHelper.getOutputEUt(recipe);
             if (EUt > 0) {
@@ -115,6 +118,8 @@ public class SimpleGeneratorMachine extends WorkableTieredMachine implements IFa
                             generatorMachine.exportItems.storage,
                             generatorMachine.importFluids,
                             generatorMachine.exportFluids,
+                            new CompoundTag(),
+                            Collections.emptyList(),
                             false, false));
             createEnergyBar().setupUI(template, generatorMachine);
         }

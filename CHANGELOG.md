@@ -1,12 +1,13 @@
 # ChangeLog
 
-Version: 1.1.4.b
+Version: 1.2.0.a
 
 ### ADDITIONS:
 
-### FIXES:
-- fixed client error when opening multiblock UI for the first time
-- fixed Large assembler & circuit assembler being able to have >1 energy hatch
-- fix server crash in LDlib
-
 ### CHANGES:
+
+### FIXES:
+- Fixed some components not requiring data
+- Fixed assembly line recipes with no data not working
+- Fixed data module recipe being missing
+- Fixed tiered multiblock builders not working

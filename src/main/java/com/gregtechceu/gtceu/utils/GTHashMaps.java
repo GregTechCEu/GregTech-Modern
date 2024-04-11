@@ -6,7 +6,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
@@ -21,8 +21,8 @@ public final class GTHashMaps {
      * @param inputs The inventory handler of the inventory
      * @return a {@link Map} of {@link ItemStack} and {@link Integer} as amount on the inventory
      */
-    @Nonnull
-    public static Object2IntMap<ItemStack> fromItemHandler(@Nonnull IItemHandler inputs) {
+    @NotNull
+    public static Object2IntMap<ItemStack> fromItemHandler(@NotNull IItemHandler inputs) {
         return fromItemHandler(inputs, false);
     }
 
@@ -33,8 +33,8 @@ public final class GTHashMaps {
      * @param linked If the Map should be a Linked Map to preserve insertion order
      * @return a {@link Map} of {@link ItemStack} and {@link Integer} as amount on the inventory
      */
-    @Nonnull
-    public static Object2IntMap<ItemStack> fromItemHandler(@Nonnull IItemHandler inputs, boolean linked) {
+    @NotNull
+    public static Object2IntMap<ItemStack> fromItemHandler(@NotNull IItemHandler inputs, boolean linked) {
         final Object2IntMap<ItemStack> map = createItemStackMap(linked);
 
         // Create a single stack of the combined count for each item
@@ -55,8 +55,8 @@ public final class GTHashMaps {
      * @param inputs The inventory handler of the inventory
      * @return a {@link Map} of {@link ItemStack} and {@link Integer} as amount on the inventory
      */
-    @Nonnull
-    public static Object2IntMap<ItemStack> fromItemStackCollection(@Nonnull Iterable<ItemStack> inputs) {
+    @NotNull
+    public static Object2IntMap<ItemStack> fromItemStackCollection(@NotNull Iterable<ItemStack> inputs) {
         return fromItemStackCollection(inputs, false);
     }
 
@@ -67,8 +67,8 @@ public final class GTHashMaps {
      * @param linked If the Map should be a Linked Map to preserve insertion order
      * @return a {@link Map} of {@link ItemStack} and {@link Integer} as amount on the inventory
      */
-    @Nonnull
-    public static Object2IntMap<ItemStack> fromItemStackCollection(@Nonnull Iterable<ItemStack> inputs, boolean linked) {
+    @NotNull
+    public static Object2IntMap<ItemStack> fromItemStackCollection(@NotNull Iterable<ItemStack> inputs, boolean linked) {
         final Object2IntMap<ItemStack> map = createItemStackMap(linked);
 
         // Create a single stack of the combined count for each item
@@ -82,7 +82,7 @@ public final class GTHashMaps {
         return map;
     }
 
-    @Nonnull
+    @NotNull
     private static Object2IntMap<ItemStack> createItemStackMap(boolean linked) {
         ItemStackHashStrategy strategy = ItemStackHashStrategy.comparingAllButCount();
         return linked ? new Object2IntLinkedOpenCustomHashMap<>(strategy) : new Object2IntOpenCustomHashMap<>(strategy);

@@ -8,7 +8,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -20,7 +20,7 @@ public class OverlayedFluidHandler {
 
     private final List<OverlayedTank> overlayedTanks;
 
-    public OverlayedFluidHandler(@Nonnull FluidTransferList tank) {
+    public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
         this.overlayedTanks = new ArrayList<>();
         FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
@@ -47,7 +47,7 @@ public class OverlayedFluidHandler {
      * @param amountToInsert Amount of the fluid to insert
      * @return Amount of fluid inserted into tanks
      */
-    public long insertFluid(@Nonnull FluidStack fluid, int amountToInsert) {
+    public long insertFluid(@NotNull FluidStack fluid, int amountToInsert) {
         if (amountToInsert <= 0) {
             return 0;
         }
@@ -130,7 +130,7 @@ public class OverlayedFluidHandler {
 
         private FluidStack fluid;
 
-        OverlayedTank(@Nonnull IFluidTank property, boolean allowSameFluidFill) {
+        OverlayedTank(@NotNull IFluidTank property, boolean allowSameFluidFill) {
             this.property = property;
             this.allowSameFluidFill = allowSameFluidFill;
             reset();
@@ -150,7 +150,7 @@ public class OverlayedFluidHandler {
          * @param amount Amount of the fluid to insert
          * @return Amount of fluid inserted into this tank
          */
-        public int tryInsert(@Nonnull FluidStack fluid, int amount) {
+        public int tryInsert(@NotNull FluidStack fluid, int amount) {
             if (this.fluid == FluidStack.EMPTY) {
                 this.fluid = fluid.copy();
                 this.fluid.setAmount(Math.min(this.property.getCapacity(), amount));

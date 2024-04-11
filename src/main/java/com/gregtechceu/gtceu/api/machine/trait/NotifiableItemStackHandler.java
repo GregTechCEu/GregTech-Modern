@@ -40,7 +40,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public final CustomItemStackHandler storage;
     private Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Function<Integer, CustomItemStackHandler> transferFactory) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO, Function<Integer, CustomItemStackHandler> transferFactory) {
         super(machine);
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
@@ -48,11 +48,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
         this.storage.setOnContentsChanged(this::onContentsChanged);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO) {
         this(machine, slots, handlerIO, capabilityIO, CustomItemStackHandler::new);
     }
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO) {
         this(machine, slots, handlerIO, handlerIO);
     }
 
@@ -229,5 +229,4 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return storage.isItemValid(slot, stack);
     }
-
 }

@@ -1,0 +1,7 @@
+{
+  "parent": "gtceu:block/cube_2_layer_all",
+  "textures": {
+    "bot_all": "gtceu:block/casings/unique/heat_vent",
+    "top_all": "gtceu:block/casings/unique/heat_vent_bloom"
+  }
+}

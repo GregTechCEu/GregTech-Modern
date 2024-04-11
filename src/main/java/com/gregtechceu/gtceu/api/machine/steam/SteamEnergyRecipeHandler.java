@@ -36,7 +36,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
         long sum = left.stream().reduce(0L, Long::sum);
         int realSum = (int) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
-            var steam = io == IO.IN ? FluidIngredient.of(CustomTags.STEAM, realSum) : FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
+            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), realSum) : FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
             var list = new ArrayList<FluidIngredient>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);

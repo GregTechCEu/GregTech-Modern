@@ -4,7 +4,7 @@ import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import net.minecraft.core.Direction;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 @NoArgsConstructor
 public class LaserPipeProperties {

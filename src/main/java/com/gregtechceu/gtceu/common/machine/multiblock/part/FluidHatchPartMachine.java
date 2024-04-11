@@ -151,7 +151,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
                 .addWidget(new LabelWidget(8, 18, () -> String.valueOf(tank.getFluidInTank(0).getAmount())).setTextColor(-1).setDropShadow(true))
-                .addWidget(new TankWidget(tank.storages[0], 67, 22, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
+                .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
 
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
@@ -171,7 +171,7 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         int index = 0;
         for (int y = 0; y < colSize; y++) {
             for (int x = 0; x < rowSize; x++) {
-                container.addWidget(new TankWidget(tank.storages[index++], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
+                container.addWidget(new TankWidget(tank.getStorages()[index++], 4 + x * 18, 4 + y * 18, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
             }
         }
 

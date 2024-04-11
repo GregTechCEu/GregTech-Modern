@@ -33,7 +33,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
@@ -308,7 +308,7 @@ public abstract class ProspectorMode<T> {
     public final String unlocalizedName;
     public final int cellSize;
 
-    ProspectorMode(@Nonnull String unlocalizedName, int cellSize) {
+    ProspectorMode(@NotNull String unlocalizedName, int cellSize) {
         this.unlocalizedName = unlocalizedName;
         this.cellSize = cellSize;
     }

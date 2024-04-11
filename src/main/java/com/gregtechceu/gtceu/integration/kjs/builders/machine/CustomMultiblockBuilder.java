@@ -44,7 +44,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.function.TriFunction;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
@@ -81,7 +81,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
     public static MachineBuilder<MultiblockMachineDefinition> createMultiblock(String name, Object... args) {
         CustomMultiblockBuilder[] builders;
         int start = 0;
-        while (start < args.length && (!(args[start] instanceof Number) || !(args[start] instanceof Number[]) || !(args[start] instanceof int[]))) {
+        while (start < args.length && (!(args[start] instanceof Number || args[start] instanceof Number[] || args[start] instanceof int[]))) {
             ++start;
         }
         Object[] tierObjects = MachineFunctionPresets.copyArgs(args, start);

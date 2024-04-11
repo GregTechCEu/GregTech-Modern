@@ -13,7 +13,7 @@ import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.level.LevelAccessor;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -113,7 +113,7 @@ public class DamageTypeData {
          */
         public DamageTypeData.Builder simpleId(ResourceLocation location) {
             location(location);
-            return msgId(location.getNamespace() + '.' + location.getPath());
+            return msgId("death.attack." + location.getNamespace() + "." + location.getPath());
         }
 
         public DamageTypeData.Builder simpleId(String path) {

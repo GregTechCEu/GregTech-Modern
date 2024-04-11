@@ -2,6 +2,7 @@
   "values": [
     "gtceu:long_distance_item_pipeline",
     "gtceu:long_distance_fluid_pipeline",
+    "gtceu:wood_wall",
     "gtceu:coke_oven_bricks",
     "gtceu:firebricks",
     "gtceu:steam_machine_casing",
@@ -105,6 +106,9 @@
     "gtceu:steel_firebox_casing",
     "gtceu:titanium_firebox_casing",
     "gtceu:tungstensteel_firebox_casing",
+    "gtceu:computer_casing",
+    "gtceu:advanced_computer_casing",
+    "gtceu:computer_heat_vent",
     "gtceu:high_power_casing"
   ]
 }

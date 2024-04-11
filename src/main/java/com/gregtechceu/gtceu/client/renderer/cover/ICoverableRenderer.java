@@ -17,8 +17,8 @@ import net.minecraft.world.phys.AABB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public interface ICoverableRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @Nonnull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
+    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
         var thickness = coverable.getCoverPlateThickness();
         for (Direction face : Direction.values()) {
             var cover = coverable.getCoverAtSide(face);

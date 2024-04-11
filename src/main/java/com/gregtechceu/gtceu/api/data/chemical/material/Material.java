@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.*;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
@@ -27,14 +28,15 @@ import lombok.experimental.Accessors;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 
 public class Material implements Comparable<Material> {
@@ -44,7 +46,7 @@ public class Material implements Comparable<Material> {
      *
      * @see MaterialInfo
      */
-    @Nonnull
+    @NotNull
     @Getter
     private final MaterialInfo materialInfo;
 
@@ -53,7 +55,7 @@ public class Material implements Comparable<Material> {
      *
      * @see MaterialProperties
      */
-    @Nonnull
+    @NotNull
     @Getter
     private final MaterialProperties properties;
 
@@ -62,7 +64,7 @@ public class Material implements Comparable<Material> {
      *
      * @see MaterialFlags
      */
-    @Nonnull
+    @NotNull
     private final MaterialFlags flags;
 
     /**
@@ -113,7 +115,7 @@ public class Material implements Comparable<Material> {
         return this;
     }
 
-    private Material(@Nonnull MaterialInfo materialInfo, @Nonnull MaterialProperties properties, @Nonnull MaterialFlags flags) {
+    private Material(@NotNull MaterialInfo materialInfo, @NotNull MaterialProperties properties, @NotNull MaterialFlags flags) {
         this.materialInfo = materialInfo;
         this.properties = properties;
         this.flags = flags;
@@ -215,7 +217,7 @@ public class Material implements Comparable<Material> {
      * @param key the key for the fluid
      * @return the fluid corresponding with the key
      */
-    public Fluid getFluid(@Nonnull FluidStorageKey key) {
+    public Fluid getFluid(@NotNull FluidStorageKey key) {
         FluidProperty prop = getProperty(PropertyKey.FLUID);
         if (prop == null) {
             throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
@@ -239,8 +241,16 @@ public class Material implements Comparable<Material> {
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
      */
-    public FluidStack getFluid(@Nonnull FluidStorageKey key, int amount) {
+    public FluidStack getFluid(@NotNull FluidStorageKey key, int amount) {
         return new FluidStack(getFluid(key), amount);
+    }
+
+    /**
+     * @return a {@code TagKey<Fluid>} with the material's name as the tag key
+     * @see #getFluid(FluidStorageKey, long)
+     */
+    public TagKey<Fluid> getFluidTag() {
+        return TagUtil.createFluidTag(this.getName());
     }
 
     /**
@@ -275,7 +285,7 @@ public class Material implements Comparable<Material> {
      * @param key the key for the fluid
      * @return the fluid corresponding with the key
      */
-    public FluidBuilder getFluidBuilder(@Nonnull FluidStorageKey key) {
+    public FluidBuilder getFluidBuilder(@NotNull FluidStorageKey key) {
         FluidProperty prop = getProperty(PropertyKey.FLUID);
         if (prop == null) {
             throw new IllegalArgumentException("Material " + getResourceLocation() + " does not have a Fluid!");
@@ -564,7 +574,7 @@ public class Material implements Comparable<Material> {
          * <p>
          * Can be called multiple times to add multiple fluids.
          */
-        public Builder fluid(@Nonnull FluidStorageKey key, @Nonnull FluidState state) {
+        public Builder fluid(@NotNull FluidStorageKey key, @NotNull FluidState state) {
             return fluid(key, new FluidBuilder().state(state));
         }
 
@@ -573,7 +583,7 @@ public class Material implements Comparable<Material> {
          * <p>
          * Can be called multiple times to add multiple fluids.
          */
-        public Builder fluid(@Nonnull FluidStorageKey key, @Nonnull FluidBuilder builder) {
+        public Builder fluid(@NotNull FluidStorageKey key, @NotNull FluidBuilder builder) {
             properties.ensureSet(PropertyKey.FLUID);
             FluidProperty property = properties.getProperty(PropertyKey.FLUID);
             property.getStorage().enqueueRegistration(key, builder);

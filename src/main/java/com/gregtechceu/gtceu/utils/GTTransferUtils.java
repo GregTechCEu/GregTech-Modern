@@ -15,21 +15,21 @@ import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class GTTransferUtils {
 
-    public static int transferFluids(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler) {
+    public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler) {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler, int transferLimit) {
+    public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler, int transferLimit) {
         return transferFluids(sourceHandler, destHandler, transferLimit, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler, int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+    public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler, int transferLimit, @NotNull Predicate<FluidStack> fluidFilter) {
         int fluidLeftToTransfer = transferLimit;
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
@@ -61,7 +61,7 @@ public class GTTransferUtils {
         return transferLimit - fluidLeftToTransfer;
     }
 
-    public static boolean transferExactFluidStack(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler, FluidStack fluidStack) {
+    public static boolean transferExactFluidStack(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler, FluidStack fluidStack) {
         long amount = fluidStack.getAmount();
         FluidStack sourceFluid = sourceHandler.drain(fluidStack, IFluidHandler.FluidAction.SIMULATE);
         if (sourceFluid == FluidStack.EMPTY || sourceFluid.getAmount() != amount) {

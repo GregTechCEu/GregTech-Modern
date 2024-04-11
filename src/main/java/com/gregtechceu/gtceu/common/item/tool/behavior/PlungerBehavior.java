@@ -1,8 +1,12 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
+import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
+import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.misc.forge.VoidFluidHandlerItemStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.minecraft.network.chat.Component;
@@ -22,7 +26,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class PlungerBehavior implements IToolBehavior, IComponentCapability {
+public class PlungerBehavior implements IToolBehavior, IComponentCapability, IInteractionItem {
 
     public static final PlungerBehavior INSTANCE = PlungerBehavior.create();
 
@@ -33,20 +37,33 @@ public class PlungerBehavior implements IToolBehavior, IComponentCapability {
     }
 
     @Override
+    public boolean shouldOpenUIAfterUse(UseOnContext context) {
+        return !(context.getPlayer() != null && context.getPlayer().isShiftKeyDown());
+    }
+
+    @Override
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
-        IFluidHandler fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(), context.getClickedFace());
+        if (context.getPlayer() == null || !context.getPlayer().isShiftKeyDown()) {
+            return InteractionResult.PASS;
+        }
+
+        IFluidHandler fluidHandler;
+
+        if (context.getLevel().getBlockEntity(context.getClickedPos()) instanceof IMachineBlockEntity metaMachineBlockEntity) {
+            fluidHandler = metaMachineBlockEntity.getMetaMachine().getFluidTransferCap(context.getClickedFace(), false);
+        } else {
+            fluidHandler = FluidTransferHelper.getFluidTransfer(context.getLevel(), context.getClickedPos(), context.getClickedFace());
+        }
+
         if (fluidHandler == null) {
             return InteractionResult.PASS;
         }
 
-        IFluidHandler handlerToRemoveFrom = fluidHandler;
-//                player.isCrouching() ?
-//                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).input : null) :
-//                (fluidHandler instanceof IOFluidTransferList ? ((IOFluidTransferList) fluidHandler).output : fluidHandler);
-
-        if (handlerToRemoveFrom != null && handlerToRemoveFrom.drain(FluidHelper.getBucket(), IFluidHandler.FluidAction.EXECUTE) != null) {
+        FluidStack drained = fluidHandler.drain(1000, true);
+        if (drained != null && !drained.isEmpty()) {
+            fluidHandler.drain(1000, IFluidHandler.FluidAction.EXECUTE);
             ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
-            return InteractionResult.PASS;
+            return InteractionResult.CONSUME;
         }
         return InteractionResult.PASS;
     }

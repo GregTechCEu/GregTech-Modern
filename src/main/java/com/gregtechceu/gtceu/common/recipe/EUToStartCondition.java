@@ -15,7 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author Screret
@@ -61,7 +61,7 @@ public class EUToStartCondition extends RecipeCondition {
         return new EUToStartCondition();
     }
 
-    @Nonnull
+    @NotNull
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
@@ -70,7 +70,7 @@ public class EUToStartCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition deserialize(@Nonnull JsonObject config) {
+    public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         euToStart = GsonHelper.getAsLong(config, "euToStart", 0);
         return this;
