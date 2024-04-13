@@ -80,29 +80,29 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWorking(IWorkableMultiController controller) {
-
+    default boolean onWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWaiting(IWorkableMultiController controller) {
-
+    default boolean onWaiting(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
-    default void afterWorking(IWorkableMultiController controller) {
-
+    default boolean afterWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default void beforeWorking(IWorkableMultiController controller) {
-
+    default boolean beforeWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**

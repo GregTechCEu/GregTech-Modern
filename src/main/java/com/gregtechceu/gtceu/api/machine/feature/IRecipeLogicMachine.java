@@ -80,29 +80,29 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default void beforeWorking() {
-
+    default boolean beforeWorking() {
+        return self().getDefinition().getBeforeWorking().test(this);
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWorking() {
-
+    default boolean onWorking() {
+        return self().getDefinition().getOnWorking().test(this);
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
     default void onWaiting() {
-
+        self().getDefinition().getOnWaiting().accept(this);
     }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
     default void afterWorking() {
-
+        self().getDefinition().getAfterWorking().accept(this);
     }
 
     /**
