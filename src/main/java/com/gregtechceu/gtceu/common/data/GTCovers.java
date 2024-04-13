@@ -55,6 +55,11 @@ public class GTCovers {
             new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_infinite_water"))
     );
 
+    public final static CoverDefinition SHUTTER = register(
+        "shutter", ShutterCover::new,
+        new SimpleCoverRenderer(GTCEu.id("block/cover/overlay_shutter"))
+    );
+
     public final static CoverDefinition[] CONVEYORS = registerTiered(
             "conveyor", ConveyorCover::new,
             tier -> ConveyorCoverRenderer.INSTANCE, ALL_TIERS
