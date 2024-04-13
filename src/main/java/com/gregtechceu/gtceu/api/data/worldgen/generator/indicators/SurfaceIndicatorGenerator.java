@@ -48,7 +48,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
-            FloatProvider.codec(0.0f, 1.0f).fieldOf("density").forGetter(ext -> ext.density),
+            FloatProvider.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
             IndicatorPlacement.CODEC.fieldOf("placement").forGetter(ext -> ext.placement)
     ).apply(instance, SurfaceIndicatorGenerator::new));
 
