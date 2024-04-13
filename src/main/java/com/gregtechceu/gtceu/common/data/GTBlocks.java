@@ -537,9 +537,6 @@ public class GTBlocks {
             .build()
             .register();
 
-    // todo multiblock tanks
-    //WOOD_WALL("wood_wall", GTCEu.id(""));
-
 
     // Machine Casings
     public static final BlockEntry<Block> MACHINE_CASING_ULV = createMachineCasingBlock(ULV);
