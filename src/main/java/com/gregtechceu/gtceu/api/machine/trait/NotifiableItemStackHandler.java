@@ -1,15 +1,19 @@
 package com.gregtechceu.gtceu.api.machine.trait;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import dev.architectury.hooks.item.ItemStackHooks;
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -73,11 +77,11 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
 
     @Override
     public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-        return handleIngredient(io, left, simulate, this.handlerIO, storage);
+        return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Nullable
-    public static List<Ingredient> handleIngredient(IO io, List<Ingredient> left, boolean simulate, IO handlerIO, CustomItemStackHandler storage) {
+    public static List<Ingredient> handleIngredient(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate, IO handlerIO, CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
         var capability = simulate ? storage.copy() : storage;
         Iterator<Ingredient> iterator = left.iterator();
@@ -92,7 +96,19 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                         ItemStack[] ingredientStacks = ingredient.getItems();
                         for (ItemStack ingredientStack : ingredientStacks) {
                             if (ingredientStack.is(itemStack.getItem())) {
-                                ItemStack extracted = capability.extractItem(i, ingredientStack.getCount(), false);
+                                ItemStack extracted = ItemStack.EMPTY;
+                                boolean didRunIngredientAction = false;
+                                if (GTCEu.isKubeJSLoaded()) {
+                                    //noinspection unchecked must be List<?> to be able to load without KJS.
+                                    ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i, (List<IngredientAction>) recipe.ingredientActions);
+                                    if (!actioned.isEmpty()) {
+                                        extracted = actioned;
+                                        didRunIngredientAction = true;
+                                    }
+                                }
+                                if (!didRunIngredientAction) {
+                                    extracted = capability.extractItem(i, ingredientStack.getCount(), false);
+                                }
                                 ingredientStack.setCount(ingredientStack.getCount() - extracted.getCount());
                                 if (ingredientStack.isEmpty()) {
                                     iterator.remove();
@@ -114,7 +130,19 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
                 ItemStack output = items[0];
                 if (!output.isEmpty()) {
                     for (int i = 0; i < capability.getSlots(); i++) {
-                        ItemStack leftStack = capability.insertItem(i, output.copy(), false);
+                        ItemStack leftStack = ItemStack.EMPTY;
+                        boolean didRunIngredientAction = false;
+                        if (GTCEu.isKubeJSLoaded()) {
+                            //noinspection unchecked must be List<?> to be able to load without KJS.
+                            ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i, (List<IngredientAction>) recipe.ingredientActions);
+                            if (!actioned.isEmpty()) {
+                                leftStack = actioned;
+                                didRunIngredientAction = true;
+                            }
+                        }
+                        if (!didRunIngredientAction) {
+                            leftStack = capability.insertItem(i, output.copy(), false);
+                        }
                         output.setCount(leftStack.getCount());
                         if (output.isEmpty()) break;
                     }
@@ -229,4 +257,24 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     public boolean isItemValid(int slot, @NotNull ItemStack stack) {
         return storage.isItemValid(slot, stack);
     }
+
+    public static class KJSCallWrapper {
+        public static ItemStack applyIngredientAction(ItemStackTransfer storage, int index, List<IngredientAction> ingredientActions) {
+            var stack = storage.getStackInSlot(index);
+
+            if (stack.isEmpty()) {
+                return ItemStack.EMPTY;
+            }
+
+            DummyCraftingContainer container = new DummyCraftingContainer(storage);
+            for (var action : ingredientActions) {
+                if (action.checkFilter(index, stack)) {
+                    return action.transform(stack.copy(), index, container);
+                }
+            }
+
+            return ItemStack.EMPTY;
+        }
+    }
+
 }

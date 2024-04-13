@@ -204,7 +204,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 result = handleTickRecipe(lastRecipe);
                 if (result.isSuccess()) {
                     setStatus(Status.WORKING);
-                    machine.onWorking();
+                    if (!machine.onWorking()) {
+                        this.interruptRecipe();
+                        return;
+                    }
                     progress++;
                     totalContinuousRunningTime++;
                 } else {
@@ -308,7 +311,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public void setupRecipe(GTRecipe recipe) {
         if (handleFuelRecipe()) {
-            machine.beforeWorking();
+            if (!machine.beforeWorking()) {
+                return;
+            }
             recipe.preWorking(this.machine);
             if (handleRecipeIO(recipe, IO.IN)) {
                 recipeDirty = false;

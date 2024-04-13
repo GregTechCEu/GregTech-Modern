@@ -690,7 +690,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe buildRecipe() {
-        return new GTRecipe(recipeType, input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
+        return new GTRecipe(recipeType, input, output, tickInput, tickOutput, conditions, List.of(), data, duration, isFuel);
     }
 
     //////////////////////////////////////
@@ -720,9 +720,9 @@ public class GTRecipeBuilder {
      */
     @Accessors(fluent = false)
     public record ResearchRecipeEntry(
-            @NotNull @Getter String researchId,
-            @NotNull @Getter ItemStack researchStack,
-            @NotNull @Getter ItemStack dataStack,
+            @NotNull String researchId,
+            @NotNull ItemStack researchStack,
+            @NotNull ItemStack dataStack,
             @Getter int duration,
             @Getter int EUt,
             @Getter int CWUt) {
