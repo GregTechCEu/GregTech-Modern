@@ -123,13 +123,15 @@ public interface IMaintenanceMachine extends IMultiPart {
     }
 
     @Override
-    default void afterWorking(IWorkableMultiController controller) {
+    default boolean afterWorking(IWorkableMultiController controller) {
         if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
             calculateMaintenance(this, controller.getRecipeLogic().getProgress());
             if (hasMaintenanceProblems()) {
                 controller.getRecipeLogic().markLastRecipeDirty();
+                return false;
             }
         }
+        return true;
     }
 
     @Override
