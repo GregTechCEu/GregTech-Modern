@@ -154,7 +154,7 @@ public class DikeVeinGenerator extends VeinGenerator {
 
     @Override
     public VeinGenerator copy() {
-        return new DikeVeinGenerator(blocks, minYLevel, maxYLevel);
+        return new DikeVeinGenerator(new ArrayList<>(blocks), minYLevel, maxYLevel);
     }
 
     @Override

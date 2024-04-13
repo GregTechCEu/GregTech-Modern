@@ -124,7 +124,7 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     @Override
     public VeinGenerator copy() {
-        return new StandardVeinGenerator(this.blocks);
+        return new StandardVeinGenerator(this.blocks.mapBoth(ArrayList::new, Function.identity()));
     }
 
     @Override

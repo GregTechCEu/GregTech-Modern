@@ -157,13 +157,13 @@ public class LayeredVeinGenerator extends VeinGenerator {
         int y = SectionPos.sectionRelative(pos.getY());
         int z = SectionPos.sectionRelative(pos.getZ());
 
-        BlockState blockstate = section.getBlockState(x, y, z);
+        BlockState blockState = section.getBlockState(x, y, z);
         BlockPos.MutableBlockPos posCursor = pos.mutable();
 
         if (random.nextFloat() <= density) {
             state.ifLeft(blockStates -> {
                 for (OreConfiguration.TargetBlockState targetState : blockStates) {
-                    if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, targetState, posCursor))
+                    if (!OreVeinUtil.canPlaceOre(blockState, access::getBlockState, random, entry, targetState, posCursor))
                         continue;
                     if (targetState.state.isAir())
                         continue;
@@ -171,7 +171,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
                     break;
                 }
             }).ifRight(material -> {
-                if (!OreVeinUtil.canPlaceOre(blockstate, access::getBlockState, random, entry, posCursor))
+                if (!OreVeinUtil.canPlaceOre(blockState, access::getBlockState, random, entry, posCursor))
                     return;
                 BlockState currentState = access.getBlockState(posCursor);
                 var prefix = ChemicalHelper.getOrePrefix(currentState);
@@ -203,16 +203,15 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
     public VeinGenerator build() {
         if (this.layerPatterns != null && !this.layerPatterns.isEmpty()) return this;
-        List<GTLayerPattern> layerPatterns = this.bakingLayerPatterns.stream()
+        this.layerPatterns = this.bakingLayerPatterns.stream()
                 .map(NonNullSupplier::get)
                 .toList();
-        this.layerPatterns = layerPatterns;
         return this;
     }
 
     @Override
     public VeinGenerator copy() {
-        return new LayeredVeinGenerator(this.layerPatterns);
+        return new LayeredVeinGenerator(new ArrayList<>(this.layerPatterns));
     }
 
     @Override
