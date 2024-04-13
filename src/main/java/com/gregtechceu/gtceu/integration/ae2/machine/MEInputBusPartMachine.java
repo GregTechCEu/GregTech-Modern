@@ -145,7 +145,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY, Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY, Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
                 @NotNull
                 @Override
                 public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {

@@ -63,11 +63,12 @@ public interface IMufflerMachine extends IMultiPart {
     }
 
     @Override
-    default void afterWorking(IWorkableMultiController controller) {
+    default boolean afterWorking(IWorkableMultiController controller) {
         val supplier = controller.self().getDefinition().getRecoveryItems();
         if (supplier != null) {
             recoverItemsTable(supplier.get());
         }
+        return IMultiPart.super.afterWorking(controller);
     }
 
     //////////////////////////////////////

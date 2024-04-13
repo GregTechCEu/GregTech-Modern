@@ -256,11 +256,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     @Override
-    public void onWorking() {
+    public boolean onWorking() {
+        boolean value = super.onWorking();
         if (currentTemperature < getMaxTemperature()) {
             currentTemperature = Math.max(1, currentTemperature);
             updateSteamSubscription();
         }
+        return value;
     }
 
     @Override
