@@ -275,6 +275,15 @@ public class GTOreDefinition {
         return this;
     }
 
+    public GTOreDefinition cuboidVeinGenerator(Consumer<CuboidVeinGenerator> config) {
+        var veinGenerator = new CuboidVeinGenerator(this);
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
+    }
+
     @Tolerate
     @Nullable
     public VeinGenerator veinGenerator(ResourceLocation id) {
