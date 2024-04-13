@@ -25,6 +25,7 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -53,13 +54,24 @@ public class GTRecipe implements Recipe<Container> {
     @Getter
     public boolean isFuel;
 
-    public GTRecipe(GTRecipeType recipeType, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, CompoundTag data, int duration, boolean isFuel) {
+    public GTRecipe(GTRecipeType recipeType,
+                    ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    List<RecipeCondition> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    boolean isFuel) {
         this.recipeType = recipeType;
         this.inputs = inputs;
         this.outputs = outputs;
         this.tickInputs = tickInputs;
         this.tickOutputs = tickOutputs;
         this.conditions = conditions;
+        this.ingredientActions = ingredientActions;
         this.data = data != null ? data : new CompoundTag();
         this.duration = duration;
         this.isFuel = isFuel;
@@ -83,7 +95,7 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), data, duration, isFuel);
+        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -91,7 +103,7 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), data, duration, isFuel);
+        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }

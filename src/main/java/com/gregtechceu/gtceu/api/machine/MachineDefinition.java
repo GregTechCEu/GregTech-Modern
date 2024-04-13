@@ -23,10 +23,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -70,24 +66,19 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
-    @Getter
-    @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    @Getter @Setter
+    private Predicate<IRecipeLogicMachine> beforeWorking = (machine) -> true;
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private IRenderer renderer;
     @Setter
     private VoxelShape shape;

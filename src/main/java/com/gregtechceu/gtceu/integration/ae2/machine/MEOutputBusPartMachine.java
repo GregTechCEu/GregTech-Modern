@@ -129,7 +129,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, new CustomItemStackHandler(16) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, new CustomItemStackHandler(16) {
                 @NotNull
                 @Override
                 public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {

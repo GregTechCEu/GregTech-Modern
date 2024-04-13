@@ -339,7 +339,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public void setupRecipe(GTRecipe recipe) {
         if (handleFuelRecipe()) {
-            if (!machine.beforeWorking(recipe)) {
+            if (!machine.beforeWorking()) {
                 return;
             }
             recipe.preWorking(this.machine);

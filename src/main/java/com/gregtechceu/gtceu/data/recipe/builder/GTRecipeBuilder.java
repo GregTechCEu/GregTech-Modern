@@ -662,7 +662,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe buildRecipe() {
-        return new GTRecipe(recipeType, input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
+        return new GTRecipe(recipeType, input, output, tickInput, tickOutput, conditions, List.of(), data, duration, isFuel);
     }
 
     //////////////////////////////////////
@@ -692,10 +692,12 @@ public class GTRecipeBuilder {
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
     public record ResearchRecipeEntry(
-                                      @NotNull String researchId,
-                                      @NotNull ItemStack researchStack,
-                                      @NotNull ItemStack dataStack,
-                                      int duration,
-                                      int EUt,
-                                      int CWUt) {}
+            @NotNull String researchId,
+            @NotNull ItemStack researchStack,
+            @NotNull ItemStack dataStack,
+            @Getter int duration,
+            @Getter int EUt,
+            @Getter int CWUt) {
+    }
+
 }

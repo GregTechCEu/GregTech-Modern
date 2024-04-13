@@ -58,6 +58,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.TriFunction;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -124,20 +125,16 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
-    @Getter
-    @Setter
-    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    @Getter @Setter
+    private Predicate<IRecipeLogicMachine> beforeWorking = (machine) -> true;
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
     @NotNull
-    @Getter
-    @Setter
+    @Getter @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
 
     @Setter

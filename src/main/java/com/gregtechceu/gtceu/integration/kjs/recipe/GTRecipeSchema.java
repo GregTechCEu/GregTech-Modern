@@ -10,6 +10,8 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipe.ResearchData;
+import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
@@ -20,7 +22,6 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
-
 import com.lowdragmc.lowdraglib.LDLib;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
@@ -43,6 +44,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -542,15 +544,12 @@ public interface GTRecipeSchema {
             }
 
             if (!generatingRecipes) {
-                GTCEu.LOGGER.error("Cannot generate recipes when using researchWithoutRecipe()",
-                        new IllegalArgumentException());
+                GTCEu.LOGGER.error("Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
                 return false;
             }
 
             if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
-            ResearchCondition condition = Arrays.stream(this.getValue(CONDITIONS))
-                    .filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast)
-                    .orElse(null);
+            ResearchCondition condition = Arrays.stream(this.getValue(CONDITIONS)).filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
             if (condition != null) {
                 condition.data.add(researchEntry);
             } else {
@@ -575,7 +574,7 @@ public interface GTRecipeSchema {
          * Does not generate a research recipe.
          *
          * @param researchId the researchId for the recipe
-         * @param dataStack  the stack to hold the data. Must have the {@link IDataItem} behavior.
+         * @param dataStack the stack to hold the data. Must have the {@link IDataItem} behavior.
          * @return this
          */
         public GTRecipeJS researchWithoutRecipe(@NotNull String researchId, @NotNull ItemStack dataStack) {
@@ -588,8 +587,7 @@ public interface GTRecipeSchema {
          * Generates a research recipe for the Scanner.
          */
         public GTRecipeJS scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
-            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder())
-                    .build();
+            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
@@ -610,8 +608,7 @@ public interface GTRecipeSchema {
          * Generates a research recipe for the Research Station.
          */
         public GTRecipeJS stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
-            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder())
-                    .build();
+            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }

@@ -244,13 +244,13 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean beforeWorking(@Nullable GTRecipe recipe) {
+    public boolean beforeWorking() {
         for (IMultiPart part : getParts()) {
             if (!part.beforeWorking(this)) {
                 return false;
             }
         }
-        return IWorkableMultiController.super.beforeWorking(recipe);
+        return IWorkableMultiController.super.beforeWorking();
     }
 
     @Override
@@ -269,16 +269,6 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             part.onWaiting(this);
         }
         IWorkableMultiController.super.onWaiting();
-    }
-
-    @Override
-    public void setWorkingEnabled(boolean isWorkingAllowed) {
-        if (!isWorkingAllowed) {
-            for (IMultiPart part : getParts()) {
-                part.onPaused(this);
-            }
-        }
-        IWorkableMultiController.super.setWorkingEnabled(isWorkingAllowed);
     }
 
     @NotNull

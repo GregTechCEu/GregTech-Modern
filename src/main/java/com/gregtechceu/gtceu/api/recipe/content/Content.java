@@ -45,7 +45,7 @@ public class Content {
             ExtraCodecs.POSITIVE_FLOAT.optionalFieldOf("tierChanceBoost", 0.0f).forGetter(val -> val.tierChanceBoost),
             Codec.STRING.optionalFieldOf("slotName", "").forGetter(val -> val.slotName != null ? val.slotName : ""),
             Codec.STRING.optionalFieldOf("uiName", "").forGetter(val -> val.uiName != null ? val.uiName : "")
-            ).apply(instance, Content::new));
+        ).apply(instance, Content::new));
     }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {

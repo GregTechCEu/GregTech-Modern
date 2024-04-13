@@ -86,7 +86,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
                     return;
                 }
                 progress = 0;
-                if (!machine.beforeWorking(null)) {
+                if (!machine.beforeWorking()) {
                     return;
                 }
                 adjustCleanAmount(false);
