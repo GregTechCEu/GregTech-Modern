@@ -1425,6 +1425,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE.item("shutter_module_cover", ComponentItem::create)
         .lang("Shutter Module")
         .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+        .onRegister(attach(new CoverPlaceBehavior(GTCovers.SHUTTER)))
         .register();
 
     public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE.item("infinite_water_cover", ComponentItem::create)
