@@ -91,7 +91,6 @@ public class LayeredVeinGenerator extends VeinGenerator {
         List<GTLayerPattern.Layer> resolvedLayers = new ArrayList<>();
         List<Float> layerDiameterOffsets = new ArrayList<>();
 
-        BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
         int layerCoordinate = random.nextInt(4);
         int slantyCoordinate = random.nextInt(3);
         float slope = random.nextFloat() * .75f;

@@ -43,13 +43,15 @@ public class ClassicVeinGenerator extends VeinGenerator {
         Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
         Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
         Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
-        Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic)
+        Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic),
+        ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", 3).forGetter(val -> val.yRadius)
     ).apply(instance, ClassicVeinGenerator::new));
 
     private Layer primary;
     private Layer secondary;
     private Layer between;
     private Layer sporadic;
+    private int yRadius = 3;
 
     // Provided for readability
     private int sporadicDivisor;
@@ -63,11 +65,12 @@ public class ClassicVeinGenerator extends VeinGenerator {
         super(entry);
     }
 
-    public ClassicVeinGenerator(Layer primary, Layer secondary, Layer between, Layer sporadic) {
+    public ClassicVeinGenerator(Layer primary, Layer secondary, Layer between, Layer sporadic, int yRadius) {
         this.primary = primary;
         this.secondary = secondary;
         this.between = between;
         this.sporadic = sporadic;
+        this.yRadius = yRadius;
     }
 
     @Override
@@ -104,24 +107,30 @@ public class ClassicVeinGenerator extends VeinGenerator {
         int yz2 = ySize * ySize * radius * radius;
         int xyz2 = xy2 * radius * radius;
 
-        int max = Math.max(ySize, radius);
-        int yMax = Math.min(max, getYRadius());
-        BlockPos minPos = new BlockPos(-max, -yMax, -max);
+        int xPos = origin.getX();
+        int yPos = origin.getY();
+        int zPos = origin.getZ();
 
-        for (int x = -max; x <= max; x++) {
-            int xr = yz2 * x * x;
+        int max = Math.max(ySize, radius);
+        int yMax = Math.min(max, yRadius);
+        BlockPos minPos = new BlockPos(xPos - max, yPos - yMax, zPos - max);
+
+        for (int xOffset = -max; xOffset <= max; xOffset++) {
+            int xr = yz2 * xOffset * xOffset;
             if (xr > xyz2) continue;
-            for (int y = -yMax; y <= yMax; y++) {
-                int yr = xr + xz2 * y * y + xy2;
+            for (int yOffset = -yMax; yOffset <= yMax; yOffset++) {
+                int yr = xr + xz2 * yOffset * yOffset + xy2;
                 if (yr > xyz2) continue;
-                for (int z = -max; z <= max; z++) {
-                    int zr = yr + xy2 * z * z;
+                if (level.isOutsideBuildHeight(yOffset + yPos))
+                    continue;
+                for (int zOffset = -max; zOffset <= max; zOffset++) {
+                    int zr = yr + xy2 * zOffset * zOffset;
                     if (zr > xyz2) continue;
 
                     final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    BlockPos currentPos = new BlockPos(x, y, z);
+                    BlockPos currentPos = new BlockPos(xOffset + xPos, yOffset + yPos, zOffset + zPos);
                     generatedBlocks.put(currentPos, (access, section) ->
-                        placeBlock(access, section, randomSeed, entry, entry.density(), currentPos, minPos)
+                        placeBlock(access, section, randomSeed, entry, currentPos, minPos)
                     );
                 }
             }
@@ -130,7 +139,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     }
 
     private void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed,
-                                   GTOreDefinition entry, float density,
+                                   GTOreDefinition entry,
                                    BlockPos blockPos, BlockPos lowestPos) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
         int x = SectionPos.sectionRelative(blockPos.getX());
@@ -140,10 +149,9 @@ public class ClassicVeinGenerator extends VeinGenerator {
         BlockState blockState = section.getBlockState(x, y, z);
         int layer = blockPos.getY() - lowestPos.getY();
 
-
         // First try to spawn "between"
         if (layer >= startBetween && layer - startBetween + 1 <= between.layers) {
-            if (random.nextFloat() <= density / 2) {
+            if (random.nextFloat() <= entry.density() / 2) {
                 between.place(blockState, access, section, randomSeed, entry, blockPos);
                 return;
             }
@@ -151,25 +159,21 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         // Then try primary/secondary
         if (layer >= startPrimary) {
-            if (random.nextFloat() <= density) {
+            if (random.nextFloat() <= entry.density()) {
                 primary.place(blockState, access, section, randomSeed, entry, blockPos);
                 return;
             }
         } else {
-            if (random.nextFloat() <= density) {
+            if (random.nextFloat() <= entry.density()) {
                 secondary.place(blockState, access, section, randomSeed, entry, blockPos);
                 return;
             }
         }
 
         // Then lastly, try sporadic
-        if (random.nextFloat() <= density / sporadicDivisor) {
+        if (random.nextFloat() <= entry.density() / sporadicDivisor) {
             sporadic.place(blockState, access, section, randomSeed, entry, blockPos);
         }
-    }
-
-    public int getYRadius() {
-        return Integer.MAX_VALUE;
     }
 
     @Override
@@ -190,7 +194,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
     @Override
     public VeinGenerator copy() {
-        return new ClassicVeinGenerator(this.primary.copy(), this.secondary.copy(), this.between.copy(), this.sporadic.copy());
+        return new ClassicVeinGenerator(this.primary.copy(), this.secondary.copy(), this.between.copy(), this.sporadic.copy(), this.yRadius);
     }
 
     @Override
