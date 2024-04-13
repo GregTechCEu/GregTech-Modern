@@ -29,6 +29,9 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.mods.rhino.BaseFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -89,12 +92,16 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
         if (tiers.length > 0) {
             if (args.length > 0 && args[0] instanceof BiFunction<?,?,?> machineFunction) {
                 builders = tieredMultis(name, (BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine>) machineFunction, tiers);
+            } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
+                builders = tieredMultis(name, UtilsJS.makeFunctionProxy(ScriptType.STARTUP, BiFunction.class, machineFunction), tiers);
             } else {
                 builders = tieredMultis(name, TieredWorkableElectricMultiblockMachine::new, tiers);
             }
         } else {
             if (args.length > 0 && args[0] instanceof Function<?,?> machineFunction) {
                 return new CustomMultiblockBuilder(name, (Function<IMachineBlockEntity, MultiblockControllerMachine>)machineFunction);
+            } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
+                return new CustomMultiblockBuilder(name, UtilsJS.makeFunctionProxy(ScriptType.STARTUP, Function.class, machineFunction));
             } else {
                 return new CustomMultiblockBuilder(name, WorkableElectricMultiblockMachine::new);
             }
