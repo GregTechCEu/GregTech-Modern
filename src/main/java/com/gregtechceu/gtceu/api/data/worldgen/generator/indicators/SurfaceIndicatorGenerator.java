@@ -49,7 +49,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
             Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
             FloatProvider.codec(0.0f, 1.0f).fieldOf("density").forGetter(ext -> ext.density),
-            StringRepresentable.fromEnum(IndicatorPlacement::values).fieldOf("placement").forGetter(ext -> ext.placement)
+            IndicatorPlacement.CODEC.fieldOf("placement").forGetter(ext -> ext.placement)
     ).apply(instance, SurfaceIndicatorGenerator::new));
 
     private Either<BlockState, Material> block = Either.left(Blocks.AIR.defaultBlockState());
@@ -205,6 +205,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                 ).orElse(initialPos),
                 block -> getBlockState(block, Direction.UP)
         );
+
+        public static final Codec<IndicatorPlacement> CODEC = StringRepresentable.fromEnum(IndicatorPlacement::values);
 
         public final TriFunction<WorldGenLevel, BulkSectionAccess, BlockPos, BlockPos> resolver;
         public final Function<Either<BlockState, Material>, BlockState> stateTransformer;

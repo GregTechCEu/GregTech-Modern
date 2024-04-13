@@ -230,7 +230,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     public static class Layer {
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("targets").forGetter(layer -> layer.target),
-            ExtraCodecs.intRange(-1, Integer.MAX_VALUE).optionalFieldOf("size", -1).forGetter(layer -> layer.layers)
+            ExtraCodecs.intRange(-1, Integer.MAX_VALUE).optionalFieldOf("layers", -1).forGetter(layer -> layer.layers)
         ).apply(instance, Layer::new));
 
         public final Either<List<OreConfiguration.TargetBlockState>, Material> target;

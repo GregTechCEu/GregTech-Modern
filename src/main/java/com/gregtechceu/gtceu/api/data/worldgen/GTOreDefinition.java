@@ -266,6 +266,15 @@ public class GTOreDefinition {
         return this;
     }
 
+    public GTOreDefinition classicVeinGenerator(Consumer<ClassicVeinGenerator> config) {
+        var veinGenerator = new ClassicVeinGenerator(this);
+
+        config.accept(veinGenerator);
+        this.veinGenerator = veinGenerator;
+
+        return this;
+    }
+
     @Tolerate
     @Nullable
     public VeinGenerator veinGenerator(ResourceLocation id) {
