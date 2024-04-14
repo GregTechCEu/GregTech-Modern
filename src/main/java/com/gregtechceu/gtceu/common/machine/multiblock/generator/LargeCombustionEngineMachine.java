@@ -122,14 +122,15 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
     }
 
     @Override
-    public void onWorking() {
-        super.onWorking();
+    public boolean onWorking() {
+        boolean value = super.onWorking();
         // check lubricant
         val totalContinuousRunningTime = recipeLogic.getTotalContinuousRunningTime();
         if ((totalContinuousRunningTime == 1 || totalContinuousRunningTime % 72 == 0)) {
             // insufficient lubricant
             if (!getLubricantRecipe().handleRecipeIO(IO.IN, this)) {
                 recipeLogic.interruptRecipe();
+                return false;
             }
         }
         // check boost fluid
@@ -137,6 +138,7 @@ public class LargeCombustionEngineMachine extends WorkableElectricMultiblockMach
             var boosterRecipe = getBoostRecipe();
             this.isOxygenBoosted = boosterRecipe.matchRecipe(this).isSuccess() && boosterRecipe.handleRecipeIO(IO.IN, this);
         }
+        return value;
     }
 
     @Override

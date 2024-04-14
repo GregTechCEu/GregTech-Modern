@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.registry.registrate;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
@@ -16,7 +17,6 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.common.data.GTCompassNodes;
 import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -272,6 +272,26 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
         return (MultiblockMachineBuilder) super.alwaysTryModifyRecipe(alwaysTryModifyRecipe);
+    }
+
+    @Override
+    public MultiblockMachineBuilder beforeWorking(Predicate<IRecipeLogicMachine> beforeWorking) {
+        return (MultiblockMachineBuilder) super.beforeWorking(beforeWorking);
+    }
+
+    @Override
+    public MultiblockMachineBuilder onWorking(Predicate<IRecipeLogicMachine> onWorking) {
+        return (MultiblockMachineBuilder) super.onWorking(onWorking);
+    }
+
+    @Override
+    public MultiblockMachineBuilder onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
+        return (MultiblockMachineBuilder) super.onWaiting(onWaiting);
+    }
+
+    @Override
+    public MultiblockMachineBuilder afterWorking(Consumer<IRecipeLogicMachine> afterWorking) {
+        return (MultiblockMachineBuilder) super.afterWorking(afterWorking);
     }
 
     @Override

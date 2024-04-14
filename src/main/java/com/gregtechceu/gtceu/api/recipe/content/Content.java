@@ -4,22 +4,18 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import dev.emi.emi.screen.RecipeScreen;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import org.jetbrains.annotations.Nullable;
 
+@AllArgsConstructor
 public class Content {
     @Getter
     public Object content;
@@ -29,14 +25,6 @@ public class Content {
     public String slotName;
     @Nullable
     public String uiName;
-
-    public Content(Object content, float chance, float tierChanceBoost, @Nullable String slotName, @Nullable String uiName) {
-        this.content = content;
-        this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
-        this.slotName = slotName;
-        this.uiName = uiName;
-    }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
         if (modifier == null || chance == 0) {
