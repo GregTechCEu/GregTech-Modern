@@ -117,7 +117,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private boolean alwaysTryModifyRecipe;
     @NotNull
     @Getter @Setter
-    private Predicate<IRecipeLogicMachine> beforeWorking = (machine) -> true;
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
     @NotNull
     @Getter @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;

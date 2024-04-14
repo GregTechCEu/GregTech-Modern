@@ -65,7 +65,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
-        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
+        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
         this.traitSubscriptions = new ArrayList<>();
     }
 
@@ -228,13 +228,13 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean beforeWorking() {
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
             if (!part.beforeWorking(this)) {
                 return false;
             }
         }
-        return IWorkableMultiController.super.beforeWorking();
+        return IWorkableMultiController.super.beforeWorking(recipe);
     }
 
     @Override

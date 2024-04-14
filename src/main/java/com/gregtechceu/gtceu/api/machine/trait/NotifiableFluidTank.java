@@ -6,18 +6,17 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
+import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,11 +35,19 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Persisted @Getter
+    @Persisted
+    @Getter
     private final FluidStorage[] storages;
     @Setter
     protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined while creating tanks.
     private Boolean isEmpty;
+
+    @Persisted @DescSynced
+    @Getter
+    private boolean locked = false;
+    @Persisted @DescSynced
+    @Getter
+    protected FluidStorage lockedFluid = new FluidStorage(FluidHelper.getBucket());
 
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io, IO capabilityIO) {
         super(machine);
@@ -147,6 +154,32 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return left.isEmpty() ? null : left;
     }
 
+    @Override
+    public boolean test(FluidIngredient ingredient) {
+        return !this.locked || ingredient.test(this.lockedFluid.getFluid());
+    }
+
+    @Override
+    public int getPriority() {
+        return !locked || lockedFluid.getFluid().isEmpty() ? super.getPriority() : Integer.MAX_VALUE - getTanks();
+    }
+
+    public void setLocked(boolean locked) {
+        if (this.locked == locked) return;
+        this.locked = locked;
+        FluidStack fluidStack = getStorages()[0].getFluid();
+        if (locked && !fluidStack.isEmpty()) {
+            this.lockedFluid.setFluid(fluidStack.copy());
+            this.lockedFluid.getFluid().setAmount(1);
+            onContentsChanged();
+            setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
+            return;
+        }
+        this.lockedFluid.setFluid(FluidStack.empty());
+        setFilter(stack -> true);
+        onContentsChanged();
+    }
+
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {
         for (FluidStorage storage : getStorages()) {
             storage.setValidator(filter);
@@ -178,6 +211,18 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             }
         }
         return Arrays.asList(ingredients.toArray());
+    }
+
+    @Override
+    public double getTotalContentAmount() {
+        long amount = 0;
+        for (int i = 0; i < getTanks(); ++i) {
+            FluidStack stack = getFluidInTank(i);
+            if (!stack.isEmpty()) {
+                amount += stack.getAmount();
+            }
+        }
+        return amount;
     }
 
     public boolean isEmpty() {
