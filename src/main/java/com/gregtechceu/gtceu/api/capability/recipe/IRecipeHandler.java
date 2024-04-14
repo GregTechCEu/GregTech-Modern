@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -12,7 +14,19 @@ import java.util.Set;
  * @date 2023/2/20
  * @implNote IRecipeHandler
  */
-public interface IRecipeHandler<K> {
+public interface IRecipeHandler<K> extends IFilteredHandler<K> {
+    /**
+     * Comparator for entries that can be used in insertion logic
+     */
+    Comparator<IRecipeHandler<?>> ENTRY_COMPARATOR = (o1, o2) -> {
+        // #1: non-empty storage first
+        boolean empty1 = o1.getTotalContentAmount() <= 0;
+        boolean empty2 = o2.getTotalContentAmount() <= 0;
+        if (empty1 != empty2) return empty1 ? 1 : -1;
+
+        // #2: filter priority
+        return IFilteredHandler.PRIORITY_COMPARATOR.compare(o1, o2);
+    };
 
     /**
      * matching or handling the given recipe.

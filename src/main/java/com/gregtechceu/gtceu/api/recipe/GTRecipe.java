@@ -296,7 +296,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (!capabilityProxies.contains(capIO, capability))
             return new Tuple<>(content, contentSlot);
 
-        var handlers = capabilityProxies.get(capIO, capability);
+        //noinspection DataFlowIssue checked above.
+        var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
+        handlers.sort(IRecipeHandler.ENTRY_COMPARATOR);
+
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
