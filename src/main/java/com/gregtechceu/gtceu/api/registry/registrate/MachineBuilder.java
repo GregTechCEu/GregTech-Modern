@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
@@ -55,6 +56,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.function.TriFunction;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
@@ -115,6 +117,19 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     private RecipeModifier recipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
     @Setter
     private boolean alwaysTryModifyRecipe;
+    @NotNull
+    @Getter @Setter
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    @NotNull
+    @Getter @Setter
+    private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
+    @NotNull
+    @Getter @Setter
+    private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
+    @NotNull
+    @Getter @Setter
+    private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+
     @Setter
     private Supplier<BlockState> appearance;
     @Setter @Nullable
@@ -351,6 +366,11 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         });
         definition.setRecipeModifier(recipeModifier);
         definition.setAlwaysTryModifyRecipe(alwaysTryModifyRecipe);
+        definition.setBeforeWorking(this.beforeWorking);
+        definition.setOnWorking(this.onWorking);
+        definition.setOnWaiting(this.onWaiting);
+        definition.setAfterWorking(this.afterWorking);
+
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));
         }

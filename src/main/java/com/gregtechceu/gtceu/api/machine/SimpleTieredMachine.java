@@ -52,6 +52,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -379,6 +380,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                             tieredMachine.importFluids,
                             tieredMachine.exportFluids,
                             new CompoundTag(),
+                            Collections.emptyList(),
                             false, false));
             createBatterySlot().setupUI(template, tieredMachine);
 //            createCircuitConfigurator().setupUI(template, tieredMachine);

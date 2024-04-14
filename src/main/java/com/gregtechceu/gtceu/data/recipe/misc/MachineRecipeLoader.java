@@ -1009,6 +1009,13 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_nbt_tungstensteel", FLUID_CELL_LARGE_TUNGSTEN_STEEL.asStack(), FLUID_CELL_LARGE_TUNGSTEN_STEEL.asStack());
         VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_vial_nbt", FLUID_CELL_GLASS_VIAL.asStack(), FLUID_CELL_GLASS_VIAL.asStack());
 
+        // Data Items
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_stick_nbt", TOOL_DATA_STICK.asStack(),
+            TOOL_DATA_STICK.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_orb_nbt", TOOL_DATA_ORB.asStack(),
+            TOOL_DATA_ORB.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(),
+            TOOL_DATA_MODULE.asStack());
 
         //Jetpacks
         // TODO armor

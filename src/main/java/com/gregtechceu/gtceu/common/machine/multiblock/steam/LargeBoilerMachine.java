@@ -175,11 +175,13 @@ public class LargeBoilerMachine extends WorkableMultiblockMachine implements IEx
     }
 
     @Override
-    public void onWorking() {
+    public boolean onWorking() {
+        boolean value = super.onWorking();
         if (currentTemperature < getMaxTemperature()) {
             currentTemperature = Math.max(1, currentTemperature);
             updateSteamSubscription();
         }
+        return value;
     }
 
     @Nullable
