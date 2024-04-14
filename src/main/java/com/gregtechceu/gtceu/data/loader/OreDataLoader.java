@@ -42,8 +42,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager,
-                         ProfilerFiller profiler) {
+    protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
         // Check condition in cause of reload failing which makes the registry not freeze.
         if (GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.unfreeze();
@@ -83,10 +82,6 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         GTOres.updateLargestVeinSize();
         if (!GTRegistries.ORE_VEINS.isFrozen()) {
             GTRegistries.ORE_VEINS.freeze();
-        }
-
-        if (Platform.getMinecraftServer() != null) {
-            GTNetwork.NETWORK.sendToAll(new SPacketSyncOreVeins(GTRegistries.ORE_VEINS.registry()));
         }
     }
 

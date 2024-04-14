@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import dev.architectury.hooks.item.ItemStackHooks;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
 import net.minecraft.core.Direction;
@@ -276,7 +275,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     public static class KJSCallWrapper {
-        public static ItemStack applyIngredientAction(ItemStackTransfer storage, int index, List<IngredientAction> ingredientActions) {
+        public static ItemStack applyIngredientAction(CustomItemStackHandler storage, int index, List<IngredientAction> ingredientActions) {
             var stack = storage.getStackInSlot(index);
 
             if (stack.isEmpty()) {

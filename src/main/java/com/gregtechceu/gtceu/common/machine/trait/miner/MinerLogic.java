@@ -131,10 +131,8 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         this.pickaxeTool = GTItems.TOOL_ITEMS.get(GTMaterials.Neutronium, GTToolType.PICKAXE).get().get();
         this.pickaxeTool.enchant(Enchantments.BLOCK_FORTUNE, fortune);
         this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-        this.inputItemHandler = new ItemRecipeHandler(IO.IN,
-                machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
-        this.outputItemHandler = new ItemRecipeHandler(IO.OUT,
-                machine.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP));
+        this.inputItemHandler = new ItemRecipeHandler(IO.IN, machine.getRecipeType().getMaxInputs(ItemRecipeCapability.CAP));
+        this.outputItemHandler = new ItemRecipeHandler(IO.OUT, machine.getRecipeType().getMaxOutputs(ItemRecipeCapability.CAP));
         this.inputEnergyHandler = new IgnoreEnergyRecipeHandler();
         this.capabilitiesProxy.put(IO.IN, inputItemHandler.getCapability(), List.of(inputItemHandler));
         this.capabilitiesProxy.put(IO.IN, inputEnergyHandler.getCapability(), List.of(inputEnergyHandler));

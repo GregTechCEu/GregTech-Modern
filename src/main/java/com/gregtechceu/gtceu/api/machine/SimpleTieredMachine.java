@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
@@ -56,6 +57,7 @@ import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -315,16 +317,14 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
-            .memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
-                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-                SlotWidget batterySlot = createBatterySlot().createDefault();
-                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width,
-                        Math.max(template.getSize().height, 78));
-                template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
-                batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
-                group.addWidget(batterySlot);
-                group.addWidget(template);
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
+        WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+        SlotWidget batterySlot = createBatterySlot().createDefault();
+        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width, Math.max(template.getSize().height, 78));
+        template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
+        batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
+        group.addWidget(batterySlot);
+        group.addWidget(template);
 
                 // TODO fix this.
                 // if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
@@ -333,28 +333,27 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 // group.addWidget(circuitSlot);
                 // }
 
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof SimpleTieredMachine tieredMachine) {
-                    var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
-                            LinkedHashMap<RecipeCapability<?>, Object>::new);
-                    storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
-                    storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
-                    storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
-                    storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
-                    storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
-                    storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
+        return group;
+    }, (template, machine) -> {
+        if (machine instanceof SimpleTieredMachine tieredMachine) {
+            var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
+            storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
+            storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
+            storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
+            storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
+            storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
+            storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
 
-                    tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
-                            new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
-                                    storages,
-                                    new CompoundTag(),
-                                    Collections.emptyList(),
-                                    false, false));
-                    createBatterySlot().setupUI(template, tieredMachine);
-                    // createCircuitConfigurator().setupUI(template, tieredMachine);
-                }
-            }));
+            tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                    new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+                        storages,
+                        new CompoundTag(),
+                        Collections.emptyList(),
+                        false, false));
+            createBatterySlot().setupUI(template, tieredMachine);
+//            createCircuitConfigurator().setupUI(template, tieredMachine);
+        }
+    }));
 
     /**
      * Create an energy bar widget.

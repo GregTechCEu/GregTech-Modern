@@ -70,12 +70,9 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
-                       int combinedLight, int combinedOverlay) {
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
-                machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(),
-                    machine.getCache().getLockedFluid().getFluid());
+    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
+        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
+            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(), machine.getCache().getLockedFluid().getFluid());
         }
     }
 
