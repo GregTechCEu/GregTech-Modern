@@ -6,7 +6,6 @@ import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -45,6 +44,8 @@ public interface IRecipeHandler<K> {
     }
 
     List<Object> getContents();
+
+    double getTotalContentAmount();
 
     /**
      * Whether the content of same capability  can only be handled distinct.
