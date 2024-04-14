@@ -163,6 +163,33 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         return null;
     }
 
+    @Override
+    public boolean alwaysTryModifyRecipe() {
+        return true;
+    }
+
+    @Override
+    public boolean onWorking() {
+        GTRecipe recipe = recipeLogic.getLastRecipe();
+        if (recipe.data.contains("eu_to_start")) {
+            long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
+            // if the remaining energy needed is more than stored, do not run
+            if (heatDiff > 0) {
+                recipeLogic.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
+
+                // if the remaining energy needed is more than stored, do not run
+                if (this.energyContainer.getEnergyStored() < heatDiff)
+                    return super.onWorking();
+                // remove the energy needed
+                this.energyContainer.removeEnergy(heatDiff);
+                // increase the stored heat
+                this.heat += heatDiff;
+                this.updatePreHeatSubscription();
+            }
+        }
+        return super.onWorking();
+    }
+
     public void updateHeat() {
         // Drain heat when the reactor is not active, is paused via soft mallet, or does not have enough energy and has fully wiped recipe progress
         // Don't drain heat when there is not enough energy and there is still some recipe progress, as that makes it doubly hard to complete the recipe

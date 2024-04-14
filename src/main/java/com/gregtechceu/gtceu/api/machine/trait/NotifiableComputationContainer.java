@@ -213,6 +213,11 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
     }
 
     @Override
+    public double getTotalContentAmount() {
+        return lastOutputCwu;
+    }
+
+    @Override
     public RecipeCapability<Integer> getCapability() {
         return CWURecipeCapability.CAP;
     }
