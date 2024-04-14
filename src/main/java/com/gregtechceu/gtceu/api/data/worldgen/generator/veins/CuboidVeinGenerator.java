@@ -80,8 +80,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
 
         // determine density based on distance from the origin chunk
         // this makes the vein more concentrated towards the center
-        double xLength = currentChunk.x - origin.getX() / 16f;
-        double zLength = currentChunk.z - origin.getZ() / 16f;
+        double xLength = currentChunk.x - origin.getX();
+        double zLength = currentChunk.z - origin.getZ();
         double volume = Math.sqrt(2 + (xLength * xLength) + (zLength * zLength));
 
         int size = entry.clusterSize();
