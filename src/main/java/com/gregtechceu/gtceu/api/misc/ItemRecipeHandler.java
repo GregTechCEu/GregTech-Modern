@@ -50,6 +50,18 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
+    public double getTotalContentAmount() {
+        long amount = 0;
+        for (int i = 0; i < storage.getSlots(); ++i) {
+            ItemStack stack = storage.getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                amount += stack.getCount();
+            }
+        }
+        return amount;
+    }
+
+    @Override
     public int getSize() {
         return this.storage.getSlots();
     }

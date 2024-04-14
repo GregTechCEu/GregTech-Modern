@@ -1,11 +1,15 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.codecs.CompoundListFunctionCodec;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
@@ -13,6 +17,9 @@ import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.mutable.MutableInt;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -37,14 +44,19 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
                     List::addAll
                 )
         );
+    public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final String name;
     public final int color;
+    public final boolean doRenderSlot;
+    public final int sortIndex;
     public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(String name, int color, IContentSerializer<T> serializer) {
+    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex, IContentSerializer<T> serializer) {
         this.name = name;
         this.color = color;
+        this.doRenderSlot = doRenderSlot;
+        this.sortIndex = sortIndex;
         this.serializer = serializer;
     }
 
@@ -115,7 +127,7 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     }
 
     /**
-     * Does the recipe test if this capability is workable? if not, you should test validity somewhere later.
+     * Does the recipe test if this capability is workable? if not, you should test validity somewhere else.
      */
     public boolean doMatchInRecipe() {
         return true;
@@ -126,6 +138,38 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     }
 
     public void addXEIInfo(WidgetGroup group, int xOffset, List<Content> contents, boolean perTick, boolean isInput, MutableInt yOffset) {
+
+    }
+
+    @NotNull
+    public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe) {
+        return new ArrayList<>();
+    }
+
+    @Nullable
+    public Object createXEIContainer(List<?> contents) {
+        return null;
+    }
+
+    @UnknownNullability("null when getWidgetClass() == null")
+    public Widget createWidget() {
+        return null;
+    }
+
+    @Nullable
+    public Class<? extends Widget> getWidgetClass() {
+        return null;
+    }
+
+    public void applyWidgetInfo(@NotNull Widget widget,
+                                int index,
+                                boolean isXEI,
+                                IO io,
+                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                @NotNull GTRecipeType recipeType,
+                                @UnknownNullability("null when content == null") GTRecipe recipe,
+                                @Nullable Content content,
+                                @Nullable Object storage) {
 
     }
 

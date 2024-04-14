@@ -54,7 +54,6 @@ public class GTRecipe implements Recipe<Container> {
     public boolean isFuel;
 
     public GTRecipe(GTRecipeType recipeType,
-                    ResourceLocation id,
                     Map<RecipeCapability<?>, List<Content>> inputs,
                     Map<RecipeCapability<?>, List<Content>> outputs,
                     Map<RecipeCapability<?>, List<Content>> tickInputs,
@@ -296,7 +295,10 @@ public class GTRecipe implements Recipe<Container> {
         if (!capabilityProxies.contains(capIO, capability))
             return new Tuple<>(content, contentSlot);
 
-        var handlers = capabilityProxies.get(capIO, capability);
+        //noinspection DataFlowIssue checked above.
+        var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
+        handlers.sort(IRecipeHandler.ENTRY_COMPARATOR);
+
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
