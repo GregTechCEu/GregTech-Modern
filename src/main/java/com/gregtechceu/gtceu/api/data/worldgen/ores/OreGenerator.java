@@ -95,7 +95,6 @@ public class OreGenerator {
         Map<BlockPos, OreBlockPlacer> generatedVeins = definition.veinGenerator()
                 .generate(level, config.newRandom(), definition, config.data.center());
 
-
         if (generatedVeins.isEmpty()) {
             logEmptyVein(config);
             return Optional.empty();
