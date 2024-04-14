@@ -385,6 +385,19 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
+        chancedInput(fluid, 0, 0);
+        return this;
+    }
+
+    public GTRecipeBuilder notConsumableFluid(FluidIngredient ingredient) {
+        float lastChance = this.chance;
+        this.chance = 0;
+        inputFluids(ingredient);
+        this.chance = lastChance;
+        return this;
+    }
+
     public GTRecipeBuilder circuitMeta(int configuration) {
         return notConsumable(IntCircuitIngredient.circuitInput(configuration));
     }

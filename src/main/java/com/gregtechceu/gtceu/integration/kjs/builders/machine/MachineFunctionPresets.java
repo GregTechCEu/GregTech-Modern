@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
@@ -244,7 +245,7 @@ public class MachineFunctionPresets {
             }
 
             @Override
-            public MachineBuilder<D> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
+            public MachineBuilder<D> recipeModifier(RecipeModifier recipeModifier) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.recipeModifier(recipeModifier);
@@ -383,7 +384,7 @@ public class MachineFunctionPresets {
                 return this;
             }
 
-            public MachineBuilder<D> recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+            public MachineBuilder<D> recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
                 recipeModifier(recipeModifier);
                 alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 return this;
