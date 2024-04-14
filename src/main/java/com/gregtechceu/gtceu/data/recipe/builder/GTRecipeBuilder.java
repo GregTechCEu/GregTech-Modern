@@ -383,6 +383,19 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
+        chancedInput(fluid, 0, 0);
+        return this;
+    }
+
+    public GTRecipeBuilder notConsumableFluid(FluidIngredient ingredient) {
+        float lastChance = this.chance;
+        this.chance = 0;
+        inputFluids(ingredient);
+        this.chance = lastChance;
+        return this;
+    }
+
     public GTRecipeBuilder circuitMeta(int configuration) {
         return notConsumable(IntCircuitIngredient.circuitInput(configuration));
     }
@@ -673,7 +686,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe build() {
-        return new GTRecipe(this.recipeType, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, this.data, this.duration, this.isFuel);
+        return new GTRecipe(this.recipeType, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, List.of(), this.data, this.duration, this.isFuel);
     }
 
     public void save(RecipeOutput consumer) {

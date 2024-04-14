@@ -14,11 +14,15 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import lombok.val;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.util.Tuple;
 
 import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -34,20 +38,29 @@ public class GTRecipeModifiers {
     /**
      * Use it if machines are {@link IOverclockMachine}.
      */
-    public final static Function<OverclockingLogic, BiFunction<MetaMachine, GTRecipe, GTRecipe>> ELECTRIC_OVERCLOCK = Util.memoize(overclockingLogic -> (machine, recipe) -> {
-        if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
-            return null;
-        }
-        if (machine instanceof IOverclockMachine overclockMachine) {
-            return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
-        }
-        return recipe;
-    });
+    public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util.memoize(ElectricOverclockModifier::new);
+    public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers.hatchParallel(machine, recipe, false).getA();
 
-    public static final BiFunction<OverclockingLogic, Function<OverclockingLogic, BiFunction<MetaMachine, GTRecipe, GTRecipe>>, BiFunction<MetaMachine, GTRecipe, GTRecipe>> PARALLEL_HATCH = Util.memoize((overclockingLogic, function) -> ((machine, recipe) -> {
-        var paralleledRecipe = GTRecipeModifiers.hatchParallel(machine, recipe, false);
-        return function.apply(overclockingLogic).apply(machine, paralleledRecipe.getA());
-    }));
+    @MethodsReturnNonnullByDefault
+    @ParametersAreNonnullByDefault
+    public static class ElectricOverclockModifier implements RecipeModifier{
+        private final OverclockingLogic overclockingLogic;
+
+
+        public ElectricOverclockModifier(OverclockingLogic overclockingLogic) {
+            this.overclockingLogic = overclockingLogic;
+        }
+        @Override
+        public GTRecipe apply(MetaMachine machine, GTRecipe recipe) {
+            if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
+                return null;
+            }
+            if (machine instanceof IOverclockMachine overclockMachine) {
+                return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
+            }
+            return recipe;
+        }
+    }
 
     /**
      * Fast parallel, the parallel amount is always the 2 times the divisor of maxParallel。

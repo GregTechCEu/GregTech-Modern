@@ -46,7 +46,7 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -315,6 +315,11 @@ public interface GTRecipeSchema {
             this.chance = 0;
             inputItems(orePrefix, material);
             this.chance = lastChance;
+            return this;
+        }
+
+        public GTRecipeJS notConsumableFluid(GTRecipeComponents.FluidIngredientJS fluid) {
+            chancedFluidInput(fluid, 0, 0);
             return this;
         }
 
@@ -611,7 +616,7 @@ public interface GTRecipeSchema {
          */
 
         @Override
-        public @Nullable Recipe<?> createRecipe() {
+        public @Nullable RecipeHolder<?> createRecipe() {
             if (onSave != null) {
                 onSave.accept(this);
             }
