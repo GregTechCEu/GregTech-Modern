@@ -228,13 +228,13 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     }
 
     @Override
-    public boolean beforeWorking() {
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
             if (!part.beforeWorking(this)) {
                 return false;
             }
         }
-        return IWorkableMultiController.super.beforeWorking();
+        return IWorkableMultiController.super.beforeWorking(recipe);
     }
 
     @Override
