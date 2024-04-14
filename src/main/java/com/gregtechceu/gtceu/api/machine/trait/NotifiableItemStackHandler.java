@@ -13,7 +13,6 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import dev.architectury.hooks.item.ItemStackHooks;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
 import net.minecraft.core.Direction;
@@ -177,6 +176,18 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
         }
         return Arrays.asList(stacks.toArray());
+    }
+
+    @Override
+    public double getTotalContentAmount() {
+        long amount = 0;
+        for (int i = 0; i < getSlots(); ++i) {
+            ItemStack stack = getStackInSlot(i);
+            if (!stack.isEmpty()) {
+                amount += stack.getCount();
+            }
+        }
+        return amount;
     }
 
     public boolean isEmpty() {

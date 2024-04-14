@@ -65,6 +65,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected boolean allowInputFromOutputSideFluids;
     @Getter
     private final long maxStoredFluids;
+    @Getter
     @Persisted @DropSaved
     protected final NotifiableFluidTank cache;
     @Nullable
@@ -75,15 +76,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected FluidStack stored = FluidStack.empty();
     @Persisted @Getter @Setter
     private boolean isVoiding;
-    @Persisted @DescSynced @Getter
-    protected final FluidStorage lockedFluid;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxStoredFluids, Object... args) {
         super(holder, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler(args);
-        this.lockedFluid = new FluidStorage(FluidHelper.getBucket());
     }
 
     //////////////////////////////////////
@@ -120,7 +118,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
                 return filled;
             }
-        }.setFilter(fluidStack -> !isLocked() || lockedFluid.getFluid().isFluidEqual(fluidStack));
+        };
     }
 
     @Override
@@ -289,16 +287,18 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     public boolean isLocked() {
-        return !lockedFluid.getFluid().isEmpty();
+        return cache.isLocked();
     }
 
     protected void setLocked(boolean locked) {
         if (!stored.isEmpty() && locked) {
             var copied = stored.copy();
-            copied.setAmount(lockedFluid.getCapacity());
-            lockedFluid.setFluid(copied);
+            copied.setAmount(cache.getLockedFluid().getCapacity());
+            cache.getLockedFluid().setFluid(copied);
+            cache.setLocked(true);
         } else if (!locked) {
-            lockedFluid.setFluid(FluidStack.empty());
+            cache.getLockedFluid().setFluid(FluidStack.empty());
+            cache.setLocked(false);
         }
     }
 
@@ -314,7 +314,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 ).setTextColor(-1).setDropShadow(true))
                 .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .addWidget(new PhantomFluidWidget(lockedFluid, 68, 41, 18, 18)
+                .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 68, 41, 18, 18)
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
