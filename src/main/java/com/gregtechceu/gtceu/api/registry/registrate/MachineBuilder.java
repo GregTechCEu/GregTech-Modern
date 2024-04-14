@@ -14,6 +14,13 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
+import com.gregtechceu.gtceu.client.renderer.machine.*;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
@@ -120,8 +127,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
     @Setter
-    private RecipeModifier recipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK
-            .apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
+    private RecipeModifier recipeModifier = GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK);
     @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
@@ -260,8 +266,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return this.recipeModifier(new RecipeModifierList(recipeModifiers));
     }
 
-    public MachineBuilder<DEFINITION> recipeModifiers(boolean alwaysTryModifyRecipe,
-                                                      RecipeModifier... recipeModifiers) {
+    public MachineBuilder<DEFINITION> recipeModifiers(boolean alwaysTryModifyRecipe, RecipeModifier... recipeModifiers) {
         return this.recipeModifier(new RecipeModifierList(recipeModifiers), alwaysTryModifyRecipe);
     }
 

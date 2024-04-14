@@ -14,16 +14,19 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import lombok.val;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.Util;
+import net.minecraft.util.Tuple;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
@@ -40,26 +43,21 @@ public class GTRecipeModifiers {
     /**
      * Use it if machines are {@link IOverclockMachine}.
      */
-    public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util
-            .memoize(ElectricOverclockModifier::new);
-    public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers
-            .hatchParallel(machine, recipe, false).getFirst();
+    public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util.memoize(ElectricOverclockModifier::new);
+    public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers.hatchParallel(machine, recipe, false).getA();
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault
-    public static class ElectricOverclockModifier implements RecipeModifier {
-
+    public static class ElectricOverclockModifier implements RecipeModifier{
         private final OverclockingLogic overclockingLogic;
+
 
         public ElectricOverclockModifier(OverclockingLogic overclockingLogic) {
             this.overclockingLogic = overclockingLogic;
         }
-
-        @Nullable
         @Override
-        public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
-            if (machine instanceof ITieredMachine tieredMachine &&
-                    RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
+        public GTRecipe apply(MetaMachine machine, GTRecipe recipe) {
+            if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
                 return null;
             }
             if (machine instanceof IOverclockMachine overclockMachine) {

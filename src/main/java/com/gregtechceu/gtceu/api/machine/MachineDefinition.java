@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
@@ -59,11 +58,9 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private int defaultPaintingColor;
-    @Getter
-    @Setter
+    @Getter @Setter
     private RecipeModifier recipeModifier;
-    @Getter
-    @Setter
+    @Getter @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
     @Getter @Setter

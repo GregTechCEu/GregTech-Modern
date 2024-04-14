@@ -645,7 +645,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe build() {
-        return new GTRecipe(this.recipeType, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, this.data, this.duration, this.isFuel);
+        return new GTRecipe(this.recipeType, this.input, this.output, this.tickInput, this.tickOutput, this.conditions, List.of(), this.data, this.duration, this.isFuel);
     }
 
     public void save(RecipeOutput consumer) {

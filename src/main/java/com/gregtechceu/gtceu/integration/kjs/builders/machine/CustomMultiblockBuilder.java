@@ -427,8 +427,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
-            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier,
-                                                          boolean alwaysTryModifyRecipe) {
+            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
                 recipeModifier(recipeModifier);
                 alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 return this;
