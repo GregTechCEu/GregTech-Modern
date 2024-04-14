@@ -65,6 +65,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected boolean allowInputFromOutputSideFluids;
     @Getter
     private final long maxStoredFluids;
+    @Getter
     @Persisted @DropSaved
     protected final NotifiableFluidTank cache;
     @Nullable
