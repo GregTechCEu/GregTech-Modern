@@ -156,16 +156,16 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         if (this.io == IO.OUT) {
             tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 67, 41, 18, 18)
                 .setIFluidStackUpdater(f -> {
-                    if (this.tank.getStorages()[0].getFluidAmount() != 0) {
+                    if (this.tank.getFluidInTank(0).getAmount() != 0) {
                         return;
                     }
                     if (f.isEmpty()) {
                         this.tank.setLocked(false);
-                        this.tank.getLockedFluid().setFluid(FluidStack.empty());
                     } else {
                         this.tank.setLocked(true);
-                        this.tank.getLockedFluid().setFluid(f.copy());
-                        this.tank.getLockedFluid().getFluid().setAmount(1);
+                        FluidStack newFluid = f.copy();
+                        newFluid.setAmount(1);
+                        this.tank.getLockedFluid().setFluid(newFluid);
                     }
                 }).setShowAmount(true).setDrawHoverTips(false);
 
@@ -192,8 +192,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     private Component getFluidNameText(TankWidget tankWidget) {
         Component translation;
-        if (tankWidget.getFluidTank() == null && !tankWidget.getFluidTank().getFluidInTank(tankWidget.getTank()).isEmpty()) {
-            translation = tankWidget.getFluidTank().getFluidInTank(tankWidget.getTank()).getDisplayName();
+        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
+            translation = tank.getFluidInTank(tankWidget.getTank()).getDisplayName();
         } else {
             translation = this.tank.getLockedFluid().getFluid().getDisplayName();
         }
@@ -202,8 +202,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     private String getFluidAmountText(TankWidget tankWidget) {
         String fluidAmount = "";
-        if (tankWidget.getFluidTank() != null && !tankWidget.getFluidTank().getFluidInTank(tankWidget.getTank()).isEmpty()) {
-            fluidAmount = getFormattedFluidAmount(tankWidget.getFluidTank().getFluidInTank(tankWidget.getTank()));
+        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
+            fluidAmount = getFormattedFluidAmount(tank.getFluidInTank(tankWidget.getTank()));
         } else {
             // Display Zero to show information about the locked fluid
             if (!this.tank.getLockedFluid().getFluid().isEmpty()) {
