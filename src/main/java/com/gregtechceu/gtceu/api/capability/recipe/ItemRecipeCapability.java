@@ -56,7 +56,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     public final static ItemRecipeCapability CAP = new ItemRecipeCapability();
 
     protected ItemRecipeCapability() {
-        super("item", 0xFFD96106, true, SerializerIngredient.INSTANCE);
+        super("item", 0xFFD96106, true, 0, SerializerIngredient.INSTANCE);
     }
 
     @Override

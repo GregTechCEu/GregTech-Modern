@@ -48,7 +48,7 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
@@ -259,11 +259,11 @@ public class GTRecipeTypeUI {
     protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
         int maxCount = 0;
         int totalR = 0;
-        Map<RecipeCapability<?>, Integer> map = new Object2IntLinkedOpenHashMap<>();
+        TreeMap<RecipeCapability<?>, Integer> map = new TreeMap<>(RecipeCapability.COMPARATOR);
         if (isOutputs) {
-            for (var value : recipeType.maxOutputs.object2IntEntrySet()) {
+            for (var value : recipeType.maxOutputs.entrySet()) {
                 if (value.getKey().doRenderSlot) {
-                    int val = value.getIntValue();
+                    int val = value.getValue();
                     if (val > maxCount) {
                         maxCount = Math.min(val, 3);
                     }
@@ -272,9 +272,9 @@ public class GTRecipeTypeUI {
                 }
             }
         } else {
-            for (var value : recipeType.maxInputs.object2IntEntrySet()) {
+            for (var value : recipeType.maxInputs.entrySet()) {
                 if (value.getKey().doRenderSlot) {
-                    int val = value.getIntValue();
+                    int val = value.getValue();
                     if (val > maxCount) {
                         maxCount = Math.min(val, 3);
                     }

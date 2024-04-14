@@ -21,7 +21,7 @@ public class CWURecipeCapability extends RecipeCapability<Integer> {
     public final static CWURecipeCapability CAP = new CWURecipeCapability();
 
     protected CWURecipeCapability() {
-        super("cwu", 0xFFEEEE00, false, SerializerInteger.INSTANCE);
+        super("cwu", 0xFFEEEE00, false, 3, SerializerInteger.INSTANCE);
     }
 
     @Override

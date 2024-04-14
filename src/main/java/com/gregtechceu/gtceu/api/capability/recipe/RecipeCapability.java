@@ -17,25 +17,25 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Used to detect whether a machine has a certain capability.
  */
 public abstract class RecipeCapability<T> {
+    public static final Comparator<RecipeCapability<?>> COMPARATOR = Comparator.comparingInt(o -> o.sortIndex);
 
     public final String name;
     public final int color;
-    public final IContentSerializer<T> serializer;
     public final boolean doRenderSlot;
+    public final int sortIndex;
+    public final IContentSerializer<T> serializer;
 
-    protected RecipeCapability(String name, int color, boolean doRenderSlot, IContentSerializer<T> serializer) {
+    protected RecipeCapability(String name, int color, boolean doRenderSlot, int sortIndex, IContentSerializer<T> serializer) {
         this.name = name;
         this.color = color;
         this.doRenderSlot = doRenderSlot;
+        this.sortIndex = sortIndex;
         this.serializer = serializer;
     }
 
