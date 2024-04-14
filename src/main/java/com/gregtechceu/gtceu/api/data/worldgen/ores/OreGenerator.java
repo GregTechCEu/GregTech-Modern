@@ -93,7 +93,7 @@ public class OreGenerator {
     private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
         GTOreDefinition definition = config.data.definition();
         Map<BlockPos, OreBlockPlacer> generatedVeins = definition.veinGenerator()
-                .generate(level, config.newRandom(), definition, config.data.center(), chunkPos);
+                .generate(level, config.newRandom(), definition, config.data.center());
 
         if (generatedVeins.isEmpty()) {
             logEmptyVein(config);

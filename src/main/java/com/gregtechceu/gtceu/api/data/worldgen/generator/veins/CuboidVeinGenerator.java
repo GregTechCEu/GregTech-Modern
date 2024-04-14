@@ -16,7 +16,6 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -75,14 +74,8 @@ public class CuboidVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin, ChunkPos currentChunk) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
-
-        // determine density based on distance from the origin chunk
-        // this makes the vein more concentrated towards the center
-        double xLength = currentChunk.x - origin.getX();
-        double zLength = currentChunk.z - origin.getZ();
-        double volume = Math.sqrt(2 + (xLength * xLength) + (zLength * zLength));
 
         int size = entry.clusterSize();
 
@@ -94,64 +87,67 @@ public class CuboidVeinGenerator extends VeinGenerator {
         int minY = this.minY;
         int startY = minY + random.nextInt(this.maxY - minY - 5);
 
-        int localDensity = (int) Math.max(1, entry.density() * 0.1 * volume);
-
         int topAmount = 0;
         int middleAmount = 0;
         int bottomAmount = 0;
         int spreadAmount = 0;
 
-        BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
         for (int layerOffset = -1; layerOffset <= 7; layerOffset++) {
             int layer = startY + layerOffset;
             if (level.isOutsideBuildHeight(layer))
                 continue;
             for (int x = westBound; x < eastBound; x++) {
-                int weightX = Math.max(1, Math.max(Mth.abs(westBound - x), Mth.abs(eastBound - x)) / localDensity);
                 for (int z = northBound; z < southBound; z++) {
+                    final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
+
+                    // determine density based on distance from the origin chunk
+                    // this makes the vein more concentrated towards the center
+                    double xLength = origin.getX() - x;
+                    double zLength = origin.getZ() - z;
+                    double volume = Math.sqrt(2 + (xLength * xLength) + (zLength * zLength));
+
+                    int localDensity = (int) Math.max(1, entry.density() * volume);
+                    int weightX = Math.max(1, Math.max(Mth.abs(westBound - x), Mth.abs(eastBound - x)) / localDensity);
                     int weightZ = Math.max(1, Math.max(Mth.abs(southBound - z), Mth.abs(northBound - z)) / localDensity);
 
-                    final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    pos.set(x, layer, z);
-
-                    BlockPos immutable = pos.immutable();
+                    BlockPos pos = new BlockPos(x, layer, z);
                     if (layerOffset <= 1) {
                         // layers -1, 0, and 1 are bottom and spread
-                        if (placeBottom(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        if (placeBottom(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             bottomAmount++;
-                        } else if (placeSpread(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             spreadAmount++;
                         }
                     } else if (layerOffset == 2) {
                         // layer 2 is bottom, middle, and spread
-                        if (placeMiddle(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        if (placeMiddle(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             middleAmount++;
-                        } else if (placeBottom(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeBottom(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             bottomAmount++;
-                        } else if (placeSpread(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             spreadAmount++;
                         }
                     } else if (layerOffset == 3) {
                         // layer 3 is middle, and spread
-                        if (placeMiddle(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        if (placeMiddle(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             middleAmount++;
-                        } else if (placeSpread(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             spreadAmount++;
                         }
                     } else if (layerOffset <= 5) {
                         // layers 4 and 5 is top, middle, and spread
-                        if (placeMiddle(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        if (placeMiddle(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             middleAmount++;
-                        } else if (placeTop(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeTop(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             topAmount++;
-                        } else if (placeSpread(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             spreadAmount++;
                         }
                     } else {
                         // layers 6 and 7 is top and spread
-                        if (placeTop(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        if (placeTop(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             topAmount++;
-                        } else if (placeSpread(generatedBlocks, entry, randomSeed, immutable, random, weightX, weightZ)) {
+                        } else if (placeSpread(generatedBlocks, entry, randomSeed, pos, random, weightX, weightZ)) {
                             spreadAmount++;
                         }
                     }
