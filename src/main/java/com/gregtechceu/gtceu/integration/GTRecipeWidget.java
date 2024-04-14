@@ -322,6 +322,7 @@ public class GTRecipeWidget extends WidgetGroup {
             IO io = capabilityEntry.getKey();
             for (var contentsEntry : capabilityEntry.getValue().entrySet()) {
                 RecipeCapability<?> cap = contentsEntry.getKey();
+                int nonTickInputCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
                 WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(), widget -> {
@@ -329,7 +330,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     if (index >= 0 && index < contents.size()) {
                         var content = contents.get(index);
                         cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content, null);
-                        widget.setOverlay(content.createOverlay(index >= recipe.getOutputContents(cap).size()));
+                        widget.setOverlay(content.createOverlay(index >= nonTickInputCount));
                     }
                 });
             }
