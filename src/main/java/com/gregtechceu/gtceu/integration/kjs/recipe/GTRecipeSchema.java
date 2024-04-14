@@ -26,6 +26,7 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
 import dev.latvian.mods.kubejs.item.InputItem;
@@ -314,6 +315,11 @@ public interface GTRecipeSchema {
             this.chance = 0;
             inputItems(orePrefix, material);
             this.chance = lastChance;
+            return this;
+        }
+
+        public GTRecipeJS notConsumableFluid(GTRecipeComponents.FluidIngredientJS fluid) {
+            chancedFluidInput(fluid, 0, 0);
             return this;
         }
 
