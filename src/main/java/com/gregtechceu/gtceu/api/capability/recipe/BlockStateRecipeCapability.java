@@ -8,7 +8,7 @@ public class BlockStateRecipeCapability extends RecipeCapability<BlockState> {
     public final static BlockStateRecipeCapability CAP = new BlockStateRecipeCapability();
 
     protected BlockStateRecipeCapability() {
-        super("block_state", 0xFFABABAB, SerializerBlockState.INSTANCE);
+        super("block_state", 0xFFABABAB, false, SerializerBlockState.INSTANCE);
     }
 
     @Override

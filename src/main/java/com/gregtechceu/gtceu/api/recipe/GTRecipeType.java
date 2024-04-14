@@ -138,7 +138,8 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, IGuiTexture slotOverlay) {
-        return this.setSlotOverlay(isOutput, isFluid, false, slotOverlay).setSlotOverlay(isOutput, isFluid, true, slotOverlay);
+        this.recipeUI.setSlotOverlay(isOutput, isFluid, slotOverlay);
+        return this;
     }
 
     public GTRecipeType setSlotOverlay(boolean isOutput, boolean isFluid, boolean isLast, IGuiTexture slotOverlay) {

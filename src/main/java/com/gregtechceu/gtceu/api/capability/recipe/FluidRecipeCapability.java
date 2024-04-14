@@ -1,17 +1,39 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.lookup.MapFluidTagIngredient;
+import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.integration.GTRecipeWidget;
+import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
+import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
+import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author KilaBash
@@ -23,7 +45,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     public final static FluidRecipeCapability CAP = new FluidRecipeCapability();
 
     protected FluidRecipeCapability() {
-        super("fluid", 0xFF3C70EE, SerializerFluidIngredient.INSTANCE);
+        super("fluid", 0xFF3C70EE, true, SerializerFluidIngredient.INSTANCE);
     }
 
     @Override
@@ -107,5 +129,86 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public boolean isRecipeSearchFilter() {
         return true;
+    }
+
+    @Override
+    public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe) {
+        return contents.stream().map(content -> content.content)
+            .map(this::of)
+            .map(FluidRecipeCapability::mapFluid)
+            .collect(Collectors.toList());
+    }
+
+    public Object createXEIContainer(List<?> contents) {
+        // cast is safe if you don't pass the wrong thing.
+        //noinspection unchecked
+        return new TagOrCycleFluidTransfer((List<Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>>>) contents);
+    }
+
+    @NotNull
+    @Override
+    public Widget createWidget() {
+        TankWidget tank = new TankWidget();
+        tank.initTemplate();
+        tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
+        return tank;
+    }
+
+    @NotNull
+    @Override
+    public Class<? extends Widget> getWidgetClass() {
+        return TankWidget.class;
+    }
+
+    @Override
+    public void applyWidgetInfo(@NotNull Widget widget,
+                                int index,
+                                boolean isXEI,
+                                IO io,
+                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                @NotNull GTRecipeType recipeType,
+                                @UnknownNullability("null when content == null") GTRecipe recipe,
+                                @Nullable Content content,
+                                @Nullable Object storage) {
+        if (widget instanceof TankWidget tank) {
+            if (storage instanceof TagOrCycleFluidTransfer fluidTransfer) {
+                tank.setFluidTank(fluidTransfer, index);
+            } else if (storage instanceof IFluidTransfer fluidTransfer) {
+                tank.setFluidTank(new OverlayingFluidStorage(fluidTransfer, index));
+            }
+            tank.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
+            tank.setAllowClickFilled(!isXEI);
+            tank.setAllowClickDrained(!isXEI);
+            if (content != null) {
+                tank.setXEIChance(content.chance);
+                tank.setOnAddedTooltips((w, tooltips) -> {
+                    GTRecipeWidget.setConsumedChance(content, tooltips);
+                    if (index >= recipe.getOutputContents(this).size()) {
+                        tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
+                    }
+                });
+            }
+        }
+    }
+
+    // Maps fluids to Either<(tag with count), FluidStack>s
+    public static Either<List<Pair<TagKey<Fluid>, Long>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
+        long amount = ingredient.getAmount();
+        CompoundTag tag = ingredient.getNbt();
+
+        List<Pair<TagKey<Fluid>, Long>> tags = new ArrayList<>();
+        List<FluidStack> fluids = new ArrayList<>();
+        for (FluidIngredient.Value value : ingredient.values) {
+            if (value instanceof FluidIngredient.TagValue tagValue) {
+                tags.add(Pair.of(tagValue.getTag(), amount));
+            } else {
+                fluids.addAll(value.getFluids().stream().map(fluid -> FluidStack.create(fluid, amount, tag)).toList());
+            }
+        }
+        if (!tags.isEmpty()) {
+            return Either.left(tags);
+        }else {
+            return Either.right(fluids);
+        }
     }
 }
