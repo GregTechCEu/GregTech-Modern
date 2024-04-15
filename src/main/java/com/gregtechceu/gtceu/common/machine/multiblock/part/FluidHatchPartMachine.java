@@ -154,7 +154,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
         // Add input/output-specific widgets
         if (this.io == IO.OUT) {
-            tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 67, 41, 18, 18)
+            // if this is an output hatch, assign tankWidget to the phantom widget displaying the locked fluid...
+            group.addWidget(tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 67, 40, 18, 18)
                 .setIFluidStackUpdater(f -> {
                     if (this.tank.getFluidInTank(0).getAmount() != 0) {
                         return;
@@ -167,24 +168,23 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
                         newFluid.setAmount(1);
                         this.tank.getLockedFluid().setFluid(newFluid);
                     }
-                }).setShowAmount(true).setDrawHoverTips(false);
+                }).setShowAmount(true).setDrawHoverTips(false).setBackground(GuiTextures.FLUID_SLOT));
 
-            group.addWidget(new ToggleButtonWidget(7, 41, 18, 18,
+            group.addWidget(new ToggleButtonWidget(7, 40, 18, 18,
                     GuiTextures.BUTTON_LOCK, this.tank::isLocked, this.tank::setLocked)
                     .setTooltipText("gtceu.gui.fluid_lock.tooltip")
-                    .setShouldUseBaseBackground());
+                    .setShouldUseBaseBackground())
+                // ...and add the actual tank widget separately.
+                .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
+                    .setShowAmount(true).setDrawHoverTips(false).setBackground(GuiTextures.FLUID_SLOT));
         } else {
-            tankWidget = new TankWidget(tank.getStorages()[0], 69, 52, 18, 18, true, io.support(IO.IN))
-                .setShowAmount(true).setDrawHoverTips(false);
-
-            group.addWidget(new ImageWidget(91, 36, 14, 15, GuiTextures.TANK_ICON));
+            group.addWidget(tankWidget = new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
+                    .setShowAmount(true).setDrawHoverTips(false).setBackground(GuiTextures.FLUID_SLOT));
         }
 
         group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
             .addWidget(new LabelWidget(8, 18, () -> getFluidAmountText(tankWidget)))
-            .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()))
-            .addWidget(tankWidget)
-            .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
+            .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()));
 
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
