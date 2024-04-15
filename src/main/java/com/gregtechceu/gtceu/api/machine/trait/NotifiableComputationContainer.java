@@ -130,6 +130,7 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
 
     @Override
     public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
+        if (seen.contains(this)) return false;
         seen.add(this);
         if (handlerIO == IO.IN) {
             if (isTransmitter()) {
