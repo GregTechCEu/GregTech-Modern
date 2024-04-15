@@ -239,7 +239,12 @@ public class NotifiableComputationContainer extends NotifiableRecipeHandlerTrait
             BlockEntity blockEntity = machine.getLevel().getBlockEntity(machine.getPos().relative(direction));
             if (blockEntity == null) continue;
 
-            return blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).orElse(null);
+            //noinspection DataFlowIssue can be null just fine.
+            IOpticalComputationProvider provider = blockEntity.getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, direction.getOpposite()).orElse(null);
+            //noinspection ConstantValue can be null because above.
+            if (provider != null) {
+                return provider;
+            }
         }
         return null;
     }
