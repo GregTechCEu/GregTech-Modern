@@ -612,7 +612,7 @@ public class GTRecipeBuilder {
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
         if (researchEntry == null) {
-            GTCEu.LOGGER.error("Assembly Line Research Entry cannot be empty.", new IllegalArgumentException());
+            GTCEu.LOGGER.error("Research Entry cannot be empty.", new IllegalArgumentException());
             return false;
         }
 
@@ -797,14 +797,13 @@ public class GTRecipeBuilder {
      * @param EUt           the EUt of the recipe
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
-    @Accessors(fluent = false)
     public record ResearchRecipeEntry(
             @NotNull String researchId,
             @NotNull ItemStack researchStack,
             @NotNull ItemStack dataStack,
-            @Getter int duration,
-            @Getter int EUt,
-            @Getter int CWUt) {
+            int duration,
+            int EUt,
+            int CWUt) {
     }
 
 }

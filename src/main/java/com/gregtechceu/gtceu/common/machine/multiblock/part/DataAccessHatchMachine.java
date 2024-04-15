@@ -84,13 +84,14 @@ public class DataAccessHatchMachine extends TieredPartMachine implements IMachin
     @Override
     public Widget createUIWidget() {
         int rowSize = (int) Math.sqrt(getInventorySize());
+        int xOffset = 18 * rowSize / 2;
         WidgetGroup group = new WidgetGroup(0, 0, 18 * rowSize, 18 * rowSize);
         
         for (int y = 0; y < rowSize; y++) {
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 group.addWidget(new SlotWidget(importItems, index,
-                    rowSize * 9 + x * 18 - 27, y * 18, true, true)
+                    rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
                     .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
