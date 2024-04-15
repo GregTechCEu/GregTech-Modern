@@ -117,7 +117,7 @@ public abstract class RecipeCapability<T> {
     }
 
     @NotNull
-    public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe) {
+    public List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
         return new ArrayList<>();
     }
 
