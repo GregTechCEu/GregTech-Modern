@@ -301,14 +301,14 @@ public class GTRecipeWidget extends WidgetGroup {
             List<Content> contents = entry.getValue();
 
             extraContents.put(IO.IN, cap, contents);
-            inputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe));
+            inputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.IN));
         }
         for (var entry : recipe.tickInputs.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             List<Content> contents = entry.getValue();
 
             extraContents.put(IO.IN, cap, contents);
-            inputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe));
+            inputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.IN));
         }
         for (var entry : inputCapabilities.entrySet()) {
             while (entry.getValue().size() < recipe.recipeType.getMaxInputs(entry.getKey())) entry.getValue().add(null);
@@ -324,14 +324,14 @@ public class GTRecipeWidget extends WidgetGroup {
             List<Content> contents = entry.getValue();
 
             extraContents.put(IO.OUT, cap, contents);
-            outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe));
+            outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.OUT));
         }
         for (var entry : recipe.tickOutputs.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
             List<Content> contents = entry.getValue();
 
             extraContents.put(IO.OUT, cap, contents);
-            outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe));
+            outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.OUT));
         }
         for (var entry : outputCapabilities.entrySet()) {
             while (entry.getValue().size() < recipe.recipeType.getMaxOutputs(entry.getKey())) entry.getValue().add(null);

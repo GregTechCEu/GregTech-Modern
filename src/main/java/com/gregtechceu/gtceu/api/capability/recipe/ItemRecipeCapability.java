@@ -195,14 +195,14 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
     }
 
     @Override
-    public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe) {
+    public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
         var outputStacks = contents.stream().map(content -> content.content)
             .map(this::of)
             .map(ItemRecipeCapability::mapItem)
             .collect(Collectors.toList());
 
         List<Either<List<Pair<TagKey<Item>, Integer>>, List<ItemStack>>> scannerPossibilities = null;
-        if (recipe.recipeType.isScanner()) {
+        if (io == IO.OUT && recipe.recipeType.isScanner()) {
             scannerPossibilities = new ArrayList<>();
             // Scanner Output replacing, used for cycling research outputs
             Pair<GTRecipeType, String> researchData = null;
@@ -284,27 +284,26 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     slot.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
                     slot.setCanTakeItems(!isXEI);
                     slot.setCanPutItems(false);
-
-                    // 1 over container size.
-                    // If in a recipe viewer and a research slot can be added, add it.
-                    if (isXEI && recipeType.isHasResearchSlot() && index == items.getSlots()) {
-                        if (ConfigHolder.INSTANCE.machines.enableResearch) {
-                            ResearchCondition condition = recipeHolder.conditions().stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
-                            if (condition == null) {
-                                return;
-                            }
-                            List<ItemStack> dataItems = new ArrayList<>();
-                            for (ResearchData.ResearchEntry entry : condition.data) {
-                                ItemStack dataStick = entry.getDataItem().copy();
-                                ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), recipeType);
-                                dataItems.add(dataStick);
-                            }
-                            CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
-                            slot.setHandlerSlot(handler, 0);
-                            slot.setIngredientIO(IngredientIO.INPUT);
-                            slot.setCanTakeItems(false);
-                            slot.setCanPutItems(false);
+                }
+                // 1 over container size.
+                // If in a recipe viewer and a research slot can be added, add it.
+                if (isXEI && recipeType.isHasResearchSlot() && index == items.getSlots()) {
+                    if (ConfigHolder.INSTANCE.machines.enableResearch) {
+                        ResearchCondition condition = recipeHolder.conditions().stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+                        if (condition == null) {
+                            return;
                         }
+                        List<ItemStack> dataItems = new ArrayList<>();
+                        for (ResearchData.ResearchEntry entry : condition.data) {
+                            ItemStack dataStick = entry.getDataItem().copy();
+                            ResearchManager.writeResearchToNBT(dataStick.getOrCreateTag(), entry.getResearchId(), recipeType);
+                            dataItems.add(dataStick);
+                        }
+                        CycleItemStackHandler handler = new CycleItemStackHandler(List.of(dataItems));
+                        slot.setHandlerSlot(handler, 0);
+                        slot.setIngredientIO(IngredientIO.INPUT);
+                        slot.setCanTakeItems(false);
+                        slot.setCanPutItems(false);
                     }
                 }
             }

@@ -135,7 +135,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     }
 
     @Override
-    public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe) {
+    public @NotNull List<Object> createXEIContainerContents(List<Content> contents, GTRecipe recipe, IO io) {
         return contents.stream().map(content -> content.content)
             .map(this::of)
             .map(FluidRecipeCapability::mapFluid)

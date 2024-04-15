@@ -632,16 +632,82 @@ public class GTRecipeBuilder {
         return rpm(rpm, false);
     }
 
-    public JsonObject capabilitiesToJson(Map<RecipeCapability<?>, List<Content>> contents) {
-        JsonObject jsonObject = new JsonObject();
-        contents.forEach((cap, list) -> {
-            JsonArray contentsJson = new JsonArray();
-            for (Content content : list) {
-                contentsJson.add(cap.serializer.toJsonContent(content));
-            }
-            jsonObject.add(GTRegistries.RECIPE_CAPABILITIES.getKey(cap), contentsJson);
-        });
-        return jsonObject;
+    private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
+        if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
+        if (researchEntry == null) {
+            GTCEu.LOGGER.error("Research Entry cannot be empty.", new IllegalArgumentException());
+            return false;
+        }
+
+        if (!generatingRecipes) {
+            GTCEu.LOGGER.error("Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
+            return false;
+        }
+
+        ResearchCondition condition = this.conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+        if (condition != null) {
+            condition.data.add(researchEntry);
+        } else {
+            condition = new ResearchCondition();
+            condition.data.add(researchEntry);
+            this.addCondition(condition);
+        }
+        return true;
+    }
+
+    /**
+     * Does not generate a research recipe.
+     *
+     * @param researchId the researchId for the recipe
+     * @return this
+     */
+    public GTRecipeBuilder researchWithoutRecipe(@NotNull String researchId) {
+        return researchWithoutRecipe(researchId, ResearchManager.getDefaultScannerItem());
+    }
+
+    /**
+     * Does not generate a research recipe.
+     *
+     * @param researchId the researchId for the recipe
+     * @param dataStack the stack to hold the data. Must have the {@link IDataItem} behavior.
+     * @return this
+     */
+    public GTRecipeBuilder researchWithoutRecipe(@NotNull String researchId, @NotNull ItemStack dataStack) {
+        applyResearchProperty(new ResearchData.ResearchEntry(researchId, dataStack));
+        this.generatingRecipes = false;
+        return this;
+    }
+
+    /**
+     * Generates a research recipe for the Scanner.
+     */
+    public GTRecipeBuilder scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
+        if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
+            this.researchRecipeEntries.add(entry);
+        }
+        return this;
+    }
+
+    /**
+     * Generates a research recipe for the Scanner. All values are defaults other than the research stack.
+     *
+     * @param researchStack the stack to use for research
+     * @return this
+     */
+    public GTRecipeBuilder scannerResearch(@NotNull ItemStack researchStack) {
+        return scannerResearch(b -> b.researchStack(researchStack));
+    }
+
+    /**
+     * Generates a research recipe for the Research Station.
+     */
+    public GTRecipeBuilder stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
+        ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
+        if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId, entry.dataStack))) {
+            this.researchRecipeEntries.add(entry);
+        }
+        return this;
     }
 
     public GTRecipe build() {
@@ -695,9 +761,9 @@ public class GTRecipeBuilder {
             @NotNull String researchId,
             @NotNull ItemStack researchStack,
             @NotNull ItemStack dataStack,
-            @Getter int duration,
-            @Getter int EUt,
-            @Getter int CWUt) {
+            int duration,
+            int EUt,
+            int CWUt) {
     }
 
 }

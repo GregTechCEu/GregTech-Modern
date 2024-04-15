@@ -54,14 +54,13 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
                     if (part instanceof IDataAccessHatch hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
                         dataAccesses.add(hatch);
                     }
-                    if (part instanceof IDataAccessHatch hatch &&
-                            PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
+                    if (part instanceof IDataAccessHatch hatch && PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
                         transmitters.add(hatch);
                     }
                 }
 
                 return isRecipeAvailable(dataAccesses, seen, recipe) ||
-                        isRecipeAvailable(transmitters, seen, recipe);
+                    isRecipeAvailable(transmitters, seen, recipe);
             } else {
                 BlockEntity tileEntity = getLevel().getBlockEntity(getPos().relative(getFrontFacing()));
                 if (tileEntity == null) return false;
