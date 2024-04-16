@@ -120,6 +120,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             if (stack.hasTag()) {
                 ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
             }
+            if (stack.getShareTag() != null) {
+                ingredients.add(new MapItemStackPartialNBTIngredient(stack, PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
+            }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
                 Material material = ChemicalHelper.getMaterial(stack.getItem()).material();

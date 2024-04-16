@@ -24,6 +24,7 @@ public class MapItemStackPartialNBTIngredient extends MapItemStackIngredient {
         }
         return list;
     }
+
     @Override
     protected int hash() {
         return stack.getItem().hashCode() * 31;
