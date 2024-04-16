@@ -68,6 +68,10 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return false;
     }
 
+    default boolean isProxy() {
+        return false;
+    }
+
     RecipeCapability<K> getCapability();
 
     @SuppressWarnings("unchecked")
