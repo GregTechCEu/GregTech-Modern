@@ -10,6 +10,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 
 import java.util.*;
@@ -50,6 +51,19 @@ public class IngredientEquality {
             if (first instanceof StrictNBTIngredient strict1) {
                 if (second instanceof StrictNBTIngredientAccessor strict2) {
                     return strict1.test(strict2.getStack()) ? 0 : 1;
+                }
+                return 1;
+            }
+            if (first instanceof PartialNBTIngredient partial1) {
+                if (second instanceof PartialNBTIngredient partial2) {
+                    if (partial1.getItems().length != partial2.getItems().length)
+                        return 1;
+                    for (ItemStack stack : partial1.getItems()) {
+                        if (!partial2.test(stack)) {
+                            return 1;
+                        }
+                    }
+                    return 0;
                 }
                 return 1;
             }
