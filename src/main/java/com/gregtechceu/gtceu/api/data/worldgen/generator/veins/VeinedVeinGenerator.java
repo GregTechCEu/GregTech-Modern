@@ -37,7 +37,6 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
@@ -68,8 +67,8 @@ public class VeinedVeinGenerator extends VeinGenerator {
             Codec.FLOAT.fieldOf("rare_block_chance").orElse(0.02f).forGetter(it -> it.rareBlockChance)//,
     ).apply(instance, VeinedVeinGenerator::new));
 
-    public List<VeinBlockDefinition> oreBlocks;
-    public List<VeinBlockDefinition> rareBlocks;
+    public List<VeinBlockDefinition> oreBlocks = new ArrayList<>();
+    public List<VeinBlockDefinition> rareBlocks = new ArrayList<>();
     @Setter
     public BlockState fillerBlock;
     @Setter
@@ -103,14 +102,14 @@ public class VeinedVeinGenerator extends VeinGenerator {
                         material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))
                 )
         );
-        var s2 = this.rareBlocks == null ? null : this.rareBlocks.stream().flatMap(definition ->
+        var s2 = this.rareBlocks.stream().flatMap(definition ->
                 definition.block.map(
                         state -> state.stream().map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
                         material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))
                 )
         );
 
-        return (s2 == null ? s1 : Stream.concat(s1, s2)).collect(Collectors.toList());
+        return Stream.concat(s1, s2).collect(Collectors.toList());
     }
 
     @Override
@@ -120,7 +119,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry().registry(Registries.DENSITY_FUNCTION).get();
 
         List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
-        List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks == null ? null : rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
+        List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
@@ -206,7 +205,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
         return generatedBlocks;
     }
 
-    @Nullable
     private void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed, GTOreDefinition entry, double chance, List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries, BlockPos.MutableBlockPos pos, List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
         int sectionX = SectionPos.sectionRelative(pos.getX());
@@ -283,7 +281,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     public VeinedVeinGenerator oreBlock(VeinBlockDefinition material) {
-        if (this.oreBlocks == null) this.oreBlocks = new ArrayList<>();
         this.oreBlocks.add(material);
         return this;
     }
@@ -298,7 +295,6 @@ public class VeinedVeinGenerator extends VeinGenerator {
     }
 
     public VeinedVeinGenerator rareBlock(VeinBlockDefinition material) {
-        if (this.rareBlocks == null) this.rareBlocks = new ArrayList<>();
         this.rareBlocks.add(material);
         return this;
     }
