@@ -8,12 +8,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.resources.RegistryOps;
@@ -64,7 +62,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
                 }
                 GTRegistries.BEDROCK_ORE_DEFINITIONS.registerOrOverride(location, bedrockOre);
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
-                LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
+                LOGGER.error("Parsing error loading bedrock ore vein {}", location, jsonParseException);
             }
         }
 

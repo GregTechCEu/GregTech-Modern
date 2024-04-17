@@ -57,7 +57,7 @@ public class BedrockOreDefinition {
     @Getter @Setter
     private int depletedYield; // yield after the vein is depleted
     @Getter @Setter
-    private List<Pair<Material, Integer>> materials; // the fluid which the vein contains
+    private List<Pair<Material, Integer>> materials; // the ores which the vein contains
     @Getter
     private BiomeWeightModifier biomeWeightModifier; // weighting of biomes
     private List<BiomeWeightModifier> originalModifiers; // weighting of biomes
