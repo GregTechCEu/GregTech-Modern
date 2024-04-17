@@ -76,7 +76,7 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
                 // Ore amount
                 Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
                     getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
-                    " mB/s").withStyle(ChatFormatting.BLUE);
+                    "/s").withStyle(ChatFormatting.BLUE);
                 textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo).withStyle(ChatFormatting.GRAY));
             } else {
                 Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area").withStyle(ChatFormatting.RED);
