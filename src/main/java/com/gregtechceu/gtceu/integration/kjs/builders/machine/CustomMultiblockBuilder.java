@@ -354,6 +354,15 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             }
 
             @Override
+            public CustomMultiblockBuilder recipeModifiers(RecipeModifier... recipeModifiers) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.recipeModifiers(recipeModifiers);
+                }
+                return this;
+            }
+
+            @Override
             public CustomMultiblockBuilder alwaysTryModifyRecipe(boolean alwaysTryModifyRecipe) {
                 for (var builder : builders) {
                     if (builder == null) continue;
