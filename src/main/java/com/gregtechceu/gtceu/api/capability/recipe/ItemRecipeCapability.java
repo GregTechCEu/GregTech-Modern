@@ -37,6 +37,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IntersectionIngredient;
+import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,9 +78,13 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             // all kinds of special cases
             if (ingredient instanceof StrictNBTIngredient nbt) {
                 ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+            } else if (ingredient instanceof PartialNBTIngredient nbt) {
+                ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
             } else if (ingredient instanceof SizedIngredient sized) {
                 if (sized.getInner() instanceof StrictNBTIngredient nbt) {
                     ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+                } else if (sized.getInner() instanceof PartialNBTIngredient nbt) {
+                    ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
                 } else if (sized.getInner() instanceof IntersectionIngredient intersection) {
                     ingredients.add(new MapIntersectionIngredient(intersection));
                 } else {
@@ -114,6 +119,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
             if (stack.hasTag()) {
                 ingredients.add(new MapItemStackNBTIngredient(stack, StrictNBTIngredient.of(stack)));
+            }
+            if (stack.getShareTag() != null) {
+                ingredients.add(new MapItemStackPartialNBTIngredient(stack, PartialNBTIngredient.of(stack.getItem(), stack.getShareTag())));
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {

@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -249,6 +250,15 @@ public class MachineFunctionPresets {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.recipeModifier(recipeModifier);
+                }
+                return this;
+            }
+
+            @Override
+            public MachineBuilder<D> recipeModifiers(RecipeModifier... recipeModifiers) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.recipeModifiers(recipeModifiers);
                 }
                 return this;
             }

@@ -83,6 +83,11 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
         recomputeEnabledState();
     }
 
+    @Override
+    public boolean isProxy() {
+        return true;
+    }
+
     public void recomputeEnabledState() {
         this.enabled = isDistinct();
     }
