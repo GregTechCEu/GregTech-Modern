@@ -48,7 +48,7 @@ public class GTRecipeModifiers {
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault
-    public static class ElectricOverclockModifier implements RecipeModifier{
+    public static class ElectricOverclockModifier implements RecipeModifier {
         private final OverclockingLogic overclockingLogic;
 
 

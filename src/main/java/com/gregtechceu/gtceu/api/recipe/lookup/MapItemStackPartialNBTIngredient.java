@@ -1,25 +1,23 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.minecraftforge.common.crafting.PartialNBTIngredient;
-
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import net.neoforged.neoforge.common.crafting.NBTIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MapItemStackPartialNBTIngredient extends MapItemStackIngredient {
+    NBTIngredient nbtIngredient;
 
-    PartialNBTIngredient nbtIngredient;
-
-    public MapItemStackPartialNBTIngredient(ItemStack stack, PartialNBTIngredient nbtIngredient) {
+    public MapItemStackPartialNBTIngredient(ItemStack stack, NBTIngredient nbtIngredient) {
         super(stack, nbtIngredient);
         this.nbtIngredient = nbtIngredient;
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull PartialNBTIngredient r) {
+    public static List<AbstractMapIngredient> from(@NotNull NBTIngredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : r.getItems()) {
             list.add(new MapItemStackPartialNBTIngredient(s, r));

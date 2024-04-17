@@ -54,8 +54,8 @@ public class IngredientEquality {
                 }
                 return 1;
             }
-            if (first instanceof PartialNBTIngredient partial1) {
-                if (second instanceof PartialNBTIngredient partial2) {
+            if (first instanceof NBTIngredient partial1 && !partial1.isStrict()) {
+                if (second instanceof NBTIngredient partial2 && !partial2.isStrict()) {
                     if (partial1.getItems().length != partial2.getItems().length)
                         return 1;
                     for (ItemStack stack : partial1.getItems()) {
