@@ -76,11 +76,15 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             // all kinds of special cases
             if (ingredient instanceof NBTIngredient nbt && nbt.isStrict()) {
                 ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+            } if (ingredient instanceof NBTIngredient nbt && !nbt.isStrict()) {
+                ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
             } if (ingredient instanceof IntCircuitIngredient circuit) {
                 ingredients.addAll(MapItemStackNBTIngredient.from(circuit));
             } else if (ingredient instanceof SizedIngredient sized) {
                 if (sized.getInner() instanceof NBTIngredient nbt && nbt.isStrict()) {
                     ingredients.addAll(MapItemStackNBTIngredient.from(nbt));
+                } else if (sized.getInner() instanceof NBTIngredient nbt && !nbt.isStrict()) {
+                    ingredients.addAll(MapItemStackPartialNBTIngredient.from(nbt));
                 } else if (sized.getInner() instanceof IntersectionIngredient intersection) {
                     ingredients.add(new MapIntersectionIngredient(intersection));
                 } else {
@@ -119,6 +123,9 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
             stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
             if (stack.hasTag()) {
                 ingredients.add(new MapItemStackNBTIngredient(stack, NBTIngredient.of(true, stack)));
+            }
+            if (stack.getTag() != null) {
+                ingredients.add(new MapItemStackPartialNBTIngredient(stack, NBTIngredient.of(false, stack.getTag(), stack.getItem())));
             }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {

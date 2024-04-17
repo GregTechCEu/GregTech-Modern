@@ -49,6 +49,19 @@ public class IngredientEquality {
                 }
                 return 1;
             }
+            if (first instanceof NBTIngredient partial1 && !partial1.isStrict()) {
+                if (second instanceof NBTIngredient partial2 && !partial2.isStrict()) {
+                    if (partial1.getItems().length != partial2.getItems().length)
+                        return 1;
+                    for (ItemStack stack : partial1.getItems()) {
+                        if (!partial2.test(stack)) {
+                            return 1;
+                        }
+                    }
+                    return 0;
+                }
+                return 1;
+            }
 
             if (first instanceof IntersectionIngredient intersection1) {
                 if (second instanceof IntersectionIngredient intersection2) {
