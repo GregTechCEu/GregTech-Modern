@@ -5,6 +5,10 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.addon.AddonFinder;
+import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
@@ -19,6 +23,7 @@ import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
 import net.minecraft.world.level.storage.loot.Deserializers;
+import net.minecraftforge.fml.ModLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -38,7 +43,13 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
+        if (GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
+        }
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
+
+        AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS, BedrockOreDefinition.class));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
@@ -56,10 +67,14 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
+
+        if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
+        }
     }
 
     public static BedrockOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return BedrockOreDefinition.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+        return BedrockOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 
     /**
@@ -67,7 +82,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
      */
     public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
         public static void fireKJSEvent() {
-            GTCEuServerEvents.ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTBedrockOreVeinEventJS());
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTBedrockOreVeinEventJS());
         }
     }
 }

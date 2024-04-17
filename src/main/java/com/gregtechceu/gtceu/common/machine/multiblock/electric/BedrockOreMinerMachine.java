@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
@@ -10,15 +11,19 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
-import com.gregtechceu.gtceu.common.machine.trait.FluidDrillLogic;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import lombok.Getter;
+import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
+import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @author Screret
@@ -42,6 +47,11 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         return new BedrockOreMinerLogic(this);
     }
 
+    @Override
+    public BedrockOreMinerLogic getRecipeLogic() {
+        return (BedrockOreMinerLogic) super.getRecipeLogic();
+    }
+
     public int getEnergyTier() {
         return Math.min(this.tier + 1 , Math.max(this.tier, getOverclockTier()));
     }
@@ -49,6 +59,39 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
+
+        if (isFormed()) {
+            int energyContainer = getEnergyTier();
+            long maxVoltage = GTValues.V[energyContainer];
+            String voltageName = GTValues.VNF[energyContainer];
+            textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
+
+            if (getRecipeLogic().getVeinMaterials() != null) {
+                // Ore names
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list").withStyle(ChatFormatting.GREEN));
+                List<Map.Entry<Integer, Material>> drilledOres = getRecipeLogic().getVeinMaterials();
+                for (var entry : drilledOres) {
+                    Component fluidInfo = entry.getValue().getLocalizedName().withStyle(ChatFormatting.GREEN);
+                    textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo).withStyle(ChatFormatting.GRAY));
+                }
+
+                // Ore amount
+                Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
+                    getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
+                    " mB/s").withStyle(ChatFormatting.BLUE);
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo).withStyle(ChatFormatting.GRAY));
+            } else {
+                Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area").withStyle(ChatFormatting.RED);
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list").withStyle(ChatFormatting.GREEN));
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", noOre).withStyle(ChatFormatting.GRAY));
+            }
+        } else {
+            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip").withStyle(ChatFormatting.GRAY);
+            textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
+                .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
+        }
+
         if (isFormed()) {
             int energyContainer = getEnergyTier();
             long maxVoltage = GTValues.V[energyContainer];

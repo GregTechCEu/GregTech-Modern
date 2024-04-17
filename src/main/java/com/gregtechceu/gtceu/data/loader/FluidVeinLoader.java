@@ -42,7 +42,9 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
+        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
+        }
         GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
 
         GTBedrockFluids.init();
@@ -59,24 +61,20 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
                 BedrockFluidDefinition fluid = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
                 if (fluid == null) {
                     LOGGER.info("Skipping loading fluid vein {} as it's serializer returned null", location);
-                } /*else if(fluid.getVeinGenerator() instanceof NoopVeinGenerator) {
-                    LOGGER.info("Removing fluid vein {} as it's generator was marked as no-operation", location);
-                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.remove(location);
-                }*/else if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.containKey(location)) {
-                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.replace(location, fluid);
-                }  else {
-                    GTRegistries.BEDROCK_FLUID_DEFINITIONS.register(location, fluid);
                 }
+                GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(location, fluid);
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
                 LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
             }
         }
 
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
+        if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
+            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
+        }
     }
 
     public static BedrockFluidDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return BedrockFluidDefinition.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+        return BedrockFluidDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 
     /**

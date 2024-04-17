@@ -206,9 +206,6 @@ public class ConfigHolder {
             @Configurable.Comment({"Prevents vanilla's large ore veins from being generated", "Default: true"})
             public boolean removeVanillaLargeOreVeins = true;
             @Configurable
-            @Configurable.Comment({"Multiplier to bedrock ore generation amount", "Default: 1.0f"})
-            public float bedrockOreMultiplier = 1.0f;
-            @Configurable
             @Configurable.Comment({"Distance between bedrock ore veins in chunks, if enabled.", "Default: 16"})
             public int bedrockOreDistance = 16;
             @Configurable

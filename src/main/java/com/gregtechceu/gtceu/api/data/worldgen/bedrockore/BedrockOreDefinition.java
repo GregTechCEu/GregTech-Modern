@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -17,29 +18,30 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
+import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Biomes;
 
 import java.util.*;
 
 @Accessors(fluent = true, chain = true)
 public class BedrockOreDefinition {
-    public static final MapCodec<Pair<Material, Integer>> MATERIAL = Codec.mapPair(GTRegistries.MATERIALS.codec().fieldOf("material"), Codec.INT.fieldOf("chance"));
+    public static final MapCodec<Pair<Material, Integer>> MATERIAL = Codec.mapPair(GTCEuAPI.materialManager.codec().fieldOf("material"), Codec.INT.fieldOf("chance"));
 
     public static final Codec<BedrockOreDefinition> FULL_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
                     Codec.INT.fieldOf("weight").forGetter(ft -> ft.weight),
+                    Codec.INT.fieldOf("size").forGetter(ft -> ft.size),
                     IntProvider.POSITIVE_CODEC.fieldOf("yield").forGetter(ft -> ft.yield),
                     Codec.INT.fieldOf("depletion_amount").forGetter(ft -> ft.depletionAmount),
-                    Codec.INT.fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
+                    ExtraCodecs.intRange(0, 100).fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
                     Codec.INT.fieldOf("depleted_yield").forGetter(ft -> ft.depletedYield),
                     MATERIAL.codec().listOf().fieldOf("materials").forGetter(ft -> ft.materials),
-                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", null).forGetter(ft -> ft.originalModifiers),
+                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of()).forGetter(ft -> ft.originalModifiers),
                     ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
-            ).apply(instance, (weight, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, dimensionFilter) -> new BedrockOreDefinition(weight, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, new HashSet<>(dimensionFilter)))
+            ).apply(instance, (weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, dimensionFilter) -> new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, new HashSet<>(dimensionFilter)))
     );
 
     @Getter @Setter
@@ -62,13 +64,14 @@ public class BedrockOreDefinition {
     @Getter @Setter
     public Set<ResourceKey<Level>> dimensionFilter; // filtering of dimensions
 
-    public BedrockOreDefinition(ResourceLocation name, int weight, IntProvider yield, int depletionAmount, int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials, List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
-        this(weight, yield, depletionAmount, depletionChance, depletedYield, materials, originalModifiers, dimensionFilter);
+    public BedrockOreDefinition(ResourceLocation name, int size, int weight, IntProvider yield, int depletionAmount, int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials, List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
+        this(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, originalModifiers, dimensionFilter);
         GTRegistries.BEDROCK_ORE_DEFINITIONS.register(name, this);
     }
 
-    public BedrockOreDefinition(int weight, IntProvider yield, int depletionAmount, int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials, List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
+    public BedrockOreDefinition(int weight, int size, IntProvider yield, int depletionAmount, int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials, List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
         this.weight = weight;
+        this.size = size;
         this.yield = yield;
         this.depletionAmount = depletionAmount;
         this.depletionChance = depletionChance;
@@ -115,6 +118,8 @@ public class BedrockOreDefinition {
         private final ResourceLocation name;
         @Setter
         private int weight; // weight value for determining which vein will appear
+        @Setter
+        private int size; // size of the vein, in chunks.
         @Setter
         private IntProvider yield;// the [minimum, maximum) yields
         @Setter
@@ -173,7 +178,7 @@ public class BedrockOreDefinition {
         }
 
         public BedrockOreDefinition register() {
-            var definition = new BedrockOreDefinition(weight, yield, depletionAmount, depletionChance, depletedYield, materials, biomes, dimensions);
+            var definition = new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomes, dimensions);
             GTOres.toReRegisterBedrock.put(name, definition);
             return definition;
         }
