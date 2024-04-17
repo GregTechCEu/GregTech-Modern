@@ -58,8 +58,6 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
 
     @Override
     public void addDisplayText(List<Component> textList) {
-        super.addDisplayText(textList);
-
         if (isFormed()) {
             int energyContainer = getEnergyTier();
             long maxVoltage = GTValues.V[energyContainer];
@@ -91,13 +89,6 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
                 .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
                     .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
         }
-
-        if (isFormed()) {
-            int energyContainer = getEnergyTier();
-            long maxVoltage = GTValues.V[energyContainer];
-            String voltageName = GTValues.VNF[energyContainer];
-            textList.add(Component.translatable("gtceu.multiblock.max_energy_per_tick", maxVoltage, voltageName));
-        }
     }
 
     public static int getDepletionChance(int tier) {
@@ -114,9 +105,9 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
         if (tier == GTValues.MV)
             return 1;
         if (tier == GTValues.HV)
-            return 16;
+            return 4;
         if (tier == GTValues.EV)
-            return 64;
+            return 16;
         return 1;
     }
 
