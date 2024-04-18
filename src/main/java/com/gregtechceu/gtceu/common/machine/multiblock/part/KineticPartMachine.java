@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
@@ -17,7 +16,6 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
 
-import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -34,13 +32,9 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     @Persisted
     protected final NotifiableStressTrait stressTrait;
 
-    @Nullable
-    private TickableSubscription stopWorkingSub;
-
     public KineticPartMachine(IMachineBlockEntity holder, int tier, IO io, Object... args) {
         super(holder, tier, io);
         this.stressTrait = createStressTrait(args);
-        stopWorkingSub = subscribeServerTick(stopWorkingSub, this::stopWhenControllerNotWorking);
     }
 
     //////////////////////////////////////
@@ -71,30 +65,15 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     }
 
     @Override
-    public boolean onWorking(IWorkableMultiController controller) {
-        if (stopWorkingSub == null) {
-            stopWorkingSub = subscribeServerTick(this::stopWhenControllerNotWorking);
-        }
-        return super.onWorking(controller);
-    }
-
-    private void stopWhenControllerNotWorking() {
-        for (IMultiController controller : getControllers()) {
-            if (controller instanceof IWorkableMultiController workableMultiController) {
-                if (!workableMultiController.getRecipeLogic().isWorking()) {
-                    getKineticHolder().stopWorking();
-                    assert stopWorkingSub != null;
-                    stopWorkingSub.unsubscribe();
-                    stopWorkingSub = null;
-                }
-            }
-        }
-    }
-
-    @Override
     public boolean onWaiting(IWorkableMultiController controller) {
         getKineticHolder().stopWorking();
         return super.onWaiting(controller);
+    }
+
+    @Override
+    public boolean onPaused(IWorkableMultiController controller) {
+        getKineticHolder().stopWorking();
+        return super.onPaused(controller);
     }
 
     @Override
