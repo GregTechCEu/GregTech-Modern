@@ -130,7 +130,6 @@ public class WorldAcceleratorMachine extends TieredEnergyMachine implements ICon
                 }
                 i++;
             }
-            return;
         } else {
             // else handle block entity mode
             for (Direction dir : GTUtil.DIRECTIONS) {
