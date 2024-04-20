@@ -231,10 +231,10 @@ public class ItemCollectorMachine extends TieredEnergyMachine
         if (drainEnergy(false)) {
             if (aabb == null || rangeDirty) {
                 rangeDirty = false;
-                BlockPos pos1, pos2;
+                BlockPos pos1,pos2;
                 pos1 = getPos().offset(-range, 0, -range);
                 pos2 = getPos().offset(range, 2, range);
-                this.aabb = AABB.of(BoundingBox.fromCorners(pos1, pos2));
+                this.aabb = AABB.of(BoundingBox.fromCorners(pos1,pos2));
             }
             moveItemsInRange();
             updateCollectionSubscription();
@@ -242,20 +242,20 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     public void moveItemsInRange() {
-        ItemFilter filter = null;
-        if (!filterInventory.getStackInSlot(0).isEmpty())
+            ItemFilter filter = null;
+        if(!filterInventory.getStackInSlot(0).isEmpty())
             filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
         BlockPos centerPos = self().getPos().above();
 
         List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, aabb);
-        for (ItemEntity itemEntity : itemEntities) {
-            if (!itemEntity.isAlive()) continue;
-            if (filter != null && !filter.test(itemEntity.getItem())) continue;
+        for(ItemEntity itemEntity : itemEntities) {
+            if(!itemEntity.isAlive()) continue;
+            if(filter != null && !filter.test(itemEntity.getItem())) continue;
             double distX = (centerPos.getX() + 0.5) - itemEntity.position().x;
             double distZ = (centerPos.getZ() + 0.5) - itemEntity.position().z;
-            double dist = Math.sqrt(Math.pow(distX,2) + Math.pow(distZ,2));
-            if(dist>=.7f){
-                if(((ItemEntityAccessor)itemEntity).getPickupDelay()==32767) continue; //INFINITE_PICKUP_DELAY = 32767
+            double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distZ, 2));
+            if(dist >= 0.7f) {
+                if(((ItemEntityAccessor)itemEntity).getPickupDelay() == 32767) continue; //INFINITE_PICKUP_DELAY = 32767
                 double dirX = distX/dist;
                 double dirZ = distZ/dist;
                 Vec3 delta = itemEntity.getDeltaMovement();
@@ -317,7 +317,9 @@ public class ItemCollectorMachine extends TieredEnergyMachine
     }
 
     @Override
-    public void setAllowInputFromOutputSideItems(boolean allow) {}
+    public void setAllowInputFromOutputSideItems(boolean allow) {
+
+    }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
@@ -336,9 +338,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
-        if ((isAutoOutputItems() && !output.isEmpty()) && outputFacing != null &&
-                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing),
-                        outputFacing.getOpposite()) != null)
+        if ((isAutoOutputItems() && !output.isEmpty()) && outputFacing != null
+                && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null)
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -415,26 +416,25 @@ public class ItemCollectorMachine extends TieredEnergyMachine
                 var size = group.getSize();
                 energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
-                template.setSelfPosition(new Position(
-                        (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
-                                energyGroup.getSize().width + 2,
-                        (size.height - template.getSize().height) / 2 + 15));
+        template.setSelfPosition(new Position(
+                (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
+                (size.height - template.getSize().height) / 2+15
+        ));
 
-                group.addWidget(energyGroup);
-                group.addWidget(template);
-                return group;
-            }, (template, machine) -> {
-                if (machine instanceof ItemCollectorMachine itemCollectorMachine) {
-                    createTemplate(inventorySize).setupUI(template, itemCollectorMachine);
-                    createEnergyBar().setupUI(template, itemCollectorMachine);
-                    createBatterySlot().setupUI(template, itemCollectorMachine);
-                    var rangeSelector = new IntInputWidget((template.getSize().width - 80) / 2, 5, 80, 20,
-                            itemCollectorMachine::getRange, itemCollectorMachine::setRange);
-                    rangeSelector.setMin(1);
-                    rangeSelector.setMax(itemCollectorMachine.maxRange);
-                    template.addWidget(rangeSelector);
-                }
-            }));
+        group.addWidget(energyGroup);
+        group.addWidget(template);
+        return group;
+    }, (template, machine) -> {
+        if (machine instanceof ItemCollectorMachine itemCollectorMachine) {
+            createTemplate(inventorySize).setupUI(template, itemCollectorMachine);
+            createEnergyBar().setupUI(template, itemCollectorMachine);
+            createBatterySlot().setupUI(template, itemCollectorMachine);
+            var rangeSelector = new IntInputWidget((template.getSize().width-80)/2,5,80,20, itemCollectorMachine::getRange, itemCollectorMachine::setRange);
+            rangeSelector.setMin(1);
+            rangeSelector.setMax(itemCollectorMachine.maxRange);
+            template.addWidget(rangeSelector);
+        }
+    }));
 
     protected static EditableUI<SlotWidget, ItemCollectorMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
