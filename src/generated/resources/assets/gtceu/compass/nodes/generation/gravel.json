@@ -113,7 +113,9 @@
     "gtceu:gravel_diatomite_ore",
     "gtceu:gravel_granitic_mineral_sand_ore",
     "gtceu:gravel_garnet_sand_ore",
-    "gtceu:gravel_basaltic_mineral_sand_ore"
+    "gtceu:gravel_basaltic_mineral_sand_ore",
+    "gtceu:gravel_fluorite_ore",
+    "gtceu:gravel_dolomite_ore"
   ],
   "page": "gtceu:generation/gravel",
   "position": [

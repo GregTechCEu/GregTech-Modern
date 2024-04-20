@@ -5,8 +5,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTOres;
-import com.gregtechceu.gtceu.utils.RegistryUtil;
-
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
@@ -19,22 +24,11 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-
 import java.util.*;
 
 @Accessors(fluent = true, chain = true)
 public class BedrockOreDefinition {
-
-    public static final MapCodec<Pair<Material, Integer>> MATERIAL = Codec
-            .mapPair(GTCEuAPI.materialManager.codec().fieldOf("material"), Codec.INT.fieldOf("chance"));
+    public static final MapCodec<Pair<Material, Integer>> MATERIAL = Codec.mapPair(GTCEuAPI.materialManager.codec().fieldOf("material"), Codec.INT.fieldOf("chance"));
 
     public static final Codec<BedrockOreDefinition> FULL_CODEC = RecordCodecBuilder.create(
             instance -> instance.group(
@@ -45,55 +39,37 @@ public class BedrockOreDefinition {
                     ExtraCodecs.intRange(0, 100).fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
                     Codec.INT.fieldOf("depleted_yield").forGetter(ft -> ft.depletedYield),
                     MATERIAL.codec().listOf().fieldOf("materials").forGetter(ft -> ft.materials),
-                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of())
-                            .forGetter(ft -> ft.originalModifiers),
-                    ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter")
-                            .forGetter(ft -> new ArrayList<>(ft.dimensionFilter)))
-                    .apply(instance,
-                            (weight, size, yield, depletionAmount, depletionChance, depletedYield, materials,
-                             biomeWeightModifier, dimensionFilter) -> new BedrockOreDefinition(weight, size, yield,
-                                     depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier,
-                                     new HashSet<>(dimensionFilter))));
+                    BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of()).forGetter(ft -> ft.originalModifiers),
+                    ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
+            ).apply(instance, (weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, dimensionFilter) -> new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, new HashSet<>(dimensionFilter)))
+    );
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private int weight; // weight value for determining which vein will appear
-    @Getter
-    @Setter
+    @Getter @Setter
     private int size; // size in chunks
-    @Getter
-    @Setter
+    @Getter @Setter
     private IntProvider yield;// the [minimum, maximum] yields
-    @Getter
-    @Setter
+    @Getter @Setter
     private int depletionAmount; // amount of ore the vein gets drained by
-    @Getter
-    @Setter
+    @Getter @Setter
     private int depletionChance; // the chance [0, 100] that the vein will deplete by 1
-    @Getter
-    @Setter
+    @Getter @Setter
     private int depletedYield; // yield after the vein is depleted
-    @Getter
-    @Setter
+    @Getter @Setter
     private List<Pair<Material, Integer>> materials; // the ores which the vein contains
     @Getter
     private BiomeWeightModifier biomeWeightModifier; // weighting of biomes
     private List<BiomeWeightModifier> originalModifiers; // weighting of biomes
-    @Getter
-    @Setter
+    @Getter @Setter
     public Set<ResourceKey<Level>> dimensionFilter; // filtering of dimensions
 
-    public BedrockOreDefinition(ResourceLocation name, int size, int weight, IntProvider yield, int depletionAmount,
-                                int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials,
-                                List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
-        this(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, originalModifiers,
-                dimensionFilter);
+    public BedrockOreDefinition(ResourceLocation name, int size, int weight, IntProvider yield, int depletionAmount, int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials, List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
+        this(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, originalModifiers, dimensionFilter);
         GTRegistries.BEDROCK_ORE_DEFINITIONS.register(name, this);
     }
 
-    public BedrockOreDefinition(int weight, int size, IntProvider yield, int depletionAmount, int depletionChance,
-                                int depletedYield, List<Pair<Material, Integer>> materials,
-                                List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
+    public BedrockOreDefinition(int weight, int size, IntProvider yield, int depletionAmount, int depletionChance, int depletedYield, List<Pair<Material, Integer>> materials, List<BiomeWeightModifier> originalModifiers, Set<ResourceKey<Level>> dimensionFilter) {
         this.weight = weight;
         this.size = size;
         this.yield = yield;
@@ -102,10 +78,7 @@ public class BedrockOreDefinition {
         this.depletedYield = depletedYield;
         this.materials = materials;
         this.originalModifiers = originalModifiers;
-        this.biomeWeightModifier = new BiomeWeightModifier(
-                () -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()),
-                originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
-
+        this.biomeWeightModifier = new BiomeWeightModifier(() -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()), originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
             @Override
             public Integer apply(Holder<Biome> biome) {
                 int mod = 0;
@@ -122,10 +95,7 @@ public class BedrockOreDefinition {
 
     public void setOriginalModifiers(List<BiomeWeightModifier> modifiers) {
         this.originalModifiers = modifiers;
-        this.biomeWeightModifier = new BiomeWeightModifier(
-                () -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()),
-                originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
-
+        this.biomeWeightModifier = new BiomeWeightModifier(() -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()), originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
             @Override
             public Integer apply(Holder<Biome> biome) {
                 int mod = 0;
@@ -145,7 +115,6 @@ public class BedrockOreDefinition {
 
     @Accessors(chain = true, fluent = true)
     public static class Builder {
-
         private final ResourceLocation name;
         @Setter
         private int weight; // weight value for determining which vein will appear
@@ -161,6 +130,7 @@ public class BedrockOreDefinition {
         private int depletedYield; // yield after the vein is depleted
         @Setter
         private List<Pair<Material, Integer>> materials; // the ores which the vein contains
+        @Setter
         private Set<ResourceKey<Level>> dimensions;
         private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
@@ -207,21 +177,11 @@ public class BedrockOreDefinition {
             return this;
         }
 
-        @HideFromJS
-        public Builder dimensions(Set<ResourceKey<Level>> dimensions) {
-            this.dimensions = dimensions;
-            return this;
-        }
-
-        public Builder dimensions(String... dimensions) {
-            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
-        }
-
         public BedrockOreDefinition register() {
-            var definition = new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance,
-                    depletedYield, materials, biomes, dimensions);
+            var definition = new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomes, dimensions);
             GTOres.toReRegisterBedrock.put(name, definition);
             return definition;
         }
     }
+
 }

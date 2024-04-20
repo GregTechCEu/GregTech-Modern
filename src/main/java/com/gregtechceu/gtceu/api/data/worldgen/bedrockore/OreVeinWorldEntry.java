@@ -31,7 +31,9 @@ public class OreVeinWorldEntry {
         this.operationsRemaining = operationsRemaining;
     }
 
-    private OreVeinWorldEntry() {}
+    private OreVeinWorldEntry() {
+
+    }
 
     @SuppressWarnings("unused")
     public void setOperationsRemaining(int amount) {
@@ -60,10 +62,7 @@ public class OreVeinWorldEntry {
         info.operationsRemaining = tag.getInt("operationsRemaining");
 
         if (tag.contains("vein")) {
-            ResourceLocation id = new ResourceLocation(tag.getString("vein"));
-            if (GTRegistries.BEDROCK_ORE_DEFINITIONS.containKey(id)) {
-                info.definition = GTRegistries.BEDROCK_ORE_DEFINITIONS.get(id);
-            }
+            info.definition = GTRegistries.BEDROCK_ORE_DEFINITIONS.get(new ResourceLocation(tag.getString("vein")));
         }
         return info;
     }

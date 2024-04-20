@@ -108,7 +108,6 @@ public class OreGenerator {
 
         return Optional.of(new GeneratedVein(chunkPos, definition.layer(), generatedVeins));
     }
-
     private List<VeinConfiguration> createConfigs(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
 

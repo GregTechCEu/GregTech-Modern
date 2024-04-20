@@ -113,11 +113,13 @@
     "gtceu:sand_diatomite_ore",
     "gtceu:sand_granitic_mineral_sand_ore",
     "gtceu:sand_garnet_sand_ore",
-    "gtceu:sand_basaltic_mineral_sand_ore"
+    "gtceu:sand_basaltic_mineral_sand_ore",
+    "gtceu:sand_fluorite_ore",
+    "gtceu:sand_dolomite_ore"
   ],
   "page": "gtceu:generation/sand",
   "position": [
-    -50,
+    -100,
     100
   ],
   "pre_nodes": [

@@ -241,7 +241,7 @@ public class ConfigHolder {
             @Configurable.Comment({ "Prevents vanilla's large ore veins from being generated", "Default: true" })
             public boolean removeVanillaLargeOreVeins = true;
             @Configurable
-            @Configurable.Comment({ "Distance between bedrock ore veins in chunks, if enabled.", "Default: 16" })
+            @Configurable.Comment({"Distance between bedrock ore veins in chunks, if enabled.", "Default: 16"})
             public int bedrockOreDistance = 16;
             @Configurable
             @Configurable.Comment({ "Make bedrock ore/fluid veins infinite?", "Default: false" })
@@ -265,7 +265,10 @@ public class ConfigHolder {
     }
 
     public static class MachineConfigs {
-
+        @Configurable
+        @Configurable.Comment({"Whether insufficient energy supply should reset Machine recipe progress to zero.",
+                "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed", "Default: false"})
+        public boolean recipeProgressLowEnergy = false;
         @Configurable
         @Configurable.Comment({ "Whether insufficient energy supply should reset Machine recipe progress to zero.",
                 "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed",

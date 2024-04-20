@@ -103,6 +103,13 @@ public interface IGTAddon {
     default void registerBedrockOreVeins() {}
 
     /**
+     * Use {@link com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition#builder(ResourceLocation)} to register the veins.
+     */
+    default void registerBedrockOreVeins() {
+
+    }
+
+    /**
      * Register Material -> Casing block mappings here
      */
     default void collectMaterialCasings(MaterialCasingCollectionEvent event) {}

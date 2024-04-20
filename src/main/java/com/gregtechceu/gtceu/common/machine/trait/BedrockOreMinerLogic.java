@@ -75,30 +75,12 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
-            Material material = veinMaterials
-                    .get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
-            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
-                    material, getOreToProduce());
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup
-                                                                                                             // 1:
-                                                                                                             // crushed;
-                                                                                                             // if raw
-                                                                                                             // ore
-                                                                                                             // doesn't
-                                                                                                             // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2:
-                                                                                                         // gem; if
-                                                                                                         // crushed ore
-                                                                                                         // doesn't
-                                                                                                         // exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3:
-                                                                                                         // normal ore;
-                                                                                                         // if gem
-                                                                                                         // doesn't
-                                                                                                         // exist.
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4:
-                                                                                                          // fallback to
-                                                                                                          // dust
+            Material material = veinMaterials.get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
+            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material, getOreToProduce());
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup 1: crushed; if raw ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2: gem; if crushed ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3: normal ore; if gem doesn't exist.
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4: fallback to dust
             if (stack.isEmpty()) {
                 return null;
             }

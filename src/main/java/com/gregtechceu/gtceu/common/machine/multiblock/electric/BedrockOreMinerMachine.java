@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.machine.trait.BedrockOreMinerLogic;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-
+import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -25,8 +25,6 @@ import lombok.Getter;
 
 import java.util.List;
 import java.util.Map;
-
-import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author Screret
@@ -69,35 +67,28 @@ public class BedrockOreMinerMachine extends WorkableElectricMultiblockMachine im
 
             if (getRecipeLogic().getVeinMaterials() != null) {
                 // Ore names
-                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
-                        .withStyle(ChatFormatting.GREEN));
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list").withStyle(ChatFormatting.GREEN));
                 List<Map.Entry<Integer, Material>> drilledOres = getRecipeLogic().getVeinMaterials();
                 for (var entry : drilledOres) {
                     Component fluidInfo = entry.getValue().getLocalizedName().withStyle(ChatFormatting.GREEN);
-                    textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo)
-                            .withStyle(ChatFormatting.GRAY));
+                    textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", fluidInfo).withStyle(ChatFormatting.GRAY));
                 }
 
                 // Ore amount
                 Component amountInfo = Component.literal(FormattingUtil.formatNumbers(
-                        getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
-                        "/s").withStyle(ChatFormatting.BLUE);
-                textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo)
-                        .withStyle(ChatFormatting.GRAY));
+                    getRecipeLogic().getOreToProduce() * 20L / BedrockOreMinerLogic.MAX_PROGRESS) +
+                    "/s").withStyle(ChatFormatting.BLUE);
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.ore_amount", amountInfo).withStyle(ChatFormatting.GRAY));
             } else {
-                Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area")
-                        .withStyle(ChatFormatting.RED);
-                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list")
-                        .withStyle(ChatFormatting.GREEN));
-                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", noOre)
-                        .withStyle(ChatFormatting.GRAY));
+                Component noOre = Component.translatable("gtceu.multiblock.fluid_rig.no_fluid_in_area").withStyle(ChatFormatting.RED);
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ores_list").withStyle(ChatFormatting.GREEN));
+                textList.add(Component.translatable("gtceu.multiblock.ore_rig.drilled_ore_entry", noOre).withStyle(ChatFormatting.GRAY));
             }
         } else {
-            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip")
-                    .withStyle(ChatFormatting.GRAY);
+            Component tooltip = Component.translatable("gtceu.multiblock.invalid_structure.tooltip").withStyle(ChatFormatting.GRAY);
             textList.add(Component.translatable("gtceu.multiblock.invalid_structure")
-                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
+                .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)
+                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip))));
         }
     }
 

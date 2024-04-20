@@ -113,7 +113,9 @@
     "gtceu:netherrack_diatomite_ore",
     "gtceu:netherrack_granitic_mineral_sand_ore",
     "gtceu:netherrack_garnet_sand_ore",
-    "gtceu:netherrack_basaltic_mineral_sand_ore"
+    "gtceu:netherrack_basaltic_mineral_sand_ore",
+    "gtceu:netherrack_fluorite_ore",
+    "gtceu:netherrack_dolomite_ore"
   ],
   "page": "gtceu:generation/netherrack",
   "position": [

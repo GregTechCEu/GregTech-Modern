@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
-import com.gregtechceu.gtceu.data.loader.forge.FluidVeinLoaderImpl;
-import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
+import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
+import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -43,8 +46,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new OreDataLoaderImpl());
-        event.addListener(new FluidVeinLoaderImpl());
+        event.addListener(new OreDataLoader());
+        event.addListener(new FluidVeinLoader());
+        event.addListener(new BedrockOreLoader());
     }
 
     @SubscribeEvent

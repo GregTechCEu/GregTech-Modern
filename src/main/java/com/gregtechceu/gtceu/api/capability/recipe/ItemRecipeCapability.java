@@ -284,7 +284,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                     slot.setHandlerSlot(items, index);
                     slot.setIngredientIO(io == IO.IN ? IngredientIO.INPUT : IngredientIO.OUTPUT);
                     slot.setCanTakeItems(!isXEI);
-                    slot.setCanPutItems(false);
+                    slot.setCanPutItems(!isXEI && io.support(IO.IN));
                 }
                 // 1 over container size.
                 // If in a recipe viewer and a research slot can be added, add it.

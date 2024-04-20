@@ -113,11 +113,13 @@
     "gtceu:deepslate_diatomite_ore",
     "gtceu:deepslate_granitic_mineral_sand_ore",
     "gtceu:deepslate_garnet_sand_ore",
-    "gtceu:deepslate_basaltic_mineral_sand_ore"
+    "gtceu:deepslate_basaltic_mineral_sand_ore",
+    "gtceu:deepslate_fluorite_ore",
+    "gtceu:deepslate_dolomite_ore"
   ],
   "page": "gtceu:generation/deepslate",
   "position": [
-    -150,
+    -200,
     100
   ],
   "pre_nodes": [
