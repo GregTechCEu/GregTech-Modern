@@ -51,6 +51,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -126,11 +127,11 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         super(holder, tier);
         this.inventorySize = INVENTORY_SIZES[Mth.clamp(getTier(), 0, INVENTORY_SIZES.length - 1)];
         this.energyPerTick = (long) BASE_EU_CONSUMPTION * (1L << (tier - 1));
-        this.output = createoutputItemHandler();
+        this.output = createOutputItemHandler();
         this.chargerInventory = createChargerItemHandler();
         this.filterInventory = createFilterItemHandler();
 
-        maxRange = (int) Math.pow(2,tier+2);
+        maxRange = (int) Math.pow(2, tier + 2);
         range = maxRange;
         setOutputFacingItems(getFrontFacing());
     }
@@ -156,29 +157,29 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         return MANAGED_FIELD_HOLDER;
     }
 
-    protected NotifiableItemStackHandler createoutputItemHandler() {
+    protected NotifiableItemStackHandler createOutputItemHandler() {
         return new NotifiableItemStackHandler(this, inventorySize, IO.BOTH, IO.OUT);
     }
-
-
 
     @Override
     public void onLoad() {
         super.onLoad();
         if (isRemote()) return;
 
-        if (getLevel() instanceof ServerLevel serverLevel)
-            serverLevel.getServer().tell(new TickTask(0, this::updateAutoOutputSubscription));
+        if (getLevel() instanceof ServerLevel serverLevel) {
+
+            serverLevel.getServer().tell(new TickTask(0, () -> {
+                this.updateAutoOutputSubscription();
+                this.updateCollectionSubscription();
+            }));
+        }
 
         exportItemSubs = output.addChangedListener(this::updateAutoOutputSubscription);
-
         energySubs = energyContainer.addChangedListener(() -> {
             this.updateBatterySubscription();
             this.updateCollectionSubscription();
-
         });
         chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
-
     }
 
     @Override
@@ -225,36 +226,35 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
             if (aabb == null || rangeDirty) {
                 rangeDirty = false;
                 BlockPos pos1,pos2;
-                pos1 = getPos().offset(-range,0,-range);
-                pos2 = getPos().offset(range,2,range);
-                this.aabb =  AABB.of(BoundingBox.fromCorners(pos1,pos2));
+                pos1 = getPos().offset(-range, 0, -range);
+                pos2 = getPos().offset(range, 2, range);
+                this.aabb = AABB.of(BoundingBox.fromCorners(pos1,pos2));
             }
             moveItemsInRange();
             updateCollectionSubscription();
         }
     }
 
-    public void moveItemsInRange(){
+    public void moveItemsInRange() {
             ItemFilter filter = null;
         if(!filterInventory.getStackInSlot(0).isEmpty())
             filter = ItemFilter.loadFilter(filterInventory.getStackInSlot(0));
         BlockPos centerPos = self().getPos().above();
 
         List<ItemEntity> itemEntities = getLevel().getEntitiesOfClass(ItemEntity.class, aabb);
-        for(ItemEntity itemEntity: itemEntities){
+        for(ItemEntity itemEntity : itemEntities) {
             if(!itemEntity.isAlive()) continue;
             if(filter != null && !filter.test(itemEntity.getItem())) continue;
             double distX = (centerPos.getX() + 0.5) - itemEntity.position().x;
             double distZ = (centerPos.getZ() + 0.5) - itemEntity.position().z;
-            double dist = Math.sqrt(Math.pow(distX,2) + Math.pow(distZ,2));
-            if(dist>=.7f){
-                if(itemEntity.pickupDelay==32767) continue; //INFINITE_PICKUP_DELAY = 32767
+            double dist = Math.sqrt(Math.pow(distX, 2) + Math.pow(distZ, 2));
+            if(dist >= 0.7f) {
+                if(itemEntity.pickupDelay == 32767) continue; //INFINITE_PICKUP_DELAY = 32767
                 double dirX = distX/dist;
                 double dirZ = distZ/dist;
-                itemEntity.kjs$setMotionX(dirX*MOTION_MULTIPLIER*tier);
-                itemEntity.kjs$setMotionZ(dirZ*MOTION_MULTIPLIER*tier);
+                Vec3 delta = itemEntity.getDeltaMovement();
+                itemEntity.setDeltaMovement(dirX * MOTION_MULTIPLIER * tier, delta.y, dirZ * MOTION_MULTIPLIER * tier);
                 itemEntity.setPickUpDelay(1);
-
             } else {
                 ItemStack stack = itemEntity.getItem();
                 if(!canFillOutput(stack)) continue;
@@ -262,24 +262,26 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
                 ItemStack remainder = fillOutput(stack);
                 if(remainder.isEmpty())
                     itemEntity.kill();
-                else if(stack.getCount()>remainder.getCount())
+                else if (stack.getCount() > remainder.getCount())
                     itemEntity.setItem(remainder);
             }
         }
     }
 
     private boolean canFillOutput(ItemStack stack) {
-        for (int i = 0; i < output.getSlots(); i++)
+        for (int i = 0; i < output.getSlots(); i++) {
             if (output.insertItemInternal(i, stack, true).getCount() < stack.getCount())
                 return true;
+        }
 
         return false;
     }
 
     private ItemStack fillOutput(ItemStack stack) {
-        for (int i = 0; i < output.getSlots(); i++)
+        for (int i = 0; i < output.getSlots(); i++) {
             if (output.insertItemInternal(i, stack, true).getCount() < stack.getCount())
                 return output.insertItemInternal(i, stack, false);
+        }
 
         return ItemStack.EMPTY;
     }
@@ -305,10 +307,14 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     }
 
     @Override
-    public boolean isAllowInputFromOutputSideItems() { return false;}
+    public boolean isAllowInputFromOutputSideItems() {
+        return false;
+    }
 
     @Override
-    public void setAllowInputFromOutputSideItems(boolean allow) {}
+    public void setAllowInputFromOutputSideItems(boolean allow) {
+
+    }
 
     @Override
     public void setOutputFacingItems(@Nullable Direction outputFacing) {
@@ -329,14 +335,14 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
         var outputFacing = getOutputFacingItems();
         if ((isAutoOutputItems() && !output.isEmpty()) && outputFacing != null
                 && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null)
-            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
+            autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
             autoOutputSubs = null;
         }
     }
 
-    protected void checkAutoOutput() {
+    protected void autoOutput() {
         if (getOffsetTimer() % 5 == 0) {
             if (isAutoOutputItems() && getOutputFacingItems() != null)
                 output.exportToNearby(getOutputFacingItems());
@@ -405,9 +411,8 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
 
         template.setSelfPosition(new Position(
                 (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
-                (size.height - template.getSize().height) / 2+15));
-
-
+                (size.height - template.getSize().height) / 2+15
+        ));
 
         group.addWidget(energyGroup);
         group.addWidget(template);
@@ -436,9 +441,6 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
             slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
         });
     }
-
-
-
 
     protected static EditableUI<WidgetGroup, ItemCollectorMachine> createTemplate(int inventorySize) {
         return new EditableUI<>("functional_container", WidgetGroup.class, () -> {
