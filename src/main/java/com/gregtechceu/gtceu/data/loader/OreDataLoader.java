@@ -39,6 +39,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     public OreDataLoader() {
         super(GSON_INSTANCE, FOLDER);
+        INSTANCE = this;
     }
 
     @Override

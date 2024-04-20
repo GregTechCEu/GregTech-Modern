@@ -13,9 +13,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.data.loader.forge.BedrockOreLoaderImpl;
-import com.gregtechceu.gtceu.data.loader.forge.FluidVeinLoaderImpl;
-import com.gregtechceu.gtceu.data.loader.forge.OreDataLoaderImpl;
+import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
+import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
+import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
@@ -94,9 +94,9 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerReloadListeners(AddReloadListenerEvent event) {
-        event.addListener(new OreDataLoaderImpl());
-        event.addListener(new FluidVeinLoaderImpl());
-        event.addListener(new BedrockOreLoaderImpl());
+        event.addListener(new OreDataLoader());
+        event.addListener(new FluidVeinLoader());
+        event.addListener(new BedrockOreLoader());
     }
 
     @SubscribeEvent

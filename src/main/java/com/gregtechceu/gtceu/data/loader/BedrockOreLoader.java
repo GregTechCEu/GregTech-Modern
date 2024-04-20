@@ -37,6 +37,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
 
     public BedrockOreLoader() {
         super(GSON_INSTANCE, FOLDER);
+        INSTANCE = this;
     }
 
     @Override

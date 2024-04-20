@@ -38,6 +38,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
 
     public FluidVeinLoader() {
         super(GSON_INSTANCE, FOLDER);
+        INSTANCE = this;
     }
 
     @Override
