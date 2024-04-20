@@ -19,18 +19,18 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class WorldAcceleratorRenderer extends TieredHullMachineRenderer{
-    private final WorkableOverlayModel BEModeModel, RTModeModel;
+    private final WorkableOverlayModel blockEntityModeModel, randomTickModeModel;
     public WorldAcceleratorRenderer(int tier, ResourceLocation beModeModelPath, ResourceLocation rtModeModelPath) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
-        BEModeModel = new WorkableOverlayModel(beModeModelPath);
-        RTModeModel = new WorkableOverlayModel(rtModeModelPath);
+        blockEntityModeModel = new WorkableOverlayModel(beModeModelPath);
+        randomTickModeModel = new WorkableOverlayModel(rtModeModelPath);
     }
 
-    private WorkableOverlayModel getModeModel(boolean isRandomTickMode){
-        if (isRandomTickMode){
-            return RTModeModel;
+    private WorkableOverlayModel getModeModel(boolean isRandomTickMode) {
+        if (isRandomTickMode) {
+            return randomTickModeModel;
         }
-        return BEModeModel;
+        return blockEntityModeModel;
     }
 
     @Override
@@ -50,8 +50,8 @@ public class WorldAcceleratorRenderer extends TieredHullMachineRenderer{
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            RTModeModel.registerTextureAtlas(register);
-            BEModeModel.registerTextureAtlas(register);
+            randomTickModeModel.registerTextureAtlas(register);
+            blockEntityModeModel.registerTextureAtlas(register);
         }
     }
 }
