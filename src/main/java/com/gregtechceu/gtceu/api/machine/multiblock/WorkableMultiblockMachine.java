@@ -255,6 +255,16 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         IWorkableMultiController.super.onWaiting();
     }
 
+    @Override
+    public void setWorkingEnabled(boolean isWorkingAllowed) {
+        if (!isWorkingAllowed) {
+            for (IMultiPart part : getParts()) {
+                part.onPaused(this);
+            }
+        }
+        IWorkableMultiController.super.setWorkingEnabled(isWorkingAllowed);
+    }
+
     @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
