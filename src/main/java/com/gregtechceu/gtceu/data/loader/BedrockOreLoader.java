@@ -5,12 +5,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
-import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
-import com.mojang.datafixers.util.Pair;
+import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.resources.RegistryOps;
@@ -23,29 +21,30 @@ import net.neoforged.fml.ModLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
 
-public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
-    public static FluidVeinLoader INSTANCE;
-    public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setPrettyPrinting().setLenient().create();
-    private static final String FOLDER = "gtceu/fluid_veins";
+@ParametersAreNonnullByDefault
+public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
+    public static BedrockOreLoader INSTANCE;
+    public static final Gson GSON_INSTANCE = new GsonBuilder().disableHtmlEscaping().setLenient().create();
+    private static final String FOLDER = "gtceu/bedrock_ore_veins";
     protected static final Logger LOGGER = LogManager.getLogger();
 
-    public FluidVeinLoader() {
+    public BedrockOreLoader() {
         super(GSON_INSTANCE, FOLDER);
         INSTANCE = this;
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        if (GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.unfreeze();
+        if (GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
         }
-        GTRegistries.BEDROCK_FLUID_DEFINITIONS.registry().clear();
+        GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
 
-        GTBedrockFluids.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS, BedrockFluidDefinition.class));
+        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS, BedrockOreDefinition.class));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }
@@ -54,23 +53,23 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
             ResourceLocation location = entry.getKey();
 
             try {
-                BedrockFluidDefinition fluid = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
-                if (fluid == null) {
-                    LOGGER.info("Skipping loading fluid vein {} as it's serializer returned null", location);
+                BedrockOreDefinition bedrockOre = fromJson(location, GsonHelper.convertToJsonObject(entry.getValue(), "top element"), ops);
+                if (bedrockOre == null) {
+                    LOGGER.info("Skipping loading bedrock ore vein {} as it's serializer returned null", location);
                 }
-                GTRegistries.BEDROCK_FLUID_DEFINITIONS.registerOrOverride(location, fluid);
+                GTRegistries.BEDROCK_ORE_DEFINITIONS.registerOrOverride(location, bedrockOre);
             } catch (IllegalArgumentException | JsonParseException jsonParseException) {
-                LOGGER.error("Parsing error loading ore vein {}", location, jsonParseException);
+                LOGGER.error("Parsing error loading bedrock ore vein {}", location, jsonParseException);
             }
         }
 
-        if (!GTRegistries.BEDROCK_FLUID_DEFINITIONS.isFrozen()) {
-            GTRegistries.BEDROCK_FLUID_DEFINITIONS.freeze();
+        if (!GTRegistries.BEDROCK_ORE_DEFINITIONS.isFrozen()) {
+            GTRegistries.BEDROCK_ORE_DEFINITIONS.freeze();
         }
     }
 
-    public static BedrockFluidDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return BedrockFluidDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
+    public static BedrockOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
+        return BedrockOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 
     /**
@@ -78,7 +77,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
      */
     public static final class RunKJSEventInSeparateClassBecauseForgeIsDumb {
         public static void fireKJSEvent() {
-            GTCEuServerEvents.FLUID_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTFluidVeinEventJS());
+            GTCEuServerEvents.BEDROCK_ORE_VEIN_MODIFICATION.post(ScriptType.SERVER, new GTBedrockOreVeinEventJS());
         }
     }
 }

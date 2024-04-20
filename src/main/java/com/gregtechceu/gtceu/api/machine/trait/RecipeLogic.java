@@ -18,6 +18,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.api.distmarker.Dist;
@@ -58,7 +59,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Nullable @Getter @Persisted
     protected GTRecipe lastOriginRecipe;
     @Persisted
-    @Getter
+    @Getter @Setter
     protected int progress;
     @Getter @Persisted
     protected int duration;
