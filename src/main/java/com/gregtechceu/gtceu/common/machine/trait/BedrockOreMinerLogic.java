@@ -77,6 +77,9 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2: gem; if crushed ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3: normal ore; if gem doesn't exist.
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4: fallback to dust
+            if (stack.isEmpty()) {
+                return null;
+            }
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
