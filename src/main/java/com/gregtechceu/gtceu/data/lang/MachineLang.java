@@ -721,6 +721,9 @@ public class MachineLang {
         provider.add("gtceu.multiblock.fluid_rig.fluid_amount", "Pumping Rate: %s");
         provider.add("gtceu.multiblock.fluid_rig.vein_depletion", "Vein Size: %s");
         provider.add("gtceu.multiblock.fluid_rig.vein_depleted", "Vein Depleted.");
+        provider.add("gtceu.multiblock.ore_rig.drilled_ores_list", "Ores:");
+        provider.add("gtceu.multiblock.ore_rig.drilled_ore_entry", " - %s");
+        provider.add("gtceu.multiblock.ore_rig.ore_amount", "Drilling Rate: %s");
         provider.add("gtceu.multiblock.pyrolyse_oven.speed", "Processing Speed: %s%%");
         provider.add("gtceu.multiblock.cracking_unit.energy", "Energy Usage: %s%%");
         provider.add("gtceu.multiblock.power_substation.stored", "Stored: %s EU");

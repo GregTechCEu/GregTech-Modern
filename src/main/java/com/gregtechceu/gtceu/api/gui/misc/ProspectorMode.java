@@ -242,8 +242,8 @@ public abstract class ProspectorMode<T> {
                 var oreVein = BedrockOreVeinSavedData.getOrCreate(serverLevel).getOreVeinWorldEntry(chunk.getPos().x, chunk.getPos().z);
                 if (oreVein.getDefinition() != null) {
                     var left = 100 * oreVein.getOperationsRemaining() / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
-                    for (var entry : oreVein.getDefinition().getBedrockVeinMaterials()) {
-                        storage[0][0] = ArrayUtils.add(storage[0][0], new OreInfo(entry.getValue(), entry.getKey(), left, oreVein.getOreYield()));
+                    for (var entry : oreVein.getDefinition().materials()) {
+                        storage[0][0] = ArrayUtils.add(storage[0][0], new OreInfo(entry.getFirst(), entry.getSecond(), left, oreVein.getOreYield()));
                     }
                 }
             }
@@ -261,7 +261,8 @@ public abstract class ProspectorMode<T> {
             ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material);
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material); // backup 1: crushed; if raw ore doesn't exist
             if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material); // backup 2: gem; if crushed ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material); // backup 3: just fallback to normal ore...
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material); // backup 3: ore; if gem doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material); // backup 4: just fallback to dust...
             return new ItemStackTexture(stack).scale(0.8f);
         }
 
