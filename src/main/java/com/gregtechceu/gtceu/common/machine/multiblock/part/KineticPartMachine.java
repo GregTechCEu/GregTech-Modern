@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.gregtechceu.gtceu.common.machine.trait.NotifiableStressTrait;
@@ -60,6 +62,32 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
                 holder.removeSource();
             }
         }
+    }
+
+    @Override
+    public boolean onWaiting(IWorkableMultiController controller) {
+        getKineticHolder().stopWorking();
+        return super.onWaiting(controller);
+    }
+
+    @Override
+    public boolean onPaused(IWorkableMultiController controller) {
+        getKineticHolder().stopWorking();
+        return super.onPaused(controller);
+    }
+
+    @Override
+    public void removedFromController(IMultiController controller) {
+        super.removedFromController(controller);
+        getKineticHolder().stopWorking();
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean workingEnabled) {
+        if (!workingEnabled) {
+            getKineticHolder().stopWorking();
+        }
+        super.setWorkingEnabled(workingEnabled);
     }
 
     //////////////////////////////////////
