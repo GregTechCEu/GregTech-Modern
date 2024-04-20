@@ -6,14 +6,18 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.common.Tags;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.lens;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
@@ -31,6 +35,11 @@ public class ItemTagLoader {
 
         create(provider, "pistons", rl("piston"), rl("sticky_piston"));
 
+        // add treated wood stick to vanilla sticks tag
+        //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with `rodWood`
+        provider.addTag(Tags.Items.RODS_WOODEN)
+            .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()))
+            .addTag(ChemicalHelper.getTag(TagPrefix.rod, Wood));
         // TODO add to planks mc tag?
         //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
         //    for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {

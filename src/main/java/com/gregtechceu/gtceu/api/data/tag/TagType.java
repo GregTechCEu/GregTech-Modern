@@ -23,9 +23,9 @@ public class TagType {
      * Create a tag with a specified path, with the "default" formatter, meaning
      * that there is 1 "%s" format character in the path, intended for the Material name.
      */
-    public static TagType withDefaultFormatter(String tagPath) {
+    public static TagType withDefaultFormatter(String tagPath, boolean isVanilla) {
         TagType type = new TagType(tagPath);
-        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(mat.getName()));
+        type.formatter = (prefix, mat) -> TagUtil.createItemTag(type.tagPath.formatted(mat.getName()), isVanilla);
         return type;
     }
 
