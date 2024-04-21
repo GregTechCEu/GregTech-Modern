@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -118,7 +119,12 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
     private class ObjectHolderHandler extends NotifiableItemStackHandler {
 
         public ObjectHolderHandler(MetaMachine metaTileEntity) {
-            super(metaTileEntity, 2, IO.IN, IO.BOTH);
+            super(metaTileEntity, 2, IO.IN, IO.BOTH, size -> new ItemStackTransfer(size) {
+                @Override
+                public int getSlotLimit(int slot) {
+                    return 1;
+                }
+            });
         }
 
         // only allow a single item, no stack size

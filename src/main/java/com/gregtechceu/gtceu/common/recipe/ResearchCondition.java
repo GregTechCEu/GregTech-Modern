@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
@@ -53,6 +54,17 @@ public class ResearchCondition extends RecipeCondition {
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
         this.data = ResearchData.fromJson(config.getAsJsonArray("research"));
+        return this;
+    }
+
+    public void toNetwork(FriendlyByteBuf buf) {
+        super.toNetwork(buf);
+        this.data.toNetwork(buf);
+    }
+
+    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+        super.fromNetwork(buf);
+        this.data = ResearchData.fromNetwork(buf);
         return this;
     }
 

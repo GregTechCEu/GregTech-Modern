@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
@@ -37,7 +40,8 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         CompoundTag.CODEC.optionalFieldOf("data", new CompoundTag()).forGetter(val -> val.data),
         ExtraCodecs.NON_NEGATIVE_INT.fieldOf("duration").forGetter(val -> val.duration),
         Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel)
-    ).apply(instance, GTRecipe::new));
+    ).apply(instance, (type, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel) ->
+        new GTRecipe(type, inputs, outputs, tickInputs, tickOutputs, conditions, List.of(), data, duration, isFuel)));
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 
@@ -94,7 +98,17 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
             data = new CompoundTag();
         }
         boolean isFuel = buf.readBoolean();
-        return new GTRecipe((GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType), inputs, outputs, tickInputs, tickOutputs, conditions, ingredientActions, data, duration, isFuel);
+        GTRecipeType type = (GTRecipeType) BuiltInRegistries.RECIPE_TYPE.get(recipeType);
+        GTRecipe recipe = new GTRecipe(type, inputs, outputs, tickInputs, tickOutputs, conditions, ingredientActions, data, duration, isFuel);
+
+        // a little special piece of code for loading all the research entries into the recipe type's list on the client.
+        ResearchCondition researchCondition = conditions.stream().filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+        if (researchCondition != null) {
+            for (ResearchData.ResearchEntry entry : researchCondition.data) {
+                type.addDataStickEntry(entry.getResearchId(), recipe);
+            }
+        }
+        return recipe;
     }
 
     @Override
