@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import com.google.gson.JsonObject;

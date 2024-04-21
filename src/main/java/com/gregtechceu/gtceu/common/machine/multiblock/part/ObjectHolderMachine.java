@@ -127,7 +127,6 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
 
         public ObjectHolderHandler(MetaMachine metaTileEntity) {
             super(metaTileEntity, 2, IO.IN, IO.BOTH, size -> new ItemStackTransfer(size) {
-
                 @Override
                 public int getSlotLimit(int slot) {
                     return 1;
