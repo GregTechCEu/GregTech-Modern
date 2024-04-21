@@ -603,7 +603,7 @@ public class TagPrefix {
         .unformattedTagPath("planks", true);
     public static final TagPrefix slab = new TagPrefix("slab")
         .unformattedTagPath("slabs", true);
-    public static final TagPrefix stair = new TagPrefix("stair")
+    public static final TagPrefix stairs = new TagPrefix("stairs")
         .unformattedTagPath("stairs", true);
     public static final TagPrefix fence = new TagPrefix("fence")
         .unformattedTagPath("fences");

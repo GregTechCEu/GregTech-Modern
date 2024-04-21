@@ -33,13 +33,12 @@ public class ItemTagLoader {
         create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).getId());
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
-        create(provider, "pistons", rl("piston"), rl("sticky_piston"));
+        create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
         // add treated wood stick to vanilla sticks tag
-        //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with `rodWood`
+        //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
-            .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()))
-            .addTag(ChemicalHelper.getTag(TagPrefix.rod, Wood));
+            .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
         // TODO add to planks mc tag?
         //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
         //    for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {
@@ -68,8 +67,8 @@ public class ItemTagLoader {
 
     public static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, Item... rls) {
         var builder = provider.addTag(tagKey);
-        for (Item block : rls) {
-            builder.addOptional(BuiltInRegistries.ITEM.getKey(block));
+        for (Item item : rls) {
+            builder.add(BuiltInRegistries.ITEM.getResourceKey(item).get());
         }
     }
 

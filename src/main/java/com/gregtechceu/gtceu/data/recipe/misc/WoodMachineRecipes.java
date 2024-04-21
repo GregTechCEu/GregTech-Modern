@@ -307,7 +307,7 @@ public class WoodMachineRecipes {
 
         if (entry.stairs != null) {
             if (entry.addStairsOreDict) {
-                ChemicalHelper.registerUnificationItems(stair, entry.material, entry.stairs);
+                ChemicalHelper.registerUnificationItems(stairs, entry.material, entry.stairs);
             }
             if (entry.addStairsUnificationInfo) {
                 ChemicalHelper.registerMaterialInfo(entry.stairs,
