@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.mojang.serialization.JsonOps;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,6 +51,20 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         return json;
     }
 
+    public static ResearchData fromNetwork(FriendlyByteBuf buf) {
+        List<ResearchEntry> entries = new ArrayList<>();
+        int size = buf.readVarInt();
+        for (int i = 0; i < size; ++i) {
+            entries.add(ResearchEntry.fromNetwork(buf));
+        }
+        return new ResearchData(entries);
+    }
+
+    public void toNetwork(FriendlyByteBuf buf) {
+        buf.writeVarInt(this.entries.size());
+        this.entries.forEach(entry -> entry.toNetwork(buf));
+    }
+
     /**
      * An entry containing information about a researchable recipe.
      * <p>
@@ -83,6 +97,17 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
             json.addProperty("researchId", researchId);
             json.add("dataItem", ItemStack.CODEC.encodeStart(JsonOps.INSTANCE, dataItem).getOrThrow(false, GTCEu.LOGGER::error));
             return json;
+        }
+
+        public static ResearchEntry fromNetwork(FriendlyByteBuf buf) {
+            String researchId = buf.readUtf();
+            ItemStack dataItem = buf.readItem();
+            return new ResearchEntry(researchId, dataItem);
+        }
+
+        public void toNetwork(FriendlyByteBuf buf) {
+            buf.writeUtf(this.researchId);
+            buf.writeItem(this.dataItem);
         }
     }
 }
