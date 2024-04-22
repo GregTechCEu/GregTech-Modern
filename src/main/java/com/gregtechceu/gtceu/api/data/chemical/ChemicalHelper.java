@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
@@ -367,9 +368,6 @@ public class ChemicalHelper {
             });
         }
         GTItems.toUnify.forEach(ChemicalHelper::registerUnificationItems);
-        //GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
-        //GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
-        //GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
-        // add new stuff here as more maps are added, IDK a better way
+        WoodMachineRecipes.registerUnificationInfo();
     }
 }
