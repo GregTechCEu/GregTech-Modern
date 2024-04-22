@@ -42,17 +42,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.Table;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import it.unimi.dsi.fastutil.objects.Object2FloatMap;
-import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -677,19 +666,19 @@ public class TagPrefix {
             .unificationEnabled(true);
 
     public static final TagPrefix log = new TagPrefix("log")
-            .unformattedTagPath("logs", true);
+        .unformattedTagPath("logs", true);
     public static final TagPrefix planks = new TagPrefix("planks")
-            .unformattedTagPath("planks", true);
+        .unformattedTagPath("planks", true);
     public static final TagPrefix slab = new TagPrefix("slab")
-            .unformattedTagPath("slabs", true);
+        .unformattedTagPath("slabs", true);
     public static final TagPrefix stairs = new TagPrefix("stairs")
-            .unformattedTagPath("stairs", true);
+        .unformattedTagPath("stairs", true);
     public static final TagPrefix fence = new TagPrefix("fence")
-            .unformattedTagPath("fences");
+        .unformattedTagPath("fences");
     public static final TagPrefix fenceGate = new TagPrefix("fenceGate")
-            .unformattedTagPath("fence_gates");
+        .unformattedTagPath("fence_gates");
     public static final TagPrefix door = new TagPrefix("door")
-            .unformattedTagPath("doors", true);
+        .unformattedTagPath("doors", true);
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.

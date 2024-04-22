@@ -131,48 +131,8 @@ public class RecipeAddition {
         }
     }
 
-    private static void nerfWoodCrafting(RecipeOutput provider) {
-        boolean nerfed = ConfigHolder.INSTANCE.recipes.nerfWoodCrafting;
-        if (nerfed) {
-            VanillaRecipeHelper.addShapedRecipe(provider, "stick_saw", new ItemStack(Items.STICK, 4), "s", "P", "P", 'P', ItemTags.PLANKS);
-            VanillaRecipeHelper.addShapedRecipe(provider, "stick_normal", new ItemStack(Items.STICK, 2), "P", "P", 'P', ItemTags.PLANKS);
-            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(rod, TreatedWood, 4), "s", "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
-            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_normal", ChemicalHelper.get(rod, TreatedWood, 2), "P", "P", 'P', GTBlocks.TREATED_WOOD_PLANK.asStack());
-
-            VanillaRecipeHelper.addShapedRecipe(provider, "oak_planks", new ItemStack(Items.OAK_PLANKS, 2), "L", 'L', Items.OAK_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "spruce_planks", new ItemStack(Items.SPRUCE_PLANKS, 2), "L", 'L', Items.SPRUCE_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "birch_planks", new ItemStack(Items.BIRCH_PLANKS, 2), "L", 'L', Items.BIRCH_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "jungle_planks", new ItemStack(Items.JUNGLE_PLANKS, 2), "L", 'L', Items.JUNGLE_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "acacia_planks", new ItemStack(Items.ACACIA_PLANKS, 2), "L", 'L', Items.ACACIA_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_planks", new ItemStack(Items.DARK_OAK_PLANKS, 2), "L", 'L', Items.DARK_OAK_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_planks", new ItemStack(Items.MANGROVE_PLANKS, 2), "L", 'L', Items.MANGROVE_LOG.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "crimson_planks", new ItemStack(Items.CRIMSON_PLANKS, 2), "L", 'L', Items.CRIMSON_STEM.getDefaultInstance());
-            VanillaRecipeHelper.addShapedRecipe(provider, "warped_planks", new ItemStack(Items.WARPED_PLANKS, 2), "L", 'L', Items.WARPED_STEM.getDefaultInstance());
-        } else {
-            VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_normal", ChemicalHelper.get(rod, TreatedWood, 4), "L", "L", 'L', GTBlocks.TREATED_WOOD_PLANK.asStack());
-        }
-
-        VanillaRecipeHelper.addShapedRecipe(provider, "oak_planks_saw", new ItemStack(Items.OAK_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.OAK_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "spruce_planks_saw", new ItemStack(Items.SPRUCE_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.SPRUCE_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "birch_planks_saw", new ItemStack(Items.BIRCH_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.BIRCH_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "jungle_planks_saw", new ItemStack(Items.JUNGLE_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.JUNGLE_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "acacia_planks_saw", new ItemStack(Items.ACACIA_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.ACACIA_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "dark_oak_planks_saw", new ItemStack(Items.DARK_OAK_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.DARK_OAK_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "mangrove_planks_saw", new ItemStack(Items.MANGROVE_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.MANGROVE_LOG.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "crimson_planks_saw", new ItemStack(Items.CRIMSON_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.CRIMSON_STEM.getDefaultInstance());
-        VanillaRecipeHelper.addShapedRecipe(provider, "warped_planks_saw", new ItemStack(Items.WARPED_PLANKS, nerfed ? 4 : 6), "s", "L", 'L', Items.WARPED_STEM.getDefaultInstance());
-    }
-
     private static void hardWoodRecipes(RecipeOutput provider) {
-        VanillaRecipeHelper.addShapedRecipe(provider, "ladder", new ItemStack(Blocks.LADDER, 2), "SrS", "SRS", "ShS", 'S', new ItemStack(Items.STICK), 'R', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood));
-
-        VanillaRecipeHelper.addShapedRecipe(provider, "bowl", new ItemStack(Items.BOWL), "k", "X", 'X',
-                ItemTags.PLANKS);
-
-        VanillaRecipeHelper.addShapedRecipe(provider, "chest", new ItemStack(Blocks.CHEST), "LPL", "PFP", "LPL",
-                'L', ItemTags.LOGS,
-                'P', ItemTags.PLANKS,
-                'F', new ItemStack(Items.FLINT));
+        VanillaRecipeHelper.addShapedRecipe(provider, "ladder", new ItemStack(Blocks.LADDER, 2), "SrS", "SRS", "ShS", 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'R', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood));
     }
 
     private static void hardIronRecipes(RecipeOutput provider) {
@@ -1074,12 +1034,6 @@ public class RecipeAddition {
                 'R', new UnificationEntry(TagPrefix.ring, GTMaterials.Iron),
                 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Iron)
         );
-    }
-
-    private static void hardDyeRecipes(RecipeOutput provider) {
-    }
-
-    private static void harderCharcoalRecipes(RecipeOutput provider) {
     }
 
     private static void flintAndSteelRequireSteel(RecipeOutput provider) {

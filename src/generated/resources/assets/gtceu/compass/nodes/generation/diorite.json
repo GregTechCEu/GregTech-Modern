@@ -113,9 +113,7 @@
     "gtceu:diorite_diatomite_ore",
     "gtceu:diorite_granitic_mineral_sand_ore",
     "gtceu:diorite_garnet_sand_ore",
-    "gtceu:diorite_basaltic_mineral_sand_ore",
-    "gtceu:diorite_fluorite_ore",
-    "gtceu:diorite_dolomite_ore"
+    "gtceu:diorite_basaltic_mineral_sand_ore"
   ],
   "page": "gtceu:generation/diorite",
   "position": [

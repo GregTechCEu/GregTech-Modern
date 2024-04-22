@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
-
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 
@@ -108,8 +107,6 @@ public class RecipeRemoval {
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:ladder"));
-        registry.accept(new ResourceLocation("minecraft:bowl"));
-        registry.accept(new ResourceLocation("minecraft:chest"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
