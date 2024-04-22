@@ -22,10 +22,6 @@ public class MapFluidTagIngredient extends AbstractMapIngredient {
         if (super.equals(obj)) {
             return tag == ((MapFluidTagIngredient) obj).tag;
         }
-        // equality jank
-        if (obj instanceof MapFluidIngredient ingredient) {
-            return ingredient.fluid.is(tag);
-        }
         return false;
     }
 
