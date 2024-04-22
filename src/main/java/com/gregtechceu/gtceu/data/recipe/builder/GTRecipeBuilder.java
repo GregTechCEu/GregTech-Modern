@@ -226,6 +226,14 @@ public class GTRecipeBuilder {
         return input(ItemRecipeCapability.CAP, inputs);
     }
 
+    public GTRecipeBuilder inputItems(ItemStack input) {
+        if (input.isEmpty()) {
+            GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
+            throw new IllegalArgumentException(id + ": input items is empty");
+        }
+        return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
+    }
+
     public GTRecipeBuilder inputItems(ItemStack... inputs) {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
@@ -299,6 +307,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder itemOutput(UnificationEntry unificationEntry, int count) {
         return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+    }
+
+    public GTRecipeBuilder outputItems(ItemStack output) {
+        if (output.isEmpty()) {
+            GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
+            throw new IllegalArgumentException(id + ": output items is empty");
+        }
+        return output(ItemRecipeCapability.CAP, SizedIngredient.create(output));
     }
 
     public GTRecipeBuilder outputItems(ItemStack... outputs) {
@@ -452,6 +468,10 @@ public class GTRecipeBuilder {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
     }
 
+    public GTRecipeBuilder inputFluids(FluidStack input) {
+        return input(FluidRecipeCapability.CAP, FluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
+    }
+
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> {
             if (!Platform.isForge() && fluid.getFluid() == Fluids.WATER) { // Special case for fabric, because there all fluids have to be tagged as water to function as water when placed.
@@ -464,6 +484,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
         return input(FluidRecipeCapability.CAP, inputs);
+    }
+
+    public GTRecipeBuilder outputFluids(FluidStack output) {
+        return output(FluidRecipeCapability.CAP, FluidIngredient.of(output));
     }
 
     public GTRecipeBuilder outputFluids(FluidStack... outputs) {
