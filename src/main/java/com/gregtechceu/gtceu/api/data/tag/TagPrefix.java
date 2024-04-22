@@ -51,7 +51,6 @@ import net.minecraft.world.level.material.MaterialColor;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
@@ -598,8 +597,20 @@ public class TagPrefix {
             .generationCondition(material -> material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK))
             .unificationEnabled(true);
 
+    public static final TagPrefix log = new TagPrefix("log")
+        .unformattedTagPath("logs", true);
     public static final TagPrefix planks = new TagPrefix("planks")
         .unformattedTagPath("planks", true);
+    public static final TagPrefix slab = new TagPrefix("slab")
+        .unformattedTagPath("slabs", true);
+    public static final TagPrefix stairs = new TagPrefix("stairs")
+        .unformattedTagPath("stairs", true);
+    public static final TagPrefix fence = new TagPrefix("fence")
+        .unformattedTagPath("fences");
+    public static final TagPrefix fenceGate = new TagPrefix("fenceGate")
+        .unformattedTagPath("fence_gates");
+    public static final TagPrefix door = new TagPrefix("door")
+        .unformattedTagPath("doors", true);
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
@@ -776,7 +787,11 @@ public class TagPrefix {
     }
 
     public TagPrefix defaultTagPath(String path) {
-        this.tags.add(TagType.withDefaultFormatter(path));
+        return this.defaultTagPath(path, false);
+    }
+
+    public TagPrefix defaultTagPath(String path, boolean isVanilla) {
+        this.tags.add(TagType.withDefaultFormatter(path, isVanilla));
         return this;
     }
 

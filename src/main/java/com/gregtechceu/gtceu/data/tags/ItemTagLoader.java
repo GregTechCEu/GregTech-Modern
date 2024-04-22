@@ -7,15 +7,18 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagBuilder;
+import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
+import net.minecraftforge.common.Tags;
 
 import java.util.Objects;
 
@@ -33,8 +36,12 @@ public class ItemTagLoader {
         create(provider, lens, Color.Green, GTItems.MATERIAL_ITEMS.get(lens, Emerald).getId());
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
-        create(provider, "pistons", rl("piston"), rl("sticky_piston"));
+        create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
+        // add treated wood stick to vanilla sticks tag
+        //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
+        provider.tag(Tags.Items.RODS_WOODEN)
+            .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
         // TODO add to planks mc tag?
         //for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
         //    for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {
@@ -64,8 +71,8 @@ public class ItemTagLoader {
 
     public static void create(RegistrateTagsProvider<Item> provider, TagKey<Item> tagKey, Item... rls) {
         var builder = provider.tag(tagKey);
-        for (Item block : rls) {
-            builder.addOptional(Registry.ITEM.getKey(block));
+        for (Item item : rls) {
+            builder.add(Registry.ITEM.getResourceKey(item).get());
         }
     }
 

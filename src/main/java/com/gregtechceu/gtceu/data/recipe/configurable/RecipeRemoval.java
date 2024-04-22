@@ -3,10 +3,9 @@ package com.gregtechceu.gtceu.data.recipe.configurable;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.Blocks;
 
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -15,9 +14,9 @@ public class RecipeRemoval {
 
     public static void init(Consumer<ResourceLocation> registry) {
         generalRemovals(registry);
+        WoodMachineRecipes.hardWoodRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.disableManualCompression) disableManualCompression(registry);
         if (ConfigHolder.INSTANCE.recipes.harderBrickRecipes) harderBrickRecipes(registry);
-        if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) nerfWoodCrafting(registry);
         if (ConfigHolder.INSTANCE.recipes.hardWoodRecipes) hardWoodRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.hardIronRecipes) hardIronRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.hardRedstoneRecipes) hardRedstoneRecipes(registry);
@@ -27,7 +26,6 @@ public class RecipeRemoval {
         if (ConfigHolder.INSTANCE.recipes.nerfPaperCrafting) nerfPaperCrafting(registry);
         if (ConfigHolder.INSTANCE.recipes.hardAdvancedIronRecipes) hardAdvancedIronRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.hardDyeRecipes) hardDyeRecipes(registry);
-        if (ConfigHolder.INSTANCE.recipes.harderCharcoalRecipe) harderCharcoalRecipes(registry);
         if (ConfigHolder.INSTANCE.recipes.flintAndSteelRequireSteel) flintAndSteelRequireSteel(registry);
         if (ConfigHolder.INSTANCE.recipes.removeVanillaBlockRecipes) removeVanillaBlockRecipes(registry);
     }
@@ -102,66 +100,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
     }
 
-    private static void nerfWoodCrafting(Consumer<ResourceLocation> registry) {
-        registry.accept(new ResourceLocation("minecraft:stick"));
-        registry.accept(new ResourceLocation("minecraft:oak_planks"));
-        registry.accept(new ResourceLocation("minecraft:spruce_planks"));
-        registry.accept(new ResourceLocation("minecraft:birch_planks"));
-        registry.accept(new ResourceLocation("minecraft:jungle_planks"));
-        registry.accept(new ResourceLocation("minecraft:acacia_planks"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_planks"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_planks"));
-        registry.accept(new ResourceLocation("minecraft:crimson_planks"));
-        registry.accept(new ResourceLocation("minecraft:warped_planks"));
-    }
-
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:ladder"));
-        registry.accept(new ResourceLocation("minecraft:oak_door"));
-        registry.accept(new ResourceLocation("minecraft:spruce_door"));
-        registry.accept(new ResourceLocation("minecraft:birch_door"));
-        registry.accept(new ResourceLocation("minecraft:jungle_door"));
-        registry.accept(new ResourceLocation("minecraft:acacia_door"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_door"));
-        registry.accept(new ResourceLocation("minecraft:crimson_door"));
-        registry.accept(new ResourceLocation("minecraft:warped_door"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_door"));
-        registry.accept(new ResourceLocation("minecraft:oak_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:birch_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:spruce_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:jungle_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:acacia_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:crimson_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:warped_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_trapdoor"));
-        registry.accept(new ResourceLocation("minecraft:bowl"));
-        registry.accept(new ResourceLocation("minecraft:chest"));
-        registry.accept(new ResourceLocation("minecraft:oak_boat"));
-        registry.accept(new ResourceLocation("minecraft:spruce_boat"));
-        registry.accept(new ResourceLocation("minecraft:birch_boat"));
-        registry.accept(new ResourceLocation("minecraft:jungle_boat"));
-        registry.accept(new ResourceLocation("minecraft:acacia_boat"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_boat"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_boat"));
-        registry.accept(new ResourceLocation("minecraft:oak_fence"));
-        registry.accept(new ResourceLocation("minecraft:spruce_fence"));
-        registry.accept(new ResourceLocation("minecraft:birch_fence"));
-        registry.accept(new ResourceLocation("minecraft:jungle_fence"));
-        registry.accept(new ResourceLocation("minecraft:acacia_fence"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_fence"));
-        registry.accept(new ResourceLocation("minecraft:crimson_fence"));
-        registry.accept(new ResourceLocation("minecraft:warped_fence"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_fence"));
-        registry.accept(new ResourceLocation("minecraft:oak_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:spruce_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:birch_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:jungle_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:acacia_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:dark_oak_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:crimson_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:warped_fence_gate"));
-        registry.accept(new ResourceLocation("minecraft:mangrove_fence_gate"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
@@ -311,9 +251,6 @@ public class RecipeRemoval {
             }
         }
         registry.accept(new ResourceLocation("minecraft:dark_prismarine"));
-    }
-
-    private static void harderCharcoalRecipes(Consumer<ResourceLocation> registry) {
     }
 
     private static void flintAndSteelRequireSteel(Consumer<ResourceLocation> registry) {
