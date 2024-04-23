@@ -10,6 +10,7 @@
     "GuiGraphicsMixin",
     "GuiHeartTypeMixin",
     "LevelRendererMixin",
+    "LocalPlayerAccessor",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",
     "rei.FluidEntryRendererMixin"

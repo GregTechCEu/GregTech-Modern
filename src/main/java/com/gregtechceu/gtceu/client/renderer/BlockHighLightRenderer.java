@@ -8,15 +8,16 @@ import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
+import com.gregtechceu.gtceu.core.mixins.LocalPlayerAccessor;
 
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -39,6 +40,7 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
+import org.lwjgl.opengl.GL11;
 
 import java.util.Set;
 import java.util.function.Function;
@@ -63,11 +65,15 @@ public class BlockHighLightRenderer {
             Set<GTToolType> toolType = ToolHelper.getToolTypes(held);
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
+            double d3 = ((LocalPlayerAccessor)player).getXLast() + (player.position().x - ((LocalPlayerAccessor)player).getXLast()) * (double) partialTick;
+            double d4 = ((LocalPlayerAccessor)player).getYLast() + (player.position().y - ((LocalPlayerAccessor)player).getYLast()) * (double) partialTick;
+            double d5 = ((LocalPlayerAccessor)player).getZLast() + (player.position().z - ((LocalPlayerAccessor)player).getZLast()) * (double) partialTick;
+
             // draw tool grid highlight
             if (!toolType.isEmpty() && blockEntity instanceof IToolGridHighLight gridHighLight) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
-                poseStack.translate(-pos.x, -pos.y, -pos.z);
+                poseStack.translate(-pos.x + d3, -pos.y + d4, -pos.z + d5);
                 if (gridHighLight.shouldRenderGrid(player, held, toolType)) {
                     var buffer = multiBufferSource.getBuffer(RenderType.lines());
                     RenderSystem.lineWidth(3);
