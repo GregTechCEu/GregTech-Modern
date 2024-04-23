@@ -251,9 +251,8 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (gridSide == getFrontFacing() && allowExtendedFacing()) {
-            if (!getLevel().isClientSide) {
-                setUpwardsFacing(playerIn.isShiftKeyDown() ? gridSide.getCounterClockWise() : gridSide.getClockWise());
-            }
+            setUpwardsFacing(playerIn.isShiftKeyDown() ? getUpwardsFacing().getCounterClockWise() : getUpwardsFacing().getClockWise());
+            return InteractionResult.CONSUME;
         }
         if (playerIn.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {

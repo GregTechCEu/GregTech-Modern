@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
+import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -46,22 +48,24 @@ public class LargeBoilerRenderer extends WorkableCasingMachineRenderer implement
             // firebox
             if (side != null && modelFacing != null) {
                 if (side == Direction.UP) {
-                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.top()), modelState));
+                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                            ModelFactory.getBlockSprite(firebox.top()), modelState));
                 } else if (side == Direction.DOWN) {
-                    quads.add(
-                            FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.bottom()), modelState));
+                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                            ModelFactory.getBlockSprite(firebox.bottom()), modelState));
                 } else {
-                    quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(firebox.side()), modelState));
+                    quads.add(StaticFaceBakery.bakeFace(modelFacing,
+                            ModelFactory.getBlockSprite(firebox.side()), modelState));
                     if (machine instanceof IRecipeLogicMachine recipeLogicMachine &&
                             recipeLogicMachine.getRecipeLogic().isWorking()) {
-                        quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY), modelState,
-                                -101, 15, true, false));
+                        quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(BLOOM_OVERLAY),
+                                modelState, -101, 15, true, false));
                     }
                 }
             }
         } else {
             if (side != null && modelFacing != null) {
-                quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(baseCasing), modelState));
+                quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(baseCasing), modelState));
             }
         }
     }

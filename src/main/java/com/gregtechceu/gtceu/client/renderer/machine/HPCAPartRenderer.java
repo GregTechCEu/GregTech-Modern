@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 
@@ -97,17 +98,17 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                     facing = RelativeDirection.RIGHT.getRelativeFacing(hpca.getFrontFacing(), hpca.getUpwardsFacing(), hpca.isFlipped());
                 }
                 facing = ModelFactory.modelFacing(frontFacing, facing);
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState,
+                quads.add(StaticFaceBakery.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState,
                         -1, 0, true, true));
                 if (emissiveTexture != null) {
-                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture),
+                    quads.add(StaticFaceBakery.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture),
                             modelState, -101, 15, true, false));
                 }
             }
         } else {
             ResourceLocation texture = this.texture;
             if (texture != null) {
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture),
+                quads.add(StaticFaceBakery.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture),
                         modelState, -1, 0, true, true));
             }
         }
