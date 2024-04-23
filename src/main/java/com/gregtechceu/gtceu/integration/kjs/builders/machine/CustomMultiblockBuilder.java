@@ -179,6 +179,24 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
+            @Override
+            public MultiblockMachineBuilder allowExtendedFacing(boolean allowExtendedFacing) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.allowExtendedFacing(allowExtendedFacing);
+                }
+                return this;
+            }
+
+            @Override
+            public MultiblockMachineBuilder allowFlip(boolean allowFlip) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.allowFlip(allowFlip);
+                }
+                return this;
+            }
+
             public MultiblockMachineBuilder recoveryItems(Supplier<ItemLike[]> items) {
                 for (var builder : builders) {
                     if (builder == null) continue;
