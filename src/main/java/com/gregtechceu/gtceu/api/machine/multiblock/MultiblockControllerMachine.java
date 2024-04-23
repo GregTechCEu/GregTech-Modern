@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -60,10 +61,6 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
     @Getter
     @Persisted @DescSynced @RequireRerender
     protected boolean isFormed;
-    @NotNull
-    @Getter
-    @Persisted @DescSynced
-    Direction upwardsFacing = Direction.NORTH;
     @Getter @Setter
     @Persisted @DescSynced
     protected boolean isFlipped;
@@ -231,14 +228,18 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
         return allowExtendedFacing() || super.isFacingValid(facing);
     }
 
+    public Direction getUpwardsFacing() {
+        return this.allowExtendedFacing() ? this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) : Direction.NORTH;
+    }
+
     public void setUpwardsFacing(@NotNull Direction upwardsFacing) {
         if (!getDefinition().isAllowExtendedFacing()) return;
         if (upwardsFacing == null || upwardsFacing == Direction.UP || upwardsFacing == Direction.DOWN) {
             GTCEu.LOGGER.error("Tried to set upwards facing to invalid facing {}! Skipping", upwardsFacing);
             return;
         }
-        if (this.upwardsFacing != upwardsFacing) {
-            this.upwardsFacing = upwardsFacing;
+        if (this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+            this.getBlockState().setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing);
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();

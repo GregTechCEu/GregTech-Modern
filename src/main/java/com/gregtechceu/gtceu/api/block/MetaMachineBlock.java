@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -60,6 +61,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
  * @date 2023/2/17
  * @implNote GTBlock
  */
+@SuppressWarnings("deprecation")
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
@@ -74,7 +76,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         this.definition = definition;
         this.rotationState = RotationState.get();
         if (rotationState != RotationState.NONE) {
-            registerDefaultState(defaultBlockState().setValue(rotationState.property, rotationState.defaultDirection));
+            BlockState defaultState = this.defaultBlockState().setValue(rotationState.property, rotationState.defaultDirection);
+            if (definition instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+                defaultState = defaultState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, Direction.NORTH);
+            }
+            registerDefaultState(defaultState);
         }
     }
 
@@ -84,6 +90,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         RotationState rotationState = RotationState.get();
         if (rotationState != RotationState.NONE) {
             pBuilder.add(rotationState.property);
+            if (MachineDefinition.getBuilt() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+                pBuilder.add(IMachineBlock.UPWARDS_FACING_PROPERTY);
+            }
         }
     }
 
@@ -157,9 +166,17 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                 }
             }
             if (rotationState == RotationState.Y_AXIS) {
-                return state.setValue(rotationState.property, Direction.UP);
+                state.setValue(rotationState.property, Direction.UP);
             } else {
-                return state.setValue(rotationState.property, player.getDirection().getOpposite());
+                state.setValue(rotationState.property, player.getDirection().getOpposite());
+            }
+            if (getDefinition() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
+                Direction frontFacing = state.getValue(rotationState.property);
+                if (frontFacing == Direction.UP) {
+                    state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection());
+                } else if (frontFacing == Direction.DOWN) {
+                    state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection().getOpposite());
+                }
             }
         }
         return state;
