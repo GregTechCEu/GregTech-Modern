@@ -108,7 +108,8 @@ public class GTRecipeModifiers {
         int mid = (min + max) / 2;
 
         GTRecipe copied = original.copy(ContentModifier.multiplier(mid), modifyDuration);
-        if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess()) {
+        if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess() ||
+            !(RecipeHelper.getRecipeEUtTier(copied) <= ((ITieredMachine)holder).getTier())) {
             // tried too many
             return tryParallel(holder, original, min, mid - 1, modifyDuration);
         } else {
