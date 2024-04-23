@@ -4,8 +4,12 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
+import com.lowdragmc.lowdraglib.utils.ResourceHelper;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.math.Transformation;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;
@@ -16,17 +20,22 @@ import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Mth;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.SimpleModelState;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -144,7 +153,20 @@ public class WorkableOverlayModel {
             if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
                 var quads = new ArrayList<BakedQuad>();
                 for (Direction renderSide : GTUtil.DIRECTIONS) {
-                    var rotation = ModelFactory.getRotation(frontFacing);
+                    // construct a rotation matrix from front & up rotation
+                    Matrix4f matrix = new Matrix4f();
+                    float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? -1 : upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? 1 : 0);
+                    Quaternionf rot = new Quaternionf().rotationAxis(degree, frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
+                    matrix.translate(0.5f, 0.5f, 0.5f);
+ //                   if (frontFacing == Direction.DOWN && upwardsFacing.getAxis() == Direction.Axis.Z) {
+ //                       matrix.rotate(new Quaternionf().rotationAxis(Mth.PI, 0, 1, 0));
+ //                   }
+                    matrix.rotate(rot);
+                    matrix.scale(1.0000f);
+                    matrix.translate(-0.5f, -0.5f, -0.5f);
+
+                    var rotation = new SimpleModelState(new Transformation(matrix));
+
                     ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
                     if (predicate != null) {
                         var texture = predicate.getSprite(isActive, isWorkingEnabled);

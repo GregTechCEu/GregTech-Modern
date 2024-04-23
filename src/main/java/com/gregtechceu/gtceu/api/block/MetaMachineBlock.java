@@ -154,28 +154,28 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         var blockPos = context.getClickedPos();
         var state = defaultBlockState();
         if (player != null && rotationState != RotationState.NONE) {
+            if (rotationState == RotationState.Y_AXIS) {
+                state = state.setValue(rotationState.property, Direction.UP);
+            } else {
+                state = state.setValue(rotationState.property, player.getDirection().getOpposite());
+            }
             Vec3 pos = player.position();
             if (Math.abs(pos.x - (double) ((float) blockPos.getX() + 0.5F)) < 2.0D &&
                     Math.abs(pos.z - (double) ((float) blockPos.getZ() + 0.5F)) < 2.0D) {
                 double d0 = pos.y + (double) player.getEyeHeight();
                 if (d0 - (double) blockPos.getY() > 2.0D && rotationState.test(Direction.UP)) {
-                    return state.setValue(rotationState.property, Direction.UP);
+                    state = state.setValue(rotationState.property, Direction.UP);
                 }
                 if ((double) blockPos.getY() - d0 > 0.0D && rotationState.test(Direction.DOWN)) {
-                    return state.setValue(rotationState.property, Direction.DOWN);
+                    state = state.setValue(rotationState.property, Direction.DOWN);
                 }
-            }
-            if (rotationState == RotationState.Y_AXIS) {
-                state.setValue(rotationState.property, Direction.UP);
-            } else {
-                state.setValue(rotationState.property, player.getDirection().getOpposite());
             }
             if (getDefinition() instanceof MultiblockMachineDefinition multi && multi.isAllowExtendedFacing()) {
                 Direction frontFacing = state.getValue(rotationState.property);
                 if (frontFacing == Direction.UP) {
-                    state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection());
+                    state = state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection());
                 } else if (frontFacing == Direction.DOWN) {
-                    state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection().getOpposite());
+                    state = state.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, player.getDirection().getOpposite());
                 }
             }
         }
