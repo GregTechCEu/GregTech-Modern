@@ -95,6 +95,7 @@ public class GTRecipeModifiers {
         if (maxParallel == 1) {
             return new Tuple<>(recipe, 1);
         }
+        if(!(machine instanceof ITieredMachine))return new Tuple<>(recipe, 1);
         if (machine instanceof IRecipeCapabilityHolder holder) {
             var parallel = tryParallel(holder, recipe, 1, maxParallel, modifyDuration);
             return parallel == null ? new Tuple<>(recipe, 1) : parallel;
