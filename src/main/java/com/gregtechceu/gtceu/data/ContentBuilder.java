@@ -182,6 +182,9 @@ public class ContentBuilder {
     public ContentBuilder circuitMeta(int configuration) {
         return notConsumable(IntCircuitIngredient.circuitInput(configuration));
     }
+    public ContentBuilder circuit(int cfg){
+        return circuitMeta(cfg);
+    }
 
     public ContentBuilder chance(ItemStack stack, int chance, int tierChanceBoost) {
         float lastChance = this.chance;
@@ -209,7 +212,7 @@ public class ContentBuilder {
         return addContent(FluidRecipeCapability.CAP, FluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
     }
 
-    public ContentBuilder fluidS(FluidStack... inputs) {
+    public ContentBuilder fluids(FluidStack... inputs) {
         return addContent(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> {
             if (!Platform.isForge() && fluid.getFluid() == Fluids.WATER) { // Special case for fabric, because there all fluids have to be tagged as water to function as water when placed.
                 return FluidIngredient.of(fluid);
