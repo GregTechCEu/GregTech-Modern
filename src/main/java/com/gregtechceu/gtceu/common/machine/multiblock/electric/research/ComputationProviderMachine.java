@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
-import com.gregtechceu.gtceu.api.gui.util.TimedProgressSupplier;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
@@ -27,19 +26,15 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
     @Persisted
     public long totalCWU=0;
     public Boolean canBridge=true;
-    @Persisted
-    public int last_tick_time=0;
     public int maxCWUt=0;
     @Nullable
     protected TickableSubscription tickSubs;
 
-    private final TimedProgressSupplier progressSupplier;
     String lastAllocatedCWUt="";
     boolean canProvideCWUt=true;
 
     public ComputationProviderMachine(IMachineBlockEntity holder, Object... args) {
         super(holder, args);
-        this.progressSupplier = new TimedProgressSupplier(200, 47, false);
     }
 
     @Override
