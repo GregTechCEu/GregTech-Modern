@@ -104,6 +104,22 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default void afterWorking() {
         self().getDefinition().getAfterWorking().accept(this);
     }
+    
+    default <T> T customCallback(String str,@Nullable Object value,@Nullable T defaultValue){
+        var callback=self().getDefinition().getCustomCallback().get(str);
+        if(callback!=null){
+            var res=callback.apply(this,value);
+            if(res!=null){
+                try{
+                    return (T)res;
+                }catch (ClassCastException e){
+                    e.printStackTrace();
+                    return defaultValue;
+                }
+            }
+        }
+        return defaultValue;
+    }
 
     /**
      * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
@@ -113,11 +129,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
 
-    /**
-     * Always try {@link IRecipeLogicMachine#fullModifyRecipe(GTRecipe)} before setting up recipe.
-     * @return true - will map {@link RecipeLogic#lastOriginRecipe} to the latest recipe for next round when finishing.
-     * false - keep using the {@link RecipeLogic#lastRecipe}, which is already modified.
-     */
+    
     default boolean alwaysTryModifyRecipe() {
         return self().getDefinition().isAlwaysTryModifyRecipe();
     }

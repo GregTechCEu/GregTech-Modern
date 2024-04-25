@@ -1305,7 +1305,7 @@ public class GTMachines {
                     .where('R', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('T', blocks(CASING_ASSEMBLY_LINE.get()))
                     .where('D', dataHatchPredicate(blocks(CASING_GRATE.get())))
-                    .where('#', Predicates.any())
+                .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"), false)

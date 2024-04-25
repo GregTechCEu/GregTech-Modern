@@ -28,6 +28,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.*;
@@ -71,6 +72,8 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @NotNull
     @Getter @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+    @Getter
+    public Map<String,BiFunction<IRecipeLogicMachine,@Nullable Object,@Nullable Object>> customCallback=new HashMap<>();
 
     @Getter @Setter
     private IRenderer renderer;

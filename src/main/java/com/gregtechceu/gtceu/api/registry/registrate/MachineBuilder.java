@@ -143,6 +143,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
     @Setter
     private ResourceLocation compassPage = null;
     private final List<ResourceLocation> preNodes = new ArrayList<>();
+    private final Map<String,BiFunction<IRecipeLogicMachine,@Nullable Object,@Nullable Object>> customCallback=new HashMap<>();
 
     protected MachineBuilder(Registrate registrate, String name,
                              Function<ResourceLocation, DEFINITION> definitionFactory,
@@ -295,6 +296,10 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
+    public void addCallBack(String str,BiFunction<IRecipeLogicMachine,@Nullable Object,@Nullable Object> callback){
+        this.customCallback.put(str,callback);
+    }
+
 //    @HideFromJS
     public DEFINITION register() {
         var definition = createDefinition();
@@ -370,6 +375,7 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         definition.setOnWorking(this.onWorking);
         definition.setOnWaiting(this.onWaiting);
         definition.setAfterWorking(this.afterWorking);
+        definition.customCallback=this.customCallback;
 
         if (renderer == null) {
             renderer = () -> new MachineRenderer(new ResourceLocation(registrate.getModid(), "block/machine/" + name));

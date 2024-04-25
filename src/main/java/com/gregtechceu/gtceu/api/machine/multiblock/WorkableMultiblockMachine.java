@@ -16,6 +16,8 @@ import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -27,6 +29,9 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
 
 import org.jetbrains.annotations.NotNull;
@@ -269,4 +274,20 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
     }
+
+    public GTRecipe.ActionResult input(boolean simulate, Map<RecipeCapability<?>, List<Content>> contents){
+        GTRecipe tmp=new GTRecipe(new GTRecipeType(new ResourceLocation("gt_machine_io"),"gt"),
+            new ResourceLocation("___recipe_test_ids__"),contents,null,null,
+            null,null,List.of(),null,0,false);
+        if(simulate)return tmp.matchRecipe(IO.IN,this,contents,false);
+        else return tmp.handleRecipe(IO.IN,this,contents)?GTRecipe.ActionResult.SUCCESS: GTRecipe.ActionResult.FAIL_NO_REASON;
+    }
+    public GTRecipe.ActionResult output(boolean simulate, Map<RecipeCapability<?>, List<Content>> contents){
+        GTRecipe tmp=new GTRecipe(new GTRecipeType(new ResourceLocation("gt_machine_io"),"gt"),
+            new ResourceLocation("___recipe_test_ids__"),null,contents,null,
+            null,null,List.of(),null,0,false);
+        if(simulate)return tmp.matchRecipe(IO.OUT,this,contents,false);
+        else return tmp.handleRecipe(IO.OUT,this,contents)?GTRecipe.ActionResult.SUCCESS: GTRecipe.ActionResult.FAIL_NO_REASON;
+    }
+
 }
