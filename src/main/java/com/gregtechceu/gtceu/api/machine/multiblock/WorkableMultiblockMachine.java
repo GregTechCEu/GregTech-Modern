@@ -130,6 +130,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             }
         }
         // schedule recipe logic
+        machineCallback("onStructureFormed",null, null);
         recipeLogic.updateTickSubscription();
     }
 
@@ -142,6 +143,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         traitSubscriptions.forEach(ISubscription::unsubscribe);
         traitSubscriptions.clear();
         //reset recipe Logic
+        machineCallback("onStructureInvalid",null, null);
         recipeLogic.resetRecipeLogic();
     }
 

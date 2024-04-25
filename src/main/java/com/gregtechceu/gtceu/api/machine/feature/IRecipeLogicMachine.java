@@ -14,7 +14,6 @@ import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
- * @date 2023/2/20
  * @implNote IRecipeMachine
  * A machine can handle recipes.
  */
@@ -106,7 +105,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         self().getDefinition().getAfterWorking().accept(this);
     }
     @SuppressWarnings("unchecked")
-    default <T> T customCallback(String str, @Nullable Object value, @Nullable T defaultValue) {
+    default <T> T machineCallback(String str, @Nullable Object value, @Nullable T defaultValue) {
         var callback = self().getDefinition().getCustomCallback().get(str);
         if (callback != null) {
             var res = callback.apply(this, value);

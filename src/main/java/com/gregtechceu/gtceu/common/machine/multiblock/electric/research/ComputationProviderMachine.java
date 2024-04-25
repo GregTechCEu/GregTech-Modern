@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.electric.research;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IOpticalComputationProvider;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -38,6 +39,7 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
         super(holder, args);
     }
 
+
     @Override
     public int requestCWUt(int cwut, boolean simulate, @NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
@@ -60,7 +62,7 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
     public int getMaxCWUt(@NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (maxCWUt == 0)
-            return maxCWUt = customCallback("getMaxCWUt", true, 0);
+            return maxCWUt = machineCallback("getMaxCWUt", null, 0);
         else return maxCWUt;
     }
 
@@ -68,7 +70,7 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
     public boolean canBridge(@NotNull Collection<IOpticalComputationProvider> seen) {
         seen.add(this);
         if (!isFormed()) return true;
-        if (canBridge == null) return canBridge = customCallback("canBridge", null, true);
+        if (canBridge == null) return canBridge = machineCallback("canBridge", null, true);
         return canBridge;
     }
 
@@ -89,7 +91,7 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
             getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
         }
         if (totalCWU < getMaxCWUt()) {
-            totalCWU += customCallback("requestCWUt", null, 0);
+            totalCWU += machineCallback("requestCWUt", null, 0);
             maxCWUt = 0;
         }
     }
@@ -130,7 +132,8 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
 
     @Override
     public void onChanged() {
-        super.onChanged();
+//        super.onChanged();
+        GTCEu.LOGGER.debug("change");
         maxCWUt = 0;
     }
 
