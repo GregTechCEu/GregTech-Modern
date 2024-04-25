@@ -71,7 +71,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
                 tankContents.add(stack);
             }
         }
-        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0, Integer::sum);
         return (long) Math.ceil(sum * conversionRate);
     }
 

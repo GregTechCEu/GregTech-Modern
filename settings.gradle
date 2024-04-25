@@ -48,7 +48,7 @@ dependencyResolutionManagement {
         def vineFlowerVersion = "1.+"
         def macheteVersion = "1.+"
         def configurationVersion = "2.2.3"
-        def ldLibVersion = "1.0.25.e"
+        def ldLibVersion = "1.0.25.d"
         def shimmerVersion = "0.2.2"
 
         forge {

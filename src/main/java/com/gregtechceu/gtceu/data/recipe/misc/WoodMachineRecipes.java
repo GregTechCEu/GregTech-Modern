@@ -547,7 +547,7 @@ public class WoodMachineRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks",
             GTBlocks.TREATED_WOOD_PLANK.asStack(8),
             "PPP", "PBP", "PPP",
-            'P', "plankWood",
+            'P', ItemTags.PLANKS,
             'B', FluidUtil.getFilledBucket(Creosote.getFluid(1000)));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",

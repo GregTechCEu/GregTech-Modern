@@ -1,17 +1,17 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 public class DummyCraftingContainer extends TransientCraftingContainer {
 
-    private final IItemTransfer itemTransfer;
+    private final IItemHandlerModifiable itemTransfer;
 
-    public DummyCraftingContainer(IItemTransfer itemHandler) {
+    public DummyCraftingContainer(IItemHandlerModifiable itemHandler) {
         super(null, 0, 0);
         this.itemTransfer = itemHandler;
     }
@@ -38,12 +38,14 @@ public class DummyCraftingContainer extends TransientCraftingContainer {
 
     @Override
     public @NotNull ItemStack removeItemNoUpdate(int slot) {
-        return this.itemTransfer.extractItem(slot, Integer.MAX_VALUE, false, false);
+        return this.itemTransfer.extractItem(slot, Integer.MAX_VALUE, false);
     }
 
     @Override
     public @NotNull ItemStack removeItem(int slot, int count) {
-        return this.itemTransfer.extractItem(slot, count, false, true);
+        ItemStack val = this.itemTransfer.getStackInSlot(slot).copy();
+        this.itemTransfer.getStackInSlot(slot).setCount(0);
+        return val;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class DummyCraftingContainer extends TransientCraftingContainer {
     @Override
     public void fillStackedContents(@NotNull StackedContents helper) {}
 
-    private static NonNullList<ItemStack> createInventory(IItemTransfer itemHandler) {
+    private static NonNullList<ItemStack> createInventory(IItemHandlerModifiable itemHandler) {
         NonNullList<ItemStack> inv = NonNullList.create();
 
         for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
