@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
@@ -104,22 +105,50 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     default void afterWorking() {
         self().getDefinition().getAfterWorking().accept(this);
     }
-    
-    default <T> T customCallback(String str,@Nullable Object value,@Nullable T defaultValue){
-        var callback=self().getDefinition().getCustomCallback().get(str);
-        if(callback!=null){
-            var res=callback.apply(this,value);
-            if(res!=null){
-                try{
-                    return (T)res;
-                }catch (ClassCastException e){
-                    e.printStackTrace();
-                    return defaultValue;
+    @SuppressWarnings("unchecked")
+    default <T> T customCallback(String str, @Nullable Object value, @Nullable T defaultValue) {
+        var callback = self().getDefinition().getCustomCallback().get(str);
+        if (callback != null) {
+            var res = callback.apply(this, value);
+            if(defaultValue==null)return (T) res;
+            if (res != null) {
+                if (defaultValue.getClass().isAssignableFrom(res.getClass())) {
+                    return (T) res;
+                } else {
+                    try {
+                        return (T) convertValue(res, defaultValue.getClass());
+                    } catch (Exception e) {
+                        GTCEu.LOGGER.error(e.getMessage());
+                        return defaultValue;
+                    }
                 }
             }
         }
         return defaultValue;
     }
+
+    @SuppressWarnings("unchecked")
+    private <T> T convertValue(Object value, Class<T> targetClass) {
+        if (targetClass.isInstance(value)) {
+            return (T) value;
+        } else if (targetClass == int.class || targetClass == Integer.class) {
+            return (T) (Integer) Double.valueOf(value.toString()).intValue();
+        } else if (targetClass == long.class || targetClass == Long.class) {
+            return (T) (Long) Double.valueOf(value.toString()).longValue();
+        } else if (targetClass == float.class || targetClass == Float.class) {
+            return (T) (Float) Double.valueOf(value.toString()).floatValue();
+        } else if (targetClass == double.class || targetClass == Double.class) {
+            return (T) Double.valueOf(value.toString());
+        } else if (targetClass == boolean.class || targetClass == Boolean.class) {
+            return (T) Boolean.valueOf(value.toString());
+        } else if (targetClass == String.class) {
+            return (T) value.toString();
+        } else {
+            throw new IllegalArgumentException("Unsupported target class: " + targetClass);
+        }
+    }
+
+
 
     /**
      * Whether progress decrease when machine is waiting for pertick ingredients. (e.g. lack of EU)
@@ -129,7 +158,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
 
-    
+
     default boolean alwaysTryModifyRecipe() {
         return self().getDefinition().isAlwaysTryModifyRecipe();
     }

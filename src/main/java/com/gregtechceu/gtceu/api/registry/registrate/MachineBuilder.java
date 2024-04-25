@@ -296,8 +296,9 @@ public class MachineBuilder<DEFINITION extends MachineDefinition> extends Builde
         return definitionFactory.apply(new ResourceLocation(registrate.getModid(), name));
     }
 
-    public void addCallBack(String str,BiFunction<IRecipeLogicMachine,@Nullable Object,@Nullable Object> callback){
+    public MachineBuilder<DEFINITION> addCallBack(String str,BiFunction<IRecipeLogicMachine,@Nullable Object,@Nullable Object> callback){
         this.customCallback.put(str,callback);
+        return this;
     }
 
 //    @HideFromJS

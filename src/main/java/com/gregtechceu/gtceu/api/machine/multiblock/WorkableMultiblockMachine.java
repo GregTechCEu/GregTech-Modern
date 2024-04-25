@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.ContentBuilder;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -29,9 +29,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
 
 import org.jetbrains.annotations.NotNull;
@@ -288,6 +286,10 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
             null,null,List.of(),null,0,false);
         if(simulate)return tmp.matchRecipe(IO.OUT,this,contents,false);
         else return tmp.handleRecipe(IO.OUT,this,contents)?GTRecipe.ActionResult.SUCCESS: GTRecipe.ActionResult.FAIL_NO_REASON;
+    }
+
+    public ContentBuilder getContentBuilder(){
+        return new ContentBuilder();
     }
 
 }

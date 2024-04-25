@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
+import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.ComputationProviderMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
@@ -112,6 +113,9 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
     public static MachineBuilder<MultiblockMachineDefinition> createPrimitiveMultiblock(String name, Object... args) {
         return new CustomMultiblockBuilder(name, (holder) -> new PrimitiveFancyUIWorkableMachine(holder, args));
+    }
+    public static MachineBuilder<MultiblockMachineDefinition> createComputationProviderMachineMultiblock(String name, Object... args){
+        return new CustomMultiblockBuilder(name,(holder)->new ComputationProviderMachine(holder,args));
     }
 
     public static CustomMultiblockBuilder tieredBuilder(String name, CustomMultiblockBuilder[] builders) {
