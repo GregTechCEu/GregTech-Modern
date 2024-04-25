@@ -52,7 +52,7 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
     private int allocatedCWUt(int cwut, boolean simulate) {
         int maxCWUt = getMaxCWUt();
         int availableCWUt = maxCWUt - this.allocatedCWUt;
-        int toAllocate = Math.min(cwut, availableCWUt);
+        int toAllocate = Math.min(cwut, (int)Math.min(availableCWUt,totalCWU));
         if (!simulate) {
             this.allocatedCWUt += toAllocate;
         }
