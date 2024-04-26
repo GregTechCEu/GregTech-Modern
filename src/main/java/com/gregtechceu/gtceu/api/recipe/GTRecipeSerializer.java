@@ -122,8 +122,12 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
         List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::conditionReader);
         List<?> ingredientActions = new ArrayList<>();
-        if (GTCEu.isKubeJSLoaded()) {
-            ingredientActions = KJSCallWrapper.getIngredientActions(buf);
+        try{
+            if (GTCEu.isKubeJSLoaded()) {
+                ingredientActions = KJSCallWrapper.getIngredientActions(buf);
+            }
+        }catch (Throwable e){
+            GTCEu.LOGGER.error(e.getMessage());
         }
         CompoundTag data = buf.readNbt();
         if (data == null) {
@@ -152,9 +156,14 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.tickOutputs.entrySet(), GTRecipeSerializer::entryWriter);
         buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);
-        if (GTCEu.isKubeJSLoaded()) {
-            KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
+        try{
+            if (GTCEu.isKubeJSLoaded()) {
+                KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
+            }
+        }catch (Throwable e){
+            GTCEu.LOGGER.error(e.getMessage());
         }
+
         buf.writeNbt(recipe.data);
         buf.writeBoolean(recipe.isFuel);
     }

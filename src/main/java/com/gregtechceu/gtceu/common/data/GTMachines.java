@@ -118,7 +118,7 @@ public class GTMachines {
     public static final int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? MAX : UHV);
     public static final int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? OpV : UV);
     public static final int[] LOW_TIERS = GTValues.tiersBetween(LV, EV);
-    public static final int[] HIGH_TIERS = GTValues.tiersBetween(IV, GTCEuAPI.isHighTier() ? OpV : UHV);
+    public static final int[] HIGH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
     public static final int[] MULTI_HATCH_TIERS = GTValues.tiersBetween(EV, GTCEuAPI.isHighTier() ? MAX : UHV);
 
     public static final Int2LongFunction defaultTankSizeFunction = tier -> (tier <= GTValues.LV ? 8 : tier == GTValues.MV ? 12 : tier == GTValues.HV ? 16 : tier == GTValues.EV ? 32 : 64) * FluidHelper.getBucket();
@@ -673,7 +673,7 @@ public class GTMachines {
                     .overlayTieredHullRenderer("energy_hatch.input_4a")
                     .compassNode("energy_hatch")
                     .register(),
-            EV, IV, LuV, ZPM, UV, UHV);
+            HIGH_TIERS);
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_4A = registerTieredMachines("energy_output_hatch_4a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 4),
@@ -685,7 +685,7 @@ public class GTMachines {
                     .overlayTieredHullRenderer("energy_hatch.output_4a")
                     .compassNode("energy_hatch")
                     .register(),
-            EV, IV, LuV, ZPM, UV, UHV);
+            HIGH_TIERS);
 
     public static final MachineDefinition[] ENERGY_INPUT_HATCH_16A = registerTieredMachines("energy_input_hatch_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 16),
@@ -697,7 +697,7 @@ public class GTMachines {
                     .overlayTieredHullRenderer("energy_hatch.input_16a")
                     .compassNode("energy_hatch")
                     .register(),
-            EV, IV, LuV, ZPM, UV, UHV);
+            HIGH_TIERS);
 
     public static final MachineDefinition[] ENERGY_OUTPUT_HATCH_16A = registerTieredMachines("energy_output_hatch_16a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 16),
@@ -709,7 +709,7 @@ public class GTMachines {
                     .overlayTieredHullRenderer("energy_hatch.output_16a")
                     .compassNode("energy_hatch")
                     .register(),
-            EV, IV, LuV, ZPM, UV, UHV);
+            HIGH_TIERS);
 
     public static final MachineDefinition[] SUBSTATION_ENERGY_INPUT_HATCH = registerTieredMachines("substation_input_hatch_64a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.IN, 64),
@@ -721,7 +721,7 @@ public class GTMachines {
                     .overlayTieredHullRenderer("energy_hatch.input_16a")
                     .compassNode("energy_hatch")
                     .register(),
-            EV, IV, LuV, ZPM, UV, UHV);
+            HIGH_TIERS);
 
     public static final MachineDefinition[] SUBSTATION_ENERGY_OUTPUT_HATCH = registerTieredMachines("substation_output_hatch_64a",
             (holder, tier) -> new EnergyHatchPartMachine(holder, tier, IO.OUT, 64),
@@ -733,7 +733,7 @@ public class GTMachines {
                     .overlayTieredHullRenderer("energy_hatch.output_16a")
                     .compassNode("energy_hatch")
                     .register(),
-            EV, IV, LuV, ZPM, UV, UHV);
+            HIGH_TIERS);
 
     public static final MachineDefinition[] MUFFLER_HATCH = registerTieredMachines("muffler_hatch",
             MufflerPartMachine::new,
