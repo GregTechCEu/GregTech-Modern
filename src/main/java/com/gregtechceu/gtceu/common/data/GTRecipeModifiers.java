@@ -95,6 +95,7 @@ public class GTRecipeModifiers {
         if (maxParallel == 1) {
             return new Tuple<>(recipe, 1);
         }
+//        if(!(machine instanceof ITieredMachine))return new Tuple<>(recipe, 1);
         if (machine instanceof IRecipeCapabilityHolder holder) {
             var parallel = tryParallel(holder, recipe, 1, maxParallel, modifyDuration);
             return parallel == null ? new Tuple<>(recipe, 1) : parallel;
@@ -106,9 +107,9 @@ public class GTRecipeModifiers {
         if (min > max) return null;
 
         int mid = (min + max) / 2;
-
         GTRecipe copied = original.copy(ContentModifier.multiplier(mid), modifyDuration);
-        if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess()) {
+        if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess() ||
+            !(holder instanceof ITieredMachine && RecipeHelper.getRecipeEUtTier(copied) <= ((ITieredMachine)holder).getTier())) {
             // tried too many
             return tryParallel(holder, original, min, mid - 1, modifyDuration);
         } else {
