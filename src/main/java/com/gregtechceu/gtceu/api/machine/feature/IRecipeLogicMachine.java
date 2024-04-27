@@ -109,37 +109,37 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
         var callback = self().getDefinition().getCustomCallback().get(str);
         if (callback != null) {
             var res = callback.apply(this, value);
-            if(defaultValue==null)return (T) res;
-            if (res != null) {
-                if (defaultValue.getClass().isAssignableFrom(res.getClass())) {
-                    return (T) res;
-                } else {
-                    try {
-                        return (T) convertValue(res, defaultValue.getClass());
-                    } catch (Exception e) {
-                        GTCEu.LOGGER.error(e.getMessage());
-                        return defaultValue;
-                    }
-                }
+            if (defaultValue == null) {
+                return null;
             }
+            if (defaultValue.getClass().isInstance(res)) {
+                return (T)res;
+            }
+            return (T) convertValue(res, defaultValue.getClass());
         }
         return defaultValue;
     }
 
     @SuppressWarnings("unchecked")
     private <T> T convertValue(Object value, Class<T> targetClass) {
-        if (targetClass == int.class || targetClass == Integer.class) {
-            return (T) (Integer) ((Double)value).intValue();
-        } else if (targetClass == long.class || targetClass == Long.class) {
-            return (T) (Long) ((Double)value).longValue();
-        } else if (targetClass == float.class || targetClass == Float.class) {
-            return (T) (Float) ((Double)value).floatValue();
-        } else if (targetClass == double.class || targetClass == Double.class) {
+        if (targetClass.isInstance(value)) {
             return (T) value;
-        } else {
-            throw new IllegalArgumentException("Unsupported target class: " + targetClass);
         }
+        if (value instanceof Number number) {
+            if (targetClass == int.class || targetClass == Integer.class) {
+                return (T) (Integer) number.intValue();
+            } else if (targetClass == long.class || targetClass == Long.class) {
+                return (T) (Long) number.longValue();
+            } else if (targetClass == float.class || targetClass == Float.class) {
+                return (T) (Float) number.floatValue();
+            } else if (targetClass == double.class || targetClass == Double.class) {
+                return (T) (Double) number.doubleValue();
+            }
+        }
+        throw new IllegalArgumentException("Cannot convert " + value.getClass() + " to " + targetClass);
     }
+
+
 
 
 
