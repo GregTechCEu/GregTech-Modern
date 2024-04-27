@@ -7,9 +7,11 @@ import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import com.google.gson.JsonObject;
@@ -18,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 public class ResearchCondition extends RecipeCondition {
-    public static final Codec<ResearchCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<ResearchCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
         .and(
             ResearchData.CODEC.fieldOf("research").forGetter(val -> val.data)
         ).apply(instance, ResearchCondition::new));
@@ -59,12 +61,12 @@ public class ResearchCondition extends RecipeCondition {
         return this;
     }
 
-    public void toNetwork(FriendlyByteBuf buf) {
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
         super.toNetwork(buf);
         this.data.toNetwork(buf);
     }
 
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+    public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
         this.data = ResearchData.fromNetwork(buf);
         return this;

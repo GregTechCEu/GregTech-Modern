@@ -6,14 +6,11 @@ import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.minecraft.network.chat.Component;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
@@ -60,8 +57,7 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         if (stack.hasTag()) {
             FluidStack tank = FluidTransferHelper.getFluidContained(stack);
             tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),

@@ -10,11 +10,6 @@ import com.gregtechceu.gtceu.utils.ResearchManager;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
-
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
@@ -37,8 +32,7 @@ public class DataItemBehavior implements IAddInformation, IDataItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         Pair<GTRecipeType, String> researchData = ResearchManager.readResearchId(stack);
         if (researchData == null) return;
         Collection<GTRecipe> recipes = researchData.getFirst().getDataStickEntry(researchData.getSecond());

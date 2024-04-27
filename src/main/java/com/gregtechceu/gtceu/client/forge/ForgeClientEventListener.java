@@ -22,7 +22,7 @@ import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
  * @date 2022/8/27
  * @implNote ForgeCommonEventListener
  */
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
+@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 @OnlyIn(Dist.CLIENT)
 public class ForgeClientEventListener {
 

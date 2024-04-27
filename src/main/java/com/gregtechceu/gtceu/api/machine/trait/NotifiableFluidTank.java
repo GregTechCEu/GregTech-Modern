@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -182,7 +182,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             this.lockedFluid.setFluid(fluidStack.copy());
             this.lockedFluid.getFluid().setAmount(1);
             onContentsChanged();
-            setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
+            setFilter(stack -> FluidStack.isSameFluidSameComponents(stack, this.lockedFluid.getFluid()));
             return;
         }
         this.lockedFluid.setFluid(FluidStack.EMPTY);
@@ -297,7 +297,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         CustomFluidTank existingStorage = null;
         if (!allowSameFluids) {
             for (var storage : getStorages()) {
-                if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(resource)) {
+                if (!storage.getFluid().isEmpty() && FluidStack.isSameFluidSameComponents(storage.getFluid(), resource)) {
                     existingStorage = storage;
                     break;
                 }
@@ -330,7 +330,7 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         CustomFluidTank existingStorage = null;
         if (!allowSameFluids) {
             for (var storage : getStorages()) {
-                if (!storage.getFluid().isEmpty() && storage.getFluid().isFluidEqual(resource)) {
+                if (!storage.getFluid().isEmpty() && FluidStack.isSameFluidSameComponents(storage.getFluid(), resource)) {
                     existingStorage = storage;
                     break;
                 }

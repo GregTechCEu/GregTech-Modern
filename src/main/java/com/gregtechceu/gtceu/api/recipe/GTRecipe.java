@@ -7,12 +7,12 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.RegistryAccess;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
@@ -125,7 +125,7 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack assemble(Container inventory, RegistryAccess registryManager) {
+    public ItemStack assemble(Container p_44001_, HolderLookup.Provider p_336092_) {
         return ItemStack.EMPTY;
     }
 
@@ -135,7 +135,7 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryManager) {
+    public ItemStack getResultItem(HolderLookup.Provider p_336125_) {
         return ItemStack.EMPTY;
     }
 
@@ -565,5 +565,20 @@ public class GTRecipe implements Recipe<Container> {
             ", duration=" + duration +
             ", isFuel=" + isFuel +
             '}';
+    }
+
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
+        buf.writeResourceLocation(this.recipeType.registryName);
+        buf.writeVarInt(this.duration);
+        GTRecipeSerializer.writeCollection(this.inputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(this.tickInputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(this.outputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(this.tickOutputs.entrySet(), buf, GTRecipeSerializer::entryWriter);
+        GTRecipeSerializer.writeCollection(this.conditions, buf, GTRecipeSerializer::conditionWriter);
+        if (GTCEu.isKubeJSLoaded()) {
+            GTRecipeSerializer.KJSCallWrapper.writeIngredientActions(this.ingredientActions, buf);
+        }
+        buf.writeNbt(this.data);
+        buf.writeBoolean(this.isFuel);
     }
 }

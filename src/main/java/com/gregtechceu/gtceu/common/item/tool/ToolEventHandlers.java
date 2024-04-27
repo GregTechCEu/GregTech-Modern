@@ -4,8 +4,11 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
@@ -51,8 +54,7 @@ public class ToolEventHandlers {
                         electricItem.setMaxChargeOverride(def.getMaxCharge(original));
                     }
 
-                    electricStack.charge(Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(),
-                            true, false);
+                    electricStack.charge(brokenStack, Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(), true, false);
                 }
             }
             if (!brokenStack.isEmpty()) {
@@ -97,18 +99,18 @@ public class ToolEventHandlers {
                                                             int fortuneLevel, ObjectArrayList<ItemStack> drops,
                                                             float dropChance) {
         if (player != null && world instanceof ServerLevel serverLevel) {
-            if (tool.isEmpty() || !tool.hasTag() || !(tool.getItem() instanceof IGTTool)) {
+            if (tool.isEmpty()|| !(tool.getItem() instanceof IGTTool)) {
                 return drops;
             }
             if (!isSilkTouch) {
                 ToolHelper.applyHammerDropConversion(serverLevel, pos, tool, state, drops, fortuneLevel, dropChance,
                         player.getRandom());
             }
-            if (!ToolHelper.hasBehaviorsTag(tool)) return drops;
+            if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
 
-            CompoundTag behaviorTag = ToolHelper.getBehaviorsTag(tool);
+            ToolBehaviorsComponent behaviorTag = ToolHelper.getBehaviorsComponent(tool);
             Block block = state.getBlock();
-            if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.getBoolean(ToolHelper.HARVEST_ICE_KEY)) {
+            if (!isSilkTouch && state.is(BlockTags.ICE) && behaviorTag.hasBehavior(GTToolBehaviors.HARVEST_ICE)) {
                 Item iceBlock = block.asItem();
                 if (drops.stream().noneMatch(drop -> drop.getItem() == iceBlock)) {
                     drops.add(new ItemStack(iceBlock));
@@ -121,7 +123,7 @@ public class ToolEventHandlers {
                     ((IGTTool) tool.getItem()).playSound(player);
                 }
             }
-            if (behaviorTag.getBoolean(ToolHelper.RELOCATE_MINED_BLOCKS_KEY)) {
+            if (tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS)) {
                 Iterator<ItemStack> dropItr = drops.iterator();
                 while (dropItr.hasNext()) {
                     ItemStack dropStack = dropItr.next();

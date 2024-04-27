@@ -1,60 +1,58 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.google.gson.JsonElement;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import net.minecraft.core.HolderLookup;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 
-import com.google.gson.JsonElement;
-
-public class SerializerIngredient implements IContentSerializer<Ingredient> {
+public class SerializerIngredient implements IContentSerializer<SizedIngredient> {
 
     public static SerializerIngredient INSTANCE = new SerializerIngredient();
 
     private SerializerIngredient() {}
 
     @Override
-    public void toNetwork(FriendlyByteBuf buf, Ingredient content) {
-        content.toNetwork(buf);
+    public void toNetwork(RegistryFriendlyByteBuf buf, SizedIngredient content) {
+        SizedIngredient.STREAM_CODEC.encode(buf, content);
     }
 
     @Override
-    public Ingredient fromNetwork(FriendlyByteBuf buf) {
-        return Ingredient.fromNetwork(buf);
+    public SizedIngredient fromNetwork(RegistryFriendlyByteBuf buf) {
+        return SizedIngredient.STREAM_CODEC.decode(buf);
     }
 
     @Override
-    public Ingredient fromJson(JsonElement json) {
-        return Ingredient.fromJson(json, false);
+    public SizedIngredient fromJson(JsonElement json, HolderLookup.Provider provider) {
+        return SizedIngredient.NESTED_CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json).getOrThrow();
     }
 
     @Override
-    public JsonElement toJson(Ingredient content) {
-        return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, content).getOrThrow(false, GTCEu.LOGGER::error);
+    public JsonElement toJson(SizedIngredient content, HolderLookup.Provider provider) {
+        return SizedIngredient.NESTED_CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), content).getOrThrow();
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "rawtypes" })
-    public Ingredient of(Object o) {
-        if (o instanceof Ingredient ingredient) {
-            return ingredient;
+    @SuppressWarnings({"unchecked", "rawtypes"})
+    public SizedIngredient of(Object o) {
+        if (o instanceof SizedIngredient SizedIngredient) {
+            return SizedIngredient;
         } else if (o instanceof ItemStack itemStack) {
-            return SizedIngredient.create(itemStack);
+            return SizedIngredient.of(itemStack.getItem(), itemStack.getCount());
         } else if (o instanceof ItemLike itemLike) {
-            return Ingredient.of(itemLike);
+            return SizedIngredient.of(itemLike, 1);
         } else if (o instanceof TagKey tag) {
-            return Ingredient.of(tag);
+            return SizedIngredient.of(tag, 1);
         }
-        return Ingredient.EMPTY;
+        return new SizedIngredient(Ingredient.EMPTY, 0);
     }
 
     @Override
-    public Ingredient defaultValue() {
-        return Ingredient.EMPTY;
+    public SizedIngredient defaultValue() {
+        return new SizedIngredient(Ingredient.EMPTY, 0);
     }
 }

@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -29,7 +30,7 @@ import org.jetbrains.annotations.NotNull;
 @AllArgsConstructor
 @NoArgsConstructor
 public class CleanroomCondition extends RecipeCondition {
-    public static final Codec<CleanroomCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<CleanroomCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
         .and(CleanroomType.CODEC.fieldOf("cleanroom").forGetter(val -> val.cleanroom))
         .apply(instance, CleanroomCondition::new));
     public final static CleanroomCondition INSTANCE = new CleanroomCondition();

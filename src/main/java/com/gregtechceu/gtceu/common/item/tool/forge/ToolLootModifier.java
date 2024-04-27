@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.common.item.tool.forge;
 
 import com.gregtechceu.gtceu.common.item.tool.ToolEventHandlers;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -17,7 +19,7 @@ import org.jetbrains.annotations.NotNull;
 public class ToolLootModifier implements IGlobalLootModifier {
 
     public static final ToolLootModifier INSTANCE = new ToolLootModifier();
-    public static final Codec<ToolLootModifier> CODEC = Codec.unit(() -> INSTANCE);
+    public static final MapCodec<ToolLootModifier> CODEC = MapCodec.unit(INSTANCE);
 
     private ToolLootModifier() {/**/}
 
@@ -29,16 +31,15 @@ public class ToolLootModifier implements IGlobalLootModifier {
             BlockPos blockPos = new BlockPos(Mth.floor(pos.x), Mth.floor(pos.y), Mth.floor(pos.z));
             ItemStack tool = context.getParam(LootContextParams.TOOL);
             boolean isSilktouch = EnchantmentHelper.hasSilkTouch(tool);
-            int fortuneLevel = tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE);
-            return ToolEventHandlers.onHarvestDrops(player, tool, context.getLevel(), blockPos,
-                    context.getParam(LootContextParams.BLOCK_STATE), isSilktouch, fortuneLevel, objectArrayList, 1);
+            int fortuneLevel = tool.getEnchantmentLevel(Enchantments.FORTUNE);
+            return ToolEventHandlers.onHarvestDrops(player, tool, context.getLevel(), blockPos, context.getParam(LootContextParams.BLOCK_STATE), isSilktouch, fortuneLevel, objectArrayList, 1);
         } else {
             return objectArrayList;
         }
     }
 
     @Override
-    public Codec<ToolLootModifier> codec() {
+    public MapCodec<ToolLootModifier> codec() {
         return CODEC;
     }
 }

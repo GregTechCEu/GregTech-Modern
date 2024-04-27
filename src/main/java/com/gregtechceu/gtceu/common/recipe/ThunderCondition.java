@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
@@ -25,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class ThunderCondition extends RecipeCondition {
-    public static final Codec<ThunderCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<ThunderCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
         .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
         .apply(instance, ThunderCondition::new));
 

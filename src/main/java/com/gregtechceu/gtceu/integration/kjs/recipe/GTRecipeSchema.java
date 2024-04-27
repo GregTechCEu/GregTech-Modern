@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -326,7 +326,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
-            return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration), 1));
+            return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration).toVanilla(), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {

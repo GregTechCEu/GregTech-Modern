@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.common.worldgen.feature.configurations.FluidSproutC
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.StoneBlobConfiguration;
 
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
@@ -37,7 +37,7 @@ public class GTConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> RAW_OIL_SPROUT = ResourceKey
             .create(Registries.CONFIGURED_FEATURE, GTCEu.id("raw_oil_sprout"));
 
-    public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> ctx) {
+    public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
         FeatureUtils.register(ctx, RUBBER, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider
                         .simple(GTBlocks.RUBBER_LOG.get().changeNatural(GTBlocks.RUBBER_LOG.getDefaultState(), true)),

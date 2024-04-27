@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
-
+import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -19,14 +19,13 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
 /**
  * Describes generic behaviour attachable to tools. Multiple behaviours can be attached to one tool.
  */
-public interface IToolBehavior {
+public interface IToolBehavior<T extends IToolBehavior<T>> {
 
     default void init(IGTTool toolItem) {}
 
@@ -124,8 +123,8 @@ public interface IToolBehavior {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
-                                @NotNull TooltipFlag flag) {}
+    default void addInformation(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    }
 
     /**
      * Add the necessary NBT information to the tool
@@ -133,5 +132,8 @@ public interface IToolBehavior {
      * @param stack the tool
      * @param tag   the nbt tag to add to
      */
-    default void addBehaviorNBT(@NotNull ItemStack stack, @NotNull CompoundTag tag) {}
+    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviorsComponent tag) {
+    }
+
+    public ToolBehaviorType<T> getType();
 }

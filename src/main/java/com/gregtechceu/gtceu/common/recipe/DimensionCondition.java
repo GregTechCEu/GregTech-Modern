@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class DimensionCondition extends RecipeCondition {
-    public static final Codec<DimensionCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
         .and(ResourceLocation.CODEC.fieldOf("dimension").forGetter(val -> val.dimension))
         .apply(instance, DimensionCondition::new));
 

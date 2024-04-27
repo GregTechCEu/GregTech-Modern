@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
@@ -24,7 +25,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class EUToStartCondition extends RecipeCondition {
-    public static final Codec<EUToStartCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<EUToStartCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
         .and(Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart))
         .apply(instance, EUToStartCondition::new));
     public static final EUToStartCondition INSTANCE = new EUToStartCondition();

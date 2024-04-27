@@ -4,6 +4,8 @@ import net.minecraft.network.FriendlyByteBuf;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonPrimitive;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class SerializerInteger implements IContentSerializer<Integer> {
@@ -13,22 +15,22 @@ public class SerializerInteger implements IContentSerializer<Integer> {
     private SerializerInteger() {}
 
     @Override
-    public void toNetwork(FriendlyByteBuf buf, Integer content) {
+    public void toNetwork(RegistryFriendlyByteBuf buf, Integer content) {
         buf.writeInt(content);
     }
 
     @Override
-    public Integer fromNetwork(FriendlyByteBuf buf) {
+    public Integer fromNetwork(RegistryFriendlyByteBuf buf) {
         return buf.readInt();
     }
 
     @Override
-    public Integer fromJson(JsonElement json) {
+    public Integer fromJson(JsonElement json, HolderLookup.Provider provider) {
         return json.getAsInt();
     }
 
     @Override
-    public JsonElement toJson(Integer content) {
+    public JsonElement toJson(Integer content, HolderLookup.Provider provider) {
         return new JsonPrimitive(content);
     }
 

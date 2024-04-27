@@ -21,7 +21,9 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -143,28 +145,28 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     // ****** Battery Logic ******//
     //////////////////////////////////////
 
-    private List<IElectricItem> getNonFullBatteries() {
-        List<IElectricItem> batteries = new ArrayList<>();
+    private List<Pair<IElectricItem, ItemStack>> getNonFullBatteries() {
+        List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
             var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
-                    batteries.add(electricItem);
+                    batteries.add(Pair.of(electricItem, batteryStack));
                 }
             }
         }
         return batteries;
     }
 
-    private List<IElectricItem> getNonEmptyBatteries() {
-        List<IElectricItem> batteries = new ArrayList<>();
+    private List<Pair<IElectricItem, ItemStack>> getNonEmptyBatteries() {
+        List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
             var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 if (electricItem.canProvideChargeExternally() && electricItem.getCharge() > 0) {
-                    batteries.add(electricItem);
+                    batteries.add(Pair.of(electricItem, batteryStack));
                 }
             }
         }
@@ -224,8 +226,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 long distributed = energy / batteries.size();
 
                 boolean changed = false;
-                for (IElectricItem electricItem : batteries) {
-                    var charged = electricItem.discharge(distributed, getTier(), false, true, false);
+                for (var pair : batteries) {
+                    IElectricItem electricItem = pair.getFirst();
+                    var charged = electricItem.discharge(pair.getSecond(), distributed, getTier(), false, true, false);
                     if (charged > 0) {
                         changed = true;
                     }
@@ -274,10 +277,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 long distributed = energy / batteries.size();
 
                 boolean changed = false;
-                for (var battery : batteries) {
-                    var charged = battery.charge(
-                            Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true,
-                            false);
+                for (var pair : batteries) {
+                    IElectricItem battery = pair.getFirst();
+                    var charged = battery.charge(pair.getSecond(), Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true, false);
                     if (charged > 0) {
                         changed = true;
                     }

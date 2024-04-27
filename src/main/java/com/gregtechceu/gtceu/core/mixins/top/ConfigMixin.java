@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-
+import mcjty.theoneprobe.config.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -36,9 +36,8 @@ public class ConfigMixin {
             at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"))
     private static void gtceu$injectToolTags(CallbackInfoReturnable<Map<ResourceLocation, String>> cir) {
         for (GTToolType type : GTToolType.getTypes().values()) {
-            for (TagKey<Item> tag : type.itemTags) {
-                if (!tooltypeTagsSet.containsKey(tag.location())) tooltypeTagsSet.put(tag.location(),
-                        Component.translatable("gtceu.tool.class." + type.name).getString());
+            for (TagKey<Item> tag : type.tool) {
+                if (!tooltypeTagsSet.containsKey(tag.location())) tooltypeTagsSet.put(tag.location(), Component.translatable("gtceu.tool.class." + type.name).getString());
             }
         }
     }

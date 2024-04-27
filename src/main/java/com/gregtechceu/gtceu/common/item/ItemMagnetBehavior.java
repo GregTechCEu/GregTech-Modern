@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
-
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -58,20 +58,13 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         if (stack == ItemStack.EMPTY) {
             return false;
         }
-        CompoundTag tag = stack.getTag();
-        if (tag == null) {
-            return false;
-        }
-        if (tag.contains("IsActive")) {
-            return tag.getBoolean("IsActive");
-        }
-        return false;
+        return stack.getOrDefault(GTDataComponents.ITEM_MAGNET, false);
     }
 
     private static boolean toggleActive(ItemStack stack) {
         boolean isActive = isActive(stack);
         // noinspection ConstantConditions
-        stack.getOrCreateTag().putBoolean("IsActive", !isActive);
+        stack.set(GTDataComponents.ITEM_MAGNET, !isActive);
         return !isActive;
     }
 
@@ -190,13 +183,11 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
         if (electricItem == null)
             return false;
 
-        return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
+        return electricItem.discharge(stack, amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Level level, List<Component> lines,
-                                TooltipFlag isAdvanced) {
-        lines.add(Component
-                .translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
+    public void appendHoverText(ItemStack itemStack, @Nullable Item.TooltipContext context, List<Component> lines, TooltipFlag isAdvanced) {
+        lines.add(Component.translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
     }
 }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.test.api.machine.trait;
 
+import com.google.common.collect.HashMultimap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -17,12 +18,15 @@ import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class RecipeLogicTest {
 
@@ -31,9 +35,11 @@ public class RecipeLogicTest {
     @BeforeBatch(batch = GTCEu.MOD_ID)
     public static void replaceRecipeManagerEntries(ServerLevel level) {
         if (hasInjectedRecipe) return;
-        var recipes = new HashMap<>(((RecipeManagerAccessor) level.getRecipeManager()).getRawRecipes());
-        ((RecipeManagerAccessor) level.getRecipeManager()).setRawRecipes(recipes);
-        recipes.replaceAll((k, v) -> new HashMap<>(v));
+        var recipes = HashMultimap.create(((RecipeManagerAccessor) level.getRecipeManager()).getRawRecipes());
+        ((RecipeManagerAccessor)level.getRecipeManager()).setRawRecipes(recipes);
+        for (var key : recipes.keySet()) {
+            recipes.replaceValues(key, new HashSet<>(recipes.get(key)));
+        }
     }
 
     @GameTest(template = "gtceu:recipelogic")
@@ -61,8 +67,7 @@ public class RecipeLogicTest {
         // force insert the recipe into the manager.
 
         if (!hasInjectedRecipe) {
-            ((RecipeManagerAccessor) helper.getLevel().getRecipeManager()).getRawRecipes()
-                    .get(GTRecipeTypes.CHEMICAL_RECIPES).put(GTCEu.id("test"), recipe);
+            ((RecipeManagerAccessor) helper.getLevel().getRecipeManager()).getRawRecipes().get(GTRecipeTypes.CHEMICAL_RECIPES).add(new RecipeHolder<>(GTCEu.id("test"), recipe));
             hasInjectedRecipe = true;
         }
 

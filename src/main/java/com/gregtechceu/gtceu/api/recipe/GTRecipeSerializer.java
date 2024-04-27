@@ -7,22 +7,27 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
+import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.codec.StreamDecoder;
+import net.minecraft.network.codec.StreamEncoder;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
+import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.function.IntFunction;
 
 /**
  * @author KilaBash
@@ -30,7 +35,7 @@ import java.util.Map;
  * @implNote GTRecipeSerializer
  */
 public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
-    public static final Codec<GTRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<GTRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         GTRegistries.RECIPE_TYPES.codec().fieldOf("type").forGetter(val -> val.recipeType),
         RecipeCapability.CODEC.optionalFieldOf("inputs", Map.of()).forGetter(val -> val.inputs),
         RecipeCapability.CODEC.optionalFieldOf("outputs", Map.of()).forGetter(val -> val.outputs),
@@ -42,25 +47,31 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Codec.BOOL.optionalFieldOf("isFuel", false).forGetter(val -> val.isFuel)
     ).apply(instance, (type, inputs, outputs, tickInputs, tickOutputs, conditions, data, duration, isFuel) ->
         new GTRecipe(type, inputs, outputs, tickInputs, tickOutputs, conditions, List.of(), data, duration, isFuel)));
+    public static final StreamCodec<RegistryFriendlyByteBuf, GTRecipe> STREAM_CODEC = StreamCodec.ofMember(GTRecipe::toNetwork, GTRecipeSerializer::fromNetwork);
 
     public static final GTRecipeSerializer SERIALIZER = new GTRecipeSerializer();
 
     @Override
-    public Codec<GTRecipe> codec() {
+    public MapCodec<GTRecipe> codec() {
         return CODEC;
     }
 
-    public static Tuple<RecipeCapability<?>, List<Content>> entryReader(FriendlyByteBuf buf) {
+    @Override
+    public StreamCodec<RegistryFriendlyByteBuf, GTRecipe> streamCodec() {
+        return null;
+    }
+
+    public static Tuple<RecipeCapability<?>, List<Content>> entryReader(RegistryFriendlyByteBuf buf) {
         RecipeCapability<?> capability = GTRegistries.RECIPE_CAPABILITIES.get(buf.readUtf());
-        List<Content> contents = buf.readList(capability.serializer::fromNetworkContent);
+        List<Content> contents = readCollection(buf, capability.serializer::fromNetworkContent);
         return new Tuple<>(capability, contents);
     }
 
-    public static void entryWriter(FriendlyByteBuf buf, Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
+    public static void entryWriter(RegistryFriendlyByteBuf buf, Map.Entry<RecipeCapability<?>, ? extends List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         List<Content> contents = entry.getValue();
         buf.writeUtf(GTRegistries.RECIPE_CAPABILITIES.getKey(capability));
-        buf.writeCollection(contents, capability.serializer::toNetworkContent);
+        writeCollection(contents, buf, capability.serializer::toNetworkContent);
     }
 
     public static RecipeCondition conditionReader(FriendlyByteBuf buf) {
@@ -79,15 +90,14 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return map;
     }
 
-    @Override
     @NotNull
-    public GTRecipe fromNetwork(@NotNull FriendlyByteBuf buf) {
+    public static GTRecipe fromNetwork(@NotNull RegistryFriendlyByteBuf buf) {
         ResourceLocation recipeType = buf.readResourceLocation();
         int duration = buf.readVarInt();
-        Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
-        Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
-        Map<RecipeCapability<?>, List<Content>> outputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
-        Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::entryReader));
+        Map<RecipeCapability<?>, List<Content>> inputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
+        Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
+        Map<RecipeCapability<?>, List<Content>> outputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
+        Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
         List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::conditionReader);
         List<?> ingredientActions = new ArrayList<>();
         if (GTCEu.isKubeJSLoaded()) {
@@ -111,20 +121,23 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return recipe;
     }
 
-    @Override
-    public void toNetwork(FriendlyByteBuf buf, GTRecipe recipe) {
-        buf.writeResourceLocation(recipe.recipeType.registryName);
-        buf.writeVarInt(recipe.duration);
-        buf.writeCollection(recipe.inputs.entrySet(), GTRecipeSerializer::entryWriter);
-        buf.writeCollection(recipe.tickInputs.entrySet(), GTRecipeSerializer::entryWriter);
-        buf.writeCollection(recipe.outputs.entrySet(), GTRecipeSerializer::entryWriter);
-        buf.writeCollection(recipe.tickOutputs.entrySet(), GTRecipeSerializer::entryWriter);
-        buf.writeCollection(recipe.conditions, GTRecipeSerializer::conditionWriter);
-        if (GTCEu.isKubeJSLoaded()) {
-            KJSCallWrapper.writeIngredientActions(recipe.ingredientActions, buf);
+    public static <T> ArrayList<T> readCollection(RegistryFriendlyByteBuf buf, StreamDecoder<? super RegistryFriendlyByteBuf, T> decoder) {
+        int i = buf.readVarInt();
+        var list = new ArrayList<T>(i);
+
+        for (int j = 0; j < i; j++) {
+            list.add(decoder.decode(buf));
         }
-        buf.writeNbt(recipe.data);
-        buf.writeBoolean(recipe.isFuel);
+
+        return list;
+    }
+
+    public static  <T> void writeCollection(Collection<T> collection, RegistryFriendlyByteBuf buf, StreamEncoder<? super RegistryFriendlyByteBuf, T> encoder) {
+        buf.writeVarInt(collection.size());
+
+        for (T t : collection) {
+            encoder.encode(buf, t);
+        }
     }
 
     public static class KJSCallWrapper {

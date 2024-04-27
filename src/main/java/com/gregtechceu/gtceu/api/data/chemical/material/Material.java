@@ -528,6 +528,21 @@ public class Material implements Comparable<Material> {
         calculateDecompositionType();
     }
 
+    @Override
+    public final boolean equals(Object o) {
+        if (this == o)
+            return true;
+        if (!(o instanceof Material material))
+            return false;
+
+        return Objects.equals(this.getResourceLocation(), material.getResourceLocation());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(this.getResourceLocation());
+    }
+
     /**
      * @since GTCEu 2.0.0
      */

@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Listen to PostMaterialEvent instead of doing this directly because it's a lot cleaner this way.
  */
-// @Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD)
+//@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class AlloyBlastPropertyAddition {
 
     public static void addAlloyBlastProperties(PostMaterialEvent event) {

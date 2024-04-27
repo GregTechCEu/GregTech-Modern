@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
@@ -26,7 +26,7 @@ public class GTBiomeModifiers {
     public static final ResourceKey<BiomeModifier> RAW_OIL_SPROUT = ResourceKey
             .create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("raw_oil_sprout"));
 
-    public static void bootstrap(BootstapContext<BiomeModifier> ctx) {
+    public static void bootstrap(BootstrapContext<BiomeModifier> ctx, CompletableFuture<HolderLookup.Provider> provider) {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
 

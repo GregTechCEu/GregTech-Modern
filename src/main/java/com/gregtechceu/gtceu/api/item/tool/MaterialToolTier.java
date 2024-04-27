@@ -48,8 +48,8 @@ public class MaterialToolTier implements Tier {
     }
 
     @Override
-    public int getLevel() {
-        return property.getHarvestLevel();
+    public TagKey<Block> getIncorrectBlocksForDrops() {
+        return CustomTags.INCORRECT_TOOL_TIERS[property.getHarvestLevel()];
     }
 
     @Override
@@ -61,10 +61,5 @@ public class MaterialToolTier implements Tier {
     @NotNull
     public Ingredient getRepairIngredient() {
         return Ingredient.EMPTY;
-    }
-
-    @Override
-    public @Nullable TagKey<Block> getTag() {
-        return CustomTags.TOOL_TIERS[getLevel()];
     }
 }

@@ -66,7 +66,7 @@ public class GTSoundEntries {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerSounds);
-        ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.SOUNDS, SoundEntry.class));
         GTRegistries.SOUNDS.values().forEach(SoundEntry::prepare);
         registerSounds();
 

@@ -35,7 +35,6 @@ import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.pattern.Predicates;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeSerializer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -53,16 +52,7 @@ import com.gregtechceu.gtceu.integration.kjs.builders.prefix.OreTagPrefixBuilder
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.integration.kjs.recipe.GTRecipeSchema;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
-
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.NbtOps;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.Recipe;
-import net.minecraft.world.item.crafting.RecipeManager;
-import net.minecraft.world.item.crafting.RecipeType;
-import net.minecraft.world.level.block.SoundType;
-import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-
+import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.DataResult;
 import dev.latvian.mods.kubejs.KubeJSPlugin;
 import dev.latvian.mods.kubejs.block.state.BlockStatePredicate;
@@ -329,7 +319,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         typeWrappers.register(HeightRangePlacement.class, (ctx, o) -> {
             if (o instanceof HeightRangePlacement placement) return placement;
             return Optional.ofNullable(NBTUtils.toTagCompound(o))
-                    .map(tag -> HeightRangePlacement.CODEC.parse(NbtOps.INSTANCE, tag))
+                    .map(tag -> HeightRangePlacement.CODEC.codec().parse(NbtOps.INSTANCE, tag))
                     .flatMap(DataResult::result)
                     .orElse(null);
         });
@@ -393,39 +383,31 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
 
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
                     builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getFirst().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer.fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey()).getFirst().write(gtRecipe, content), Platform.getFrozenRegistry()))
+                            .toList()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS) != null) {
                     builder.output.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_OUTPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getSecond().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer.fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey()).getSecond().write(gtRecipe, content), Platform.getFrozenRegistry()))
+                            .toList()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS) != null) {
                     builder.tickInput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_INPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getFirst().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer.fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey()).getFirst().write(gtRecipe, content), Platform.getFrozenRegistry()))
+                            .toList()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS) != null) {
                     builder.tickOutput.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_TICK_OUTPUTS).entrySet().stream()
-                            .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
-                                    .map(content -> entry.getKey().serializer
-                                            .fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey())
-                                                    .getSecond().write(gtRecipe, content)))
-                                    .toList()))
-                            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
+                        .map(entry -> Map.entry(entry.getKey(), Arrays.stream(entry.getValue())
+                            .map(content -> entry.getKey().serializer.fromJsonContent(GTRecipeComponents.VALID_CAPS.get(entry.getKey()).getSecond().write(gtRecipe, content), Platform.getFrozenRegistry()))
+                            .toList()))
+                        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue)));
                 }
 
                 builder.save(new RecipeOutput() {

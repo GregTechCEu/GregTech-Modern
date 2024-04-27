@@ -10,28 +10,24 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.components.GTTool;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.side.ForgeEventHooks;
-import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
@@ -40,12 +36,12 @@ import net.minecraft.stats.Stats;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
-import net.minecraft.world.item.Tiers;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.item.enchantment.DigDurabilityEnchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -62,9 +58,7 @@ import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.IShearable;
-import net.neoforged.neoforge.common.TierSortingRegistry;
 import net.neoforged.neoforge.event.EventHooks;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -96,8 +90,6 @@ public class ToolHelper {
     public static final String TINT_COLOR_KEY = "TintColor";
 
     // Keys that resides in tool tag
-    public static final String DURABILITY_KEY = ItemStack.TAG_DAMAGE;
-    public static final String MAX_DURABILITY_KEY = "MaxDamage";
     public static final String TOOL_SPEED_KEY = "ToolSpeed";
     public static final String ATTACK_DAMAGE_KEY = "AttackDamage";
     public static final String ATTACK_SPEED_KEY = "AttackSpeed";
@@ -154,16 +146,12 @@ public class ToolHelper {
         symbols.put(symbol, tool);
     }
 
-    public static CompoundTag getToolTag(ItemStack stack) {
-        return stack.getOrCreateTagElement(TOOL_TAG_KEY);
+    public static ToolBehaviorsComponent getBehaviorsComponent(ItemStack stack) {
+        return stack.get(GTDataComponents.TOOL_BEHAVIOURS);
     }
 
-    public static CompoundTag getBehaviorsTag(ItemStack stack) {
-        return stack.getOrCreateTagElement(BEHAVIOURS_TAG_KEY);
-    }
-
-    public static boolean hasBehaviorsTag(ItemStack stack) {
-        return stack.getTagElement(BEHAVIOURS_TAG_KEY) != null;
+    public static boolean hasBehaviorsComponent(ItemStack stack) {
+        return stack.has(GTDataComponents.TOOL_BEHAVIOURS);
     }
 
     public static ItemStack get(GTToolType toolType, Material material) {
@@ -186,9 +174,9 @@ public class ToolHelper {
 
     public static void damageItem(@NotNull ItemStack stack, @Nullable LivingEntity user, int damage) {
         if (!(stack.getItem() instanceof IGTTool tool)) {
-            if (user != null) stack.hurtAndBreak(damage, user, p -> {});
+            if (user != null) stack.hurtAndBreak(damage, user, EquipmentSlot.MAINHAND);
         } else {
-            if (stack.getTag() != null && stack.getTag().getBoolean(UNBREAKABLE_KEY)) {
+            if (stack.has(DataComponents.UNBREAKABLE)) {
                 return;
             }
             if (!(user instanceof Player player) || !player.isCreative()) {
@@ -197,7 +185,7 @@ public class ToolHelper {
                     int electricDamage = damage * ConfigHolder.INSTANCE.machines.energyUsageMultiplier;
                     IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
                     if (electricItem != null) {
-                        electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
+                        electricItem.discharge(stack, electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&
                                 random.nextInt(100) >= ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
                             return;
@@ -249,12 +237,10 @@ public class ToolHelper {
         var entry = GTItems.TOOL_ITEMS.get(material, toolType);
         if (entry == null) return ItemStack.EMPTY;
         ItemStack stack = entry.get().getRaw();
-        stack.getOrCreateTag().putInt(HIDE_FLAGS, 2);
-        CompoundTag toolTag = getToolTag(stack);
-        toolTag.putInt(MAX_DURABILITY_KEY, maxDurability);
-        toolTag.putInt(HARVEST_LEVEL_KEY, harvestLevel);
-        toolTag.putFloat(TOOL_SPEED_KEY, toolSpeed);
-        toolTag.putFloat(ATTACK_DAMAGE_KEY, attackDamage);
+        stack.update(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(Collections.emptyList(), true), val -> val.withTooltip(false));
+        stack.set(DataComponents.MAX_DAMAGE, maxDurability);
+        GTTool toolComponent = new GTTool(Optional.of(toolSpeed), Optional.of(attackDamage), Optional.empty(), Optional.of(harvestLevel), Optional.empty());
+        stack.set(GTDataComponents.GT_TOOL, toolComponent);
         ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
         if (toolProperty != null) {
             toolProperty.getEnchantments().forEach((enchantment, level) -> {
@@ -301,12 +287,8 @@ public class ToolHelper {
         boolean apply(ItemStack stack, Level level, Player player, BlockPos start, UseOnContext context);
     }
 
-    public static AoESymmetrical getMaxAoEDefinition(ItemStack stack) {
-        return AoESymmetrical.readMax(getBehaviorsTag(stack));
-    }
-
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return AoESymmetrical.read(getBehaviorsTag(stack), getMaxAoEDefinition(stack));
+        return stack.get(GTDataComponents.AOE);
     }
 
     public static Set<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
@@ -496,17 +478,7 @@ public class ToolHelper {
     }
 
     public static double getPlayerBlockReach(@NotNull Player player) {
-        return player.getBlockReach();
-    }
-
-    public static boolean isCorrectTierForDrops(BlockState state, int tier) {
-        return TierSortingRegistry.isCorrectTierForDrops(getTier(tier), state);
-    }
-
-    private static Tier getTier(int harvestLevel) {
-        return TierSortingRegistry.getSortedTiers().stream()
-                .dropWhile(tier -> tier.getLevel() < harvestLevel || tier.getLevel() > harvestLevel).findAny()
-                .orElse(Tiers.WOOD);
+        return player.blockInteractionRange();
     }
 
     public static boolean onBlockStartBreak(ItemStack itemstack, BlockPos pos, Player player) {
@@ -535,7 +507,7 @@ public class ToolHelper {
     }
 
     public static Set<BlockPos> getHarvestableBlocks(ItemStack stack, Player player) {
-        if (!hasBehaviorsTag(stack)) return Collections.emptySet();
+        if (!hasBehaviorsComponent(stack)) return Collections.emptySet();
 
         AoESymmetrical aoeDefiniton = getAoEDefinition(stack);
         if (aoeDefiniton == AoESymmetrical.none()) {
@@ -605,11 +577,8 @@ public class ToolHelper {
     }
 
     // encompasses all vanilla special case tool checks for harvesting
-    public static boolean isToolEffective(BlockState state, Set<GTToolType> toolClasses, int harvestLevel) {
+    public static boolean isToolEffective(ItemStack stack, BlockState state, Set<GTToolType> toolClasses, int harvestLevel) {
         Block block = state.getBlock();
-        if (toolClasses.stream().anyMatch(type -> type.harvestTags.stream().anyMatch(state::is))) {
-            return isCorrectTierForDrops(state, harvestLevel);
-        }
 
         if (toolClasses.contains(GTToolType.PICKAXE)) {
             if (Blocks.OBSIDIAN == block && harvestLevel >= 3) return true;
@@ -636,7 +605,7 @@ public class ToolHelper {
         if (toolClasses.contains(GTToolType.CROWBAR)) {
             return block instanceof BaseRailBlock;
         }
-        return false;
+        return stack.get(DataComponents.TOOL).isCorrectForDrops(state);
     }
 
     /**
@@ -698,9 +667,8 @@ public class ToolHelper {
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
-                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
-                            tool.getEnchantmentLevel(Enchantments.BLOCK_FORTUNE));
-                    boolean relocateMinedBlocks = getBehaviorsTag(tool).getBoolean(RELOCATE_MINED_BLOCKS_KEY);
+                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, tool.getEnchantmentLevel(Enchantments.FORTUNE));
+                    boolean relocateMinedBlocks = tool.getOrDefault(GTDataComponents.RELOCATE_MINED_BLOCKS, false);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
                         ItemStack stack = iter.next();

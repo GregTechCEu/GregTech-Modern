@@ -20,6 +20,7 @@ import net.minecraft.core.Direction;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.Nullable;
 
@@ -186,7 +187,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
         var electricItem = GTCapabilityHelper.getElectricItem(stackInSlot);
         if (electricItem != null) {
-            if (handleElectricItem(electricItem, simulate)) {
+            if (handleElectricItem(stackInSlot, electricItem, simulate)) {
                 if (!simulate) {
                     itemHandler.setStackInSlot(slotIndex, stackInSlot);
                 }
@@ -196,7 +197,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         return false;
     }
 
-    private boolean handleElectricItem(IElectricItem electricItem, boolean simulate) {
+    private boolean handleElectricItem(ItemStack stack, IElectricItem electricItem, boolean simulate) {
         var machineTier = GTUtil.getTierByVoltage(Math.max(getInputVoltage(), getOutputVoltage()));
         var chargeTier = Math.min(machineTier, electricItem.getTier());
         var chargePercent = getEnergyStored() / (getEnergyCapacity() * 1.0);
@@ -206,8 +207,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
             // Drain from the battery if we are below half energy capacity, and if the tier matches
             if (chargePercent <= 0.5 && chargeTier == machineTier) {
-                long dischargedBy = electricItem.discharge(getEnergyCanBeInserted(), machineTier, false, true,
-                        simulate);
+                long dischargedBy = electricItem.discharge(stack, getEnergyCanBeInserted(), machineTier, false, true, simulate);
                 if (!simulate) {
                     addEnergy(dischargedBy);
                 }
@@ -217,7 +217,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
         // Else, check if we have above 65% power
         if (chargePercent > 0.65) {
-            long chargedBy = electricItem.charge(getEnergyStored(), chargeTier, false, simulate);
+            long chargedBy = electricItem.charge(stack, getEnergyStored(), chargeTier, false, simulate);
             if (!simulate) {
                 removeEnergy(chargedBy);
             }

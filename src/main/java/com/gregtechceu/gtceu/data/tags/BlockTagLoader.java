@@ -32,6 +32,9 @@ public class BlockTagLoader {
                 Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
         create(provider, CustomTags.ENDSTONE_ORE_REPLACEABLES, Blocks.END_STONE);
 
+        create(provider, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, CustomTags.NEEDS_NETHERITE_TOOL, CustomTags.NEEDS_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
+        create(provider, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, CustomTags.NEEDS_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
+
         create(provider, BlockTags.REPLACEABLE,
                 GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
                 GTMaterials.OilLight.getFluid().defaultFluidState().createLegacyBlock().getBlock(),
@@ -53,6 +56,14 @@ public class BlockTagLoader {
         var builder = provider.addTag(tagKey);
         for (Block block : rls) {
             builder.addOptional(BuiltInRegistries.BLOCK.getKey(block));
+        }
+    }
+
+    @SafeVarargs
+    public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, TagKey<Block>... rls) {
+        var builder = provider.addTag(tagKey);
+        for (TagKey<Block> tag : rls) {
+            builder.addTag(tag);
         }
     }
 

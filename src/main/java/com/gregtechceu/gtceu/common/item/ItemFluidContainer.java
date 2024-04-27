@@ -23,7 +23,10 @@ public class ItemFluidContainer implements IRecipeRemainder {
             if (drained.getAmount() != FluidHelper.getBucket()) return ItemStack.EMPTY;
             transfer.drain(FluidHelper.getBucket(), IFluidHandler.FluidAction.EXECUTE);
             var copied = storage.getStackInSlot(0);
-            copied.setTag(null);
+            // clear all components.
+            for (var key : copied.getComponents().keySet()) {
+                copied.remove(key);
+            }
             return copied;
         }
         return storage.getStackInSlot(0);

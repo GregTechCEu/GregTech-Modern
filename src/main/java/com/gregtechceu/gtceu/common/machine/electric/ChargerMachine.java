@@ -231,7 +231,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 var charged = 0L;
                 for (var electricItem : electricItems) {
                     if (electricItem instanceof IElectricItem item) {
-                        charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM), getTier(), true, false);
+                        charged += item.charge(, Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM), getTier(), true, false);
                     } else if (electricItem instanceof IEnergyStorage energyStorage) {
                         energy += FeCompat.insertEu(energyStorage, Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM));
                     }

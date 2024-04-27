@@ -21,10 +21,9 @@ import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.gui.factory.MachineUIFactory;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
@@ -204,7 +203,7 @@ public class CommonProxy {
         MaterialRegistryManager managerInternal = (MaterialRegistryManager) GTCEuAPI.materialManager;
 
         GTCEu.LOGGER.info("Registering material registries");
-        ModLoader.get().postEvent(new MaterialRegistryEvent());
+        ModLoader.postEvent(new MaterialRegistryEvent());
 
         // First, register CEu Materials
         managerInternal.unfreezeRegistries();
@@ -217,7 +216,7 @@ public class CommonProxy {
         // Then, register addon Materials
         GTCEu.LOGGER.info("Registering addon Materials");
         MaterialEvent materialEvent = new MaterialEvent();
-        ModLoader.get().postEvent(materialEvent);
+        ModLoader.postEvent(materialEvent);
         if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialRegistry();
         }
@@ -225,7 +224,7 @@ public class CommonProxy {
         // Fire Post-Material event, intended for when Materials need to be iterated over in-full before freezing
         // Block entirely new Materials from being added in the Post event
         managerInternal.closeRegistries();
-        ModLoader.get().postEvent(new PostMaterialEvent());
+        ModLoader.postEvent(new PostMaterialEvent());
         if (GTCEu.isKubeJSLoaded()) {
             KJSEventWrapper.materialModification();
         }
@@ -294,7 +293,9 @@ public class CommonProxy {
         for (Item item : BuiltInRegistries.ITEM) {
             if (item instanceof ComponentItem componentItem) {
                 componentItem.attachCapabilities(event);
-            } else if (item instanceof DrumMachineItem drum) {
+            } else if (item instanceof IGTTool tool) {
+                tool.attachCapabilities(event);
+            }else if (item instanceof DrumMachineItem drum) {
                 drum.attachCapabilities(event);
             } else if (item instanceof GTBucketItem bucket) {
                 event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), bucket);

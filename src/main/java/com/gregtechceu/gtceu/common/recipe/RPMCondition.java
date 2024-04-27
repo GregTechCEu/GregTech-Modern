@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
@@ -26,7 +27,7 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class RPMCondition extends RecipeCondition {
-    public static final Codec<RPMCondition> CODEC = RecordCodecBuilder.create(instance -> RecipeCondition.isReverse(instance)
+    public static final MapCodec<RPMCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
         .and(Codec.FLOAT.fieldOf("rpm").forGetter(val -> val.rpm))
         .apply(instance, RPMCondition::new));
 

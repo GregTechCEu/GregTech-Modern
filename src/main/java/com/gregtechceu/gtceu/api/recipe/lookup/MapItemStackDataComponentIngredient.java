@@ -5,42 +5,36 @@ import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MapItemStackNBTIngredient extends MapItemStackIngredient {
+public class MapItemStackDataComponentIngredient extends MapItemStackIngredient {
 
-    protected NBTIngredient nbtIngredient;
+    protected Ingredient nbtIngredient;
 
-    public MapItemStackNBTIngredient(ItemStack s, NBTIngredient nbtIngredient) {
+    public MapItemStackDataComponentIngredient(ItemStack s, Ingredient nbtIngredient) {
         super(s);
         this.nbtIngredient = nbtIngredient;
     }
 
     @NotNull
-    public static List<AbstractMapIngredient> from(@NotNull NBTIngredient r) {
+    public static List<AbstractMapIngredient> from(@NotNull Ingredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : r.getItems()) {
-            list.add(new MapItemStackNBTIngredient(s, r));
+            list.add(new MapItemStackDataComponentIngredient(s, r));
         }
         return list;
     }
 
     @NotNull
     public static List<AbstractMapIngredient> from(@NotNull IntCircuitIngredient r) {
-        NBTIngredient nbtIngredient = NBTIngredient.of(true, IntCircuitBehaviour.stack(r.getConfiguration()));
+        Ingredient nbtIngredient = DataComponentIngredient.of(true, IntCircuitBehaviour.stack(r.getConfiguration()));
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
-        for (ItemStack s : r.getItems()) {
-            list.add(new MapItemStackNBTIngredient(s, nbtIngredient));
-        }
+        r.getItems().forEach(s -> list.add(new MapItemStackDataComponentIngredient(s, nbtIngredient)));
         return list;
-    }
-
-    @Override
-    protected int hash() {
-        return stack.getItem().hashCode() * 31;
     }
 
     @Override
@@ -48,13 +42,13 @@ public class MapItemStackNBTIngredient extends MapItemStackIngredient {
         if (this == obj) {
             return true;
         }
-        if (obj instanceof MapItemStackNBTIngredient other) {
+        if (obj instanceof MapItemStackDataComponentIngredient other) {
             if (this.stack.getItem() != other.stack.getItem()) {
                 return false;
             }
             if (this.nbtIngredient != null) {
                 if (other.nbtIngredient != null) {
-                    return ItemStack.isSameItemSameTags(nbtIngredient.getItems()[0], other.nbtIngredient.getItems()[0]);
+                    return ItemStack.isSameItemSameComponents(nbtIngredient.getItems()[0], other.nbtIngredient.getItems()[0]);
                 }
             } else if (other.nbtIngredient != null) {
                 return other.nbtIngredient.test(this.stack);
@@ -65,7 +59,7 @@ public class MapItemStackNBTIngredient extends MapItemStackIngredient {
 
     @Override
     public String toString() {
-        return "MapItemStackNBTIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "MapItemStackDataComponentIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
     }
 
     @Override

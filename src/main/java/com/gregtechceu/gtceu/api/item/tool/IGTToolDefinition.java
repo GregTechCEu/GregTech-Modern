@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
+
+import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -19,14 +21,11 @@ public interface IGTToolDefinition {
     /**
      * Tool Component/Behaviours
      */
-    List<IToolBehavior> getBehaviors();
+    List<IToolBehavior<?>> getBehaviors();
+
+    Tool getTool();
 
     boolean isToolEffective(BlockState state);
-
-    /**
-     * Durability Spec
-     */
-    int getDamagePerAction(ItemStack stack);
 
     int getDamagePerCraftingAction(ItemStack stack);
 
@@ -37,12 +36,12 @@ public interface IGTToolDefinition {
     boolean isSuitableForCrafting(ItemStack stack);
 
     default int getToolDamagePerBlockBreak(ItemStack stack) {
-        int action = getDamagePerAction(stack);
+        int action = getTool().damagePerBlock();
         return isSuitableForBlockBreak(stack) ? action : action * 2;
     }
 
     default int getToolDamagePerAttack(ItemStack stack) {
-        int action = getDamagePerAction(stack);
+        int action = getTool().damagePerBlock();
         return isSuitableForAttacking(stack) ? action : action * 2;
     }
 
@@ -76,10 +75,6 @@ public interface IGTToolDefinition {
 
     default float getEfficiencyMultiplier(ItemStack stack) {
         return 1.0F;
-    }
-
-    default float getAttackSpeed(ItemStack stack) {
-        return 0.0F;
     }
 
     default AoESymmetrical getAoEDefinition(ItemStack stack) {

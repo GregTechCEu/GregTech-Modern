@@ -7,38 +7,38 @@ import net.minecraft.network.FriendlyByteBuf;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.lowdragmc.lowdraglib.LDLib;
-import com.mojang.datafixers.util.Pair;
+import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.*;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.util.JavaOps;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public interface IContentSerializer<T> {
 
-    default void toNetwork(FriendlyByteBuf buf, T content) {
-        buf.writeUtf(LDLib.GSON.toJson(toJson(content)));
+    default void toNetwork(RegistryFriendlyByteBuf buf, T content) {
+        buf.writeUtf(LDLib.GSON.toJson(toJson(content, buf.registryAccess())));
     }
 
-    default T fromNetwork(FriendlyByteBuf buf) {
-        return fromJson(LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class));
+    default T fromNetwork(RegistryFriendlyByteBuf buf) {
+        return fromJson(LDLib.GSON.fromJson(buf.readUtf(), JsonElement.class), buf.registryAccess());
     }
 
     default Codec<T> codec() {
         return Codec.PASSTHROUGH.flatXmap(
-            dynamic -> DataResult.success(fromJson(dynamic.convert(JsonOps.INSTANCE).getValue()), Lifecycle.stable()),
-            json -> DataResult.success(new Dynamic<>(JsonOps.INSTANCE, toJson(json)), Lifecycle.stable())
+            dynamic -> DataResult.success(fromJson(dynamic.convert(JsonOps.INSTANCE).getValue(), Platform.getFrozenRegistry()), Lifecycle.stable()),
+            json -> DataResult.success(new Dynamic<>(JsonOps.INSTANCE, toJson(json, Platform.getFrozenRegistry())), Lifecycle.stable())
         );
     }
 
-    T fromJson(JsonElement json);
+    T fromJson(JsonElement json, HolderLookup.Provider provider);
 
-    JsonElement toJson(T content);
+    JsonElement toJson(T content, HolderLookup.Provider provider);
 
     T of(Object o);
 
     T defaultValue();
 
     @SuppressWarnings("unchecked")
-    default void toNetworkContent(FriendlyByteBuf buf, Content content) {
+    default void toNetworkContent(RegistryFriendlyByteBuf buf, Content content) {
         T inner = (T) content.getContent();
         toNetwork(buf, inner);
         buf.writeFloat(content.chance);
@@ -53,7 +53,7 @@ public interface IContentSerializer<T> {
         }
     }
 
-    default Content fromNetworkContent(FriendlyByteBuf buf) {
+    default Content fromNetworkContent(RegistryFriendlyByteBuf buf) {
         T inner = fromNetwork(buf);
         float chance = buf.readFloat();
         float tierChanceBoost = buf.readFloat();
@@ -69,9 +69,9 @@ public interface IContentSerializer<T> {
     }
 
     @SuppressWarnings("unchecked")
-    default JsonElement toJsonContent(Content content) {
+    default JsonElement toJsonContent(Content content, HolderLookup.Provider provider) {
         JsonObject json = new JsonObject();
-        json.add("content", toJson((T) content.getContent()));
+        json.add("content", toJson((T) content.getContent(), provider));
         json.addProperty("chance", content.chance);
         json.addProperty("tierChanceBoost", content.tierChanceBoost);
         if (content.slotName != null)
@@ -81,9 +81,9 @@ public interface IContentSerializer<T> {
         return json;
     }
 
-    default Content fromJsonContent(JsonElement json) {
+    default Content fromJsonContent(JsonElement json, HolderLookup.Provider provider) {
         JsonObject jsonObject = json.getAsJsonObject();
-        T inner = fromJson(jsonObject.get("content"));
+        T inner = fromJson(jsonObject.get("content"), provider);
         float chance = jsonObject.has("chance") ? jsonObject.get("chance").getAsFloat() : 1;
         float tierChanceBoost = jsonObject.has("tierChanceBoost") ? jsonObject.get("tierChanceBoost").getAsFloat() : 0;
         String slotName = jsonObject.has("slotName") ? jsonObject.get("slotName").getAsString() : null;

@@ -1,26 +1,30 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.data.GTIngredientTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.IngredientType;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Set;
 import java.util.stream.Stream;
 
-public class IntCircuitIngredient extends Ingredient {
-    public static final ResourceLocation TYPE = GTCEu.id("circuit");
+public class IntCircuitIngredient implements ICustomIngredient {
+    public static final ResourceLocation ID = GTCEu.id("circuit");
 
     public static final int CIRCUIT_MIN = 0;
     public static final int CIRCUIT_MAX = 32;
-    public static final Codec<IntCircuitIngredient> CODEC = ExtraCodecs.intRange(CIRCUIT_MIN, CIRCUIT_MAX).xmap(IntCircuitIngredient::new, IntCircuitIngredient::getConfiguration);
+    public static final MapCodec<IntCircuitIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        ExtraCodecs.intRange(CIRCUIT_MIN, CIRCUIT_MAX).fieldOf("configuration").forGetter(val -> val.configuration)
+    ).apply(instance, IntCircuitIngredient::new));
+    public static final IngredientType<IntCircuitIngredient> TYPE = new IngredientType<>(CODEC);
 
     private static final IntCircuitIngredient[] INGREDIENTS = new IntCircuitIngredient[CIRCUIT_MAX + 1];
 
@@ -40,7 +44,6 @@ public class IntCircuitIngredient extends Ingredient {
     private ItemStack[] stacks;
 
     protected IntCircuitIngredient(int configuration) {
-        super(Stream.of(new Ingredient.ItemValue(IntCircuitBehaviour.stack(configuration))), GTIngredientTypes.INT_CIRCUIT_INGREDIENT);
         this.configuration = configuration;
     }
 
@@ -49,6 +52,21 @@ public class IntCircuitIngredient extends Ingredient {
         if (stack == null) return false;
         return stack.is(GTItems.INTEGRATED_CIRCUIT.get()) &&
                 IntCircuitBehaviour.getCircuitConfiguration(stack) == this.configuration;
+    }
+
+    @Override
+    public Stream<ItemStack> getItems() {
+        return Stream.of(IntCircuitBehaviour.stack(configuration));
+    }
+
+    @Override
+    public boolean isSimple() {
+        return false;
+    }
+
+    @Override
+    public IngredientType<?> getType() {
+        return TYPE;
     }
 
     public IntCircuitIngredient copy() {

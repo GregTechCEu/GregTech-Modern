@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import com.google.common.collect.Lists;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
 
 import com.google.common.collect.Lists;
 
@@ -48,17 +49,17 @@ public class IngredientEquality {
 
         @Override
         public int compare(Ingredient first, Ingredient second) {
-            if (first instanceof NBTIngredient strict1 && strict1.isStrict()) {
-                if (second instanceof NBTIngredient strict2 && strict2.isStrict()) {
-                    return strict1.test(strict2.getItems()[0]) ? 0 : 1;
+            if (first.getCustomIngredient() instanceof DataComponentIngredient strict1 && strict1.isStrict()) {
+                if (second.getCustomIngredient() instanceof DataComponentIngredient strict2 && strict2.isStrict()) {
+                    return strict1.test(strict2.getItems().findFirst().orElse(ItemStack.EMPTY)) ? 0 : 1;
                 }
                 return 1;
             }
-            if (first instanceof NBTIngredient partial1 && !partial1.isStrict()) {
-                if (second instanceof NBTIngredient partial2 && !partial2.isStrict()) {
-                    if (partial1.getItems().length != partial2.getItems().length)
+            if (first.getCustomIngredient() instanceof DataComponentIngredient partial1 && !partial1.isStrict()) {
+                if (second.getCustomIngredient() instanceof DataComponentIngredient partial2 && !partial2.isStrict()) {
+                    if (partial1.getItems().count() != partial2.getItems().count())
                         return 1;
-                    for (ItemStack stack : partial1.getItems()) {
+                    for (ItemStack stack : partial1.getItems().toList()) {
                         if (!partial2.test(stack)) {
                             return 1;
                         }
@@ -68,10 +69,10 @@ public class IngredientEquality {
                 return 1;
             }
 
-            if (first instanceof IntersectionIngredient intersection1) {
-                if (second instanceof IntersectionIngredient intersection2) {
-                    List<Ingredient> ingredients1 = Lists.newArrayList(intersection1.getChildren());
-                    List<Ingredient> ingredients2 = Lists.newArrayList(intersection2.getChildren());
+            if (first.getCustomIngredient() instanceof IntersectionIngredient intersection1) {
+                if (second.getCustomIngredient() instanceof IntersectionIngredient intersection2) {
+                    List<Ingredient> ingredients1 = Lists.newArrayList(intersection1.children());
+                    List<Ingredient> ingredients2 = Lists.newArrayList(intersection2.children());
                     if (ingredients1.size() != ingredients2.size()) return 1;
 
                     ingredients1.sort(this);
@@ -111,18 +112,15 @@ public class IngredientEquality {
         }
     };
 
+    public static boolean ingredientEquals(SizedIngredient first, SizedIngredient second) {
+        if (first == second) return true;
+
+        return cmp(first.ingredient(), second.ingredient());
+    }
+
     public static boolean ingredientEquals(Ingredient first, Ingredient second) {
         if (first == second) return true;
 
-        if (first instanceof SizedIngredient sized1) {
-            if (second instanceof SizedIngredient sized2) {
-                return cmp(sized1.getInner(), sized2.getInner());
-            } else {
-                return cmp(sized1, second);
-            }
-        } else if (second instanceof SizedIngredient sized2) {
-            return cmp(first, sized2.getInner());
-        }
         return cmp(first, second);
     }
 
