@@ -287,8 +287,6 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
-            var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
 
             // important not to use getters here, which have different logic
