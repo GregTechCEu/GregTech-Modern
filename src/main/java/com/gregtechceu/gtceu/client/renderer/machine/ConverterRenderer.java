@@ -23,14 +23,31 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ConverterRenderer extends TieredHullMachineRenderer {
+    private final ResourceLocation ENERGY_IN;
+    private final ResourceLocation ENERGY_OUT;
+    private static final ResourceLocation CONVERTER_FE_IN = GTCEu.id("block/overlay/converter/converter_native_in");
+    private static final ResourceLocation CONVERTER_FE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
 
-    private static final ResourceLocation ENERGY_IN = GTCEu.id("block/overlay/machine/overlay_energy_in"),
-            ENERGY_OUT = GTCEu.id("block/overlay/machine/overlay_energy_out"),
-            CONVERTER_NATIVE_IN = GTCEu.id("block/overlay/converter/converter_native_in"),
-            CONVERTER_NATIVE_OUT = GTCEu.id("block/overlay/converter/converter_native_out");
-
-    public ConverterRenderer(int tier) {
+    public ConverterRenderer(int tier, int baseAmp) {
         super(tier, GTCEu.id("block/machine/hull_machine"));
+        switch (baseAmp){
+            case 4:
+                ENERGY_IN = TransformerRenderer.ENERGY_IN_4A;
+                ENERGY_OUT = TransformerRenderer.ENERGY_OUT_4A;
+                break;
+            case 8:
+                ENERGY_IN = TransformerRenderer.ENERGY_IN_8A;
+                ENERGY_OUT = TransformerRenderer.ENERGY_OUT_8A;
+                break;
+            case 16:
+                ENERGY_IN = TransformerRenderer.ENERGY_IN_16A;
+                ENERGY_OUT = TransformerRenderer.ENERGY_OUT_16A;
+                break;
+            default:
+                ENERGY_IN = TransformerRenderer.ENERGY_IN_1A;
+                ENERGY_OUT = TransformerRenderer.ENERGY_OUT_1A;
+                break;
+        }
     }
 
     @Override
@@ -40,17 +57,17 @@ public class ConverterRenderer extends TieredHullMachineRenderer {
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         var otherFaceTexture = ENERGY_IN;
-        var frontFaceTexture = CONVERTER_NATIVE_OUT;
+        var frontFaceTexture = CONVERTER_FE_OUT;
+        var isFeToEu = false;
         if (machine instanceof ConverterMachine converter) {
-            otherFaceTexture = converter.isFeToEu() ? CONVERTER_NATIVE_IN : otherFaceTexture;
+            otherFaceTexture = converter.isFeToEu() ? CONVERTER_FE_IN : otherFaceTexture;
             frontFaceTexture = converter.isFeToEu() ? ENERGY_OUT : frontFaceTexture;
+            isFeToEu = converter.isFeToEu();
         }
         if (side == frontFacing && modelFacing != null) {
-            quads.add(
-                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(frontFaceTexture), modelState, (isFeToEu?2:-1)));
         } else if (side != null && modelFacing != null) {
-            quads.add(
-                    StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState));
+            quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(otherFaceTexture), modelState, (isFeToEu?-1:2)));
         }
     }
 
@@ -58,8 +75,8 @@ public class ConverterRenderer extends TieredHullMachineRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            register.accept(CONVERTER_NATIVE_IN);
-            register.accept(CONVERTER_NATIVE_OUT);
+            register.accept(CONVERTER_FE_IN);
+            register.accept(CONVERTER_FE_OUT);
         }
     }
 }

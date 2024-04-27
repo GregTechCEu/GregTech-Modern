@@ -27,17 +27,20 @@ import java.util.function.Consumer;
  * @date 2023/3/10
  * @implNote TransformerRenderer
  */
-public class TransformerRenderer extends TieredHullMachineRenderer {
+public class TransformerRenderer extends TieredHullMachineRenderer{
+    public final static ResourceLocation ENERGY_IN_1A = GTCEu.id("block/overlay/machine/overlay_energy_in_1a");
+    public final static ResourceLocation ENERGY_IN_2A = GTCEu.id("block/overlay/machine/overlay_energy_in_2a");
+    public final static ResourceLocation ENERGY_IN_4A = GTCEu.id("block/overlay/machine/overlay_energy_in_4a");
+    public final static ResourceLocation ENERGY_IN_8A = GTCEu.id("block/overlay/machine/overlay_energy_in_8a");
+    public final static ResourceLocation ENERGY_IN_16A = GTCEu.id("block/overlay/machine/overlay_energy_in_16a");
+    public final static ResourceLocation ENERGY_IN_64A = GTCEu.id("block/overlay/machine/overlay_energy_in_64a");
 
-    public final static ResourceLocation ENERGY_IN = GTCEu.id("block/overlay/machine/overlay_energy_in");
-    public final static ResourceLocation ENERGY_OUT = GTCEu.id("block/overlay/machine/overlay_energy_out");
-    public final static ResourceLocation ENERGY_IN_HI = GTCEu.id("block/overlay/machine/overlay_energy_in_hi");
-    public final static ResourceLocation ENERGY_OUT_HI = GTCEu.id("block/overlay/machine/overlay_energy_out_hi");
-    public final static ResourceLocation ENERGY_IN_MULTI = GTCEu.id("block/overlay/machine/overlay_energy_in_multi");
-    public final static ResourceLocation ENERGY_OUT_MULTI = GTCEu.id("block/overlay/machine/overlay_energy_out_multi");
-    public final static ResourceLocation ENERGY_IN_ULTRA = GTCEu.id("block/overlay/machine/overlay_energy_in_ultra");
-    public final static ResourceLocation ENERGY_OUT_ULTRA = GTCEu.id("block/overlay/machine/overlay_energy_out_ultra");
-
+    public final static ResourceLocation ENERGY_OUT_1A = GTCEu.id("block/overlay/machine/overlay_energy_out_1a");
+    public final static ResourceLocation ENERGY_OUT_2A = GTCEu.id("block/overlay/machine/overlay_energy_out_2a");
+    public final static ResourceLocation ENERGY_OUT_4A = GTCEu.id("block/overlay/machine/overlay_energy_out_4a");
+    public final static ResourceLocation ENERGY_OUT_8A = GTCEu.id("block/overlay/machine/overlay_energy_out_8a");
+    public final static ResourceLocation ENERGY_OUT_16A = GTCEu.id("block/overlay/machine/overlay_energy_out_16a");
+    public final static ResourceLocation ENERGY_OUT_64A = GTCEu.id("block/overlay/machine/overlay_energy_out_64a");
     private final int baseAmp;
 
     public TransformerRenderer(int tier, int baseAmp) {
@@ -51,8 +54,8 @@ public class TransformerRenderer extends TieredHullMachineRenderer {
                               Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
                               ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        var otherFaceTexture = ENERGY_OUT;
-        var frontFaceTexture = ENERGY_IN_MULTI;
+        var otherFaceTexture = ENERGY_OUT_4A;
+        var frontFaceTexture = ENERGY_IN_1A;
         var isTransformUp = false;
         if (machine instanceof TransformerMachine transformer) {
             isTransformUp = transformer.isTransformUp();
@@ -60,17 +63,20 @@ public class TransformerRenderer extends TieredHullMachineRenderer {
 
         switch (baseAmp) {
             case 1 -> { // 1A <-> 4A
-                otherFaceTexture = isTransformUp ? ENERGY_IN : otherFaceTexture;
-                frontFaceTexture = isTransformUp ? ENERGY_OUT_MULTI : frontFaceTexture;
+                otherFaceTexture = isTransformUp ? ENERGY_IN_4A : otherFaceTexture;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_1A : frontFaceTexture;
             }
             case 2 -> { // 2A <-> 8A
-                otherFaceTexture = isTransformUp ? ENERGY_IN_MULTI : ENERGY_OUT_MULTI;
-                frontFaceTexture = isTransformUp ? ENERGY_OUT_HI : ENERGY_IN_HI;
+                otherFaceTexture = isTransformUp ? ENERGY_IN_8A : ENERGY_OUT_8A;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_2A : ENERGY_IN_2A;
             }
-            // 4A <-> 16A
+            case 4 -> { // 4A <-> 16A
+                otherFaceTexture = isTransformUp ? ENERGY_IN_16A : ENERGY_OUT_16A;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_4A : ENERGY_IN_4A;
+            }
             default -> { // 16A <-> 64A or more
-                otherFaceTexture = isTransformUp ? ENERGY_IN_HI : ENERGY_OUT_HI;
-                frontFaceTexture = isTransformUp ? ENERGY_OUT_ULTRA : ENERGY_IN_ULTRA;
+                otherFaceTexture = isTransformUp ? ENERGY_IN_64A : ENERGY_OUT_64A;
+                frontFaceTexture = isTransformUp ? ENERGY_OUT_16A : ENERGY_IN_16A;
 
             }
         }
@@ -89,14 +95,19 @@ public class TransformerRenderer extends TieredHullMachineRenderer {
     public void onPrepareTextureAtlas(ResourceLocation atlasName, Consumer<ResourceLocation> register) {
         super.onPrepareTextureAtlas(atlasName, register);
         if (atlasName.equals(TextureAtlas.LOCATION_BLOCKS)) {
-            register.accept(ENERGY_IN);
-            register.accept(ENERGY_OUT);
-            register.accept(ENERGY_IN_MULTI);
-            register.accept(ENERGY_OUT_MULTI);
-            register.accept(ENERGY_IN_HI);
-            register.accept(ENERGY_OUT_HI);
-            register.accept(ENERGY_IN_ULTRA);
-            register.accept(ENERGY_OUT_ULTRA);
+            register.accept(ENERGY_IN_1A);
+            register.accept(ENERGY_IN_2A);
+            register.accept(ENERGY_IN_4A);
+            register.accept(ENERGY_IN_8A);
+            register.accept(ENERGY_IN_16A);
+            register.accept(ENERGY_IN_64A);
+
+            register.accept(ENERGY_OUT_1A);
+            register.accept(ENERGY_OUT_2A);
+            register.accept(ENERGY_OUT_4A);
+            register.accept(ENERGY_OUT_8A);
+            register.accept(ENERGY_OUT_16A);
+            register.accept(ENERGY_OUT_64A);
         }
     }
 }

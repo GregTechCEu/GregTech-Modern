@@ -1,6 +1,6 @@
 {
 	"parent": "gtceu:block/overlay/tinted/front_2",
 	"textures": {
-		"overlay": "gtceu:block/overlay/machine/overlay_energy_out_ultra"
+		"overlay": "gtceu:block/overlay/machine/overlay_energy_in_16a"
 	}
 }
