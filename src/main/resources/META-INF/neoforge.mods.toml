@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[${loader_version},)"
-#issueTrackerURL = ""
+issueTrackerURL = "${mod_issue_tracker}"
 license = "${mod_license}"
 
 [[mods]]

@@ -3,7 +3,7 @@ plugins {
     id 'eclipse'
     id 'idea'
     id 'maven-publish'
-    id 'net.neoforged.gradle.userdev' version '7.0.57'
+    id 'net.neoforged.gradle.userdev' version '7.0.107'
     alias libs.plugins.machete // automatic jar compressing on build
     alias libs.plugins.shadow
 }
@@ -15,8 +15,8 @@ base {
     archivesName = mod_id
 }
 
-// Mojang ships Java 17 to end users in 1.18+, so your mod should target Java 17.
-java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+// Mojang ships Java 21 to end users in 1.20.5+, so your mod should target Java 21.
+java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 
 apply from: "$rootDir/gradle/scripts/neogradle.gradle"
 apply from: "$rootDir/gradle/scripts/capabilities.gradle"
@@ -32,8 +32,4 @@ sourceSets.main.resources { srcDir 'src/generated/resources' }
 machete {
     // disable machete locally for faster builds
     enabled = false
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8' // Use the UTF-8 charset for Java compilation
 }

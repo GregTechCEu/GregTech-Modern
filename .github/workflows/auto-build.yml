@@ -3,7 +3,7 @@ name: auto-build
 on:
   push:
     branches:
-      - '1.20.4'
+      - '1.20.5'
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
 
       - uses: actions/setup-java@v3
         with:
-          java-version: '17'
+          java-version: '21'
           distribution: 'adopt'
 
       - name: Validate Gradle wrapper
