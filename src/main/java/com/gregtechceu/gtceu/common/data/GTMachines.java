@@ -1108,7 +1108,7 @@ public class GTMachines {
                     .build())
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()                
+                var builder = MultiblockShapeInfo.builder()
                     .aisle("IXO", "XSX", "FMD")
                     .aisle("CCC", "C#C", "CCC")
                     .aisle("CCC", "C#C", "CCC")
@@ -1213,7 +1213,7 @@ public class GTMachines {
                     .aisle("ECHCH", "H###H", "HCHCH")
                     .aisle("ECHCH", "HCXCH", "HCHCH")
                     .where('S', definition, Direction.NORTH)
-                    .where('H', CASING_STAINLESS_CLEAN.getDefaultState()) 
+                    .where('H', CASING_STAINLESS_CLEAN.getDefaultState())
                     .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.WEST)
                     .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
                     .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
@@ -1305,7 +1305,7 @@ public class GTMachines {
                     .where('R', blocks(CASING_LAMINATED_GLASS.get()))
                     .where('T', blocks(CASING_ASSEMBLY_LINE.get()))
                     .where('D', dataHatchPredicate(blocks(CASING_GRATE.get())))
-                .where('#', Predicates.any())
+                    .where('#', Predicates.any())
                     .build())
             .workableCasingRenderer(GTCEu.id("block/casings/solid/machine_casing_solid_steel"),
                     GTCEu.id("block/multiblock/assembly_line"), false)
