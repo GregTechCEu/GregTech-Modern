@@ -12,10 +12,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.machine.multiblock.TieredWorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.machine.multiblock.*;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -116,6 +113,9 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
     }
     public static MachineBuilder<MultiblockMachineDefinition> createComputationProviderMachineMultiblock(String name, Object... args){
         return new CustomMultiblockBuilder(name,(holder)->new ComputationProviderMachine(holder,args));
+    }
+    public static MachineBuilder<MultiblockMachineDefinition> createCoilMultiblock(String name, Object... args){
+        return new CustomMultiblockBuilder(name, CoilWorkableElectricMultiblockMachine::new);
     }
 
     public static CustomMultiblockBuilder tieredBuilder(String name, CustomMultiblockBuilder[] builders) {

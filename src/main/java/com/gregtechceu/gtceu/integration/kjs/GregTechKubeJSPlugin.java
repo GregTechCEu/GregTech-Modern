@@ -108,6 +108,7 @@ public class GregTechKubeJSPlugin extends KubeJSPlugin {
         GTRegistryInfo.MACHINE.addType("steam", SteamMachineBuilder.class, (id, args) -> SteamMachineBuilder.createBoth(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("generator", GeneratorBuilder.class, (id, args) -> GeneratorBuilder.createAll(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("multiblock", CustomMultiblockBuilder.class, (id, args) -> CustomMultiblockBuilder.createMultiblock(id.getPath(), args), false);
+        GTRegistryInfo.MACHINE.addType("coilMultiblock", CustomMultiblockBuilder.class, (id, args) -> CustomMultiblockBuilder.createCoilMultiblock(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("hpca", CustomMultiblockBuilder.class, (id, args) -> CustomMultiblockBuilder.createComputationProviderMachineMultiblock(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("primitive", CustomMultiblockBuilder.class, (id, args) -> CustomMultiblockBuilder.createPrimitiveMultiblock(id.getPath(), args), false);
         GTRegistryInfo.MACHINE.addType("kinetic", KineticMachineBuilder.class, (id, args) -> KineticMachineBuilder.createAll(id.getPath(), args), false);
