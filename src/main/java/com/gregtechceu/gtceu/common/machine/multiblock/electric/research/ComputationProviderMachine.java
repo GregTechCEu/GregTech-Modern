@@ -48,6 +48,10 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
     }
 
     private int allocatedCWUt(int cwut, boolean simulate) {
+        if (totalCWU < getMaxCWUt()) {
+            totalCWU += machineCallback("requestCWUt", null, 0);
+            maxCWUt = 0;
+        }
         int maxCWUt = getMaxCWUt();
         int availableCWUt = maxCWUt - this.allocatedCWUt;
         int toAllocate = Math.min(cwut, (int) Math.min(availableCWUt, totalCWU));
@@ -89,10 +93,6 @@ public class ComputationProviderMachine extends WorkableElectricMultiblockMachin
             allocatedCWUt = 0;
         }else{
             getRecipeLogic().setStatus(RecipeLogic.Status.IDLE);
-        }
-        if (totalCWU < getMaxCWUt()) {
-            totalCWU += machineCallback("requestCWUt", null, 0);
-            maxCWUt = 0;
         }
     }
 

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
@@ -8,7 +7,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-
+import dev.latvian.mods.kubejs.util.ConsoleJS;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,15 +106,22 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     @SuppressWarnings("unchecked")
     default <T> T machineCallback(String str, @Nullable Object value, @Nullable T defaultValue) {
         var callback = self().getDefinition().getCustomCallback().get(str);
+        Object res;
         if (callback != null) {
-            var res = callback.apply(this, value);
-            if (defaultValue == null) {
-                return null;
+            try {
+                res = callback.apply(this, value);
+                if (defaultValue == null) {
+                    return null;
+                }
+                if (defaultValue.getClass().isInstance(res)) {
+                    return (T)res;
+                }
+                return (T) convertValue(res, defaultValue.getClass());
+            }catch (Exception e){
+                ConsoleJS.STARTUP.error(e.getMessage());
+                return defaultValue;
             }
-            if (defaultValue.getClass().isInstance(res)) {
-                return (T)res;
-            }
-            return (T) convertValue(res, defaultValue.getClass());
+
         }
         return defaultValue;
     }
@@ -136,7 +142,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
                 return (T) (Double) number.doubleValue();
             }
         }
-        throw new IllegalArgumentException("Cannot convert " + value.getClass() + " to " + targetClass);
+        throw new ClassCastException("Cannot convert " + value.getClass() + " to " + targetClass);
     }
 
 

@@ -73,7 +73,6 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import org.jetbrains.annotations.NotNull;
 import java.util.HashMap;
 import java.util.Locale;
@@ -82,10 +81,9 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
-
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 /**
  * @author KilaBash
  * @date 2023/2/13
@@ -840,8 +838,7 @@ public class GTBlocks {
         ALL_FILTERS.put(filterType, filterBlock);
         return filterBlock;
     }
-
-    protected static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
+    public static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
         String finalName = "%s".formatted(name);
         return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
                         Platform.isClient() ? new CTMModelRenderer(GTCEu.id(baseModelPath)) : null,
