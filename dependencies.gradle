@@ -10,13 +10,13 @@ dependencies {
     jarJar("com.tterrag.registrate:Registrate:${forge.versions.registrate.get()}")
 
     // Create and its dependencies
-    implementation("com.simibubi.create:create-${libs.versions.minecraftOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
-    implementation forge.flywheel
+    compileOnly("com.simibubi.create:create-${libs.versions.minecraftVeryOld.get()}:${forge.versions.createForge.get()}:all") { transitive = false }
+    compileOnly forge.flywheel
 
     // JEI
     compileOnly(forge.jei.common.api) { transitive = false }
     compileOnly(forge.jei.forge.api) { transitive = false }
-    implementation(forge.jei.forge.impl) { transitive = false }
+    compileOnly(forge.jei.forge.impl) { transitive = false }
 
     // REI
     compileOnly forge.rei.plugin
@@ -40,7 +40,7 @@ dependencies {
     compileOnly(forge.almostUnified.forge)
 
     // KJS
-    implementation forge.kubejs
+    compileOnly forge.kubejs
 
     // Configuration
     implementation(forge.configuration)
@@ -55,6 +55,6 @@ dependencies {
     //runtimeOnly(forge.worldStripper)
 
     // lombok
-    compileOnly 'org.projectlombok:lombok:1.18.24'
-    annotationProcessor 'org.projectlombok:lombok:1.18.24'
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
 }

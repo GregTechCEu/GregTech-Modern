@@ -19,13 +19,8 @@ jobs:
         uses: dorny/paths-filter@v3
         id: filter
         with:
-          filters: |
-            code:
-              - 'src/**'
-              - '**.gradle'
-              - 'gradle.properties'
-              - 'gradlew**'
-              - 'gradle/**'
+          java-version: '21'
+          distribution: 'adopt'
 
       - name: Setup Build
         if: steps.filter.outputs.code == 'true'
