@@ -66,13 +66,6 @@ public interface IGTAddon {
     }
 
     /**
-     * Call init on your custom Recipe Conditions here
-     */
-    default void registerRecipeConditions() {
-
-    }
-
-    /**
      * Call init on your custom IWorldGenLayer class(es) here
      */
     default void registerWorldgenLayers() {

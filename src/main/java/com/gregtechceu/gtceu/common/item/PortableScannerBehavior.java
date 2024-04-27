@@ -8,10 +8,8 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
-import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
@@ -20,6 +18,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -27,6 +26,7 @@ import lombok.Getter;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -44,12 +44,10 @@ import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 public class PortableScannerBehavior implements IInteractionItem, IAddInformation {
 
@@ -126,12 +124,11 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     protected boolean drainEnergy(@Nonnull ItemStack stack, int amount, boolean simulate) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
-        return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
+        return electricItem.discharge(stack, amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }
 
     protected void setNextMode(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putInt("Mode", (tag.getInt("Mode") + 1) % DisplayMode.values().length);
+        stack.update(GTDataComponents.SCANNER_MODE, (byte)0, mode -> (byte) ((mode + 1) % DisplayMode.values().length));
     }
 
     @Nonnull
@@ -139,11 +136,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         if (stack == ItemStack.EMPTY) {
             return DisplayMode.SHOW_ALL;
         }
-        var tag = stack.getTag();
-        if (tag == null) {
-            return DisplayMode.SHOW_ALL;
-        }
-        return DisplayMode.values()[tag.getInt("Mode") % DisplayMode.values().length];
+        return DisplayMode.values()[stack.get(GTDataComponents.SCANNER_MODE) % DisplayMode.values().length];
 
     }
 
@@ -216,7 +209,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                                 .withStyle(ChatFormatting.GREEN),
                             Component.translatable(FormattingUtil.formatNumbers(fluidHandler.getTankCapacity(i)))
                                 .withStyle(ChatFormatting.YELLOW),
-                            Component.translatable(fluidStack.getTranslationKey())
+                            ((MutableComponent)fluidStack.getHoverName())
                                 .withStyle(ChatFormatting.GOLD)));
                     }
 
@@ -372,7 +365,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
                     if (player.isCreative()) {
                         list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.amount",
-                            Component.translatable(stack.getTranslationKey())
+                            ((MutableComponent)stack.getHoverName())
                                 .withStyle(ChatFormatting.GOLD),
                             Component.translatable(String.valueOf(
                                     veinData.getFluidYield(pos.getX() / 16, pos.getZ() / 16)))
@@ -411,7 +404,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("metaitem.behavior.mode_switch.tooltip"));
         tooltipComponents.add(Component.translatable("behavior.portable_scanner.mode.caption", Component.translatable(getMode(stack).getLangKey()).withStyle(ChatFormatting.AQUA)));
     }

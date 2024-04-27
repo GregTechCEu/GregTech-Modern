@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.levelgen.DensityFunction;
 import net.minecraft.world.level.levelgen.DensityFunctions;
@@ -15,7 +15,7 @@ import static com.gregtechceu.gtceu.common.data.GTFeatures.NEW_ORE_VEIN_TOGGLE;
 
 public class GTWorldgen {
 
-    public static void bootstrapDensityFunctions(BootstapContext<DensityFunction> ctx) {
+    public static void bootstrapDensityFunctions(BootstrapContext<DensityFunction> ctx) {
         HolderGetter<NormalNoise.NoiseParameters> noises = ctx.lookup(Registries.NOISE);
 
         Holder<NormalNoise.NoiseParameters> oreVeininess = noises.getOrThrow(Noises.ORE_VEININESS);

@@ -8,7 +8,7 @@ import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.GenerationStep;
@@ -23,7 +23,7 @@ public class GTBiomeModifiers {
     public static final ResourceKey<BiomeModifier> RUBBER = ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.id("rubber_tree"));
 
 
-    public static void bootstrap(BootstapContext<BiomeModifier> ctx, CompletableFuture<HolderLookup.Provider> provider) {
+    public static void bootstrap(BootstrapContext<BiomeModifier> ctx, CompletableFuture<HolderLookup.Provider> provider) {
         HolderGetter<Biome> biomeLookup = ctx.lookup(Registries.BIOME);
         HolderGetter<PlacedFeature> placedFeatureRegistry = ctx.lookup(Registries.PLACED_FEATURE);
         /*HolderSet<Biome> biomes = new AnyHolderSet<>(ctx.registryLookup(Registries.BIOME).orElseThrow());

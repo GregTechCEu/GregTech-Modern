@@ -21,7 +21,6 @@ public class GTCapability {
     public static final BlockCapability<IWorkable, Direction> CAPABILITY_WORKABLE = BlockCapability.createSided(GTCEu.id("workable"), IWorkable.class);
     public static final BlockCapability<IControllable, Direction> CAPABILITY_CONTROLLABLE = BlockCapability.createSided(GTCEu.id("controllable"), IControllable.class);
     public static final BlockCapability<RecipeLogic, Direction> CAPABILITY_RECIPE_LOGIC = BlockCapability.createSided(GTCEu.id("recipe_logic"), RecipeLogic.class);
-    public static final ItemCapability<IElectricItem, Void> CAPABILITY_ELECTRIC_ITEM = ItemCapability.createVoid(GTCEu.id("electric_item"), IElectricItem.class);
     public static final BlockCapability<ICleanroomReceiver, Direction> CAPABILITY_CLEANROOM_RECEIVER = BlockCapability.createSided(GTCEu.id("cleanroom_receiver"), ICleanroomReceiver.class);
     public static final BlockCapability<IMaintenanceMachine, Direction> CAPABILITY_MAINTENANCE_MACHINE = BlockCapability.createSided(GTCEu.id("maintenance"), IMaintenanceMachine.class);
     public static final BlockCapability<ILaserContainer, Direction> CAPABILITY_LASER = BlockCapability.createSided(GTCEu.id("laser_container"), ILaserContainer.class);

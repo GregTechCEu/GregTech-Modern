@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.damagesource.DamageTypeData;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;
 
@@ -41,7 +41,7 @@ public class GTDamageTypes {
 
     }
 
-    public static void bootstrap(BootstapContext<DamageType> ctx) {
+    public static void bootstrap(BootstrapContext<DamageType> ctx) {
         DamageTypeData.allInNamespace(GTCEu.MOD_ID).forEach(data -> data.register(ctx));
     }
 }

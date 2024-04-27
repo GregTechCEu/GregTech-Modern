@@ -73,7 +73,7 @@ public class MixinHelpers {
                 map.forEach((type, item) -> {
                     if (item != null) {
                         var entry = new TagLoader.EntryWithSource(TagEntry.element(item.getId()), GTValues.CUSTOM_TAG_SOURCE);
-                        for (TagKey<Item> tag : type.itemTags) {
+                        for (TagKey<Item> tag : type.tool) {
                             tagMap.computeIfAbsent(tag.location(), path -> new ArrayList<>()).add(entry);
                         }
                     }

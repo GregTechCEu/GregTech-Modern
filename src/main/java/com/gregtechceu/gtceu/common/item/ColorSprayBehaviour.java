@@ -178,7 +178,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         int remainingUses = getUsesLeft(stack);
         if (color != null) {
             tooltipComponents.add(Component.translatable("behaviour.paintspray." + this.color.getSerializedName() + ".tooltip"));

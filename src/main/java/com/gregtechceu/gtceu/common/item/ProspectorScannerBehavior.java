@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -9,6 +8,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -23,7 +23,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.Nullable;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
@@ -51,23 +50,17 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
         if (stack == ItemStack.EMPTY) {
             return modes[0];
         }
-        var tag = stack.getTag();
-        if (tag == null) {
-            return modes[0];
-        }
-        return modes[tag.getInt("Mode") % modes.length];
-
+        return modes[stack.getOrDefault(GTDataComponents.SCANNER_MODE, (byte)0) % modes.length];
     }
 
     public void setNextMode(ItemStack stack) {
-        var tag = stack.getOrCreateTag();
-        tag.putInt("Mode", (tag.getInt("Mode") + 1) % modes.length);
+        stack.update(GTDataComponents.SCANNER_MODE, (byte)0, mode -> (byte) ((mode + 1) % modes.length));
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
-        return electricItem.discharge(cost, Integer.MAX_VALUE, true, false, simulate) >= cost;
+        return electricItem.discharge(stack, cost, Integer.MAX_VALUE, true, false, simulate) >= cost;
     }
 
     @Override
@@ -103,7 +96,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.radius", radius));
         tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.modes"));
         for (ProspectorMode<?> mode : modes) {

@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.google.gson.JsonElement;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.mojang.serialization.JsonOps;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
@@ -14,23 +14,23 @@ public class SerializerFluidIngredient implements IContentSerializer<FluidIngred
     private SerializerFluidIngredient() {}
 
     @Override
-    public void toNetwork(FriendlyByteBuf buf, FluidIngredient content) {
+    public void toNetwork(RegistryFriendlyByteBuf buf, FluidIngredient content) {
         content.toNetwork(buf);
     }
 
     @Override
-    public FluidIngredient fromNetwork(FriendlyByteBuf buf) {
+    public FluidIngredient fromNetwork(RegistryFriendlyByteBuf buf) {
         return FluidIngredient.fromNetwork(buf);
     }
 
     @Override
-    public FluidIngredient fromJson(JsonElement json) {
+    public FluidIngredient fromJson(JsonElement json, HolderLookup.Provider provider) {
         return FluidIngredient.fromJson(json);
     }
 
     @Override
-    public JsonElement toJson(FluidIngredient content) {
-        return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, content).getOrThrow(false, GTCEu.LOGGER::error);
+    public JsonElement toJson(FluidIngredient content, HolderLookup.Provider provider) {
+        return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, content).getOrThrow();
     }
 
     @Override

@@ -19,7 +19,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -222,7 +224,7 @@ public class GTRecipeBuilder {
         return output(CWURecipeCapability.CAP, cwu);
     }
 
-    public GTRecipeBuilder inputItems(Ingredient... inputs) {
+    public GTRecipeBuilder inputItems(SizedIngredient... inputs) {
         return input(ItemRecipeCapability.CAP, inputs);
     }
 
@@ -231,7 +233,11 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
             throw new IllegalArgumentException(id + ": input items is empty");
         }
-        return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
+        if (input.getComponents().isEmpty()) {
+            return input(ItemRecipeCapability.CAP, SizedIngredient.of(input.getItem(), input.getCount()));
+        } else {
+            return input(ItemRecipeCapability.CAP, new SizedIngredient(DataComponentIngredient.of(true, input), input.getCount()));
+        }
     }
 
     public GTRecipeBuilder inputItems(ItemStack... inputs) {
@@ -241,11 +247,17 @@ public class GTRecipeBuilder {
                 throw new IllegalArgumentException(id + ": input items is empty");
             }
         }
-        return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(SizedIngredient::create).toArray(Ingredient[]::new));
+        return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> {
+            if (stack.getComponents().isEmpty()) {
+                return SizedIngredient.of(stack.getItem(), stack.getCount());
+            } else {
+                return new SizedIngredient(DataComponentIngredient.of(true, stack), stack.getCount());
+            }
+        }).toArray(SizedIngredient[]::new));
     }
 
     public GTRecipeBuilder inputItems(TagKey<Item> tag, int amount) {
-        return inputItems(SizedIngredient.create(tag, amount));
+        return inputItems(SizedIngredient.of(tag, amount));
     }
 
     public GTRecipeBuilder inputItems(TagKey<Item> tag) {
@@ -257,7 +269,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputItems(Item input) {
-        return inputItems(SizedIngredient.create(new ItemStack(input)));
+        return inputItems(SizedIngredient.of(input, 1));
     }
 
     public GTRecipeBuilder inputItems(Supplier<? extends Item> input) {
@@ -314,7 +326,7 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
             throw new IllegalArgumentException(id + ": output items is empty");
         }
-        return output(ItemRecipeCapability.CAP, SizedIngredient.create(output));
+        return output(ItemRecipeCapability.CAP, new SizedIngredient(DataComponentIngredient.of(true, output), output.getCount()));
     }
 
     public GTRecipeBuilder outputItems(ItemStack... outputs) {
@@ -324,7 +336,7 @@ public class GTRecipeBuilder {
                 throw new IllegalArgumentException(id + ": output items is empty");
             }
         }
-        return output(ItemRecipeCapability.CAP, Arrays.stream(outputs).map(SizedIngredient::create).toArray(Ingredient[]::new));
+        return output(ItemRecipeCapability.CAP, Arrays.stream(outputs).map(item -> new SizedIngredient(DataComponentIngredient.of(true, item), item.getCount())).toArray(SizedIngredient[]::new));
     }
 
     public GTRecipeBuilder outputItems(Item input, int amount) {
@@ -367,7 +379,7 @@ public class GTRecipeBuilder {
         return this;
     }
 
-    public GTRecipeBuilder notConsumable(Ingredient ingredient) {
+    public GTRecipeBuilder notConsumable(SizedIngredient ingredient) {
         float lastChance = this.chance;
         this.chance = 0;
         inputItems(ingredient);
@@ -413,7 +425,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder circuitMeta(int configuration) {
-        return notConsumable(IntCircuitIngredient.circuitInput(configuration));
+        return notConsumable(new SizedIngredient(IntCircuitIngredient.circuitInput(configuration).toVanilla(), 1));
     }
 
     public GTRecipeBuilder chancedInput(ItemStack stack, int chance, int tierChanceBoost) {
@@ -548,7 +560,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder explosivesType(ItemStack explosivesType) {
-        return addData("explosives_type", explosivesType.save(new CompoundTag()));
+        return addData("explosives_type", explosivesType.save(Platform.getFrozenRegistry()));
     }
 
     public GTRecipeBuilder solderMultiplier(int multiplier) {

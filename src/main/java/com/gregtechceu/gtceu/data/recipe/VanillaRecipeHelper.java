@@ -25,10 +25,7 @@ import net.minecraft.world.level.ItemLike;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Comparator;
-import java.util.Locale;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 /**
@@ -197,7 +194,7 @@ public class VanillaRecipeHelper {
             }
         }
         for (Character c : set) {
-            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).tool.get(0));
         }
         builder.save(provider);
 
@@ -269,7 +266,7 @@ public class VanillaRecipeHelper {
             }
         }
         for (Character c : set) {
-            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+            builder.define(c, ToolHelper.getToolFromSymbol(c.charValue()).tool.get(0));
         }
         builder.save(provider);
 
@@ -311,7 +308,7 @@ public class VanillaRecipeHelper {
             } else if (content instanceof ItemProviderEntry<?, ?> entry) {
                 builder.requires(entry.asStack());
             } else if (content instanceof Character c) {
-                builder.requires(ToolHelper.getToolFromSymbol(c.charValue()).itemTags.get(0));
+                builder.requires(ToolHelper.getToolFromSymbol(c.charValue()).tool.get(0));
             }
         }
         builder.save(provider);

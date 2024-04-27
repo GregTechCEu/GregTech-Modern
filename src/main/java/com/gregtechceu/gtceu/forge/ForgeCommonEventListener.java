@@ -24,7 +24,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
  * @date 2022/8/27
  * @implNote ForgeCommonEventListener
  */
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
 public class ForgeCommonEventListener {
 
     @SubscribeEvent

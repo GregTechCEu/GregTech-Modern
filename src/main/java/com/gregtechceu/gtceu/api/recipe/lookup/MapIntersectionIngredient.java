@@ -13,7 +13,7 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
 
     public MapIntersectionIngredient(IntersectionIngredient ingredient) {
         this.intersectionIngredient = ingredient;
-        this.ingredients = new ArrayList<>(ingredient.getChildren());
+        this.ingredients = new ArrayList<>(ingredient.children());
         this.ingredients.sort(IngredientEquality.INGREDIENT_COMPARATOR);
     }
 

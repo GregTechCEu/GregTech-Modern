@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.worldgen.BootstapContext;
+import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.valueproviders.ConstantInt;
@@ -23,7 +23,7 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.ForkingTrunkPlace
 public class GTConfiguredFeatures {
     public static final ResourceKey<ConfiguredFeature<?, ?>> RUBBER = ResourceKey.create(Registries.CONFIGURED_FEATURE, GTCEu.id("rubber_tree"));
 
-    public static void bootstrap(BootstapContext<ConfiguredFeature<?, ?>> ctx) {
+    public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> ctx) {
         FeatureUtils.register(ctx, RUBBER, Feature.TREE, new TreeConfiguration.TreeConfigurationBuilder(
                 BlockStateProvider.simple(GTBlocks.RUBBER_LOG.get().changeNatural(GTBlocks.RUBBER_LOG.getDefaultState(), true)),
                 new ForkingTrunkPlacer(5, 1, 3),

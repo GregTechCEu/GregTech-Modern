@@ -28,7 +28,6 @@ import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +47,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     @Getter
     protected List<IItemComponent> components;
 
-    protected ComponentItem(Properties properties) {
+    public ComponentItem(Properties properties) {
         super(properties);
         components = new ArrayList<>();
     }
@@ -77,10 +76,10 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
-                addInformation.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+                addInformation.appendHoverText(stack, context, tooltipComponents, isAdvanced);
             }
         }
     }
@@ -268,7 +267,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         if (electricItem == null) {
             throw new IllegalStateException("Not an electric item.");
         }
-        electricItem.charge(chargeAmount, Integer.MAX_VALUE, true, false);
+        electricItem.charge(itemStack, chargeAmount, Integer.MAX_VALUE, true, false);
         return itemStack;
     }
 }
