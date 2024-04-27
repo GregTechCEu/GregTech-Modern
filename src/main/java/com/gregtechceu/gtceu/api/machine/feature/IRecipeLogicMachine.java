@@ -128,20 +128,14 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
 
     @SuppressWarnings("unchecked")
     private <T> T convertValue(Object value, Class<T> targetClass) {
-        if (targetClass.isInstance(value)) {
-            return (T) value;
-        } else if (targetClass == int.class || targetClass == Integer.class) {
-            return (T) (Integer) Double.valueOf(value.toString()).intValue();
+        if (targetClass == int.class || targetClass == Integer.class) {
+            return (T) (Integer) ((Double)value).intValue();
         } else if (targetClass == long.class || targetClass == Long.class) {
-            return (T) (Long) Double.valueOf(value.toString()).longValue();
+            return (T) (Long) ((Double)value).longValue();
         } else if (targetClass == float.class || targetClass == Float.class) {
-            return (T) (Float) Double.valueOf(value.toString()).floatValue();
+            return (T) (Float) ((Double)value).floatValue();
         } else if (targetClass == double.class || targetClass == Double.class) {
-            return (T) Double.valueOf(value.toString());
-        } else if (targetClass == boolean.class || targetClass == Boolean.class) {
-            return (T) Boolean.valueOf(value.toString());
-        } else if (targetClass == String.class) {
-            return (T) value.toString();
+            return (T) value;
         } else {
             throw new IllegalArgumentException("Unsupported target class: " + targetClass);
         }
