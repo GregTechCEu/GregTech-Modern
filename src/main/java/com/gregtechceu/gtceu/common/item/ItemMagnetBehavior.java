@@ -45,11 +45,10 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level world, @NotNull Player player,
-                                                  InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player, InteractionHand hand) {
         if (!player.level().isClientSide && player.isShiftKeyDown()) {
             player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                    "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+                "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
         }
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
@@ -179,7 +178,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private static boolean drainEnergy(boolean simulate, @NotNull ItemStack stack, long amount) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem == null)
             return false;
 

@@ -57,11 +57,10 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        if (stack.hasTag()) {
-            FluidStack tank = FluidTransferHelper.getFluidContained(stack);
-            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(),
-                    tank.getAmount()));
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        FluidStack tank = FluidTransferHelper.getFluidContained(stack);
+        if (!tank.isEmpty()) {
+            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(), tank.getAmount()));
         }
     }
 }

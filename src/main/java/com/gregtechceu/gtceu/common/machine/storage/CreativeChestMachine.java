@@ -171,8 +171,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1,
-                        false);
+                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (player.addItem(drained)) {
                         Block.popResource(world, getPos().relative(getFrontFacing()), drained);

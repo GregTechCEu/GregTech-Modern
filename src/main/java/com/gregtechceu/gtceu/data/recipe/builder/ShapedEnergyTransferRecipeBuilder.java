@@ -16,7 +16,7 @@ import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -68,8 +68,8 @@ public class ShapedEnergyTransferRecipeBuilder {
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
-            key.put(cha, NBTIngredient.of(true, itemStack));
+        if (!itemStack.getComponents().isEmpty()) {
+            key.put(cha, DataComponentIngredient.of(true, itemStack));
         }else {
             key.put(cha, Ingredient.of(itemStack));
         }
@@ -89,13 +89,6 @@ public class ShapedEnergyTransferRecipeBuilder {
     public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return this;
-    }
-
-    public ShapedEnergyTransferRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
-        this.output = itemStack.copy();
-        this.output.setCount(count);
-        this.output.setTag(nbt);
         return this;
     }
 

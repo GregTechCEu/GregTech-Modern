@@ -2,23 +2,22 @@ package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.google.common.collect.Lists;
 import com.google.gson.*;
-import com.gregtechceu.gtceu.GTCEu;
-import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
-import net.neoforged.neoforge.common.crafting.CraftingHelper;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -27,11 +26,11 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 public class FluidIngredient implements Predicate<FluidStack> {
-    public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, (CompoundTag) null);
+    public static final FluidIngredient EMPTY = new FluidIngredient(Stream.empty(), 0, (PatchedDataComponentMap) null);
     public static final Codec<FluidIngredient> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Value.CODEC.listOf().fieldOf("values").forGetter(ing -> Arrays.stream(ing.values).toList()),
-            ExtraCodecs.strictOptionalField(ExtraCodecs.POSITIVE_INT, "amount", 0).forGetter(ing -> ing.amount),
-            CraftingHelper.TAG_CODEC.optionalFieldOf("nbt").forGetter(ing -> Optional.ofNullable(ing.nbt))
+        Value.CODEC.listOf().fieldOf("values").forGetter(ing -> Arrays.stream(ing.values).toList()),
+        ExtraCodecs.POSITIVE_INT.optionalFieldOf("amount", 0).forGetter(ing -> ing.amount),
+        DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ing -> ing.components.asPatch())
     ).apply(instance, (values, amount, tag) -> new FluidIngredient(values.stream(), amount, tag)));
 
     public FluidIngredient.Value[] values;
@@ -40,34 +39,38 @@ public class FluidIngredient implements Predicate<FluidStack> {
     @Getter
     private int amount;
     @Getter
-    private CompoundTag nbt;
+    private PatchedDataComponentMap components;
     private boolean changed = true;
 
-    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable CompoundTag nbt) {
+    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, @Nullable PatchedDataComponentMap components) {
         this.values = empty.toArray(Value[]::new);
         this.amount = amount;
-        this.nbt = nbt;
+        this.components = components == null ? new PatchedDataComponentMap(DataComponentMap.EMPTY) : components;
     }
-    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, Optional<CompoundTag> nbt) {
+    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, Optional<PatchedDataComponentMap> components) {
         this.values = empty.toArray(Value[]::new);
         this.amount = amount;
-        this.nbt = nbt.orElse(null);
+        this.components = components.orElse(new PatchedDataComponentMap(DataComponentMap.EMPTY));
+    }
+    public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, DataComponentPatch patch) {
+        this.values = empty.toArray(Value[]::new);
+        this.amount = amount;
+        this.components = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, patch);
     }
 
-    public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount, @Nullable CompoundTag nbt) {
-        FluidIngredient ingredient = new FluidIngredient(stream, amount, nbt);
+    public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount, @Nullable DataComponentPatch components) {
+        FluidIngredient ingredient = new FluidIngredient(stream, amount, components);
         return ingredient.isEmpty() ? EMPTY : ingredient;
     }
 
-    public void toNetwork(FriendlyByteBuf buffer) {
-        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> stack.writeToPacket(buf));
+    public void toNetwork(RegistryFriendlyByteBuf buffer) {
+        buffer.writeCollection(Arrays.asList(this.getStacks()), (buf, stack) -> FluidStack.STREAM_CODEC.encode((RegistryFriendlyByteBuf) buf, stack));
         buffer.writeVarLong(amount);
-        buffer.writeNbt(nbt);
+        DataComponentPatch.STREAM_CODEC.encode(buffer, components.asPatch());
     }
 
     public FluidIngredient copy() {
-        return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount,
-                this.nbt == null ? null : this.nbt.copy());
+        return new FluidIngredient(Arrays.stream(this.values).map(Value::copy), this.amount, this.components == null ? null : this.components.copy());
     }
 
     @Override
@@ -78,7 +81,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         if (this.isEmpty()) {
             return stack.isEmpty();
         }
-        if (this.nbt != null && !this.nbt.equals(stack.getTag())) {
+        if (this.components != null && !this.components.equals(stack.getComponents())) {
             return false;
         }
         for (FluidStack fluidStack : this.getStacks()) {
@@ -95,7 +98,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
             return false;
         }
 
-        if (!Objects.equals(this.nbt, other.nbt)) return false;
+        if (!Objects.equals(this.components, other.components)) return false;
         if (this.values.length != other.values.length) return false;
         for (Value value1 : this.values) {
             for (Value value2 : other.values) {
@@ -126,13 +129,13 @@ public class FluidIngredient implements Predicate<FluidStack> {
     public FluidStack[] getStacks() {
         if (changed || this.stacks == null) {
             List<FluidStack> fluidStacks = new ObjectArrayList<>(1);
-            List<Fluid> found = new ObjectArrayList<>(1);
+            List<Holder<Fluid>> found = new ObjectArrayList<>(1);
             for (Value value : this.values) {
-                for (Fluid fluid : value.getFluids()) {
+                for (Holder<Fluid> fluid : value.getFluids()) {
                     if (found.contains(fluid)) continue;
                     found.add(fluid);
 
-                    fluidStacks.add(new FluidStack(fluid, this.amount, this.nbt));
+                    fluidStacks.add(new FluidStack(fluid, this.amount, this.components.asPatch()));
                 }
             }
             this.stacks = fluidStacks.toArray(FluidStack[]::new);
@@ -146,8 +149,8 @@ public class FluidIngredient implements Predicate<FluidStack> {
         this.changed = true;
     }
 
-    public void setNbt(CompoundTag nbt) {
-        this.nbt = nbt;
+    public void setComponents(DataComponentPatch components) {
+        this.components = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, components);
         this.changed = true;
     }
 
@@ -160,12 +163,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
     }
 
     public static FluidIngredient of(FluidStack... stacks) {
-        return FluidIngredient.of(Arrays.stream(stacks).map(FluidStack::getFluid),
-                stacks.length == 0 ? 0 : stacks[0].getAmount(), stacks.length == 0 ? null : stacks[0].getTag());
+        return FluidIngredient.of(Arrays.stream(stacks).map(FluidStack::getFluid), stacks.length == 0 ? 0 : stacks[0].getAmount(), stacks.length == 0 ? null : stacks[0].getComponents().asPatch());
     }
 
-    public static FluidIngredient of(Stream<Fluid> stacks, int amount, CompoundTag nbt) {
-        return FluidIngredient.fromValues(stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(FluidValue::new), amount, nbt);
+    public static FluidIngredient of(Stream<Fluid> stacks, int amount, DataComponentPatch nbt) {
+        return FluidIngredient.fromValues(stacks.filter(stack -> stack != null && !stack.isSame(Fluids.EMPTY)).map(Fluid::builtInRegistryHolder).map(FluidValue::new), amount, nbt);
     }
 
     /**
@@ -177,20 +179,20 @@ public class FluidIngredient implements Predicate<FluidStack> {
         return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, null);
     }
 
-    public static FluidIngredient of(TagKey<Fluid> tag, int amount, CompoundTag nbt) {
+    public static FluidIngredient of(TagKey<Fluid> tag, int amount, DataComponentPatch nbt) {
         return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, nbt);
     }
 
-    public static FluidIngredient fromNetwork(FriendlyByteBuf buffer) {
-        return FluidIngredient.fromValues(buffer.readList(FluidStack::readFromPacket).stream().map(stack -> new FluidValue(stack.getFluid())), buffer.readVarInt(), buffer.readNbt());
+    public static FluidIngredient fromNetwork(RegistryFriendlyByteBuf buffer) {
+        return FluidIngredient.fromValues(buffer.readList((buf) -> FluidStack.STREAM_CODEC.decode((RegistryFriendlyByteBuf) buf)).stream().map(stack -> new FluidValue(stack.getFluidHolder())), buffer.readVarInt(), DataComponentPatch.STREAM_CODEC.decode(buffer));
     }
 
     public static FluidIngredient fromJson(@Nullable JsonElement json) {
-        return FluidIngredient.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow(false, GTCEu.LOGGER::error);
+        return FluidIngredient.CODEC.parse(JsonOps.INSTANCE, json).getOrThrow();
     }
 
     public static interface Value {
-        Codec<Value> CODEC = ExtraCodecs.xor(FluidValue.CODEC, TagValue.CODEC)
+        Codec<Value> CODEC = Codec.xor(FluidValue.CODEC, TagValue.CODEC)
                 .xmap(either -> either.map(fluidValue -> fluidValue, tagValue -> tagValue), value -> {
                     if (value instanceof TagValue tagValue) {
                         return Either.right(tagValue);
@@ -201,7 +203,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
                     }
                 });
 
-        public Collection<Fluid> getStacks();
+        public Collection<Holder<Fluid>> getFluids();
 
         public Value copy();
     }
@@ -219,10 +221,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
         }
 
         @Override
-        public Collection<Fluid> getFluids() {
-            ArrayList<Fluid> list = Lists.newArrayList();
+        public Collection<Holder<Fluid>> getFluids() {
+            ArrayList<Holder<Fluid>> list = Lists.newArrayList();
             for (Holder<Fluid> holder : BuiltInRegistries.FLUID.getTagOrEmpty(this.tag)) {
-                list.add(holder.value());
+                list.add(holder);
             }
             return list;
         }
@@ -235,17 +237,17 @@ public class FluidIngredient implements Predicate<FluidStack> {
 
     public static class FluidValue implements Value {
         static final Codec<FluidValue> CODEC = RecordCodecBuilder.create(
-            instance -> instance.group(BuiltInRegistries.FLUID.byNameCodec().fieldOf("fluid").forGetter(value -> value.fluid))
+            instance -> instance.group(BuiltInRegistries.FLUID.holderByNameCodec().fieldOf("fluid").forGetter(value -> value.fluid))
                     .apply(instance, FluidValue::new)
         );
-        private final Fluid fluid;
+        private final Holder<Fluid> fluid;
 
-        public FluidValue(Fluid item) {
+        public FluidValue(Holder<Fluid> item) {
             this.fluid = item;
         }
 
         @Override
-        public Collection<Fluid> getFluids() {
+        public Collection<Holder<Fluid>> getFluids() {
             return Collections.singleton(this.fluid);
         }
 

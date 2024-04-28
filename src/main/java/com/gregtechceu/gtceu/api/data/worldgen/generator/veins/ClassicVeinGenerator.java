@@ -7,7 +7,14 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
-
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.ExtraCodecs;
@@ -41,14 +48,13 @@ import java.util.stream.Stream;
 
 @Accessors(fluent = true, chain = true)
 public class ClassicVeinGenerator extends VeinGenerator {
-
-    public static final Codec<ClassicVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
-            Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
-            Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
-            Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic),
-            ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", 3).forGetter(val -> val.yRadius))
-            .apply(instance, ClassicVeinGenerator::new));
+    public static final MapCodec<ClassicVeinGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+        Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
+        Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
+        Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
+        Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic),
+        ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", 3).forGetter(val -> val.yRadius)
+    ).apply(instance, ClassicVeinGenerator::new));
 
     private Layer primary;
     private Layer secondary;
@@ -202,7 +208,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Codec<? extends VeinGenerator> codec() {
+    public MapCodec<? extends VeinGenerator> codec() {
         return CODEC;
     }
 

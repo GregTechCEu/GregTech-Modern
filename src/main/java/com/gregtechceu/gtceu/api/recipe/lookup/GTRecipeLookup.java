@@ -140,7 +140,7 @@ public class GTRecipeLookup {
             if (index > 0) {
                 for (ItemStack unique : uniqueItems) {
                     if (unique == null) break;
-                    else if (ItemStack.isSameItemSameTags(input, unique)) {
+                    else if (ItemStack.isSameItemSameComponents(input, unique)) {
                         continue main;
                     }
                 }

@@ -170,7 +170,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
-            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow(false, GTCEu.LOGGER::error);
+            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
         }
 
         @Override
@@ -202,7 +202,7 @@ public class GTRecipeComponents {
 
         @Override
         public JsonElement write(RecipeJS recipe, FluidIngredientJS value) {
-            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow(false, GTCEu.LOGGER::error);
+            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, value.ingredient).getOrThrow();
         }
 
         @Override
@@ -277,7 +277,8 @@ public class GTRecipeComponents {
         @Override
         public boolean matches(FluidLike other) {
             if (other instanceof FluidStackJS fluidStack) {
-                return ingredient.test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount(), fluidStack.getNbt()));
+                // TODO fix nbt once KubeJS 1.20.5 is out
+                return ingredient.test(new FluidStack(fluidStack.getFluid(), (int) fluidStack.getAmount()/*, fluidStack.getNbt()*/));
             }
             return other.matches(this);
         }
@@ -290,7 +291,8 @@ public class GTRecipeComponents {
             } else if (o instanceof JsonElement json) {
                 return new FluidIngredientJS(FluidIngredient.fromJson(json));
             } else if (o instanceof FluidStackJS fluidStackJS) {
-                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount(), fluidStackJS.getNbt())));
+                // TODO fix nbt once KubeJS 1.20.5 is out
+                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(fluidStackJS.getFluid(), (int) fluidStackJS.getAmount()/*, fluidStackJS.getNbt()*/)));
             }
 
             var list = ListJS.of(o);
@@ -298,12 +300,14 @@ public class GTRecipeComponents {
                 List<FluidStack> stacks = new ArrayList<>();
                 for (var object : list) {
                     FluidStackJS stackJS = FluidStackJS.of(object);
-                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt()));
+                    // TODO fix nbt once KubeJS 1.20.5 is out
+                    stacks.add(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount()/*, stackJS.getNbt()*/));
                 }
                 return new FluidIngredientJS(FluidIngredient.of(stacks.toArray(FluidStack[]::new)));
             } else {
                 FluidStackJS stackJS = FluidStackJS.of(o);
-                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount(), stackJS.getNbt())));
+                // TODO fix nbt once KubeJS 1.20.5 is out
+                return new FluidIngredientJS(FluidIngredient.of(new FluidStack(stackJS.getFluid(), (int) stackJS.getAmount()/*, stackJS.getNbt()*/)));
             }
         }
     }

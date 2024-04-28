@@ -17,7 +17,7 @@ import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
 import lombok.Getter;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -33,7 +33,7 @@ import java.util.function.Function;
  * @date 2023/2/20
  * @implNote NotifiableItemStackHandler
  */
-public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait, IItemHandlerModifiable {
+public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<SizedIngredient> implements ICapabilityTrait, IItemHandlerModifiable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             NotifiableItemStackHandler.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
@@ -77,18 +77,18 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Nullable
-    public static List<Ingredient> handleIngredient(IO io, GTRecipe recipe, List<Ingredient> left, boolean simulate, IO handlerIO, CustomItemStackHandler storage) {
+    public static List<SizedIngredient> handleIngredient(IO io, GTRecipe recipe, List<SizedIngredient> left, boolean simulate, IO handlerIO, CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
         var capability = simulate ? storage.copy() : storage;
-        Iterator<Ingredient> iterator = left.iterator();
+        Iterator<SizedIngredient> iterator = left.iterator();
         if (io == IO.IN) {
             while (iterator.hasNext()) {
-                Ingredient ingredient = iterator.next();
+                SizedIngredient ingredient = iterator.next();
                 SLOT_LOOKUP:
                 for (int i = 0; i < capability.getSlots(); i++) {
                     ItemStack itemStack = capability.getStackInSlot(i);
@@ -123,7 +123,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
             }
         } else if (io == IO.OUT) {
             while (iterator.hasNext()) {
-                Ingredient ingredient = iterator.next();
+                SizedIngredient ingredient = iterator.next();
                 var items = ingredient.getItems();
                 if (items.length == 0) {
                     iterator.remove();
@@ -156,7 +156,7 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Ing
     }
 
     @Override
-    public RecipeCapability<Ingredient> getCapability() {
+    public RecipeCapability<SizedIngredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
 

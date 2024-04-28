@@ -169,8 +169,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         itemsStoredInside -= additional;
                         if (getStackInSlot(0).isEmpty() && itemsStoredInside > 0) {
                             var copied = extracted.copy();
-                            copied.setCount(
-                                    Math.min(itemsStoredInside, Math.min(64, copied.getItem().getMaxStackSize())));
+                            copied.setCount(Math.min(itemsStoredInside, Math.min(64, copied.getMaxStackSize())));
                             itemsStoredInside -= copied.getCount();
                             setStackInSlot(0, copied);
                         }
@@ -298,8 +297,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1,
-                        false);
+                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getMaxStackSize() : 1, false);
                 if (!drained.isEmpty()) {
                     if (player.addItem(drained)) {
                         Block.popResource(world, getPos().relative(getFrontFacing()), drained);
@@ -390,7 +388,7 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
         });
         var current = cache.getStackInSlot(0).copy();
         if (!current.isEmpty()) {
-            current.setCount(Math.min(current.getCount(), current.getItem().getMaxStackSize()));
+            current.setCount(Math.min(current.getCount(), current.getMaxStackSize()));
         }
         group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
                 .addWidget(new LabelWidget(8, 8, "gtceu.machine.quantum_chest.items_stored"))
@@ -407,17 +405,13 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         })
                         .setBackgroundTexture(GuiTextures.SLOT))
                 .addWidget(new ButtonWidget(87, 42, 18, 18,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
-                            if (!cd.isRemote) {
-                                var stored = cache.getStackInSlot(0);
-                                if (!stored.isEmpty()) {
-                                    var extracted = cache.extractItem(0,
-                                            Math.min(stored.getCount(), stored.getItem().getMaxStackSize()), false);
-                                    if (!group.getGui().entityPlayer.addItem(extracted)) {
-                                        Block.popResource(group.getGui().entityPlayer.level(),
-                                                group.getGui().entityPlayer.getOnPos(), extracted);
-                                    }
-                                }
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)),cd -> {
+                    if (!cd.isRemote) {
+                        var stored = cache.getStackInSlot(0);
+                        if (!stored.isEmpty()) {
+                            var extracted = cache.extractItem(0, Math.min(stored.getCount(), stored.getMaxStackSize()), false);
+                            if (!group.getGui().entityPlayer.addItem(extracted)) {
+                                Block.popResource(group.getGui().entityPlayer.level(), group.getGui().entityPlayer.getOnPos(), extracted);
                             }
                         }))
                 .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41))

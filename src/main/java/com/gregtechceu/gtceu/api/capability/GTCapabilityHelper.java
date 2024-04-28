@@ -24,11 +24,6 @@ import org.jetbrains.annotations.Nullable;
 public class GTCapabilityHelper {
 
     @Nullable
-    public static IElectricItem getElectricItem(ItemStack itemStack) {
-        return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
-    }
-
-    @Nullable
     public static IEnergyStorage getPlatformEnergyItem(ItemStack itemStack) {
         return itemStack.getCapability(Capabilities.EnergyStorage.ITEM);
     }

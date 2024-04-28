@@ -13,6 +13,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IMachineLife;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidBlockTransfer;
+import com.gregtechceu.gtceu.core.mixins.LiquidBlockAccessor;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -201,8 +202,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         var blockHere = getLevel().getBlockState(checkPos);
         boolean shouldCheckNeighbours = isStraightInPumpRange(checkPos);
 
-        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock &&
-                liquidBlock.getFluidState(blockHere).isSource()) {
+        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock && ((LiquidBlockAccessor)liquidBlock).invokeGetFluidState(blockHere).isSource()) {
             var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), checkPos);
             FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
             if (!drainStack.isEmpty()) {
@@ -229,8 +229,7 @@ public class PumpMachine extends TieredEnergyMachine implements IAutoOutputFluid
         BlockPos fluidBlockPos = fluidSourceBlocks.poll();
         if (fluidBlockPos == null) return;
         var blockHere = getLevel().getBlockState(fluidBlockPos);
-        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock &&
-                liquidBlock.getFluidState(blockHere).isSource()) {
+        if (blockHere.getBlock() instanceof LiquidBlock liquidBlock && ((LiquidBlockAccessor)liquidBlock).invokeGetFluidState(blockHere).isSource()) {
             var fluidHandler = new FluidBlockTransfer(liquidBlock, getLevel(), fluidBlockPos);
             FluidStack drainStack = fluidHandler.drain(Integer.MAX_VALUE, IFluidHandler.FluidAction.SIMULATE);
             if (!drainStack.isEmpty() && cache.fillInternal(drainStack, IFluidHandler.FluidAction.SIMULATE) == drainStack.getAmount()) {

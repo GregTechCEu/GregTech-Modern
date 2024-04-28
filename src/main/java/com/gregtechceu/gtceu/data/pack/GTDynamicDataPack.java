@@ -13,14 +13,18 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.world.item.crafting.Recipe;
+import net.minecraft.world.level.storage.loot.LootTable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,18 +46,18 @@ public class GTDynamicDataPack implements PackResources {
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
     protected static final Map<ResourceLocation, JsonElement> DATA = new HashMap<>();
 
-    private final String name;
+    private final PackLocationInfo info;
 
     static {
         SERVER_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "forge", "c"));
     }
 
-    public GTDynamicDataPack(String name) {
-        this(name, AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet()));
+    public GTDynamicDataPack(PackLocationInfo info) {
+        this(info, AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet()));
     }
 
-    public GTDynamicDataPack(String name, Collection<String> domains) {
-        this.name = name;
+    public GTDynamicDataPack(PackLocationInfo info, Collection<String> domains) {
+        this.info = info;
         SERVER_DOMAINS.addAll(domains);
     }
 
@@ -62,7 +66,7 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
-        JsonElement recipeJson = Recipe.CODEC.encodeStart(JsonOps.INSTANCE, recipe).getOrThrow(false, GTCEu.LOGGER::error);
+        JsonElement recipeJson = Recipe.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), recipe).getOrThrow();
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipes", parent, recipeJson);
@@ -72,12 +76,24 @@ public class GTDynamicDataPack implements PackResources {
         }
         DATA.put(getRecipeLocation(recipeId), recipeJson);
         if (advancement != null) {
-            JsonElement advancementJson = Advancement.CODEC.encodeStart(JsonOps.INSTANCE, advancement.value()).getOrThrow(false, GTCEu.LOGGER::error);
+            JsonElement advancementJson = Advancement.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), advancement.value()).getOrThrow();
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(advancement.id(), "advancements", parent, advancementJson);
             }
             DATA.put(getAdvancementLocation(Objects.requireNonNull(advancement.id())), advancementJson);
         }
+    }
+
+    public static void addLootTable(ResourceLocation recipeId, LootTable table) {
+        JsonElement recipeJson = LootTable.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
+        Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
+        if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
+            writeJson(recipeId, "loot_tables", parent, recipeJson);
+        }
+        if (DATA.containsKey(recipeId)) {
+            GTCEu.LOGGER.error("duplicated loot table: {}", recipeId);
+        }
+        DATA.put(getRecipeLocation(recipeId), recipeJson);
     }
 
     /**
@@ -174,8 +190,8 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     @Override
-    public String packId() {
-        return this.name;
+    public PackLocationInfo location() {
+        return this.info;
     }
 
     @Override
@@ -185,6 +201,10 @@ public class GTDynamicDataPack implements PackResources {
 
     public static ResourceLocation getRecipeLocation(ResourceLocation recipeId) {
         return new ResourceLocation(recipeId.getNamespace(), String.join("", "recipes/", recipeId.getPath(), ".json"));
+    }
+
+    public static ResourceLocation getLootTableLocation(ResourceLocation lootTableId) {
+        return new ResourceLocation(lootTableId.getNamespace(), String.join("", "loot_tables/", lootTableId.getPath(), ".json"));
     }
 
     public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {

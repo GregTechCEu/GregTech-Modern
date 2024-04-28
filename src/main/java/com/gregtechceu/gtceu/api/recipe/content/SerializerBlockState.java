@@ -51,7 +51,7 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
         BlockState blockState = block.defaultBlockState();
         if (buf.readBoolean()) {
             StateDefinition<Block, BlockState> stateDefinition = block.getStateDefinition();
-            ImmutableMap<Property<?>, Comparable<?>> values = blockState.getValues();
+            Map<Property<?>, Comparable<?>> values = blockState.getValues();
 
             for (int i = 0; i < values.size(); ++i) {
                 String propertyName = buf.readUtf();

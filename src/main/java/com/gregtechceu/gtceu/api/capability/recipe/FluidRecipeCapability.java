@@ -20,13 +20,14 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
+import net.minecraft.core.Holder;
+import net.minecraft.core.component.PatchedDataComponentMap;
 import net.neoforged.neoforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -70,9 +71,9 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 if (value instanceof FluidIngredient.TagValue tagValue) {
                     ingredients.add(new MapFluidTagIngredient(tagValue.getTag()));
                 } else {
-                    Collection<Fluid> fluids = value.getFluids();
-                    for (Fluid fluid : fluids) {
-                        ingredients.add(new MapFluidIngredient(new FluidStack(fluid, ingredient.getAmount(), ingredient.getNbt())));
+                    Collection<Holder<Fluid>> fluids = value.getFluids();
+                    for (Holder<Fluid> fluid : fluids) {
+                        ingredients.add(new MapFluidIngredient(new FluidStack(fluid, ingredient.getAmount(), ingredient.getComponents().asPatch())));
                     }
                 }
             }
@@ -116,7 +117,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                             break;
                         }
                     } else if (obj instanceof FluidStack stack) {
-                        if (fluidStack.isFluidEqual(stack)) {
+                        if (FluidStack.isSameFluidSameComponents(fluidStack, stack)) {
                             isEqual = true;
                             break;
                         }
@@ -197,7 +198,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     // Maps fluids to Either<(tag with count), FluidStack>s
     public static Either<List<Pair<TagKey<Fluid>, Integer>>, List<FluidStack>> mapFluid(FluidIngredient ingredient) {
         int amount = ingredient.getAmount();
-        CompoundTag tag = ingredient.getNbt();
+        PatchedDataComponentMap components = ingredient.getComponents();
 
         List<Pair<TagKey<Fluid>, Integer>> tags = new ArrayList<>();
         List<FluidStack> fluids = new ArrayList<>();
@@ -205,7 +206,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
             if (value instanceof FluidIngredient.TagValue tagValue) {
                 tags.add(Pair.of(tagValue.getTag(), amount));
             } else {
-                fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, tag)).toList());
+                fluids.addAll(value.getFluids().stream().map(fluid -> new FluidStack(fluid, amount, components.asPatch())).toList());
             }
         }
         if (!tags.isEmpty()) {

@@ -50,7 +50,8 @@ public class AEFluidDisplayWidget extends Widget {
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (fluid != null) {
-            FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) fluid.amount(), key.getTag()) : FluidStack.EMPTY;
+            // TODO fix nbt once AE2 1.20.5 is out
+            FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) fluid.amount()/*, key.getTag()*/) : FluidStack.EMPTY;
             DrawerHelper.drawFluidForGui(graphics, fluidStack, fluid.amount(), stackX, stackY, 17, 17);
             String amountStr = String.format("x%,d", fluid.amount());
             drawText(graphics, amountStr, stackX + 20, stackY + 5, 1, 0xFFFFFFFF);
@@ -65,9 +66,10 @@ public class AEFluidDisplayWidget extends Widget {
         if (isMouseOverElement(mouseX, mouseY)) {
             GenericStack fluid = this.gridWidget.getAt(this.index);
             if (fluid != null) {
-                FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) fluid.amount(), key.getTag()) : FluidStack.EMPTY;
+                // TODO fix nbt once AE2 1.20.5 is out
+                FluidStack fluidStack = fluid.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) fluid.amount()/*, key.getTag()*/) : FluidStack.EMPTY;
                 List<Component> tooltips = new ArrayList<>();
-                tooltips.add(fluidStack.getDisplayName());
+                tooltips.add(fluidStack.getHoverName());
                 tooltips.add(Component.literal(String.format("%,d ", fluid.amount())).append(FluidHelper.getUnit()));
                 if (!Platform.isForge()) {
                     tooltips.add(Component.literal(

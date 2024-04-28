@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -47,8 +47,8 @@ public class SmokingRecipeBuilder {
     }
 
     public SmokingRecipeBuilder input(ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
-            input = NBTIngredient.of(true, itemStack);
+        if (!itemStack.getComponents().isEmpty()) {
+            input = DataComponentIngredient.of(true, itemStack);
         }else {
             input = Ingredient.of(itemStack);
         }
@@ -72,13 +72,6 @@ public class SmokingRecipeBuilder {
     public SmokingRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return this;
-    }
-
-    public SmokingRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
-        this.output = itemStack.copy();
-        this.output.setCount(count);
-        this.output.setTag(nbt);
         return this;
     }
 

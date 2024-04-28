@@ -13,7 +13,7 @@ import net.minecraft.world.item.crafting.BlastingRecipe;
 import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -49,8 +49,8 @@ public class BlastingRecipeBuilder {
     }
 
     public BlastingRecipeBuilder input(ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
-            input = NBTIngredient.of(true, itemStack);
+        if (!itemStack.getComponents().isEmpty()) {
+            input = DataComponentIngredient.of(true, itemStack);
         }else {
             input = Ingredient.of(itemStack);
         }
@@ -74,13 +74,6 @@ public class BlastingRecipeBuilder {
     public BlastingRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return this;
-    }
-
-    public BlastingRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
-        this.output = itemStack.copy();
-        this.output.setCount(count);
-        this.output.setTag(nbt);
         return this;
     }
 

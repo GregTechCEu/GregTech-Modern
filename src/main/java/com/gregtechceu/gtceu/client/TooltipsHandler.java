@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 
 import net.minecraft.ChatFormatting;
@@ -29,7 +30,7 @@ public class TooltipsHandler {
 
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Energy Item
-        var energyItem = GTCapabilityHelper.getElectricItem(stack);
+        var energyItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (energyItem != null) {
             tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
                     energyItem.getCharge(),

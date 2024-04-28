@@ -1,6 +1,10 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
+import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
+import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
@@ -10,9 +14,11 @@ import com.gregtechceu.gtceu.api.item.components.ToolCharge;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
+import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -32,10 +38,20 @@ public class GTDataComponents {
     // Material-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<IMaterialPartItem.PartStats>> PART_STATS = DATA_COMPONENTS.registerComponentType("part_stats", builder -> builder.persistent(IMaterialPartItem.PartStats.CODEC).networkSynchronized(IMaterialPartItem.PartStats.STREAM_CODEC));
 
-    // misc
+    // component item-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResearchManager.ResearchItem>> RESEARCH_ITEM = DATA_COMPONENTS.registerComponentType("research_item", builder -> builder.persistent(ResearchManager.ResearchItem.CODEC).networkSynchronized(ResearchManager.ResearchItem.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ElectricItem>> ELECTRIC_ITEM = DATA_COMPONENTS.registerComponentType("electric_item", builder -> builder.persistent(ElectricItem.CODEC).networkSynchronized(ElectricItem.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ITEM_MAGNET = DATA_COMPONENTS.registerComponentType("item_magnet", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Byte>> SCANNER_MODE = DATA_COMPONENTS.registerComponentType("scanner_mode", builder -> builder.persistent(Codec.BYTE).networkSynchronized(ByteBufCodecs.BYTE));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidFilter>> SIMPLE_FLUID_FILTER = DATA_COMPONENTS.registerComponentType("simple_fluid_filter", builder -> builder.persistent(SimpleFluidFilter.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TagFluidFilter>> TAG_FLUID_FILTER = DATA_COMPONENTS.registerComponentType("tag_fluid_filter", builder -> builder.persistent(TagFluidFilter.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleItemFilter>> SIMPLE_ITEM_FILTER = DATA_COMPONENTS.registerComponentType("simple_item_filter", builder -> builder.persistent(SimpleItemFilter.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<TagItemFilter>> TAG_ITEM_FILTER = DATA_COMPONENTS.registerComponentType("tag_item_filter", builder -> builder.persistent(TagItemFilter.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Integer>> CIRCUIT_CONFIG = DATA_COMPONENTS.registerComponentType("circuit_config", builder -> builder.persistent(Codec.INT));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<SimpleFluidContent>> FLUID_CONTENT = DATA_COMPONENTS.registerComponentType("fluid_content", builder -> builder.persistent(SimpleFluidContent.CODEC).networkSynchronized(SimpleFluidContent.STREAM_CODEC));
+
+    // misc
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> DROP_SAVED_MACHINE = DATA_COMPONENTS.registerComponentType("drop_saved_machine", builder -> builder.persistent(CompoundTag.CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemStack>> FACADE = DATA_COMPONENTS.registerComponentType("facade", builder -> builder.persistent(ItemStack.CODEC).networkSynchronized(ItemStack.STREAM_CODEC));
+
 }

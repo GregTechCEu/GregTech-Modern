@@ -173,7 +173,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     default ItemStack get(long defaultCharge, long defaultMaxCharge) {
         ItemStack stack = get();
         if (isElectric()) {
-            ElectricItem electricItem = (ElectricItem) GTCapabilityHelper.getElectricItem(stack);
+            ElectricItem electricItem = (ElectricItem) stack.get(GTDataComponents.ELECTRIC_ITEM);
             if (electricItem != null) {
                 electricItem.setMaxChargeOverride(defaultMaxCharge);
                 stack.set(GTDataComponents.ELECTRIC_ITEM, electricItem.setCharge(defaultCharge));

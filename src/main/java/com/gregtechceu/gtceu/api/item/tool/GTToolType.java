@@ -135,7 +135,7 @@ public class GTToolType {
     public static final GTToolType WRENCH = GTToolType.builder("wrench")
         .toolTag(TagUtil.createItemTag("tools/wrenches", false))
         .toolTag(TagUtil.createItemTag("tools/wrench", false))
-        .toolStats(b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(TagUtil.createBlockTag("mineable/wrench", false), 1.5F)), -2.8F, 1))
+        .toolStats(b -> b.tool(new Tool(List.of(Tool.Rule.minesAndDrops(CustomTags.MINEABLE_WITH_WRENCH, 1.5F)), -2.8F, 1))
             .blockBreaking().crafting().sneakBypassUse()
             .attackDamage(1.0F)
             .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS)))

@@ -61,7 +61,7 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
                     }
                 }
             }
-        } else if (GTToolType.CROWBAR.tool.stream().anyMatch(itemStack::is) || GTToolType.SOFT_MALLET.tool.stream().anyMatch(itemStack::is) || GTToolType.SCREWDRIVER.tool.stream().anyMatch(itemStack::is)) {
+        } else if (GTToolType.CROWBAR.itemTags.stream().anyMatch(itemStack::is) || GTToolType.SOFT_MALLET.itemTags.stream().anyMatch(itemStack::is) || GTToolType.SCREWDRIVER.itemTags.stream().anyMatch(itemStack::is)) {
             return hasCoverSupplier == null || hasCoverSupplier.getAsBoolean();
         }
         return false;

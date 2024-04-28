@@ -19,7 +19,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -52,8 +52,8 @@ public class ShapelessRecipeBuilder {
     }
 
     public ShapelessRecipeBuilder requires(ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
-            requires(NBTIngredient.of(true, itemStack));
+        if (!itemStack.getComponents().isEmpty()) {
+            requires(DataComponentIngredient.of(true, itemStack));
         }else {
             requires(Ingredient.of(itemStack));
         }
@@ -77,13 +77,6 @@ public class ShapelessRecipeBuilder {
     public ShapelessRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return this;
-    }
-
-    public ShapelessRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
-        this.output = itemStack.copy();
-        this.output.setCount(count);
-        this.output.setTag(nbt);
         return this;
     }
 

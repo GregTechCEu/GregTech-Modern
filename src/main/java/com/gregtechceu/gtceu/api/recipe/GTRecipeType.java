@@ -39,6 +39,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
@@ -278,7 +279,7 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     public RecipeHolder<GTRecipe> toGTrecipe(RecipeHolder<?> recipe) {
         var builder = recipeBuilder(recipe.id());
         for (var ingredient : recipe.value().getIngredients()) {
-            builder.inputItems(ingredient);
+            builder.inputItems(new SizedIngredient(ingredient, 1));
         }
         builder.outputItems(recipe.value().getResultItem(RegistryAccess.fromRegistryOfRegistries(BuiltInRegistries.REGISTRY)));
         if (recipe.value() instanceof SmeltingRecipe smeltingRecipe) {

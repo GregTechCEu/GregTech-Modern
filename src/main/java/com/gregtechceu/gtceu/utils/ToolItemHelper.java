@@ -3,7 +3,8 @@ package com.gregtechceu.gtceu.utils;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
-
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -18,15 +19,11 @@ public class ToolItemHelper {
      */
     public static ItemStack getMaxChargeOverrideStack(Item item, long maxCharge) {
         ItemStack itemStack = item.getDefaultInstance();
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        ElectricItem electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem == null) {
             throw new IllegalStateException("Not an electric item.");
         }
-        if (!(electricItem instanceof ElectricItem)) {
-            throw new IllegalStateException("Only standard ElectricItem implementation supported, but this item uses " +
-                    electricItem.getClass());
-        }
-        ((ElectricItem) electricItem).setMaxChargeOverride(maxCharge);
+        electricItem.setMaxChargeOverride(maxCharge);
         return itemStack;
     }
 }

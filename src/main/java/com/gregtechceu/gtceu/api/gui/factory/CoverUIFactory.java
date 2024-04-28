@@ -11,6 +11,7 @@ import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
@@ -39,7 +40,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    protected CoverBehavior readHolderFromSyncData(FriendlyByteBuf syncData) {
+    protected CoverBehavior readHolderFromSyncData(RegistryFriendlyByteBuf syncData) {
         Level world = Minecraft.getInstance().level;
         if (world == null) return null;
         var pos = syncData.readBlockPos();
@@ -52,7 +53,7 @@ public class CoverUIFactory extends UIFactory<CoverBehavior> {
     }
 
     @Override
-    protected void writeHolderToSyncData(FriendlyByteBuf syncData, CoverBehavior holder) {
+    protected void writeHolderToSyncData(RegistryFriendlyByteBuf syncData, CoverBehavior holder) {
         syncData.writeBlockPos(holder.coverHolder.getPos());
         syncData.writeEnum(holder.attachedSide);
     }

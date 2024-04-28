@@ -14,6 +14,7 @@ import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 /**
@@ -79,8 +80,9 @@ public class AEFluidGridWidget extends AEListGridWidget {
             buf.writeVarInt(this.changeMap.size());
             for (GenericStack item : this.changeMap.keySet()) {
                 if (item.what() instanceof AEFluidKey key) {
-                    FluidStack stack = new FluidStack(key.getFluid(), (int) item.amount(), key.getTag());
-                    stack.writeToPacket(buf);
+                    // TODO fix nbt once AE2 1.20.5 is out
+                    FluidStack stack = new FluidStack(key.getFluid(), (int) item.amount()/*, key.getTag()*/);
+                    FluidStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
                     buf.writeVarLong(this.changeMap.getLong(item));
                 }
             }
@@ -88,13 +90,14 @@ public class AEFluidGridWidget extends AEListGridWidget {
     }
 
     @Override
-    protected void readListChange(FriendlyByteBuf buffer) {
+    protected void readListChange(RegistryFriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
         for (int i = 0; i < size ; i ++) {
-            FluidStack fluid = FluidStack.readFromPacket(buffer);
+            FluidStack fluid = FluidStack.OPTIONAL_STREAM_CODEC.decode(buffer);
             long delta = buffer.readVarLong();
             if (fluid != null) {
-                GenericStack stack = new GenericStack(AEFluidKey.of(fluid.getFluid(), fluid.getTag()), delta);
+                // TODO fix nbt once AE2 1.20.5 is out
+                GenericStack stack = new GenericStack(AEFluidKey.of(fluid.getFluid()/*, fluid.getTag()*/), delta);
                 this.displayList.insert(i, stack.what(), delta, Actionable.MODULATE);
             }
         }

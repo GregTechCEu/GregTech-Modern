@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.util;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
@@ -79,7 +80,7 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     protected abstract void addStack(GenericStack stack);
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         if (this.config != null) {
             CompoundTag configTag = GenericStack.writeTag(this.config);
@@ -93,7 +94,7 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         if (tag.contains(CONFIG_TAG)) {
             this.config = GenericStack.readTag(tag.getCompound(CONFIG_TAG));
         }

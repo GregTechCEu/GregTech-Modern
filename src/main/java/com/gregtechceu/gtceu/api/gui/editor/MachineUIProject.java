@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -18,7 +19,8 @@ import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
 import com.lowdragmc.lowdraglib.gui.widget.TabButton;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
-
+import lombok.Getter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
@@ -75,8 +77,8 @@ public class MachineUIProject extends UIProject {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        var tag = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        var tag = super.serializeNBT(provider);
         if (machineDefinition != null) {
             tag.putString("machine", machineDefinition.getId().toString());
         }
@@ -84,8 +86,8 @@ public class MachineUIProject extends UIProject {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
-        super.deserializeNBT(tag);
+    public void deserializeNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        super.deserializeNBT(tag, provider);
         if (tag.contains("machine")) {
             machineDefinition = GTRegistries.MACHINES.get(new ResourceLocation(tag.getString("machine")));
         }
@@ -139,7 +141,7 @@ public class MachineUIProject extends UIProject {
                         m.leaf(new ItemStackTexture(definition.asStack()), definition.getDescriptionId(), () -> {
                             root.clearAllWidgets();
                             if (editableUI.hasCustomUI()) {
-                                deserializeNBT(editableUI.getCustomUI());
+                                deserializeNBT(editableUI.getCustomUI(), Platform.getFrozenRegistry());
                             } else {
                                 var template = editableUI.createDefault();
                                 template.setSelfPosition(

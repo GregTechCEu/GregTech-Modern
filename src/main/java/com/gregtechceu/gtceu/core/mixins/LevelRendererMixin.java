@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
+import com.llamalad7.mixinextras.sugar.Local;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.SheetedDecalTextureGenerator;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -21,6 +22,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.client.model.data.ModelData;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.spongepowered.asm.mixin.Final;
@@ -52,12 +54,9 @@ public abstract class LevelRendererMixin {
     @Shadow
     private @Nullable ClientLevel level;
 
-    @Inject(
-            method = { "renderLevel" },
-            at = { @At("HEAD") })
-    private void renderLevel(PoseStack poseStack, float partialTick, long finishNanoTime, boolean renderBlockOutline,
-                             Camera camera, GameRenderer gameRenderer, LightTexture lightTexture,
-                             Matrix4f projectionMatrix, CallbackInfo ci) {
+    @Inject(method = "renderLevel", at = @At(value = "INVOKE", target = "Lit/unimi/dsi/fastutil/longs/Long2ObjectMap;long2ObjectEntrySet()Lit/unimi/dsi/fastutil/objects/ObjectSet;"))
+    private void renderLevel(float partialTick, long finishNanoTime, boolean renderBlockOutline, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f viewMatrix, Matrix4f projectionMatrix, CallbackInfo ci,
+                             @Local(ordinal = 0) PoseStack poseStack) {
         if (minecraft.player == null || minecraft.level == null) return;
 
         ItemStack mainHandItem = minecraft.player.getMainHandItem();
@@ -83,13 +82,12 @@ public abstract class LevelRendererMixin {
             poseStack.translate((double) pos.getX() - camX, (double) pos.getY() - camY, (double) pos.getZ() - camZ);
             PoseStack.Pose last = poseStack.last();
             VertexConsumer breakProgressDecal = new SheetedDecalTextureGenerator(
-                    this.renderBuffers.crumblingBufferSource()
-                            .getBuffer(ModelBakery.DESTROY_TYPES.get(progress.getProgress())),
-                    last.pose(),
-                    last.normal(),
-                    1.0f);
-            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos,
-                    minecraft.level, poseStack, breakProgressDecal);
+                    this.renderBuffers.crumblingBufferSource().getBuffer(ModelBakery.DESTROY_TYPES.get(progress.getProgress())),
+                    last,
+                    1.0f
+            );
+            ModelData modelData = level.getModelData(pos);
+            this.minecraft.getBlockRenderer().renderBreakingTexture(minecraft.level.getBlockState(pos), pos, minecraft.level, poseStack, breakProgressDecal, modelData);
             poseStack.popPose();
         }
     }

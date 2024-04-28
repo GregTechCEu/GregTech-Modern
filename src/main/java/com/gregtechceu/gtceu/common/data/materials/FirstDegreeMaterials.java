@@ -301,8 +301,8 @@ public class FirstDegreeMaterials {
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(18)
                         .enchantment(Enchantments.BANE_OF_ARTHROPODS, 3)
-                        .enchantment(Enchantments.BLOCK_EFFICIENCY, 1).build())
-                .rotorStats(130, 115, 3.0f, 512)
+                        .enchantment(Enchantments.EFFICIENCY, 1).build())
+                .rotorStats(7.0f, 3.0f, 512)
                 .buildAndRegister();
 
         Kanthal = new Material.Builder(GTCEu.id("kanthal"))
@@ -424,8 +424,8 @@ public class FirstDegreeMaterials {
                 .components(Copper, 1, Gold, 4)
                 .toolStats(ToolProperty.Builder.of(12.0F, 2.0F, 768, 2)
                         .enchantability(33)
-                        .enchantment(Enchantments.BLOCK_FORTUNE, 2).build())
-                .rotorStats(100, 170, 2.0f, 152)
+                        .enchantment(Enchantments.FORTUNE, 2).build())
+                .rotorStats(14.0f, 2.0f, 152)
                 .itemPipeProperties(1024, 2)
                 .blastTemp(1600, GasTier.LOW, GTValues.VA[MV], 1000)
                 .buildAndRegister();

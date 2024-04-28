@@ -9,8 +9,7 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
-
-import lombok.Getter;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -24,8 +23,7 @@ import static com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler
  * @date 2023/7/13
  * @implNote ItemRecipeHandler
  */
-public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
-
+public class ItemRecipeHandler implements IRecipeHandler<SizedIngredient> {
     @Getter
     public final IO handlerIO;
     public final CustomItemStackHandler storage;
@@ -36,7 +34,7 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
@@ -70,7 +68,7 @@ public class ItemRecipeHandler implements IRecipeHandler<Ingredient> {
     }
 
     @Override
-    public RecipeCapability<Ingredient> getCapability() {
+    public RecipeCapability<SizedIngredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
 }

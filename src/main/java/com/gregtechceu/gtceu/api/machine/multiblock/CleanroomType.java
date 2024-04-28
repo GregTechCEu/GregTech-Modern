@@ -15,7 +15,7 @@ public class CleanroomType {
     public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", "gtceu.recipe.cleanroom.display_name");
     public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom", "gtceu.recipe.cleanroom_sterile.display_name");
 
-    public static final Codec<CleanroomType> CODEC = ExtraCodecs.stringResolverCodec(CleanroomType::getName, CLEANROOM_TYPES::get);
+    public static final Codec<CleanroomType> CODEC = Codec.stringResolver(CleanroomType::getName, CLEANROOM_TYPES::get);
 
     private final String name;
     private final String translationKey;

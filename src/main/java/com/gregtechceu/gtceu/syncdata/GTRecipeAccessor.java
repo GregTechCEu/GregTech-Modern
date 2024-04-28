@@ -7,8 +7,11 @@ import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
-
+import io.netty.buffer.Unpooled;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
@@ -26,16 +29,16 @@ public class GTRecipeAccessor extends CustomObjectAccessor<GTRecipe> {
     }
 
     @Override
-    public ITypedPayload<?> serialize(AccessorOp accessorOp, GTRecipe gtRecipe) {
+    public ITypedPayload<?> serialize(AccessorOp accessorOp, GTRecipe gtRecipe, HolderLookup.Provider provider) {
         FriendlyByteBuf serializedHolder = new FriendlyByteBuf(Unpooled.buffer());
-        GTRecipeSerializer.SERIALIZER.toNetwork(serializedHolder, gtRecipe);
+        gtRecipe.toNetwork(new RegistryFriendlyByteBuf(serializedHolder, (RegistryAccess) provider));
         return FriendlyBufPayload.of(serializedHolder);
     }
 
     @Override
-    public GTRecipe deserialize(AccessorOp accessorOp, ITypedPayload<?> payload) {
+    public GTRecipe deserialize(AccessorOp accessorOp, ITypedPayload<?> payload, HolderLookup.Provider provider) {
         if (payload instanceof FriendlyBufPayload buffer) {
-            return GTRecipeSerializer.SERIALIZER.fromNetwork(buffer.getPayload());
+            return GTRecipeSerializer.SERIALIZER.fromNetwork(new RegistryFriendlyByteBuf(buffer.getPayload(), (RegistryAccess) provider));
         }
         return null;
     }

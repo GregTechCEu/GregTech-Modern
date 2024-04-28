@@ -121,7 +121,7 @@ public class OreVeinUtil {
         JsonElement codecInput = resolveBiomeCodecInput(biomes);
         return () -> RegistryCodecs.homogeneousList(Registries.BIOME)
                 .parse(registryOps, codecInput)
-                .getOrThrow(false, GTCEu.LOGGER::error);
+                .getOrThrow();
     }
 
     private static JsonElement resolveBiomeCodecInput(List<String> biomes) {

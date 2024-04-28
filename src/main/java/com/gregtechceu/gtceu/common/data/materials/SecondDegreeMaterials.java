@@ -120,8 +120,8 @@ public class SecondDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(6.0F, 4.0F, 1024, 3)
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(0.3F).enchantability(33)
-                        .enchantment(Enchantments.MOB_LOOTING, 3)
-                        .enchantment(Enchantments.BLOCK_FORTUNE, 3).build())
+                        .enchantment(Enchantments.LOOTING, 3)
+                        .enchantment(Enchantments.FORTUNE, 3).build())
                 .blastTemp(1500, GasTier.LOW)
                 .buildAndRegister();
 

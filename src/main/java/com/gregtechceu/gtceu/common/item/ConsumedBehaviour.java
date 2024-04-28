@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
@@ -38,18 +39,10 @@ public abstract class ConsumedBehaviour {
     }
 
     public final int getUsesLeft(ItemStack stack) {
-        var tagCompound = stack.getTag();
-        if (tagCompound == null || !tagCompound.contains("GT.UsesLeft", Tag.TAG_INT))
-            return totalUses;
-        return tagCompound.getInt("GT.UsesLeft");
+        return totalUses - stack.getOrDefault(DataComponents.DAMAGE, 0);
     }
 
-    public static void setUsesLeft(ItemStack itemStack, int usesLeft) {
-        var tagCompound = itemStack.getTag();
-        if (tagCompound == null) {
-            tagCompound = new CompoundTag();
-            itemStack.setTag(tagCompound);
-        }
-        tagCompound.putInt("GT.UsesLeft", usesLeft);
+    public void setUsesLeft(ItemStack itemStack, int usesLeft) {
+        itemStack.set(DataComponents.DAMAGE, totalUses - usesLeft);
     }
 }

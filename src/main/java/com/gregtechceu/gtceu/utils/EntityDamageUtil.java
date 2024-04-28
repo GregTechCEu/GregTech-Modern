@@ -75,7 +75,7 @@ public class EntityDamageUtil {
         // check for empty in order to force damage to be applied if armor breaks
         if (!stack.isEmpty()) {
             if (stack.getEnchantmentLevel(Enchantments.FROST_WALKER) > 0) {
-                stack.hurtAndBreak(1, entity, ent -> ent.broadcastBreakEvent(EquipmentSlot.FEET));
+                stack.hurtAndBreak(1, entity, EquipmentSlot.FEET);
                 return;
             }
         }

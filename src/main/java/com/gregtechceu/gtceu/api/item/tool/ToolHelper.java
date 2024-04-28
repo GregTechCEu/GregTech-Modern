@@ -183,7 +183,7 @@ public class ToolHelper {
                 RandomSource random = user == null ? GTValues.RNG : user.getRandom();
                 if (tool.isElectric()) {
                     int electricDamage = damage * ConfigHolder.INSTANCE.machines.energyUsageMultiplier;
-                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+                    IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
                     if (electricItem != null) {
                         electricItem.discharge(stack, electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&
@@ -406,8 +406,7 @@ public class ToolHelper {
                     if (prefix == null) {
                         for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                drops.add(SizedIngredient.copy(ItemRecipeCapability.CAP.of(output.content))
-                                        .getItems()[0]);
+                                drops.add(ItemRecipeCapability.CAP.copyInner(ItemRecipeCapability.CAP.of(output.content)).getItems()[0]);
                             }
                         }
                     } else if (TagPrefix.ORES.containsKey(prefix)) {
@@ -668,7 +667,7 @@ public class ToolHelper {
             if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
                     List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, tool.getEnchantmentLevel(Enchantments.FORTUNE));
-                    boolean relocateMinedBlocks = tool.getOrDefault(GTDataComponents.RELOCATE_MINED_BLOCKS, false);
+                    boolean relocateMinedBlocks = tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {
                         ItemStack stack = iter.next();

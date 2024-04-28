@@ -6,7 +6,11 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
-
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
@@ -23,8 +27,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class VeinGenerator {
-
-    public static final Codec<Codec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
+    public static final Codec<MapCodec<? extends VeinGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
             .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.VEIN_GENERATORS.get(rl))
                     .map(DataResult::success)
                     .orElseGet(() -> DataResult.error(() -> "No VeinGenerator with id " + rl + " registered")),
@@ -99,5 +102,5 @@ public abstract class VeinGenerator {
         return entry;
     }
 
-    public abstract Codec<? extends VeinGenerator> codec();
+    public abstract MapCodec<? extends VeinGenerator> codec();
 }

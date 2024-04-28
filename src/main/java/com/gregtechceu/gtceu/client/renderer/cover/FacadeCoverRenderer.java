@@ -94,8 +94,7 @@ public class FacadeCoverRenderer implements ICoverRenderer {
                 }
 
                 for (BakedQuad bakedQuad : quads) {
-                    buffer.getBuffer(RenderType.cutout()).putBulkData(pose, bakedQuad, 1, 1, 1, combinedLight,
-                            combinedOverlay);
+                    buffer.getBuffer(RenderType.cutout()).putBulkData(pose, bakedQuad, 1.0f, 1.0f, 1.0f, 1.0f, combinedLight, combinedOverlay, false);
                 }
 
                 matrixStack.popPose();

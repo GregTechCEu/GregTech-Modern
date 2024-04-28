@@ -10,6 +10,9 @@ import appeng.api.stacks.GenericStack;
 import appeng.helpers.externalstorage.GenericStackInv;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
 
 /**
  * @Author GlodBlock
@@ -76,7 +79,7 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     protected abstract void writeListChange();
 
     @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+    public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);
         if (id == ROW_CHANGE_ID) {
             int slotsToAdd = buffer.readVarInt();
@@ -87,10 +90,10 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
         }
     }
 
-    protected abstract void readListChange(FriendlyByteBuf buffer);
+    protected abstract void readListChange(RegistryFriendlyByteBuf buffer);
 
     @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
+    public void writeInitialData(RegistryFriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
         if (this.list == null) return;
         int amountOfTypes = 0;
@@ -106,7 +109,7 @@ public abstract class AEListGridWidget extends DraggableScrollableWidgetGroup {
     }
 
     @Override
-    public void readInitialData(FriendlyByteBuf buffer) {
+    public void readInitialData(RegistryFriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         if (this.list == null) return;
         this.modifySlotRows(buffer.readVarInt());

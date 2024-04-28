@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.misc.forge;
 
 import com.gregtechceu.gtceu.api.capability.IThermalFluidHandlerItemStack;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStackSimple;
 import org.jetbrains.annotations.NotNull;
-
-import javax.annotation.Nonnull;
 
 /**
  * @author KilaBash
@@ -20,8 +19,8 @@ public class SimpleThermalFluidHandlerItemStack extends FluidHandlerItemStackSim
     private final boolean cryoProof;
     private final boolean plasmaProof;
 
-    public SimpleThermalFluidHandlerItemStack(@Nonnull ItemStack container, int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
-        super(container, capacity);
+    public SimpleThermalFluidHandlerItemStack(@NotNull ItemStack container, int capacity, int maxFluidTemperature, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
+        super(GTDataComponents.FLUID_CONTENT, container, capacity);
         this.maxFluidTemperature = maxFluidTemperature;
         this.gasProof = gasProof;
         this.acidProof = acidProof;
@@ -45,7 +44,7 @@ public class SimpleThermalFluidHandlerItemStack extends FluidHandlerItemStackSim
 
     private void removeTagWhenEmpty(FluidAction action) {
         if (getFluid() == FluidStack.EMPTY && action == FluidAction.EXECUTE) {
-            this.container.setTag(null);
+            this.container.remove(GTDataComponents.FLUID_CONTENT);
         }
     }
 

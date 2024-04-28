@@ -37,11 +37,12 @@ runs {
         systemProperty 'forge.enabledGameTestNamespaces', project.mod_id
 
 
+        /*
         if (isJetBrainsRuntime()) {
             jvmArguments '-XX:+AllowEnhancedClassRedefinition'
             jvmArguments '-XX:HotswapAgent=fatjar'
-
         }
+        */
     }
 
     server {

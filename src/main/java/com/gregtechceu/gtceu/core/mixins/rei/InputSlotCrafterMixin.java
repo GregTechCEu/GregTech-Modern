@@ -12,13 +12,8 @@ import org.spongepowered.asm.mixin.injection.At;
 
 @Mixin(value = InputSlotCrafter.class, remap = false)
 public class InputSlotCrafterMixin {
-
-    @WrapOperation(method = "areItemsEqual",
-                   at = @At(value = "INVOKE",
-                            target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z",
-                            remap = true))
-    private static boolean gtceu$modifyFindSlotMatcherREI(ItemStack stack, ItemStack other,
-                                                          Operation<Boolean> original) {
+    @WrapOperation(method = "areItemsEqual", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameComponents(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z", remap = true))
+    private static boolean gtceu$modifyFindSlotMatcherREI(ItemStack stack, ItemStack other, Operation<Boolean> original) {
         if (stack.getItem() instanceof IGTTool) {
             return ItemStack.isSameItem(stack, other);
         }

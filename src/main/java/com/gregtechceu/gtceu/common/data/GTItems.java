@@ -258,7 +258,7 @@ public class GTItems {
         .onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<ComponentItem> WOODEN_FORM_BRICK = REGISTRATE.item("brick_wooden_form", ComponentItem::new)
         .lang("Brick Wooden Form")
-        .properties(p -> p.stacksTo(1).component())
+        .properties(p -> p.stacksTo(1))
         .onRegister(compassNode(GTCompassSections.MISC))
         .onRegister(attach((IRecipeRemainder) ItemStack::copy)).register();
 

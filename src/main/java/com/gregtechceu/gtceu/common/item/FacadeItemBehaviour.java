@@ -1,17 +1,16 @@
 package com.gregtechceu.gtceu.common.item;
 
+import com.google.common.collect.ImmutableList;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
-import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -24,7 +23,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author KilaBash
@@ -62,11 +60,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
         if (!isValidFacade(facadeStack)) {
             facadeStack = new ItemStack(Blocks.STONE);
         }
-        if (!itemStack.hasTag()) {
-            itemStack.setTag(new CompoundTag());
-        }
-        var tagCompound = Objects.requireNonNull(itemStack.getTag());
-        tagCompound.put("Facade", facadeStack.save(new CompoundTag()));
+        itemStack.set(GTDataComponents.FACADE, facadeStack);
     }
 
     public static boolean isValidFacade(ItemStack itemStack) {
@@ -87,11 +81,10 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
 
     @Nullable
     private static ItemStack getFacadeStackUnsafe(ItemStack itemStack) {
-        var tagCompound = itemStack.getTag();
-        if (tagCompound == null || !tagCompound.contains("Facade", Tag.TAG_COMPOUND)) {
+        var facadeStack = itemStack.get(GTDataComponents.FACADE);
+        if (facadeStack == null) {
             return null;
         }
-        ItemStack facadeStack = ItemStack.of(tagCompound.getCompound("Facade"));
         if (facadeStack.isEmpty() || !isValidFacade(facadeStack)) {
             return null;
         }

@@ -11,6 +11,16 @@ import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
+import appeng.helpers.externalstorage.GenericStackInv;
+import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import it.unimi.dsi.fastutil.objects.Object2LongMap;
+import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+
+import java.io.IOException;
 
 /**
  * @Author GlodBlock
@@ -81,10 +91,11 @@ public class AEItemGridWidget extends AEListGridWidget {
             for (GenericStack item : this.changeMap.keySet()) {
                 if (item.what() instanceof AEItemKey key) {
                     ItemStack stack = new ItemStack(key.getItem(), (int) item.amount());
-                    if (key.hasTag()) {
-                        stack.setTag(key.getTag().copy());
-                    }
-                    buf.writeItem(stack);
+                    // TODO fix nbt once AE2 1.20.5 is out
+                    //if (key.hasTag()) {
+                    //    stack.setTag(key.getTag().copy());
+                    //}
+                    ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
                     buf.writeVarLong(this.changeMap.getLong(item));
                 }
             }
@@ -92,14 +103,15 @@ public class AEItemGridWidget extends AEListGridWidget {
     }
 
     @Override
-    protected void readListChange(FriendlyByteBuf buffer) {
+    protected void readListChange(RegistryFriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
         for (int i = 0; i < size; i++) {
-            ItemStack item = buffer.readItem();
+            ItemStack item = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
             item.setCount(1);
             long delta = buffer.readVarLong();
             if (!item.isEmpty()) {
-                GenericStack stack = new GenericStack(AEItemKey.of(item.getItem(), item.getTag()), delta);
+                // TODO fix nbt once AE2 1.20.5 is out
+                GenericStack stack = new GenericStack(AEItemKey.of(item.getItem()/*, item.getTag()*/), delta);
                 this.displayList.setStack(i, stack);
             }
         }

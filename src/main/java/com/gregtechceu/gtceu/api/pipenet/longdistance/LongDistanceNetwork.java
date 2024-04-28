@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.LongTag;
@@ -330,7 +331,7 @@ public class LongDistanceNetwork {
 
         public static WorldData get(LevelAccessor level) {
             if (level instanceof ServerLevel serverLevel) {
-                return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> WorldData.create(serverLevel), (tag) -> WorldData.load(tag, serverLevel)), "gtceu_long_dist_pipe");
+                return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> WorldData.create(serverLevel), (tag, provider) -> WorldData.load(tag, serverLevel)), "gtceu_long_dist_pipe");
             }
             return null;
         }
@@ -420,7 +421,7 @@ public class LongDistanceNetwork {
 
         @NotNull
         @Override
-        public CompoundTag save(@NotNull CompoundTag nbtTagCompound) {
+        public CompoundTag save(@NotNull CompoundTag nbtTagCompound, HolderLookup.Provider provider) {
             ListTag list = new ListTag();
             for (LongDistanceNetwork network : this.networkList) {
                 CompoundTag tag = new CompoundTag();

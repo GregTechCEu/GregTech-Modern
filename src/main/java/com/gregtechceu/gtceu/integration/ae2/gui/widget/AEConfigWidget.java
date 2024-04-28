@@ -14,6 +14,8 @@ import net.minecraft.network.FriendlyByteBuf;
 import appeng.api.stacks.GenericStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
+import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public abstract class AEConfigWidget extends WidgetGroup {
 
@@ -107,7 +109,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
     }
 
     @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+    public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         super.readUpdateInfo(id, buffer);
         if (id == UPDATE_ID) {
             int size = buffer.readVarInt();

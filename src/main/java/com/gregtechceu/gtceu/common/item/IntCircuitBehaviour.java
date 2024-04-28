@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTItems;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -16,6 +17,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
@@ -44,27 +46,15 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     public static void setCircuitConfiguration(ItemStack itemStack, int configuration) {
         if (configuration < 0 || configuration > CIRCUIT_MAX)
             throw new IllegalArgumentException("Given configuration number is out of range!");
-        var tagCompound = itemStack.getOrCreateTag();
-        tagCompound.putInt("Configuration", configuration);
+        itemStack.set(GTDataComponents.CIRCUIT_CONFIG, configuration);
     }
 
     public static int getCircuitConfiguration(ItemStack itemStack) {
-        if (!isIntegratedCircuit(itemStack)) return 0;
-        var tagCompound = itemStack.getTag();
-        if (tagCompound != null) {
-            return tagCompound.getInt("Configuration");
-        }
-        return 0;
+        return itemStack.getOrDefault(GTDataComponents.CIRCUIT_CONFIG, 0);
     }
 
     public static boolean isIntegratedCircuit(ItemStack itemStack) {
-        boolean isCircuit = GTItems.INTEGRATED_CIRCUIT.isIn(itemStack);
-        if (isCircuit && !itemStack.hasTag()) {
-            var compound = new CompoundTag();
-            compound.putInt("Configuration", 0);
-            itemStack.setTag(compound);
-        }
-        return isCircuit;
+        return GTItems.INTEGRATED_CIRCUIT.isIn(itemStack);
     }
 
     // deprecated, not needed (for now)
@@ -77,7 +67,6 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     // deprecated, not needed (for now)
     @Deprecated
     public static void adjustConfiguration(ItemStack stack, int amount) {
-        if (!isIntegratedCircuit(stack)) return;
         int configuration = getCircuitConfiguration(stack);
         configuration += amount;
         configuration = Mth.clamp(configuration, 0, CIRCUIT_MAX);
@@ -85,7 +74,7 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         int configuration = getCircuitConfiguration(stack);
         tooltipComponents.add(Component.translatable("metaitem.int_circuit.configuration", configuration));
     }

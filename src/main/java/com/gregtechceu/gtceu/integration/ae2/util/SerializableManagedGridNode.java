@@ -6,8 +6,10 @@ import net.minecraft.nbt.CompoundTag;
 
 import appeng.api.networking.IGridNodeListener;
 import appeng.me.ManagedGridNode;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.UnknownNullability;
 
 public class SerializableManagedGridNode extends ManagedGridNode implements INBTSerializable<CompoundTag> {
     public <T> SerializableManagedGridNode(T nodeOwner, IGridNodeListener<? super T> listener) {
@@ -15,14 +17,14 @@ public class SerializableManagedGridNode extends ManagedGridNode implements INBT
     }
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         super.saveToNBT(tag);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         super.loadFromNBT(tag);
     }
 }

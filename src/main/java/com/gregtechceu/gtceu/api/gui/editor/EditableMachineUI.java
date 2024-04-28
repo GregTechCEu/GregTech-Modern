@@ -65,8 +65,7 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
         if (hasCustomUI()) {
             var nbt = getCustomUI();
             var group = new WidgetGroup();
-            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"),
-                    Resources.fromNBT(nbt.getCompound("resources")), false);
+            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false, Platform.getFrozenRegistry());
             group.setSelfPosition(new Position(0, 0));
             return group;
         }

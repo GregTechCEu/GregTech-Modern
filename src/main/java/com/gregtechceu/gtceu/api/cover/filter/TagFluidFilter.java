@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import net.minecraft.nbt.CompoundTag;
@@ -8,9 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-
+import java.util.Arrays;
 import java.util.function.Consumer;
 
 /**
@@ -19,19 +20,21 @@ import java.util.function.Consumer;
  * @implNote TagFluidFilter
  */
 public class TagFluidFilter extends TagFilter<FluidStack, FluidFilter> implements FluidFilter {
-
+    public static final Codec<TagFluidFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.STRING.fieldOf("tag").forGetter(val -> val.oreDictFilterExpression)
+    ).apply(instance, TagFluidFilter::loadFilter));
     private final Object2BooleanMap<Fluid> cache = new Object2BooleanOpenHashMap<>();
 
     protected TagFluidFilter() {}
 
     public static TagFluidFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+        return itemStack.get(GTDataComponents.TAG_FLUID_FILTER);
     }
 
-    private static TagFluidFilter loadFilter(CompoundTag tag, Consumer<FluidFilter> itemWriter) {
+    private static TagFluidFilter loadFilter(String oreDict) {
         var handler = new TagFluidFilter();
-        handler.itemWriter = itemWriter;
-        handler.oreDictFilterExpression = tag.getString("oreDict");
+        //handler.itemWriter = itemWriter; // TODO fix
+        handler.oreDictFilterExpression = oreDict;
         handler.matchRules.clear();
         handler.cache.clear();
         OreDictExprFilter.parseExpression(handler.matchRules, handler.oreDictFilterExpression);

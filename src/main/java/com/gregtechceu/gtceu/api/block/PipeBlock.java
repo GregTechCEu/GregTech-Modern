@@ -280,14 +280,13 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-                                 BlockHitResult hit) {
-        ItemStack itemStack = player.getItemInHand(hand);
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+        ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         BlockEntity entity = level.getBlockEntity(pos);
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (entity instanceof IToolable toolable && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
-            var result = toolable.onToolClick(types, itemStack, new UseOnContext(player, hand, hit));
+            var result = toolable.onToolClick(types, itemStack, new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 
@@ -323,7 +322,7 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                     types = Set.of(pipeTile.getPipeTuneTool());
                 }
 
-                if (types.stream().anyMatch(type -> type.tool.stream().anyMatch(held::is)) ||
+                if (types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is)) ||
                     CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
                     (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
                     return Shapes.block();

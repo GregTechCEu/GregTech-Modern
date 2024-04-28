@@ -311,12 +311,12 @@ public class BlockPattern {
                             int foundSlot = -1;
                             IItemHandler handler = null;
                             if (!player.isCreative()) {
-                                var foundHandler = getMatchStackWithHandler(candidates,
-                                        player.getCapability(ForgeCapabilities.ITEM_HANDLER));
-                                if (foundHandler != null) {
-                                    foundSlot = foundHandler.getFirst();
-                                    handler = foundHandler.getSecond();
-                                    found = handler.getStackInSlot(foundSlot).copy();
+                                for (ItemStack itemStack : player.getInventory().items) {
+                                    if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, itemStack)) && !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
+                                        found = itemStack.copy();
+                                        itemStack.setCount(itemStack.getCount() - 1);
+                                        break;
+                                    }
                                 }
                             } else {
                                 for (ItemStack candidate : candidates) {

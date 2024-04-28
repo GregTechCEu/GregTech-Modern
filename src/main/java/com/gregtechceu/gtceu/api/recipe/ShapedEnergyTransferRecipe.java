@@ -1,27 +1,25 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.components.ToolCharge;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
+import com.mojang.datafixers.util.Function8;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.Getter;
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 
-import com.google.gson.JsonObject;
-import lombok.Getter;
-
-import java.util.Map;
+import java.util.function.Function;
 
 /**
  * @author Irgendwer01
@@ -50,20 +48,19 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack assemble(CraftingContainer craftingContainer, RegistryAccess registryAccess) {
+    public ItemStack assemble(CraftingContainer craftingContainer, HolderLookup.Provider provider) {
         long maxCharge = 0L;
         long charge = 0L;
-        ItemStack resultStack = super.assemble(craftingContainer, registryAccess);
+        ItemStack resultStack = super.assemble(craftingContainer, provider);
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
             for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
                 if (ItemStack.isSameItem(craftingContainer.getItem(i), chargeStack)) {
                     ItemStack stack = craftingContainer.getItem(i);
-                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+                    IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
                     if (electricItem != null) {
                         maxCharge += electricItem.getMaxCharge();
                         charge += electricItem.getCharge();
-                        resultStack.getOrCreateTag().putLong("MaxCharge", maxCharge);
-                        resultStack.getOrCreateTag().putLong("Charge", charge);
+                        resultStack.set(GTDataComponents.TOOL_CHARGE, new ToolCharge(maxCharge, charge));
                         return resultStack;
                     }
                 }
@@ -73,17 +70,16 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     }
 
     @Override
-    public ItemStack getResultItem(RegistryAccess registryAccess) {
+    public ItemStack getResultItem(HolderLookup.Provider provider) {
         long maxCharge = 0L;
         long charge = 0L;
-        ItemStack resultStack = super.getResultItem(registryAccess);
+        ItemStack resultStack = super.getResultItem(provider);
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
-            IElectricItem electricItem = GTCapabilityHelper.getElectricItem(chargeStack);
+            IElectricItem electricItem = chargeStack.get(GTDataComponents.ELECTRIC_ITEM);
             if (electricItem != null) {
                 maxCharge += electricItem.getMaxCharge();
                 charge += electricItem.getCharge();
-                resultStack.getOrCreateTag().putLong("MaxCharge", maxCharge);
-                resultStack.getOrCreateTag().putLong("Charge", charge);
+                resultStack.set(GTDataComponents.TOOL_CHARGE, new ToolCharge(maxCharge, charge));
                 return resultStack;
             }
         }
@@ -91,45 +87,83 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<ShapedEnergyTransferRecipe> {
-        public static final Codec<ShapedEnergyTransferRecipe> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            ExtraCodecs.strictOptionalField(Codec.STRING, "group", "").forGetter(ShapedRecipe::getGroup),
+        public static final MapCodec<ShapedEnergyTransferRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
+            Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
             CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
             ShapedRecipePattern.MAP_CODEC.forGetter(val -> ((ShapedRecipeAccessor)val).getPattern()),
-            Ingredient.CODEC.fieldOf("chargeIngredient").forGetter(val -> val.chargeIngredient),
-            Codec.BOOL.fieldOf("overrideCharge").forGetter(val -> val.overrideCharge),
-            Codec.BOOL.fieldOf("transferMaxCharge").forGetter(val -> val.transferMaxCharge),
-            ItemStack.ITEM_WITH_COUNT_CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor)val).getResult()),
-            ExtraCodecs.strictOptionalField(Codec.BOOL, "show_notification", true).forGetter(val -> ((ShapedRecipeAccessor)val).getShowNotification())
+            Ingredient.CODEC.fieldOf("chargeIngredient").forGetter(ShapedEnergyTransferRecipe::getChargeIngredient),
+            Codec.BOOL.fieldOf("overrideCharge").forGetter(ShapedEnergyTransferRecipe::isOverrideCharge),
+            Codec.BOOL.fieldOf("transferMaxCharge").forGetter(ShapedEnergyTransferRecipe::isTransferMaxCharge),
+            ItemStack.CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor)val).getResult()),
+            Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(val -> ((ShapedRecipeAccessor)val).getShowNotification())
         ).apply(instance, ShapedEnergyTransferRecipe::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, ShapedEnergyTransferRecipe> STREAM_CODEC = composite(
+            ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
+            CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,
+            ShapedRecipePattern.STREAM_CODEC, val -> ((ShapedRecipeAccessor)val).getPattern(),
+            Ingredient.CONTENTS_STREAM_CODEC, ShapedEnergyTransferRecipe::getChargeIngredient,
+            ByteBufCodecs.BOOL, ShapedEnergyTransferRecipe::isOverrideCharge,
+            ByteBufCodecs.BOOL, ShapedEnergyTransferRecipe::isTransferMaxCharge,
+            ItemStack.STREAM_CODEC, val -> ((ShapedRecipeAccessor)val).getResult(),
+            ByteBufCodecs.BOOL, ShapedRecipe::showNotification,
+            ShapedEnergyTransferRecipe::new
+        );
 
         @Override
-        public Codec<ShapedEnergyTransferRecipe> codec() {
+        public MapCodec<ShapedEnergyTransferRecipe> codec() {
             return CODEC;
         }
 
         @Override
-        public ShapedEnergyTransferRecipe fromNetwork(FriendlyByteBuf buffer) {
-            boolean overrideCharge = buffer.readBoolean();
-            boolean transferMaxCharge = buffer.readBoolean();
-            Ingredient chargeIngredient = Ingredient.fromNetwork(buffer);
-            String group = buffer.readUtf();
-            CraftingBookCategory category = buffer.readEnum(CraftingBookCategory.class);
-            ShapedRecipePattern pattern = ShapedRecipePattern.fromNetwork(buffer);
-            ItemStack result = buffer.readItem();
-            boolean showNotification = buffer.readBoolean();
-            return new ShapedEnergyTransferRecipe(group, category, pattern, chargeIngredient, overrideCharge, transferMaxCharge, result, showNotification);
-        }
-
-        @Override
-        public void toNetwork(FriendlyByteBuf buffer, ShapedEnergyTransferRecipe recipe) {
-            buffer.writeBoolean(recipe.isOverrideCharge());
-            buffer.writeBoolean(recipe.isTransferMaxCharge());
-            recipe.getChargeIngredient().toNetwork(buffer);
-            buffer.writeUtf(recipe.getGroup());
-            buffer.writeEnum(recipe.category());
-            ((ShapedRecipeAccessor)recipe).getPattern().toNetwork(buffer);
-            buffer.writeItem(((ShapedRecipeAccessor)recipe).getResult());
-            buffer.writeBoolean(((ShapedRecipeAccessor) recipe).getShowNotification());
+        public StreamCodec<RegistryFriendlyByteBuf, ShapedEnergyTransferRecipe> streamCodec() {
+            return STREAM_CODEC;
         }
     }
+
+    public static <B, C, T1, T2, T3, T4, T5, T6, T7, T8> StreamCodec<B, C> composite(
+        final StreamCodec<? super B, T1> codec1,
+        final Function<C, T1> getter1,
+        final StreamCodec<? super B, T2> codec2,
+        final Function<C, T2> getter2,
+        final StreamCodec<? super B, T3> codec3,
+        final Function<C, T3> getter3,
+        final StreamCodec<? super B, T4> codec4,
+        final Function<C, T4> getter4,
+        final StreamCodec<? super B, T5> codec5,
+        final Function<C, T5> getter5,
+        final StreamCodec<? super B, T6> codec6,
+        final Function<C, T6> getter6,
+        final StreamCodec<? super B, T7> codec7,
+        final Function<C, T7> getter7,
+        final StreamCodec<? super B, T8> codec8,
+        final Function<C, T8> getter8,
+        final Function8<T1, T2, T3, T4, T5, T6, T7, T8, C> p_331335_) {
+        return new StreamCodec<>() {
+            @Override
+            public C decode(B buffer) {
+                T1 t1 = codec1.decode(buffer);
+                T2 t2 = codec2.decode(buffer);
+                T3 t3 = codec3.decode(buffer);
+                T4 t4 = codec4.decode(buffer);
+                T5 t5 = codec5.decode(buffer);
+                T6 t6 = codec6.decode(buffer);
+                T7 t7 = codec7.decode(buffer);
+                T8 t8 = codec8.decode(buffer);
+                return p_331335_.apply(t1, t2, t3, t4, t5, t6, t7, t8);
+            }
+
+            @Override
+            public void encode(B buffer, C object) {
+                codec1.encode(buffer, getter1.apply(object));
+                codec2.encode(buffer, getter2.apply(object));
+                codec3.encode(buffer, getter3.apply(object));
+                codec4.encode(buffer, getter4.apply(object));
+                codec5.encode(buffer, getter5.apply(object));
+                codec6.encode(buffer, getter6.apply(object));
+                codec7.encode(buffer, getter7.apply(object));
+                codec8.encode(buffer, getter8.apply(object));
+            }
+        };
+    }
+
 }

@@ -22,6 +22,7 @@ import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
@@ -176,7 +177,7 @@ public class CombinedDirectionalConfigurator extends WidgetGroup {
     }
 
     @Override
-    public void handleClientAction(int id, FriendlyByteBuf buf) {
+    public void handleClientAction(int id, RegistryFriendlyByteBuf buf) {
         if (id != MOUSE_CLICK_CLIENT_ACTION_ID) {
             super.handleClientAction(id, buf);
             return;

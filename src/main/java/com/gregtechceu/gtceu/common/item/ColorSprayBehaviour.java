@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -28,6 +29,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -190,7 +192,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         int remainingUses = getUsesLeft(stack);
         if (color != null) {
             tooltipComponents
@@ -501,14 +503,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     public final int getUsesLeft(ItemStack stack) {
-        CompoundTag tagCompound = stack.getTag();
-        if (tagCompound == null || !tagCompound.contains("UsesLeft", Tag.TAG_INT))
-            return totalUses;
-        return tagCompound.getInt("UsesLeft");
+        return totalUses - stack.getOrDefault(DataComponents.DAMAGE, 0);
     }
 
-    public static void setUsesLeft(ItemStack itemStack, int usesLeft) {
-        CompoundTag tagCompound = itemStack.getOrCreateTag();
-        tagCompound.putInt("UsesLeft", usesLeft);
+    public void setUsesLeft(ItemStack itemStack, int usesLeft) {
+        itemStack.set(DataComponents.DAMAGE, totalUses - usesLeft);
     }
 }

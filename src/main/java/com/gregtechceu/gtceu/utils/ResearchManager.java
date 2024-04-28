@@ -22,6 +22,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
 import net.minecraft.core.component.DataComponentMap;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -187,16 +188,14 @@ public final class ResearchManager {
         }
 
         private GTRecipe createDataRecipe(@NotNull ItemStack first, @NotNull ItemStack second) {
-            DataComponentMap compound = second.getComponents();
+            DataComponentPatch components = second.getComponentsPatch();
 
             // Both must be data items
             if (!isStackDataItem(first, true)) return null;
             if (!isStackDataItem(second, true)) return null;
 
             ItemStack output = first.copy();
-            for (var type : compound.keySet()) {
-                output.set((DataComponentType) type, compound.get(type));
-            }
+            output.applyComponents(components);
             return GTRecipeTypes.SCANNER_RECIPES.recipeBuilder(GTStringUtils.itemStackToString(output))
                     .inputItems(first)
                     .notConsumable(second)

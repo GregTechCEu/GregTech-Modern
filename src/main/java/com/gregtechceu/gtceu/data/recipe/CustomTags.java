@@ -66,10 +66,13 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_WOOD_TOOL = Tags.Blocks.NEEDS_WOOD_TOOL;
     public static final TagKey<Block> NEEDS_GOLD_TOOL = Tags.Blocks.NEEDS_GOLD_TOOL;
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = Tags.Blocks.NEEDS_NETHERITE_TOOL;
-    public static final TagKey<Block> NEEDS_DURANIUM_TOOL = TagUtil.createBlockTag("needs_duranium_tool");
-    public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createBlockTag("needs_neutronium_tool");
-    public static final TagKey<Block> INCORRECT_FOR_DURANIUM_TOOL = TagUtil.createBlockTag("incorrect_for_duranium_tool");
-    public static final TagKey<Block> INCORRECT_FOR_NEUTRONIUM_TOOL = TagUtil.createBlockTag("incorrect_for_neutronium_tool");
+    public static final TagKey<Block> NEEDS_DURANIUM_TOOL = TagUtil.createModBlockTag("needs_duranium_tool");
+    public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createModBlockTag("needs_neutronium_tool");
+    public static final TagKey<Block> INCORRECT_FOR_DURANIUM_TOOL = TagUtil.createModBlockTag("incorrect_for_duranium_tool");
+    public static final TagKey<Block> INCORRECT_FOR_NEUTRONIUM_TOOL = TagUtil.createModBlockTag("incorrect_for_neutronium_tool");
+
+    public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench", false);
+    public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter", false);
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] TOOL_TIERS = new TagKey[] {

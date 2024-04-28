@@ -3,19 +3,26 @@ package com.gregtechceu.gtceu.api.cover.filter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 
 import lombok.Getter;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -28,7 +35,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
-
+    public static final Codec<SimpleItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
+        Codec.BOOL.fieldOf("ignore_components").forGetter(val -> val.ignoreNbt),
+        ItemStack.OPTIONAL_CODEC.listOf().fieldOf("matches").forGetter(val -> Arrays.stream(val.matches).toList())
+    ).apply(instance, SimpleItemFilter::new));
     @Getter
     protected boolean isBlackList;
     @Getter
@@ -47,20 +58,15 @@ public class SimpleItemFilter implements ItemFilter {
         maxStackSize = 1;
     }
 
-    public static SimpleItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+    protected SimpleItemFilter(boolean isBlackList, boolean ignoreNbt, List<ItemStack> matches) {
+        this.isBlackList = isBlackList;
+        this.ignoreNbt = ignoreNbt;
+        this.matches = matches.toArray(ItemStack[]::new);
     }
 
-    private static SimpleItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
-        var handler = new SimpleItemFilter();
-        handler.itemWriter = itemWriter;
-        handler.isBlackList = tag.getBoolean("isBlackList");
-        handler.ignoreNbt = tag.getBoolean("matchNbt");
-        var list = tag.getList("matches", Tag.TAG_COMPOUND);
-        for (int i = 0; i < list.size(); i++) {
-            handler.matches[i] = ItemStack.of((CompoundTag) list.get(i));
-        }
-        return handler;
+    public static SimpleItemFilter loadFilter(ItemStack itemStack) {
+        //handler.itemWriter = itemWriter; TODO fix
+        return itemStack.get(GTDataComponents.SIMPLE_ITEM_FILTER);
     }
 
     @Override
@@ -77,7 +83,7 @@ public class SimpleItemFilter implements ItemFilter {
         tag.putBoolean("matchNbt", ignoreNbt);
         var list = new ListTag();
         for (var match : matches) {
-            list.add(match.save(new CompoundTag()));
+            list.add(match.saveOptional(Platform.getFrozenRegistry()));
         }
         tag.put("matches", list);
         return tag;
@@ -151,7 +157,7 @@ public class SimpleItemFilter implements ItemFilter {
         int totalCount = 0;
 
         for (var candidate : matches) {
-            if (ignoreNbt && ItemStack.isSameItemSameTags(candidate, itemStack)) {
+            if (ignoreNbt && ItemStack.isSameItemSameComponents(candidate, itemStack)) {
                 totalCount += candidate.getCount();
             } else if (ItemTransferHelper.canItemStacksStack(candidate, itemStack)) {
                 totalCount += candidate.getCount();

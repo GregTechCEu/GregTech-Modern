@@ -72,7 +72,11 @@ import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
+import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
@@ -547,11 +551,14 @@ public class GTMachines {
             .register();
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
-        if (stack.hasTag()) {
-            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(),
-                    storedAmount));
+        if (stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
+            Tag itemNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+            if (itemNbt == null) {
+                return;
+            }
+            ItemStack itemStack = ItemStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), itemNbt).getOrThrow();
+            int storedAmount = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).getInt("storedAmount");
+            list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(), storedAmount));
         }
     };
 
@@ -590,9 +597,13 @@ public class GTMachines {
 
     public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName) {
         return (stack, list) -> {
-            if (stack.hasTag()) {
-                FluidStack tank = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement(nbtName));
-                list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getDisplayName(), tank.getAmount()));
+            if (stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
+                Tag fluidNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+                if (fluidNbt == null) {
+                    return;
+                }
+                FluidStack tank = FluidStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), fluidNbt).getOrThrow();
+                list.add(1, Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(), tank.getAmount()));
             }
         };
     }

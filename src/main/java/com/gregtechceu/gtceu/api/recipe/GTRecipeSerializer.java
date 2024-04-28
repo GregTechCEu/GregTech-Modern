@@ -11,7 +11,6 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
 import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.FriendlyByteBuf;
@@ -23,11 +22,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Tuple;
 import net.minecraft.world.item.crafting.RecipeSerializer;
-import org.checkerframework.checker.units.qual.C;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
-import java.util.function.IntFunction;
 
 /**
  * @author KilaBash
@@ -74,12 +71,12 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         writeCollection(contents, buf, capability.serializer::toNetworkContent);
     }
 
-    public static RecipeCondition conditionReader(FriendlyByteBuf buf) {
+    public static RecipeCondition conditionReader(RegistryFriendlyByteBuf buf) {
         RecipeCondition condition = GTRegistries.RECIPE_CONDITIONS.get(buf.readUtf()).factory.createDefault();
         return condition.fromNetwork(buf);
     }
 
-    public static void conditionWriter(FriendlyByteBuf buf, RecipeCondition condition) {
+    public static void conditionWriter(RegistryFriendlyByteBuf buf, RecipeCondition condition) {
         buf.writeUtf(GTRegistries.RECIPE_CONDITIONS.getKey(condition.getType()));
         condition.toNetwork(buf);
     }
@@ -98,7 +95,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         Map<RecipeCapability<?>, List<Content>> tickInputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> outputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
         Map<RecipeCapability<?>, List<Content>> tickOutputs = tuplesToMap(readCollection(buf, GTRecipeSerializer::entryReader));
-        List<RecipeCondition> conditions = buf.readCollection(c -> new ArrayList<>(), GTRecipeSerializer::conditionReader);
+        List<RecipeCondition> conditions = readCollection(buf, GTRecipeSerializer::conditionReader);
         List<?> ingredientActions = new ArrayList<>();
         if (GTCEu.isKubeJSLoaded()) {
             ingredientActions = KJSCallWrapper.getIngredientActions(buf);

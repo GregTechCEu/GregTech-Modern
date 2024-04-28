@@ -6,17 +6,21 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
+import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -40,8 +44,8 @@ import java.util.function.Consumer;
 
 public final class ChestGenHooks {
 
-    private static final Map<ResourceLocation, List<GTLootEntryItem>> lootEntryItems = new Object2ObjectOpenHashMap<>();
-    private static final Map<ResourceLocation, NumberProvider> rollValues = new Object2ObjectOpenHashMap<>();
+    private static final Map<ResourceKey<LootTable>, List<GTLootEntryItem>> lootEntryItems = new Object2ObjectOpenHashMap<>();
+    private static final Map<ResourceKey<LootTable>, NumberProvider> rollValues = new Object2ObjectOpenHashMap<>();
 
     private static final List<LootItemCondition> NO_CONDITIONS = List.of();
 
@@ -82,7 +86,7 @@ public final class ChestGenHooks {
         }
     }
 
-    public static void addItem(@NotNull ResourceLocation lootTable, @NotNull ItemStack stack, int minAmount,
+    public static void addItem(@NotNull ResourceKey<LootTable> lootTable, @NotNull ItemStack stack, int minAmount,
                                int maxAmount, int weight) {
         RandomWeightLootFunction lootFunction = new RandomWeightLootFunction(stack, minAmount, maxAmount);
         String modid = Objects.requireNonNull(BuiltInRegistries.ITEM.getKey(stack.getItem())).getNamespace();
@@ -91,7 +95,7 @@ public final class ChestGenHooks {
         lootEntryItems.computeIfAbsent(lootTable, $ -> new ArrayList<>()).add(itemEntry);
     }
 
-    public static void addRolls(ResourceLocation tableLocation, int minAdd, int maxAdd) {
+    public static void addRolls(ResourceKey<LootTable> tableLocation, int minAdd, int maxAdd) {
         rollValues.put(tableLocation, UniformGenerator.between(minAdd, maxAdd));
     }
 
@@ -127,13 +131,13 @@ public final class ChestGenHooks {
     }
 
     public static class RandomWeightLootFunction extends LootItemConditionalFunction implements LootItemFunction {
-        public static final Codec<RandomWeightLootFunction> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        public static final MapCodec<RandomWeightLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             ItemStack.CODEC.fieldOf("stack").forGetter(val -> val.stack),
             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("min").forGetter(val -> val.minAmount),
             ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(val -> val.maxAmount)
         ).apply(instance, RandomWeightLootFunction::new));
 
-        public static final LootItemFunctionType TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType(CODEC));
+        public static final LootItemFunctionType<RandomWeightLootFunction> TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType<>(CODEC));
 
         private final ItemStack stack;
         @Getter
@@ -154,7 +158,7 @@ public final class ChestGenHooks {
         }
 
         @Override
-        public LootItemFunctionType getType() {
+        public LootItemFunctionType<RandomWeightLootFunction> getType() {
             return TYPE;
         }
 
@@ -163,10 +167,8 @@ public final class ChestGenHooks {
             if (stack.getDamageValue() != 0) {
                 itemStack.setDamageValue(stack.getDamageValue());
             }
-            CompoundTag tagCompound = stack.getTag();
-            if (tagCompound != null) {
-                itemStack.setTag(tagCompound.copy());
-            }
+            DataComponentPatch patch = stack.getComponentsPatch();
+            itemStack.applyComponents(patch);
 
             if (minAmount == maxAmount) {
                 itemStack.setCount(minAmount);

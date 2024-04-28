@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -23,14 +25,14 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
         this.serverLevel = serverLevel;
     }
 
-    public LevelPipeNet(ServerLevel serverLevel, CompoundTag tag) {
+    public LevelPipeNet(ServerLevel serverLevel, CompoundTag tag, HolderLookup.Provider provider) {
         this(serverLevel);
         this.pipeNets = new ArrayList<>();
         ListTag allEnergyNets = tag.getList("PipeNets", Tag.TAG_COMPOUND);
         for (int i = 0; i < allEnergyNets.size(); i++) {
             CompoundTag pNetTag = allEnergyNets.getCompound(i);
             T pipeNet = createNetInstance();
-            pipeNet.deserializeNBT(pNetTag);
+            pipeNet.deserializeNBT(provider, pNetTag);
             addPipeNetSilently(pipeNet);
         }
         init();
@@ -138,10 +140,10 @@ public abstract class LevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType>
     protected abstract T createNetInstance();
 
     @Override
-    public CompoundTag save(CompoundTag compound) {
+    public CompoundTag save(CompoundTag compound, HolderLookup.Provider provider) {
         ListTag allPipeNets = new ListTag();
         for (T pipeNet : pipeNets) {
-            CompoundTag pNetTag = pipeNet.serializeNBT();
+            CompoundTag pNetTag = pipeNet.serializeNBT(provider);
             allPipeNets.add(pNetTag);
         }
         compound.put("PipeNets", allPipeNets);

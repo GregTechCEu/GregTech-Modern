@@ -29,7 +29,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
         return builder().compareItem(true)
                 .compareCount(true)
                 .compareDamage(true)
-                .compareTag(true)
+                .compareComponents(true)
                 .build();
     }
 
@@ -42,7 +42,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
     static ItemStackHashStrategy comparingAllButCount() {
         return builder().compareItem(true)
                 .compareDamage(true)
-                .compareTag(true)
+                .compareComponents(true)
                 .build();
     }
 
@@ -57,8 +57,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      * Builder pattern class for generating customized ItemStackHashStrategy
      */
     class ItemStackHashStrategyBuilder {
-
-        private boolean item, count, damage, tag;
+        private boolean item, count, damage, components;
 
         /**
          * Defines whether the Item type should be considered for equality.
@@ -94,13 +93,13 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
         }
 
         /**
-         * Defines whether NBT Tags should be considered for equality.
+         * Defines whether Data Components should be considered for equality.
          *
          * @param choice {@code true} to consider this property, {@code false} to ignore it.
          * @return {@code this}
          */
-        public ItemStackHashStrategyBuilder compareTag(boolean choice) {
-            tag = choice;
+        public ItemStackHashStrategyBuilder compareComponents(boolean choice) {
+            components = choice;
             return this;
         }
 
@@ -116,7 +115,8 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
                             item ? o.getItem() : null,
                             count ? o.getCount() : null,
                             damage ? o.getDamageValue() : null,
-                            tag ? o.getTag() : null);
+                            components ? o.getComponents() : null
+                    );
                 }
 
                 @Override
@@ -127,7 +127,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
                     return (!item || a.getItem() == b.getItem()) &&
                             (!count || a.getCount() == b.getCount()) &&
                             (!damage || a.getDamageValue() == b.getDamageValue()) &&
-                            (!tag || Objects.equals(a.getTag(), b.getTag()));
+                            (!components || Objects.equals(a.getComponents(), b.getComponents()));
                 }
             };
         }

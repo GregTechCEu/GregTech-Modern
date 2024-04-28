@@ -112,7 +112,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isCrouching()) {
             if (!level.isClientSide) {
@@ -127,7 +127,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     protected boolean drainEnergy(@Nonnull ItemStack stack, int amount, boolean simulate) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem == null) return false;
         return electricItem.discharge(stack, amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }

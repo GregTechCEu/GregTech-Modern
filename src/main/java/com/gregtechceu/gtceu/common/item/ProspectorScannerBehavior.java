@@ -62,13 +62,13 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem == null) return false;
         return electricItem.discharge(stack, cost, Integer.MAX_VALUE, true, false, simulate) >= cost;
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isShiftKeyDown() && modes.length > 1) {
             if (!level.isClientSide) {

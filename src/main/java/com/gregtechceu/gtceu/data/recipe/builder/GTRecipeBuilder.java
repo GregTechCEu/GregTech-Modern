@@ -19,13 +19,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
-import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -219,6 +218,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputItems(SizedIngredient... inputs) {
         return input(ItemRecipeCapability.CAP, inputs);
+    }
+
+    public GTRecipeBuilder inputItems(Ingredient input) {
+        return input(ItemRecipeCapability.CAP, new SizedIngredient(input, 1));
+    }
+
+    public GTRecipeBuilder inputItems(Ingredient... inputs) {
+        return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(input -> new SizedIngredient(input, 1)).toArray(SizedIngredient[]::new));
     }
 
     public GTRecipeBuilder inputItems(ItemStack input) {

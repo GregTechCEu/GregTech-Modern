@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumChestMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
@@ -14,6 +15,9 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -45,16 +49,20 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         model = getItemBakedModel();
-        if (model != null && stack.hasTag()) {
+        if (model != null && stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
             poseStack.pushPose();
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            ItemStack itemStack = ItemStack.of(stack.getOrCreateTagElement("stored"));
-            int storedAmount = stack.getOrCreateTag().getInt("storedAmount");
-            float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
-            // Don't need to handle locked items here since they don't get saved to the item
-            renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
+            Tag itemNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+            if (itemNbt != null) {
+                ItemStack itemStack = ItemStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), itemNbt).getOrThrow();
+                int storedAmount = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).getInt("storedAmount");
+                float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
+                // Don't need to handle locked items here since they don't get saved to the item
+                renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
+
+            }
 
             poseStack.popPose();
         }

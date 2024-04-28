@@ -7,6 +7,8 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -409,14 +411,14 @@ public abstract class PipeNet<NodeDataType> implements INBTSerializable<Compound
     protected abstract NodeDataType readNodeData(CompoundTag tagCompound);
 
     @Override
-    public CompoundTag serializeNBT() {
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag compound = new CompoundTag();
         compound.put("Nodes", serializeAllNodeList(nodeByBlockPos));
         return compound;
     }
 
     @Override
-    public void deserializeNBT(CompoundTag nbt) {
+    public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         this.nodeByBlockPos.clear();
         this.ownedChunks.clear();
         deserializeAllNodeList(nbt.getCompound("Nodes"));

@@ -13,6 +13,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.ReadOnlyManaged;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
 import net.minecraft.core.Direction;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -140,13 +141,13 @@ public abstract class MEHatchPartMachine extends FluidHatchPartMachine
     }
 
     @SuppressWarnings("unused")
-    public CompoundTag serializeGridNode(SerializableManagedGridNode node) {
-        return node.serializeNBT();
+    public CompoundTag serializeGridNode(SerializableManagedGridNode node, HolderLookup.Provider provider) {
+        return node.serializeNBT(provider);
     }
 
     @SuppressWarnings("unused")
-    public SerializableManagedGridNode deserializeGridNode(CompoundTag tag) {
-        this.mainNode.deserializeNBT(tag);
+    public SerializableManagedGridNode deserializeGridNode(CompoundTag tag, HolderLookup.Provider provider) {
+        this.mainNode.deserializeNBT(provider, tag);
         return this.mainNode;
     }
 }

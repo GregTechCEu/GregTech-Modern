@@ -16,9 +16,7 @@ import java.util.Set;
  * @implNote IWorldGenLayer
  */
 public interface IWorldGenLayer extends StringRepresentable {
-
-    Codec<IWorldGenLayer> CODEC = ExtraCodecs.stringResolverCodec(StringRepresentable::getSerializedName,
-            WorldGeneratorUtils.WORLD_GEN_LAYERS::get);
+    Codec<IWorldGenLayer> CODEC = Codec.stringResolver(StringRepresentable::getSerializedName, WorldGeneratorUtils.WORLD_GEN_LAYERS::get);
 
     boolean isApplicableForLevel(ResourceLocation level);
 

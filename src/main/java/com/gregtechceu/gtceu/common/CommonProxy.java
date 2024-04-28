@@ -36,6 +36,7 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.core.mixins.AbstractRegistrateAccessor;
 import com.gregtechceu.gtceu.data.GregTechDatagen;
 import com.gregtechceu.gtceu.data.lang.MaterialLangGenerator;
@@ -159,6 +160,8 @@ public class CommonProxy {
         GTRecipeTypes.init();
         GTMachines.init();
         GTFoods.init();
+        GTToolBehaviors.init();
+        GTDataComponents.DATA_COMPONENTS.register(modBus);
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTOreVeinWidget.init();
@@ -332,6 +335,7 @@ public class CommonProxy {
                     GTDynamicDataPack.addRecipe(id, recipe, advancement);
                 }
             });
+            MixinHelpers.generateGTDynamicLoot(GTDynamicDataPack::addLootTable);
             // Initialize dungeon loot additions
             DungeonLootLoader.init();
             GTCEu.LOGGER.info("GregTech Data loading took {}ms", System.currentTimeMillis() - startTime);

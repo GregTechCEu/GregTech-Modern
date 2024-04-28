@@ -15,6 +15,7 @@ import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
+import com.lowdragmc.lowdraglib.Platform;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -45,7 +46,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -203,11 +204,12 @@ public interface GTRecipeSchema {
                     throw new IllegalArgumentException(id + ": input items is empty");
                 }
             }
-            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> InputItem.of(SizedIngredient.create(stack.hasTag() ? NBTIngredient.of(true, stack) : Ingredient.of(stack), stack.getCount()), stack.getCount())).toArray());
+            // TODO remove `.ingredient()`
+            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> InputItem.of(new SizedIngredient(!stack.getComponents().isEmpty() ? DataComponentIngredient.of(true, stack) : Ingredient.of(stack), stack.getCount()).ingredient(), stack.getCount())).toArray());
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
-            return inputItems(InputItem.of(SizedIngredient.create(tag, amount)));
+            return inputItems(InputItem.of(SizedIngredient.of(tag, amount)));
         }
 
         public GTRecipeJS inputItems(Item input, int amount) {
@@ -453,7 +455,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS explosivesType(ItemStack explosivesType) {
-            return addData("explosives_type", explosivesType.save(new CompoundTag()));
+            return addData("explosives_type", explosivesType.save(Platform.getFrozenRegistry()));
         }
 
         public GTRecipeJS solderMultiplier(int multiplier) {
@@ -629,11 +631,11 @@ public interface GTRecipeSchema {
 
         public InputItem readInputItem(Object from) {
             if (from instanceof SizedIngredient ingr) {
-                return InputItem.of(ingr.getInner(), ingr.getAmount());
+                return InputItem.of(ingr.ingredient(), ingr.count());
             } else if (from instanceof JsonObject jsonObject) {
-                var ingredient = SizedIngredient.fromJson(jsonObject, true);
+                var ingredient = SizedIngredient.NESTED_CODEC.parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow();
                 if (ingredient instanceof SizedIngredient sized) {
-                    return InputItem.of(sized.getInner(), sized.getAmount());
+                    return InputItem.of(sized.ingredient(), sized.count());
                 } else {
                     return InputItem.of(from);
                 }
@@ -642,14 +644,14 @@ public interface GTRecipeSchema {
         }
 
         public JsonElement writeInputItem(InputItem value) {
-            return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, SizedIngredient.create(value.ingredient, value.count)).getOrThrow(false, GTCEu.LOGGER::error);
+            return SizedIngredient.NESTED_CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), new SizedIngredient(value.ingredient, value.count)).getOrThrow();
         }
 
         @Override
         public OutputItem readOutputItem(Object from) {
-            if (from instanceof SizedIngredient ingredient) {
-                return OutputItem.of(ingredient.getInner().getItems()[0], Double.NaN);
-            } else if (from instanceof JsonObject jsonObject) {
+            if(from instanceof SizedIngredient ingredient) {
+                return OutputItem.of(ingredient.ingredient().getItems()[0], Double.NaN);
+            } else if(from instanceof JsonObject jsonObject) {
                 float chance = 1.0f;
                 if (jsonObject.has("chance")) {
                     chance = jsonObject.get("chance").getAsFloat();
@@ -657,7 +659,7 @@ public interface GTRecipeSchema {
                 if (jsonObject.has("content")) {
                     jsonObject = jsonObject.getAsJsonObject("content");
                 }
-                var ingredient = Ingredient.fromJson(jsonObject, false);
+                var ingredient = SizedIngredient.NESTED_CODEC.parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow();
                 return OutputItem.of(ingredient.getItems()[0], chance);
             }
             return OutputItem.of(from);
@@ -665,14 +667,14 @@ public interface GTRecipeSchema {
 
         @Override
         public JsonElement writeOutputItem(OutputItem value) {
-            return Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, SizedIngredient.create(value.item)).getOrThrow(false, GTCEu.LOGGER::error);
+            return SizedIngredient.NESTED_CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), new SizedIngredient(!value.item.getComponents().isEmpty() ? DataComponentIngredient.of(true, value.item) : Ingredient.of(value.item), value.item.getCount())).getOrThrow();
         }
 
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
             var fluid = ((FluidStackJS)value).getFluidStack();
             FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
-            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow(false, GTCEu.LOGGER::error);
+            return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
         }
 
         @Override

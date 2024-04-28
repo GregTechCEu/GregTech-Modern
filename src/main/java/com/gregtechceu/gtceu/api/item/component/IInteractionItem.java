@@ -21,10 +21,10 @@ public interface IInteractionItem extends IItemComponent {
         return InteractionResult.PASS;
     }
 
-    default InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-        if (item.isEdible()) {
+    default InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+        if (item.getFoodProperties(player) != null) {
             ItemStack itemStack = player.getItemInHand(usedHand);
-            if (player.canEat(itemStack.getFoodProperties(player).canAlwaysEat())) {
+            if (player.canEat(item.getFoodProperties(player).canAlwaysEat())) {
                 player.startUsingItem(usedHand);
                 return InteractionResultHolder.consume(itemStack);
             } else {
@@ -36,7 +36,7 @@ public interface IInteractionItem extends IItemComponent {
     }
 
     default ItemStack finishUsingItem(ItemStack stack, Level level, LivingEntity livingEntity) {
-        return stack.isEdible() ? livingEntity.eat(level, stack) : stack;
+        return stack.getFoodProperties(livingEntity) != null ? livingEntity.eat(level, stack) : stack;
     }
 
     default InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {

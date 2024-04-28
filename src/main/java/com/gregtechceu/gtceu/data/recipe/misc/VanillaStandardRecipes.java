@@ -15,8 +15,10 @@ import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.common.Tags;
+import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
@@ -571,13 +573,13 @@ public class VanillaStandardRecipes {
      * + Adds dying and cleaning recipes for vanilla blocks
      */
     private static void dyingCleaningRecipes(RecipeOutput provider) {
-        /*
-        for (int i = 0; i < 16; i++) {
-            MIXER_RECIPES.recipeBuilder().duration(200).EUt(VA[ULV])
-                    .inputItems(new ItemStack(Blocks.SAND, 4))
-                    .inputItems(new ItemStack(Blocks.GRAVEL, 4))
-                    .inputFluids(CHEMICAL_DYES[i].getFluid(L))
-                    .outputItems(new ItemStack(Blocks.CONCRETE_POWDER, 8, i))
+        for (DyeColor color : DyeColor.values()) {
+            String dyeName = color.getName();
+            MIXER_RECIPES.recipeBuilder(dyeName + "_concrete_powder").duration(200).EUt(VA[ULV])
+                    .inputItems(Tags.Items.SANDS, 4)
+                    .inputItems(Tags.Items.GRAVELS, 4)
+                    .inputFluids(CHEMICAL_DYES[color.ordinal()].getFluid(L))
+                    .outputItems(new ItemStack(BuiltInRegistries.ITEM.get(new ResourceLocation(dyeName + "_concrete_powder")), 8))
                     .save(provider);
 
             CHEMICAL_BATH_RECIPES.recipeBuilder(dyeName + "_concrete").duration(20).EUt(VA[ULV])
@@ -639,33 +641,32 @@ public class VanillaStandardRecipes {
                     .save(provider);
         }
 
-        // todo new tags to avoid white -> white recipe?
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_wool")
-                .inputItems(ItemTags.WOOL)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(ItemTags.WOOL), Ingredient.of(Tags.Items.DYED)))
                 .inputFluids(Chlorine.getFluid(50))
                 .outputItems(new ItemStack(Blocks.WHITE_WOOL))
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_carpet")
-                .inputItems(ItemTags.WOOL_CARPETS)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(ItemTags.WOOL_CARPETS), Ingredient.of(Tags.Items.DYED)))
                 .inputFluids(Chlorine.getFluid(25))
                 .outputItems(new ItemStack(Blocks.WHITE_CARPET))
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_terracotta")
-                .inputItems(ItemTags.TERRACOTTA)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(ItemTags.TERRACOTTA), Ingredient.of(Tags.Items.DYED)))
                 .inputFluids(Chlorine.getFluid(50))
                 .outputItems(Items.TERRACOTTA)
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_stained_glass")
-                .inputItems(Tags.Items.STAINED_GLASS)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(Tags.Items.GLASS_BLOCKS), Ingredient.of(Tags.Items.DYED)))
                 .inputFluids(Chlorine.getFluid(50))
                 .outputItems(Items.GLASS)
                 .duration(400).EUt(2).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("decolor_stained_glass_pane")
-                .inputItems(Tags.Items.STAINED_GLASS_PANES)
+                .inputItems(IntersectionIngredient.of(Ingredient.of(Tags.Items.GLASS_PANES), Ingredient.of(Tags.Items.DYED)))
                 .inputFluids(Chlorine.getFluid(20))
                 .outputItems(Items.GLASS_PANE)
                 .duration(400).EUt(2).save(provider);

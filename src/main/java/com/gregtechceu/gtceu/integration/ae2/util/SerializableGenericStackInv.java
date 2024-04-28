@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.util;
 import com.gregtechceu.gtceu.core.mixins.ae2.GenericStackInvAccessor;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.ListTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.Nullable;
@@ -19,12 +20,12 @@ public class SerializableGenericStackInv extends GenericStackInv implements INBT
     }
 
     @Override
-    public ListTag serializeNBT() {
+    public ListTag serializeNBT(HolderLookup.Provider provider) {
         return super.writeToTag();
     }
 
     @Override
-    public void deserializeNBT(ListTag tags) {
+    public void deserializeNBT(HolderLookup.Provider provider, ListTag tags) {
         super.readFromTag(tags);
     }
 

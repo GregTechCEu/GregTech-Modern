@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.machine.storage.QuantumTankMachine;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
 
@@ -21,6 +22,9 @@ import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.NbtOps;
+import net.minecraft.nbt.Tag;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -54,14 +58,18 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         model = getItemBakedModel();
-        if (model != null && stack.hasTag()) {
+        if (model != null && stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
             poseStack.pushPose();
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            FluidStack tank = FluidStack.loadFluidStackFromNBT(stack.getOrCreateTagElement("stored"));
-            // Don't need to handle locked fluids here since they don't get saved to the item
-            renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.EMPTY);
+            Tag fluidNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+            if (fluidNbt != null) {
+                FluidStack tank = FluidStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), fluidNbt).getOrThrow();
+                // Don't need to handle locked fluids here since they don't get saved to the item
+                renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.EMPTY);
+
+            }
 
             poseStack.popPose();
         }

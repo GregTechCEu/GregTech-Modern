@@ -50,7 +50,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {
-        var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        var electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem != null) {
             var per = (electricItem.getCharge() * 7 / electricItem.getMaxCharge());
             return per / 100f;
@@ -59,9 +59,9 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
-        var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        var electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
@@ -76,7 +76,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        var electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (!level.isClientSide && entity instanceof Player player && electricItem != null &&
                 electricItem.canProvideChargeExternally() &&
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
@@ -85,7 +85,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
             for (int i = 0; i < inventoryPlayer.getContainerSize(); i++) {
                 var itemInSlot = inventoryPlayer.getItem(i);
-                var slotElectricItem = GTCapabilityHelper.getElectricItem(itemInSlot);
+                var slotElectricItem = itemInSlot.get(GTDataComponents.ELECTRIC_ITEM);
                 if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
                     long chargedAmount = chargeElectricItem(itemInSlot, transferLimit, electricItem, slotElectricItem);
                     if (chargedAmount > 0L) {
@@ -114,7 +114,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
+        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
             addTotalChargeTooltip(tooltipComponents, electricItem.getMaxCharge(), electricItem.getTier());
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
@@ -153,7 +153,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         items.add(new ItemStack(item));
         var stack = new ItemStack(item);
-        var electricItem = GTCapabilityHelper.getElectricItem(stack);
+        var electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem != null) {
             electricItem.charge(stack, electricItem.getMaxCharge(), electricItem.getTier(), true, false);
             items.add(stack);

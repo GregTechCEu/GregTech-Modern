@@ -12,13 +12,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
-public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Ingredient> implements ICapabilityTrait {
-
+public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<SizedIngredient> implements ICapabilityTrait {
     @Getter
     public final IO handlerIO;
     @Getter
@@ -29,11 +29,9 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     private boolean enabled;
 
     @Getter
-    private final Collection<NotifiableRecipeHandlerTrait<Ingredient>> handlers;
+    private final Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers;
 
-    public ItemHandlerProxyRecipeTrait(MetaMachine machine,
-                                       Collection<NotifiableRecipeHandlerTrait<Ingredient>> handlers, IO handlerIO,
-                                       IO capabilityIO) {
+    public ItemHandlerProxyRecipeTrait(MetaMachine machine, Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers, IO handlerIO, IO capabilityIO) {
         super(machine);
         this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = handlerIO;
@@ -42,10 +40,9 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     }
 
     @Override
-    public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName,
-                                              boolean simulate) {
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
-        for (IRecipeHandler<Ingredient> handler : handlers) {
+        for (IRecipeHandler<SizedIngredient> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);
             if (left.isEmpty()) return null;
         }
@@ -55,7 +52,7 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     @Override
     public List<Object> getContents() {
         List<Object> contents = new ObjectArrayList<>(2);
-        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
+        for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
             contents.addAll(handler.getContents());
         }
         return contents;
@@ -64,20 +61,20 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     @Override
     public double getTotalContentAmount() {
         long amount = 0;
-        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
+        for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
             amount += handler.getTotalContentAmount();
         }
         return amount;
     }
 
     @Override
-    public RecipeCapability<Ingredient> getCapability() {
+    public RecipeCapability<SizedIngredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
 
     @Override
     public boolean isDistinct() {
-        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
+        for (NotifiableRecipeHandlerTrait<SizedIngredient> handler : handlers) {
             if (!handler.isDistinct)
                 return false;
         }

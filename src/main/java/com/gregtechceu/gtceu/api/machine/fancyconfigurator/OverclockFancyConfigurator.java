@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import java.util.HashMap;
@@ -105,7 +106,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
             }
 
             @Override
-            public void writeInitialData(FriendlyByteBuf buffer) {
+            public void writeInitialData(RegistryFriendlyByteBuf buffer) {
                 int min = overclockMachine.getMinOverclockTier();
                 int max = overclockMachine.getMaxOverclockTier();
                 buffer.writeVarInt(min);
@@ -116,7 +117,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
             }
 
             @Override
-            public void readInitialData(FriendlyByteBuf buffer) {
+            public void readInitialData(RegistryFriendlyByteBuf buffer) {
                 int min = buffer.readVarInt();
                 int max = buffer.readVarInt();
                 currentTier = buffer.readVarInt();
@@ -172,7 +173,7 @@ public class OverclockFancyConfigurator implements IFancyConfigurator {
             }
 
             @Override
-            public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+            public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
                 if (id == 0) {
                     int min = buffer.readVarInt();
                     int max = buffer.readVarInt();

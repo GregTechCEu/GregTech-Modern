@@ -6,11 +6,14 @@ import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
 
+@AllArgsConstructor
 public class ElectricItem implements IElectricItem {
     public static final Codec<ElectricItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
         Codec.LONG.fieldOf("max_charge").forGetter(ElectricItem::getMaxCharge),
@@ -21,10 +24,10 @@ public class ElectricItem implements IElectricItem {
         Codec.BOOL.optionalFieldOf("infinite", false).forGetter(ElectricItem::isInfinite),
         Codec.BOOL.optionalFieldOf("discharge_mode", false).forGetter(ElectricItem::isDischargeMode)
     ).apply(instance, ElectricItem::new));
-    public static final StreamCodec<ByteBuf, ElectricItem> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.VAR_LONG, ElectricItem::getMaxCharge,
-        ByteBufCodecs.VAR_LONG, ElectricItem::getCharge,
-        ByteBufCodecs.VAR_INT, ElectricItem::getTier,
+    public static final StreamCodec<ByteBuf, ElectricItem> STREAM_CODEC = NeoForgeStreamCodecs.composite(
+        ByteBufCodecs.VAR_LONG, item -> item.maxCharge,
+        ByteBufCodecs.VAR_LONG, item -> item.charge,
+        ByteBufCodecs.VAR_INT, item -> item.tier,
         ByteBufCodecs.BOOL, ElectricItem::isChargeable,
         ByteBufCodecs.BOOL, ElectricItem::isCanProvideEnergyExternally,
         ByteBufCodecs.BOOL, ElectricItem::isInfinite,
@@ -51,17 +54,6 @@ public class ElectricItem implements IElectricItem {
     public ElectricItem(long maxCharge, int tier, boolean chargeable, boolean canProvideEnergyExternally) {
         this(maxCharge, 0, tier, chargeable, canProvideEnergyExternally, false, false);
     }
-
-    public ElectricItem(long maxCharge, long charge, int tier, boolean chargeable, boolean canProvideEnergyExternally, boolean infinite, boolean dischargeMode) {
-        this.maxCharge = maxCharge;
-        this.charge = charge;
-        this.tier = tier;
-        this.chargeable = chargeable;
-        this.canProvideEnergyExternally = canProvideEnergyExternally;
-        this.infinite = infinite;
-        this.dischargeMode = dischargeMode;
-    }
-
 
     public ElectricItem setCharge(long charge) {
         return new ElectricItem(maxCharge, charge, tier, chargeable, canProvideEnergyExternally, infinite, dischargeMode);
