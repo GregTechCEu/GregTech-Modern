@@ -4,7 +4,7 @@
     "res": "gtceu:ev_aluminium_drill"
   },
   "items": [
-    "#forge:tools/drills"
+    "#c:tools/drills"
   ],
   "page": "gtceu:tools/ev_drill",
   "position": [

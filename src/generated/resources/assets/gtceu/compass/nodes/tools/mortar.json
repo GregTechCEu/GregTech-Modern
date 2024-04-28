@@ -4,7 +4,7 @@
     "res": "gtceu:iron_mortar"
   },
   "items": [
-    "#forge:tools/mortars"
+    "#c:tools/mortars"
   ],
   "page": "gtceu:tools/mortar",
   "position": [

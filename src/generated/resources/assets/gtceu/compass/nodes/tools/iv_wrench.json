@@ -4,7 +4,7 @@
     "res": "gtceu:iv_aluminium_wrench"
   },
   "items": [
-    "#forge:tools/wrenches"
+    "#c:tools/wrenches"
   ],
   "page": "gtceu:tools/iv_wrench",
   "position": [

@@ -4,7 +4,7 @@
     "res": "gtceu:polybenzimidazole_mallet"
   },
   "items": [
-    "#forge:tools/mallets"
+    "#c:tools/mallets"
   ],
   "page": "gtceu:tools/mallet",
   "position": [

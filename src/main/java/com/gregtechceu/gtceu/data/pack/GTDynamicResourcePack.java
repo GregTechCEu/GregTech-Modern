@@ -53,7 +53,7 @@ public class GTDynamicResourcePack implements PackResources {
     private final PackLocationInfo info;
 
     static {
-        CLIENT_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "forge", "c"));
+        CLIENT_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "neoforge", "c"));
     }
 
     public GTDynamicResourcePack(PackLocationInfo info) {

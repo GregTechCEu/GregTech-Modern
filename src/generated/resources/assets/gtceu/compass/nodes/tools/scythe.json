@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_scythe"
   },
   "items": [
-    "#forge:tools/scythes"
+    "#c:tools/scythes"
   ],
   "page": "gtceu:tools/scythe",
   "position": [

@@ -4,7 +4,7 @@
     "res": "gtceu:polybenzimidazole_plunger"
   },
   "items": [
-    "#forge:tools/plungers"
+    "#c:tools/plungers"
   ],
   "page": "gtceu:tools/plunger",
   "position": [

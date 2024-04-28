@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_wire_cutter"
   },
   "items": [
-    "#forge:tools/wire_cutters"
+    "#c:tools/wire_cutters"
   ],
   "page": "gtceu:tools/wire_cutter",
   "position": [
