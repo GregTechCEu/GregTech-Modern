@@ -26,15 +26,16 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
-import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.*;
-import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -196,10 +197,16 @@ public class GTItems {
                                 .properties(p -> p.craftRemainder(Items.AIR)
                                     .component(DataComponents.TOOL, new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock()))
                                     .component(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(toolType.toolDefinition.getBehaviors())))
+                                .properties(p -> {
+                                    if (toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY) != AoESymmetrical.none()) {
+                                        p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY));
+                                    }
+                                    return p;
+                                })
                                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> IGTTool::tintColor)
-                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTags.get(0)))
+                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTags.getFirst()))
                                 .register());
                         }
                     }
@@ -628,6 +635,7 @@ public class GTItems {
         .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
         .tag(CustomTags.HV_BATTERIES).register();
     public static ItemEntry<ComponentItem> LAPOTRON_CRYSTAL = REGISTRATE.item("lapotron_crystal", ComponentItem::new)
+        .lang("Lapotron Crystal")
         .model(overrideModel(GTCEu.id("battery"), 8))
         .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotron_crystal"))
         .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))

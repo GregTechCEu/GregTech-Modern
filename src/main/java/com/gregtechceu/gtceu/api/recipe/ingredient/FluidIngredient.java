@@ -31,7 +31,7 @@ public class FluidIngredient implements Predicate<FluidStack> {
         Value.CODEC.listOf().fieldOf("values").forGetter(ing -> Arrays.stream(ing.values).toList()),
         ExtraCodecs.POSITIVE_INT.optionalFieldOf("amount", 0).forGetter(ing -> ing.amount),
         DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ing -> ing.components.asPatch())
-    ).apply(instance, (values, amount, tag) -> new FluidIngredient(values.stream(), amount, tag)));
+    ).apply(instance, (values, amount, componentPatch) -> new FluidIngredient(values.stream(), amount, componentPatch)));
 
     public FluidIngredient.Value[] values;
     @Nullable
@@ -55,10 +55,10 @@ public class FluidIngredient implements Predicate<FluidStack> {
     public FluidIngredient(Stream<? extends FluidIngredient.Value> empty, int amount, DataComponentPatch patch) {
         this.values = empty.toArray(Value[]::new);
         this.amount = amount;
-        this.components = PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, patch);
+        this.components = patch == null ? new PatchedDataComponentMap(DataComponentMap.EMPTY) : PatchedDataComponentMap.fromPatch(DataComponentMap.EMPTY, patch);
     }
 
-    public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount, @Nullable DataComponentPatch components) {
+    public static FluidIngredient fromValues(Stream<? extends FluidIngredient.Value> stream, int amount, DataComponentPatch components) {
         FluidIngredient ingredient = new FluidIngredient(stream, amount, components);
         return ingredient.isEmpty() ? EMPTY : ingredient;
     }
@@ -176,11 +176,11 @@ public class FluidIngredient implements Predicate<FluidStack> {
      * @param tag the tag key
      */
     public static FluidIngredient of(TagKey<Fluid> tag, int amount) {
-        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, null);
+        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, DataComponentPatch.EMPTY);
     }
 
-    public static FluidIngredient of(TagKey<Fluid> tag, int amount, DataComponentPatch nbt) {
-        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, nbt);
+    public static FluidIngredient of(TagKey<Fluid> tag, int amount, DataComponentPatch componentPatch) {
+        return FluidIngredient.fromValues(Stream.of(new FluidIngredient.TagValue(tag)), amount, componentPatch);
     }
 
     public static FluidIngredient fromNetwork(RegistryFriendlyByteBuf buffer) {

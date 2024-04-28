@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
@@ -114,7 +115,7 @@ public class ToolRecipeHandler {
             for (ItemEntry<? extends Item> batteryItem : tieredBatteryItems) {
                 if (powerUnitItems.get(tier) != null) {
                     ItemStack batteryStack = batteryItem.asStack();
-                    long maxCharge = batteryStack.get(GTDataComponents.ELECTRIC_ITEM).getMaxCharge();
+                    long maxCharge = GTCapabilityHelper.getElectricItem(batteryStack).getMaxCharge();
                     ItemStack powerUnitStack = ToolItemHelper.getMaxChargeOverrideStack(powerUnitItems.get(tier).get(), maxCharge);
                     String recipeName = String.format("%s_%s", BuiltInRegistries.ITEM.getKey(powerUnitItems.get(tier).get()).getPath(), BuiltInRegistries.ITEM.getKey(batteryItem.get()).getPath());
 
@@ -326,7 +327,7 @@ public class ToolRecipeHandler {
         for (IGTTool toolItem : toolItems) {
             int tier = toolItem.getElectricTier();
             ItemStack powerUnitStack = powerUnitItems.get(tier).asStack();
-            IElectricItem powerUnit = powerUnitStack.get(GTDataComponents.ELECTRIC_ITEM);
+            IElectricItem powerUnit = GTCapabilityHelper.getElectricItem(powerUnitStack);
             ItemStack tool = GTItems.TOOL_ITEMS.get(material, toolType).get().get(0, powerUnit.getMaxCharge());
             VanillaRecipeHelper.addShapedEnergyTransferRecipe(provider,
                     true, true, true,

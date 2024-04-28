@@ -337,11 +337,11 @@ public class ComponentItem extends Item
      */
     public ItemStack getChargedStack(long chargeAmount) {
         ItemStack itemStack = getDefaultInstance();
-        IElectricItem electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
         if (electricItem == null) {
             throw new IllegalStateException("Not an electric item.");
         }
-        electricItem.charge(itemStack, chargeAmount, Integer.MAX_VALUE, true, false);
+        electricItem.charge(chargeAmount, Integer.MAX_VALUE, true, false);
         return itemStack;
     }
 

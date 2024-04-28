@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
@@ -130,7 +129,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
 
     protected CustomItemStackHandler createChargerItemHandler(Object... args) {
         var transfer = new CustomItemStackHandler();
-        transfer.setFilter(item -> item.get(GTDataComponents.ELECTRIC_ITEM) != null);
+        transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null);
         return transfer;
     }
 

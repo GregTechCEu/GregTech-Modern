@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
 import net.minecraft.world.item.ItemStack;

@@ -10,7 +10,7 @@ import net.neoforged.fml.ModLoader;
 public class GTToolBehaviors {
 
     static {
-        GTRegistries.RECIPE_CONDITIONS.unfreeze();
+        GTRegistries.TOOL_BEHAVIORS.unfreeze();
     }
 
     private GTToolBehaviors() {}
@@ -32,6 +32,6 @@ public class GTToolBehaviors {
 
     public static void init() {
         ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TOOL_BEHAVIORS, (Class<ToolBehaviorType<?>>) (Class<?>) ToolBehaviorType.class));
-        GTRegistries.RECIPE_CONDITIONS.freeze();
+        GTRegistries.TOOL_BEHAVIORS.freeze();
     }
 }

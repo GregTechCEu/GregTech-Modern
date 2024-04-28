@@ -2,69 +2,43 @@ package com.gregtechceu.gtceu.api.item.capability;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
+import lombok.Setter;
+import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.neoforge.network.codec.NeoForgeStreamCodecs;
+
+import java.util.function.Supplier;
 
 @AllArgsConstructor
 public class ElectricItem implements IElectricItem {
-    public static final Codec<ElectricItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.LONG.fieldOf("max_charge").forGetter(ElectricItem::getMaxCharge),
-        Codec.LONG.optionalFieldOf("charge", 0L).forGetter(ElectricItem::getCharge),
-        Codec.INT.fieldOf("tier").forGetter(ElectricItem::getTier),
-        Codec.BOOL.fieldOf("chargeable").forGetter(ElectricItem::chargeable),
-        Codec.BOOL.fieldOf("can_provide_energy_externally").forGetter(ElectricItem::canProvideChargeExternally),
-        Codec.BOOL.optionalFieldOf("infinite", false).forGetter(ElectricItem::isInfinite),
-        Codec.BOOL.optionalFieldOf("discharge_mode", false).forGetter(ElectricItem::isDischargeMode)
-    ).apply(instance, ElectricItem::new));
-    public static final StreamCodec<ByteBuf, ElectricItem> STREAM_CODEC = NeoForgeStreamCodecs.composite(
-        ByteBufCodecs.VAR_LONG, item -> item.maxCharge,
-        ByteBufCodecs.VAR_LONG, item -> item.charge,
-        ByteBufCodecs.VAR_INT, item -> item.tier,
-        ByteBufCodecs.BOOL, ElectricItem::isChargeable,
-        ByteBufCodecs.BOOL, ElectricItem::isCanProvideEnergyExternally,
-        ByteBufCodecs.BOOL, ElectricItem::isInfinite,
-        ByteBufCodecs.BOOL, ElectricItem::isDischargeMode,
-        ElectricItem::new
-    );
+    protected final Supplier<DataComponentType<SimpleEnergyContent>> componentType;
+    protected ItemStack container;
 
-    @Getter
     protected final long maxCharge;
-    @Getter
-    protected final long charge;
-    @Getter
     protected final int tier;
 
-    @Getter
     protected final boolean chargeable;
-    @Getter
     protected final boolean canProvideEnergyExternally;
-    @Getter
-    protected final boolean infinite;
-    @Getter
-    protected final boolean dischargeMode;
 
-    public ElectricItem(long maxCharge, int tier, boolean chargeable, boolean canProvideEnergyExternally) {
-        this(maxCharge, 0, tier, chargeable, canProvideEnergyExternally, false, false);
+
+    public ElectricItem(ItemStack container, long maxCharge, int tier, boolean chargeable, boolean canProvideEnergyExternally) {
+        componentType = GTDataComponents.ENERGY_CONTENT;
+        this.container = container;
+        this.maxCharge = maxCharge;
+        this.tier = tier;
+        this.chargeable = chargeable;
+        this.canProvideEnergyExternally = canProvideEnergyExternally;
     }
 
-    public ElectricItem setCharge(long charge) {
-        return new ElectricItem(maxCharge, charge, tier, chargeable, canProvideEnergyExternally, infinite, dischargeMode);
+    public void setCharge(long change) {
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withCharge(change));
     }
 
-    public ElectricItem setMaxChargeOverride(long maxCharge) {
-        return new ElectricItem(maxCharge, charge, tier, chargeable, canProvideEnergyExternally, infinite, dischargeMode);
-    }
-
-    public ElectricItem setDischargeMode(boolean dischargeMode) {
-        return new ElectricItem(maxCharge, charge, tier, chargeable, canProvideEnergyExternally, infinite, dischargeMode);
+    public void setMaxChargeOverride(long maxCharge) {
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withMaxCharge(maxCharge));
     }
 
     @Override
@@ -72,8 +46,23 @@ public class ElectricItem implements IElectricItem {
         return GTValues.V[getTier()];
     }
 
-    public ElectricItem setInfiniteCharge(boolean infinite) {
-        return new ElectricItem(maxCharge, charge, tier, chargeable, canProvideEnergyExternally, infinite, dischargeMode);
+    @Override
+    public long getMaxCharge() {
+        if (!container.has(GTDataComponents.ENERGY_CONTENT)) {
+            return maxCharge;
+        }
+        return container.get(GTDataComponents.ENERGY_CONTENT).maxCharge();
+    }
+
+    public long getCharge() {
+        if (!container.has(GTDataComponents.ENERGY_CONTENT)) {
+            return 0;
+        }
+        return container.get(GTDataComponents.ENERGY_CONTENT).charge();
+    }
+
+    public void setInfiniteCharge(boolean infiniteCharge) {
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withInfinite(infiniteCharge));
     }
 
     @Override
@@ -87,8 +76,21 @@ public class ElectricItem implements IElectricItem {
     }
 
     @Override
-    public long charge(ItemStack stack, long amount, int chargerTier, boolean ignoreTransferLimit, boolean simulate) {
-        if (stack.getCount() != 1) {
+    public boolean isDischargeMode() {
+        if (!container.has(GTDataComponents.ENERGY_CONTENT)) {
+            return false;
+        }
+        return container.get(GTDataComponents.ENERGY_CONTENT).dischargeMode();
+    }
+
+    @Override
+    public void setDischargeMode(boolean dischargeMode) {
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withDischargeMode(dischargeMode));
+    }
+
+    @Override
+    public long charge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean simulate) {
+        if (container.getCount() != 1) {
             return 0L;
         }
         if ((chargeable || amount == Long.MAX_VALUE) && (chargerTier >= tier) && amount > 0L) {
@@ -98,7 +100,7 @@ public class ElectricItem implements IElectricItem {
             }
             long charged = Math.min(amount, canReceive);
             if (!simulate) {
-                stack.set(GTDataComponents.ELECTRIC_ITEM, setCharge(charge + charged));
+                setCharge(getCharge() + charged);
             }
             return charged;
         }
@@ -106,8 +108,8 @@ public class ElectricItem implements IElectricItem {
     }
 
     @Override
-    public long discharge(ItemStack stack, long amount, int chargerTier, boolean ignoreTransferLimit, boolean externally, boolean simulate) {
-        if (stack.getCount() != 1) {
+    public long discharge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean externally, boolean simulate) {
+        if (container.getCount() != 1) {
             return 0L;
         }
         if ((canProvideEnergyExternally || !externally || amount == Long.MAX_VALUE) && (chargerTier >= tier) &&
@@ -118,11 +120,15 @@ public class ElectricItem implements IElectricItem {
             long charge = getCharge();
             long discharged = Math.min(amount, charge);
             if (!simulate) {
-                stack.set(GTDataComponents.ELECTRIC_ITEM, setCharge(charge - discharged));
+                setCharge(charge - discharged);
             }
             return discharged;
         }
         return 0;
     }
 
+    @Override
+    public int getTier() {
+        return tier;
+    }
 }

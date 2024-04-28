@@ -62,9 +62,9 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
-        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
-        return electricItem.discharge(stack, cost, Integer.MAX_VALUE, true, false, simulate) >= cost;
+        return electricItem.discharge(cost, Integer.MAX_VALUE, true, false, simulate) >= cost;
     }
 
     @Override

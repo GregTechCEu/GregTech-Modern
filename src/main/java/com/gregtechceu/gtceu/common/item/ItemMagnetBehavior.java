@@ -178,11 +178,11 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private static boolean drainEnergy(boolean simulate, @NotNull ItemStack stack, long amount) {
-        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null)
             return false;
 
-        return electricItem.discharge(stack, amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
+        return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }
 
     @Override

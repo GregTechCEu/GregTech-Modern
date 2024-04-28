@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
+import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
@@ -12,19 +12,19 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
-import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.api.item.components.GTTool;
+import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IGTToolDefinition;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.TreeFellingHelper;
-import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -118,7 +118,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     default ItemStack get() {
         ItemStack stack = new ItemStack(asItem());
 
-        stack.set(GTDataComponents.DISALLOW_CONTAINER_ITEM.get(), Unit.INSTANCE);
+        // do NOT set this, to have tools have crafting durability.
+        // stack.set(GTDataComponents.DISALLOW_CONTAINER_ITEM, Unit.INSTANCE);
 
         IGTToolDefinition toolStats = getToolStats();
 
@@ -173,10 +174,10 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     default ItemStack get(long defaultCharge, long defaultMaxCharge) {
         ItemStack stack = get();
         if (isElectric()) {
-            ElectricItem electricItem = (ElectricItem) stack.get(GTDataComponents.ELECTRIC_ITEM);
+            ElectricItem electricItem = (ElectricItem) GTCapabilityHelper.getElectricItem(stack);
             if (electricItem != null) {
                 electricItem.setMaxChargeOverride(defaultMaxCharge);
-                stack.set(GTDataComponents.ELECTRIC_ITEM, electricItem.setCharge(defaultCharge));
+                electricItem.setCharge(defaultCharge);
             }
         }
         return stack;
@@ -236,8 +237,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
 
     default long getMaxCharge(ItemStack stack) {
         if (isElectric()) {
-            if (stack.has(GTDataComponents.TOOL_CHARGE)) {
-                return stack.get(GTDataComponents.TOOL_CHARGE).maxCharge();
+            if (stack.has(GTDataComponents.ENERGY_CONTENT)) {
+                return stack.get(GTDataComponents.ENERGY_CONTENT).maxCharge();
             }
         }
         return -1L;
@@ -245,8 +246,8 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
 
     default long getCharge(ItemStack stack) {
         if (isElectric()) {
-            if (stack.has(GTDataComponents.TOOL_CHARGE)) {
-                return stack.get(GTDataComponents.TOOL_CHARGE).charge();
+            if (stack.has(GTDataComponents.ENERGY_CONTENT)) {
+                return stack.get(GTDataComponents.ENERGY_CONTENT).charge();
             }
         }
         return -1L;
@@ -361,7 +362,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                         if (playSoundOnBlockDestroy()) playSound(player);
                     } else {
                         if (result == -1) {
-                            if (stack.has(GTDataComponents.TREE_FELLING) && state.is(BlockTags.LOGS)) {
+                            if (stack.get(GTDataComponents.TOOL_BEHAVIOURS).hasBehavior(GTToolBehaviors.TREE_FELLING) && state.is(BlockTags.LOGS)) {
                                 new TreeFellingHelper().fellTree(stack, player.level(), state, pos, player);
                             }
                             if (playSoundOnBlockDestroy()) playSound(player);
@@ -697,7 +698,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
             case "enchantment.cofhcore.smelting": // cofhcore
             case "enchantment.as.smelting": // astral sorcery
                 // block autosmelt enchants from AoE and Tree-Felling tools
-                return getToolStats().getAoEDefinition(stack) == AoESymmetrical.none() && !stack.has(GTDataComponents.TREE_FELLING);
+                return getToolStats().getAoEDefinition(stack) == AoESymmetrical.none() && !stack.get(GTDataComponents.TOOL_BEHAVIOURS).hasBehavior(GTToolBehaviors.TREE_FELLING);
         }
 
         // Block Mending and Unbreaking on Electric tools
@@ -803,10 +804,6 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
     }
 
     default void attachCapabilities(RegisterCapabilitiesEvent event) {
-        if (isElectric()) {
-            ElectricStats stats = ElectricStats.createElectricItem(0L, getElectricTier());
-            //event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (item, unused) -> stats.createItem(item), this.asItem());
-        }
         for (IToolBehavior<?> behavior : getToolStats().getBehaviors()) {
             if (behavior instanceof IComponentCapability componentCapability) {
                componentCapability.attachCaps(event, this.asItem());

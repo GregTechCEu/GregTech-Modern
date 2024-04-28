@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.data.GTIngredientTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.mojang.serialization.Codec;
@@ -24,7 +25,6 @@ public class IntCircuitIngredient implements ICustomIngredient {
     public static final MapCodec<IntCircuitIngredient> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         ExtraCodecs.intRange(CIRCUIT_MIN, CIRCUIT_MAX).fieldOf("configuration").forGetter(val -> val.configuration)
     ).apply(instance, IntCircuitIngredient::new));
-    public static final IngredientType<IntCircuitIngredient> TYPE = new IngredientType<>(CODEC);
 
     private static final IntCircuitIngredient[] INGREDIENTS = new IntCircuitIngredient[CIRCUIT_MAX + 1];
 
@@ -66,7 +66,7 @@ public class IntCircuitIngredient implements ICustomIngredient {
 
     @Override
     public IngredientType<?> getType() {
-        return TYPE;
+        return GTIngredientTypes.INT_CIRCUIT_INGREDIENT.get();
     }
 
     public IntCircuitIngredient copy() {

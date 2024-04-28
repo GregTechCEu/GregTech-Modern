@@ -10,15 +10,14 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
-import com.gregtechceu.gtceu.api.item.components.GTTool;
+import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.*;
-import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
@@ -183,9 +182,9 @@ public class ToolHelper {
                 RandomSource random = user == null ? GTValues.RNG : user.getRandom();
                 if (tool.isElectric()) {
                     int electricDamage = damage * ConfigHolder.INSTANCE.machines.energyUsageMultiplier;
-                    IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
                     if (electricItem != null) {
-                        electricItem.discharge(stack, electricDamage, tool.getElectricTier(), true, false, false);
+                        electricItem.discharge(electricDamage, tool.getElectricTier(), true, false, false);
                         if (electricItem.getCharge() > 0 &&
                                 random.nextInt(100) >= ConfigHolder.INSTANCE.tools.rngDamageElectricTools) {
                             return;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;

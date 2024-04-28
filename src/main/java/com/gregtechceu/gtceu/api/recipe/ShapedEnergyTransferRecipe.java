@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.components.ToolCharge;
+import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
 import com.mojang.datafixers.util.Function8;
@@ -56,11 +57,11 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
             for (int i = 0; i < craftingContainer.getContainerSize(); i++) {
                 if (ItemStack.isSameItem(craftingContainer.getItem(i), chargeStack)) {
                     ItemStack stack = craftingContainer.getItem(i);
-                    IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+                    IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
                     if (electricItem != null) {
                         maxCharge += electricItem.getMaxCharge();
                         charge += electricItem.getCharge();
-                        resultStack.set(GTDataComponents.TOOL_CHARGE, new ToolCharge(maxCharge, charge));
+                        resultStack.set(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, charge));
                         return resultStack;
                     }
                 }
@@ -75,11 +76,11 @@ public class ShapedEnergyTransferRecipe extends ShapedRecipe {
         long charge = 0L;
         ItemStack resultStack = super.getResultItem(provider);
         for (ItemStack chargeStack : chargeIngredient.getItems()) {
-            IElectricItem electricItem = chargeStack.get(GTDataComponents.ELECTRIC_ITEM);
+            IElectricItem electricItem = GTCapabilityHelper.getElectricItem(chargeStack);
             if (electricItem != null) {
                 maxCharge += electricItem.getMaxCharge();
                 charge += electricItem.getCharge();
-                resultStack.set(GTDataComponents.TOOL_CHARGE, new ToolCharge(maxCharge, charge));
+                resultStack.set(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, charge));
                 return resultStack;
             }
         }

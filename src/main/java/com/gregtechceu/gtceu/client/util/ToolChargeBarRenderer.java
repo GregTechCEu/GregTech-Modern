@@ -6,13 +6,10 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.FastColor;
 import net.minecraft.world.item.ItemStack;
 
@@ -76,7 +73,7 @@ public final class ToolChargeBarRenderer {
             renderedDurability = renderDurabilityBar(graphics, stack, bar, xPosition, yPosition);
         }
 
-        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null) {
             renderElectricBar(graphics, electricItem.getCharge(), electricItem.getMaxCharge(), xPosition, yPosition,
                     renderedDurability);

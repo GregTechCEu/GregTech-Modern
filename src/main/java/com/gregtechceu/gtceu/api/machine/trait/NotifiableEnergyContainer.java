@@ -186,7 +186,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
             return false;
         }
 
-        var electricItem = stackInSlot.get(GTDataComponents.ELECTRIC_ITEM);
+        var electricItem = GTCapabilityHelper.getElectricItem(stackInSlot);
         if (electricItem != null) {
             if (handleElectricItem(stackInSlot, electricItem, simulate)) {
                 if (!simulate) {
@@ -208,7 +208,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
             // Drain from the battery if we are below half energy capacity, and if the tier matches
             if (chargePercent <= 0.5 && chargeTier == machineTier) {
-                long dischargedBy = electricItem.discharge(stack, getEnergyCanBeInserted(), machineTier, false, true, simulate);
+                long dischargedBy = electricItem.discharge(getEnergyCanBeInserted(), machineTier, false, true, simulate);
                 if (!simulate) {
                     addEnergy(dischargedBy);
                 }
@@ -218,7 +218,7 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
         // Else, check if we have above 65% power
         if (chargePercent > 0.65) {
-            long chargedBy = electricItem.charge(stack, getEnergyStored(), chargeTier, false, simulate);
+            long chargedBy = electricItem.charge(getEnergyStored(), chargeTier, false, simulate);
             if (!simulate) {
                 removeEnergy(chargedBy);
             }

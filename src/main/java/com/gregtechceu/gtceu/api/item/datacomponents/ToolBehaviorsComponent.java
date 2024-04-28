@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.components;
+package com.gregtechceu.gtceu.api.item.datacomponents;
 
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;

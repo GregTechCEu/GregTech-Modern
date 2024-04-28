@@ -30,7 +30,7 @@ public class TooltipsHandler {
 
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Energy Item
-        var energyItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        var energyItem = GTCapabilityHelper.getElectricItem(stack);
         if (energyItem != null) {
             tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
                     energyItem.getCharge(),

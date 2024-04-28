@@ -3,8 +3,10 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
@@ -19,12 +21,13 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle {
+public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IComponentCapability {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -45,12 +48,17 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         return new ElectricStats(maxCharge, tier, chargeable, dischargeable);
     }
 
+    @Override
+    public void attachCaps(RegisterCapabilitiesEvent event, Item item) {
+        event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (stack, unused) -> createItem(stack), item);
+    }
+
     public IElectricItem createItem(ItemStack stack) {
-        return new ElectricItem(maxCharge, tier, chargeable, dischargeable);
+        return new ElectricItem(stack, maxCharge, tier, chargeable, dischargeable);
     }
 
     public static float getStoredPredicate(ItemStack itemStack) {
-        var electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
+        var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
         if (electricItem != null) {
             var per = (electricItem.getCharge() * 7 / electricItem.getMaxCharge());
             return per / 100f;
@@ -61,7 +69,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     @Override
     public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
-        var electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
+        var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
@@ -76,7 +84,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        var electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        var electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (!level.isClientSide && entity instanceof Player player && electricItem != null &&
                 electricItem.canProvideChargeExternally() &&
                 isInDischargeMode(stack) && electricItem.getCharge() > 0L) {
@@ -85,7 +93,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
 
             for (int i = 0; i < inventoryPlayer.getContainerSize(); i++) {
                 var itemInSlot = inventoryPlayer.getItem(i);
-                var slotElectricItem = itemInSlot.get(GTDataComponents.ELECTRIC_ITEM);
+                var slotElectricItem = GTCapabilityHelper.getElectricItem(itemInSlot);
                 if (slotElectricItem != null && !slotElectricItem.canProvideChargeExternally()) {
                     long chargedAmount = chargeElectricItem(itemInSlot, transferLimit, electricItem, slotElectricItem);
                     if (chargedAmount > 0L) {
@@ -98,23 +106,23 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static long chargeElectricItem(ItemStack stack, long maxDischargeAmount, IElectricItem source, IElectricItem target) {
-        long maxDischarged = source.discharge(stack, maxDischargeAmount, source.getTier(), false, false, true);
-        long maxReceived = target.charge(stack, maxDischarged, source.getTier(), false, true);
+        long maxDischarged = source.discharge(maxDischargeAmount, source.getTier(), false, false, true);
+        long maxReceived = target.charge(maxDischarged, source.getTier(), false, true);
         if (maxReceived > 0L) {
-            long resultDischarged = source.discharge(stack, maxReceived, source.getTier(), false, true, false);
-            target.charge(stack, resultDischarged, source.getTier(), false, false);
+            long resultDischarged = source.discharge(maxReceived, source.getTier(), false, true, false);
+            target.charge(resultDischarged, source.getTier(), false, false);
             return resultDischarged;
         }
         return 0L;
     }
 
     private static void setInDischargeMode(ItemStack itemStack, boolean isDischargeMode) {
-        itemStack.update(GTDataComponents.ELECTRIC_ITEM, new ElectricItem(0, 0, false, false), item -> item.setDischargeMode(isDischargeMode));
+        GTCapabilityHelper.getElectricItem(itemStack).setDischargeMode(isDischargeMode);
     }
 
     @Override
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-        IElectricItem electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
             addTotalChargeTooltip(tooltipComponents, electricItem.getMaxCharge(), electricItem.getTier());
             tooltipComponents.add(Component.translatable("metaitem.electric.discharge_mode.tooltip"));
@@ -142,7 +150,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     private static boolean isInDischargeMode(ItemStack itemStack) {
-        var electric = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
+        var electric = GTCapabilityHelper.getElectricItem(itemStack);
         if (electric == null) {
             return false;
         }
@@ -153,22 +161,22 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         items.add(new ItemStack(item));
         var stack = new ItemStack(item);
-        var electricItem = stack.get(GTDataComponents.ELECTRIC_ITEM);
+        var electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null) {
-            electricItem.charge(stack, electricItem.getMaxCharge(), electricItem.getTier(), true, false);
+            electricItem.charge(electricItem.getMaxCharge(), electricItem.getTier(), true, false);
             items.add(stack);
         }
     }
 
-    public static ElectricStats createElectricItem(long maxCharge, long tier) {
-        return ElectricStats.create(maxCharge, tier, true, false);
+    public static ElectricStats createElectricItem(long maxCharge, int tier) {
+        return new ElectricStats(maxCharge, tier, true, false);
     }
 
     public static ElectricStats createRechargeableBattery(long maxCharge, int tier) {
-        return ElectricStats.create(maxCharge, tier, true, true);
+        return new ElectricStats(maxCharge, tier, true, true);
     }
 
     public static ElectricStats createBattery(long maxCharge, int tier, boolean rechargeable) {
-        return ElectricStats.create(maxCharge, tier, rechargeable, true);
+        return new ElectricStats(maxCharge, tier, rechargeable, true);
     }
 }

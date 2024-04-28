@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.components;
+package com.gregtechceu.gtceu.api.item.datacomponents;
 
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
