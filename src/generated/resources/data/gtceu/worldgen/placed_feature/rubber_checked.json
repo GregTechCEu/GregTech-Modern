@@ -6,7 +6,7 @@
       "modifiers": [
         {
           "added_weight": 50,
-          "biomes": "#forge:is_swamp"
+          "biomes": "#c:is_swamp"
         }
       ]
     },

@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_spade"
   },
   "items": [
-    "#forge:tools/spades"
+    "#c:tools/spades"
   ],
   "page": "gtceu:tools/spade",
   "position": [

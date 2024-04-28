@@ -1,0 +1,12 @@
+{
+  "values": [
+    {
+      "id": "#gtceu:needs_duranium_tool",
+      "required": false
+    },
+    {
+      "id": "#gtceu:needs_neutronium_tool",
+      "required": false
+    }
+  ]
+}

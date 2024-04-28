@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_butchery_knife"
   },
   "items": [
-    "#forge:tools/butchery_knives"
+    "#c:tools/butchery_knives"
   ],
   "page": "gtceu:tools/butchery_knife",
   "position": [

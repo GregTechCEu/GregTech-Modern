@@ -63,7 +63,7 @@ public class BlockTagLoader {
     public static void create(RegistrateTagsProvider<Block> provider, TagKey<Block> tagKey, TagKey<Block>... rls) {
         var builder = provider.addTag(tagKey);
         for (TagKey<Block> tag : rls) {
-            builder.addTag(tag);
+            builder.addOptionalTag(tag);
         }
     }
 

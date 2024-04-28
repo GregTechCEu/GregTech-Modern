@@ -4,7 +4,7 @@
     "res": "gtceu:aluminium_knife"
   },
   "items": [
-    "#forge:tools/knives"
+    "#c:tools/knives"
   ],
   "page": "gtceu:tools/knife",
   "position": [
