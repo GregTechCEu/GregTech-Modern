@@ -31,7 +31,6 @@
     "OreConfigurationMixin",
     "OreVeinifierMixin",
     "RecipeManagerAccessor",
-    "RecipeManagerInvoker",
     "RecipeManagerMixin",
     "RepairItemRecipeMixin",
     "ServerChunkProviderMixin",

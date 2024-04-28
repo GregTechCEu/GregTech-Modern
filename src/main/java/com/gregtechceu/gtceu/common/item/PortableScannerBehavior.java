@@ -128,7 +128,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     protected void setNextMode(ItemStack stack) {
-        stack.update(GTDataComponents.SCANNER_MODE, (byte)0, mode -> (byte) ((mode + 1) % DisplayMode.values().length));
+        stack.update(GTDataComponents.SCANNER_MODE, (byte) 0, mode -> (byte) ((mode + 1) % DisplayMode.values().length));
     }
 
     @Nonnull
@@ -136,7 +136,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         if (stack == ItemStack.EMPTY) {
             return DisplayMode.SHOW_ALL;
         }
-        return DisplayMode.values()[stack.get(GTDataComponents.SCANNER_MODE) % DisplayMode.values().length];
+        return DisplayMode.values()[stack.getOrDefault(GTDataComponents.SCANNER_MODE, (byte) 0) % DisplayMode.values().length];
 
     }
 

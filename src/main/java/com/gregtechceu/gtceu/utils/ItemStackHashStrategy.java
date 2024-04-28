@@ -26,7 +26,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
     static ItemStackHashStrategy comparingAll() {
         return builder().compareItem(true)
                 .compareCount(true)
-                .compareDamage(true)
                 .compareComponents(true)
                 .build();
     }
@@ -39,14 +38,13 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      */
     static ItemStackHashStrategy comparingAllButCount() {
         return builder().compareItem(true)
-                .compareDamage(true)
                 .compareComponents(true)
                 .build();
     }
 
-    static ItemStackHashStrategy comparingItemDamageCount() {
+    static ItemStackHashStrategy comparingItemComponentsCount() {
         return builder().compareItem(true)
-                .compareDamage(true)
+                .compareComponents(true)
                 .compareCount(true)
                 .build();
     }
@@ -55,7 +53,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      * Builder pattern class for generating customized ItemStackHashStrategy
      */
     class ItemStackHashStrategyBuilder {
-        private boolean item, count, damage, components;
+        private boolean item, count, components;
 
         /**
          * Defines whether the Item type should be considered for equality.
@@ -80,17 +78,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
         }
 
         /**
-         * Defines whether damage values should be considered for equality.
-         *
-         * @param choice {@code true} to consider this property, {@code false} to ignore it.
-         * @return {@code this}
-         */
-        public ItemStackHashStrategyBuilder compareDamage(boolean choice) {
-            damage = choice;
-            return this;
-        }
-
-        /**
          * Defines whether Data Components should be considered for equality.
          *
          * @param choice {@code true} to consider this property, {@code false} to ignore it.
@@ -111,7 +98,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             item ? o.getItem() : null,
                             count ? o.getCount() : null,
-                            damage ? o.getDamageValue() : null,
                             components ? o.getComponents() : null
                     );
                 }
@@ -123,7 +109,6 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
 
                     return (!item || a.getItem() == b.getItem()) &&
                             (!count || a.getCount() == b.getCount()) &&
-                            (!damage || a.getDamageValue() == b.getDamageValue()) &&
                             (!components || Objects.equals(a.getComponents(), b.getComponents()));
                 }
             };

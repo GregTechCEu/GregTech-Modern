@@ -84,6 +84,6 @@ public final class CompoundListFunctionCodec<K, V> implements Codec<List<Pair<K,
 
     @Override
     public String toString() {
-        return "CompoundListCodec[" + keyCodec + " -> " + elementCodec + ']';
+        return "CompoundListFunctionCodec[" + keyCodec + " -> " + elementCodec + ']';
     }
 }
