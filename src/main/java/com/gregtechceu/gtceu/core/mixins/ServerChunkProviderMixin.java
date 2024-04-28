@@ -4,10 +4,11 @@ import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
 import com.lowdragmc.lowdraglib.async.AsyncThreadData;
 import com.mojang.datafixers.util.Either;
 import net.minecraft.server.level.ChunkHolder;
+import net.minecraft.server.level.ChunkResult;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -65,9 +66,9 @@ public abstract class ServerChunkProviderMixin {
 
             ChunkHolder chunkholder = this.getVisibleChunkIfPresent(i);
             if (chunkholder != null) {
-                Either<ChunkAccess, ChunkHolder.ChunkLoadingFailure> either = chunkholder.getFutureIfPresent(ChunkStatus.FULL).getNow(null);
-                if (either != null) {
-                    ChunkAccess chunk = either.left().orElse(null);
+                ChunkResult<ChunkAccess> result = chunkholder.getFutureIfPresent(ChunkStatus.FULL).getNow(null);
+                if (result != null) {
+                    ChunkAccess chunk = result.orElse(null);
                     if (chunk instanceof LevelChunk levelChunk) {
                         storeInCache(i, levelChunk);
                         cir.setReturnValue(levelChunk);

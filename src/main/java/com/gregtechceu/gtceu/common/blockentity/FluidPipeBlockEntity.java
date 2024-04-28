@@ -24,6 +24,7 @@ import com.gregtechceu.gtceu.common.pipelike.fluidpipe.PipeTankList;
 import com.gregtechceu.gtceu.utils.EntityDamageUtil;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import net.minecraft.core.BlockPos;
@@ -33,6 +34,7 @@ import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
@@ -433,10 +435,11 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         for (int i = 0; i < getFluidTanks().length; i++) {
             FluidStack stack1 = getContainedFluid(i);
             CompoundTag fluidTag = new CompoundTag();
-            if (stack1 == null || stack1.getAmount() <= 0)
+            if (stack1 == null || stack1.getAmount() <= 0) {
                 fluidTag.putBoolean("isNull", true);
-            else
-                stack1.writeToNBT(fluidTag);
+            } else {
+                FluidStack.OPTIONAL_CODEC.encode(stack1, Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), fluidTag).getOrThrow();
+            }
             list.add(fluidTag);
         }
         tag.put("Fluids", list);
@@ -450,7 +453,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
         for (int i = 0; i < list.size(); i++) {
             CompoundTag tag = list.getCompound(i);
             if (!tag.getBoolean("isNull")) {
-                fluidTanks[i].setFluid(FluidStack.loadFluidStackFromNBT(tag));
+                fluidTanks[i].setFluid(FluidStack.OPTIONAL_CODEC.parse(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), tag).getOrThrow());
             }
         }
     }
@@ -492,7 +495,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                 boolean allTanksEmpty = true;
                 for (int i = 0; i < fluids.length; i++) {
                     if (fluids[i] != null) {
-                        if (fluids[i].getFluid() == null || fluids[i].isEmpty()) {
+                        if (fluids[i].isEmpty()) {
                             continue;
                         }
 
@@ -502,7 +505,7 @@ public class FluidPipeBlockEntity extends PipeBlockEntity<FluidPipeType, FluidPi
                                 .withStyle(ChatFormatting.GREEN),
                             Component.translatable(FormattingUtil.formatNumbers(getCapacityPerTank()))
                                 .withStyle(ChatFormatting.YELLOW),
-                            fluids[i].getDisplayName().copy()
+                            fluids[i].getHoverName().copy()
                                 .withStyle(ChatFormatting.GOLD)));
                     }
                 }

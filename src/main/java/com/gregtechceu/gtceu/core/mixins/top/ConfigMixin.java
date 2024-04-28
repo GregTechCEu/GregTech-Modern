@@ -31,7 +31,7 @@ public class ConfigMixin {
     @Inject(method = "getTooltypeTags", at = @At(value = "INVOKE", target = "Ljava/util/List;iterator()Ljava/util/Iterator;"))
     private static void gtceu$injectToolTags(CallbackInfoReturnable<Map<ResourceLocation, String>> cir) {
         for (GTToolType type : GTToolType.getTypes().values()) {
-            for (TagKey<Item> tag : type.tool) {
+            for (TagKey<Item> tag : type.itemTags) {
                 if (!tooltypeTagsSet.containsKey(tag.location())) tooltypeTagsSet.put(tag.location(), Component.translatable("gtceu.tool.class." + type.name).getString());
             }
         }
@@ -43,7 +43,7 @@ public class ConfigMixin {
         for (Material mat : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (mat.hasProperty(PropertyKey.TOOL)) {
                 MaterialToolTier tier = mat.getToolTier();
-                int harvestLevel = tier.getLevel();
+                int harvestLevel = tier.property.getHarvestLevel();
                 if (!passedTiers.contains(harvestLevel)) {
                     passedTiers.add(harvestLevel);
                     TagKey<Block> tag = CustomTags.TOOL_TIERS[harvestLevel];

@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.cover.filter;
 
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.function.Consumer;
 
 /**
  * @author KilaBash
@@ -15,6 +15,9 @@ import java.util.function.Consumer;
  * @implNote TagItemFilter
  */
 public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements ItemFilter {
+    public static final Codec<TagItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+        Codec.STRING.fieldOf("tag").forGetter(val -> val.oreDictFilterExpression)
+    ).apply(instance, TagItemFilter::loadFilter));
 
     private final Object2BooleanMap<Item> cache = new Object2BooleanOpenHashMap<>();
 
@@ -22,13 +25,13 @@ public class TagItemFilter extends TagFilter<ItemStack, ItemFilter> implements I
     }
 
     public static TagItemFilter loadFilter(ItemStack itemStack) {
-        return loadFilter(itemStack.getOrCreateTag(), filter -> itemStack.setTag(filter.saveFilter()));
+        return itemStack.get(GTDataComponents.TAG_ITEM_FILTER);
     }
 
-    private static TagItemFilter loadFilter(CompoundTag tag, Consumer<ItemFilter> itemWriter) {
+    private static TagItemFilter loadFilter(String oreDict) {
         var handler = new TagItemFilter();
-        handler.itemWriter = itemWriter;
-        handler.oreDictFilterExpression = tag.getString("oreDict");
+        //handler.itemWriter = itemWriter; // TODO fix
+        handler.oreDictFilterExpression = oreDict;
         handler.matchRules.clear();
         handler.cache.clear();
         OreDictExprFilter.parseExpression(handler.matchRules, handler.oreDictFilterExpression);

@@ -11,6 +11,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
@@ -92,7 +93,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+    public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
         min = buf.readVarInt();
         max = buf.readVarInt();
@@ -100,7 +101,7 @@ public class PositionYCondition extends RecipeCondition {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buf) {
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
         super.toNetwork(buf);
         buf.writeVarInt(min);
         buf.writeVarInt(max);

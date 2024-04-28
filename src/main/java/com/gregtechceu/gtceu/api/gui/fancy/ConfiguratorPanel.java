@@ -19,6 +19,7 @@ import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -212,13 +213,13 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         @Override
-        public void writeInitialData(FriendlyByteBuf buffer) {
+        public void writeInitialData(RegistryFriendlyByteBuf buffer) {
             super.writeInitialData(buffer);
             configurator.writeInitialData(buffer);
         }
 
         @Override
-        public void readInitialData(FriendlyByteBuf buffer) {
+        public void readInitialData(RegistryFriendlyByteBuf buffer) {
             super.readInitialData(buffer);
             configurator.readInitialData(buffer);
         }
@@ -233,7 +234,7 @@ public class ConfiguratorPanel extends WidgetGroup {
         }
 
         @Override
-        public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+        public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
             if (id == 0) {
                 configurator.readUpdateInfo(buffer.readVarInt(), buffer);
             } else {

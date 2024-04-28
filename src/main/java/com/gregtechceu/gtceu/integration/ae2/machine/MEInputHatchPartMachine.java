@@ -234,7 +234,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @NotNull
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
-                return new FluidStack(fluidKey.getFluid(), this.stock == null ? 0 : (int) this.stock.amount(), fluidKey.getTag());
+                // TODO fix nbt once AE2 1.20.5 is out
+                return new FluidStack(fluidKey.getFluid(), this.stock == null ? 0 : (int) this.stock.amount()/*, fluidKey.getTag()*/);
             }
             return FluidStack.EMPTY;
         }
@@ -283,7 +284,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
         @NotNull
         @Override
         public FluidStack drain(FluidStack resource, FluidAction action) {
-            if (this.getFluid().isFluidEqual(resource)) {
+            if (FluidStack.isSameFluidSameComponents(this.getFluid(), resource)) {
                 return this.drain(resource.getAmount(), action);
             }
             return FluidStack.EMPTY;
@@ -295,7 +296,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
                 return FluidStack.EMPTY;
             }
             int drained = (int) Math.min(this.stock.amount(), maxDrain);
-            FluidStack result = new FluidStack(fluidKey.getFluid(), drained, fluidKey.getTag());
+            // TODO fix nbt once AE2 1.20.5 is out
+            FluidStack result = new FluidStack(fluidKey.getFluid(), drained/*, fluidKey.getTag()*/);
             if (action == FluidAction.EXECUTE) {
                 this.stock = new GenericStack(this.stock.what(), this.stock.amount() - drained);
                 if (this.stock.amount() == 0) {

@@ -44,9 +44,9 @@ public class ToolEventHandlers {
         if (item instanceof IGTTool def) {
             ItemStack brokenStack = def.getToolStats().getBrokenStack();
             // Transfer over remaining charge to power units
-            if (GTCapabilityHelper.getElectricItem(brokenStack) != null && def.isElectric()) {
+            if (brokenStack.get(GTDataComponents.ELECTRIC_ITEM) != null && def.isElectric()) {
                 long remainingCharge = def.getCharge(original);
-                IElectricItem electricStack = GTCapabilityHelper.getElectricItem(brokenStack);
+                IElectricItem electricStack = brokenStack.get(GTDataComponents.ELECTRIC_ITEM);
                 if (electricStack != null) {
                     // update the max charge of the item, if possible
                     // applies to items like power units, which can have different max charges depending on their recipe

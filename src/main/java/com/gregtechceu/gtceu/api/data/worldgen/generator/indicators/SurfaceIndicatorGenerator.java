@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -45,7 +46,7 @@ import java.util.stream.Stream;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SurfaceIndicatorGenerator extends IndicatorGenerator {
-    public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
             Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
             FloatProvider.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
@@ -169,7 +170,7 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     }
 
     @Override
-    public Codec<? extends IndicatorGenerator> codec() {
+    public MapCodec<? extends IndicatorGenerator> codec() {
         return CODEC;
     }
 

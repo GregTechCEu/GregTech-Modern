@@ -19,6 +19,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import org.jetbrains.annotations.NotNull;
@@ -79,13 +80,13 @@ public class CleanroomCondition extends RecipeCondition {
     }
 
     @Override
-    public void toNetwork(FriendlyByteBuf buf) {
+    public void toNetwork(RegistryFriendlyByteBuf buf) {
         super.toNetwork(buf);
         buf.writeUtf(this.cleanroom.getName());
     }
 
     @Override
-    public RecipeCondition fromNetwork(FriendlyByteBuf buf) {
+    public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
         this.cleanroom = CleanroomType.getByNameOrDefault(buf.readUtf());
         return this;

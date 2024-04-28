@@ -69,7 +69,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
     }
 
     public static BedrockOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return BedrockOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
+        return BedrockOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow();
     }
 
     /**

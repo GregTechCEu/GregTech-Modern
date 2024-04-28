@@ -91,7 +91,7 @@ public interface FluidStackHashStrategy extends Hash.Strategy<FluidStack> {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             fluid ? o.getFluid() : null,
                             amount ? o.getAmount() : null,
-                            tag ? o.getTag() : null
+                            tag ? o.getComponents() : null
                     );
                 }
 
@@ -102,7 +102,7 @@ public interface FluidStackHashStrategy extends Hash.Strategy<FluidStack> {
 
                     return (!fluid || a.getFluid() == b.getFluid()) &&
                             (!amount || a.getAmount() == b.getAmount()) &&
-                            (!tag || Objects.equals(a.getTag(), b.getTag()));
+                            (!tag || Objects.equals(a.getComponents(), b.getComponents()));
                 }
             };
         }

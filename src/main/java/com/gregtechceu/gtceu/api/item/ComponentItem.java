@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
@@ -131,7 +132,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand usedHand) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
-                var result = interactionItem.use(this, level, player, usedHand);
+                var result = interactionItem.use(player.getItemInHand(usedHand), level, player, usedHand);
                 if (result.getResult() != InteractionResult.PASS) {
                     return result;
                 }
@@ -263,7 +264,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
      */
     public ItemStack getChargedStack(long chargeAmount) {
         ItemStack itemStack = getDefaultInstance();
-        IElectricItem electricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        IElectricItem electricItem = itemStack.get(GTDataComponents.ELECTRIC_ITEM);
         if (electricItem == null) {
             throw new IllegalStateException("Not an electric item.");
         }

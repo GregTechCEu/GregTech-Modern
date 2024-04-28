@@ -113,8 +113,8 @@ public class LargeMinerLogic extends MinerLogic {
             if (ChemicalHelper.getPrefix(outputStack.getItem()) == TagPrefix.crushed) {
                 if (getDropCountMultiplier() > 0) {
                     ItemStack fortunePick = pickaxeTool.copy();
-                    fortunePick.enchant(Enchantments.BLOCK_FORTUNE, getDropCountMultiplier());
-                    outputStack = ApplyBonusCount.addOreBonusCount(Enchantments.BLOCK_FORTUNE).build().apply(outputStack,
+                    fortunePick.enchant(Enchantments.FORTUNE, getDropCountMultiplier());
+                    outputStack = ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE).build().apply(outputStack,
                             new LootContext.Builder(builder.withParameter(LootContextParams.TOOL, fortunePick).create(LootContextParamSets.BLOCK)).create(null));
                 }
             }

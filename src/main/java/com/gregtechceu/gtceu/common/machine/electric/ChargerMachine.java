@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -20,6 +21,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -89,7 +91,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     protected CustomItemStackHandler createChargerInventory(Object... args) {
         var itemTransfer = new CustomItemStackHandler(this.inventorySize);
-        itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null || GTCapabilityHelper.getPlatformEnergyItem(item) != null);
+        itemTransfer.setFilter(item -> item.get(GTDataComponents.ELECTRIC_ITEM) != null || GTCapabilityHelper.getPlatformEnergyItem(item) != null);
         return itemTransfer;
     }
 
@@ -149,20 +151,20 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     //******    Charger Logic     ******//
     //////////////////////////////////////
 
-    private List<Object> getNonFullElectricItem() {
-        List<Object> electricItems = new ArrayList<>();
+    private List<Pair<ItemStack, Object>> getNonFullElectricItem() {
+        List<Pair<ItemStack, Object>> electricItems = new ArrayList<>();
         for (int i = 0; i < chargerInventory.getSlots(); i++) {
             var electricItemStack = chargerInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
+            var electricItem = electricItemStack.get(GTDataComponents.ELECTRIC_ITEM);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
-                    electricItems.add(electricItem);
+                    electricItems.add(Pair.of(electricItemStack, electricItem));
                 }
             } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
                 var energyStorage = GTCapabilityHelper.getPlatformEnergyItem(electricItemStack);
                 if (energyStorage != null) {
                     if (energyStorage.getEnergyStored() < energyStorage.getMaxEnergyStored()) {
-                        electricItems.add(energyStorage);
+                        electricItems.add(Pair.of(electricItemStack, energyStorage));
                     }
                 }
             }
@@ -220,9 +222,10 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
                 boolean changed = false;
                 var charged = 0L;
-                for (var electricItem : electricItems) {
+                for (var pair : electricItems) {
+                    Object electricItem = pair.getSecond();
                     if (electricItem instanceof IElectricItem item) {
-                        charged += item.charge(, Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM), getTier(), true, false);
+                        charged += item.charge(pair.getFirst(), Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM), getTier(), true, false);
                     } else if (electricItem instanceof IEnergyStorage energyStorage) {
                         energy += FeCompat.insertEu(energyStorage, Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM));
                     }
@@ -249,7 +252,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             long energyCapacity = 0L;
             for (int i = 0; i < chargerInventory.getSlots(); i++) {
                 var electricItemStack = chargerInventory.getStackInSlot(i);
-                var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
+                var electricItem = electricItemStack.get(GTDataComponents.ELECTRIC_ITEM);
                 if (electricItem != null) {
                     energyCapacity += electricItem.getMaxCharge();
                 } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {
@@ -272,7 +275,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
             long energyStored = 0L;
             for (int i = 0; i < chargerInventory.getSlots(); i++) {
                 var electricItemStack = chargerInventory.getStackInSlot(i);
-                var electricItem = GTCapabilityHelper.getElectricItem(electricItemStack);
+                var electricItem = electricItemStack.get(GTDataComponents.ELECTRIC_ITEM);
                 if (electricItem != null) {
                     energyStored += electricItem.getCharge();
                 } else if (ConfigHolder.INSTANCE.compat.energy.nativeEUToFE) {

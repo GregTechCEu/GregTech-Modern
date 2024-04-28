@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -79,7 +80,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
                 return 1;
             }
         };
-        itemTransfer.setFilter(item -> GTCapabilityHelper.getElectricItem(item) != null);
+        itemTransfer.setFilter(item -> item.get(GTDataComponents.ELECTRIC_ITEM) != null);
         return itemTransfer;
     }
 
@@ -138,7 +139,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            var electricItem = batteryStack.get(GTDataComponents.ELECTRIC_ITEM);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
                     batteries.add(Pair.of(electricItem, batteryStack));
@@ -152,7 +153,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            var electricItem = batteryStack.get(GTDataComponents.ELECTRIC_ITEM);
             if (electricItem != null) {
                 if (electricItem.canProvideChargeExternally() && electricItem.getCharge() > 0) {
                     batteries.add(Pair.of(electricItem, batteryStack));
@@ -166,7 +167,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         List<IElectricItem> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
+            var electricItem = batteryStack.get(GTDataComponents.ELECTRIC_ITEM);
             if (electricItem != null) {
                 batteries.add(electricItem);
             }

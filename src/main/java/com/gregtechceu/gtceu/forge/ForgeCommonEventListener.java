@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.utils.TaskHandler;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
@@ -24,7 +25,7 @@ import net.neoforged.neoforge.event.level.LevelEvent;
  * @date 2022/8/27
  * @implNote ForgeCommonEventListener
  */
-@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = GTCEu.MOD_ID, bus = EventBusSubscriber.Bus.GAME)
 public class ForgeCommonEventListener {
 
     @SubscribeEvent

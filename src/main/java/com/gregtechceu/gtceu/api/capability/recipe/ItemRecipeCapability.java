@@ -62,7 +62,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         if (content instanceof SizedIngredient sizedIngredient) {
             return new SizedIngredient(sizedIngredient.ingredient(), sizedIngredient.count());
         } else if (content.ingredient().getCustomIngredient() instanceof IntCircuitIngredient circuit) {
-            return new SizedIngredient(circuit.copy(), 1);
+            return new SizedIngredient(circuit.copy().toVanilla(), 1);
         }
         return content;
     }
@@ -82,7 +82,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
             } else if (ingredient.getCustomIngredient() instanceof DataComponentIngredient component && !component.isStrict()) {
                 ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
-            } else if (ingredient instanceof IntCircuitIngredient circuit) {
+            } else if (ingredient.getCustomIngredient() instanceof IntCircuitIngredient circuit) {
                 ingredients.addAll(MapItemStackDataComponentIngredient.from(circuit));
             }  else if (ingredient.getCustomIngredient() instanceof IntersectionIngredient intersection) {
                 ingredients.add(new MapIntersectionIngredient(intersection));

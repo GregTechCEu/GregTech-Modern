@@ -13,10 +13,12 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.packs.PackLocationInfo;
 import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
+import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
@@ -31,6 +33,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -47,18 +50,18 @@ public class GTDynamicResourcePack implements PackResources {
     @ApiStatus.Internal
     public static final ConcurrentMap<ResourceLocation, byte[]> DATA = new ConcurrentHashMap<>();
 
-    private final String name;
+    private final PackLocationInfo info;
 
     static {
         CLIENT_DOMAINS.addAll(Sets.newHashSet(GTCEu.MOD_ID, "minecraft", "forge", "c"));
     }
 
-    public GTDynamicResourcePack(String name) {
-        this(name, AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet()));
+    public GTDynamicResourcePack(PackLocationInfo info) {
+        this(info, AddonFinder.getAddons().stream().map(IGTAddon::addonModId).collect(Collectors.toSet()));
     }
 
-    public GTDynamicResourcePack(String name, Collection<String> domains) {
-        this.name = name;
+    public GTDynamicResourcePack(PackLocationInfo info, Collection<String> domains) {
+        this.info = info;
         CLIENT_DOMAINS.addAll(domains);
     }
 
@@ -185,8 +188,8 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     @Override
-    public String packId() {
-        return this.name;
+    public PackLocationInfo location() {
+        return info;
     }
 
     @Override

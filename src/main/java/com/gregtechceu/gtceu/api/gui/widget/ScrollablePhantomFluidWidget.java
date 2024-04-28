@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -54,7 +55,7 @@ public class ScrollablePhantomFluidWidget extends PhantomFluidWidget {
     }
 
     @Override
-    public void handleClientAction(int id, FriendlyByteBuf buffer) {
+    public void handleClientAction(int id, RegistryFriendlyByteBuf buffer) {
         switch (id) {
             case SCROLL_ACTION_ID -> handleScrollAction(buffer.readVarInt());
             default -> super.handleClientAction(id, buffer);

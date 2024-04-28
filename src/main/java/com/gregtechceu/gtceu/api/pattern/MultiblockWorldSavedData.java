@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
@@ -34,7 +35,7 @@ public class MultiblockWorldSavedData extends SavedData {
         this.chunkPosMapping = new HashMap<>();
     }
 
-    private MultiblockWorldSavedData(CompoundTag tag) {
+    private MultiblockWorldSavedData(CompoundTag tag, HolderLookup.Provider provider) {
         this();
     }
 
@@ -60,7 +61,7 @@ public class MultiblockWorldSavedData extends SavedData {
 
     @NotNull
     @Override
-    public CompoundTag save(@NotNull CompoundTag compound) {
+    public CompoundTag save(@NotNull CompoundTag compound, HolderLookup.Provider provider) {
         return compound;
     }
 

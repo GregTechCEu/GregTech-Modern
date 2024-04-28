@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -25,6 +26,6 @@ public class DrumMachineItem extends MetaMachineItem {
     }
 
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new FluidHandlerItemStack(stack, GTMachines.DRUM_CAPACITY.getInt(getDefinition())), this);
+        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, GTMachines.DRUM_CAPACITY.getInt(getDefinition())), this);
     }
 }

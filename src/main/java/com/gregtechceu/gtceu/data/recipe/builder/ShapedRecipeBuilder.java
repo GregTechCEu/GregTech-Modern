@@ -18,7 +18,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
-import net.neoforged.neoforge.common.crafting.NBTIngredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -65,8 +65,8 @@ public class ShapedRecipeBuilder {
     }
 
     public ShapedRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
-            key.put(cha, NBTIngredient.of(true, itemStack));
+        if (!itemStack.getComponents().isEmpty()) {
+            key.put(cha, DataComponentIngredient.of(true, itemStack));
         }else {
             key.put(cha, Ingredient.of(itemStack));
         }
@@ -86,13 +86,6 @@ public class ShapedRecipeBuilder {
     public ShapedRecipeBuilder output(ItemStack itemStack, int count) {
         this.output = itemStack.copy();
         this.output.setCount(count);
-        return this;
-    }
-
-    public ShapedRecipeBuilder output(ItemStack itemStack, int count, CompoundTag nbt) {
-        this.output = itemStack.copy();
-        this.output.setCount(count);
-        this.output.setTag(nbt);
         return this;
     }
 

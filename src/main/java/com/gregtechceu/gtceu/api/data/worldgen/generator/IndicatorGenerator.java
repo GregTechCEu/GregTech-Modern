@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.GeneratedVeinMetadata;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreIndicatorPlacer;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
+import com.mojang.serialization.MapCodec;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;
@@ -22,7 +23,7 @@ import java.util.function.Function;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class IndicatorGenerator {
-    public static final Codec<Codec<? extends IndicatorGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
+    public static final Codec<MapCodec<? extends IndicatorGenerator>> REGISTRY_CODEC = ResourceLocation.CODEC
             .flatXmap(rl -> Optional.ofNullable(WorldGeneratorUtils.INDICATOR_GENERATORS.get(rl))
                             .map(DataResult::success)
                             .orElseGet(() -> DataResult.error(() -> "No IndicatorGenerator with id " + rl + " registered")),
@@ -55,7 +56,7 @@ public abstract class IndicatorGenerator {
         return entry;
     }
 
-    public abstract Codec<? extends IndicatorGenerator> codec();
+    public abstract MapCodec<? extends IndicatorGenerator> codec();
 
     public abstract int getSearchRadiusModifier(int veinRadius);
 }

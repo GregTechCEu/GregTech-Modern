@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.editor.annotation.LDLRegister;
@@ -20,6 +21,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import lombok.Getter;
 import lombok.Setter;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
@@ -74,8 +76,8 @@ public class RecipeTypeUIProject extends UIProject {
     }
 
     @Override
-    public CompoundTag serializeNBT() {
-        var tag = super.serializeNBT();
+    public CompoundTag serializeNBT(HolderLookup.Provider provider) {
+        var tag = super.serializeNBT(provider);
         if (recipeType != null) {
             tag.putString("recipe_type", recipeType.registryName.toString());
         }
@@ -83,8 +85,8 @@ public class RecipeTypeUIProject extends UIProject {
     }
 
     @Override
-    public void deserializeNBT(CompoundTag tag) {
-        super.deserializeNBT(tag);
+    public void deserializeNBT(CompoundTag tag, HolderLookup.Provider provider) {
+        super.deserializeNBT(tag, provider);
         if (tag.contains("recipe_type")) {
             recipeType = GTRegistries.RECIPE_TYPES.get(new ResourceLocation(tag.getString("recipe_type")));
         }
@@ -133,7 +135,7 @@ public class RecipeTypeUIProject extends UIProject {
                         root.clearAllWidgets();
                         if (recipeType.getRecipeUI().hasCustomUI()) {
                             var nbt = recipeType.getRecipeUI().getCustomUI();
-                            IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false);
+                            IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false, Platform.getFrozenRegistry());
                         } else {
                             var widget = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
                             root.setSize(widget.getSize());

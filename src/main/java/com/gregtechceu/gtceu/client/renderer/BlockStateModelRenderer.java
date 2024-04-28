@@ -1,19 +1,16 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
-import net.minecraft.client.renderer.block.BlockModelShaper;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.core.Registry;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.common.util.TriState;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -38,8 +35,8 @@ public class BlockStateModelRenderer implements IRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public boolean useAO() {
-        return true;
+    public TriState useAO() {
+        return TriState.TRUE;
     }
 
     @Override

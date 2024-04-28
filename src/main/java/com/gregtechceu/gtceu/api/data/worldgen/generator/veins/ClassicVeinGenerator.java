@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
@@ -39,7 +40,7 @@ import java.util.stream.Stream;
 
 @Accessors(fluent = true, chain = true)
 public class ClassicVeinGenerator extends VeinGenerator {
-    public static final Codec<ClassicVeinGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+    public static final MapCodec<ClassicVeinGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
         Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
         Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
         Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
@@ -198,7 +199,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Codec<? extends VeinGenerator> codec() {
+    public MapCodec<? extends VeinGenerator> codec() {
         return CODEC;
     }
 

@@ -41,6 +41,7 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
     }
 
+    /* TODO fix once Jade 1.20.5 is out
     static {
         GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
             if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
@@ -55,4 +56,5 @@ public class GTJadePlugin implements IWailaPlugin {
             ));
         });
     }
+    */
 }

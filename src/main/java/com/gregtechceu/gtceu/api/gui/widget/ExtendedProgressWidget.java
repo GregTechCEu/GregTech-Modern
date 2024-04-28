@@ -6,8 +6,9 @@ import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
@@ -51,7 +52,7 @@ public class ExtendedProgressWidget extends ProgressWidget {
                 writeUpdateInfo(1, buffer -> {
                     buffer.writeVarInt(serverTooltips.size());
                     for (Component component : serverTooltips) {
-                        buffer.writeComponent(component);
+                        ComponentSerialization.STREAM_CODEC.encode(buffer, component);
                     }
                 });
             }
@@ -59,12 +60,12 @@ public class ExtendedProgressWidget extends ProgressWidget {
     }
 
     @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+    public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         if (id == 1) {
             this.serverTooltips.clear();
             int count = buffer.readVarInt();
             for (int i = 0; i < count; i++) {
-                Component component = buffer.readComponent();
+                Component component = ComponentSerialization.STREAM_CODEC.decode(buffer);
                 this.serverTooltips.add(component);
             }
         } else {

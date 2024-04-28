@@ -16,6 +16,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -65,7 +66,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
     }
 
     @Override
-    public void writeInitialData(FriendlyByteBuf buffer) {
+    public void writeInitialData(RegistryFriendlyByteBuf buffer) {
         super.writeInitialData(buffer);
         buffer.writeVarInt(playerChunkX = gui.entityPlayer.chunkPosition().x);
         buffer.writeVarInt(playerChunkZ = gui.entityPlayer.chunkPosition().z);
@@ -75,7 +76,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void readInitialData(FriendlyByteBuf buffer) {
+    public void readInitialData(RegistryFriendlyByteBuf buffer) {
         super.readInitialData(buffer);
         texture = new ProspectingTexture(
                 buffer.readVarInt(),
@@ -157,7 +158,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void readUpdateInfo(int id, FriendlyByteBuf buffer) {
+    public void readUpdateInfo(int id, RegistryFriendlyByteBuf buffer) {
         if (id == -1) {
             addPacketToQueue(PacketProspecting.readPacketData(mode, buffer));
         } else {

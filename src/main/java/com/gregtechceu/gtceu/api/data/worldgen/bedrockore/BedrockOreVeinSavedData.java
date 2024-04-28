@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.core.SectionPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -44,7 +45,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     private final ServerLevel serverLevel;
 
     public static BedrockOreVeinSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new BedrockOreVeinSavedData(serverLevel), tag -> new BedrockOreVeinSavedData(serverLevel, tag)), "gtceu_bedrock_ore");
+        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new BedrockOreVeinSavedData(serverLevel), (tag, provider) -> new BedrockOreVeinSavedData(serverLevel, tag)), "gtceu_bedrock_ore");
     }
 
     public BedrockOreVeinSavedData(ServerLevel serverLevel) {
@@ -63,7 +64,7 @@ public class BedrockOreVeinSavedData extends SavedData {
     }
 
     @Override
-    public CompoundTag save(CompoundTag nbt) {
+    public CompoundTag save(CompoundTag nbt, HolderLookup.Provider provider) {
         var oreList = new ListTag();
         for (var entry : veinOres.entrySet()) {
             var tag = new CompoundTag();
@@ -241,5 +242,4 @@ public class BedrockOreVeinSavedData extends SavedData {
             setDirty();
         }
     }
-
 }
