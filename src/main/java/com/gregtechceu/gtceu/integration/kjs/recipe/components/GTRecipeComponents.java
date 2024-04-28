@@ -235,9 +235,6 @@ public class GTRecipeComponents {
         KJSRecipeKeyEvent event = new KJSRecipeKeyEvent();
         AddonFinder.getAddons().forEach(addon -> addon.registerRecipeKeys(event));
         VALID_CAPS.putAll(event.getRegisteredKeys());
-        Set<RecipeCapability<?>> addedCaps = event.getRegisteredKeys().keySet();
-        Set<RecipeCapability<?>> registeredCaps = GTRegistries.RECIPE_CAPABILITIES.values();
-        registeredCaps.removeAll(addedCaps);
     }
 
 
