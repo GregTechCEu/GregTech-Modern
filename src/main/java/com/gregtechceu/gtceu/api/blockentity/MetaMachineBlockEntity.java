@@ -120,6 +120,13 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         return result == null ? super.getCapability(cap, side) : result;
     }
 
+    @Override
+    public void setChanged() {
+        if (getLevel() != null) {
+            getLevel().blockEntityChanged(getBlockPos());
+        }
+    }
+
     @Nullable
     public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
