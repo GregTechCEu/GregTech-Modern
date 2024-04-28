@@ -4,13 +4,12 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
-import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
@@ -44,9 +43,9 @@ public class ToolEventHandlers {
         if (item instanceof IGTTool def) {
             ItemStack brokenStack = def.getToolStats().getBrokenStack();
             // Transfer over remaining charge to power units
-            if (brokenStack.get(GTDataComponents.ELECTRIC_ITEM) != null && def.isElectric()) {
+            if (GTCapabilityHelper.getElectricItem(brokenStack) != null && def.isElectric()) {
                 long remainingCharge = def.getCharge(original);
-                IElectricItem electricStack = brokenStack.get(GTDataComponents.ELECTRIC_ITEM);
+                IElectricItem electricStack = GTCapabilityHelper.getElectricItem(brokenStack);
                 if (electricStack != null) {
                     // update the max charge of the item, if possible
                     // applies to items like power units, which can have different max charges depending on their recipe
@@ -54,7 +53,7 @@ public class ToolEventHandlers {
                         electricItem.setMaxChargeOverride(def.getMaxCharge(original));
                     }
 
-                    electricStack.charge(brokenStack, Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(), true, false);
+                    electricStack.charge(Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(), true, false);
                 }
             }
             if (!brokenStack.isEmpty()) {

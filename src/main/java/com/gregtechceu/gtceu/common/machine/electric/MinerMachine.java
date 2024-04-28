@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -53,7 +52,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,7 +84,7 @@ public class MinerMachine extends WorkableTieredMachine implements IMiner, ICont
 
     protected CustomItemStackHandler createChargerItemHandler(Object... args) {
         var transfer = new CustomItemStackHandler();
-        transfer.setFilter(item -> item.get(GTDataComponents.ELECTRIC_ITEM) != null);
+        transfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null);
         return transfer;
     }
 

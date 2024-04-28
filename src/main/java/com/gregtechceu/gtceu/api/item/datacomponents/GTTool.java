@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.item.components;
+package com.gregtechceu.gtceu.api.item.datacomponents;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

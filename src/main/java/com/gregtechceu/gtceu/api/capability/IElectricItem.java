@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
 
-import net.minecraft.world.item.ItemStack;
-
 public interface IElectricItem {
 
     /**
@@ -15,17 +13,20 @@ public interface IElectricItem {
 
     boolean chargeable();
 
+    boolean isDischargeMode();
+
+    void setDischargeMode(boolean dischargeMode);
+
     /**
      * Charge an item with a specified amount of energy.
      *
-     * @param stack
      * @param amount              max amount of energy to charge in EU
      * @param chargerTier         tier of the charging device, has to be at least as high as the item to charge
      * @param ignoreTransferLimit ignore any transfer limits, infinite charge rate
      * @param simulate            don't actually change the item, just determine the return value
      * @return Energy transferred into the electric item
      */
-    long charge(ItemStack stack, long amount, int chargerTier, boolean ignoreTransferLimit, boolean simulate);
+    long charge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean simulate);
 
     /**
      * Discharge an item by a specified amount of energy
@@ -34,7 +35,6 @@ public interface IElectricItem {
      * example discharge slots set externally to true, but items using energy for themselves don't.
      * Special cases like the nano saber hitting armor will discharge with externally = false.
      *
-     * @param stack
      * @param amount              max amount of energy to discharge in EU
      * @param dischargerTier      tier of the discharging device, has to be at least as high as the item to discharge
      * @param ignoreTransferLimit ignore any transfer limits, infinite discharge rate
@@ -42,7 +42,7 @@ public interface IElectricItem {
      * @param simulate            don't actually discharge the item, just determine the return value
      * @return Energy retrieved from the electric item
      */
-    long discharge(ItemStack stack, long amount, int dischargerTier, boolean ignoreTransferLimit, boolean externally, boolean simulate);
+    long discharge(long amount, int dischargerTier, boolean ignoreTransferLimit, boolean externally, boolean simulate);
 
     /**
      * Determine the transfer limit for the specified item
@@ -71,12 +71,11 @@ public interface IElectricItem {
     /**
      * Determine if the specified electric item has at least a specific amount of EU.
      *
-     * @param stack the stack to test
      * @param amount minimum amount of energy required
      * @return true if there's enough energy
      */
-    default boolean canUse(ItemStack stack, long amount) {
-        return discharge(stack, amount, Integer.MAX_VALUE, true, false, true) == amount;
+    default boolean canUse(long amount) {
+        return discharge(amount, Integer.MAX_VALUE, true, false, true) == amount;
     }
 
     /**

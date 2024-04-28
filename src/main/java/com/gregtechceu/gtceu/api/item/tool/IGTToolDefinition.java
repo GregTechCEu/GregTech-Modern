@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
 
-import com.gregtechceu.gtceu.api.item.components.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.world.item.ItemStack;

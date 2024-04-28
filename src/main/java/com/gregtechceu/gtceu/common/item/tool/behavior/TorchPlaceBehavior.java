@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.item.components.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;

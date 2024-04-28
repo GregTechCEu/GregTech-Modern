@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.worldgen;
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.common.data.GTPlacerTypes;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -21,7 +22,7 @@ import java.util.function.BiConsumer;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class RubberTrunkPlacer extends TrunkPlacer {
-    public static final Codec<RubberTrunkPlacer> CODEC = RecordCodecBuilder.create((p_70206_) -> trunkPlacerParts(p_70206_).apply(p_70206_, RubberTrunkPlacer::new));
+    public static final MapCodec<RubberTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(instance -> trunkPlacerParts(instance).apply(instance, RubberTrunkPlacer::new));
 
     public RubberTrunkPlacer(int pBaseHeight, int pHeightRandA, int pHeightRandB) {
         super(pBaseHeight, pHeightRandA, pHeightRandB);

@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 import org.apache.commons.lang3.NotImplementedException;
@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 public interface ITrunkPlacerTypeAccessor {
 
     @Invoker(value = "<init>")
-    static <T extends TrunkPlacer> TrunkPlacerType<T> callCtor(Codec<T> pCodec) {
+    static <T extends TrunkPlacer> TrunkPlacerType<T> callCtor(MapCodec<T> pCodec) {
         throw new NotImplementedException("Mixin failed to apply");
     }
 }

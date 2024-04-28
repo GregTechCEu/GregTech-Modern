@@ -80,7 +80,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
                 return 1;
             }
         };
-        itemTransfer.setFilter(item -> item.get(GTDataComponents.ELECTRIC_ITEM) != null);
+        itemTransfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null);
         return itemTransfer;
     }
 
@@ -139,7 +139,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = batteryStack.get(GTDataComponents.ELECTRIC_ITEM);
+            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 if (electricItem.getCharge() < electricItem.getMaxCharge()) {
                     batteries.add(Pair.of(electricItem, batteryStack));
@@ -153,7 +153,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         List<Pair<IElectricItem, ItemStack>> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = batteryStack.get(GTDataComponents.ELECTRIC_ITEM);
+            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 if (electricItem.canProvideChargeExternally() && electricItem.getCharge() > 0) {
                     batteries.add(Pair.of(electricItem, batteryStack));
@@ -167,7 +167,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
         List<IElectricItem> batteries = new ArrayList<>();
         for (int i = 0; i < batteryInventory.getSlots(); i++) {
             var batteryStack = batteryInventory.getStackInSlot(i);
-            var electricItem = batteryStack.get(GTDataComponents.ELECTRIC_ITEM);
+            var electricItem = GTCapabilityHelper.getElectricItem(batteryStack);
             if (electricItem != null) {
                 batteries.add(electricItem);
             }
@@ -216,7 +216,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
                 boolean changed = false;
                 for (var pair : batteries) {
                     IElectricItem electricItem = pair.getFirst();
-                    var charged = electricItem.discharge(pair.getSecond(), distributed, getTier(), false, true, false);
+                    var charged = electricItem.discharge(distributed, getTier(), false, true, false);
                     if (charged > 0) {
                         changed = true;
                     }
@@ -267,7 +267,7 @@ public class BatteryBufferMachine extends TieredEnergyMachine implements IContro
                 boolean changed = false;
                 for (var pair : batteries) {
                     IElectricItem battery = pair.getFirst();
-                    var charged = battery.charge(pair.getSecond(), Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true, false);
+                    var charged = battery.charge(Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true, false);
                     if (charged > 0) {
                         changed = true;
                     }
