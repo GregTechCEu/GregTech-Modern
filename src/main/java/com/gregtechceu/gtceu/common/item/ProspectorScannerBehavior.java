@@ -54,11 +54,11 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
         if (stack == ItemStack.EMPTY) {
             return modes[0];
         }
-        return modes[stack.getOrDefault(GTDataComponents.SCANNER_MODE, (byte)0) % modes.length];
+        return modes[stack.getOrDefault(GTDataComponents.SCANNER_MODE, (byte) 0) % modes.length];
     }
 
     public void setNextMode(ItemStack stack) {
-        stack.update(GTDataComponents.SCANNER_MODE, (byte)0, mode -> (byte) ((mode + 1) % modes.length));
+        stack.update(GTDataComponents.SCANNER_MODE, (byte) 0, mode -> (byte) ((mode + 1) % modes.length));
     }
 
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {

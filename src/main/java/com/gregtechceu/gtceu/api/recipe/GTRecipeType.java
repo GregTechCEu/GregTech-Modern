@@ -7,20 +7,13 @@ import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
-import com.gregtechceu.gtceu.core.mixins.RecipeManagerInvoker;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.jei.JEIPlugin;
-import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Rect;
-import com.lowdragmc.lowdraglib.utils.Size;
-import dev.emi.emi.api.EmiApi;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -40,9 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
-import net.neoforged.neoforge.items.IItemHandler;
-import net.neoforged.neoforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -181,23 +171,9 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
     }
 
     @Nullable
-    public GTRecipe getRecipe(RecipeManager recipeManager, ResourceLocation id) {
-        var recipes = ((RecipeManagerInvoker) recipeManager).getRecipeFromType(this);
-        if (recipes.get(id) instanceof GTRecipe recipe) {
-            return recipe;
-        }
-        return null;
-    }
-
-    public List<GTRecipe> searchFuelRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies() || !isFuelRecipeType()) return Collections.emptyList();
-        List<GTRecipe> matches = new ArrayList<>();
-        for (net.minecraft.world.item.crafting.RecipeHolder<GTRecipe> recipe : recipeManager.getAllRecipesFor(this)) {
-            if (recipe.value().isFuel && recipe.value().matchRecipe(holder).isSuccess() && recipe.value().matchTickRecipe(holder).isSuccess()) {
-                matches.add(recipe.value());
-            }
-        }
-        return matches;
+    public Iterator<GTRecipe> searchFuelRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {
+        if (!holder.hasProxies() || !isFuelRecipeType()) return null;
+        return getLookup().getRecipeIterator(holder, recipe -> recipe.isFuel && recipe.matchRecipe(holder).isSuccess() && recipe.matchTickRecipe(holder).isSuccess());
     }
 
     public List<GTRecipe> searchRecipe(RecipeManager recipeManager, IRecipeCapabilityHolder holder) {

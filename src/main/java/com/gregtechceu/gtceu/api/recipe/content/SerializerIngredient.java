@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.google.gson.JsonElement;
+import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.mojang.serialization.JsonOps;
@@ -48,11 +49,11 @@ public class SerializerIngredient implements IContentSerializer<SizedIngredient>
         } else if (o instanceof TagKey tag) {
             return SizedIngredient.of(tag, 1);
         }
-        return new SizedIngredient(Ingredient.EMPTY, 0);
+        return new SizedIngredient(Ingredient.EMPTY, 1);
     }
 
     @Override
     public SizedIngredient defaultValue() {
-        return new SizedIngredient(Ingredient.EMPTY, 0);
+        return new SizedIngredient(Ingredient.EMPTY, 1);
     }
 }

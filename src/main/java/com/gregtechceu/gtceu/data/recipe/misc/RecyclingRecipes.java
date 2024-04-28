@@ -79,7 +79,7 @@ public class RecyclingRecipes {
         if (ignoreArcSmelting) return;
 
         if (components.size() == 1) {
-            Material m = components.get(0).material();
+            Material m = components.getFirst().material();
 
             // skip non-ingot materials
             if (!m.hasProperty(PropertyKey.INGOT)) {
@@ -115,7 +115,7 @@ public class RecyclingRecipes {
         }
 
         // Exit if no valid Materials exist for this recycling Recipe.
-        if (outputs.size() == 0) return;
+        if (outputs.isEmpty()) return;
 
         // Build the final Recipe.
         ResourceLocation itemPath = BuiltInRegistries.ITEM.getKey(input.getItem());

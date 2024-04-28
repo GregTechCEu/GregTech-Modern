@@ -34,7 +34,7 @@ import java.util.Objects;
  */
 public class EntityDamageBehavior implements IToolBehavior<EntityDamageBehavior> {
     public static final MapCodec<EntityDamageBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Codec.STRING.optionalFieldOf("mob_type", "").forGetter(val -> val.mobType),
+        Codec.STRING.lenientOptionalFieldOf("mob_type", "").forGetter(val -> val.mobType == null ? "" : val.mobType),
         Codec.unboundedMap(TagKey.codec(Registries.ENTITY_TYPE), Codec.FLOAT).fieldOf("bonus_list").forGetter(val -> val.bonusList)
     ).apply(instance, EntityDamageBehavior::new));
 

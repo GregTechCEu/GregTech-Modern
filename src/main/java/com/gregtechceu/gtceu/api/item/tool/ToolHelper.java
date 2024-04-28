@@ -287,14 +287,13 @@ public class ToolHelper {
     }
 
     public static AoESymmetrical getAoEDefinition(ItemStack stack) {
-        return stack.get(GTDataComponents.AOE);
+        return stack.getOrDefault(GTDataComponents.AOE, AoESymmetrical.none());
     }
 
     public static Set<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
                                            Player player, HitResult rayTraceResult,
                                            AOEFunction function) {
-        if (aoeDefinition != AoESymmetrical.none() && rayTraceResult instanceof BlockHitResult blockHit &&
-                blockHit.getDirection() != null) {
+        if (aoeDefinition != null && aoeDefinition != AoESymmetrical.none() && rayTraceResult instanceof BlockHitResult blockHit && blockHit.getDirection() != null) {
             int column = aoeDefinition.column;
             int row = aoeDefinition.row;
             int layer = aoeDefinition.layer;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.datacomponents.FacadeWrapper;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
@@ -60,7 +61,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
         if (!isValidFacade(facadeStack)) {
             facadeStack = new ItemStack(Blocks.STONE);
         }
-        itemStack.set(GTDataComponents.FACADE, facadeStack);
+        itemStack.set(GTDataComponents.FACADE, new FacadeWrapper(facadeStack));
     }
 
     public static boolean isValidFacade(ItemStack itemStack) {
@@ -81,10 +82,11 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
 
     @Nullable
     private static ItemStack getFacadeStackUnsafe(ItemStack itemStack) {
-        var facadeStack = itemStack.get(GTDataComponents.FACADE);
-        if (facadeStack == null) {
+        var facade = itemStack.get(GTDataComponents.FACADE);
+        if (facade == null) {
             return null;
         }
+        ItemStack facadeStack = facade.stack();
         if (facadeStack.isEmpty() || !isValidFacade(facadeStack)) {
             return null;
         }

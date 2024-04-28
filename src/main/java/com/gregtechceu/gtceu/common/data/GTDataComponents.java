@@ -46,6 +46,6 @@ public class GTDataComponents {
 
     // misc
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<CompoundTag>> DROP_SAVED_MACHINE = DATA_COMPONENTS.registerComponentType("drop_saved_machine", builder -> builder.persistent(CompoundTag.CODEC));
-    public static final DeferredHolder<DataComponentType<?>, DataComponentType<ItemStack>> FACADE = DATA_COMPONENTS.registerComponentType("facade", builder -> builder.persistent(ItemStack.CODEC).networkSynchronized(ItemStack.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<FacadeWrapper>> FACADE = DATA_COMPONENTS.registerComponentType("facade", builder -> builder.persistent(FacadeWrapper.CODEC).networkSynchronized(FacadeWrapper.STREAM_CODEC));
 
 }

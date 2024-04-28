@@ -6,19 +6,31 @@ import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.common.data.GTRecipes;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
+import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import com.gregtechceu.gtceu.utils.TaskHandler;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
+import net.minecraft.data.recipes.RecipeBuilder;
+import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.item.crafting.Recipe;
+import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
+import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.event.AddReloadListenerEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerInteractEvent;
 import net.neoforged.neoforge.event.level.LevelEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -50,6 +62,25 @@ public class ForgeCommonEventListener {
         event.addListener(new OreDataLoader());
         event.addListener(new FluidVeinLoader());
         event.addListener(new BedrockOreLoader());
+    }
+
+    // low priority to go AFTER LDLib has saved the static registry access.
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void loadRecipes(ServerAboutToStartEvent event) {
+        // load recipes *after* other data so that we have the registries loaded before saving recipes to JSON.
+        // because it breaks if we don't do that.
+        GTRecipes.recipeAddition(new RecipeOutput() {
+            @Override
+            public Advancement.Builder advancement() {
+                //noinspection removal
+                return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
+            }
+
+            @Override
+            public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
+                GTDynamicDataPack.addRecipe(id, recipe, advancement);
+            }
+        });
     }
 
     @SubscribeEvent

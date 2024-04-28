@@ -100,7 +100,7 @@ public class DecompositionRecipeHandler {
                     .duration(((int) material.getProtons() * totalInputAmount * 2))
                     .EUt(material.getMaterialComponents().size() <= 2 ? VA[LV] : 2L * VA[LV]);
         } else {
-            builder = CENTRIFUGE_RECIPES.recipeBuilder("decomposition_centrifuging_", material.getName())
+            builder = CENTRIFUGE_RECIPES.recipeBuilder("decomposition_centrifuging", material.getName())
                     .duration((int) Math.ceil(material.getMass() * totalInputAmount * 1.5))
                     .EUt(VA[LV]);
         }

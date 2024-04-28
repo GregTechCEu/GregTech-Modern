@@ -83,6 +83,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.event.AddPackFindersEvent;
+import net.neoforged.neoforge.event.server.ServerAboutToStartEvent;
 import net.neoforged.neoforge.fluids.capability.wrappers.FluidBucketWrapper;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import org.jetbrains.annotations.ApiStatus;
@@ -323,18 +324,7 @@ public class CommonProxy {
             // Register recipes & unification data again
             long startTime = System.currentTimeMillis();
             ChemicalHelper.reinitializeUnification();
-            GTRecipes.recipeAddition(new RecipeOutput() {
-                @Override
-                public Advancement.Builder advancement() {
-                    //noinspection removal
-                    return Advancement.Builder.recipeAdvancement().parent(RecipeBuilder.ROOT_RECIPE_ADVANCEMENT);
-                }
-
-                @Override
-                public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
-                    GTDynamicDataPack.addRecipe(id, recipe, advancement);
-                }
-            });
+            // recipes have been moved to ForgeCommonEventListener#loadRecipes
             MixinHelpers.generateGTDynamicLoot(GTDynamicDataPack::addLootTable);
             // Initialize dungeon loot additions
             DungeonLootLoader.init();

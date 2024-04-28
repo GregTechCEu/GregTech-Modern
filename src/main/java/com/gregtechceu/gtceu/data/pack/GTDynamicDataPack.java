@@ -84,16 +84,16 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
-    public static void addLootTable(ResourceLocation recipeId, LootTable table) {
+    public static void addLootTable(ResourceLocation lootTableId, LootTable table) {
         JsonElement recipeJson = LootTable.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(recipeId, "loot_tables", parent, recipeJson);
+            writeJson(lootTableId, "loot_tables", parent, recipeJson);
         }
-        if (DATA.containsKey(recipeId)) {
-            GTCEu.LOGGER.error("duplicated loot table: {}", recipeId);
+        if (DATA.containsKey(lootTableId)) {
+            GTCEu.LOGGER.error("duplicated loot table: {}", lootTableId);
         }
-        DATA.put(getRecipeLocation(recipeId), recipeJson);
+        DATA.put(getLootTableLocation(lootTableId), recipeJson);
     }
 
     /**

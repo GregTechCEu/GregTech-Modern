@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
+import com.google.common.collect.Multimap;
+import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
@@ -26,7 +28,7 @@ import java.util.stream.Stream;
 @Mixin(RecipeManager.class)
 public abstract class RecipeManagerMixin {
 
-    @Shadow private Map<RecipeType<?>, Map<ResourceLocation, RecipeHolder<?>>> recipes;
+    @Shadow private Multimap<RecipeType<?>, RecipeHolder<?>> byType;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
@@ -41,17 +43,17 @@ public abstract class RecipeManagerMixin {
                     var type = entry.getKey();
                     var recipes = entry.getValue();
                     recipes.clear();
-                    if (this.recipes.containsKey(type)) {
-                        for (var recipe : this.recipes.get(type).entrySet()) {
-                            recipes.add(gtRecipeType.toGTrecipe(recipe.getValue()));
+                    if (this.byType.containsKey(type)) {
+                        for (var recipe : this.byType.get(type)) {
+                            recipes.add(gtRecipeType.toGTrecipe(recipe));
                         }
                     }
                 }
 
-                if (this.recipes.containsKey(gtRecipeType)) {
+                if (this.byType.containsKey(gtRecipeType)) {
                     //noinspection unchecked
                     Stream.concat(
-                            this.recipes.get(gtRecipeType).values().stream(),
+                            this.byType.get(gtRecipeType).stream(),
                             proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream())
                         ).filter(holder -> holder != null && holder.value() instanceof GTRecipe)
                         .forEach(gtRecipeHolder -> gtRecipeType.getLookup().addRecipe((RecipeHolder<GTRecipe>) gtRecipeHolder));

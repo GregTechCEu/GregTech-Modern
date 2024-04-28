@@ -22,7 +22,7 @@ public class ItemMaterialInfo {
      * Returns the first MaterialStack in the "materials" list
      */
     public MaterialStack getMaterial() {
-        return materials.size() == 0 ? null : materials.get(0);
+        return materials.isEmpty() ? null : materials.getFirst();
     }
 
     /**
@@ -48,6 +48,6 @@ public class ItemMaterialInfo {
 
     @Override
     public String toString() {
-        return materials.size() == 0 ? "" : materials.get(0).material().toCamelCaseString();
+        return materials.isEmpty() ? "" : materials.getFirst().material().toCamelCaseString();
     }
 }
