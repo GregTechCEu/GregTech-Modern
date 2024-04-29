@@ -2,7 +2,6 @@ repositories {
     flatDir {
         dir "libs"
     }
-    mavenLocal()
     mavenCentral()
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
     maven { url = "https://maven.terraformersmc.com/releases/" } // Mod Menu, EMI
@@ -47,4 +46,5 @@ repositories {
     }
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url 'https://jitpack.io' } // Mixin Extras, Fabric ASM
+    mavenLocal()
 }
