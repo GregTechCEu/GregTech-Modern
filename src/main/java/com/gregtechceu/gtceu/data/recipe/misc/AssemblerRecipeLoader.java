@@ -61,7 +61,7 @@ public class AssemblerRecipeLoader {
                 .inputItems(rotor, Titanium, 2)
                 .inputItems(pipeNormalFluid, Titanium, 4)
                 .inputItems(CASING_TITANIUM_STABLE.asStack())
-                .outputItems(CASING_EXTREME_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
+                .outputItems(CASING_ENGINE_INTAKE.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("stable_tungstensteel_casing")
