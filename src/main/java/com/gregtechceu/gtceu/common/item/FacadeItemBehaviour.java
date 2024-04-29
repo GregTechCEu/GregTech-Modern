@@ -39,9 +39,10 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     }
 
     @Override
-    public @Nullable Component getItemName(ItemStack stack) {
-        ItemStack facadeStack = getFacadeStack(stack);
-        return Component.translatable(stack.getDescriptionId(), facadeStack.getHoverName());
+    public String getItemStackDisplayName(ItemStack itemStack) {
+        ItemStack facadeStack = getFacadeStack(itemStack);
+        String name = facadeStack.getItem().getDescriptionId(facadeStack);
+        return LocalizationUtils.format(name) + " " + LocalizationUtils.format(itemStack.getItem().getDescriptionId());
     }
 
     @Override
