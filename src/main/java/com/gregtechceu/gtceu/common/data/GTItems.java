@@ -430,8 +430,8 @@ public class GTItems {
             .color(() -> GTItems::cellColor)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
-            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 128, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 6)))).register();
+            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 128, GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE.item("tungstensteel_fluid_cell", ComponentItem::create)
             .lang("Tungstensteel Cell")
             .model(GTModels::cellModel)
