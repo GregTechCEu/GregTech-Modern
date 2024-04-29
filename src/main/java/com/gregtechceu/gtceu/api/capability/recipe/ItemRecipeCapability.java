@@ -75,29 +75,29 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     @Override
     public List<AbstractMapIngredient> convertToMapIngredient(Object obj) {
         List<AbstractMapIngredient> ingredients = new ObjectArrayList<>(1);
-        if (obj instanceof Ingredient ingredient) {
+        if (obj instanceof SizedIngredient ingredient) {
 
             // all kinds of special cases
-            if (ingredient.getCustomIngredient() instanceof DataComponentIngredient component && component.isStrict()) {
+            if (ingredient.ingredient().getCustomIngredient() instanceof DataComponentIngredient component && component.isStrict()) {
                 ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
-            } else if (ingredient.getCustomIngredient() instanceof DataComponentIngredient component && !component.isStrict()) {
+            } else if (ingredient.ingredient().getCustomIngredient() instanceof DataComponentIngredient component && !component.isStrict()) {
                 ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
-            } else if (ingredient.getCustomIngredient() instanceof IntCircuitIngredient circuit) {
+            } else if (ingredient.ingredient().getCustomIngredient() instanceof IntCircuitIngredient circuit) {
                 ingredients.addAll(MapItemStackDataComponentIngredient.from(circuit));
-            }  else if (ingredient.getCustomIngredient() instanceof IntersectionIngredient intersection) {
+            }  else if (ingredient.ingredient().getCustomIngredient() instanceof IntersectionIngredient intersection) {
                 ingredients.add(new MapIntersectionIngredient(intersection));
-            } else if (ingredient.getCustomIngredient() instanceof CompoundIngredient compound) {
+            } else if (ingredient.ingredient().getCustomIngredient() instanceof CompoundIngredient compound) {
                 for (Ingredient inner : compound.children()) {
                     ingredients.addAll(convertToMapIngredient(inner));
                 }
             } else {
-                for (Ingredient.Value value : ingredient.getValues()) {
+                for (Ingredient.Value value : ingredient.ingredient().getValues()) {
                     if (value instanceof Ingredient.TagValue tagValue) {
                         ingredients.add(new MapItemTagIngredient(tagValue.tag()));
                     } else {
                         Collection<ItemStack> stacks = value.getItems();
                         for (ItemStack stack : stacks) {
-                            ingredients.add(new MapItemStackIngredient(stack, ingredient));
+                            ingredients.add(new MapItemStackIngredient(stack, ingredient.ingredient()));
                         }
                     }
                 }
@@ -106,8 +106,10 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
             ingredients.add(new MapItemStackIngredient(stack));
 
             stack.getTags().forEach(tag -> ingredients.add(new MapItemTagIngredient(tag)));
-            ingredients.add(new MapItemStackDataComponentIngredient(stack, DataComponentIngredient.of(true, stack)));
-            ingredients.add(new MapItemStackPartialDataComponentIngredient(stack, DataComponentIngredient.of(false, stack.getComponents(), stack.getItem())));
+            if (!stack.getComponents().equals(stack.getPrototype())) {
+                ingredients.add(new MapItemStackDataComponentIngredient(stack, DataComponentIngredient.of(true, stack)));
+                ingredients.add(new MapItemStackWeakDataComponentIngredient(stack, DataComponentIngredient.of(false, stack.getComponents(), stack.getItem())));
+            }
             TagPrefix prefix = ChemicalHelper.getPrefix(stack.getItem());
             if (prefix != null && TagPrefix.ORES.containsKey(prefix)) {
                 Material material = ChemicalHelper.getMaterial(stack.getItem()).material();
@@ -121,11 +123,11 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         List<Object> list = new ObjectArrayList<>(ingredients.size());
         for (Object item : ingredients) {
-            if (item instanceof Ingredient ingredient) {
+            if (item instanceof SizedIngredient ingredient) {
                 boolean isEqual = false;
                 for (Object obj : list) {
-                    if (obj instanceof Ingredient ingredient1) {
-                        if (IngredientEquality.ingredientEquals(ingredient, ingredient1)) {
+                    if (obj instanceof SizedIngredient ingredient1) {
+                        if (ingredient.ingredient().equals(ingredient1.ingredient())) {
                             isEqual = true;
                             break;
                         }
@@ -137,7 +139,7 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                     }
                 }
                 if (isEqual) continue;
-                if (ingredient.getCustomIngredient() instanceof IntCircuitIngredient) {
+                if (ingredient.ingredient().getCustomIngredient() instanceof IntCircuitIngredient) {
                     list.addFirst(ingredient);
                 } else {
                     list.add(ingredient);
