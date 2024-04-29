@@ -29,7 +29,7 @@ public class MapItemStackIngredient extends AbstractMapIngredient {
             }
             if (this.ingredient != null) {
                 if (other.ingredient != null) {
-                    return IngredientEquality.ingredientEquals(this.ingredient, other.ingredient);
+                    return this.ingredient.equals(other.ingredient);
                 }
             } else if (other.ingredient != null) {
                 return other.ingredient.test(this.stack);

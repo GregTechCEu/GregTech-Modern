@@ -8,10 +8,10 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class MapItemStackPartialDataComponentIngredient extends MapItemStackIngredient {
+public class MapItemStackWeakDataComponentIngredient extends MapItemStackIngredient {
     Ingredient nbtIngredient;
 
-    public MapItemStackPartialDataComponentIngredient(ItemStack stack, Ingredient nbtIngredient) {
+    public MapItemStackWeakDataComponentIngredient(ItemStack stack, Ingredient nbtIngredient) {
         super(stack, nbtIngredient);
         this.nbtIngredient = nbtIngredient;
     }
@@ -20,7 +20,7 @@ public class MapItemStackPartialDataComponentIngredient extends MapItemStackIngr
     public static List<AbstractMapIngredient> from(@NotNull Ingredient r) {
         ObjectArrayList<AbstractMapIngredient> list = new ObjectArrayList<>();
         for (ItemStack s : r.getItems()) {
-            list.add(new MapItemStackPartialDataComponentIngredient(s, r));
+            list.add(new MapItemStackWeakDataComponentIngredient(s, r));
         }
         return list;
     }
@@ -35,7 +35,7 @@ public class MapItemStackPartialDataComponentIngredient extends MapItemStackIngr
         if (this == obj) {
             return true;
         }
-        if (obj instanceof MapItemStackPartialDataComponentIngredient other) {
+        if (obj instanceof MapItemStackWeakDataComponentIngredient other) {
             if (this.stack.getItem() != other.stack.getItem()) {
                 return false;
             }
@@ -59,7 +59,7 @@ public class MapItemStackPartialDataComponentIngredient extends MapItemStackIngr
 
     @Override
     public String toString() {
-        return "MapItemStackPartialDataComponentIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "MapItemStackWeakDataComponentIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
     }
 
     @Override

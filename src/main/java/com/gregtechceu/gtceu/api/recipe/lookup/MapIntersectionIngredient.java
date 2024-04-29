@@ -44,7 +44,7 @@ public class MapIntersectionIngredient extends AbstractMapIngredient {
                     for (int i = 0; i < this.ingredients.size(); ++i) {
                         Ingredient ingredient1 = this.ingredients.get(i);
                         Ingredient ingredient2 = other.ingredients.get(i);
-                        if (!IngredientEquality.ingredientEquals(ingredient1, ingredient2)) {
+                        if (!ingredient1.equals(ingredient2)) {
                             return false;
                         }
                     }

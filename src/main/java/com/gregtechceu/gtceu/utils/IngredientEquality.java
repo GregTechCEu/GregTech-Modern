@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.google.common.collect.Lists;
+import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
@@ -44,6 +46,8 @@ public class IngredientEquality {
             return 0;
         }
     };
+
+    public static final Comparator<ItemStack> ITEM_STACK_COMPARATOR = Comparator.comparingInt(ItemStack::getCount).thenComparing(ItemStack::getItem, Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
     public static final Comparator<Ingredient> INGREDIENT_COMPARATOR = new Comparator<>() {
 
@@ -90,12 +94,33 @@ public class IngredientEquality {
                 }
                 return 1;
             }
+            if (first.isCustom() || second.isCustom()) {
+                ICustomIngredient firstCustom = first.getCustomIngredient();
+                ICustomIngredient secondCustom = second.getCustomIngredient();
+                if (firstCustom.getItems().count() != secondCustom.getItems().count())
+                    return 1;
+                ItemStack[] values1 = firstCustom.getItems().toArray(ItemStack[]::new);
+                ItemStack[] values2 = firstCustom.getItems().toArray(ItemStack[]::new);
+                if (values1.length != values2.length) return 1;
+
+                Arrays.parallelSort(values1, ITEM_STACK_COMPARATOR);
+                Arrays.parallelSort(values2, ITEM_STACK_COMPARATOR);
+
+                for (int i = 0; i < values1.length; ++i) {
+                    ItemStack value1 = values1[i];
+                    ItemStack value2 = values2[i];
+                    int result = ITEM_STACK_COMPARATOR.compare(value1, value2);
+                    if (result != 0) {
+                        return result;
+                    }
+                }
+                return 0;
+            }
 
             if (first.getValues().length != second.getValues().length)
                 return 1;
             Ingredient.Value[] values1 = first.getValues();
             Ingredient.Value[] values2 = second.getValues();
-            if (values1.length != values2.length) return 1;
 
             Arrays.parallelSort(values1, INGREDIENT_VALUE_COMPARATOR);
             Arrays.parallelSort(values2, INGREDIENT_VALUE_COMPARATOR);
@@ -111,20 +136,4 @@ public class IngredientEquality {
             return 0;
         }
     };
-
-    public static boolean ingredientEquals(SizedIngredient first, SizedIngredient second) {
-        if (first == second) return true;
-
-        return cmp(first.ingredient(), second.ingredient());
-    }
-
-    public static boolean ingredientEquals(Ingredient first, Ingredient second) {
-        if (first == second) return true;
-
-        return cmp(first, second);
-    }
-
-    private static boolean cmp(Ingredient first, Ingredient second) {
-        return IngredientEquality.INGREDIENT_COMPARATOR.compare(first, second) == 0;
-    }
 }
