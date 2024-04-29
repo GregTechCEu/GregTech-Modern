@@ -809,7 +809,7 @@ public class GTMachines {
             .compassNodeSelf()
             .register();
 
-    public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::new)
+    public static final MachineDefinition CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::Cleaning)
             .rotationState(RotationState.ALL)
             .abilities(PartAbility.MAINTENANCE)
             .tooltips(Component.translatable("gtceu.universal.disabled"),
@@ -823,6 +823,21 @@ public class GTMachines {
             .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.cleaning")))
             .compassNodeSelf()
             .register();
+
+    public static final MachineDefinition STERILE_CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("sterile_cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::SterileCleaning)
+        .rotationState(RotationState.ALL)
+        .abilities(PartAbility.MAINTENANCE)
+        .tooltips(Component.translatable("gtceu.universal.disabled"),
+            Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
+            Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
+        .tooltipBuilder((stack, tooltips) -> {
+            for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypesSTERILE()) {
+                tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN, Component.translatable(type.getTranslationKey()).getString())));
+            }
+        })
+        .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.sterile_cleaning")))
+        .compassNodeSelf()
+        .register();
 
     public static final MachineDefinition AUTO_MAINTENANCE_HATCH = REGISTRATE.machine("auto_maintenance_hatch", AutoMaintenanceHatchPartMachine::new)
             .rotationState(RotationState.ALL)

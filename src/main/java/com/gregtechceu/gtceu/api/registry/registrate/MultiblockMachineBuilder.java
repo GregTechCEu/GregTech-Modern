@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
+import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -297,6 +298,11 @@ public class MultiblockMachineBuilder extends MachineBuilder<MultiblockMachineDe
     @Override
     public MultiblockMachineBuilder onWaiting(Consumer<IRecipeLogicMachine> onWaiting) {
         return (MultiblockMachineBuilder) super.onWaiting(onWaiting);
+    }
+
+    @Override
+    public MultiblockMachineBuilder addCallBack(String str, BiFunction<IRecipeLogicMachine, @Nullable Object, @Nullable Object> callback) {
+        return (MultiblockMachineBuilder) super.addCallBack(str, callback);
     }
 
     @Override
