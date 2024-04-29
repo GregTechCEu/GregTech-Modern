@@ -39,7 +39,7 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     public String getItemStackDisplayName(ItemStack itemStack) {
         ItemStack facadeStack = getFacadeStack(itemStack);
         String name = facadeStack.getItem().getDescriptionId(facadeStack);
-        return LocalizationUtils.format(itemStack.getItem().getDescriptionId()) + "-" +LocalizationUtils.format(name);
+        return LocalizationUtils.format(name) + " " + LocalizationUtils.format(itemStack.getItem().getDescriptionId());
     }
 
     @Override
