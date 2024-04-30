@@ -29,11 +29,12 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
 
     // must come after the static block
     private static final ICleanroomProvider DUMMY_CLEANROOM = DummyCleanroom.createForTypes(CLEANROOM);
-    private static final ICleanroomProvider STERILE_DUMMY_CLEANROOM = DummyCleanroom.createForTypes(CLEANROOM);
+    private static final ICleanroomProvider STERILE_DUMMY_CLEANROOM = DummyCleanroom.createForTypes(STERILE_CLEANROOM);
 
     ICleanroomProvider cleanroomTypes;
-    public CleaningMaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId,ICleanroomProvider  cleanroomTypes) {
+    public CleaningMaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId,ICleanroomProvider cleanroomTypes) {
         super(metaTileEntityId);
+        this.cleanroomTypes=cleanroomTypes;
     }
     public static CleaningMaintenanceHatchPartMachine Cleaning(IMachineBlockEntity metaTileEntityId){
         return new CleaningMaintenanceHatchPartMachine(metaTileEntityId,DUMMY_CLEANROOM);
