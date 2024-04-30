@@ -85,7 +85,7 @@ public class CustomTags {
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
     public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
-    public static final TagKey<Block> RUBBER_LOGS_BLOCK = TagUtil.createBlockTag("logs/rubber");
+    public static final TagKey<Block> RUBBER_LOGS_BLOCK = TagUtil.createModBlockTag("logs/rubber");
     public static final TagKey<Item> WOODEN_CHESTS = TagUtil.createItemTag("chests/wooden");
 
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
