@@ -56,6 +56,8 @@ public class GCyMMachines {
                         case 6 -> "Master";
                         case 7 -> "Ultimate";
                         case 8 -> "Super";
+                        case 9 -> "Very Super";
+                        case 10 -> "Op";
                         default -> "Simple"; // Should never be hit.
                     } + " Parallel Control Hatch")
                     .rotationState(RotationState.ALL)
@@ -64,7 +66,7 @@ public class GCyMMachines {
                     .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk"+tier+".tooltip"))
                     .compassNode("parallel_hatch")
                     .register(),
-            IV, LuV, ZPM, UV);
+            IV, LuV, ZPM, UV,UHV,UEV);
 
     public final static MultiblockMachineDefinition LARGE_MACERATION_TOWER = REGISTRATE.multiblock("large_maceration_tower", WorkableElectricMultiblockMachine::new)
             .langValue("Large Maceration Tower")
