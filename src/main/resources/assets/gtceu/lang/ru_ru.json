@@ -6787,5 +6787,9 @@
     "gtceu.top.energy_stored": " / %d EU",
     "gtceu.top.progress_computation": " / %s CWU",
     "item.gtceu.portable_scanner": "Портативный сканер",
-    "gtceu.multiblock.uv_fusion_reactor.description": "Термоядерный реактор модель 3 - это большая многоблочная структура использующаяся для термоядерного синтеза двух элементов в один. Может использовать UV+ энергетические разъемы. За каждый энергетический разъём, внутренний буфер увеличивается на 40млн. EU, максимум энергии для старта 640млн. EU."
+    "gtceu.multiblock.uv_fusion_reactor.description": "Термоядерный реактор модель 3 - это большая многоблочная структура использующаяся для термоядерного синтеза двух элементов в один. Может использовать UV+ энергетические разъемы. За каждый энергетический разъём, внутренний буфер увеличивается на 40млн. EU, максимум энергии для старта 640млн. EU.",
+    "config.gtceu.option.bedrockOreDistance": "bedrockOreDistance",
+    "gtceu.multiblock.ore_rig.drilled_ore_entry": " - %s",
+    "gtceu.multiblock.ore_rig.drilled_ores_list": "Руды:",
+    "gtceu.multiblock.ore_rig.ore_amount": "Скорость доб.: %s"
 }
