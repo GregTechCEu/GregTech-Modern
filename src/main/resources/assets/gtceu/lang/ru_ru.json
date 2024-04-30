@@ -6791,5 +6791,11 @@
     "config.gtceu.option.bedrockOreDistance": "bedrockOreDistance",
     "gtceu.multiblock.ore_rig.drilled_ore_entry": " - %s",
     "gtceu.multiblock.ore_rig.drilled_ores_list": "Руды:",
-    "gtceu.multiblock.ore_rig.ore_amount": "Скорость доб.: %s"
+    "gtceu.multiblock.ore_rig.ore_amount": "Скорость доб.: %s",
+    "tagprefix.door": "Дверь (%s)",
+    "tagprefix.fence": "Забор (%s)",
+    "tagprefix.fence_gate": "Калитка (%s)",
+    "tagprefix.log": "Дерево (%s)",
+    "tagprefix.slab": "Плита (%s)",
+    "tagprefix.stairs": "Ступеньки (%s)"
 }
