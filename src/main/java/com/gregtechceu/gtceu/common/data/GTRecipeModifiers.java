@@ -52,9 +52,9 @@ public class GTRecipeModifiers {
         }
         @Override
         public GTRecipe apply(MetaMachine machine, GTRecipe recipe) {
-            if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
-                return null;
-            }
+//            if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
+//                return null;
+//            }
             if (machine instanceof IOverclockMachine overclockMachine) {
                 return RecipeHelper.applyOverclock(overclockingLogic, recipe, overclockMachine.getOverclockVoltage());
             }
@@ -109,7 +109,8 @@ public class GTRecipeModifiers {
         int mid = (min + max) / 2;
         GTRecipe copied = original.copy(ContentModifier.multiplier(mid), modifyDuration);
         if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess() ||
-            !(holder instanceof ITieredMachine && RecipeHelper.getRecipeEUtTier(copied) <= ((ITieredMachine)holder).getTier())) {
+            !(holder instanceof IOverclockMachine oHolder &&
+                RecipeHelper.getRecipeEUt(copied) <= oHolder.getOverclockVoltage())) {
             // tried too many
             return tryParallel(holder, original, min, mid - 1, modifyDuration);
         } else {
@@ -157,9 +158,9 @@ public class GTRecipeModifiers {
             if (!recipe.data.contains("ebf_temp") || recipe.data.getInt("ebf_temp") > blastFurnaceTemperature) {
                 return null;
             }
-            if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
-                return null;
-            }
+//            if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
+//                return null;
+//            }
             return RecipeHelper.applyOverclock(new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> OverclockingLogic.heatingCoilOverclockingLogic(
                     Math.abs(recipeEUt),
                     maxVoltage,
@@ -174,9 +175,9 @@ public class GTRecipeModifiers {
 
     public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
-            if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
-                return null;
-            }
+//            if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
+//                return null;
+//            }
             return RecipeHelper.applyOverclock(new OverclockingLogic((recipe1, recipeEUt, maxVoltage, duration, amountOC) -> {
                 var pair = OverclockingLogic.NON_PERFECT_OVERCLOCK.getLogic().runOverclockingLogic(recipe1, recipeEUt, maxVoltage, duration, amountOC);
                 if (coilMachine.getCoilTier() == 0) {

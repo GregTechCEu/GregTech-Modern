@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -29,6 +27,13 @@ public class RecipeHelper {
                 .mapToLong(EURecipeCapability.CAP::of)
                 .sum();
     }
+    public static long getRecipeEUt(GTRecipe recipe){
+        long EUt = getInputEUt(recipe);
+        if (EUt == 0) {
+            EUt = getOutputEUt(recipe);
+        }
+        return EUt;
+    }
 
     public static void setInputEUt(GTRecipe recipe, long eut) {
         recipe.getTickInputContents(EURecipeCapability.CAP).forEach(c -> c.content = eut);
@@ -39,11 +44,7 @@ public class RecipeHelper {
     }
 
     public static int getRecipeEUtTier(GTRecipe recipe) {
-        long EUt = getInputEUt(recipe);
-        if (EUt == 0) {
-            EUt = getOutputEUt(recipe);
-        }
-        return GTUtil.getTierByVoltage(EUt);
+        return GTUtil.getTierByVoltage(getRecipeEUt(recipe));
     }
 
     /**

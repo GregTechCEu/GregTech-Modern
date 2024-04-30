@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import dev.latvian.mods.kubejs.util.ConsoleJS;
 import org.jetbrains.annotations.NotNull;
@@ -58,6 +59,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
      */
     @Nullable
     default GTRecipe doModifyRecipe(GTRecipe recipe) {
+        if (self() instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
+            return null;
+        }
         return self().getDefinition().getRecipeModifier().apply(self(), recipe);
     }
 
