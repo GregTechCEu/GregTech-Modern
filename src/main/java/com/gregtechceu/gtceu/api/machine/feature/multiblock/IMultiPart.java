@@ -3,11 +3,13 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
@@ -79,29 +81,36 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWorking(IWorkableMultiController controller) {
-
+    default boolean onWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWaiting(IWorkableMultiController controller) {
+    default boolean onWaiting(IWorkableMultiController controller) {
+        return true;
+    }
 
+    /**
+     * Called in {@link WorkableMultiblockMachine#setWorkingEnabled(boolean)}
+     */
+    default boolean onPaused(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
-    default void afterWorking(IWorkableMultiController controller) {
-
+    default boolean afterWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default void beforeWorking(IWorkableMultiController controller) {
-
+    default boolean beforeWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
@@ -112,6 +121,14 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
      */
     default GTRecipe modifyRecipe(GTRecipe recipe) {
         return recipe;
+    }
+
+    /**
+     * Add text to the multiblock's screen.
+     * @param textList the text list to add to.
+     */
+    default void addMultiText(List<Component> textList) {
+
     }
 
     /**

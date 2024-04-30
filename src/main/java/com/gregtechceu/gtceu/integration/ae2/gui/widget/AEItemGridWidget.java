@@ -65,6 +65,9 @@ public class AEItemGridWidget extends AEListGridWidget {
                 GenericStack cachedItem = this.cached.getStack(j);
                 if (item.what().matches(cachedItem) && cachedItem.amount() != item.amount()) {
                     this.changeMap.put(ExportOnlyAESlot.copy(item), item.amount() - cachedItem.amount());
+                    if(item.amount() - cachedItem.amount() <= 0) {
+                        this.cached.extract(j, item.what(), item.amount(), Actionable.MODULATE);
+                    }
                     this.cached.insert(j, item.what(), item.amount() - cachedItem.amount(), Actionable.MODULATE);
                     matched = true;
                     break;

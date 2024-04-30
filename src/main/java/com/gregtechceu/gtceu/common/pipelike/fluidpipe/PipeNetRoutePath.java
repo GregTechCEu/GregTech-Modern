@@ -10,7 +10,7 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 public class PipeNetRoutePath implements IRoutePath<IFluidTransfer> {
     @Getter

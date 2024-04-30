@@ -28,6 +28,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import it.unimi.dsi.fastutil.objects.Object2FloatMap;
 import it.unimi.dsi.fastutil.objects.Object2FloatOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -50,8 +51,7 @@ import net.minecraft.world.level.material.MapColor;
 import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
@@ -62,7 +62,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.Conditions.*;
 public class TagPrefix {
 
     public final static Map<String, TagPrefix> PREFIXES = new HashMap<>();
-    public static final Map<TagPrefix, OreType> ORES = new IdentityHashMap<>();
+    public static final Map<TagPrefix, OreType> ORES = new Object2ObjectLinkedOpenHashMap<>();
 
     public static final Codec<TagPrefix> CODEC = Codec.STRING.flatXmap(str -> Optional.ofNullable(get(str)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "invalid TagPrefix: " + str)), prefix -> DataResult.success(prefix.name));
 
@@ -597,8 +597,20 @@ public class TagPrefix {
             .generationCondition(material -> material.hasProperty(PropertyKey.INGOT) || material.hasProperty(PropertyKey.GEM) || material.hasFlag(MaterialFlags.FORCE_GENERATE_BLOCK))
             .unificationEnabled(true);
 
+    public static final TagPrefix log = new TagPrefix("log")
+        .unformattedTagPath("logs", true);
     public static final TagPrefix planks = new TagPrefix("planks")
         .unformattedTagPath("planks", true);
+    public static final TagPrefix slab = new TagPrefix("slab")
+        .unformattedTagPath("slabs", true);
+    public static final TagPrefix stairs = new TagPrefix("stairs")
+        .unformattedTagPath("stairs", true);
+    public static final TagPrefix fence = new TagPrefix("fence")
+        .unformattedTagPath("fences");
+    public static final TagPrefix fenceGate = new TagPrefix("fenceGate")
+        .unformattedTagPath("fence_gates");
+    public static final TagPrefix door = new TagPrefix("door")
+        .unformattedTagPath("doors", true);
 
     // Prefix to determine which kind of Rock this is.
     // Also has a base tag path of only the material, for things like obsidian etc.
@@ -771,7 +783,11 @@ public class TagPrefix {
     }
 
     public TagPrefix defaultTagPath(String path) {
-        this.tags.add(TagType.withDefaultFormatter(path));
+        return this.defaultTagPath(path, false);
+    }
+
+    public TagPrefix defaultTagPath(String path, boolean isVanilla) {
+        this.tags.add(TagType.withDefaultFormatter(path, isVanilla));
         return this;
     }
 
@@ -829,22 +845,22 @@ public class TagPrefix {
     }
 
     @SuppressWarnings("unchecked")
-    public TagKey<Item>[] getItemTags(@Nonnull Material mat) {
+    public TagKey<Item>[] getItemTags(@NotNull Material mat) {
         return tags.stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
-    public TagKey<Item>[] getAllItemTags(@Nonnull Material mat) {
+    public TagKey<Item>[] getAllItemTags(@NotNull Material mat) {
         return tags.stream().map(type -> type.getTag(this, mat)).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
-    public TagKey<Block>[] getBlockTags(@Nonnull Material mat) {
+    public TagKey<Block>[] getBlockTags(@NotNull Material mat) {
         return tags.stream().filter(type -> !type.isParentTag()).map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toArray(TagKey[]::new);
     }
 
     @SuppressWarnings("unchecked")
-    public TagKey<Block>[] getAllBlockTags(@Nonnull Material mat) {
+    public TagKey<Block>[] getAllBlockTags(@NotNull Material mat) {
         return tags.stream().map(type -> type.getTag(this, mat)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toArray(TagKey[]::new);
     }
 

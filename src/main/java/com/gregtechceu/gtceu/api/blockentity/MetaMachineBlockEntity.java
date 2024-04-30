@@ -120,6 +120,13 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         return result == null ? super.getCapability(cap, side) : result;
     }
 
+    @Override
+    public void setChanged() {
+        if (getLevel() != null) {
+            getLevel().blockEntityChanged(getBlockPos());
+        }
+    }
+
     @Nullable
     public static <T> LazyOptional<T> getCapability(MetaMachine machine, @NotNull Capability<T> cap, @Nullable Direction side) {
         if (cap == GTCapability.CAPABILITY_COVERABLE) {
@@ -170,7 +177,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof ICleanroomReceiver cleanroomReceiver) {
                 return GTCapability.CAPABILITY_CLEANROOM_RECEIVER.orEmpty(cap, LazyOptional.of(() -> cleanroomReceiver));
             }
-        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE ) {
+        } else if (cap == GTCapability.CAPABILITY_MAINTENANCE_MACHINE) {
             if (machine instanceof IMaintenanceMachine maintenanceMachine) {
                 return GTCapability.CAPABILITY_MAINTENANCE_MACHINE.orEmpty(cap, LazyOptional.of(() -> maintenanceMachine));
             }
@@ -225,7 +232,22 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
-
+        } else if (cap == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
+            if (machine instanceof IOpticalComputationProvider computationProvider) {
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+            }
+            var list = machine.getTraits().stream().filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IOpticalComputationProvider.class::cast).toList();
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
+        } else if (cap == GTCapability.CAPABILITY_DATA_ACCESS) {
+            if (machine instanceof IDataAccessHatch computationProvider) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
+            }
+            var list = machine.getTraits().stream().filter(IDataAccessHatch.class::isInstance).filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
+            if (!list.isEmpty()) {
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
+            }
         }
         if (GTCEu.isAE2Loaded()) {
             if (cap == Capabilities.IN_WORLD_GRID_NODE_HOST) {

@@ -7,13 +7,14 @@ import mcjty.theoneprobe.api.IProbeHitData;
 import mcjty.theoneprobe.api.IProbeInfo;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 public class ElectricContainerInfoProvider extends CapabilityInfoProvider<IEnergyContainer> {
 
@@ -33,14 +34,14 @@ public class ElectricContainerInfoProvider extends CapabilityInfoProvider<IEnerg
         long maxStorage = capability.getEnergyCapacity();
         if (maxStorage == 0) return; // do not add empty max storage progress bar
         probeInfo.progress(capability.getEnergyStored(), maxStorage, probeInfo.defaultProgressStyle()
-                .suffix(" / " + maxStorage + " EU")
+                .suffix(Component.translatable("gtceu.top.energy_stored", maxStorage))
                 .filledColor(0xFFEEE600)
                 .alternateFilledColor(0xFFEEE600)
                 .borderColor(0xFF555555));
     }
 
     @Override
-    protected boolean allowDisplaying(@Nonnull IEnergyContainer capability) {
+    protected boolean allowDisplaying(@NotNull IEnergyContainer capability) {
         return !capability.isOneProbeHidden();
     }
 

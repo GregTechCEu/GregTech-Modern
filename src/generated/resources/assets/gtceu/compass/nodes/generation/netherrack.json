@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/netherrack",
   "position": [
-    -200,
-    100
+    -100,
+    150
   ],
   "pre_nodes": [
     "gtceu:generation/ore"

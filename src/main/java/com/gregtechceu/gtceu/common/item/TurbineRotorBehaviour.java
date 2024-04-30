@@ -12,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
@@ -75,7 +75,7 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
     }
 
     @Nullable
-    public static TurbineRotorBehaviour getBehaviour(@Nonnull ItemStack itemStack) {
+    public static TurbineRotorBehaviour getBehaviour(@NotNull ItemStack itemStack) {
         if (itemStack.getItem() instanceof ComponentItem componentItem) {
             for (var component : componentItem.getComponents()) {
                 if (component instanceof TurbineRotorBehaviour behaviour) {

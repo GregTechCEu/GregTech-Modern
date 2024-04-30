@@ -1,19 +1,21 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
+import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-
+@AllArgsConstructor
 public class Content {
     @Getter
     public Object content;
@@ -23,14 +25,6 @@ public class Content {
     public String slotName;
     @Nullable
     public String uiName;
-
-    public Content(Object content, float chance, float tierChanceBoost, @Nullable String slotName, @Nullable String uiName) {
-        this.content = content;
-        this.chance = chance;
-        this.tierChanceBoost = tierChanceBoost;
-        this.slotName = slotName;
-        this.uiName = uiName;
-    }
 
     public Content copy(RecipeCapability<?> capability, @Nullable ContentModifier modifier) {
         if (modifier == null || chance == 0) {
@@ -46,11 +40,34 @@ public class Content {
             @OnlyIn(Dist.CLIENT)
             public void draw(GuiGraphics graphics, int mouseX, int mouseY, float x, float y, int width, int height) {
                 drawChance(graphics, x, y, width, height);
+                if (LDLib.isEmiLoaded()) {
+                    drawEmiAmount(graphics, x, y, width, height);
+                }
                 if (perTick) {
                     drawTick(graphics, x, y, width, height);
                 }
             }
         };
+    }
+
+    @OnlyIn(Dist.CLIENT)
+    public void drawEmiAmount(GuiGraphics graphics, float x, float y, int width, int height) {
+        if (content instanceof FluidIngredient ingredient) {
+            graphics.pose().pushPose();
+            graphics.pose().translate(0, 0, 400);
+            graphics.pose().scale(0.5f, 0.5f, 1);
+            long amount = ingredient.getAmount();
+            String s;
+            if (amount >= 1000) {
+                amount /= 1000;
+                s = amount + "B";
+            } else {
+                s = amount + "mB";
+            }
+            Font fontRenderer = Minecraft.getInstance().font;
+            graphics.drawString(fontRenderer, s, (int) ((x + (width / 3f)) * 2 - fontRenderer.width(s) + 21), (int) ((y + (height / 3f) + 6) * 2), 0xFFFFFF, true);
+            graphics.pose().popPose();
+        }
     }
 
     @OnlyIn(Dist.CLIENT)

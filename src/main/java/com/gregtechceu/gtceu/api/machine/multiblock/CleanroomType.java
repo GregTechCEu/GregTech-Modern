@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +19,7 @@ public class CleanroomType {
     private final String name;
     private final String translationKey;
 
-    public CleanroomType(@Nonnull String name, @Nonnull String translationKey) {
+    public CleanroomType(@NotNull String name, @NotNull String translationKey) {
         if (CLEANROOM_TYPES.get(name) != null)
             throw new IllegalArgumentException(String.format("CleanroomType with name %s is already registered!", name));
 
@@ -28,12 +28,12 @@ public class CleanroomType {
         CLEANROOM_TYPES.put(name, this);
     }
 
-    @Nonnull
+    @NotNull
     public String getName() {
         return this.name;
     }
 
-    @Nonnull
+    @NotNull
     public String getTranslationKey() {
         return this.translationKey;
     }
@@ -43,7 +43,7 @@ public class CleanroomType {
         return CLEANROOM_TYPES.get(name);
     }
 
-    @Nonnull
+    @NotNull
     public static CleanroomType getByNameOrDefault(@Nullable String name) {
         var type = getByName(name);
         if (type == null) {

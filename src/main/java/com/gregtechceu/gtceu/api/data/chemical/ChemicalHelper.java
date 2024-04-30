@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
@@ -30,8 +31,8 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraftforge.registries.RegistryObject;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -319,7 +320,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @Nonnull Material material) {
+    public static TagKey<Block> getBlockTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getBlockTags(material);
         if (tags.length > 0) {
             return tags[0];
@@ -328,7 +329,7 @@ public class ChemicalHelper {
     }
 
     @Nullable
-    public static TagKey<Item> getTag(TagPrefix orePrefix, @Nonnull Material material) {
+    public static TagKey<Item> getTag(TagPrefix orePrefix, @NotNull Material material) {
         var tags = orePrefix.getItemTags(material);
         if (tags.length > 0) {
             return tags[0];
@@ -336,7 +337,7 @@ public class ChemicalHelper {
         return null;
     }
 
-    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @Nonnull Material material) {
+    public static TagKey<Item>[] getTags(TagPrefix orePrefix, @NotNull Material material) {
         return orePrefix.getItemTags(material);
     }
 
@@ -367,9 +368,6 @@ public class ChemicalHelper {
             });
         }
         GTItems.toUnify.forEach(ChemicalHelper::registerUnificationItems);
-        //GTBlocks.MATERIAL_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
-        //GTBlocks.CABLE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
-        //GTBlocks.FLUID_PIPE_BLOCKS.rowMap().forEach((prefix, map) -> map.forEach((material, block) -> ChemicalHelper.registerUnificationItems(prefix, material, block)));
-        // add new stuff here as more maps are added, IDK a better way
+        WoodMachineRecipes.registerUnificationInfo();
     }
 }

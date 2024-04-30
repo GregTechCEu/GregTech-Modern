@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.UseOnContext;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Set;
 
 /**
@@ -22,6 +22,6 @@ public interface IToolable {
      *
      * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and animations will be played
      */
-    Pair<@Nullable GTToolType, InteractionResult> onToolClick(@Nonnull Set<GTToolType> toolTypes, ItemStack itemStack, UseOnContext context);
+    Pair<@Nullable GTToolType, InteractionResult> onToolClick(@NotNull Set<GTToolType> toolTypes, ItemStack itemStack, UseOnContext context);
 
 }

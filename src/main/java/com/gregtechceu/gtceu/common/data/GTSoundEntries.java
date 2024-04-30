@@ -4,7 +4,6 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import net.minecraftforge.fml.ModLoader;
@@ -42,6 +41,7 @@ public class GTSoundEntries {
     public static final SoundEntry CUT = REGISTRATE.sound("cut").build();
     public static final SoundEntry TURBINE = REGISTRATE.sound("turbine").build();
     public static final SoundEntry COMBUSTION = REGISTRATE.sound("combustion").build();
+    public static final SoundEntry COMPUTATION = REGISTRATE.sound("computation").build();
     public static final SoundEntry MINER = REGISTRATE.sound("miner").build();
     public static final SoundEntry SCIENCE = REGISTRATE.sound("science").build();
     public static final SoundEntry WRENCH_TOOL = REGISTRATE.sound("wrench").build();
@@ -54,7 +54,7 @@ public class GTSoundEntries {
     public static final SoundEntry CHAINSAW_TOOL = REGISTRATE.sound("chainsaw").build();
     public static final SoundEntry WIRECUTTER_TOOL = REGISTRATE.sound("wirecutter").build();
     public static final SoundEntry SPRAY_CAN_TOOL = REGISTRATE.sound("spray_can").build();
-    public static final SoundEntry TRICORDER_TOOL = REGISTRATE.sound("tricorder").build();
+    public static final SoundEntry PORTABLE_SCANNER = REGISTRATE.sound("portable_scanner").build();
     public static final SoundEntry MORTAR_TOOL = REGISTRATE.sound("mortar").build();
     public static final SoundEntry SUS_RECORD = REGISTRATE.sound("sus").build();
     public static final SoundEntry PORTAL_OPENING = REGISTRATE.sound("portal_opening").build();

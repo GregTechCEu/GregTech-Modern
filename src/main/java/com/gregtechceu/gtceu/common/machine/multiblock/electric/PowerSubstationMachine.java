@@ -70,9 +70,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
     private long passiveDrain;
 
     // Stats tracked for UI display
-    private long netIOLastSec;
-    @Getter
-    private long averageIOLastSec;
+    private long netInLastSec;
+    private long averageInLastSec;
+    private long netOutLastSec;
+    private long averageOutLastSec;
 
     protected ConditionalSubscriptionHandler tickSubscription;
 
@@ -140,8 +141,10 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
         inputHatches = null;
         outputHatches = null;
         passiveDrain = 0;
-        netIOLastSec = 0;
-        averageIOLastSec = 0;
+        netInLastSec = 0;
+        averageInLastSec = 0;
+        netOutLastSec = 0;
+        averageOutLastSec = 0;
         super.onStructureInvalid();
     }
 
@@ -150,24 +153,26 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
             if (getOffsetTimer() % 20 == 0) {
                 // active here is just used for rendering
                 getRecipeLogic().setStatus(energyBank.hasEnergy() ? RecipeLogic.Status.WORKING : RecipeLogic.Status.IDLE);
-                averageIOLastSec = netIOLastSec / 20;
-                netIOLastSec = 0;
+                averageInLastSec = netInLastSec / 20;
+                averageOutLastSec = netOutLastSec / 20;
+                netInLastSec = 0;
+                netOutLastSec = 0;
             }
 
             if (isWorkingEnabled() && isFormed()) {
                 // Bank from Energy Input Hatches
                 long energyBanked = energyBank.fill(inputHatches.getEnergyStored());
                 inputHatches.changeEnergy(-energyBanked);
-                netIOLastSec += energyBanked;
+                netInLastSec += energyBanked;
 
                 // Passive drain
                 long energyPassiveDrained = energyBank.drain(getPassiveDrain());
-                netIOLastSec -= energyPassiveDrained;
+                netOutLastSec -= energyPassiveDrained;
 
                 // Debank to Dynamo Hatches
                 long energyDebanked = energyBank.drain(outputHatches.getEnergyCapacity() - outputHatches.getEnergyStored());
                 outputHatches.changeEnergy(energyDebanked);
-                netIOLastSec -= energyDebanked;
+                netOutLastSec += energyDebanked;
             }
         }
     }
@@ -200,15 +205,18 @@ public class PowerSubstationMachine extends WorkableMultiblockMachine implements
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.stored", FormattingUtil.formatNumbers(energyStored)));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.capacity", FormattingUtil.formatNumbers(energyCapacity)));
                 textList.add(Component.translatable("gtceu.multiblock.power_substation.passive_drain", FormattingUtil.formatNumbers(getPassiveDrain())));
-                textList.add(Component.translatable("gtceu.multiblock.power_substation.average_io", FormattingUtil.formatNumbers(averageIOLastSec))
+                textList.add(Component.translatable("gtceu.multiblock.power_substation.average_in", FormattingUtil.formatNumbers(averageInLastSec))
                         .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                Component.translatable("gtceu.multiblock.power_substation.average_io_hover")))));
+                                Component.translatable("gtceu.multiblock.power_substation.average_in_hover")))));
+                textList.add(Component.translatable("gtceu.multiblock.power_substation.average_out", FormattingUtil.formatNumbers(Math.abs(averageOutLastSec)))
+                    .withStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                        Component.translatable("gtceu.multiblock.power_substation.average_out_hover")))));
 
-                if (averageIOLastSec > 0) {
-                    BigInteger timeToFillSeconds = energyCapacity.subtract(energyStored).divide(BigInteger.valueOf(averageIOLastSec * 20));
+                if (averageInLastSec > averageOutLastSec) {
+                    BigInteger timeToFillSeconds = energyCapacity.subtract(energyStored).divide(BigInteger.valueOf((averageInLastSec-averageOutLastSec) * 20));
                     textList.add(Component.translatable("gtceu.multiblock.power_substation.time_to_fill", getTimeToFillDrainText(timeToFillSeconds)));
-                } else if (averageIOLastSec < 0) {
-                    BigInteger timeToDrainSeconds = energyStored.divide(BigInteger.valueOf(Math.abs(averageIOLastSec) * 20));
+                } else if (averageInLastSec < averageOutLastSec) {
+                    BigInteger timeToDrainSeconds = energyStored.divide(BigInteger.valueOf((averageOutLastSec - averageInLastSec) * 20));
                     textList.add(Component.translatable("gtceu.multiblock.power_substation.time_to_drain", getTimeToFillDrainText(timeToDrainSeconds)));
                 }
             }

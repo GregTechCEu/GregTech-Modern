@@ -5,7 +5,7 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.inventory.tooltip.TooltipComponent;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.Collections;
 import java.util.List;
 
@@ -76,5 +76,13 @@ public interface IFancyUIProvider {
     @Nullable
     default TooltipComponent getTabTooltipComponent() {
         return null;
+    }
+
+    @Nullable
+    default PageGroupingData getPageGroupingData() {
+        return null;
+    }
+
+    record PageGroupingData(@Nullable String groupKey, int groupPositionWeight) {
     }
 }

@@ -29,7 +29,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -68,7 +68,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         }
     }
 
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         int duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
         var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getA();

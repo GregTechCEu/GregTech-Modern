@@ -65,6 +65,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected boolean allowInputFromOutputSideFluids;
     @Getter
     private final long maxStoredFluids;
+    @Getter
     @Persisted @DropSaved
     protected final NotifiableFluidTank cache;
     @Nullable
@@ -75,15 +76,12 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     protected FluidStack stored = FluidStack.empty();
     @Persisted @Getter @Setter
     private boolean isVoiding;
-    @Persisted @DescSynced @Getter
-    protected final FluidStorage lockedFluid;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, long maxStoredFluids, Object... args) {
         super(holder, tier);
         this.outputFacingFluids = getFrontFacing().getOpposite();
         this.maxStoredFluids = maxStoredFluids;
         this.cache = createCacheFluidHandler(args);
-        this.lockedFluid = new FluidStorage(FluidHelper.getBucket());
     }
 
     //////////////////////////////////////
@@ -120,7 +118,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
                 return filled;
             }
-        }.setFilter(fluidStack -> !isLocked() || lockedFluid.getFluid().isFluidEqual(fluidStack));
+        };
     }
 
     @Override
@@ -221,9 +219,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         var currentStack = player.getMainHandItem();
         if (hit.getDirection() == getFrontFacing() && !currentStack.isEmpty()) {
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
-            var fluidTank = cache.storages[0];
+            var fluidTank = cache.getStorages()[0];
             if (handler != null && !isRemote()) {
-                if (cache.storages[0].getFluidAmount() > 0) {
+                if (cache.getStorages()[0].getFluidAmount() > 0) {
                     FluidStack initialFluid = fluidTank.getFluid();
                     FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, false);
                     if (result.isSuccess()) {
@@ -260,7 +258,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
 
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        if (!playerIn.isCrouching() && !isRemote()) {
+        if (!playerIn.isShiftKeyDown() && !isRemote()) {
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
@@ -293,16 +291,18 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     }
 
     public boolean isLocked() {
-        return !lockedFluid.getFluid().isEmpty();
+        return cache.isLocked();
     }
 
     protected void setLocked(boolean locked) {
         if (!stored.isEmpty() && locked) {
             var copied = stored.copy();
-            copied.setAmount(lockedFluid.getCapacity());
-            lockedFluid.setFluid(copied);
+            copied.setAmount(cache.getLockedFluid().getCapacity());
+            cache.getLockedFluid().setFluid(copied);
+            cache.setLocked(true);
         } else if (!locked) {
-            lockedFluid.setFluid(FluidStack.empty());
+            cache.getLockedFluid().setFluid(FluidStack.empty());
+            cache.setLocked(false);
         }
     }
 
@@ -316,9 +316,9 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 .addWidget(new LabelWidget(8, 18, () ->
                         String.valueOf(cache.getFluidInTank(0).getAmount() / (FluidHelper.getBucket() / 1000))
                 ).setTextColor(-1).setDropShadow(true))
-                .addWidget(new TankWidget(cache.storages[0], 68, 23, true, true)
+                .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .addWidget(new PhantomFluidWidget(lockedFluid, 68, 41, 18, 18)
+                .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 68, 41, 18, 18)
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
@@ -343,7 +343,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isCrouching()) {
+            if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }

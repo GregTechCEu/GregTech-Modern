@@ -16,7 +16,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 import org.apache.commons.lang3.function.TriFunction;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Supplier;
@@ -27,6 +27,8 @@ import java.util.function.Supplier;
  * @implNote MultiblockMachineDefinition
  */
 public class MultiblockMachineDefinition extends MachineDefinition {
+    @Getter @Setter
+    private boolean generator;
     @Setter
     @Getter
     @NonNull

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import it.unimi.dsi.fastutil.longs.LongIntMutablePair;
 import it.unimi.dsi.fastutil.longs.LongIntPair;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -52,7 +52,7 @@ public class RecipeHelper {
      * @param recipe the recipe to run
      * @return a new recipe
      */
-    public static GTRecipe applyOverclock(OverclockingLogic logic, @Nonnull GTRecipe recipe, long maxOverclockVoltage) {
+    public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
         long EUt = getInputEUt(recipe);
         if (EUt > 0) {
             var overclockResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
@@ -85,7 +85,7 @@ public class RecipeHelper {
      * @param recipe the recipe to overclock
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
-    private static LongIntPair performOverclocking(OverclockingLogic logic, @Nonnull GTRecipe recipe, long EUt, long maxOverclockVoltage) {
+    private static LongIntPair performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt, long maxOverclockVoltage) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = logic.getOverclockForTier(maxOverclockVoltage);
         // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
@@ -93,9 +93,7 @@ public class RecipeHelper {
         int numberOfOCs = maximumTier - recipeTier;
         if (recipeTier == GTValues.ULV) numberOfOCs--; // no ULV overclocking
 
-        // cannot overclock, so return the starting values
-        if (numberOfOCs <= 0) return LongIntMutablePair.of(EUt, recipe.duration);
-
+        // Always overclock even if numberOfOCs is <=0 as without it, some logic for coil bonuses ETC won't apply.
         return logic.getLogic().runOverclockingLogic(recipe, EUt, maxOverclockVoltage, recipe.duration, numberOfOCs);
     }
 

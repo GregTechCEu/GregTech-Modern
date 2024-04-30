@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -21,9 +22,11 @@ import com.lowdragmc.lowdraglib.utils.ItemStackKey;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
+import dev.emi.emi.screen.RecipeScreen;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import me.shedaniel.rei.impl.client.gui.screen.AbstractDisplayViewingScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.BlockPos;
@@ -36,8 +39,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.Nonnull;
 import java.util.*;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,10 +53,12 @@ import java.util.stream.Stream;
  */
 @OnlyIn(Dist.CLIENT)
 public class PatternPreviewWidget extends WidgetGroup {
+    private boolean isLoaded;
     private static TrackedDummyWorld LEVEL;
     private static BlockPos LAST_POS = new BlockPos(0, 50, 0);
     private static final Map<MultiblockMachineDefinition, MBPattern[]> CACHE = new HashMap<>();
     private final SceneWidget sceneWidget;
+    private final DraggableScrollableWidgetGroup scrollableWidgetGroup;
     public final MultiblockMachineDefinition controllerDefinition;
     public final MBPattern[] patterns;
     private final List<SimplePredicate> predicates;
@@ -63,16 +68,24 @@ public class PatternPreviewWidget extends WidgetGroup {
     private SlotWidget[] candidates;
 
     protected PatternPreviewWidget(MultiblockMachineDefinition controllerDefinition) {
-        super(0, 0, 176, 176);
+        super(0, 0, 160, 160);
         setClientSideWidget();
         this.controllerDefinition = controllerDefinition;
         predicates = new ArrayList<>();
         layer = -1;
 
-        addWidget(sceneWidget = new SceneWidget(3, 3, 170, 170, LEVEL)
+        addWidget(sceneWidget = new SceneWidget(3, 3, 150, 150, LEVEL)
                 .setOnSelected(this::onPosSelected)
                 .setRenderFacing(false)
                 .setRenderFacing(false));
+
+        scrollableWidgetGroup = new DraggableScrollableWidgetGroup(3, 132, 154, 22)
+            .setXScrollBarHeight(4)
+            .setXBarStyle(GuiTextures.SLIDER_BACKGROUND, GuiTextures.BUTTON)
+            .setScrollable(true)
+            .setDraggable(true);
+        scrollableWidgetGroup.setScrollYOffset(0);
+        addWidget(scrollableWidgetGroup);
 
         if (ConfigHolder.INSTANCE.client.useVBO) {
             if (!RenderSystem.isOnRenderThread()) {
@@ -82,7 +95,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
         }
 
-        addWidget(new ImageWidget(3, 3, 170, 10,
+        addWidget(new ImageWidget(3, 3, 160, 10,
                 new TextTexture(controllerDefinition.getDescriptionId(), -1)
                         .setType(TextTexture.TextType.ROLL)
                         .setWidth(170)
@@ -97,13 +110,13 @@ public class PatternPreviewWidget extends WidgetGroup {
                     .toArray(MBPattern[]::new);
         });
 
-        addWidget(new ButtonWidget(150, 40, 18, 18, new GuiTextureGroup(
+        addWidget(new ButtonWidget(138, 30, 18, 18, new GuiTextureGroup(
                 ColorPattern.T_GRAY.rectTexture(),
                 new TextTexture("1").setSupplier(() -> "P:" + index)),
                 (x) -> setPage((index + 1 >= patterns.length) ? 0 : index + 1))
                 .setHoverBorderTexture(1, -1));
 
-        addWidget(new ButtonWidget(150, 60, 18, 18, new GuiTextureGroup(
+        addWidget(new ButtonWidget(138, 50, 18, 18, new GuiTextureGroup(
                 ColorPattern.T_GRAY.rectTexture(),
                 new TextTexture("1").setSupplier(() -> layer >= 0 ? "L:" + layer : "ALL")),
                 cd -> updateLayer())
@@ -168,10 +181,10 @@ public class PatternPreviewWidget extends WidgetGroup {
         slotWidgets = new SlotWidget[Math.min(pattern.parts.size(), 18)];
         var itemHandler = new CycleItemStackHandler(pattern.parts);
         for (int i = 0; i < slotWidgets.length; i++) {
-            slotWidgets[i] = new SlotWidget(itemHandler, i, 7 + (i % 9) * 18, 173 - (((slotWidgets.length - 1) / 9 + 1) * 18)  + (i / 9) * 18, false, false)
+            slotWidgets[i] = new SlotWidget(itemHandler, i, 4 + i * 18, 0, false, false)
                     .setBackgroundTexture(ColorPattern.T_GRAY.rectTexture())
                     .setIngredientIO(IngredientIO.INPUT);
-            addWidget(slotWidgets[i]);
+            scrollableWidgetGroup.addWidget(slotWidgets[i]);
         }
     }
 
@@ -211,10 +224,10 @@ public class PatternPreviewWidget extends WidgetGroup {
             }
             candidates = new SlotWidget[candidateStacks.size()];
             CycleItemStackHandler itemHandler = new CycleItemStackHandler(candidateStacks);
-            int maxCol = (173 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
+            int maxCol = (160 - (((slotWidgets.length - 1) / 9 + 1) * 18) - 35) % 18;
             for (int i = 0; i < candidateStacks.size(); i++) {
                 int finalI = i;
-                candidates[i] = new SlotWidget(itemHandler, i, 9 + (i / maxCol) * 18, 33 + (i % maxCol) * 18, false, false)
+                candidates[i] = new SlotWidget(itemHandler, i, 3 + (i / maxCol) * 18, 3 + (i % maxCol) * 18, false, false)
                         .setIngredientIO(IngredientIO.INPUT)
                         .setBackgroundTexture(new ColorRectTexture(0x4fffffff))
                         .setOnAddedTooltips((slot, list) -> list.addAll(predicateTips.get(finalI)));
@@ -232,10 +245,18 @@ public class PatternPreviewWidget extends WidgetGroup {
     @Override
     public void updateScreen() {
         super.updateScreen();
+        // I can only think of this way
+        if (!isLoaded && LDLib.isEmiLoaded() && Minecraft.getInstance().screen instanceof RecipeScreen) {
+            setPage(0);
+            isLoaded = true;
+        } else if (!isLoaded && LDLib.isReiLoaded() && Minecraft.getInstance().screen instanceof AbstractDisplayViewingScreen) {
+            setPage(0);
+            isLoaded = true;
+        }
     }
 
     @Override
-    public void drawInBackground(@Nonnull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
+    public void drawInBackground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
         RenderSystem.enableBlend();
         super.drawInBackground(graphics, mouseX, mouseY, partialTicks);
     }
@@ -283,7 +304,7 @@ public class PatternPreviewWidget extends WidgetGroup {
             if (two.isTile && !one.isTile) return +1;
             if (one.blockId != two.blockId) return two.blockId - one.blockId;
             return two.amount - one.amount;
-        }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).toList(), predicateMap, controllerBase);
+        }).map(PartInfo::getItemStack).filter(list -> !list.isEmpty()).collect(Collectors.toList()), predicateMap, controllerBase);
     }
 
     private void loadControllerFormed(Collection<BlockPos> poses, IMultiController controllerBase) {
@@ -351,17 +372,17 @@ public class PatternPreviewWidget extends WidgetGroup {
     }
 
     private static class MBPattern {
-        @Nonnull
+        @NotNull
         final List<List<ItemStack>> parts;
-        @Nonnull
+        @NotNull
         final Map<BlockPos, TraceabilityPredicate> predicateMap;
-        @Nonnull
+        @NotNull
         final Map<BlockPos, BlockInfo> blockMap;
-        @Nonnull
+        @NotNull
         final IMultiController controllerBase;
         final int maxY, minY;
 
-        public MBPattern(@Nonnull Map<BlockPos, BlockInfo> blockMap, List<List<ItemStack>> parts, @Nonnull Map<BlockPos, TraceabilityPredicate> predicateMap, @Nonnull IMultiController controllerBase) {
+        public MBPattern(@NotNull Map<BlockPos, BlockInfo> blockMap, @NotNull List<List<ItemStack>> parts, @NotNull Map<BlockPos, TraceabilityPredicate> predicateMap, @NotNull IMultiController controllerBase) {
             this.parts = parts;
             this.blockMap = blockMap;
             this.predicateMap = predicateMap;

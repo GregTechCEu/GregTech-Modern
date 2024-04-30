@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -124,7 +123,7 @@ public class StandardVeinGenerator extends VeinGenerator {
 
     @Override
     public VeinGenerator copy() {
-        return new StandardVeinGenerator(this.blocks);
+        return new StandardVeinGenerator(this.blocks.mapBoth(ArrayList::new, Function.identity()));
     }
 
     @Override

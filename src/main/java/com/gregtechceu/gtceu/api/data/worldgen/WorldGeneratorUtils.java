@@ -82,7 +82,7 @@ public class WorldGeneratorUtils {
     }
 
     public static boolean isSameDimension(ResourceKey<Level> first, ResourceKey<Level> second) {
-        return first.location().equals(second.location());
+        return first == second;
     }
 
     public static <T> Map<ChunkPos, Map<BlockPos, T>> groupByChunks(Map<BlockPos, T> input) {

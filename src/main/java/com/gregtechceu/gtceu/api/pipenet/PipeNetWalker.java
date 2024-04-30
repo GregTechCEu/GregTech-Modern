@@ -11,7 +11,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
@@ -56,7 +56,7 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
      * @param walkedBlocks distance from source in blocks
      * @return new sub walker
      */
-    @Nonnull
+    @NotNull
     protected abstract PipeNetWalker<T, NodeDataType,  Net> createSubWalker(Net pipeNet, Direction facingToNextPos, BlockPos nextPos, int walkedBlocks);
 
     /**

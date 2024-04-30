@@ -1,18 +1,21 @@
 package com.gregtechceu.gtceu.api.recipe.ui;
 
+import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
+import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.SteamTexture;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.editor.IEditableUI;
+import com.gregtechceu.gtceu.api.gui.widget.DualProgressWidget;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
 import com.gregtechceu.gtceu.integration.rei.recipe.GTRecipeTypeDisplayCategory;
-import com.gregtechceu.gtceu.utils.OverlayingFluidStorage;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
@@ -22,15 +25,13 @@ import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.jei.IngredientIO;
 import com.lowdragmc.lowdraglib.jei.JEIPlugin;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import dev.emi.emi.api.EmiApi;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectArrayMap;
 import it.unimi.dsi.fastutil.bytes.Byte2ObjectMap;
+import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import lombok.Getter;
 import lombok.Setter;
 import me.shedaniel.rei.api.client.view.ViewSearchBuilder;
@@ -47,9 +48,11 @@ import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.TreeMap;
 import java.util.function.BiConsumer;
 import java.util.function.DoubleSupplier;
 
+@SuppressWarnings("UnusedReturnValue")
 public class GTRecipeTypeUI {
 
     @Getter
@@ -78,6 +81,8 @@ public class GTRecipeTypeUI {
 
     private CompoundTag customUICache;
     private Size jeiSize;
+    @Getter
+    private int originalWidth;
 
     /**
      * @param recipeType the recipemap corresponding to this ui
@@ -100,7 +105,7 @@ public class GTRecipeTypeUI {
                 try {
                     var resource = resourceManager.getResourceOrThrow(new ResourceLocation(recipeType.registryName.getNamespace(), "ui/recipe_type/%s.rtui".formatted(recipeType.registryName.getPath())));
                     try (InputStream inputStream = resource.open()){
-                        try (DataInputStream dataInputStream = new DataInputStream(inputStream);){
+                        try (DataInputStream dataInputStream = new DataInputStream(inputStream)) {
                             this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.UNLIMITED);
                         }
                     }
@@ -128,26 +133,40 @@ public class GTRecipeTypeUI {
         Size size = this.jeiSize;
         if(size == null) {
             var originalSize = createEditableUITemplate(false, false).createDefault().getSize();
-            this.jeiSize = size = new Size(originalSize.width, getPropertyHeightShift() + 5 + originalSize.height);
+            this.originalWidth = originalSize.width;
+            this.jeiSize = size = new Size(Math.max(originalWidth, 150), getPropertyHeightShift() + 5 + originalSize.height);
         }
         return size;
     }
 
-    public record RecipeHolder(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {};
+    public record RecipeHolder(DoubleSupplier progressSupplier,
+                               Table<IO, RecipeCapability<?>, Object> storages,
+                               CompoundTag data,
+                               List<RecipeCondition> conditions,
+                               boolean isSteam,
+                               boolean isHighPressure) {}
 
     /**
      * Auto layout UI template for recipes.
      * @param progressSupplier progress. To create a JEI / REI UI, use the para {@link ProgressWidget#JEIProgress}.
      */
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids, boolean isSteam, boolean isHighPressure) {
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier,
+                                        Table<IO, RecipeCapability<?>, Object> storages,
+                                        CompoundTag data,
+                                        List<RecipeCondition> conditions,
+                                        boolean isSteam,
+                                        boolean isHighPressure) {
         var template = createEditableUITemplate(isSteam, isHighPressure);
         var group = template.createDefault();
-        template.setupUI(group, new RecipeHolder(progressSupplier, importItems, exportItems, importFluids, exportFluids, isSteam, isHighPressure));
+        template.setupUI(group, new RecipeHolder(progressSupplier, storages, data, conditions, isSteam, isHighPressure));
         return group;
     }
 
-    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier, IItemTransfer importItems, IItemTransfer exportItems, IFluidTransfer importFluids, IFluidTransfer exportFluids) {
-        return createUITemplate(progressSupplier, importItems, exportItems, importFluids, exportFluids, false, false);
+    public WidgetGroup createUITemplate(DoubleSupplier progressSupplier,
+                                        Table<IO, RecipeCapability<?>, Object> storages,
+                                        CompoundTag data,
+                                        List<RecipeCondition> conditions) {
+        return createUITemplate(progressSupplier, storages, data, conditions, false, false);
     }
 
     /**
@@ -191,9 +210,15 @@ public class GTRecipeTypeUI {
 
             // bind progress
             List<Widget> progress = new ArrayList<>();
+            // First set the progress suppliers separately.
             WidgetUtils.widgetByIdForEach(template, "^progress$", ProgressWidget.class, progressWidget -> {
                 progressWidget.setProgressSupplier(recipeHolder.progressSupplier);
                 progress.add(progressWidget);
+            });
+            // Then set the dual-progress widgets, to override their builtin ones' suppliers, in case someone forgot to remove the id from the internal ones.
+            WidgetUtils.widgetByIdForEach(template, "^progress$", DualProgressWidget.class, dualProgressWidget -> {
+                dualProgressWidget.setProgressSupplier(recipeHolder.progressSupplier);
+                progress.add(dualProgressWidget);
             });
             // add recipe button
             if (!isJEI && (LDLib.isReiLoaded() || LDLib.isJeiLoaded() || LDLib.isEmiLoaded())) {
@@ -211,78 +236,71 @@ public class GTRecipeTypeUI {
                     }).setHoverTooltips("gtceu.recipe_type.show_recipes"));
                 }
             }
-            // bind item in
-            WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.IN)), SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < recipeHolder.importItems.getSlots()) {
-                    slot.setHandlerSlot(recipeHolder.importItems, index);
-                    slot.setIngredientIO(IngredientIO.INPUT);
-                    slot.setCanTakeItems(!isJEI);
-                    slot.setCanPutItems(!isJEI);
+
+            // Bind I/O
+            for (var capabilityEntry : recipeHolder.storages.rowMap().entrySet()) {
+                IO io = capabilityEntry.getKey();
+                for (var storagesEntry : capabilityEntry.getValue().entrySet()) {
+                    RecipeCapability<?> cap = storagesEntry.getKey();
+                    Object storage = storagesEntry.getValue();
+                    // bind overlays
+                    Class<? extends Widget> widgetClass = cap.getWidgetClass();
+                    if (widgetClass != null) {
+                        WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(cap.slotName(io)), widgetClass, widget -> {
+                            var index = WidgetUtils.widgetIdIndex(widget);
+                            cap.applyWidgetInfo(widget, index, isJEI, io, recipeHolder, recipeType, null, null, storage);
+                        });
+                    }
                 }
-            });
-            // bind item out
-            WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(ItemRecipeCapability.CAP.slotName(IO.OUT)), SlotWidget.class, slot -> {
-                var index = WidgetUtils.widgetIdIndex(slot);
-                if (index >= 0 && index < recipeHolder.exportItems.getSlots()) {
-                    slot.setHandlerSlot(recipeHolder.exportItems, index);
-                    slot.setIngredientIO(IngredientIO.OUTPUT);
-                    slot.setCanTakeItems(!isJEI);
-                    slot.setCanPutItems(false);
-                }
-            });
-            // bind fluid in
-            WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.IN)), TankWidget.class, tank -> {
-                var index = WidgetUtils.widgetIdIndex(tank);
-                if (index >= 0 && index < recipeHolder.importFluids.getTanks()) {
-                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.importFluids, index));
-                    tank.setIngredientIO(IngredientIO.INPUT);
-                    tank.setAllowClickFilled(!isJEI);
-                    tank.setAllowClickDrained(!isJEI);
-                }
-            });
-            // bind fluid out
-            WidgetUtils.widgetByIdForEach(template, "^%s_[0-9]+$".formatted(FluidRecipeCapability.CAP.slotName(IO.OUT)), TankWidget.class, tank -> {
-                var index = WidgetUtils.widgetIdIndex(tank);
-                if (index >= 0 && index < recipeHolder.exportFluids.getTanks()) {
-                    tank.setFluidTank(new OverlayingFluidStorage(recipeHolder.exportFluids, index));
-                    tank.setIngredientIO(IngredientIO.OUTPUT);
-                    tank.setAllowClickFilled(!isJEI);
-                    tank.setAllowClickDrained(false);
-                }
-            });
+            }
         });
     }
 
     protected WidgetGroup addInventorySlotGroup(boolean isOutputs, boolean isSteam, boolean isHighPressure) {
-        var itemCount = isOutputs ? recipeType.getMaxOutputs(ItemRecipeCapability.CAP) : recipeType.getMaxInputs(ItemRecipeCapability.CAP);
-        var fluidCount = isOutputs ? recipeType.getMaxOutputs(FluidRecipeCapability.CAP) : recipeType.getMaxInputs(FluidRecipeCapability.CAP);
-        var itemR = (itemCount + 2) / 3;
-        var fluidR = (fluidCount + 2) / 3;
-        var itemC = Math.min(itemCount, 3);
-        var fluidC = Math.min(fluidCount, 3);
-        WidgetGroup group = new WidgetGroup(0, 0, Math.max(itemC, fluidC) * 18 + 8, (itemR + fluidR) * 18 + 8);
-        int index = 0;
-        for (int slotIndex = 0; slotIndex < itemCount; slotIndex++) {
-            var slot = new SlotWidget();
-            slot.initTemplate();
-            slot.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
-            slot.setBackground(getOverlaysForSlot(isOutputs, false, slotIndex == itemCount - 1, isSteam, isHighPressure));
-            slot.setId(ItemRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
-            group.addWidget(slot);
-            index++;
+        int maxCount = 0;
+        int totalR = 0;
+        TreeMap<RecipeCapability<?>, Integer> map = new TreeMap<>(RecipeCapability.COMPARATOR);
+        if (isOutputs) {
+            for (var value : recipeType.maxOutputs.entrySet()) {
+                if (value.getKey().doRenderSlot) {
+                    int val = value.getValue();
+                    if (val > maxCount) {
+                        maxCount = Math.min(val, 3);
+                    }
+                    totalR += (val + 2) / 3;
+                    map.put(value.getKey(), val);
+                }
+            }
+        } else {
+            for (var value : recipeType.maxInputs.entrySet()) {
+                if (value.getKey().doRenderSlot) {
+                    int val = value.getValue();
+                    if (val > maxCount) {
+                        maxCount = Math.min(val, 3);
+                    }
+                    totalR += (val + 2) / 3;
+                    map.put(value.getKey(), val);
+                }
+            }
         }
-        // move to new row
-        index += (3 - (index % 3)) % 3;
-        for (int i = 0; i < fluidCount; i++) {
-            var tank = new TankWidget();
-            tank.initTemplate();
-            tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
-            tank.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
-            tank.setBackground(getOverlaysForSlot(isOutputs, true, i == fluidCount - 1, isSteam, isHighPressure));
-            tank.setId(FluidRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, i));
-            group.addWidget(tank);
-            index++;
+        WidgetGroup group = new WidgetGroup(0, 0, maxCount * 18 + 8, totalR * 18 + 8);
+        int index = 0;
+        for (var entry : map.entrySet()) {
+            RecipeCapability<?> cap = entry.getKey();
+            if (cap.getWidgetClass() == null) {
+                continue;
+            }
+            int capCount = entry.getValue();
+            for (int slotIndex = 0; slotIndex < capCount; slotIndex++) {
+                var slot = cap.createWidget();
+                slot.setSelfPosition(new Position((index % 3) * 18 + 4, (index / 3) * 18 + 4));
+                slot.setBackground(getOverlaysForSlot(isOutputs, cap, slotIndex == capCount - 1, isSteam, isHighPressure));
+                slot.setId(cap.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
+                group.addWidget(slot);
+                index++;
+            }
+            // move to new row
+            index += (3 - (index % 3)) % 3;
         }
         return group;
     }
@@ -290,12 +308,12 @@ public class GTRecipeTypeUI {
     /**
      * Add a slot to this ui
      */
-    protected void addSlot(WidgetGroup group, int x, int y, int slotIndex, int count, boolean isFluid, boolean isOutputs, boolean isSteam, boolean isHighPressure) {
-        if (!isFluid) {
+    protected void addSlot(WidgetGroup group, int x, int y, int slotIndex, int count, RecipeCapability<?> capability, boolean isOutputs, boolean isSteam, boolean isHighPressure) {
+        if (capability != FluidRecipeCapability.CAP) {
             var slot = new SlotWidget();
             slot.initTemplate();
             slot.setSelfPosition(new Position(x, y));
-            slot.setBackground(getOverlaysForSlot(isOutputs, false, slotIndex == count - 1, isSteam, isHighPressure));
+            slot.setBackground(getOverlaysForSlot(isOutputs, capability, slotIndex == count - 1, isSteam, isHighPressure));
             slot.setId(ItemRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
             group.addWidget(slot);
         } else {
@@ -303,7 +321,7 @@ public class GTRecipeTypeUI {
             tank.initTemplate();
             tank.setFillDirection(ProgressTexture.FillDirection.ALWAYS_FULL);
             tank.setSelfPosition(new Position(x, y));
-            tank.setBackground(getOverlaysForSlot(isOutputs, true, slotIndex == count - 1, isSteam, isHighPressure));
+            tank.setBackground(getOverlaysForSlot(isOutputs, capability, slotIndex == count - 1, isSteam, isHighPressure));
             tank.setId(FluidRecipeCapability.CAP.slotName(isOutputs ? IO.OUT : IO.IN, slotIndex));
             group.addWidget(tank);
         }
@@ -335,9 +353,9 @@ public class GTRecipeTypeUI {
     }
 
 
-    protected IGuiTexture getOverlaysForSlot(boolean isOutput, boolean isFluid, boolean isLast, boolean isSteam, boolean isHighPressure) {
-        IGuiTexture base = isFluid ? GuiTextures.FLUID_SLOT : (isSteam ? GuiTextures.SLOT_STEAM.get(isHighPressure) : GuiTextures.SLOT);
-        byte overlayKey = (byte) ((isOutput ? 2 : 0) + (isFluid ? 1 : 0) + (isLast ? 4 : 0));
+    protected IGuiTexture getOverlaysForSlot(boolean isOutput, RecipeCapability<?> capability, boolean isLast, boolean isSteam, boolean isHighPressure) {
+        IGuiTexture base = capability == FluidRecipeCapability.CAP ? GuiTextures.FLUID_SLOT : (isSteam ? GuiTextures.SLOT_STEAM.get(isHighPressure) : GuiTextures.SLOT);
+        byte overlayKey = (byte) ((isOutput ? 2 : 0) + (capability == FluidRecipeCapability.CAP ? 1 : 0) + (isLast ? 4 : 0));
         if (slotOverlays.containsKey(overlayKey)) {
             return new GuiTextureGroup(base, slotOverlays.get(overlayKey));
         }
@@ -349,7 +367,7 @@ public class GTRecipeTypeUI {
      */
     public int getPropertyHeightShift() {
         int maxPropertyCount = recipeType.getMaxTooltips() + recipeType.getDataInfos().size();
-        return maxPropertyCount * 10; // GTRecipeWrapper#LINE_HEIGHT
+        return maxPropertyCount * 10; // GTRecipeWidget#LINE_HEIGHT
     }
 
     public void appendJEIUI(GTRecipe recipe, WidgetGroup widgetGroup) {

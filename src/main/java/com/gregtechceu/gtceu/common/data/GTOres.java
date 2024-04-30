@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.*;
+import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
@@ -50,6 +51,7 @@ public class GTOres {
     private static int largestIndicatorOffset = 0;
 
     private static final Map<ResourceLocation, GTOreDefinition> toReRegister = new HashMap<>();
+    public static final Map<ResourceLocation, BedrockOreDefinition> toReRegisterBedrock = new HashMap<>();
 
     static {
         VeinGenerators.registerAddonGenerators();
@@ -886,6 +888,7 @@ public class GTOres {
 
     public static void init() {
         toReRegister.forEach(GTRegistries.ORE_VEINS::registerOrOverride);
+        toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
     }
 
     public static void updateLargestVeinSize() {

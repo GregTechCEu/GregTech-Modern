@@ -76,8 +76,8 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         group.addWidget(slotWidget = new SlotWidget(transfer, 0, 19, 0)
             .setChangeListener(this::coverItemChanged)
             .setBackgroundTexture(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.IO_CONFIG_COVER_SLOT_OVERLAY)));
-        group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BTN_TEXTURE, this::toggleConfigTab)
-            .setPredicate(() -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
+        group.addWidget(new PredicatedButtonWidget(0, 0, 18, 18, CONFIG_BTN_TEXTURE, this::toggleConfigTab,
+            () -> side != null && coverBehavior != null && machine.getCoverAtSide(side) instanceof IUICover));
 
         checkCoverBehaviour();
 

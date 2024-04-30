@@ -25,7 +25,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -46,7 +46,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
         this.cost = cost;
     }
 
-    @Nonnull
+    @NotNull
     public ProspectorMode<?> getMode(ItemStack stack) {
         if (stack == ItemStack.EMPTY) {
             return modes[0];
@@ -64,7 +64,7 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
         tag.putInt("Mode", (tag.getInt("Mode") + 1) % modes.length);
     }
 
-    public boolean drainEnergy(@Nonnull ItemStack stack, boolean simulate) {
+    public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
         return electricItem.discharge(cost, Integer.MAX_VALUE, true, false, simulate) >= cost;

@@ -1,13 +1,20 @@
 package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.*;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -215,6 +222,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
                         dropSaveMachine.saveToItem(drop.getOrCreateTag());
+                        // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
+                        break;
                     }
                 }
             }
@@ -249,6 +258,7 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public InteractionResult use(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         var machine = getMachine(world, pos);
         ItemStack itemStack = player.getItemInHand(hand);
+        boolean shouldOpenUi = true;
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
@@ -263,14 +273,22 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (result.getSecond() != InteractionResult.PASS) return result.getSecond();
         }
 
+        if (itemStack.is(GTItems.PORTABLE_SCANNER.get())) {
+            return itemStack.getItem().use(world, player, hand).getResult();
+        }
+
+        if (itemStack.getItem() instanceof IGTTool gtToolItem) {
+            shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, hand, hit));
+        }
+
         if (machine instanceof IInteractedMachine interactedMachine) {
             var result = interactedMachine.onUse(state, world, pos, player, hand, hit);
             if (result != InteractionResult.PASS) return result;
         }
-        if (machine instanceof IUIMachine uiMachine) {
+        if (shouldOpenUi && machine instanceof IUIMachine uiMachine) {
             return uiMachine.tryToOpenUI(player, hand, hit);
         }
-        return InteractionResult.PASS;
+        return shouldOpenUi ? InteractionResult.PASS : InteractionResult.CONSUME;
     }
 
 

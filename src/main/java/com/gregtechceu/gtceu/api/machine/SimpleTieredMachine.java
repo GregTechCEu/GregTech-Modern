@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.gui.editor.EditableUI;
@@ -38,6 +39,7 @@ import lombok.Setter;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.TickTask;
@@ -51,8 +53,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiFunction;
 
 /**
@@ -285,9 +286,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     //////////////////////////////////////
     @Override
     protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
-        if (!playerIn.isCrouching() && !isRemote()) {
-            var tool = playerIn.getItemInHand(hand);
-            if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
+        if (!playerIn.isShiftKeyDown() && !isRemote()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
 
             // important not to use getters here, which have different logic
@@ -352,6 +351,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         configuratorPanel.attachConfigurators(new CircuitFancyConfigurator(circuitInventory.storage));
     }
 
+    @SuppressWarnings("UnstableApiUsage")
     public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
         WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
         SlotWidget batterySlot = createBatterySlot().createDefault();
@@ -371,13 +371,20 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
         return group;
     }, (template, machine) -> {
         if (machine instanceof SimpleTieredMachine tieredMachine) {
+            var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
+            storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
+            storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
+            storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
+            storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
+            storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
+            storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
+
             tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
                     new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
-                            tieredMachine.importItems.storage,
-                            tieredMachine.exportItems.storage,
-                            tieredMachine.importFluids,
-                            tieredMachine.exportFluids,
-                            false, false));
+                        storages,
+                        new CompoundTag(),
+                        Collections.emptyList(),
+                        false, false));
             createBatterySlot().setupUI(template, tieredMachine);
 //            createCircuitConfigurator().setupUI(template, tieredMachine);
         }
@@ -426,7 +433,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
         if (toolTypes.contains(GTToolType.WRENCH)) {
-            if (!player.isCrouching()) {
+            if (!player.isShiftKeyDown()) {
                 if (!hasFrontFacing() || side != getFrontFacing()) {
                     return GuiTextures.TOOL_IO_FACING_ROTATION;
                 }

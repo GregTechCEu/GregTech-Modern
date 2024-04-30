@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -16,6 +18,10 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import net.minecraft.core.Direction;
+import net.minecraftforge.fluids.capability.IFluidHandler;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankMachine extends QuantumTankMachine {
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class, QuantumTankMachine.MANAGED_FIELD_HOLDER);
@@ -25,14 +31,25 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Persisted @DropSaved
     private int ticksPerCycle = 1;
 
+    private final InfiniteFluidTransferProxy capabilityTransferProxy;
+
     public CreativeTankMachine(IMachineBlockEntity holder) {
         super(holder, GTValues.MAX, -1);
+
+        capabilityTransferProxy = new InfiniteFluidTransferProxy(cache, true, true);
     }
 
+    @Nullable
+    @Override
+    public IFluidTransfer getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability) {
+        if (side == null || (useCoverCapability && coverContainer.hasCover(side)))
+            return super.getFluidTransferCap(side, useCoverCapability);
 
+        return capabilityTransferProxy;
+    }
 
     protected NotifiableFluidTank createCacheFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, 1, 1000, IO.BOTH);
+        return new NotifiableFluidTank(this, 1, 1000, IO.BOTH, IO.NONE);
     }
 
 
@@ -60,7 +77,7 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public WidgetGroup createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomFluidWidget(this.cache.storages[0], 36, 6, 18, 18).setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
+        group.addWidget(new PhantomFluidWidget(this.cache.getStorages()[0], 36, 6, 18, 18).setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
         group.addWidget(new ImageWidget(7, 45, 154, 14, GuiTextures.DISPLAY));
         group.addWidget(new TextFieldWidget(9, 47, 152, 10, () -> String.valueOf(mBPerCycle), value -> {
@@ -88,12 +105,12 @@ public class CreativeTankMachine extends QuantumTankMachine {
     }
 
     public void updateFluidTick() {
-        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 || cache.storages[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
+        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 || cache.getStorages()[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
             return;
 
         IFluidTransfer transfer = FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
         if (transfer != null) {
-            FluidStack stack = cache.storages[0].getFluid().copy();
+            FluidStack stack = cache.getStorages()[0].getFluid().copy();
             stack.setAmount(mBPerCycle);
             long canInsertAmount = transfer.fill(stack, true);
             stack.setAmount(Math.min(mBPerCycle, canInsertAmount));

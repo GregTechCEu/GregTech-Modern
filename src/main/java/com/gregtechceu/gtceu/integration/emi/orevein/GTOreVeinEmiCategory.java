@@ -4,14 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.lowdragmc.lowdraglib.emi.ModularUIEmiRecipeCategory;
 import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
 
-public class GTOreVeinEmiCategory extends ModularUIEmiRecipeCategory {
+public class GTOreVeinEmiCategory extends EmiRecipeCategory {
     public static final GTOreVeinEmiCategory CATEGORY = new GTOreVeinEmiCategory();
 
     public GTOreVeinEmiCategory() {
