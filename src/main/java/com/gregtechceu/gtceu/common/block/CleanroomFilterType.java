@@ -9,7 +9,8 @@ import org.jetbrains.annotations.NotNull;
 public enum CleanroomFilterType implements IFilterType {
 
     FILTER_CASING("filter_casing", CleanroomType.CLEANROOM),
-    FILTER_CASING_STERILE("sterilizing_filter_casing", CleanroomType.STERILE_CLEANROOM);
+    FILTER_CASING_STERILE("sterilizing_filter_casing", CleanroomType.STERILE_CLEANROOM),
+    FILTER_CASING_LAW("law_filter_casing",CleanroomType.LAW_CLEANROOM);
 
     private final String name;
     @Getter

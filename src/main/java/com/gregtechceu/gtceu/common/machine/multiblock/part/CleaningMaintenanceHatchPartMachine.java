@@ -20,16 +20,20 @@ import java.util.Set;
 public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPartMachine {
     protected static final Set<CleanroomType> CLEANROOM = new ObjectOpenHashSet<>();
     protected static final Set<CleanroomType> STERILE_CLEANROOM = new ObjectOpenHashSet<>();
+    protected static final Set<CleanroomType> LAW_CLEANROOM = new ObjectOpenHashSet<>();
 
     static {
         CLEANROOM.add(CleanroomType.CLEANROOM);
-        STERILE_CLEANROOM.add(CleanroomType.CLEANROOM);
+        STERILE_CLEANROOM.addAll(CLEANROOM);
         STERILE_CLEANROOM.add(CleanroomType.STERILE_CLEANROOM);
+        LAW_CLEANROOM.addAll(STERILE_CLEANROOM);
+        LAW_CLEANROOM.add(CleanroomType.LAW_CLEANROOM);
     }
 
     // must come after the static block
-    private static final ICleanroomProvider DUMMY_CLEANROOM = DummyCleanroom.createForTypes(CLEANROOM);
-    private static final ICleanroomProvider STERILE_DUMMY_CLEANROOM = DummyCleanroom.createForTypes(STERILE_CLEANROOM);
+    public static final ICleanroomProvider DUMMY_CLEANROOM = DummyCleanroom.createForTypes(CLEANROOM);
+    public static final ICleanroomProvider STERILE_DUMMY_CLEANROOM = DummyCleanroom.createForTypes(STERILE_CLEANROOM);
+    public static final ICleanroomProvider LAW_DUMMY_CLEANROOM = DummyCleanroom.createForTypes(STERILE_CLEANROOM);
 
     ICleanroomProvider cleanroomTypes;
     public CleaningMaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId,ICleanroomProvider cleanroomTypes) {
@@ -62,7 +66,10 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
 
     @Override
     public int getTier() {
-        return GTValues.UV;
+        if(this.cleanroomTypes==DUMMY_CLEANROOM) return GTValues.UV;
+        if(this.cleanroomTypes==STERILE_DUMMY_CLEANROOM)return GTValues.UHV;
+        if(this.cleanroomTypes==LAW_DUMMY_CLEANROOM)return GTValues.OpV;
+        return GTValues.MAX;
     }
 
     /**
@@ -79,11 +86,8 @@ public class CleaningMaintenanceHatchPartMachine extends AutoMaintenanceHatchPar
      * @return the {@link CleanroomType}s this hatch provides to multiblocks
      */
     @SuppressWarnings("unused")
-    public static ImmutableSet<CleanroomType> getCleanroomTypes() {
-        return ImmutableSet.copyOf(CLEANROOM);
-    }
-    public static ImmutableSet<CleanroomType> getCleanroomTypesSTERILE() {
-        return ImmutableSet.copyOf(STERILE_CLEANROOM);
+    public static ImmutableSet<CleanroomType> getCleanroomTypes(ICleanroomProvider p) {
+        return ImmutableSet.copyOf(p.getTypes());
     }
 
 }

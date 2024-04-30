@@ -14,7 +14,7 @@ public class CleanroomType {
 
     public static final CleanroomType CLEANROOM = new CleanroomType("cleanroom", "gtceu.recipe.cleanroom.display_name");
     public static final CleanroomType STERILE_CLEANROOM = new CleanroomType("sterile_cleanroom", "gtceu.recipe.cleanroom_sterile.display_name");
-
+    public static final CleanroomType LAW_CLEANROOM = new CleanroomType("law_cleanroom", "gtceu.recipe.cleanroom_law.display_name");
 
     private final String name;
     private final String translationKey;

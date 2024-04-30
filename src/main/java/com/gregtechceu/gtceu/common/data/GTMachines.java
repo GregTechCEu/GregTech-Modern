@@ -816,7 +816,7 @@ public class GTMachines {
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
                     Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
             .tooltipBuilder((stack, tooltips) -> {
-                for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes()) {
+                for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes(CleaningMaintenanceHatchPartMachine.DUMMY_CLEANROOM)) {
                     tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN, Component.translatable(type.getTranslationKey()).getString())));
                 }
             })
@@ -831,11 +831,26 @@ public class GTMachines {
             Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
             Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
         .tooltipBuilder((stack, tooltips) -> {
-            for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypesSTERILE()) {
+            for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes(CleaningMaintenanceHatchPartMachine.STERILE_DUMMY_CLEANROOM)) {
                 tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN, Component.translatable(type.getTranslationKey()).getString())));
             }
         })
         .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.sterile_cleaning")))
+        .compassNodeSelf()
+        .register();
+
+    public static final MachineDefinition LAW_CLEANING_MAINTENANCE_HATCH = REGISTRATE.machine("law_cleaning_maintenance_hatch", CleaningMaintenanceHatchPartMachine::SterileCleaning)
+        .rotationState(RotationState.ALL)
+        .abilities(PartAbility.MAINTENANCE)
+        .tooltips(Component.translatable("gtceu.universal.disabled"),
+            Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.0"),
+            Component.translatable("gtceu.machine.maintenance_hatch_cleanroom_auto.tooltip.1"))
+        .tooltipBuilder((stack, tooltips) -> {
+            for (CleanroomType type : CleaningMaintenanceHatchPartMachine.getCleanroomTypes(CleaningMaintenanceHatchPartMachine.LAW_DUMMY_CLEANROOM)) {
+                tooltips.add(Component.literal(String.format("  %s%s", ChatFormatting.GREEN, Component.translatable(type.getTranslationKey()).getString())));
+            }
+        })
+        .renderer(() -> new MaintenanceHatchPartRenderer(3, GTCEu.id("block/machine/part/maintenance.law_cleaning")))
         .compassNodeSelf()
         .register();
 
