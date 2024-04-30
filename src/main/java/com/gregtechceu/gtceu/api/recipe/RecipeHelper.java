@@ -54,7 +54,7 @@ public class RecipeHelper {
      * @return a new recipe
      */
     public static GTRecipe applyOverclock(OverclockingLogic logic, @NotNull GTRecipe recipe, long maxOverclockVoltage) {
-        long EUt = getInputEUt(recipe);
+         long EUt = getInputEUt(recipe);
         if (EUt > 0) {
             var overclockResult = performOverclocking(logic, recipe, EUt, maxOverclockVoltage);
             if (overclockResult.leftLong() != EUt || recipe.duration != overclockResult.rightInt()) {

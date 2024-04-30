@@ -34,6 +34,7 @@ public class OverclockingLogic {
     public static final double STANDARD_OVERCLOCK_DURATION_DIVISOR = ConfigHolder.INSTANCE.machines.overclockDivisor;
     public static final double PERFECT_OVERCLOCK_DURATION_DIVISOR = 4.0;
 
+    public static final OverclockingLogic SUPER_OVERCLOCK=new OverclockingLogic(2,2,64);
     public static final OverclockingLogic PERFECT_OVERCLOCK = new OverclockingLogic(PERFECT_OVERCLOCK_DURATION_DIVISOR, STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
     public static final OverclockingLogic NON_PERFECT_OVERCLOCK = new OverclockingLogic(STANDARD_OVERCLOCK_DURATION_DIVISOR, STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER);
 
@@ -52,6 +53,16 @@ public class OverclockingLogic {
                 amountOC,
                 durationDivisor,
                 voltageMultiplier
+        );
+    }
+    public OverclockingLogic(double durationDivisor, double voltageMultiplier,int maxOverclocking) {
+        this.logic = (recipe, recipeEUt, maxVoltage, duration, amountOC) -> standardOverclockingLogic(
+            Math.abs(recipeEUt),
+            maxVoltage,
+            duration,
+            maxOverclocking,
+            durationDivisor,
+            voltageMultiplier
         );
     }
 
