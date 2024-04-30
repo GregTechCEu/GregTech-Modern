@@ -1253,6 +1253,12 @@ public class LangHandler {
         provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
 
         provider.add("gtceu.machine.parallel_hatch.display", "Adjust the maximum parallel of the multiblock");
+
+        // Decor Stuff
+        replace(provider,"block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");
+        replace(provider,"block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
+        replace(provider,"block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
+        replace(provider,"block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
     }
 
     /**
