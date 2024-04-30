@@ -3,6 +3,7 @@
 Version: 1.2.1
 
 ### ADDITIONS:
+- Ported decorative blocks from 1.12
 - Added filtering to Output Hatches
 - Added several utility functions to KJS
 - Added more ore generator types (Classic & Cuboid)
