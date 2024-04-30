@@ -96,6 +96,9 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
         }
 
         if (isSuspend()) {
+            if(machine.self().getOffsetTimer()%100==0){
+                adjustCleanAmount(true);
+            }
             // machine isn't working enabled
             if (subscription != null) {
                 subscription.unsubscribe();

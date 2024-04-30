@@ -105,7 +105,6 @@ public class GTRecipeModifiers {
 
     private static Tuple<GTRecipe, Integer> tryParallel(IRecipeCapabilityHolder holder, GTRecipe original, int min, int max, boolean modifyDuration) {
         if (min > max) return null;
-
         int mid = (min + max) / 2;
         GTRecipe copied = original.copy(ContentModifier.multiplier(mid), modifyDuration);
         if (!copied.matchRecipe(holder).isSuccess() || !copied.matchTickRecipe(holder).isSuccess() ||
