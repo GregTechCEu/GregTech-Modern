@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "gtceu:block/red_granite_bricks"
+    "all": "gtceu:block/stones/red_granite/bricks"
   }
 }

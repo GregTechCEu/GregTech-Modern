@@ -1312,7 +1312,7 @@ public class GTBlocks {
                     .item()
                     .build();
                 if (type == StoneBlockType.STONE && strata.isNatural()) {
-                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD)
+                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD, BlockTags.DRIPSTONE_REPLACEABLE, BlockTags.MOSS_REPLACEABLE)
                         .blockstate(GTModels.randomRotatedModel(GTCEu.id(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id)));
                 } else {
                     entry.blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(ctx.getName(), prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_all"), "all", prov.modLoc(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))));
