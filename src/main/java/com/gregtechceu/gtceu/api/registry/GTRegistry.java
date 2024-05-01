@@ -4,14 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import lombok.Getter;
-import net.minecraft.core.Holder;
-import net.minecraft.core.IdMap;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.VarInt;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModContainer;
@@ -67,7 +64,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
             throw new IllegalStateException("Registry is already frozen!");
         }
 
-        if (!checkActiveModContainerIsGregtech()) {
+        if (!checkActiveModContainerIsRegisteringMod()) {
             return;
         }
 
@@ -79,7 +76,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
             throw new IllegalStateException("Registry is already unfrozen!");
         }
 
-        if (!checkActiveModContainerIsGregtech()) {
+        if (!checkActiveModContainerIsRegisteringMod()) {
             return;
         }
 
@@ -87,10 +84,9 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
-    private static boolean checkActiveModContainerIsGregtech() {
+    private boolean checkActiveModContainerIsRegisteringMod() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && container.getModId().equals(GTCEu.MOD_ID) ||
-                container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
+        return container != null && container.getModId().equals(this.registryName.getNamespace()) || container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
     }
 
     public <T extends V> T register(K key, T value) {
@@ -113,14 +109,16 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         if (!containKey(key)) {
             GTCEu.LOGGER.warn("[replace] couldn't find key %s in registry %s".formatted(registryName, key));
         }
-        return registry.put(key, value);
+        registry.put(key, value);
+        return value;
     }
 
     public V registerOrOverride(K key, V value) {
         if (frozen) {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
-        return registry.put(key, value);
+        registry.put(key, value);
+        return value;
     }
 
     @NotNull
