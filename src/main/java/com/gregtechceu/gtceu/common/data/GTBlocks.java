@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.HangingSignItem;
 import net.minecraft.world.item.SignItem;
 import net.minecraft.world.level.block.state.properties.BlockSetType;
@@ -77,6 +79,7 @@ import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCon
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.client.model.generators.ModelProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.HashMap;
@@ -89,6 +92,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
+import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
  * @author KilaBash
@@ -965,21 +969,22 @@ public class GTBlocks {
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_LOG = REGISTRATE.block("stripped_rubber_log", RotatedPillarBlock::new)
         .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
         .lang("Stripped Rubber Log")
-        .tag(BlockTags.LOGS, CustomTags.RUBBER_LOGS_BLOCK)
         .blockstate((ctx, provider) -> provider.logBlock(ctx.get()))
-        .item()
-        .tag(ItemTags.LOGS, CustomTags.RUBBER_LOGS_ITEM)
-        .build()
+        .simpleItem()
+        .register();
+    public static final BlockEntry<RotatedPillarBlock> RUBBER_WOOD = REGISTRATE.block("rubber_wood", RotatedPillarBlock::new)
+        .initialProperties(() -> Blocks.SPRUCE_WOOD)
+        .lang("Rubber Wood")
+        .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(GTBlocks.RUBBER_LOG.get()), provider.blockTexture(GTBlocks.RUBBER_LOG.get())))
+        .simpleItem()
         .register();
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_WOOD = REGISTRATE.block("stripped_rubber_wood", RotatedPillarBlock::new)
         .initialProperties(() -> Blocks.STRIPPED_SPRUCE_WOOD)
         .lang("Stripped Rubber Wood")
-        .tag(BlockTags.LOGS, CustomTags.RUBBER_LOGS_BLOCK)
         .blockstate((ctx, provider) -> provider.axisBlock(ctx.get(), provider.blockTexture(ctx.get()), provider.blockTexture(ctx.get())))
-        .item()
-        .tag(ItemTags.LOGS, CustomTags.RUBBER_LOGS_ITEM)
-        .build()
+        .simpleItem()
         .register();
+
     public static final BlockEntry<Block> RUBBER_PLANK = REGISTRATE
         .block("rubber_planks", Block::new)
         .initialProperties(() -> Blocks.SPRUCE_PLANKS)
@@ -990,6 +995,7 @@ public class GTBlocks {
         .onRegister(compassNode(GTCompassSections.GENERATIONS))
         .build()
         .register();
+
     public static final BlockEntry<SlabBlock> RUBBER_SLAB = REGISTRATE
         .block("rubber_slab", SlabBlock::new)
         .initialProperties(() -> Blocks.SPRUCE_SLAB)
@@ -1250,468 +1256,77 @@ public class GTBlocks {
         .register();
 
     // Decoration Stuff
-    public static final BlockEntry<Block> RADIOACTIVE_HAZARD_SIGN_BLOCK = createCasingBlock("radioactive_hazard_sign_block", GTCEu.id("block/casings/hazard/radioactive_hazard_sign_block"));
-    public static final BlockEntry<Block> BIO_HAZARD_SIGN_BLOCK = createCasingBlock("bio_hazard_sign_block", GTCEu.id("block/casings/hazard/bio_hazard_sign_block"));
-    public static final BlockEntry<Block> EXPLOSION_HAZARD_SIGN_BLOCK = createCasingBlock("explosion_hazard_sign_block", GTCEu.id("block/casings/hazard/explosion_hazard_sign_block"));
-    public static final BlockEntry<Block> ACID_HAZARD_SIGN_BLOCK= createCasingBlock("acid_hazard_sign_block", GTCEu.id("block/casings/hazard/acid_hazard_sign_block"));
-    public static final BlockEntry<Block> MAGIC_HAZARD_SIGN_BLOCK = createCasingBlock("magic_hazard_sign_block", GTCEu.id("block/casings/hazard/magic_hazard_sign_block"));
-    public static final BlockEntry<Block> FROST_HAZARD_SIGN_BLOCK= createCasingBlock("frost_hazard_sign_block", GTCEu.id("block/casings/hazard/frost_hazard_sign_block"));
-    public static final BlockEntry<Block> NOISE_HAZARD_SIGN_BLOCK = createCasingBlock("noise_hazard_sign_block", GTCEu.id("block/casings/hazard/noise_hazard_sign_block"));
-    public static final BlockEntry<Block> GENERIC_HAZARD_SIGN_BLOCK  = createCasingBlock("generic_hazard_sign_block", GTCEu.id("block/casings/hazard/generic_hazard_sign_block"));
-    public static final BlockEntry<Block> HIGH_VOLTAGE_HAZARD_SIGN_BLOCK = createCasingBlock("high_voltage_hazard_sign_block", GTCEu.id("block/casings/hazard/high_voltage_hazard_sign_block"));
-    public static final BlockEntry<Block> MAGNETIC_HAZARD_SIGN_BLOCK = createCasingBlock("magnetic_hazard_sign_block", GTCEu.id("block/casings/hazard/magnetic_hazard_sign_block"));
-    public static final BlockEntry<Block> ANTIMATTER_HAZARD_SIGN_BLOCK= createCasingBlock("antimatter_hazard_sign_block", GTCEu.id("block/casings/hazard/antimatter_hazard_sign_block"));
-    public static final BlockEntry<Block> HIGH_TEMPERATURE_HAZARD_SIGN_BLOCK = createCasingBlock("high_temperature_hazard_sign_block", GTCEu.id("block/casings/hazard/high_temperature_hazard_sign_block"));
-    public static final BlockEntry<Block> VOID_HAZARD_SIGN_BLOCK = createCasingBlock("void_hazard_sign_block", GTCEu.id("block/casings/hazard/void_hazard_sign_block"));
-    public static final BlockEntry<Block> MOB_SPAWNER_HAZARD_SIGN_BLOCK = createCasingBlock("mob_spawner_hazard_sign_block", GTCEu.id("block/casings/hazard/mob_spawner_hazard_sign_block"));
-    public static final BlockEntry<Block> SPATIAL_STORAGE_HAZARD_SIGN_BLOCK = createCasingBlock("spatial_storage_hazard_sign_block", GTCEu.id("block/casings/hazard/spatial_storage_hazard_sign_block"));
-    public static final BlockEntry<Block> LASER_HAZARD_SIGN_BLOCK = createCasingBlock("laser_hazard_sign_block", GTCEu.id("block/casings/hazard/laser_hazard_sign_block"));
-    public static final BlockEntry<Block> MOB_INFESTATION_HAZARD_SIGN_BLOCK = createCasingBlock("mob_infestation_hazard_sign_block", GTCEu.id("block/casings/hazard/mob_infestation_hazard_sign_block"));
-    public static final BlockEntry<Block> BOSS_HAZARD_SIGN_BLOCK = createCasingBlock("boss_hazard_sign_block", GTCEu.id("block/casings/hazard/boss_hazard_sign_block"));
-    public static final BlockEntry<Block> GREGIFICATION_HAZARD_SIGN_BLOCK = createCasingBlock("gregification_hazard_sign_block", GTCEu.id("block/casings/hazard/gregification_hazard_sign_block"));
-    public static final BlockEntry<Block> NON_STANDARD_CASUALITY_HAZARD_SIGN_BLOCK = createCasingBlock("non_standard_casuality_hazard_sign_block", GTCEu.id("block/casings/hazard/non_standard_casuality_hazard_sign_block"));
-    public static final BlockEntry<Block> HIGH_PRESSURE_HAZARD_SIGN_BLOCK = createCasingBlock("boss_hazard_sign_block", GTCEu.id("block/casings/hazard/high_pressure_hazard_sign_block"));
-    public static final BlockEntry<Block> YELLOW_STRIPES_BLOCK_A = createCasingBlock("yellow_stripes_block.a", GTCEu.id("block/casings/hazard/yellow_stripes_block.a"));
-    public static final BlockEntry<Block> YELLOW_STRIPES_B = createCasingBlock("yellow_stripes_block.b", GTCEu.id("block/casings/hazard/yellow_stripes_block.b"));
-    public static final BlockEntry<Block> YELLOW_STRIPES_BLOCK_C = createCasingBlock("yellow_stripes_block.c", GTCEu.id("block/casings/hazard/yellow_stripes_block.c"));
-    public static final BlockEntry<Block> YELLOW_STRIPES_BLOCK_D = createCasingBlock("yellow_stripes_block.d", GTCEu.id("block/casings/hazard/yellow_stripes_block.d"));
+    public static final BlockEntry<Block> ACID_HAZARD_SIGN_BLOCK = createCasingBlock("acid_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_acidhazard"));
+    public static final BlockEntry<Block> ANTIMATTER_HAZARD_SIGN_BLOCK = createCasingBlock("antimatter_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_antimatterhazard"));
+    public static final BlockEntry<Block> BIO_HAZARD_SIGN_BLOCK = createCasingBlock("bio_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_biohazard"));
+    public static final BlockEntry<Block> BOSS_HAZARD_SIGN_BLOCK = createCasingBlock("boss_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_bosshazard"));
+    public static final BlockEntry<Block> CAUSALITY_HAZARD_SIGN_BLOCK = createCasingBlock("causality_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_causalityhazard"));
+    public static final BlockEntry<Block> EXPLOSION_HAZARD_SIGN_BLOCK = createCasingBlock("explosion_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_explosionhazard"));
+    public static final BlockEntry<Block> FIRE_HAZARD_SIGN_BLOCK = createCasingBlock("fire_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_firehazard"));
+    public static final BlockEntry<Block> FROST_HAZARD_SIGN_BLOCK = createCasingBlock("frost_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_frosthazard"));
+    public static final BlockEntry<Block> GENERIC_HAZARD_SIGN_BLOCK = createCasingBlock("generic_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_generichazard"));
+    public static final BlockEntry<Block> GREGIFICATION_HAZARD_SIGN_BLOCK = createCasingBlock("gregification_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_gregificationhazard"));
+    public static final BlockEntry<Block> HIGH_PRESSURE_HAZARD_SIGN_BLOCK = createCasingBlock("high_pressure_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_highpressurehazard"));
+    public static final BlockEntry<Block> HIGH_VOLTAGE_HAZARD_SIGN_BLOCK = createCasingBlock("high_voltage_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_highvoltagehazard"));
+    public static final BlockEntry<Block> HIGH_TEMPERATURE_HAZARD_SIGN_BLOCK = createCasingBlock("high_temperature_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_hightemperaturehazard"));
+    public static final BlockEntry<Block> LASER_HAZARD_SIGN_BLOCK = createCasingBlock("laser_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_laserhazard"));
+    public static final BlockEntry<Block> MAGIC_HAZARD_SIGN_BLOCK = createCasingBlock("magic_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_magichazard"));
+    public static final BlockEntry<Block> MAGNETIC_HAZARD_SIGN_BLOCK = createCasingBlock("magnetic_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_magneticfieldhazard"));
+    public static final BlockEntry<Block> MOB_INFESTATION_HAZARD_SIGN_BLOCK = createCasingBlock("mob_infestation_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_mobhazard"));
+    public static final BlockEntry<Block> MOB_SPAWNER_HAZARD_SIGN_BLOCK = createCasingBlock("mob_spawner_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_mobspawnhazard"));
+    public static final BlockEntry<Block> NOISE_HAZARD_SIGN_BLOCK = createCasingBlock("noise_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_noisehazard"));
+    public static final BlockEntry<Block> RADIOACTIVE_HAZARD_SIGN_BLOCK = createCasingBlock("radioactive_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_radioactivehazard"));
+    public static final BlockEntry<Block> SPATIAL_STORAGE_HAZARD_SIGN_BLOCK = createCasingBlock("spatial_storage_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_spatialhazard"));
+    public static final BlockEntry<Block> TURRET_HAZARD_SIGN_BLOCK = createCasingBlock("turret_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_turrethazard"));
+    public static final BlockEntry<Block> VOID_HAZARD_SIGN_BLOCK = createCasingBlock("void_hazard_sign_block", GTCEu.id("block/casings/signs/machine_casing_voidhazard"));
+    public static final BlockEntry<Block> YELLOW_STRIPES_BLOCK_A = createCasingBlock("yellow_stripes_block_a", GTCEu.id("block/casings/signs/machine_casing_stripes_a"));
+    public static final BlockEntry<Block> YELLOW_STRIPES_BLOCK_B = createCasingBlock("yellow_stripes_block_b", GTCEu.id("block/casings/signs/machine_casing_stripes_b"));
 
-    public static final BlockEntry<Block> COBBLED_RED_GRANITE = REGISTRATE
-        .block("red_granite_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.COBBLESTONE)
-        .lang("Cobbled Red Granite")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_TOOL_MATERIALS)
-        .build()
-        .register();
-    public static final BlockEntry<Block> RED_GRANITE = REGISTRATE
-        .block("red_granite", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Red Granite")
-        .tag(BlockTags.DRIPSTONE_REPLACEABLE)
-        .loot((table, block) -> table.dropOther(block, COBBLED_RED_GRANITE.asItem()))
-        .item()
-        .build()
-        .register();
+    public static Table<StoneBlockType, StoneTypes, BlockEntry<Block>> STONE_BLOCKS;
 
-    public static final BlockEntry<Block> MOSSY_COBBLED_RED_GRANITE = REGISTRATE
-        .block("mossy_red_granite_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_COBBLESTONE)
-        .lang("Mossy Cobbled Red Granite")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
+    public static BlockEntry<Block> RED_GRANITE;
+    public static BlockEntry<Block> MARBLE;
+    public static BlockEntry<Block> LIGHT_CONCRETE;
+    public static BlockEntry<Block> DARK_CONCRETE;
 
-    public static final BlockEntry<Block> SMOOTH_RED_GRANITE = REGISTRATE
-        .block("smooth_red_granite", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Smooth Red Granite")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
+    public static void generateStoneBlocks() {
+        // Stone type blocks
+        ImmutableTable.Builder<StoneBlockType, StoneTypes, BlockEntry<Block>> builder = ImmutableTable.builder();
+        for (StoneTypes strata : StoneTypes.values()) {
+            if (!strata.generateBlocks) continue;
+            for (StoneBlockType type : StoneBlockType.values()) {
+                String blockId = type.blockId.formatted(strata.getSerializedName());
+                if (BuiltInRegistries.BLOCK.containsKey(new ResourceLocation(blockId))) continue;
+                var entry = REGISTRATE.block(blockId, Block::new)
+                    .initialProperties(() -> Blocks.STONE)
+                    .properties(p -> p.strength(type.hardness, type.resistance).mapColor(strata.mapColor))
+                    .transform(type == StoneBlockType.STONE ? GTBlocks.unificationBlock(strata.getTagPrefix(), strata.getMaterial()) : builder2 -> builder2)
+                    .tag(BlockTags.MINEABLE_WITH_PICKAXE, CustomTags.NEEDS_WOOD_TOOL)
+                    .loot((tables, block) -> {
+                        if (type == StoneBlockType.STONE) {
+                            tables.add(block, tables.createSingleItemTableWithSilkTouch(block, STONE_BLOCKS.get(StoneBlockType.COBBLE, strata).get()));
+                        } else {
+                            tables.add(block, tables.createSingleItemTable(block));
+                        }
+                    })
+                    .item()
+                    .build();
+                if (type == StoneBlockType.STONE && strata.isNatural()) {
+                    entry.tag(BlockTags.STONE_ORE_REPLACEABLES, BlockTags.BASE_STONE_OVERWORLD)
+                        .blockstate(GTModels.randomRotatedModel(GTCEu.id(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id)));
+                } else {
+                    entry.blockstate((ctx, prov) -> prov.simpleBlock(ctx.getEntry(), prov.models().singleTexture(ctx.getName(), prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_all"), "all", prov.modLoc(ModelProvider.BLOCK_FOLDER + "/stones/" + strata.getSerializedName() + "/" + type.id))));
+                }
+                builder.put(type, strata, entry.register());
+            }
+        }
+        STONE_BLOCKS = builder.build();
 
-    public static final BlockEntry<Block> RED_GRANITE_BRICKS = REGISTRATE
-        .block("red_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.STONE_BRICKS)
-        .lang("Red Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CRACKED_RED_GRANITE_BRICKS = REGISTRATE
-        .block("cracked_red_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.CRACKED_STONE_BRICKS)
-        .lang("Cracked Red Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CHISELED_RED_GRANITE_BRICKS = REGISTRATE
-        .block("chiseled_red_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.CHISELED_STONE_BRICKS)
-        .lang("Chiseled Red Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> COBBLED_BLACK_GRANITE = REGISTRATE
-        .block("black_granite_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.COBBLESTONE)
-        .lang("Cobbled Black Granite")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_TOOL_MATERIALS)
-        .build()
-        .register();
-    public static final BlockEntry<Block> BLACK_GRANITE = REGISTRATE
-        .block("black_granite", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Black Granite")
-        .tag(BlockTags.DRIPSTONE_REPLACEABLE)
-        .loot((table, block) -> table.dropOther(block, COBBLED_BLACK_GRANITE.asItem()))
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_COBBLED_BLACK_GRANITE = REGISTRATE
-        .block("mossy_black_granite_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_COBBLESTONE)
-        .lang("Mossy Cobbled Black Granite")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> SMOOTH_BLACK_GRANITE = REGISTRATE
-        .block("smooth_black_granite", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Smooth Black Granite")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> BLACK_GRANITE_BRICKS = REGISTRATE
-        .block("black_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.STONE_BRICKS)
-        .lang("Black Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CRACKED_BLACK_GRANITE_BRICKS = REGISTRATE
-        .block("cracked_black_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.CRACKED_STONE_BRICKS)
-        .lang("Cracked Black Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_BLACK_GRANITE_BRICKS = REGISTRATE
-        .block("mossy_black_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_STONE_BRICKS)
-        .lang("Mossy Black Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CHISELED_BLACK_GRANITE_BRICKS = REGISTRATE
-        .block("chiseled_black_granite_bricks", Block::new)
-        .initialProperties(() -> Blocks.CHISELED_STONE_BRICKS)
-        .lang("Chiseled Black Granite Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> COBBLED_BASALT = REGISTRATE
-        .block("basalt_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.COBBLESTONE)
-        .lang("Cobbled Basalt")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_TOOL_MATERIALS)
-        .build()
-        .register();
-    public static final BlockEntry<Block> BASALT = REGISTRATE
-        .block("basalt", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Basalt")
-        .tag(BlockTags.DRIPSTONE_REPLACEABLE)
-        .loot((table, block) -> table.dropOther(block, COBBLED_BASALT.asItem()))
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_COBBLED_BASALT = REGISTRATE
-        .block("mossy_basalt_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_COBBLESTONE)
-        .lang("Mossy Cobbled Basalt")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> SMOOTH_BASALT = REGISTRATE
-        .block("smooth_basalt", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Smooth Basalt")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> BASALT_BRICKS = REGISTRATE
-        .block("basalt_bricks", Block::new)
-        .initialProperties(() -> Blocks.STONE_BRICKS)
-        .lang("Basalt Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CRACKED_BASALT_BRICKS = REGISTRATE
-        .block("cracked_basalt_bricks", Block::new)
-        .initialProperties(() -> Blocks.CRACKED_STONE_BRICKS)
-        .lang("Cracked Basalt Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CHISELED_BASALT_BRICKS = REGISTRATE
-        .block("chiseled_basalt_bricks", Block::new)
-        .initialProperties(() -> Blocks.CHISELED_STONE_BRICKS)
-        .lang("Chiseled Basalt Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> COBBLED_MARBLE = REGISTRATE
-        .block("marble_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.COBBLESTONE)
-        .lang("Marble Basalt")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_TOOL_MATERIALS)
-        .build()
-        .register();
-    public static final BlockEntry<Block> MARBLE = REGISTRATE
-        .block("marble", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Marble")
-        .tag(BlockTags.DRIPSTONE_REPLACEABLE)
-        .loot((table, block) -> table.dropOther(block, COBBLED_MARBLE.asItem()))
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_COBBLED_MARBLE = REGISTRATE
-        .block("mossy_marble_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_COBBLESTONE)
-        .lang("Mossy Cobbled Marble")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_MARBLE_BRICKS = REGISTRATE
-        .block("mossy_marble_bricks", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_STONE_BRICKS)
-        .lang("Mossy Marble Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> SMOOTH_MARBLE = REGISTRATE
-        .block("smooth_marble", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Smooth Marble")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MARBLE_BRICKS = REGISTRATE
-        .block("marble_bricks", Block::new)
-        .initialProperties(() -> Blocks.STONE_BRICKS)
-        .lang("Marble Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CRACKED_MARBLE_BRICKS = REGISTRATE
-        .block("cracked_marble_bricks", Block::new)
-        .initialProperties(() -> Blocks.CRACKED_STONE_BRICKS)
-        .lang("Cracked Marble Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CHISELED_MARBLE_BRICKS = REGISTRATE
-        .block("chiseled_marble_bricks", Block::new)
-        .initialProperties(() -> Blocks.CHISELED_STONE_BRICKS)
-        .lang("Chiseled Marble Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> COBBLED_DARK_CONCRETE = REGISTRATE
-        .block("dark_concrete_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.COBBLESTONE)
-        .lang("Cobbled Dark Concrete")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_TOOL_MATERIALS)
-        .build()
-        .register();
-    public static final BlockEntry<Block> DARK_CONCRETE = REGISTRATE
-        .block("dark_concrete", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Dark Concrete")
-        .loot((table, block) -> table.dropOther(block, COBBLED_DARK_CONCRETE.asItem()))
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_COBBLED_DARK_CONCRETE = REGISTRATE
-        .block("mossy_dark_concrete_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_COBBLESTONE)
-        .lang("Mossy Cobbled Dark Concrete")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_DARK_CONCRETE_BRICKS = REGISTRATE
-        .block("mossy_dark_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_STONE_BRICKS)
-        .lang("Mossy Dark Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> SMOOTH_DARK_CONCRETE = REGISTRATE
-        .block("smooth_dark_concrete", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Smooth Dark Concrete")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> DARK_CONCRETE_BRICKS = REGISTRATE
-        .block("dark_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.STONE_BRICKS)
-        .lang("Dark Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CRACKED_DARK_CONCRETE_BRICKS = REGISTRATE
-        .block("cracked_dark_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.CRACKED_STONE_BRICKS)
-        .lang("Cracked Dark Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CHISELED_DARK_CONCRETE_BRICKS = REGISTRATE
-        .block("chiseled_dark_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.CHISELED_STONE_BRICKS)
-        .lang("Chiseled Dark Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> COBBLED_LIGHT_CONCRETE = REGISTRATE
-        .block("light_concrete_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.COBBLESTONE)
-        .lang("Cobbled Light Concrete")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_TOOL_MATERIALS)
-        .build()
-        .register();
-    public static final BlockEntry<Block> LIGHT_CONCRETE = REGISTRATE
-        .block("light_concrete", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Light Concrete")
-        .loot((table, block) -> table.dropOther(block, COBBLED_LIGHT_CONCRETE.asItem()))
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_COBBLED_LIGHT_CONCRETE = REGISTRATE
-        .block("mossy_light_concrete_cobblestone", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_COBBLESTONE)
-        .lang("Mossy Cobbled Light Concrete")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MOSSY_LIGHT_CONCRETE_BRICKS = REGISTRATE
-        .block("mossy_light_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.MOSSY_STONE_BRICKS)
-        .lang("Mossy Light Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> SMOOTH_LIGHT_CONCRETE = REGISTRATE
-        .block("smooth_light_concrete", Block::new)
-        .initialProperties(() -> Blocks.STONE)
-        .lang("Smooth Light Concrete")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> LIGHT_CONCRETE_BRICKS = REGISTRATE
-        .block("light_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.STONE_BRICKS)
-        .lang("Light Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CRACKED_LIGHT_CONCRETE_BRICKS = REGISTRATE
-        .block("cracked_light_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.CRACKED_STONE_BRICKS)
-        .lang("Cracked Light Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CHISELED_LIGHT_CONCRETE_BRICKS = REGISTRATE
-        .block("chiseled_light_concrete_bricks", Block::new)
-        .initialProperties(() -> Blocks.CHISELED_STONE_BRICKS)
-        .lang("Chiseled Light Concrete Bricks")
-        .tag(BlockTags.NEEDS_STONE_TOOL)
-        .item()
-        .tag(ItemTags.STONE_BRICKS)
-        .build()
-        .register();
+        RED_GRANITE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.RED_GRANITE);
+        MARBLE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.MARBLE);
+        LIGHT_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_LIGHT);
+        DARK_CONCRETE = STONE_BLOCKS.get(StoneBlockType.STONE, StoneTypes.CONCRETE_DARK);
+    }
 
     public static final BlockEntry<Block> FOAM = REGISTRATE
         .block("foam", Block::new)
@@ -1736,124 +1351,18 @@ public class GTBlocks {
         .register();
 
     // Lamps
-
-    public static final BlockEntry<Block> WHITE_LAMP = REGISTRATE
-        .block("white_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("White Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> BLACK_LAMP = REGISTRATE
-        .block("black_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Black Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> GRAY_LAMP = REGISTRATE
-        .block("gray_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Gray Lamp")
-        .item()
-        .build()
-        .register();
-    public static final BlockEntry<Block> SILVER_LAMP = REGISTRATE
-        .block("silver_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Silver Lamp")
-        .item()
-        .build()
-        .register();
-    public static final BlockEntry<Block> LIGHT_BLUE_LAMP = REGISTRATE
-        .block("light_blue_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Light Blue Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> YELLOW_LAMP = REGISTRATE
-        .block("yellow_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Yellow Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> ORANGE_LAMP = REGISTRATE
-        .block("orange_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Orange Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> GREEN_LAMP = REGISTRATE
-        .block("green_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Green Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> LIME_LAMP = REGISTRATE
-        .block("lime_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Lime Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> PINK_LAMP = REGISTRATE
-        .block("pink_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Pink Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> MAGENTA_LAMP = REGISTRATE
-        .block("magenta_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Magenta Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> BLUE_LAMP = REGISTRATE
-        .block("blue_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Blue Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> CYAN_LAMP = REGISTRATE
-        .block("cyan_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Cyan Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> BROWN_LAMP = REGISTRATE
-        .block("brown_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Brown Lamp")
-        .item()
-        .build()
-        .register();
-
-    public static final BlockEntry<Block> RED_LAMP = REGISTRATE
-        .block("red_lamp", Block::new)
-        .initialProperties(() -> Blocks.GLOWSTONE)
-        .lang("Red Lamp")
-        .item()
-        .build()
-        .register();
+    @SuppressWarnings("unchecked")
+    public static final BlockEntry<Block>[] LAMPS = new BlockEntry[DyeColor.values().length];
+    static {
+        DyeColor[] colors = DyeColor.values();
+        for (int i = 0; i < colors.length; i++) {
+            var dyeColor = colors[i];
+            LAMPS[i] = REGISTRATE.block("%s_lamp".formatted(dyeColor.getName()), Block::new)
+            .initialProperties(() -> Blocks.GLOWSTONE)
+            .simpleItem()
+            .register();
+        }
+    }
 
     public static <P, T extends Block, S2 extends BlockBuilder<T, P>> NonNullFunction<S2, S2> unificationBlock(@NotNull TagPrefix tagPrefix, @NotNull Material mat) {
         return builder -> {
@@ -1891,6 +1400,9 @@ public class GTBlocks {
         generateItemPipeBlocks();     // Item Pipe Blocks
         generateLaserPipeBlocks();    // Laser Pipe Blocks
         generateOpticalPipeBlocks();  // Optical Pipe Blocks
+
+        // Decor Blocks
+        generateStoneBlocks();
 
         // Remove Builder Tables
         MATERIAL_BLOCKS_BUILDER = null;
