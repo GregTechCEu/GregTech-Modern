@@ -15,6 +15,7 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
@@ -22,6 +23,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -49,15 +51,15 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack poseStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         model = getItemBakedModel();
-        if (model != null && stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
+        if (model != null && stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
             poseStack.pushPose();
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            Tag itemNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+            Tag itemNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().get("stored");
             if (itemNbt != null) {
                 ItemStack itemStack = ItemStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), itemNbt).getOrThrow();
-                int storedAmount = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).getInt("storedAmount");
+                int storedAmount = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().getInt("storedAmount");
                 float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
                 // Don't need to handle locked items here since they don't get saved to the item
                 renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);
