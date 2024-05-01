@@ -721,7 +721,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, Supplier<ItemLike>[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, Supplier<? extends ItemLike>[]> ignoredMaterials = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -927,7 +927,7 @@ public class TagPrefix {
     }
 
     @SafeVarargs
-    public final void setIgnored(Material material, Supplier<ItemLike>... items) {
+    public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
@@ -958,7 +958,7 @@ public class TagPrefix {
         ignoredMaterials.remove(material);
     }
 
-    public Map<Material, Supplier<ItemLike>[]> getIgnored() {
+    public Map<Material, Supplier<? extends ItemLike>[]> getIgnored() {
         return new HashMap<>(ignoredMaterials);
     }
 

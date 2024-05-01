@@ -255,7 +255,8 @@ public class MachineRecipeLoader {
         registerBricksRecipe(provider, polisheds, smallBricks, MarkerMaterials.Color.Pink);
 
         for (int i = 0; i < smooths.size(); i++) {
-            EXTRUDER_RECIPES.recipeBuilder("extrude_" + bricks.get(i))
+            ResourceLocation bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());
+            EXTRUDER_RECIPES.recipeBuilder("extrude_" + bricksId.getPath())
                     .inputItems(smooths.get(i))
                     .notConsumable(SHAPE_EXTRUDER_INGOT)
                     .outputItems(bricks.get(i))
