@@ -188,6 +188,7 @@ public class BlockPattern {
         Map<SimplePredicate, Integer> cacheGlobal = worldState.getGlobalCount();
         Map<SimplePredicate, Integer> cacheLayer = worldState.getLayerCount();
         Map<BlockPos, Object> blocks = new HashMap<>();
+        Set<BlockPos> placeBlockPos = new HashSet<>();
         blocks.put(centerPos, controller);
         for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
             for (r = 0; r < aisleRepetitions[c][0]; r++) {
@@ -295,8 +296,11 @@ public class BlockPattern {
                             BlockItem itemBlock = (BlockItem) found.getItem();
                             BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
                             InteractionResult interactionResult = itemBlock.place(context);
-                            if(originalItemStack != null && interactionResult != InteractionResult.FAIL) {
-                                originalItemStack.setCount(originalItemStack.getCount() - 1);
+                            if(interactionResult != InteractionResult.FAIL) {
+                                placeBlockPos.add(pos);
+                                if(originalItemStack != null) {
+                                    originalItemStack.setCount(originalItemStack.getCount() - 1);
+                                }
                             }
                             if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
                                 blocks.put(pos, machineBlockEntity.getMetaMachine());
@@ -312,7 +316,12 @@ public class BlockPattern {
         Direction frontFacing = controller.self().getFrontFacing();
         blocks.forEach((pos, block) -> { // adjust facing
             if (!(block instanceof IMultiController)) {
-                if (block instanceof MetaMachine machine) {
+                if (block instanceof BlockState && placeBlockPos.contains(pos)) {
+                    resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
+                        Object object = blocks.get(p.relative(f));
+                        return object == null || (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
+                    }, state -> world.setBlock(pos, state, 3));
+                } else if (block instanceof MetaMachine machine) {
                     resetFacing(pos, machine.getBlockState(), frontFacing, (p, f) -> {
                         Object object = blocks.get(p.relative(f));
                         if (object == null || (object instanceof BlockState blockState && blockState.isAir())) {
