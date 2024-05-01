@@ -200,7 +200,6 @@ public class MixinHelpers {
                                 .apply(SetItemCountFunction.setCount(UniformGenerator.between(1, Math.max(1, material.getProperty(PropertyKey.ORE).getOreMultiplier() * oreMultiplier))))));
                     //.apply(ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE)))); //disable fortune for balance reasons. (for now, until we can think of a better solution.)
 
-                    Supplier<Material> outputDustMat = type.material();
                     LootPool.Builder pool = LootPool.lootPool();
                     boolean isEmpty = true;
                     for (MaterialStack secondaryMaterial : prefix.secondaryMaterials()) {

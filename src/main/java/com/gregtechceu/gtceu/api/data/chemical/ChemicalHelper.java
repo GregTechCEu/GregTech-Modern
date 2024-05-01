@@ -275,8 +275,19 @@ public class ChemicalHelper {
                             });
                 }
             }
-        }
-        return TAG_UNIFICATION_ENTRY.get(tag);
+            return UnificationEntry.EmptyMapMarkerEntry;
+        });
+    }
+
+    // TODO optimize this so it can be used in tooltips/etc.
+    @Nullable
+    public static UnificationEntry getOrComputeUnificationEntry(ItemLike itemLike) {
+        var value = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
+            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item.asItem());
+            return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
+                    .filter(entry -> !(entry == UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(UnificationEntry.EmptyMapMarkerEntry);
+        });
+        return value != UnificationEntry.EmptyMapMarkerEntry ? value : null;
     }
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
@@ -298,7 +309,7 @@ public class ChemicalHelper {
     public static ItemStack get(UnificationEntry unificationEntry, int size) {
         var list = getItems(unificationEntry);
         if (list.isEmpty()) return ItemStack.EMPTY;
-        var stack = list.get(0).asItem().getDefaultInstance();
+        var stack = list.getFirst().asItem().getDefaultInstance();
         stack.setCount(size);
         return stack;
     }

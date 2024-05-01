@@ -14,6 +14,7 @@ import net.minecraft.SharedConstants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.core.Holder;
+import net.minecraft.core.HolderLookup;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackLocationInfo;
@@ -21,7 +22,6 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.LootTable;
@@ -65,8 +65,8 @@ public class GTDynamicDataPack implements PackResources {
         DATA.clear();
     }
 
-    public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement) {
-        JsonElement recipeJson = Recipe.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), recipe).getOrThrow();
+    public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement, HolderLookup.Provider provider) {
+        JsonElement recipeJson = Recipe.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), recipe).getOrThrow();
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
             writeJson(recipeId, "recipes", parent, recipeJson);
@@ -76,7 +76,7 @@ public class GTDynamicDataPack implements PackResources {
         }
         DATA.put(getRecipeLocation(recipeId), recipeJson);
         if (advancement != null) {
-            JsonElement advancementJson = Advancement.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), advancement.value()).getOrThrow();
+            JsonElement advancementJson = Advancement.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), advancement.value()).getOrThrow();
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(advancement.id(), "advancements", parent, advancementJson);
             }
@@ -84,16 +84,16 @@ public class GTDynamicDataPack implements PackResources {
         }
     }
 
-    public static void addLootTable(ResourceLocation lootTableId, LootTable table) {
-        JsonElement recipeJson = LootTable.CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
+    public static void addLootTable(ResourceLocation lootTableId, LootTable table, HolderLookup.Provider provider) {
+        JsonElement lootTableJson = LootTable.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(lootTableId, "loot_tables", parent, recipeJson);
+            writeJson(lootTableId, "loot_tables", parent, lootTableJson);
         }
         if (DATA.containsKey(lootTableId)) {
             GTCEu.LOGGER.error("duplicated loot table: {}", lootTableId);
         }
-        DATA.put(getLootTableLocation(lootTableId), recipeJson);
+        DATA.put(getLootTableLocation(lootTableId), lootTableJson);
     }
 
     /**

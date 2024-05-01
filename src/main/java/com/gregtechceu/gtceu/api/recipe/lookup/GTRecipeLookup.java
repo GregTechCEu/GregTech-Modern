@@ -494,7 +494,7 @@ public class GTRecipeLookup {
                                              @NotNull Branch branchMap, int index, int count) {
         if (count >= ingredients.size()) return true;
         if (index >= ingredients.size()) {
-            throw new RuntimeException("Index out of bounds for recurseItemTreeAdd, should not happen");
+            throw new RuntimeException("Index out of bounds for recurseIngredientTreeAdd, should not happen");
         }
         // Loop through NUMBER_OF_INGREDIENTS times.
 

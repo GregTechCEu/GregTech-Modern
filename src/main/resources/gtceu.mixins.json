@@ -36,6 +36,7 @@
     "PrimedTntAccessor",
     "RecipeManagerAccessor",
     "RecipeManagerMixin",
+    "ReloadableServerResourcesMixin",
     "RepairItemRecipeMixin",
     "ServerChunkProviderMixin",
     "ServerGamePacketListenerImplAccessor",

@@ -64,7 +64,7 @@ public abstract class ProspectorMode<T> {
                                 var name = BuiltInRegistries.BLOCK.getKey(blockState.getBlock()).toString();
                                 var entry = ChemicalHelper.getOrComputeUnificationEntry(blockState.getBlock());
                                 if (entry != null && entry.material != null) {
-                                    name = "material_" + entry.material.getName();
+                                    name = "material_" + entry.material.getResourceLocation();
                                 }
                                 return name;
                             });
