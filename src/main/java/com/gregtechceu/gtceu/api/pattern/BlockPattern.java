@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -272,11 +273,12 @@ public class BlockPattern {
 
                             // check inventory
                             ItemStack found = null;
+                            ItemStack originalItemStack = null;
                             if (!player.isCreative()) {
                                 for (ItemStack itemStack : player.getInventory().items) {
                                     if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameTags(candidate, itemStack)) && !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
                                         found = itemStack.copy();
-                                        itemStack.setCount(itemStack.getCount() - 1);
+                                        originalItemStack = itemStack;
                                         break;
                                     }
                                 }
@@ -292,7 +294,10 @@ public class BlockPattern {
                             if (found == null) continue;
                             BlockItem itemBlock = (BlockItem) found.getItem();
                             BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
-                            itemBlock.place(context);
+                            InteractionResult interactionResult = itemBlock.place(context);
+                            if(originalItemStack != null && interactionResult != InteractionResult.FAIL) {
+                                originalItemStack.setCount(originalItemStack.getCount() - 1);
+                            }
                             if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
                                 blocks.put(pos, machineBlockEntity.getMetaMachine());
                             } else {
