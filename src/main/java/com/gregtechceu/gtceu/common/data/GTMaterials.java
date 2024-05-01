@@ -195,10 +195,10 @@ public class GTMaterials {
         block.setIgnored(Blaze);
         block.setIgnored(Lapotron);
 
-        rock.setIgnored(Marble);
+        rock.setIgnored(Marble, GTBlocks.MARBLE);
         rock.setIgnored(Granite, Blocks.GRANITE);
         rock.setIgnored(Granite, Blocks.POLISHED_GRANITE);
-        rock.setIgnored(GraniteRed);
+        rock.setIgnored(GraniteRed, GTBlocks.RED_GRANITE);
         rock.setIgnored(Andesite, Blocks.ANDESITE);
         rock.setIgnored(Andesite, Blocks.POLISHED_ANDESITE);
         rock.setIgnored(Diorite, Blocks.DIORITE);
