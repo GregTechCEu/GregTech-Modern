@@ -233,7 +233,7 @@ public class GTRecipeBuilder {
             GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
             throw new IllegalArgumentException(id + ": input items is empty");
         }
-        if (input.getComponents().isEmpty()) {
+        if (input.getComponents().isEmpty() && !input.getComponents().equals(input.getPrototype())) {
             return input(ItemRecipeCapability.CAP, SizedIngredient.of(input.getItem(), input.getCount()));
         } else {
             return input(ItemRecipeCapability.CAP, new SizedIngredient(DataComponentIngredient.of(true, input), input.getCount()));
