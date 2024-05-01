@@ -117,8 +117,8 @@
   ],
   "page": "gtceu:generation/deepslate",
   "position": [
-    -50,
-    50
+    -250,
+    100
   ],
   "pre_nodes": [
     "gtceu:generation/ore"
