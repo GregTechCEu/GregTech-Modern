@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.resources.ResourceLocation;
-import net.neoforged.bus.api.GenericEvent;
+import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -53,31 +53,17 @@ public class GTCEuAPI {
         else GTCEu.LOGGER.info("High-Tier is Disabled.");
     }
 
-    public static class RegisterEvent<K, V> extends GenericEvent<V> implements IModBusEvent {
+    public static class RegisterEvent<K, V> extends Event implements IModBusEvent {
 
+        @Getter
         private final GTRegistry<K, V> registry;
 
-        public RegisterEvent(GTRegistry<K, V> registry, Class<V> clazz) {
-            super(clazz);
+        public RegisterEvent(GTRegistry<K, V> registry) {
             this.registry = registry;
         }
 
         public void register(K key, V value) {
-            if (registry != null) registry.register(key, value);
-        }
-
-        public static class RL<V> extends RegisterEvent<ResourceLocation, V> {
-
-            public RL(GTRegistry<ResourceLocation, V> registry, Class<V> clazz) {
-                super(registry, clazz);
-            }
-        }
-
-        public static class String<V> extends RegisterEvent<java.lang.String, V> {
-
-            public String(GTRegistry<java.lang.String, V> registry, Class<V> clazz) {
-                super(registry, clazz);
-            }
+            registry.register(key, value);
         }
     }
 }

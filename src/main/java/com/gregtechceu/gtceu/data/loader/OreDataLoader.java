@@ -13,9 +13,8 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncOreVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTOreVeinEventJS;
-
-import com.lowdragmc.lowdraglib.Platform;
-
+import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -51,7 +50,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
         GTOres.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerOreVeins);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ORE_VEINS, GTOreDefinition.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.ORE_VEINS));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

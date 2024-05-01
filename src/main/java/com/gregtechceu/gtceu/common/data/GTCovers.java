@@ -166,7 +166,7 @@ public class GTCovers {
 
     public static void init() {
         AddonFinder.getAddons().forEach(IGTAddon::registerCovers);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.COVERS, CoverDefinition.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.COVERS));
         GTRegistries.COVERS.freeze();
     }
 }

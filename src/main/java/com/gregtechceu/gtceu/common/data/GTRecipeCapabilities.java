@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
@@ -36,7 +35,7 @@ public class GTRecipeCapabilities {
         GTRegistries.RECIPE_CAPABILITIES.register(SU.name, SU);
 
         AddonFinder.getAddons().forEach(IGTAddon::registerRecipeCapabilities);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CAPABILITIES, (Class<RecipeCapability<?>>) (Class<?>) RecipeCapability.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CAPABILITIES));
         GTRegistries.RECIPE_CAPABILITIES.freeze();
     }
 }

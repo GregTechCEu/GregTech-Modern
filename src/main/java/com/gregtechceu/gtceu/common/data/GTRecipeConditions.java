@@ -2,8 +2,6 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.recipe.*;
@@ -42,7 +40,7 @@ public final class GTRecipeConditions {
     }
 
     public static void init() {
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS, (Class<RecipeConditionType<?>>) (Class<?>) RecipeConditionType.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_CONDITIONS));
         GTRegistries.RECIPE_CONDITIONS.freeze();
     }
 }

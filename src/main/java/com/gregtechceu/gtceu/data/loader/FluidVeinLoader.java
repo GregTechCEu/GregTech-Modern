@@ -12,9 +12,8 @@ import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.SPacketSyncBedrockOreVeins;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTFluidVeinEventJS;
-
-import com.lowdragmc.lowdraglib.Platform;
-
+import com.mojang.serialization.JsonOps;
+import dev.latvian.mods.kubejs.script.ScriptType;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -48,7 +47,7 @@ public class FluidVeinLoader extends SimpleJsonResourceReloadListener {
 
         GTBedrockFluids.init();
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS, BedrockFluidDefinition.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_FLUID_DEFINITIONS));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

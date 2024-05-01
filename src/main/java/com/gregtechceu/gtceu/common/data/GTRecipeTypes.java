@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
@@ -29,7 +28,6 @@ import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.resources.language.I18n;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -40,7 +38,6 @@ import net.minecraft.world.level.material.Fluids;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -701,7 +698,7 @@ public class GTRecipeTypes {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.RECIPE_TYPES.getRegistryName());
         }
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES, GTRecipeType.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.RECIPE_TYPES));
         GTRegistries.RECIPE_TYPES.freeze();
 
         //GTRegistries.register(BuiltInRegistries.RECIPE_SERIALIZER, GTCEu.id("machine_recipe"), GTRecipeSerializer.SERIALIZER);

@@ -2579,7 +2579,7 @@ public class GTMachines {
         if (GTCEu.isKubeJSLoaded()) {
             GTRegistryInfo.registerFor(GTRegistries.MACHINES.getRegistryName());
         }
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES, MachineDefinition.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.MACHINES));
         GTRegistries.MACHINES.freeze();
     }
 
