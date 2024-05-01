@@ -791,11 +791,8 @@ public class MachineRecipeLoader {
                 .inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2)
                 .inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[9]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS)
-                .inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS)
-                .inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800)
-                .save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("wooden_crate").EUt(16).inputItems(ItemTags.PLANKS, 4)
                 .inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5).save(provider);

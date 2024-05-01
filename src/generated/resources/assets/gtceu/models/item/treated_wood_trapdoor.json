@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/template_orientable_trapdoor_bottom",
-  "textures": {
-    "texture": "gtceu:block/treated_wood_trapdoor"
-  }
+  "parent": "gtceu:block/treated_wood_trapdoor"
 }

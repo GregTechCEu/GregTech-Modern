@@ -1,5 +1,6 @@
 {
+  "parent": "minecraft:block/cube_all",
   "textures": {
-    "particle": "gtceu:block/treated_wood_planks"
+    "all": "gtceu:block/treated_wood_wall_hanging_sign"
   }
 }

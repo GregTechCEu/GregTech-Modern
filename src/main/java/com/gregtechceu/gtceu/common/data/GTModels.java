@@ -18,10 +18,13 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 
 import com.google.gson.JsonObject;
 import com.tterrag.registrate.providers.DataGenContext;
@@ -97,6 +100,9 @@ public class GTModels {
                                               RegistrateItemModelProvider provider) {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
+    public static void rubberDoorModel(DataGenContext<Block, DoorBlock> ctx, RegistrateBlockstateProvider prov) {
+        prov.doorBlock(ctx.getEntry(), GTCEu.id("block/rubber_door_bottom"), GTCEu.id("block/rubber_door_top"));
+    }
 
     public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx,
                                                  RegistrateBlockstateProvider prov) {
@@ -129,6 +135,28 @@ public class GTModels {
                     .modelFile(cubeMirroredAll)
                     .rotationY(180)
                     .build();
+            prov.simpleBlock(block, models);
+        };
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation texturePath) {
+        return (ctx, prov) -> {
+            Block block = ctx.getEntry();
+            ModelFile cubeAll = prov.models().cubeAll(ctx.getName(), texturePath);
+            ModelFile cubeMirroredAll = prov.models().singleTexture(ctx.getName() + "_mirrored", prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_mirrored_all"), "all", texturePath);
+            ConfiguredModel[] models = ConfiguredModel.builder()
+                .modelFile(cubeAll)
+                .rotationY(0)
+                .nextModel()
+                .modelFile(cubeAll)
+                .rotationY(180)
+                .nextModel()
+                .modelFile(cubeMirroredAll)
+                .rotationY(0)
+                .nextModel()
+                .modelFile(cubeMirroredAll)
+                .rotationY(180)
+                .build();
             prov.simpleBlock(block, models);
         };
     }

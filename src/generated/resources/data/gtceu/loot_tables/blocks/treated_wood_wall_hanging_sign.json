@@ -11,7 +11,7 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:treated_wood_hanging_sign"
+          "name": "gtceu:treated_wood_sign"
         }
       ],
       "rolls": 1.0

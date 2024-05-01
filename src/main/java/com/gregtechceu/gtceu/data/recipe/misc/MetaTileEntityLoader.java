@@ -24,8 +24,6 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.Tags;
-
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -276,56 +274,58 @@ public class MetaTileEntityLoader {
                 GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack(), "   ", " MY", " B ", 'M',
                 GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
 
-        VanillaRecipeHelper.addShapelessRecipe(provider, "yellow_stripes_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.YELLOW_STRIPES_BLOCK_A.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "small_yellow_stripes_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.YELLOW_STRIPES_BLOCK_B.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "radioactive_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.RADIOACTIVE_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "bio_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.BIO_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "explosion_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.EXPLOSION_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "fire_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.FIRE_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "acid_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.ACID_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "magic_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MAGIC_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "frost_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.FROST_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "noise_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.NOISE_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "generic_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.GENERIC_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "high_voltage_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_VOLTAGE_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "magnetic_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MAGNETIC_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "antimatter_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.ANTIMATTER_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "high_temperature_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_TEMPERATURE_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "void_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.VOID_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "mob_spawner_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MOB_SPAWNER_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "laser_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.LASER_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "mob_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MOB_INFESTATION_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "boss_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.BOSS_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "gregification_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.GREGIFICATION_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "causality_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.CAUSALITY_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "turret_hazard_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.TURRET_HAZARD_SIGN_BLOCK.asStack());
-        VanillaRecipeHelper.addShapelessRecipe(provider, "high_pressure_to_steel_solid_casing",
-                GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_yellow_stripes", GTBlocks.YELLOW_STRIPES_BLOCK_A.asStack(), "Y  ", " M ", "  B", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_small_yellow_stripes", GTBlocks.YELLOW_STRIPES_BLOCK_B.asStack(), "  Y", " M ", "B  ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_radioactive_hazard", GTBlocks.RADIOACTIVE_HAZARD_SIGN_BLOCK.asStack(), " YB", " M ", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_bio_hazard", GTBlocks.BIO_HAZARD_SIGN_BLOCK.asStack(), " Y ", " MB", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_explosion_hazard", GTBlocks.EXPLOSION_HAZARD_SIGN_BLOCK.asStack(), " Y ", " M ", "  B", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_fire_hazard", GTBlocks.FIRE_HAZARD_SIGN_BLOCK.asStack(), " Y ", " M ", " B ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_acid_hazard", GTBlocks.ACID_HAZARD_SIGN_BLOCK.asStack(), " Y ", " M ", "B  ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_magic_hazard", GTBlocks.MAGIC_HAZARD_SIGN_BLOCK.asStack(), " Y ", "BM ", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_frost_hazard", GTBlocks.FROST_HAZARD_SIGN_BLOCK.asStack(), "BY ", " M ", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_noise_hazard", GTBlocks.NOISE_HAZARD_SIGN_BLOCK.asStack(), "   ", " M ", "BY ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_generic_hazard", GTBlocks.GENERIC_HAZARD_SIGN_BLOCK.asStack(), "   ", "BM ", " Y ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_high_voltage_hazard", GTBlocks.HIGH_VOLTAGE_HAZARD_SIGN_BLOCK.asStack(), "B  ", " M ", " Y ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_magnetic_hazard", GTBlocks.MAGNETIC_HAZARD_SIGN_BLOCK.asStack(), " B ", " M ", " Y ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_antimatter_hazard", GTBlocks.ANTIMATTER_HAZARD_SIGN_BLOCK.asStack(), "  B", " M ", " Y ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_high_temperature_hazard", GTBlocks.HIGH_TEMPERATURE_HAZARD_SIGN_BLOCK.asStack(), "   ", " MB", " Y ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_sign_void_hazard", GTBlocks.VOID_HAZARD_SIGN_BLOCK.asStack(), "   ", " M ", " YB", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_mob_spawner_hazard", GTBlocks.MOB_SPAWNER_HAZARD_SIGN_BLOCK.asStack(), "B  ", "YM ", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_spatial_storage_hazard", GTBlocks.SPATIAL_STORAGE_HAZARD_SIGN_BLOCK.asStack(), " B ", "YM ", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_laser_hazard", GTBlocks.LASER_HAZARD_SIGN_BLOCK.asStack(), "  B", "YM ", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_mob_hazard", GTBlocks.MOB_INFESTATION_HAZARD_SIGN_BLOCK.asStack(), "   ", "YMB", "   ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_boss_hazard", GTBlocks.BOSS_HAZARD_SIGN_BLOCK.asStack(), "   ", "YM ", "  B", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_gregification_hazard", GTBlocks.GREGIFICATION_HAZARD_SIGN_BLOCK.asStack(), "   ", "YM ", " B ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_causality_hazard", GTBlocks.CAUSALITY_HAZARD_SIGN_BLOCK.asStack(), "   ", "YM ", "B  ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_turret_hazard", GTBlocks.TURRET_HAZARD_SIGN_BLOCK.asStack(), "   ", " MY", "  B", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "warning_high_pressure_hazard", GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack(), "   ", " MY", " B ", 'M', GTBlocks.CASING_STEEL_SOLID.asStack(), 'Y', Tags.Items.DYES_YELLOW, 'B', Tags.Items.DYES_BLACK);
 
-        var multiHatchMaterials = new Material[] {
+        VanillaRecipeHelper.addShapelessRecipe(provider, "yellow_stripes_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.YELLOW_STRIPES_BLOCK_A.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "small_yellow_stripes_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.YELLOW_STRIPES_BLOCK_B.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "radioactive_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.RADIOACTIVE_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "bio_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.BIO_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "explosion_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.EXPLOSION_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fire_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.FIRE_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "acid_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.ACID_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "magic_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MAGIC_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "frost_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.FROST_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "noise_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.NOISE_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "generic_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.GENERIC_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "high_voltage_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_VOLTAGE_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "magnetic_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MAGNETIC_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "antimatter_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.ANTIMATTER_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "high_temperature_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_TEMPERATURE_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "void_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.VOID_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "mob_spawner_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MOB_SPAWNER_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "laser_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.LASER_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "mob_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.MOB_INFESTATION_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "boss_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.BOSS_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "gregification_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.GREGIFICATION_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "causality_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.CAUSALITY_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "turret_hazard_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.TURRET_HAZARD_SIGN_BLOCK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "high_pressure_to_steel_solid_casing", GTBlocks.CASING_STEEL_SOLID.asStack(), GTBlocks.HIGH_PRESSURE_HAZARD_SIGN_BLOCK.asStack());
+
+        var multiHatchMaterials = new Material[]{
                 GTMaterials.Titanium, GTMaterials.TungstenSteel, GTMaterials.NiobiumTitanium,
                 GTMaterials.Iridium, GTMaterials.Naquadah, GTMaterials.Neutronium
         };
@@ -411,15 +411,8 @@ public class MetaTileEntityLoader {
         // GTMachines.MACHINE_HATCH.getStackForm(), "CHS", 'C', CustomTags.IV), 'H',
         // GTMachines.HULL[GTValues.IV].getStackForm(), 'S', MetaItems.SENSOR_IV.getStackForm());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_item",
-                GTMachines.ITEM_PASSTHROUGH_HATCH[HV].asStack(), " C ", "GHG", " S ", 'C',
-                GTItems.CONVEYOR_MODULE_HV.asStack(), 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Steel),
-                'H', GTMachines.HULL[HV].asStack(), 'S', CustomTags.WOODEN_CHESTS);
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_fluid",
-                GTMachines.FLUID_PASSTHROUGH_HATCH[HV].asStack(), " C ", "GHG", " S ", 'C',
-                GTItems.ELECTRIC_PUMP_HV.asStack(), 'G',
-                new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Steel), 'H', GTMachines.HULL[HV].asStack(),
-                'S', GTBlocks.CASING_TEMPERED_GLASS);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_item", GTMachines.ITEM_PASSTHROUGH_HATCH[HV].asStack(), " C ", "GHG", " S ", 'C', GTItems.CONVEYOR_MODULE_HV.asStack(), 'G', new UnificationEntry(TagPrefix.gearSmall, GTMaterials.Steel), 'H', GTMachines.HULL[HV].asStack(), 'S', CustomTags.WOODEN_CHESTS);
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "passthrough_hatch_fluid", GTMachines.FLUID_PASSTHROUGH_HATCH[HV].asStack(), " C ", "GHG", " S ", 'C', GTItems.ELECTRIC_PUMP_HV.asStack(), 'G', new UnificationEntry(TagPrefix.pipeSmallFluid, GTMaterials.Steel), 'H', GTMachines.HULL[HV].asStack(), 'S', GTBlocks.CASING_TEMPERED_GLASS);
 
         // TODO Charcoal pile igniter
         // VanillaRecipeHelper.addShapedRecipe(provider, true, "charcoal_pile_igniter",
@@ -735,74 +728,40 @@ public class MetaTileEntityLoader {
                 new UnificationEntry(TagPrefix.plate, GTMaterials.Lead));
 
         // MACHINES
-        registerMachineRecipe(provider, GTMachines.ALLOY_SMELTER, "ECE", "CMC", "WCW", 'M', HULL, 'E', CIRCUIT, 'W',
-                CABLE, 'C', COIL_HEATING_DOUBLE);
-        registerMachineRecipe(provider, GTMachines.ASSEMBLER, "ACA", "VMV", "WCW", 'M', HULL, 'V', CONVEYOR, 'A',
-                ROBOT_ARM, 'C', CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.BENDER, "PwP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.CANNER, "WPW", "CMC", "GGG", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W',
-                CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.COMPRESSOR, " C ", "PMP", "WCW", 'M', HULL, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.CUTTER, "WCG", "VMB", "CWE", 'M', HULL, 'E', MOTOR, 'V', CONVEYOR,
-                'C', CIRCUIT, 'W', CABLE, 'G', GLASS, 'B', SAWBLADE);
-        registerMachineRecipe(provider, GTMachines.ELECTRIC_FURNACE, "ECE", "CMC", "WCW", 'M', HULL, 'E', CIRCUIT, 'W',
-                CABLE, 'C', COIL_HEATING);
-        registerMachineRecipe(provider, GTMachines.EXTRACTOR, "GCG", "EMP", "WCW", 'M', HULL, 'E', PISTON, 'P', PUMP,
-                'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.EXTRUDER, "CCE", "XMP", "CCE", 'M', HULL, 'X', PISTON, 'E', CIRCUIT,
-                'P', PIPE_NORMAL, 'C', COIL_HEATING_DOUBLE);
-        registerMachineRecipe(provider, GTMachines.LATHE, "WCW", "EMD", "CWP", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE, 'D', GRINDER);
-        registerMachineRecipe(provider, GTMachines.MACERATOR, "PEG", "WWM", "CCW", 'M', HULL, 'E', MOTOR, 'P', PISTON,
-                'C', CIRCUIT, 'W', CABLE, 'G', GRINDER);
-        registerMachineRecipe(provider, GTMachines.WIREMILL, "EWE", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT,
-                'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.CENTRIFUGE, "CEC", "WMW", "CEC", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT,
-                'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.ELECTROLYZER, "IGI", "IMI", "CWC", 'M', HULL, 'C', CIRCUIT, 'W',
-                CABLE, 'I', WIRE_ELECTRIC, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.THERMAL_CENTRIFUGE, "CEC", "OMO", "WEW", 'M', HULL, 'E', MOTOR, 'C',
-                CIRCUIT, 'W', CABLE, 'O', COIL_HEATING_DOUBLE);
-        registerMachineRecipe(provider, GTMachines.ORE_WASHER, "RGR", "CEC", "WMW", 'M', HULL, 'R', ROTOR, 'E', MOTOR,
-                'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.CHEMICAL_REACTOR, "GRG", "WEW", "CMC", 'M', HULL, 'R', ROTOR, 'E',
-                MOTOR, 'C', CIRCUIT, 'W', CABLE, 'G', PIPE_REACTOR);
-        registerMachineRecipe(provider, GTMachines.PACKER, "BCB", "RMV", "WCW", 'M', HULL, 'R', ROBOT_ARM, 'V',
-                CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'B', CustomTags.WOODEN_CHESTS);
-        registerMachineRecipe(provider, GTMachines.BREWERY, "GPG", "WMW", "CBC", 'M', HULL, 'P', PUMP, 'B',
-                STICK_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.FERMENTER, "WPW", "GMG", "WCW", 'M', HULL, 'P', PUMP, 'C', CIRCUIT,
-                'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.DISTILLERY, "GBG", "CMC", "WPW", 'M', HULL, 'P', PUMP, 'B',
-                STICK_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.FLUID_SOLIDIFIER, "PGP", "WMW", "CBC", 'M', HULL, 'P', PUMP, 'C',
-                CIRCUIT, 'W', CABLE, 'G', GLASS, 'B', CustomTags.WOODEN_CHESTS);
-        registerMachineRecipe(provider, GTMachines.CHEMICAL_BATH, "VGW", "PGV", "CMC", 'M', HULL, 'P', PUMP, 'V',
-                CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.POLARIZER, "ZSZ", "WMW", "ZSZ", 'M', HULL, 'S',
-                STICK_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.ELECTROMAGNETIC_SEPARATOR, "VWZ", "WMS", "CWZ", 'M', HULL, 'S',
-                STICK_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.AUTOCLAVE, "IGI", "IMI", "CPC", 'M', HULL, 'P', PUMP, 'C', CIRCUIT,
-                'I', PLATE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.MIXER, "GRG", "GEG", "CMC", 'M', HULL, 'E', MOTOR, 'R', ROTOR, 'C',
-                CIRCUIT, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.LASER_ENGRAVER, "PEP", "CMC", "WCW", 'M', HULL, 'E', EMITTER, 'P',
-                PISTON, 'C', CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.FORMING_PRESS, "WPW", "CMC", "WPW", 'M', HULL, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.FORGE_HAMMER, "WPW", "CMC", "WAW", 'M', HULL, 'P', PISTON, 'C',
-                CIRCUIT, 'W', CABLE, 'A', Blocks.ANVIL);
-        registerMachineRecipe(provider, GTMachines.FLUID_HEATER, "OGO", "PMP", "WCW", 'M', HULL, 'P', PUMP, 'O',
-                COIL_HEATING_DOUBLE, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
-        registerMachineRecipe(provider, GTMachines.SIFTER, "WFW", "PMP", "CFC", 'M', HULL, 'P', PISTON, 'F',
-                GTItems.ITEM_FILTER, 'C', CIRCUIT, 'W', CABLE);
-        registerMachineRecipe(provider, GTMachines.ARC_FURNACE, "WGW", "CMC", "PPP", 'M', HULL, 'P', PLATE, 'C',
-                CIRCUIT, 'W', CABLE_QUAD, 'G', new UnificationEntry(TagPrefix.dust, GTMaterials.Graphite));
-        registerMachineRecipe(provider, GTMachines.CIRCUIT_ASSEMBLER, "RIE", "CHC", "WIW", 'R', ROBOT_ARM, 'I',
-                BETTER_CIRCUIT, 'E', EMITTER, 'C', CONVEYOR, 'H', HULL, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.ALLOY_SMELTER, "ECE", "CMC", "WCW", 'M', HULL, 'E', CIRCUIT, 'W', CABLE, 'C', COIL_HEATING_DOUBLE);
+        registerMachineRecipe(provider, GTMachines.ASSEMBLER, "ACA", "VMV", "WCW", 'M', HULL, 'V', CONVEYOR, 'A', ROBOT_ARM, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.BENDER, "PwP", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.CANNER, "WPW", "CMC", "GGG", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.COMPRESSOR, " C ", "PMP", "WCW", 'M', HULL, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.CUTTER, "WCG", "VMB", "CWE", 'M', HULL, 'E', MOTOR, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS, 'B', SAWBLADE);
+        registerMachineRecipe(provider, GTMachines.ELECTRIC_FURNACE, "ECE", "CMC", "WCW", 'M', HULL, 'E', CIRCUIT, 'W', CABLE, 'C', COIL_HEATING);
+        registerMachineRecipe(provider, GTMachines.EXTRACTOR, "GCG", "EMP", "WCW", 'M', HULL, 'E', PISTON, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.EXTRUDER, "CCE", "XMP", "CCE", 'M', HULL, 'X', PISTON, 'E', CIRCUIT, 'P', PIPE_NORMAL, 'C', COIL_HEATING_DOUBLE);
+        registerMachineRecipe(provider, GTMachines.LATHE, "WCW", "EMD", "CWP", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE, 'D', GRINDER);
+        registerMachineRecipe(provider, GTMachines.MACERATOR, "PEG", "WWM", "CCW", 'M', HULL, 'E', MOTOR, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE, 'G', GRINDER);
+        registerMachineRecipe(provider, GTMachines.WIREMILL, "EWE", "CMC", "EWE", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.CENTRIFUGE, "CEC", "WMW", "CEC", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.ELECTROLYZER, "IGI", "IMI", "CWC", 'M', HULL, 'C', CIRCUIT, 'W', CABLE, 'I', WIRE_ELECTRIC, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.THERMAL_CENTRIFUGE, "CEC", "OMO", "WEW", 'M', HULL, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE, 'O', COIL_HEATING_DOUBLE);
+        registerMachineRecipe(provider, GTMachines.ORE_WASHER, "RGR", "CEC", "WMW", 'M', HULL, 'R', ROTOR, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.CHEMICAL_REACTOR, "GRG", "WEW", "CMC", 'M', HULL, 'R', ROTOR, 'E', MOTOR, 'C', CIRCUIT, 'W', CABLE, 'G', PIPE_REACTOR);
+        registerMachineRecipe(provider, GTMachines.PACKER, "BCB", "RMV", "WCW", 'M', HULL, 'R', ROBOT_ARM, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'B', CustomTags.WOODEN_CHESTS);
+        registerMachineRecipe(provider, GTMachines.BREWERY, "GPG", "WMW", "CBC", 'M', HULL, 'P', PUMP, 'B', STICK_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.FERMENTER, "WPW", "GMG", "WCW", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.DISTILLERY, "GBG", "CMC", "WPW", 'M', HULL, 'P', PUMP, 'B', STICK_DISTILLATION, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.FLUID_SOLIDIFIER, "PGP", "WMW", "CBC", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS, 'B', CustomTags.WOODEN_CHESTS);
+        registerMachineRecipe(provider, GTMachines.CHEMICAL_BATH, "VGW", "PGV", "CMC", 'M', HULL, 'P', PUMP, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.POLARIZER, "ZSZ", "WMW", "ZSZ", 'M', HULL, 'S', STICK_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.ELECTROMAGNETIC_SEPARATOR, "VWZ", "WMS", "CWZ", 'M', HULL, 'S', STICK_ELECTROMAGNETIC, 'Z', COIL_ELECTRIC, 'V', CONVEYOR, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.AUTOCLAVE, "IGI", "IMI", "CPC", 'M', HULL, 'P', PUMP, 'C', CIRCUIT, 'I', PLATE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.MIXER, "GRG", "GEG", "CMC", 'M', HULL, 'E', MOTOR, 'R', ROTOR, 'C', CIRCUIT, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.LASER_ENGRAVER, "PEP", "CMC", "WCW", 'M', HULL, 'E', EMITTER, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.FORMING_PRESS, "WPW", "CMC", "WPW", 'M', HULL, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.FORGE_HAMMER, "WPW", "CMC", "WAW", 'M', HULL, 'P', PISTON, 'C', CIRCUIT, 'W', CABLE, 'A', Blocks.ANVIL);
+        registerMachineRecipe(provider, GTMachines.FLUID_HEATER, "OGO", "PMP", "WCW", 'M', HULL, 'P', PUMP, 'O', COIL_HEATING_DOUBLE, 'C', CIRCUIT, 'W', CABLE, 'G', GLASS);
+        registerMachineRecipe(provider, GTMachines.SIFTER, "WFW", "PMP", "CFC", 'M', HULL, 'P', PISTON, 'F', GTItems.ITEM_FILTER, 'C', CIRCUIT, 'W', CABLE);
+        registerMachineRecipe(provider, GTMachines.ARC_FURNACE, "WGW", "CMC", "PPP", 'M', HULL, 'P', PLATE, 'C', CIRCUIT, 'W', CABLE_QUAD, 'G', new UnificationEntry(TagPrefix.dust, GTMaterials.Graphite));
+        registerMachineRecipe(provider, GTMachines.CIRCUIT_ASSEMBLER, "RIE", "CHC", "WIW", 'R', ROBOT_ARM, 'I', BETTER_CIRCUIT, 'E', EMITTER, 'C', CONVEYOR, 'H', HULL, 'W', CABLE);
 
         // TODO Replication system
         // registerMachineRecipe(GTMachines.MASS_FABRICATOR, "CFC", "QMQ", "CFC", 'M', HULL, 'Q', CABLE_QUAD, 'C',
@@ -818,17 +777,12 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, GTMachines.PUMP, "WGW", "GMG", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T',
                 PIPE_LARGE);
 
-        registerMachineRecipe(provider, GTMachines.FISHER, "WTW", "PMP", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T',
-                MOTOR, 'P', PISTON);
-        registerMachineRecipe(provider, GTMachines.ITEM_COLLECTOR, "MRM", "RHR", "CWC", 'M', MOTOR, 'R', ROTOR, 'H',
-                HULL, 'C', CIRCUIT, 'W', CABLE);
-        if (ConfigHolder.INSTANCE.machines.enableWorldAccelerators)
-            registerMachineRecipe(provider, GTMachines.WORLD_ACCELERATOR, "FSF", "EHE", "FSF", 'F', FIELD_GENERATOR,
-                    'S', SENSOR, 'E', EMITTER, 'H', HULL);
-        registerMachineRecipe(provider, GTMachines.BLOCK_BREAKER, "MGM", "CHC", "WSW", 'M', MOTOR, 'H', HULL, 'C',
-                CIRCUIT, 'W', CABLE, 'S', CustomTags.WOODEN_CHESTS, 'G', GRINDER);
-        registerMachineRecipe(provider, GTMachines.MINER, "MMM", "WHW", "CSC", 'M', MOTOR, 'W', CABLE, 'H', HULL, 'C',
-                CIRCUIT, 'S', SENSOR);
+        registerMachineRecipe(provider, GTMachines.FISHER, "WTW", "PMP", "TGT", 'M', HULL, 'W', CIRCUIT, 'G', PUMP, 'T', MOTOR, 'P', PISTON);
+        registerMachineRecipe(provider, GTMachines.ITEM_COLLECTOR, "MRM", "RHR", "CWC", 'M', MOTOR, 'R', ROTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE);
+        if(ConfigHolder.INSTANCE.machines.enableWorldAccelerators)
+            registerMachineRecipe(provider, GTMachines.WORLD_ACCELERATOR, "FSF", "EHE", "FSF", 'F', FIELD_GENERATOR, 'S', SENSOR, 'E', EMITTER, 'H', HULL);
+        registerMachineRecipe(provider, GTMachines.BLOCK_BREAKER, "MGM", "CHC", "WSW", 'M', MOTOR, 'H', HULL, 'C', CIRCUIT, 'W', CABLE, 'S', CustomTags.WOODEN_CHESTS, 'G', GRINDER);
+        registerMachineRecipe(provider, GTMachines.MINER, "MMM", "WHW", "CSC", 'M', MOTOR, 'W', CABLE, 'H', HULL, 'C', CIRCUIT, 'S', SENSOR);
 
         registerMachineRecipe(provider, GTMachines.MUFFLER_HATCH, "HM", "PR", 'H', HULL, 'M', MOTOR, 'P', PIPE_NORMAL,
                 'R', ROTOR);
@@ -861,45 +815,16 @@ public class MetaTileEntityLoader {
         registerMachineRecipe(provider, ArrayUtils.subarray(GTMachines.POWER_TRANSFORMER, GTValues.MV, GTValues.UHV),
                 "WCC", "TH ", "WCC", 'W', POWER_COMPONENT, 'C', CABLE_HEX, 'T', CABLE_TIER_UP_HEX, 'H', HULL);
 
-        registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_4, "WTW", "WMW", 'M', HULL, 'W', WIRE_QUAD, 'T',
-                CustomTags.WOODEN_CHESTS);
-        registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_8, "WTW", "WMW", 'M', HULL, 'W', WIRE_OCT, 'T',
-                CustomTags.WOODEN_CHESTS);
-        registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_16, "WTW", "WMW", 'M', HULL, 'W', WIRE_HEX, 'T',
-                CustomTags.WOODEN_CHESTS);;
+        registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_4, "WTW", "WMW", 'M', HULL, 'W', WIRE_QUAD, 'T', CustomTags.WOODEN_CHESTS);
+        registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_8, "WTW", "WMW", 'M', HULL, 'W', WIRE_OCT, 'T', CustomTags.WOODEN_CHESTS);
+        registerMachineRecipe(provider, GTMachines.BATTERY_BUFFER_16, "WTW", "WMW", 'M', HULL, 'W', WIRE_HEX, 'T', CustomTags.WOODEN_CHESTS);;
 
-        registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T',
-                CustomTags.WOODEN_CHESTS, 'B', CABLE, 'C', CIRCUIT);
+        registerMachineRecipe(provider, GTMachines.CHARGER_4, "WTW", "WMW", "BCB", 'M', HULL, 'W', WIRE_QUAD, 'T', CustomTags.WOODEN_CHESTS, 'B', CABLE, 'C', CIRCUIT);
         registerMachineRecipe(provider, GTMachines.FLUID_IMPORT_HATCH, " G", " M", 'M', HULL, 'G', GLASS);
         registerMachineRecipe(provider, GTMachines.FLUID_EXPORT_HATCH, " M", " G", 'M', HULL, 'G', GLASS);
 
-        registerMachineRecipe(provider, GTMachines.ITEM_IMPORT_BUS, " C", " M", 'M', HULL, 'C',
-                CustomTags.WOODEN_CHESTS);
-        registerMachineRecipe(provider, GTMachines.ITEM_EXPORT_BUS, " M", " C", 'M', HULL, 'C',
-                CustomTags.WOODEN_CHESTS);
-
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "wooden_crate", GTMachines.WOODEN_CRATE.asStack(), "RPR",
-                "PsP", "RPR", 'P', ItemTags.PLANKS, 'R', new UnificationEntry(TagPrefix.screw, GTMaterials.Iron));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "bronze_crate", GTMachines.BRONZE_CRATE.asStack(), "RPR",
-                "PhP", "RPR", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Bronze), 'R',
-                new UnificationEntry(TagPrefix.rodLong, GTMaterials.Bronze));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "steel_crate", GTMachines.STEEL_CRATE.asStack(), "RPR",
-                "PhP", "RPR", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Steel), 'R',
-                new UnificationEntry(TagPrefix.rodLong, GTMaterials.Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "aluminium_crate", GTMachines.ALUMINIUM_CRATE.asStack(),
-                "RPR", "PhP", "RPR", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium), 'R',
-                new UnificationEntry(TagPrefix.rodLong, GTMaterials.Aluminium));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "stainless_steel_crate",
-                GTMachines.STAINLESS_STEEL_CRATE.asStack(), "RPR", "PhP", "RPR", 'P',
-                new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel), 'R',
-                new UnificationEntry(TagPrefix.rodLong, GTMaterials.StainlessSteel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "titanium_crate", GTMachines.TITANIUM_CRATE.asStack(),
-                "RPR", "PhP", "RPR", 'P', new UnificationEntry(TagPrefix.plate, GTMaterials.Titanium), 'R',
-                new UnificationEntry(TagPrefix.rodLong, GTMaterials.Titanium));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "tungstensteel_crate",
-                GTMachines.TUNGSTENSTEEL_CRATE.asStack(), "RPR", "PhP", "RPR", 'P',
-                new UnificationEntry(TagPrefix.plate, GTMaterials.TungstenSteel), 'R',
-                new UnificationEntry(TagPrefix.rodLong, GTMaterials.TungstenSteel));
+        registerMachineRecipe(provider, GTMachines.ITEM_IMPORT_BUS, " C", " M", 'M', HULL, 'C', CustomTags.WOODEN_CHESTS);
+        registerMachineRecipe(provider, GTMachines.ITEM_EXPORT_BUS, " M", " C", 'M', HULL, 'C', CustomTags.WOODEN_CHESTS);
 
         VanillaRecipeHelper.addShapedRecipe(provider, true, "wooden_barrel", GTMachines.WOODEN_DRUM.asStack(), "rSs",
                 "PRP", "PRP", 'S', GTItems.STICKY_RESIN.asStack(), 'P', ItemTags.PLANKS, 'R',

@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:item/generated",
-  "textures": {
-    "layer0": "gtceu:item/rubber_sign"
-  }
+  "parent": "gtceu:block/rubber_sign"
 }

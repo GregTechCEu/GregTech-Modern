@@ -1,6 +1,3 @@
 {
-  "parent": "minecraft:block/button_inventory",
-  "textures": {
-    "texture": "gtceu:block/rubber_planks"
-  }
+  "parent": "gtceu:block/rubber_button"
 }

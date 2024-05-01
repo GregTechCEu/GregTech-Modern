@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence",
+  "textures": {
+    "texture": "gtceu:block/rubber_planks"
+  }
+}

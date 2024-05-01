@@ -547,16 +547,10 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("ladder").EUt(4).duration(40).circuitMeta(7)
                 .inputItems(new ItemStack(Items.STICK, 7)).outputItems(new ItemStack(Blocks.LADDER, 2)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(CustomTags.WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100)
-                .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE))
-                .outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("tnt_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART))
-                .inputItems(new ItemStack(Blocks.TNT)).outputItems(new ItemStack(Items.TNT_MINECART)).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100)
-                .inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER))
-                .outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("chest_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(CustomTags.WOODEN_CHESTS).outputItems(new ItemStack(Items.CHEST_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("furnace_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.FURNACE)).outputItems(new ItemStack(Items.FURNACE_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("tnt_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.TNT)).outputItems(new ItemStack(Items.TNT_MINECART)).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_minecart").EUt(4).duration(100).inputItems(new ItemStack(Items.MINECART)).inputItems(new ItemStack(Blocks.HOPPER)).outputItems(new ItemStack(Items.HOPPER_MINECART)).save(provider);
     }
 
     /**
@@ -962,31 +956,7 @@ public class VanillaStandardRecipes {
         ASSEMBLER_RECIPES.recipeBuilder("item_frame").duration(100).EUt(4).inputItems(new ItemStack(Items.LEATHER))
                 .inputItems(new ItemStack(Items.STICK, 8)).outputItems(new ItemStack(Items.ITEM_FRAME)).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("oak_sign").duration(100).EUt(4).inputItems(Items.OAK_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.OAK_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("spruce_sign").duration(100).EUt(4).inputItems(Items.SPRUCE_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.SPRUCE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("birch_sign").duration(100).EUt(4).inputItems(Items.BIRCH_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.BIRCH_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("jungle_sign").duration(100).EUt(4).inputItems(Items.JUNGLE_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.JUNGLE_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("acacia_sign").duration(100).EUt(4).inputItems(Items.ACACIA_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.ACACIA_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("cherry_sign").duration(100).EUt(4).inputItems(Items.CHERRY_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.CHERRY_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("dark_oak_sign").duration(100).EUt(4).inputItems(Items.DARK_OAK_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.DARK_OAK_SIGN, 3)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("mangrove_sign").duration(100).EUt(4).inputItems(Items.MANGROVE_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.MANGROVE_SIGN, 3)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("bamboo_sign").duration(100).EUt(4).inputItems(Items.BAMBOO_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.BAMBOO_SIGN, 3).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("crimson_sign").duration(100).EUt(4).inputItems(Items.CRIMSON_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.CRIMSON_SIGN, 3)
-                .save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("warped_sign").duration(100).EUt(4).inputItems(Items.WARPED_PLANKS, 6)
-                .inputItems(new ItemStack(Items.STICK)).circuitMeta(3).outputItems(Items.WARPED_SIGN, 3).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("purple_shulker_box").duration(100).EUt(VA[ULV]).inputItems(CustomTags.WOODEN_CHESTS).inputItems(new ItemStack(Items.SHULKER_SHELL, 2)).outputItems(new ItemStack(Blocks.PURPLE_SHULKER_BOX)).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("flower_pot").duration(10).EUt(2).inputItems(new ItemStack(Items.BRICK, 3))
                 .outputItems(new ItemStack(Items.FLOWER_POT)).save(provider);
