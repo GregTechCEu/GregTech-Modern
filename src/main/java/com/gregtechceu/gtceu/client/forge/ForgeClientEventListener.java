@@ -12,9 +12,9 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
 import net.neoforged.neoforge.client.event.RenderHighlightEvent;
-import net.neoforged.neoforge.event.TickEvent;
 import net.neoforged.neoforge.event.entity.player.ItemTooltipEvent;
 
 /**
@@ -37,11 +37,16 @@ public class ForgeClientEventListener {
     }
 
     @SubscribeEvent
-    public static void onClientTickEvent(TickEvent.ClientTickEvent event) {
-        if (event.phase == TickEvent.Phase.END) {
-            TooltipHelper.onClientTick();
-            GTValues.CLIENT_TIME++;
-        }
+    public static void onRegisterClientCommands(RegisterClientCommandsEvent event) {
+        var dispatcher = event.getDispatcher();
+        List<LiteralArgumentBuilder<CommandSourceStack>> commands = ClientCommands.createClientCommands();
+        commands.forEach(dispatcher::register);
+    }
+
+    @SubscribeEvent
+    public static void onClientTickEvent(ClientTickEvent.Post event) {
+        TooltipHelper.onClientTick();
+        GTValues.CLIENT_TIME++;
     }
 
     @SubscribeEvent
