@@ -559,6 +559,9 @@ public class WoodMachineRecipes {
                 "s", "L", "L",
                 'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         }
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_button", GTBlocks.RUBBER_BUTTON.asStack(), GTBlocks.RUBBER_PLANK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "treated_wood_button", GTBlocks.TREATED_WOOD_BUTTON.asStack(), GTBlocks.TREATED_WOOD_PLANK.asStack());
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
