@@ -1180,7 +1180,7 @@ public class GTBlocks {
         .initialProperties(() -> Blocks.SPRUCE_HANGING_SIGN)
         .lang("Treated Wood Hanging Sign")
         .tag(BlockTags.CEILING_HANGING_SIGNS)
-    .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_HANGING_SIGN.get(), p))
+        .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_HANGING_SIGN.get(), p))
         .tag(ItemTags.HANGING_SIGNS)
         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .build()
