@@ -26,7 +26,7 @@ public class FluidBlockTransfer implements IFluidHandler {
     }
 
     public Fluid getFluid() {
-        return fluidBlock.getFluid();
+        return fluidBlock.fluid;
     }
 
     public int getTanks() {

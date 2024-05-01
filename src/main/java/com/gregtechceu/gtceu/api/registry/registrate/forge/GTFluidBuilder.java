@@ -178,7 +178,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
     }
 
     public BlockBuilder<LiquidBlock, GTFluidBuilder<P>> block() {
-        return block(LiquidBlock::new);
+        return block((fluidSupplier, p) -> new LiquidBlock(fluidSupplier.get(), p));
     }
 
     public <B extends LiquidBlock> BlockBuilder<B, GTFluidBuilder<P>> block(NonNullBiFunction<NonNullSupplier<GTFluidImpl.Flowing>, BlockBehaviour.Properties, ? extends B> factory) {
