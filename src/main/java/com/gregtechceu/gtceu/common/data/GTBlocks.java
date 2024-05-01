@@ -1228,7 +1228,6 @@ public class GTBlocks {
         .lang("Treated Wood Button")
         .tag(BlockTags.WOODEN_BUTTONS)
         .blockstate((ctx, prov) -> prov.buttonBlock(ctx.getEntry(), prov.blockTexture(TREATED_WOOD_PLANK.get())))
-
         .item()
         .tag(ItemTags.WOODEN_BUTTONS)
         .build()
