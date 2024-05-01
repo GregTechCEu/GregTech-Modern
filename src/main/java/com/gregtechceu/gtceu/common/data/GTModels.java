@@ -20,10 +20,13 @@ import net.minecraft.data.models.model.DelegatedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.level.block.DoorBlock;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.client.model.generators.ConfiguredModel;
 import net.neoforged.neoforge.client.model.generators.ModelFile;
+import net.neoforged.neoforge.client.model.generators.ModelProvider;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -82,6 +85,9 @@ public class GTModels {
     public static void rubberTreeSaplingModel(DataGenContext<Item, BlockItem> context, RegistrateItemModelProvider provider) {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
+    public static void rubberDoorModel(DataGenContext<Block, DoorBlock> ctx, RegistrateBlockstateProvider prov) {
+        prov.doorBlock(ctx.getEntry(), GTCEu.id("block/rubber_door_bottom"), GTCEu.id("block/rubber_door_top"));
+    }
 
     public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
         prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_item_pipeline", prov.modLoc("block/pipe/ld_item_pipe/block")));
@@ -89,6 +95,28 @@ public class GTModels {
 
     public static void longDistanceFluidPipeModel(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
         prov.simpleBlock(ctx.getEntry(), prov.models().cubeAll("long_distance_fluid_pipeline", prov.modLoc("block/pipe/ld_fluid_pipe/block")));
+    }
+
+    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation texturePath) {
+        return (ctx, prov) -> {
+            Block block = ctx.getEntry();
+            ModelFile cubeAll = prov.models().cubeAll(ctx.getName(), texturePath);
+            ModelFile cubeMirroredAll = prov.models().singleTexture(ctx.getName() + "_mirrored", prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_mirrored_all"), "all", texturePath);
+            ConfiguredModel[] models = ConfiguredModel.builder()
+                .modelFile(cubeAll)
+                .rotationY(0)
+                .nextModel()
+                .modelFile(cubeAll)
+                .rotationY(180)
+                .nextModel()
+                .modelFile(cubeMirroredAll)
+                .rotationY(0)
+                .nextModel()
+                .modelFile(cubeMirroredAll)
+                .rotationY(180)
+                .build();
+            prov.simpleBlock(block, models);
+        };
     }
 
     /**

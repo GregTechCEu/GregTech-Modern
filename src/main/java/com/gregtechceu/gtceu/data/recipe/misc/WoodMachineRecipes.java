@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -195,30 +196,28 @@ public class WoodMachineRecipes {
                 new WoodTypeEntry.Builder(GTCEu.MOD_ID, "rubber")
                     .planks(GTBlocks.RUBBER_PLANK.asItem(), null)
                     .log(GTBlocks.RUBBER_LOG.asItem()).addCharcoalRecipe()
-                    // TODO rubber wood set
-                    //.strippedLog(GTBlocks.STRIPPED_RUBBER_LOG.asItem())
-                    //.wood(GTBlocks.RUBBER_WOOD.asItem())
-                    //.strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
-                    //.door(GTBlocks.RUBBER_DOOR.asItem(), null)
-                    //.trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
-                    //.slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
-                    //.fence(GTBlocks.RUBBER_FENCE.asItem(), null)
-                    //.fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
-                    //.stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
-                    //.boat(GTItems.RUBBER_STAIRS.asItem(), null)
+                    .strippedLog(GTBlocks.STRIPPED_RUBBER_LOG.asItem())
+                    .wood(GTBlocks.RUBBER_WOOD.asItem())
+                    .strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
+                    .door(GTBlocks.RUBBER_DOOR.asItem(), null)
+                    .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
+                    .slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
+                    .fence(GTBlocks.RUBBER_FENCE.asItem(), null)
+                    .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
+                    .stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
+                    //.boat(GTItems.RUBBER_BOAT.asItem(), null) // TODO someone forgot boat textures.
                     .registerAllTags()
                     .registerAllUnificationInfo()
                     .build(),
                 new WoodTypeEntry.Builder(GTCEu.MOD_ID, "treated")
                     .planks(GTBlocks.TREATED_WOOD_PLANK.asItem(), null)
-                    // TODO treated wood set
-                    //.door(GTBlocks.TREATED_WOOD_DOOR.asItem(), null)
-                    //.trapdoor(GTBlocks.TREATED_WOOD_TRAPDOOR.asItem(), null)
-                    //.slab(GTBlocks.TREATED_WOOD_SLAB.asItem(), null).addSlabRecipe()
-                    //.fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
-                    //.fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
-                    //.stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
-                    //.boat(GTBlocks.TREATED_WOOD_BOAT.asItem(), null)
+                    .door(GTBlocks.TREATED_WOOD_DOOR.asItem(), null)
+                    .trapdoor(GTBlocks.TREATED_WOOD_TRAPDOOR.asItem(), null)
+                    .slab(GTBlocks.TREATED_WOOD_SLAB.asItem(), null).addSlabRecipe()
+                    .fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
+                    .fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
+                    .stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
+                    //.boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
                     .material(TreatedWood)
                     .registerAllTags()
                     .registerAllUnificationInfo()

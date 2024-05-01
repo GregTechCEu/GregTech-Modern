@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/fence",
+  "textures": {
+    "texture": "gtceu:block/treated_wood_fence"
+  }
+}
