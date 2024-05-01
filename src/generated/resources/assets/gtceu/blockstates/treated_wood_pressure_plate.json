@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "powered=false": {
+      "model": "gtceu:block/treated_wood_pressure_plate"
+    },
+    "powered=true": {
+      "model": "gtceu:block/treated_wood_pressure_plate_down"
+    }
+  }
+}
