@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.core.QuartPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
@@ -127,7 +128,12 @@ public class OreGenerator {
     private Stream<GTOreDefinition> getEntries(WorldGenLevel level, BlockPos veinCenter, XoroshiroRandomSource random) {
         return WorldGeneratorUtils.WORLD_GEN_LAYERS.values().stream()
                 .filter(layer -> layer.isApplicableForLevel(level.getLevel().dimension().location()))
-                .map(layer -> getEntry(level, level.getBiome(veinCenter), random, layer))
+                .map(layer -> {
+                    int quartX = QuartPos.fromBlock(veinCenter.getX());
+                    int quartY = QuartPos.fromBlock(veinCenter.getY());
+                    int quartZ = QuartPos.fromBlock(veinCenter.getZ());
+                    return getEntry(level, level.getUncachedNoiseBiome(quartX, quartY, quartZ), random, layer);
+                })
                 .filter(Objects::nonNull);
     }
 
