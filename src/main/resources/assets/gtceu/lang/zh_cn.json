@@ -1316,7 +1316,7 @@
     "block.gtceu.zpm_chemical_reactor":"§c精英化学反应釜 III§r",
     "block.gtceu.zpm_circuit_assembler":"§c精英电路组装机 III§r",
     "block.gtceu.zpm_compressor":"§c精英压缩机 III§r",
-    "block.gtceu.zpm_cutter":"§精英切割机 III§r",
+    "block.gtceu.zpm_cutter":"§c精英切割机 III§r",
     "block.gtceu.zpm_diode":"§cZPM§r二极管",
     "block.gtceu.zpm_distillery":"§c精英蒸馏室 III§r",
     "block.gtceu.zpm_electric_furnace":"§c精英电炉 III§r",
