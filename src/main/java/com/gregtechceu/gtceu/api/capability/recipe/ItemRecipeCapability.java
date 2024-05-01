@@ -78,26 +78,36 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
         if (obj instanceof SizedIngredient ingredient) {
 
             // all kinds of special cases
-            if (ingredient.ingredient().getCustomIngredient() instanceof DataComponentIngredient component && component.isStrict()) {
-                ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
-            } else if (ingredient.ingredient().getCustomIngredient() instanceof DataComponentIngredient component && !component.isStrict()) {
-                ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
-            } else if (ingredient.ingredient().getCustomIngredient() instanceof IntCircuitIngredient circuit) {
-                ingredients.addAll(MapItemStackDataComponentIngredient.from(circuit));
-            }  else if (ingredient.ingredient().getCustomIngredient() instanceof IntersectionIngredient intersection) {
-                ingredients.add(new MapIntersectionIngredient(intersection));
-            } else if (ingredient.ingredient().getCustomIngredient() instanceof CompoundIngredient compound) {
-                for (Ingredient inner : compound.children()) {
-                    ingredients.addAll(convertToMapIngredient(inner));
+            switch (ingredient.ingredient().getCustomIngredient()) {
+                case
+                    DataComponentIngredient component when component.isStrict() ->
+                    ingredients.addAll(MapItemStackDataComponentIngredient.from(component.toVanilla()));
+                case
+                    DataComponentIngredient component when !component.isStrict() ->
+                    ingredients.addAll(MapItemStackWeakDataComponentIngredient.from(component.toVanilla()));
+                case
+                    IntCircuitIngredient circuit ->
+                    ingredients.addAll(MapItemStackDataComponentIngredient.from(circuit));
+                case
+                    IntersectionIngredient intersection ->
+                    ingredients.add(new MapIntersectionIngredient(intersection));
+                case
+                    CompoundIngredient compound -> {
+                    for (Ingredient inner : compound.children()) {
+                        ingredients.addAll(convertToMapIngredient(inner));
+                    }
                 }
-            } else {
-                for (Ingredient.Value value : ingredient.ingredient().getValues()) {
-                    if (value instanceof Ingredient.TagValue tagValue) {
-                        ingredients.add(new MapItemTagIngredient(tagValue.tag()));
-                    } else {
-                        Collection<ItemStack> stacks = value.getItems();
-                        for (ItemStack stack : stacks) {
-                            ingredients.add(new MapItemStackIngredient(stack, ingredient.ingredient()));
+                case
+                    null,
+                    default -> {
+                    for (Ingredient.Value value : ingredient.ingredient().getValues()) {
+                        if (value instanceof Ingredient.TagValue tagValue) {
+                            ingredients.add(new MapItemTagIngredient(tagValue.tag()));
+                        } else {
+                            Collection<ItemStack> stacks = value.getItems();
+                            for (ItemStack stack : stacks) {
+                                ingredients.add(new MapItemStackIngredient(stack, ingredient.ingredient()));
+                            }
                         }
                     }
                 }

@@ -55,7 +55,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
 
     @Override
     public StreamCodec<RegistryFriendlyByteBuf, GTRecipe> streamCodec() {
-        return null;
+        return STREAM_CODEC;
     }
 
     public static Tuple<RecipeCapability<?>, List<Content>> entryReader(RegistryFriendlyByteBuf buf) {
@@ -129,7 +129,7 @@ public class GTRecipeSerializer implements RecipeSerializer<GTRecipe> {
         return list;
     }
 
-    public static  <T> void writeCollection(Collection<T> collection, RegistryFriendlyByteBuf buf, StreamEncoder<? super RegistryFriendlyByteBuf, T> encoder) {
+    public static <T> void writeCollection(Collection<T> collection, RegistryFriendlyByteBuf buf, StreamEncoder<? super RegistryFriendlyByteBuf, T> encoder) {
         buf.writeVarInt(collection.size());
 
         for (T t : collection) {
