@@ -109,6 +109,8 @@
     "gtceu:computer_casing",
     "gtceu:advanced_computer_casing",
     "gtceu:computer_heat_vent",
-    "gtceu:high_power_casing"
+    "gtceu:high_power_casing",
+    "gtceu:test",
+    "gtceu:power_module"
   ]
 }

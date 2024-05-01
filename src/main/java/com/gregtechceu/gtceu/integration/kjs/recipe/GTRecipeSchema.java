@@ -178,7 +178,7 @@ public interface GTRecipeSchema {
             return output(CWURecipeCapability.CAP, cwu);
         }
 
-        public GTRecipeJS itemInputs(ItemStack... inputs) {
+        public GTRecipeJS itemInputs(InputItem... inputs) {
             return inputItems(inputs);
         }
 

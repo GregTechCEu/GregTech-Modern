@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:law_cleaning_maintenance_hatch"
+  },
+  "items": [
+    "gtceu:law_cleaning_maintenance_hatch"
+  ],
+  "page": "gtceu:parts/law_cleaning_maintenance_hatch",
+  "position": [
+    -200,
+    100
+  ],
+  "section": "gtceu:parts"
+}

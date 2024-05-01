@@ -1,0 +1,15 @@
+{
+  "button_texture": {
+    "type": "item",
+    "res": "gtceu:sterile_cleaning_maintenance_hatch"
+  },
+  "items": [
+    "gtceu:sterile_cleaning_maintenance_hatch"
+  ],
+  "page": "gtceu:parts/sterile_cleaning_maintenance_hatch",
+  "position": [
+    -250,
+    100
+  ],
+  "section": "gtceu:parts"
+}

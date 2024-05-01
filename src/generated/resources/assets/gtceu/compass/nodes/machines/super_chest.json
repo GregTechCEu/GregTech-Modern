@@ -8,6 +8,7 @@
     "gtceu:mv_super_chest",
     "gtceu:hv_super_chest",
     "gtceu:ev_super_chest",
+    "gtceu:ev_quantum_chest",
     "gtceu:iv_quantum_chest",
     "gtceu:luv_quantum_chest",
     "gtceu:zpm_quantum_chest",
@@ -16,7 +17,8 @@
     "gtceu:uev_quantum_chest",
     "gtceu:uiv_quantum_chest",
     "gtceu:uxv_quantum_chest",
-    "gtceu:opv_quantum_chest"
+    "gtceu:opv_quantum_chest",
+    "gtceu:max_quantum_chest"
   ],
   "page": "gtceu:machines/super_chest",
   "position": [
