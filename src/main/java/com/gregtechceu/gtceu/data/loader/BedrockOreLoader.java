@@ -44,7 +44,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
 
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS, BedrockOreDefinition.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS));
         if (GTCEu.isKubeJSLoaded()) {
             RunKJSEventInSeparateClassBecauseForgeIsDumb.fireKJSEvent();
         }

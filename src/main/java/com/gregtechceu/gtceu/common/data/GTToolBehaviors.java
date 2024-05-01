@@ -31,7 +31,7 @@ public class GTToolBehaviors {
     public static final ToolBehaviorType<WaxOffBehavior> WAX_OFF = GTRegistries.TOOL_BEHAVIORS.register(GTCEu.id("wax_off"), new ToolBehaviorType<>(WaxOffBehavior.CODEC, WaxOffBehavior.STREAM_CODEC));
 
     public static void init() {
-        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TOOL_BEHAVIORS, (Class<ToolBehaviorType<?>>) (Class<?>) ToolBehaviorType.class));
+        ModLoader.postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.TOOL_BEHAVIORS));
         GTRegistries.TOOL_BEHAVIORS.freeze();
     }
 }
