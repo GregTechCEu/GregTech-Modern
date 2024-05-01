@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "gtceu:block/treated_wood_slab"
+    },
+    "type=double": {
+      "model": "gtceu:block/treated_wood_planks"
+    },
+    "type=top": {
+      "model": "gtceu:block/treated_wood_slab_top"
+    }
+  }
+}

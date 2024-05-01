@@ -1633,8 +1633,9 @@ public class GTItems {
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
-        for (int i = 0; i < DyeColor.values().length; i++) {
-            var dyeColor = DyeColor.values()[i];
+        DyeColor[] colors = DyeColor.values();
+        for (int i = 0; i < colors.length; i++) {
+            var dyeColor = colors[i];
             DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
                     .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
