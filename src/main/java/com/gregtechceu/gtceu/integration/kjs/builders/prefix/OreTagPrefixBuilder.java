@@ -47,7 +47,7 @@ public class OreTagPrefixBuilder extends TagPrefixBuilder {
         validate(this.id,
             errorIfNull(stateSupplier, "stateSupplier"),
             onlySetDefault(templateProperties, () -> {
-                templateProperties = () -> GTBlocks.copy(((BlockBehaviourAccessor) stateSupplier.get().getBlock()).getBlockProperties(), BlockBehaviour.Properties.of());
+                templateProperties = () -> GTBlocks.copy(stateSupplier.get().getBlock().properties(), BlockBehaviour.Properties.of());
             }),
             errorIfNull(baseModelLocation, "baseModelLocation")
         );
