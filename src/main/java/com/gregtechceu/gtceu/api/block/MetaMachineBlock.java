@@ -23,6 +23,7 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -35,6 +36,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.BlockAndTintGetter;
@@ -127,9 +129,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         if (!pLevel.isClientSide) {
             var machine = getMachine(pLevel, pPos);
             if (machine instanceof IDropSaveMachine dropSaveMachine) {
-                CompoundTag tag = pStack.get(GTDataComponents.DROP_SAVED_MACHINE);
+                CustomData tag = pStack.get(DataComponents.BLOCK_ENTITY_DATA);
                 if (tag != null) {
-                    dropSaveMachine.loadFromItem(tag);
+                    dropSaveMachine.loadFromItem(tag.copyTag());
                 }
             }
             if (machine instanceof IMachineLife machineLife) {
@@ -180,9 +182,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
         ItemStack itemStack = super.getCloneItemStack(state, target, level, pos, player);
         if (getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.savePickClone()) {
-            CompoundTag tag = itemStack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).copy();
+            CompoundTag tag = itemStack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
             dropSaveMachine.saveToItem(tag);
-            itemStack.set(GTDataComponents.DROP_SAVED_MACHINE, tag);
+            itemStack.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
         }
         return itemStack;
     }
@@ -227,9 +229,9 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        CompoundTag tag = drop.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).copy();
+                        CompoundTag tag = drop.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
                         dropSaveMachine.saveToItem(tag);
-                        drop.set(GTDataComponents.DROP_SAVED_MACHINE, tag);
+                        drop.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
                         // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
                         break;
                     }

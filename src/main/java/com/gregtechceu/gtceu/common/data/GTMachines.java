@@ -73,13 +73,14 @@ import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -117,6 +118,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
  * @date 2023/2/19
  * @implNote GTMachines
  */
+@SuppressWarnings("unused")
 public class GTMachines {
     public static final int[] ALL_TIERS = GTValues.tiersBetween(ULV, GTCEuAPI.isHighTier() ? MAX : UHV);
     public static final int[] ELECTRIC_TIERS = GTValues.tiersBetween(LV, GTCEuAPI.isHighTier() ? OpV : UV);
@@ -461,13 +463,13 @@ public class GTMachines {
 
 
     public static BiConsumer<ItemStack, List<Component>> CHEST_TOOLTIPS = (stack, list) -> {
-        if (stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
-            Tag itemNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+        if (stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
+            Tag itemNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().get("stored");
             if (itemNbt == null) {
                 return;
             }
             ItemStack itemStack = ItemStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), itemNbt).getOrThrow();
-            int storedAmount = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).getInt("storedAmount");
+            int storedAmount = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().getInt("storedAmount");
             list.add(1, Component.translatable("gtceu.universal.tooltip.item_stored", itemStack.getDescriptionId(), storedAmount));
         }
     };
@@ -502,8 +504,8 @@ public class GTMachines {
 
     public static BiConsumer<ItemStack, List<Component>> createTankTooltips(String nbtName) {
         return (stack, list) -> {
-            if (stack.has(GTDataComponents.DROP_SAVED_MACHINE)) {
-                Tag fluidNbt = stack.getOrDefault(GTDataComponents.DROP_SAVED_MACHINE, new CompoundTag()).get("stored");
+            if (stack.has(DataComponents.BLOCK_ENTITY_DATA)) {
+                Tag fluidNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().get("stored");
                 if (fluidNbt == null) {
                     return;
                 }
@@ -522,7 +524,7 @@ public class GTMachines {
                     .renderer(() -> new QuantumTankRenderer(tier))
                     .hasTESR(true)
                     .tooltipBuilder(createTankTooltips("stored"))
-                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity",4000000 * (int) Math.pow(2, tier)))
+                    .tooltips(Component.translatable("gtceu.machine.quantum_tank.tooltip"), Component.translatable("gtceu.universal.tooltip.fluid_storage_capacity", 4000000 * (int) Math.pow(2, tier)))
                     .compassNode("super_tank")
                     .register(),
             LOW_TIERS);
