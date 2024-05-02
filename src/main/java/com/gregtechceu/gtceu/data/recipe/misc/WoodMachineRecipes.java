@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -136,21 +135,6 @@ public class WoodMachineRecipes {
                     .boat(Items.DARK_OAK_BOAT, "dark_oak_boat")
                     .registerAllUnificationInfo()
                     .build(),
-                new WoodTypeEntry.Builder(mcModId, "cherry")
-                    .planks(Items.CHERRY_PLANKS, "cherry_planks")
-                    .log(Items.CHERRY_LOG).removeCharcoalRecipe()
-                    .strippedLog(Items.STRIPPED_CHERRY_LOG)
-                    .wood(Items.CHERRY_WOOD)
-                    .strippedWood(Items.STRIPPED_CHERRY_WOOD)
-                    .door(Items.CHERRY_DOOR, "cherry_door")
-                    .trapdoor(Items.CHERRY_TRAPDOOR, "cherry_trapdoor")
-                    .slab(Items.CHERRY_SLAB, "cherry_slab")
-                    .fence(Items.CHERRY_FENCE, "cherry_fence")
-                    .fenceGate(Items.CHERRY_FENCE_GATE, "cherry_fence_gate")
-                    .stairs(Items.CHERRY_STAIRS, "cherry_stairs")
-                    .boat(Items.CHERRY_BOAT, "cherry_boat")
-                    .registerAllUnificationInfo()
-                    .build(),
                 new WoodTypeEntry.Builder(mcModId, "mangrove")
                     .planks(Items.MANGROVE_PLANKS, "mangrove_planks")
                     .log(Items.MANGROVE_LOG).removeCharcoalRecipe()
@@ -195,30 +179,30 @@ public class WoodMachineRecipes {
                     .registerAllUnificationInfo()
                     .build(),
                 new WoodTypeEntry.Builder(GTCEu.MOD_ID, "rubber")
-                    .planks(GTBlocks.RUBBER_PLANK.asItem(), null)
-                    .log(GTBlocks.RUBBER_LOG.asItem()).addCharcoalRecipe()
-                    .strippedLog(GTBlocks.STRIPPED_RUBBER_LOG.asItem())
-                    .wood(GTBlocks.RUBBER_WOOD.asItem())
-                    .strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
-                    .door(GTBlocks.RUBBER_DOOR.asItem(), null)
-                    .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
-                    .slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
-                    .fence(GTBlocks.RUBBER_FENCE.asItem(), null)
-                    .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
-                    .stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
-                    //.boat(GTItems.RUBBER_BOAT.asItem(), null) // TODO someone forgot boat textures.
+                    .planks(GTBlocks.RUBBER_PLANK.get().asItem(), null)
+                    .log(GTBlocks.RUBBER_LOG.get().asItem()).addCharcoalRecipe()
+                    .strippedLog(GTBlocks.STRIPPED_RUBBER_LOG.get().asItem())
+                    .wood(GTBlocks.RUBBER_WOOD.get().asItem())
+                    .strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.get().asItem())
+                    .door(GTBlocks.RUBBER_DOOR.get().asItem(), null)
+                    .trapdoor(GTBlocks.RUBBER_TRAPDOOR.get().asItem(), null)
+                    .slab(GTBlocks.RUBBER_SLAB.get().asItem(), null).addSlabRecipe()
+                    .fence(GTBlocks.RUBBER_FENCE.get().asItem(), null)
+                    .fenceGate(GTBlocks.RUBBER_FENCE_GATE.get().asItem(), null)
+                    .stairs(GTBlocks.RUBBER_STAIRS.get().asItem(), null).addStairsRecipe()
+                    //.boat(GTItems.RUBBER_BOAT.get().asItem(), null) // TODO someone forgot boat textures.
                     .registerAllTags()
                     .registerAllUnificationInfo()
                     .build(),
                 new WoodTypeEntry.Builder(GTCEu.MOD_ID, "treated")
-                    .planks(GTBlocks.TREATED_WOOD_PLANK.asItem(), null)
-                    .door(GTBlocks.TREATED_WOOD_DOOR.asItem(), null)
-                    .trapdoor(GTBlocks.TREATED_WOOD_TRAPDOOR.asItem(), null)
-                    .slab(GTBlocks.TREATED_WOOD_SLAB.asItem(), null).addSlabRecipe()
-                    .fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
-                    .fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
-                    .stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
-                    //.boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
+                    .planks(GTBlocks.TREATED_WOOD_PLANK.get().asItem(), null)
+                    .door(GTBlocks.TREATED_WOOD_DOOR.get().asItem(), null)
+                    .trapdoor(GTBlocks.TREATED_WOOD_TRAPDOOR.get().asItem(), null)
+                    .slab(GTBlocks.TREATED_WOOD_SLAB.get().asItem(), null).addSlabRecipe()
+                    .fence(GTBlocks.TREATED_WOOD_FENCE.get().asItem(), null)
+                    .fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.get().asItem(), null)
+                    .stairs(GTBlocks.TREATED_WOOD_STAIRS.get().asItem(), null).addStairsRecipe()
+                    //.boat(GTItems.TREATED_WOOD_BOAT.get().asItem(), null) // TODO someone forgot boat textures.
                     .material(TreatedWood)
                     .registerAllTags()
                     .registerAllUnificationInfo()
@@ -521,7 +505,7 @@ public class WoodMachineRecipes {
                         "PHP", "PkP", "SSS",
                         'P', entry.planks,
                         'S', entry.slab,
-                        'H', ItemTags.SHOVELS);
+                        'H', Tags.Items.TOOLS_SHOVELS);
                 }
             } else {
                 if (!hasBoatRecipe) {
@@ -553,11 +537,11 @@ public class WoodMachineRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",
             ChemicalHelper.get(rod, TreatedWood, ConfigHolder.INSTANCE.recipes.nerfWoodCrafting ? 2 : 4),
             "L", "L",
-            'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
+            'L', GTBlocks.TREATED_WOOD_PLANK.get().asItem());
         if (ConfigHolder.INSTANCE.recipes.nerfWoodCrafting) {
             VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick_saw", ChemicalHelper.get(rod, TreatedWood, 4),
                 "s", "L", "L",
-                'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
+                'L', GTBlocks.TREATED_WOOD_PLANK.get().asItem());
         }
     }
 

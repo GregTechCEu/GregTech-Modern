@@ -963,7 +963,7 @@ public class GTBlocks {
             .build()
             .register();
 
-    public static final WoodType RUBBER_TYPE = WoodType.register(new WoodType(GTCEu.id("rubber").toString()));
+    public static final WoodType RUBBER_TYPE = WoodType.register(WoodType.create(GTCEu.id("rubber").toString()));
 
     public static final BlockEntry<RotatedPillarBlock> STRIPPED_RUBBER_LOG = REGISTRATE.block("stripped_rubber_log", RotatedPillarBlock::new)
         .initialProperties(() -> Blocks.STRIPPED_SPRUCE_LOG)
@@ -1098,7 +1098,7 @@ public class GTBlocks {
         .build()
         .register();
 
-    public static final WoodType TREATED_WOOD_TYPE = WoodType.register(new WoodType(GTCEu.id("treated_wood").toString()));
+    public static final WoodType TREATED_WOOD_TYPE = WoodType.register(WoodType.create(GTCEu.id("treated_wood").toString()));
 
     public static final BlockEntry<Block> TREATED_WOOD_PLANK = REGISTRATE
             .block("treated_wood_planks", Block::new)
