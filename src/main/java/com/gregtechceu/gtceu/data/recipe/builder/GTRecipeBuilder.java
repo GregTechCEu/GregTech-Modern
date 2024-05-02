@@ -471,7 +471,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder inputFluids(FluidStack input) {
-        return input(FluidRecipeCapability.CAP, FluidIngredient.of(TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
+        return input(FluidRecipeCapability.CAP, FluidIngredient.of(TagUtil.createFluidTag(Registry.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
     }
 
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
