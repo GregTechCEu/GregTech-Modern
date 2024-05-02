@@ -30,7 +30,7 @@ import net.minecraft.world.item.crafting.Ingredient;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
@@ -129,7 +129,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         }
 
         @Override
-        public void setStackInSlot(int slot, @Nonnull ItemStack stack) {
+        public void setStackInSlot(int slot, @NotNull ItemStack stack) {
             GenericStack stack1 = GenericStack.fromItemStack(stack);
             this.internalBuffer.insert(slot, stack1.what(), stack1.amount(), Actionable.MODULATE);
             this.machine.onChanged();
@@ -137,7 +137,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
 
         @Override
         public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, new ItemStackTransfer(16) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, new ItemStackTransfer(16) {
                 @NotNull
                 @Override
                 public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate, boolean notifyChanges) {
@@ -165,7 +165,7 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
             return 1;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public ItemStack getStackInSlot(int slot) {
             return ItemStack.EMPTY;

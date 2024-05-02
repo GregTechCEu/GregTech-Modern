@@ -59,8 +59,7 @@ public class CustomTags {
 
 
     // Platform-dependent tags
-    public static final TagKey<Item> TAG_WOODEN_CHESTS = TagUtil.createItemTag("chests/wooden");
-
+    public static final TagKey<Item> RUBBER_LOGS_ITEM = TagUtil.createModItemTag("logs/rubber");
     public static final TagKey<Block> NEEDS_WOOD_TOOL = TagUtil.createBlockTag("needs_wood_tool");
     public static final TagKey<Block> NEEDS_GOLD_TOOL = TagUtil.createBlockTag("needs_gold_tool");
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = TagUtil.createBlockTag("needs_netherite_tool");
@@ -86,13 +85,13 @@ public class CustomTags {
     public static final TagKey<Block> CREATE_SEATS = TagUtil.optionalTag(Registries.BLOCK, new ResourceLocation(GTValues.MODID_CREATE, "seats"));
     public static final TagKey<Block> ORE_BLOCKS = TagUtil.createBlockTag("ores");
 
+    public static final TagKey<Block> RUBBER_LOGS_BLOCK = TagUtil.createModBlockTag("logs/rubber");
+    public static final TagKey<Item> WOODEN_CHESTS = TagUtil.createItemTag("chests/wooden");
 
     public static final TagKey<Biome> IS_SWAMP = TagUtil.createTag(Registries.BIOME, "is_swamp", false);
     public static final TagKey<Biome> IS_SANDY = TagUtil.createModTag(Registries.BIOME, "is_sandy");
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");
 
-
-    public static final TagKey<Fluid> STEAM = TagUtil.createFluidTag("steam");
 
     public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "heat_immune");
     public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "chemical_immune");

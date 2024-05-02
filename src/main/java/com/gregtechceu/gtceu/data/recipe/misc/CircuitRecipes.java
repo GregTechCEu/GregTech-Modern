@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -900,6 +901,7 @@ public class CircuitRecipes {
     }
 
     private static void circuitRecipes(Consumer<FinishedRecipe> provider) {
+        int outputAmount = ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 1 : 2;
 
         // T1: Electronic ==============================================================================================
 
@@ -917,7 +919,7 @@ public class CircuitRecipes {
                 .inputItems(CustomTags.RESISTORS, 2)
                 .inputItems(wireGtSingle, RedAlloy, 2)
                 .inputItems(CustomTags.ULV_CIRCUITS, 2)
-                .outputItems(ELECTRONIC_CIRCUIT_LV, 2)
+                .outputItems(ELECTRONIC_CIRCUIT_LV, outputAmount)
                 .save(provider);
 
         // MV
@@ -947,7 +949,7 @@ public class CircuitRecipes {
                 .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireFine, Copper, 2)
                 .inputItems(bolt, Tin, 2)
-                .outputItems(INTEGRATED_CIRCUIT_LV, 2)
+                .outputItems(INTEGRATED_CIRCUIT_LV, outputAmount)
                 .save(provider);
 
         // MV
@@ -958,12 +960,13 @@ public class CircuitRecipes {
                 .inputItems(CustomTags.DIODES, 2)
                 .inputItems(wireFine, Gold, 4)
                 .inputItems(bolt, Silver, 4)
-                .outputItems(INTEGRATED_CIRCUIT_MV, 2)
+                .outputItems(INTEGRATED_CIRCUIT_MV, outputAmount)
                 .save(provider);
 
         // HV
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("integrated_circuit_hv").EUt(VA[LV]).duration(800)
-                .inputItems(INTEGRATED_CIRCUIT_MV, 2)
+                .inputItems(INTEGRATED_CIRCUIT_MV, outputAmount)// a little generous for this first HV if harder recipes
+                                                                // enabled
                 .inputItems(INTEGRATED_LOGIC_CIRCUIT, 2)
                 .inputItems(RANDOM_ACCESS_MEMORY, 2)
                 .inputItems(CustomTags.TRANSISTORS, 4)
@@ -980,7 +983,7 @@ public class CircuitRecipes {
                 .inputItems(SIMPLE_SYSTEM_ON_CHIP)
                 .inputItems(bolt, RedAlloy, 2)
                 .inputItems(wireFine, Tin, 2)
-                .outputItems(NAND_CHIP_ULV, 8)
+                .outputItems(NAND_CHIP_ULV, outputAmount * 4)
                 .save(provider);
 
         CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("nand_chip_ulv_plastic_board").EUt(VA[MV]).duration(300)
@@ -988,7 +991,7 @@ public class CircuitRecipes {
                 .inputItems(SIMPLE_SYSTEM_ON_CHIP)
                 .inputItems(bolt, RedAlloy, 2)
                 .inputItems(wireFine, Tin, 2)
-                .outputItems(NAND_CHIP_ULV, 12)
+                .outputItems(NAND_CHIP_ULV, outputAmount * 6)
                 .save(provider);
 
         // Microprocessor LV
@@ -999,7 +1002,7 @@ public class CircuitRecipes {
                 .inputItems(CustomTags.CAPACITORS, 2)
                 .inputItems(CustomTags.TRANSISTORS, 2)
                 .inputItems(wireFine, Copper, 2)
-                .outputItems(MICROPROCESSOR_LV, 3)
+                .outputItems(MICROPROCESSOR_LV, ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 2 : 3)
                 .save(provider);
 
         // Microprocessor LV SoC
@@ -1008,7 +1011,7 @@ public class CircuitRecipes {
                 .inputItems(SYSTEM_ON_CHIP)
                 .inputItems(wireFine, Copper, 2)
                 .inputItems(bolt, Tin, 2)
-                .outputItems(MICROPROCESSOR_LV, 6)
+                .outputItems(MICROPROCESSOR_LV, ConfigHolder.INSTANCE.recipes.harderCircuitRecipes ? 3 : 6)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1022,7 +1025,7 @@ public class CircuitRecipes {
                 .inputItems(CustomTags.CAPACITORS, 4)
                 .inputItems(CustomTags.TRANSISTORS, 4)
                 .inputItems(wireFine, RedAlloy, 4)
-                .outputItems(PROCESSOR_MV, 2)
+                .outputItems(PROCESSOR_MV, outputAmount)
                 .save(provider);
 
         // MV SoC
@@ -1031,7 +1034,7 @@ public class CircuitRecipes {
                 .inputItems(SYSTEM_ON_CHIP)
                 .inputItems(wireFine, RedAlloy, 4)
                 .inputItems(bolt, AnnealedCopper, 4)
-                .outputItems(PROCESSOR_MV, 4)
+                .outputItems(PROCESSOR_MV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1095,7 +1098,7 @@ public class CircuitRecipes {
                 .inputItems(SMD_CAPACITOR, 8)
                 .inputItems(SMD_TRANSISTOR, 8)
                 .inputItems(wireFine, Electrum, 8)
-                .outputItems(NANO_PROCESSOR_HV, 2)
+                .outputItems(NANO_PROCESSOR_HV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1106,7 +1109,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 2)
                 .inputItems(ADVANCED_SMD_TRANSISTOR, 2)
                 .inputItems(wireFine, Electrum, 8)
-                .outputItems(NANO_PROCESSOR_HV, 2)
+                .outputItems(NANO_PROCESSOR_HV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1116,7 +1119,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SYSTEM_ON_CHIP)
                 .inputItems(wireFine, Electrum, 4)
                 .inputItems(bolt, Platinum, 4)
-                .outputItems(NANO_PROCESSOR_HV, 4)
+                .outputItems(NANO_PROCESSOR_HV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1205,7 +1208,7 @@ public class CircuitRecipes {
                 .inputItems(SMD_CAPACITOR, 12)
                 .inputItems(SMD_TRANSISTOR, 12)
                 .inputItems(wireFine, Platinum, 12)
-                .outputItems(QUANTUM_PROCESSOR_EV, 2)
+                .outputItems(QUANTUM_PROCESSOR_EV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1216,7 +1219,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 3)
                 .inputItems(ADVANCED_SMD_TRANSISTOR, 3)
                 .inputItems(wireFine, Platinum, 12)
-                .outputItems(QUANTUM_PROCESSOR_EV, 2)
+                .outputItems(QUANTUM_PROCESSOR_EV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1226,7 +1229,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SYSTEM_ON_CHIP)
                 .inputItems(wireFine, Platinum, 12)
                 .inputItems(bolt, NiobiumTitanium, 8)
-                .outputItems(QUANTUM_PROCESSOR_EV, 4)
+                .outputItems(QUANTUM_PROCESSOR_EV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1315,7 +1318,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 6)
                 .inputItems(ADVANCED_SMD_TRANSISTOR, 6)
                 .inputItems(wireFine, NiobiumTitanium, 8)
-                .outputItems(CRYSTAL_PROCESSOR_IV, 2)
+                .outputItems(CRYSTAL_PROCESSOR_IV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1325,7 +1328,7 @@ public class CircuitRecipes {
                 .inputItems(CRYSTAL_SYSTEM_ON_CHIP)
                 .inputItems(wireFine, NiobiumTitanium, 8)
                 .inputItems(bolt, YttriumBariumCuprate, 8)
-                .outputItems(CRYSTAL_PROCESSOR_IV, 4)
+                .outputItems(CRYSTAL_PROCESSOR_IV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1367,6 +1370,9 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_DIODE, 8)
                 .inputFluids(SolderingAlloy.getFluid(L * 10))
                 .outputItems(CRYSTAL_MAINFRAME_UV)
+                .stationResearch(b -> b
+                        .researchStack(CRYSTAL_COMPUTER_ZPM.asStack())
+                        .CWUt(16))
                 .save(provider);
 
         // T7: Wetware =================================================================================================
@@ -1392,7 +1398,7 @@ public class CircuitRecipes {
                 .inputItems(ADVANCED_SMD_CAPACITOR, 8)
                 .inputItems(ADVANCED_SMD_TRANSISTOR, 8)
                 .inputItems(wireFine, YttriumBariumCuprate, 8)
-                .outputItems(WETWARE_PROCESSOR_LUV, 2)
+                .outputItems(WETWARE_PROCESSOR_LUV, outputAmount)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1402,7 +1408,7 @@ public class CircuitRecipes {
                 .inputItems(HIGHLY_ADVANCED_SOC)
                 .inputItems(wireFine, YttriumBariumCuprate, 8)
                 .inputItems(bolt, Naquadah, 8)
-                .outputItems(WETWARE_PROCESSOR_LUV, 4)
+                .outputItems(WETWARE_PROCESSOR_LUV, outputAmount * 2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .save(provider);
 
@@ -1421,17 +1427,20 @@ public class CircuitRecipes {
 
         // UV
         ASSEMBLY_LINE_RECIPES.recipeBuilder("wetware_super_computer_uv").EUt(38400).duration(400)
-                .inputItems(WETWARE_CIRCUIT_BOARD)
-                .inputItems(WETWARE_PROCESSOR_ASSEMBLY_ZPM, 2)
-                .inputItems(ADVANCED_SMD_DIODE, 8)
-                .inputItems(NOR_MEMORY_CHIP, 16)
-                .inputItems(RANDOM_ACCESS_MEMORY, 32)
-                .inputItems(wireFine, YttriumBariumCuprate, 24)
-                .inputItems(foil, Polybenzimidazole, 32)
-                .inputItems(plate, Europium, 4)
-                .inputFluids(SolderingAlloy.getFluid(1152))
-                .outputItems(WETWARE_SUPER_COMPUTER_UV)
-                .save(provider);
+            .inputItems(WETWARE_CIRCUIT_BOARD)
+            .inputItems(WETWARE_PROCESSOR_ASSEMBLY_ZPM, 2)
+            .inputItems(ADVANCED_SMD_DIODE, 8)
+            .inputItems(NOR_MEMORY_CHIP, 16)
+            .inputItems(RANDOM_ACCESS_MEMORY, 32)
+            .inputItems(wireFine, YttriumBariumCuprate, 24)
+            .inputItems(foil, Polybenzimidazole, 32)
+            .inputItems(plate, Europium, 4)
+            .inputFluids(SolderingAlloy.getFluid(1152))
+            .outputItems(WETWARE_SUPER_COMPUTER_UV)
+            .stationResearch(b -> b
+                .researchStack(WETWARE_PROCESSOR_ASSEMBLY_ZPM.asStack())
+                .CWUt(16))
+            .save(provider);
 
         // UHV
         ASSEMBLY_LINE_RECIPES.recipeBuilder("wetware_mainframe_uhv")
@@ -1449,6 +1458,10 @@ public class CircuitRecipes {
                 .inputFluids(SolderingAlloy.getFluid(L * 20))
                 .inputFluids(Polybenzimidazole.getFluid(L * 8))
                 .outputItems(WETWARE_MAINFRAME_UHV)
+                .stationResearch(b -> b
+                        .researchStack(WETWARE_SUPER_COMPUTER_UV.asStack())
+                        .CWUt(96)
+                        .EUt(VA[UV]))
                 .EUt(300000).duration(2000).save(provider);
 
         // Misc ========================================================================================================
@@ -1478,5 +1491,18 @@ public class CircuitRecipes {
                 .solderMultiplier(2)
                 .cleanroom(CleanroomType.CLEANROOM)
                 .duration(400).EUt(1200).save(provider);
+
+        // Data Module
+        CIRCUIT_ASSEMBLER_RECIPES.recipeBuilder("data_module")
+            .inputItems(WETWARE_CIRCUIT_BOARD)
+            .inputItems(CustomTags.ZPM_CIRCUITS, 2)
+            .inputItems(RANDOM_ACCESS_MEMORY, 32)
+            .inputItems(NOR_MEMORY_CHIP, 64)
+            .inputItems(NAND_MEMORY_CHIP, 64)
+            .inputItems(wireFine, YttriumBariumCuprate, 32)
+            .outputItems(TOOL_DATA_MODULE)
+            .solderMultiplier(2)
+            .cleanroom(CleanroomType.STERILE_CLEANROOM)
+            .duration(400).EUt(38400).save(provider);
     }
 }

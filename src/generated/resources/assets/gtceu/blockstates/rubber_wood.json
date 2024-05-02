@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "gtceu:block/rubber_wood_horizontal",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "gtceu:block/rubber_wood"
+    },
+    "axis=z": {
+      "model": "gtceu:block/rubber_wood_horizontal",
+      "x": 90
+    }
+  }
+}

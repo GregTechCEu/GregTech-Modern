@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import net.minecraft.util.StringRepresentable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.Map;
 
 public interface IVoidable extends IMachineFeature {
@@ -31,7 +31,7 @@ public interface IVoidable extends IMachineFeature {
             this.localeName = name;
         }
 
-        @Nonnull
+        @NotNull
         @Override
         public String getSerializedName() {
             return localeName;

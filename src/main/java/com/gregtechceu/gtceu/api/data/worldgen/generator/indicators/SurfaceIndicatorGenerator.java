@@ -32,7 +32,7 @@ import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.levelgen.Heightmap;
 import org.apache.commons.lang3.function.TriFunction;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Map;
@@ -48,8 +48,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
     public static final Codec<SurfaceIndicatorGenerator> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             Codec.either(BlockState.CODEC, GTCEuAPI.materialManager.codec()).fieldOf("block").forGetter(ext -> ext.block),
             IntProvider.codec(1, 32).fieldOf("radius").forGetter(ext -> ext.radius),
-            FloatProvider.codec(0.0f, 1.0f).fieldOf("density").forGetter(ext -> ext.density),
-            StringRepresentable.fromEnum(IndicatorPlacement::values).fieldOf("placement").forGetter(ext -> ext.placement)
+            FloatProvider.codec(0.0f, 2.0f).fieldOf("density").forGetter(ext -> ext.density),
+            IndicatorPlacement.CODEC.fieldOf("placement").forGetter(ext -> ext.placement)
     ).apply(instance, SurfaceIndicatorGenerator::new));
 
     private Either<BlockState, Material> block = Either.left(Blocks.AIR.defaultBlockState());
@@ -205,6 +205,8 @@ public class SurfaceIndicatorGenerator extends IndicatorGenerator {
                 ).orElse(initialPos),
                 block -> getBlockState(block, Direction.UP)
         );
+
+        public static final Codec<IndicatorPlacement> CODEC = StringRepresentable.fromEnum(IndicatorPlacement::values);
 
         public final TriFunction<WorldGenLevel, BulkSectionAccess, BlockPos, BlockPos> resolver;
         public final Function<Either<BlockState, Material>, BlockState> stateTransformer;

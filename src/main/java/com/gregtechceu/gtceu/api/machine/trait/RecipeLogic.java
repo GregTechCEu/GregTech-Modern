@@ -18,6 +18,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
@@ -25,7 +26,7 @@ import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.VisibleForTesting;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -60,7 +61,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Nullable @Getter @Persisted
     protected GTRecipe lastOriginRecipe;
     @Persisted
-    @Getter
+    @Getter @Setter
     protected int progress;
     @Getter @Persisted
     protected int duration;
@@ -130,10 +131,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean needFuel() {
-        if (machine.getRecipeType().isFuelRecipeType()){
-            return true;
-        }
-        return false;
+        return machine.getRecipeType().isFuelRecipeType();
     }
 
     /**
@@ -209,7 +207,10 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 result = handleTickRecipe(lastRecipe);
                 if (result.isSuccess()) {
                     setStatus(Status.WORKING);
-                    machine.onWorking();
+                    if (!machine.onWorking()) {
+                        this.interruptRecipe();
+                        return;
+                    }
                     progress++;
                     totalContinuousRunningTime++;
                 } else {
@@ -289,7 +290,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             GTRecipe recipe = iterator.next();
             if (recipe == null) continue;
 
-            if (recipe.checkConditions(this).isSuccess() && recipe.handleRecipeIO(IO.IN, this.machine)) {
+            if (recipe.checkConditions(this).isSuccess() && handleRecipeIO(recipe, IO.IN)) {
                 fuelMaxTime = recipe.duration;
                 fuelTime = fuelMaxTime;
             }
@@ -302,8 +303,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         if (recipe.hasTick()) {
             var result = recipe.matchTickRecipe(this.machine);
             if (result.isSuccess()) {
-                recipe.handleTickRecipeIO(IO.IN, this.machine);
-                recipe.handleTickRecipeIO(IO.OUT, this.machine);
+                handleTickRecipeIO(recipe, IO.IN);
+                handleTickRecipeIO(recipe, IO.OUT);
             } else {
                 return result;
             }
@@ -313,9 +314,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public void setupRecipe(GTRecipe recipe) {
         if (handleFuelRecipe()) {
-            machine.beforeWorking();
+            if (!machine.beforeWorking(recipe)) {
+                return;
+            }
             recipe.preWorking(this.machine);
-            if (recipe.handleRecipeIO(IO.IN, this.machine)) {
+            if (handleRecipeIO(recipe, IO.IN)) {
                 recipeDirty = false;
                 lastRecipe = recipe;
                 setStatus(Status.WORKING);
@@ -404,7 +407,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         machine.afterWorking();
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);
-            lastRecipe.handleRecipeIO(IO.OUT, this.machine);
+            handleRecipeIO(lastRecipe, IO.OUT);
             if (machine.alwaysTryModifyRecipe()) {
                 if (lastOriginRecipe != null) {
                     var modified = machine.fullModifyRecipe(lastOriginRecipe);
@@ -431,10 +434,18 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         }
     }
 
+    protected boolean handleRecipeIO(GTRecipe recipe, IO io) {
+        return recipe.handleRecipeIO(io, this.machine);
+    }
+
+    protected boolean handleTickRecipeIO(GTRecipe recipe, IO io) {
+        return recipe.handleTickRecipeIO(io, this.machine);
+    }
+
     /**
      * Interrupt current recipe without io.
      */
-    public void interruptRecipe(){
+    public void interruptRecipe() {
         machine.afterWorking();
         if (lastRecipe != null) {
             lastRecipe.postWorking(this.machine);

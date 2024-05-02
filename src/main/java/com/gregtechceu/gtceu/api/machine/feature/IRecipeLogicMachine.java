@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * @author KilaBash
@@ -27,9 +27,9 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * RecipeType held
      */
-    @Nonnull
+    @NotNull
     GTRecipeType[] getRecipeTypes();
-    @Nonnull
+    @NotNull
     GTRecipeType getRecipeType();
 
     int getActiveRecipeType();
@@ -44,7 +44,7 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Recipe logic
      */
-    @Nonnull
+    @NotNull
     RecipeLogic getRecipeLogic();
 
     default GTRecipe fullModifyRecipe(GTRecipe recipe) {
@@ -80,29 +80,29 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default void beforeWorking() {
-
+    default boolean beforeWorking(@Nullable GTRecipe recipe) {
+        return self().getDefinition().getBeforeWorking().test(this, recipe);
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWorking() {
-
+    default boolean onWorking() {
+        return self().getDefinition().getOnWorking().test(this);
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
     default void onWaiting() {
-
+        self().getDefinition().getOnWaiting().accept(this);
     }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
     default void afterWorking() {
-
+        self().getDefinition().getAfterWorking().accept(this);
     }
 
     /**

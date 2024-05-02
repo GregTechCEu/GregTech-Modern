@@ -20,7 +20,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
@@ -53,6 +53,10 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public final NotifiableFluidTank importFluids;
     @Persisted
     public final NotifiableFluidTank exportFluids;
+    @Persisted
+    public final NotifiableComputationContainer importComputation;
+    @Persisted
+    public final NotifiableComputationContainer exportComputation;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
     @Persisted @Getter
@@ -68,13 +72,15 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.tankScalingFunction = tankScalingFunction;
-        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
+        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
         this.traitSubscriptions = new ArrayList<>();
         this.recipeLogic = createRecipeLogic(args);
         this.importItems = createImportItemHandler(args);
         this.exportItems = createExportItemHandler(args);
         this.importFluids = createImportFluidHandler(args);
         this.exportFluids = createExportFluidHandler(args);
+        this.importComputation = createImportComputationContainer(args);
+        this.exportComputation = createExportComputationContainer(args);
     }
 
     //////////////////////////////////////
@@ -118,6 +124,18 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {
         return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.OUT);
+    }
+
+    protected NotifiableComputationContainer createImportComputationContainer(Object... args) {
+        boolean transmitter = true;
+        if (args.length > 0 && args[args.length - 1] instanceof Boolean isTransmitter) {
+            transmitter = isTransmitter;
+        }
+        return new NotifiableComputationContainer(this, IO.IN, transmitter);
+    }
+
+    protected NotifiableComputationContainer createExportComputationContainer(Object... args) {
+        return new NotifiableComputationContainer(this, IO.OUT, false);
     }
 
     protected RecipeLogic createRecipeLogic(Object... args) {
@@ -208,7 +226,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
         return false;
     }
 
-    @Nonnull
+    @NotNull
     public GTRecipeType getRecipeType() {
         return recipeTypes[activeRecipeType];
     }

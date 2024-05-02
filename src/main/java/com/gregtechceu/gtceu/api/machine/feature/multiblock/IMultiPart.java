@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -80,29 +81,36 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWorking(IWorkableMultiController controller) {
-
+    default boolean onWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called per tick in {@link RecipeLogic#handleRecipeWorking()}
      */
-    default void onWaiting(IWorkableMultiController controller) {
+    default boolean onWaiting(IWorkableMultiController controller) {
+        return true;
+    }
 
+    /**
+     * Called in {@link WorkableMultiblockMachine#setWorkingEnabled(boolean)}
+     */
+    default boolean onPaused(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called in {@link RecipeLogic#onRecipeFinish()} before outputs are produced
      */
-    default void afterWorking(IWorkableMultiController controller) {
-
+    default boolean afterWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**
      * Called in {@link RecipeLogic#setupRecipe(GTRecipe)} ()}
      */
-    default void beforeWorking(IWorkableMultiController controller) {
-
+    default boolean beforeWorking(IWorkableMultiController controller) {
+        return true;
     }
 
     /**

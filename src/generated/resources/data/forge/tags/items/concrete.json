@@ -1,68 +1,20 @@
 {
   "values": [
-    {
-      "id": "minecraft:white_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:orange_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:magenta_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:light_blue_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:yellow_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:lime_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:pink_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:gray_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:light_gray_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:cyan_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:purple_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:blue_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:brown_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:green_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:red_concrete",
-      "required": false
-    },
-    {
-      "id": "minecraft:black_concrete",
-      "required": false
-    }
+    "minecraft:white_concrete",
+    "minecraft:orange_concrete",
+    "minecraft:magenta_concrete",
+    "minecraft:light_blue_concrete",
+    "minecraft:yellow_concrete",
+    "minecraft:lime_concrete",
+    "minecraft:pink_concrete",
+    "minecraft:gray_concrete",
+    "minecraft:light_gray_concrete",
+    "minecraft:cyan_concrete",
+    "minecraft:purple_concrete",
+    "minecraft:blue_concrete",
+    "minecraft:brown_concrete",
+    "minecraft:green_concrete",
+    "minecraft:red_concrete",
+    "minecraft:black_concrete"
   ]
 }

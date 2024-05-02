@@ -13,12 +13,17 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+
+import java.util.function.Supplier;
 
 @Accessors(chain = true, fluent = true)
 public class CoilBlockBuilder extends BlockBuilder {
     @Setter
     public transient int temperature = 0, level = 0, energyDiscount = 1, tier = 0;
-    public transient Material material = GTMaterials.Air;
+    @NotNull
+    public transient Supplier<@Nullable Material> material = () -> null;
     @Setter
     public transient ResourceLocation texture = new ResourceLocation("missingno");
 
@@ -26,7 +31,7 @@ public class CoilBlockBuilder extends BlockBuilder {
         super(i);
     }
 
-    public CoilBlockBuilder coilMaterial(Material material) {
+    public CoilBlockBuilder coilMaterial(@NotNull Supplier<@Nullable Material> material) {
         this.material = material;
         return this;
     }

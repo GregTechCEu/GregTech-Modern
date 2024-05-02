@@ -14,21 +14,21 @@ import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.function.Predicate;
 
 public class GTTransferUtils {
 
-    public static int transferFluids(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler) {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, int transferLimit) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, int transferLimit) {
         return transferFluids(sourceHandler, destHandler, transferLimit, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, int transferLimit, @NotNull Predicate<FluidStack> fluidFilter) {
         int fluidLeftToTransfer = transferLimit;
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
@@ -38,17 +38,17 @@ public class GTTransferUtils {
             }
 
             currentFluid.setAmount(fluidLeftToTransfer);
-            FluidStack fluidStack = sourceHandler.drain(currentFluid, false);
+            FluidStack fluidStack = sourceHandler.drain(currentFluid, true);
             if (fluidStack == FluidStack.empty() || fluidStack.getAmount() == 0) {
                 continue;
             }
 
-            long canInsertAmount = destHandler.fill(fluidStack, false);
+            long canInsertAmount = destHandler.fill(fluidStack, true);
             if (canInsertAmount > 0) {
                 fluidStack.setAmount(canInsertAmount);
-                fluidStack = sourceHandler.drain(fluidStack, true);
+                fluidStack = sourceHandler.drain(fluidStack, false);
                 if (fluidStack != FluidStack.empty() && fluidStack.getAmount() > 0) {
-                    fillFluidAccountNotifiableList(destHandler, fluidStack, true);
+                    fillFluidAccountNotifiableList(destHandler, fluidStack, false);
 
                     fluidLeftToTransfer -= fluidStack.getAmount();
                     if (fluidLeftToTransfer == 0) {
@@ -60,7 +60,7 @@ public class GTTransferUtils {
         return transferLimit - fluidLeftToTransfer;
     }
 
-    public static boolean transferExactFluidStack(@Nonnull IFluidTransfer sourceHandler, @Nonnull IFluidTransfer destHandler, FluidStack fluidStack) {
+    public static boolean transferExactFluidStack(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, FluidStack fluidStack) {
         long amount = fluidStack.getAmount();
         FluidStack sourceFluid = sourceHandler.drain(fluidStack, true);
         if (sourceFluid == FluidStack.empty() || sourceFluid.getAmount() != amount) {
@@ -156,7 +156,7 @@ public class GTTransferUtils {
         }
 
         for (FluidStack fluidStack : fluidStacks) {
-            fillFluidAccountNotifiableList(fluidHandler, fluidStack, true);
+            fillFluidAccountNotifiableList(fluidHandler, fluidStack, false);
         }
         return true;
     }

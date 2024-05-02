@@ -16,7 +16,7 @@ import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.HashMap;
 import java.util.Objects;
@@ -78,7 +78,8 @@ public class BedrockFluidVeinSavedData extends SavedData {
      * @return The FluidVeinWorldInfo corresponding with the given chunk
      */
     public FluidVeinWorldEntry getFluidVeinWorldEntry(int chunkX, int chunkZ) {
-        if (!veinFluids.containsKey(new ChunkPos(chunkX, chunkZ))) {
+        ChunkPos pos = new ChunkPos(chunkX, chunkZ);
+        if (!veinFluids.containsKey(pos)) {
             BedrockFluidDefinition definition = null;
             int query = RandomSource.create(Objects.hash(serverLevel.getSeed(), chunkX / VEIN_CHUNK_SIZE, chunkZ / VEIN_CHUNK_SIZE)).nextInt();
             var biome = serverLevel.getBiome(new BlockPos(chunkX << 4, 64, chunkZ << 4));
@@ -108,10 +109,10 @@ public class BedrockFluidVeinSavedData extends SavedData {
                 }
                 maximumYield = Math.min(maximumYield, definition.getMaximumYield());
             }
-            veinFluids.put(new ChunkPos(chunkX, chunkZ), new FluidVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
+            veinFluids.put(pos, new FluidVeinWorldEntry(definition, maximumYield, MAXIMUM_VEIN_OPERATIONS));
             setDirty();
         }
-        return veinFluids.get(new ChunkPos(chunkX, chunkZ));
+        return veinFluids.get(pos);
     }
 
     /**

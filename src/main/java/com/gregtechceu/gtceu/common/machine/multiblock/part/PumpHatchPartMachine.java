@@ -27,7 +27,7 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
 
     @Override
     protected NotifiableFluidTank createTank(long initialCapacity, int slots, Object... args) {
-        return super.createTank(initialCapacity, slots).setFilter(fluidStack -> fluidStack.getFluid() == GTMaterials.Water.getFluid());
+        return super.createTank(initialCapacity, slots).setFilter(fluidStack -> fluidStack.getFluid().is(GTMaterials.Water.getFluidTag()));
     }
 
     @Override
@@ -38,7 +38,7 @@ public class PumpHatchPartMachine extends FluidHatchPartMachine {
                 .widget(new LabelWidget(11, 20, "gtceu.gui.fluid_amount"))
                 .widget(new LabelWidget(11, 30, () -> String.valueOf(tank.getFluidInTank(0).getAmount())).setTextColor(-1).setDropShadow(true))
                 .widget(new LabelWidget(6, 6, getBlockState().getBlock().getDescriptionId()))
-                .widget(new TankWidget(tank.storages[0], 90, 35, true, io.support(IO.IN))
+                .widget(new TankWidget(tank.getStorages()[0], 90, 35, true, io.support(IO.IN))
                         .setBackground(GuiTextures.FLUID_SLOT))
                 .widget(new ToggleButtonWidget(7, 53, 18, 18,
                         GuiTextures.BUTTON_FLUID_OUTPUT, this::isWorkingEnabled, this::setWorkingEnabled)

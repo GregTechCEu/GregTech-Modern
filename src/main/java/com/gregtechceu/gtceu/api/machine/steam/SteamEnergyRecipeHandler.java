@@ -36,7 +36,7 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
         long sum = left.stream().reduce(0L, Long::sum);
         long realSum = (long) Math.ceil(sum * conversionRate);
         if (realSum > 0) {
-            var steam = io == IO.IN ? FluidIngredient.of(CustomTags.STEAM, realSum) : FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
+            var steam = io == IO.IN ? FluidIngredient.of(GTMaterials.Steam.getFluidTag(), realSum) : FluidIngredient.of(GTMaterials.Steam.getFluid(realSum));
             var list = new ArrayList<FluidIngredient>();
             list.add(steam);
             var leftSteam = steamTank.handleRecipeInner(io, recipe, list, slotName, simulate);
@@ -58,6 +58,19 @@ public class SteamEnergyRecipeHandler implements IRecipeHandler<Long> {
         long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
         long realSum = (long) Math.ceil(sum * conversionRate);
         return List.of(realSum);
+    }
+
+    @Override
+    public double getTotalContentAmount() {
+        List<FluidStack> tankContents = new ArrayList<>();
+        for (int i = 0; i < steamTank.getTanks(); ++i) {
+            FluidStack stack = steamTank.getFluidInTank(i);
+            if (!stack.isEmpty()) {
+                tankContents.add(stack);
+            }
+        }
+        long sum = tankContents.stream().map(FluidStack::getAmount).reduce(0L, Long::sum);
+        return (long) Math.ceil(sum * conversionRate);
     }
 
     @Override

@@ -27,7 +27,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
+import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
@@ -135,7 +135,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     @Nullable
-    public static GTRecipe recipeModifier(MetaMachine machine, @Nonnull GTRecipe recipe) {
+    public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof FusionReactorMachine fusionReactorMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > fusionReactorMachine.getTier() ||
                     !recipe.data.contains("eu_to_start") ||
@@ -161,6 +161,33 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe, fusionReactorMachine.getMaxVoltage());
         }
         return null;
+    }
+
+    @Override
+    public boolean alwaysTryModifyRecipe() {
+        return true;
+    }
+
+    @Override
+    public boolean onWorking() {
+        GTRecipe recipe = recipeLogic.getLastRecipe();
+        if (recipe.data.contains("eu_to_start")) {
+            long heatDiff = recipe.data.getLong("eu_to_start") - this.heat;
+            // if the remaining energy needed is more than stored, do not run
+            if (heatDiff > 0) {
+                recipeLogic.setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_fuel"));
+
+                // if the remaining energy needed is more than stored, do not run
+                if (this.energyContainer.getEnergyStored() < heatDiff)
+                    return super.onWorking();
+                // remove the energy needed
+                this.energyContainer.removeEnergy(heatDiff);
+                // increase the stored heat
+                this.heat += heatDiff;
+                this.updatePreHeatSubscription();
+            }
+        }
+        return super.onWorking();
     }
 
     public void updateHeat() {

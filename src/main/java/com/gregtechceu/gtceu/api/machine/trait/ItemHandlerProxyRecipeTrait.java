@@ -55,6 +55,15 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     }
 
     @Override
+    public double getTotalContentAmount() {
+        long amount = 0;
+        for (NotifiableRecipeHandlerTrait<Ingredient> handler : handlers) {
+            amount += handler.getTotalContentAmount();
+        }
+        return amount;
+    }
+
+    @Override
     public RecipeCapability<Ingredient> getCapability() {
         return ItemRecipeCapability.CAP;
     }
@@ -72,6 +81,11 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<In
     public void setDistinct(boolean distinct) {
         handlers.forEach(handler -> handler.setDistinct(distinct));
         recomputeEnabledState();
+    }
+
+    @Override
+    public boolean isProxy() {
+        return true;
     }
 
     public void recomputeEnabledState() {

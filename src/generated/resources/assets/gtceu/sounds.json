@@ -80,6 +80,15 @@
     ],
     "subtitle": "gtceu.subtitle.compressor"
   },
+  "computation": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:computation"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.computation"
+  },
   "cooling": {
     "sounds": [
       {
@@ -215,6 +224,15 @@
     ],
     "subtitle": "gtceu.subtitle.plunger"
   },
+  "portable_scanner": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:portable_scanner"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.portable_scanner"
+  },
   "portal_closing": {
     "sounds": [
       {
@@ -295,15 +313,6 @@
       }
     ],
     "subtitle": "gtceu.subtitle.sus"
-  },
-  "tricorder": {
-    "sounds": [
-      {
-        "type": "file",
-        "name": "gtceu:tricorder"
-      }
-    ],
-    "subtitle": "gtceu.subtitle.tricorder"
   },
   "turbine": {
     "sounds": [

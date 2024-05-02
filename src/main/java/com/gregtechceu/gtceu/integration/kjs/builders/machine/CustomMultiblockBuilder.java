@@ -20,6 +20,7 @@ import com.gregtechceu.gtceu.api.pattern.BlockPattern;
 import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
@@ -29,6 +30,9 @@ import com.tterrag.registrate.builders.BlockBuilder;
 import com.tterrag.registrate.builders.ItemBuilder;
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
 import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.mods.rhino.BaseFunction;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
@@ -44,7 +48,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.apache.commons.lang3.function.TriFunction;
 
-import javax.annotation.Nullable;
+import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
@@ -81,7 +85,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
     public static MachineBuilder<MultiblockMachineDefinition> createMultiblock(String name, Object... args) {
         CustomMultiblockBuilder[] builders;
         int start = 0;
-        while (start < args.length && (!(args[start] instanceof Number) || !(args[start] instanceof Number[]) || !(args[start] instanceof int[]))) {
+        while (start < args.length && (!(args[start] instanceof Number || args[start] instanceof Number[] || args[start] instanceof int[]))) {
             ++start;
         }
         Object[] tierObjects = MachineFunctionPresets.copyArgs(args, start);
@@ -89,12 +93,16 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
         if (tiers.length > 0) {
             if (args.length > 0 && args[0] instanceof BiFunction<?,?,?> machineFunction) {
                 builders = tieredMultis(name, (BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine>) machineFunction, tiers);
+            } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
+                builders = tieredMultis(name, UtilsJS.makeFunctionProxy(ScriptType.STARTUP, BiFunction.class, machineFunction), tiers);
             } else {
                 builders = tieredMultis(name, TieredWorkableElectricMultiblockMachine::new, tiers);
             }
         } else {
             if (args.length > 0 && args[0] instanceof Function<?,?> machineFunction) {
                 return new CustomMultiblockBuilder(name, (Function<IMachineBlockEntity, MultiblockControllerMachine>)machineFunction);
+            } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
+                return new CustomMultiblockBuilder(name, UtilsJS.makeFunctionProxy(ScriptType.STARTUP, Function.class, machineFunction));
             } else {
                 return new CustomMultiblockBuilder(name, WorkableElectricMultiblockMachine::new);
             }
@@ -337,10 +345,19 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
             }
 
             @Override
-            public CustomMultiblockBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier) {
+            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.recipeModifier(recipeModifier);
+                }
+                return this;
+            }
+
+            @Override
+            public CustomMultiblockBuilder recipeModifiers(RecipeModifier... recipeModifiers) {
+                for (var builder : builders) {
+                    if (builder == null) continue;
+                    builder.recipeModifiers(recipeModifiers);
                 }
                 return this;
             }
@@ -381,7 +398,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
-            public CustomMultiblockBuilder recipeModifier(BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier, boolean alwaysTryModifyRecipe) {
+            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
                 recipeModifier(recipeModifier);
                 alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 return this;

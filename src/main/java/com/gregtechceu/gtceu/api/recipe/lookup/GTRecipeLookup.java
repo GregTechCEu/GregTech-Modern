@@ -76,7 +76,7 @@ public class GTRecipeLookup {
         list.addAll(fromHolder(holder));
 
         // nothing was added, so return nothing
-        if (list.size() == 0) return null;
+        if (list.isEmpty()) return null;
         return list;
     }
 
@@ -103,7 +103,7 @@ public class GTRecipeLookup {
      * @return the Recipe Iterator
      */
     @NotNull
-    public Iterator<GTRecipe> getRecipeIterator(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> canHandle) {
+    public RecipeIterator getRecipeIterator(@NotNull IRecipeCapabilityHolder holder, @NotNull Predicate<GTRecipe> canHandle) {
         List<List<AbstractMapIngredient>> list = prepareRecipeFind(holder);
         return new RecipeIterator(this.recipeType, list, canHandle);
     }
@@ -430,6 +430,9 @@ public class GTRecipeLookup {
         r.getCapabilitiesProxy().row(IO.IN).forEach((cap, handlers) -> {
             if (cap.isRecipeSearchFilter() && !handlers.isEmpty()) {
                 for (IRecipeHandler<?> handler : handlers) {
+                    if (handler.isProxy()) {
+                        continue;
+                    }
                     List<Object> compressed = cap.compressIngredients(handler.getContents());
                     for (Object content : compressed) {
                         retrieveCachedIngredient(list, cap.convertToMapIngredient(content), ingredientRoot);
