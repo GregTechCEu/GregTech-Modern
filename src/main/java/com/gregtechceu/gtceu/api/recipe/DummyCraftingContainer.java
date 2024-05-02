@@ -3,11 +3,11 @@ package com.gregtechceu.gtceu.api.recipe;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.TransientCraftingContainer;
+import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-public class DummyCraftingContainer extends TransientCraftingContainer {
+public class DummyCraftingContainer extends CraftingContainer {
 
     private final IItemTransfer itemTransfer;
 

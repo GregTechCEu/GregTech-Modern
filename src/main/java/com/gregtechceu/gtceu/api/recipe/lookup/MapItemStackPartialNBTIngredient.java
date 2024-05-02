@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.Registry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.common.crafting.PartialNBTIngredient;
 import org.jetbrains.annotations.NotNull;
@@ -59,7 +59,7 @@ public class MapItemStackPartialNBTIngredient extends MapItemStackIngredient {
 
     @Override
     public String toString() {
-        return "MapItemStackPartialNBTIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "MapItemStackPartialNBTIngredient{" + "item=" + Registry.ITEM.getKey(stack.getItem()) + "}";
     }
 
     @Override

@@ -14,7 +14,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderSet;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
@@ -36,11 +36,11 @@ public class BedrockOreDefinition {
                     Codec.INT.fieldOf("size").forGetter(ft -> ft.size),
                     IntProvider.POSITIVE_CODEC.fieldOf("yield").forGetter(ft -> ft.yield),
                     Codec.INT.fieldOf("depletion_amount").forGetter(ft -> ft.depletionAmount),
-                    ExtraCodecs.intRange(0, 100).fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
+                    ExtraCodecs.NON_NEGATIVE_INT.fieldOf("depletion_chance").forGetter(ft -> ft.depletionChance),
                     Codec.INT.fieldOf("depleted_yield").forGetter(ft -> ft.depletedYield),
                     MATERIAL.codec().listOf().fieldOf("materials").forGetter(ft -> ft.materials),
                     BiomeWeightModifier.CODEC.listOf().optionalFieldOf("weight_modifier", List.of()).forGetter(ft -> ft.originalModifiers),
-                    ResourceKey.codec(Registries.DIMENSION).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
+                    ResourceKey.codec(Registry.DIMENSION_REGISTRY).listOf().fieldOf("dimension_filter").forGetter(ft -> new ArrayList<>(ft.dimensionFilter))
             ).apply(instance, (weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, dimensionFilter) -> new BedrockOreDefinition(weight, size, yield, depletionAmount, depletionChance, depletedYield, materials, biomeWeightModifier, new HashSet<>(dimensionFilter)))
     );
 
@@ -78,12 +78,12 @@ public class BedrockOreDefinition {
         this.depletedYield = depletedYield;
         this.materials = materials;
         this.originalModifiers = originalModifiers;
-        this.biomeWeightModifier = new BiomeWeightModifier(() -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()), originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
+        this.biomeWeightModifier = new BiomeWeightModifier(HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.stream()).toList()), originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
             @Override
             public Integer apply(Holder<Biome> biome) {
                 int mod = 0;
                 for (var modifier : originalModifiers) {
-                    if (modifier.biomes.get().contains(biome)) {
+                    if (modifier.biomes.contains(biome)) {
                         mod += modifier.apply(biome);
                     }
                 }
@@ -95,12 +95,12 @@ public class BedrockOreDefinition {
 
     public void setOriginalModifiers(List<BiomeWeightModifier> modifiers) {
         this.originalModifiers = modifiers;
-        this.biomeWeightModifier = new BiomeWeightModifier(() -> HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.get().stream()).toList()), originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
+        this.biomeWeightModifier = new BiomeWeightModifier(HolderSet.direct(originalModifiers.stream().flatMap(mod -> mod.biomes.stream()).toList()), originalModifiers.stream().mapToInt(mod -> mod.addedWeight).sum()) {
             @Override
             public Integer apply(Holder<Biome> biome) {
                 int mod = 0;
                 for (var modifier : originalModifiers) {
-                    if (modifier.biomes.get().contains(biome)) {
+                    if (modifier.biomes.contains(biome)) {
                         mod += modifier.apply(biome);
                     }
                 }
@@ -160,20 +160,20 @@ public class BedrockOreDefinition {
         }
 
         public Builder biomes(int weight, TagKey<Biome> biomes) {
-            this.biomes.add(new BiomeWeightModifier(() -> GTRegistries.builtinRegistry()
-                    .registryOrThrow(Registries.BIOME).getOrCreateTag(biomes), weight));
+            this.biomes.add(new BiomeWeightModifier(GTRegistries.builtinRegistry()
+                    .registryOrThrow(Registry.BIOME_REGISTRY).getOrCreateTag(biomes), weight));
             return this;
         }
 
         @SafeVarargs
         public final Builder biomes(int weight, ResourceKey<Biome>... biomes) {
-            this.biomes.add(new BiomeWeightModifier(() -> HolderSet.direct(GTRegistries.builtinRegistry()
-                    .registryOrThrow(Registries.BIOME)::getHolderOrThrow, biomes), weight));
+            this.biomes.add(new BiomeWeightModifier(HolderSet.direct(GTRegistries.builtinRegistry()
+                    .registryOrThrow(Registry.BIOME_REGISTRY)::getHolderOrThrow, biomes), weight));
             return this;
         }
 
         public Builder biomes(int weight, HolderSet<Biome> biomes) {
-            this.biomes.add(new BiomeWeightModifier(() -> biomes, weight));
+            this.biomes.add(new BiomeWeightModifier(biomes, weight));
             return this;
         }
 
