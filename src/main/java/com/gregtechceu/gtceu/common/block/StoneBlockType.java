@@ -4,7 +4,6 @@ import javax.annotation.Nonnull;
 
 public enum StoneBlockType {
     STONE("stone", "%s"),
-    SMOOTH("smooth", "smooth_%s"),
     COBBLE("cobble", "%s_cobblestone", 2.0f, 6.0f),
     COBBLE_MOSSY("cobble_mossy", "mossy_%s_cobblestone", 2.0f, 6.0f),
     POLISHED("polished", "polished_%s"),
