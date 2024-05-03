@@ -26,6 +26,8 @@ import java.util.List;
  */
 public class GTPlacements {
     public static final ResourceKey<PlacedFeature> RUBBER_CHECKED = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("rubber_checked"));
+    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("red_granite_blob"));
+    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("marble_blob"));
 
     public static void bootstrap(BootstapContext<PlacedFeature> ctx) {
         HolderGetter<ConfiguredFeature<?, ?>> featureLookup = ctx.lookup(Registries.CONFIGURED_FEATURE);
@@ -41,6 +43,13 @@ public class GTPlacements {
                 PlacementUtils.HEIGHTMAP_TOP_SOLID,
                 BiomeFilter.biome(),
                 PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get())
+        );
+
+        PlacementUtils.register(ctx, RED_GRANITE_BLOB, featureLookup.getOrThrow(GTConfiguredFeatures.RED_GRANITE_BLOB),
+            InSquarePlacement.spread()
+        );
+        PlacementUtils.register(ctx, MARBLE_BLOB, featureLookup.getOrThrow(GTConfiguredFeatures.MARBLE_BLOB),
+            InSquarePlacement.spread()
         );
     }
 }
