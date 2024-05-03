@@ -67,7 +67,7 @@ public class GTRecipeTypeCategory extends ModularUIRecipeCategory<GTRecipeWrappe
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable(recipeType.registryName.toLanguageKey());
+        return Component.translatable(recipeType.getTranslationKey());
     }
 
     public static void registerRecipes(IRecipeRegistration registration) {

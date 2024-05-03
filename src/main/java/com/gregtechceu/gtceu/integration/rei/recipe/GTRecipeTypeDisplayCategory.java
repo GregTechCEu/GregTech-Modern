@@ -66,7 +66,7 @@ public class GTRecipeTypeDisplayCategory extends ModularUIDisplayCategory<GTReci
     @NotNull
     @Override
     public Component getTitle() {
-        return Component.translatable(recipeType.registryName.toLanguageKey());
+        return Component.translatable(recipeType.getTranslationKey());
     }
 
     public static void registerDisplays(DisplayRegistry registry) {

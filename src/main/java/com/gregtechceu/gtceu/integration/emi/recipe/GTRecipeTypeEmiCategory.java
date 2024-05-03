@@ -56,6 +56,6 @@ public class GTRecipeTypeEmiCategory extends EmiRecipeCategory {
 
     @Override
     public Component getName() {
-        return Component.translatable(recipeType.registryName.toLanguageKey());
+        return Component.translatable(recipeType.getTranslationKey());
     }
 }

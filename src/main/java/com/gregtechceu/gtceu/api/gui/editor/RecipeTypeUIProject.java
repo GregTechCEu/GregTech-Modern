@@ -100,11 +100,9 @@ public class RecipeTypeUIProject extends UIProject {
     public void onLoad(Editor editor) {
         editor.getResourcePanel().loadResource(getResources(), false);
         editor.getTabPages().addTab(new TabButton(50, 16, 60, 14).setTexture(
-                new GuiTextureGroup(ColorPattern.T_GREEN.rectTexture().setBottomRadius(10).transform(0, 0.4f),
-                        new TextTexture("Main")),
-                new GuiTextureGroup(ColorPattern.T_RED.rectTexture().setBottomRadius(10).transform(0, 0.4f),
-                        new TextTexture("Main"))),
-                new UIMainPanel(editor, root, recipeType == null ? null : recipeType.registryName.toLanguageKey()));
+                new GuiTextureGroup(ColorPattern.T_GREEN.rectTexture().setBottomRadius(10).transform(0, 0.4f), new TextTexture("Main")),
+                new GuiTextureGroup(ColorPattern.T_RED.rectTexture().setBottomRadius(10).transform(0, 0.4f), new TextTexture("Main"))
+        ), new UIMainPanel(editor, root, recipeType == null ? null : recipeType.getTranslationKey()));
         for (WidgetToolBox.Default tab : WidgetToolBox.Default.TABS) {
             editor.getToolPanel().addNewToolBox("ldlib.gui.editor.group." + tab.groupName, tab.icon,
                     tab.createToolBox());
@@ -139,7 +137,7 @@ public class RecipeTypeUIProject extends UIProject {
                     } else {
                         icon = new ItemStackTexture(Items.BARRIER);
                     }
-                    m.leaf(icon, recipeType.registryName.toLanguageKey(), () -> {
+                    m.leaf(icon, recipeType.getTranslationKey(), () -> {
                         root.clearAllWidgets();
                         if (recipeType.getRecipeUI().hasCustomUI()) {
                             var nbt = recipeType.getRecipeUI().getCustomUI();

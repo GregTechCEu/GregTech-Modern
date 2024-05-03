@@ -20,7 +20,7 @@ public class ItemLang {
     private static void initGeneratedNames(RegistrateLangProvider provider) {
         // RecipeTypes
         for (var recipeType : GTRegistries.RECIPE_TYPES) {
-            provider.add(recipeType.registryName.toLanguageKey(), toEnglishName(recipeType.registryName.getPath()));
+            provider.add(recipeType.getTranslationKey(), toEnglishName(recipeType.registryName.getPath()));
         }
         // TagPrefix
         for (TagPrefix tagPrefix : TagPrefix.values()) {
