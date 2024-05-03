@@ -68,24 +68,13 @@ public class BlockLang {
         replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
         replace(provider, "block.gtceu.vibration_safe_casing", "Vibration-Safe Casing");
 
-        // todo multiblock tanks
-        // replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
-
-        // todo fusion
         replace(provider, "block.gtceu.superconducting_coil", "Superconducting Coil Block");
         replace(provider, "block.gtceu.fusion_coil", "Fusion Coil Block");
         replace(provider, "block.gtceu.fusion_casing", "Fusion Machine Casing");
         replace(provider, "block.gtceu.fusion_casing_mk2", "Fusion Machine Casing MK II");
         replace(provider, "block.gtceu.fusion_casing_mk3", "Fusion Machine Casing MK III");
 
-        provider.add("block.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
-        provider.add("block.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
-
-        provider.add("block.gtceu.explosive.breaking_tooltip",
-                "Primes explosion when mined, sneak mine to pick back up");
-        provider.add("block.gtceu.explosive.lighting_tooltip", "Cannot be lit with Redstone");
-        provider.add("block.gtceu.powderbarrel.drops_tooltip",
-                "Slightly larger than TNT, drops all destroyed Blocks as Items");
-        provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
+        provider.add("block.gtceu.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
+        provider.add("block.gtceu.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
     }
 }

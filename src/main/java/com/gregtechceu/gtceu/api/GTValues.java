@@ -42,12 +42,6 @@ public class GTValues {
     public static final int L = 144;
     public static final RandomSource RNG = RandomSource.createThreadSafe();
 
-    /**
-     * The Item WildCard Tag. Even shorter than the "-1" of the past
-     */
-
-    // public static final short W = OreDictionary.WILDCARD_VALUE;
-
     /** Current time on the Client. Will always be zero on the server. */
     public static long CLIENT_TIME = 0;
 
@@ -144,7 +138,7 @@ public class GTValues {
             DARK_GREEN + "UIV",
             YELLOW + "UXV",
             BLUE.toString() + BOLD + "OpV",
-            RED.toString() + BOLD + "MAX" };
+            RED.toString() + BOLD + "MAX"};
 
     public static final String[] VLVH = new String[] {
             "Primitive", // not doing the gray color for these first two because it looks weird
