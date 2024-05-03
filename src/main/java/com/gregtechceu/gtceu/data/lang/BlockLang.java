@@ -11,9 +11,6 @@ public class BlockLang {
     }
 
     private static void initCasingLang(RegistrateLangProvider provider) {
-
-
-
         // Coils
         replace(provider, "block.gtceu.hssg_coil_block", "HSS-G Coil Block");
         replace(provider, "block.gtceu.rtm_alloy_coil_block", "RTM Alloy Coil Block");
@@ -71,136 +68,13 @@ public class BlockLang {
         replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
         replace(provider, "block.gtceu.vibration_safe_casing", "Vibration-Safe Casing");
 
-        // todo multiblock tanks
-        //replace(provider, "tile.steam_casing.wood_wall.name", "Wooden Wall");
-
-        // todo fusion
         replace(provider, "block.gtceu.superconducting_coil", "Superconducting Coil Block");
         replace(provider, "block.gtceu.fusion_coil", "Fusion Coil Block");
         replace(provider, "block.gtceu.fusion_casing", "Fusion Machine Casing");
         replace(provider, "block.gtceu.fusion_casing_mk2", "Fusion Machine Casing MK II");
         replace(provider, "block.gtceu.fusion_casing_mk3", "Fusion Machine Casing MK III");
 
-        provider.add("block.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
-        provider.add("block.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
-
-
-        // TODO warning sign blocks
-        /*
-        replace(provider, "tile.warning_sign.yellow_stripes.name", "Yellow Stripes Block");
-        replace(provider, "tile.warning_sign.small_yellow_stripes.name", "Yellow Stripes Block");
-        replace(provider, "tile.warning_sign.radioactive_hazard.name", "Radioactive Hazard Sign Block");
-        replace(provider, "tile.warning_sign.bio_hazard.name", "Bio Hazard Sign Block");
-        replace(provider, "tile.warning_sign.explosion_hazard.name", "Explosion Hazard Sign Block");
-        replace(provider, "tile.warning_sign.fire_hazard.name", "Fire Hazard Sign Block");
-        replace(provider, "tile.warning_sign.acid_hazard.name", "Acid Hazard Sign Block");
-        replace(provider, "tile.warning_sign.magic_hazard.name", "Magic Hazard Sign Block");
-        replace(provider, "tile.warning_sign.frost_hazard.name", "Frost Hazard Sign Block");
-        replace(provider, "tile.warning_sign.noise_hazard.name", "Noise Hazard Sign Block");
-        replace(provider, "tile.warning_sign.generic_hazard.name", "Generic Hazard Sign Block");
-        replace(provider, "tile.warning_sign.high_voltage_hazard.name", "High Voltage Hazard Sign Block");
-        replace(provider, "tile.warning_sign.magnetic_hazard.name", "Magnetic Hazard Sign Block");
-        replace(provider, "tile.warning_sign.antimatter_hazard.name", "Antimatter Hazard Sign Block");
-        replace(provider, "tile.warning_sign.high_temperature_hazard.name", "High Temperature Hazard Sign Block");
-        replace(provider, "tile.warning_sign.void_hazard.name", "Void Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.mob_spawner_hazard.name", "Mob Spawner Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.spatial_storage_hazard.name", "Spatial Storage Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.laser_hazard.name", "Laser Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.mob_hazard.name", "Mob Infestation Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.boss_hazard.name", "Boss Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.gregification_hazard.name", "Gregification Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.causality_hazard.name", "Non-Standard Causality Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.automated_defenses_hazard.name", "Automated Defenses Hazard Sign Block");
-        replace(provider, "tile.warning_sign_1.high_pressure_hazard.name", "High Pressure Hazard Sign Block");
-         */
-
-        // todo stone type decorative blocks
-        /*
-        provider.add("tile.asphalt.asphalt.name", "Asphalt");
-        provider.add("tile.stone_smooth.black_granite.name", "Black Granite");
-        provider.add("tile.stone_smooth.red_granite.name", "Red Granite");
-        provider.add("tile.stone_smooth.marble.name", "Marble");
-        provider.add("tile.stone_smooth.basalt.name", "Basalt");
-        provider.add("tile.stone_smooth.concrete_light.name", "Light Concrete");
-        provider.add("tile.stone_smooth.concrete_dark.name", "Dark Concrete");
-        provider.add("tile.stone_cobble.black_granite.name", "Black Granite Cobblestone");
-        provider.add("tile.stone_cobble.red_granite.name", "Red Granite Cobblestone");
-        provider.add("tile.stone_cobble.marble.name", "Marble Cobblestone");
-        provider.add("tile.stone_cobble.basalt.name", "Basalt Cobblestone");
-        provider.add("tile.stone_cobble.concrete_light.name", "Light Concrete Cobblestone");
-        provider.add("tile.stone_cobble.concrete_dark.name", "Dark Concrete Cobblestone");
-        provider.add("tile.stone_cobble_mossy.black_granite.name", "Mossy Black Granite Cobblestone");
-        provider.add("tile.stone_cobble_mossy.red_granite.name", "Mossy Red Granite Cobblestone");
-        provider.add("tile.stone_cobble_mossy.marble.name", "Mossy Marble Cobblestone");
-        provider.add("tile.stone_cobble_mossy.basalt.name", "Mossy Basalt Cobblestone");
-        provider.add("tile.stone_cobble_mossy.concrete_light.name", "Mossy Light Concrete Cobblestone");
-        provider.add("tile.stone_cobble_mossy.concrete_dark.name", "Mossy Dark Concrete Cobblestone");
-        provider.add("tile.stone_polished.black_granite.name", "Polished Black Granite");
-        provider.add("tile.stone_polished.red_granite.name", "Polished Red Granite");
-        provider.add("tile.stone_polished.marble.name", "Polished Marble");
-        provider.add("tile.stone_polished.basalt.name", "Polished Basalt");
-        provider.add("tile.stone_polished.concrete_light.name", "Polished Light Concrete");
-        provider.add("tile.stone_polished.concrete_dark.name", "Polished Dark Concrete");
-        provider.add("tile.stone_bricks.black_granite.name", "Black Granite Bricks");
-        provider.add("tile.stone_bricks.red_granite.name", "Red Granite Bricks");
-        provider.add("tile.stone_bricks.marble.name", "Marble Bricks");
-        provider.add("tile.stone_bricks.basalt.name", "Basalt Bricks");
-        provider.add("tile.stone_bricks.concrete_light.name", "Light Concrete Bricks");
-        provider.add("tile.stone_bricks.concrete_dark.name", "Dark Concrete Bricks");
-        provider.add("tile.stone_bricks_cracked.black_granite.name", "Cracked Black Granite Bricks");
-        provider.add("tile.stone_bricks_cracked.red_granite.name", "Cracked Red Granite Bricks");
-        provider.add("tile.stone_bricks_cracked.marble.name", "Cracked Marble Bricks");
-        provider.add("tile.stone_bricks_cracked.basalt.name", "Cracked Basalt Bricks");
-        provider.add("tile.stone_bricks_cracked.concrete_light.name", "Cracked Light Concrete Bricks");
-        provider.add("tile.stone_bricks_cracked.concrete_dark.name", "Cracked Dark Concrete Bricks");
-        provider.add("tile.stone_bricks_mossy.black_granite.name", "Mossy Black Granite Bricks");
-        provider.add("tile.stone_bricks_mossy.red_granite.name", "Mossy Red Granite Bricks");
-        provider.add("tile.stone_bricks_mossy.marble.name", "Mossy Marble Bricks");
-        provider.add("tile.stone_bricks_mossy.basalt.name", "Mossy Basalt Bricks");
-        provider.add("tile.stone_bricks_mossy.concrete_light.name", "Mossy Light Concrete Bricks");
-        provider.add("tile.stone_bricks_mossy.concrete_dark.name", "Mossy Dark Concrete Bricks");
-        provider.add("tile.stone_chiseled.black_granite.name", "Chiseled Black Granite");
-        provider.add("tile.stone_chiseled.red_granite.name", "Chiseled Red Granite");
-        provider.add("tile.stone_chiseled.marble.name", "Chiseled Marble");
-        provider.add("tile.stone_chiseled.basalt.name", "Chiseled Basalt");
-        provider.add("tile.stone_chiseled.concrete_light.name", "Chiseled Light Concrete");
-        provider.add("tile.stone_chiseled.concrete_dark.name", "Chiseled Dark Concrete");
-        provider.add("tile.stone_tiled.black_granite.name", "Black Granite Tiles");
-        provider.add("tile.stone_tiled.red_granite.name", "Red Granite Tiles");
-        provider.add("tile.stone_tiled.marble.name", "Marble Tiles");
-        provider.add("tile.stone_tiled.basalt.name", "Basalt Tiles");
-        provider.add("tile.stone_tiled.concrete_light.name", "Light Concrete Tiles");
-        provider.add("tile.stone_tiled.concrete_dark.name", "Dark Concrete Tiles");
-        provider.add("tile.stone_tiled_small.black_granite.name", "Small Black Granite Tiles");
-        provider.add("tile.stone_tiled_small.red_granite.name", "Small Red Granite Tiles");
-        provider.add("tile.stone_tiled_small.marble.name", "Small Marble Tiles");
-        provider.add("tile.stone_tiled_small.basalt.name", "Small Basalt Tiles");
-        provider.add("tile.stone_tiled_small.concrete_light.name", "Small Light Concrete Tiles");
-        provider.add("tile.stone_tiled_small.concrete_dark.name", "Small Dark Concrete Tiles");
-        provider.add("tile.stone_bricks_small.black_granite.name", "Small Black Granite Bricks");
-        provider.add("tile.stone_bricks_small.red_granite.name", "Small Red Granite Bricks");
-        provider.add("tile.stone_bricks_small.marble.name", "Small Marble Bricks");
-        provider.add("tile.stone_bricks_small.basalt.name", "Small Basalt Bricks");
-        provider.add("tile.stone_bricks_small.concrete_light.name", "Small Light Concrete Bricks");
-        provider.add("tile.stone_bricks_small.concrete_dark.name", "Small Dark Concrete Bricks");
-        provider.add("tile.stone_bricks_windmill_a.black_granite.name", "Black Granite Windmill Tiles A");
-        provider.add("tile.stone_bricks_windmill_a.red_granite.name", "Red Granite Windmill Tiles A");
-        provider.add("tile.stone_bricks_windmill_a.marble.name", "Marble Windmill Tiles A");
-        provider.add("tile.stone_bricks_windmill_a.basalt.name", "Basalt Windmill Tiles A");
-        provider.add("tile.stone_bricks_windmill_a.concrete_light.name", "Light Concrete Windmill Tiles A");
-        provider.add("tile.stone_bricks_windmill_a.concrete_dark.name", "Dark Concrete Windmill Tiles A");
-        provider.add("tile.stone_bricks_windmill_b.black_granite.name", "Black Granite Windmill Tiles B");
-        provider.add("tile.stone_bricks_windmill_b.red_granite.name", "Red Granite Windmill Tiles B");
-        provider.add("tile.stone_bricks_windmill_b.marble.name", "Marble Windmill Tiles B");
-        provider.add("tile.stone_bricks_windmill_b.basalt.name", "Basalt Windmill Tiles B");
-        provider.add("tile.stone_bricks_windmill_b.concrete_light.name", "Light Concrete Windmill Tiles B");
-        provider.add("tile.stone_bricks_windmill_b.concrete_dark.name", "Dark Concrete Windmill Tiles B");
-        provider.add("tile.stone_bricks_square.black_granite.name", "Square Black Granite Bricks");
-        provider.add("tile.stone_bricks_square.red_granite.name", "Square Red Granite Bricks");
-        provider.add("tile.stone_bricks_square.marble.name", "Square Marble Bricks");
-        provider.add("tile.stone_bricks_square.basalt.name", "Square Basalt Bricks");
-        provider.add("tile.stone_bricks_square.concrete_light.name", "Square Light Concrete Bricks");
-        provider.add("tile.stone_bricks_square.concrete_dark.name", "Square Dark Concrete Bricks");
-         */
+        provider.add("block.gtceu.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
+        provider.add("block.gtceu.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
     }
 }
