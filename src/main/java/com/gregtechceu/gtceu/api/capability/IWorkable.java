@@ -8,12 +8,12 @@ public interface IWorkable extends IControllable {
     /**
      * @return current progress of machine
      */
-    int getProgress();
+    long getProgress();
 
     /**
      * @return progress machine need to complete it's stuff
      */
-    int getMaxProgress();
+    long getMaxProgress();
 
     /**
      * @return true is machine is active

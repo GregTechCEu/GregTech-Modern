@@ -32,8 +32,8 @@ public class WorkableInfoProvider extends CapabilityInfoProvider<IWorkable> {
     protected void addProbeInfo(IWorkable capability, IProbeInfo probeInfo, Player player, BlockEntity blockEntity, IProbeHitData data) {
         if (!capability.isActive()) return;
 
-        int currentProgress = capability.getProgress();
-        int maxProgress = capability.getMaxProgress();
+        long currentProgress = capability.getProgress();
+        long maxProgress = capability.getMaxProgress();
         Component text;
 
         if (capability instanceof RecipeLogic logic &&

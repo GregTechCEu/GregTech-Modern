@@ -40,12 +40,12 @@ public class AutoMaintenanceHatchPartMachine extends TieredPartMachine implement
     }
 
     @Override
-    public int getTimeActive() {
+    public long getTimeActive() {
         return 0;
     }
 
     @Override
-    public void setTimeActive(int time) {
+    public void setTimeActive(long time) {
 
     }
 

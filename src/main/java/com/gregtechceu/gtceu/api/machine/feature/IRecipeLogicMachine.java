@@ -184,12 +184,12 @@ public interface IRecipeLogicMachine extends IRecipeCapabilityHolder, IMachineFe
     }
 
     @Override
-    default int getProgress() {
+    default long getProgress() {
         return getRecipeLogic().getProgress();
     }
 
     @Override
-    default int getMaxProgress() {
+    default long getMaxProgress() {
         return getRecipeLogic().getMaxProgress();
     }
 

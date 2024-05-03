@@ -40,3 +40,17 @@ mandatory = false
 versionRange = "[${kjs_version},)"
 ordering = "AFTER"
 side = "BOTH"
+
+#[[dependencies.${mod_id}]]
+#modId = "projecte"
+#mandatory = true
+#versionRange = "[0,)"
+#ordering = "AFTER"
+#side = "BOTH"
+
+#[[dependencies.${mod_id}]]
+#modId = "ae2disks"
+#mandatory = true
+#versionRange = "[0,)"
+#ordering = "AFTER"
+#side = "BOTH"

@@ -103,11 +103,11 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     private final int inventorySize;
 
     @Getter
-    public final int maxProgress;
+    public final long maxProgress;
 
     @Getter
     @Persisted
-    private int progress = 0;
+    private long progress = 0;
 
     @Getter
     @Persisted

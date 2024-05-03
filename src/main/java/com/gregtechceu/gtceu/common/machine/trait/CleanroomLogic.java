@@ -140,7 +140,7 @@ public class CleanroomLogic extends RecipeLogic implements IWorkable {
     /* taller cleanrooms take longer than wider ones
     /*  minimum of 100 is a 5x5x5 cleanroom: 125-25=100 ticks
     **/
-    public void setDuration(int max) {
+    public void setDuration(long max) {
         this.duration = max;
     }
 }

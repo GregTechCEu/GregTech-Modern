@@ -60,13 +60,13 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     protected GTRecipe lastOriginRecipe;
     @Persisted
     @Getter @Setter
-    protected int progress;
+    protected long progress;
     @Getter @Persisted
-    protected int duration;
+    protected long duration;
     @Getter @Persisted
-    protected int fuelTime;
+    protected long fuelTime;
     @Getter @Persisted
-    protected int fuelMaxTime;
+    protected long fuelMaxTime;
     @Getter(onMethod_ = @VisibleForTesting)
     protected boolean recipeDirty;
     @Persisted
@@ -388,7 +388,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     @Override
-    public int getMaxProgress() {
+    public long getMaxProgress() {
         return duration;
     }
 

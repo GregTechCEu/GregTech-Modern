@@ -370,12 +370,12 @@ public class ItemCollectorMachine extends TieredEnergyMachine implements IAutoOu
     }
 
     @Override
-    public int getProgress() {
+    public long getProgress() {
         return 0;
     }
 
     @Override
-    public int getMaxProgress() {
+    public long getMaxProgress() {
         return 0;
     }
 

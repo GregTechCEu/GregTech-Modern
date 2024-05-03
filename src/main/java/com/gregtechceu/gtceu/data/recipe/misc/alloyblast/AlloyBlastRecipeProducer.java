@@ -128,7 +128,7 @@ public class AlloyBlastRecipeProducer {
         builder.outputFluids(FluidStack.create(molten, (long) GTValues.L * outputAmount));
 
         // apply alloy blast duration reduction: 3/4
-        int duration = builder.duration * outputAmount * 3 / 4;
+        long duration = builder.duration * outputAmount * 3 / 4;
 
         // build the gas recipe if it exists
         if (property.getGasTier() != null) {

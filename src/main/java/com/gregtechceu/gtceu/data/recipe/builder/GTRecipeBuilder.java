@@ -69,7 +69,7 @@ public class GTRecipeBuilder {
     @Setter
     public GTRecipeType recipeType;
     @Setter
-    public int duration = 100;
+    public long duration = 100;
     @Setter
     public boolean perTick;
     @Setter

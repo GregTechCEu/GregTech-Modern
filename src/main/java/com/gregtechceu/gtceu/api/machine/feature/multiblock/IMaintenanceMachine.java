@@ -47,11 +47,11 @@ public interface IMaintenanceMachine extends IMultiPart {
 
     /**
      * Time is how long it is active and is used to determine how often problems occur.
-     * See {@link IMaintenanceMachine#calculateTime(int)} for the trigger point.
+     * See {@link IMaintenanceMachine#calculateTime(long)} for the trigger point.
      */
-    int getTimeActive();
+    long getTimeActive();
 
-    void setTimeActive(int time);
+    void setTimeActive(long time);
 
     /**
      * Duration modifier for recipe. {@link IMaintenanceMachine#modifyRecipe(GTRecipe)}
@@ -78,7 +78,7 @@ public interface IMaintenanceMachine extends IMultiPart {
      * @param duration recipe progress time
      * @return it's time for a new problem occurring;
      */
-    default boolean calculateTime(int duration) {
+    default boolean calculateTime(long duration) {
         setTimeActive(duration + getTimeActive());
         var value = getTimeActive() - MINIMUM_MAINTENANCE_TIME;
         if (value > 0) {
@@ -93,12 +93,12 @@ public interface IMaintenanceMachine extends IMultiPart {
      *
      * @param duration in ticks to add to the counter of active time
      */
-    default void calculateMaintenance(IMaintenanceMachine maintenanceMachine, int duration) {
+    default void calculateMaintenance(IMaintenanceMachine maintenanceMachine, long duration) {
         if (!ConfigHolder.INSTANCE.machines.enableMaintenance || maintenanceMachine.isFullAuto()) {
             return;
         }
 
-        if (calculateTime((int) (duration * maintenanceMachine.getTimeMultiplier()))) {
+        if (calculateTime((long) (duration * maintenanceMachine.getTimeMultiplier()))) {
             if (GTValues.RNG.nextFloat() - 0.75f >= 0) {
                 causeRandomMaintenanceProblems();
                 maintenanceMachine.setTaped(false);
@@ -143,7 +143,7 @@ public interface IMaintenanceMachine extends IMultiPart {
             var durationMultiplier = getDurationMultiplier();
             if (durationMultiplier != 1) {
                 recipe = recipe.copy();
-                recipe.duration = (int) (recipe.duration * durationMultiplier);
+                recipe.duration = (long) (recipe.duration * durationMultiplier);
             }
         }
         return recipe;

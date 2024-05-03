@@ -69,7 +69,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     }
 
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        int duration = recipe.duration;
+        long duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
         var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getA();
         recipe = result == recipe ? result.copy() : result;

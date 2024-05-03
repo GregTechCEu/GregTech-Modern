@@ -34,16 +34,16 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
     @Override
     protected void write(CompoundTag data, IWorkable capability) {
         data.putBoolean("Active", capability.isActive());
-        data.putInt("Progress", capability.getProgress());
-        data.putInt("MaxProgress", capability.getMaxProgress());
+        data.putLong("Progress", capability.getProgress());
+        data.putLong("MaxProgress", capability.getMaxProgress());
     }
 
     @Override
     protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
         if (!capData.getBoolean("Active")) return;
 
-        int currentProgress = capData.getInt("Progress");
-        int maxProgress = capData.getInt("MaxProgress");
+        long currentProgress = capData.getLong("Progress");
+        long maxProgress = capData.getLong("MaxProgress");
         Component text;
 
         if (block.getBlockEntity() instanceof IMachineBlockEntity mbe &&

@@ -27,7 +27,7 @@ public class OverclockingLogic {
          * @param amountOC        the maximum amount of overclocks to perform
          * @return an int array of {OverclockedEUt, OverclockedDuration}
          */
-        LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, int duration, int amountOC);
+        LongIntPair runOverclockingLogic(@NotNull GTRecipe recipe, long recipeEUt, long maxVoltage, long duration, int amountOC);
     }
 
     public static final double STANDARD_OVERCLOCK_VOLTAGE_MULTIPLIER = 4.0;
@@ -78,7 +78,7 @@ public class OverclockingLogic {
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
     @NotNull
-    public static LongIntPair standardOverclockingLogic(long recipeEUt, long maxVoltage, int recipeDuration, int numberOfOCs, double durationDivisor, double voltageMultiplier) {
+    public static LongIntPair standardOverclockingLogic(long recipeEUt, long maxVoltage, long recipeDuration, int numberOfOCs, double durationDivisor, double voltageMultiplier) {
         double resultDuration = recipeDuration;
         double resultVoltage = recipeEUt;
 
@@ -104,7 +104,7 @@ public class OverclockingLogic {
     }
 
     @NotNull
-    public static LongIntPair heatingCoilOverclockingLogic(long recipeEUt, long maximumVoltage, int recipeDuration, int maxOverclocks, int currentTemp, int recipeRequiredTemp) {
+    public static LongIntPair heatingCoilOverclockingLogic(long recipeEUt, long maximumVoltage, long recipeDuration, int maxOverclocks, int currentTemp, int recipeRequiredTemp) {
         int amountEUDiscount = Math.max(0, (currentTemp - recipeRequiredTemp) / 900);
         int amountPerfectOC = amountEUDiscount / 2;
 

@@ -196,12 +196,12 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
     */
 
     @Override
-    public int getProgress() {
+    public long getProgress() {
         return 0;
     }
 
     @Override
-    public int getMaxProgress() {
+    public long getMaxProgress() {
         return 0;
     }
 }

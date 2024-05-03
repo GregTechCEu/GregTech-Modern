@@ -127,7 +127,7 @@ public class GTRecipeWidget extends WidgetGroup {
     private void initializeRecipeTextWidget() {
         String tierText = GTValues.VNF[tier];
         int textsY = yOffset - 10;
-        int duration = recipe.duration;
+        long duration = recipe.duration;
         long inputEUt = RecipeHelper.getInputEUt(recipe);
         long outputEUt = RecipeHelper.getOutputEUt(recipe);
         List<Component> texts = getRecipeParaText(recipe, duration, inputEUt, outputEUt);
@@ -158,7 +158,7 @@ public class GTRecipeWidget extends WidgetGroup {
     }
 
     @NotNull
-    private static List<Component> getRecipeParaText(GTRecipe recipe, int duration, long inputEUt, long outputEUt) {
+    private static List<Component> getRecipeParaText(GTRecipe recipe, long duration, long inputEUt, long outputEUt) {
         List<Component> texts = new ArrayList<>();
         if (!recipe.data.getBoolean("hide_duration")) {
             texts.add(Component.translatable("gtceu.recipe.duration", duration / 20f));
@@ -226,7 +226,7 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private void setRecipeTextWidget(OverclockingLogic logic) {
         long inputEUt = RecipeHelper.getInputEUt(recipe);
-        int duration = recipe.duration;
+        long duration = recipe.duration;
         String tierText = GTValues.VNF[tier];
         if (tier > getMinTier() && inputEUt != 0) {
             LongIntPair pair = logic.getLogic().runOverclockingLogic(

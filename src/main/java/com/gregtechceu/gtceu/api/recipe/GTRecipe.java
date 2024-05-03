@@ -48,7 +48,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final List<?> ingredientActions;
     @NotNull
     public CompoundTag data;
-    public int duration;
+    public long duration;
     @Getter
     public boolean isFuel;
 
@@ -61,7 +61,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     List<RecipeCondition> conditions,
                     List<?> ingredientActions,
                     @NotNull CompoundTag data,
-                    int duration,
+                    long duration,
                     boolean isFuel) {
         this.recipeType = recipeType;
         this.id = id;
