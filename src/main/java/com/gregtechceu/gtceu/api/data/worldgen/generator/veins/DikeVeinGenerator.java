@@ -77,7 +77,7 @@ public class DikeVeinGenerator extends VeinGenerator {
         ChunkPos chunkPos = new ChunkPos(origin);
 
         float density = entry.density();
-        int size = entry.clusterSize();
+        int size = entry.clusterSize().sample(random);
 
         int radius = Mth.ceil(size / 2f);
 
