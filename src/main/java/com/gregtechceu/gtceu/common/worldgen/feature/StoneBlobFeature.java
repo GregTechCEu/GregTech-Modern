@@ -58,6 +58,10 @@ public class StoneBlobFeature extends Feature<StoneBlobConfiguration> {
                         continue;
 
                     for (int z = 0; z < length; z++) {
+                        float dz = z * 2f / length - 1;
+                        if (dx * dx + dy * dy + dz * dz > 1)
+                            continue;
+
                         final int currentX = x0 + x;
                         final int currentY = y0 + y;
                         final int currentZ = z0 + z;
