@@ -238,7 +238,6 @@ public class MachineRecipeLoader {
         List<ItemStack> squareBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SQUARE).values().stream().map(ItemStack::new).toList();
         List<ItemStack> smallBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SMALL).values().stream().map(ItemStack::new).toList();
 
-
         registerSmoothRecipe(provider, cobbles, smooths);
         registerCobbleRecipe(provider, smooths, cobbles);
         registerMossRecipe(provider, cobbles, mossCobbles);

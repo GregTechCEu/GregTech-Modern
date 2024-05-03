@@ -1426,6 +1426,9 @@ public class GTBlocks {
         generateOreIndicators();    // Ore Indicators
         MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.build();
 
+        // Decor Blocks
+        generateStoneBlocks();
+
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
         generateCableBlocks();        // Cable & Wire Blocks
@@ -1433,9 +1436,6 @@ public class GTBlocks {
         generateItemPipeBlocks();     // Item Pipe Blocks
         generateLaserPipeBlocks();    // Laser Pipe Blocks
         generateOpticalPipeBlocks();  // Optical Pipe Blocks
-
-        // Decor Blocks
-        generateStoneBlocks();
 
         // Remove Builder Tables
         MATERIAL_BLOCKS_BUILDER = null;
