@@ -6898,7 +6898,7 @@
     "block.gtceu.purple_lamp": "Фиолетовая лампа",
     "block.gtceu.red_granite_cobblestone": "Красно-гранитный булыжник",
     "block.gtceu.rubber_button": "Каучуковая кнопка",
-    "block.gtceu.small_dark_concrete_bricks": "Маленький тёмный бетонный кирпич",
+    "block.gtceu.small_dark_concrete_bricks": "Маленький темный бетонный кирпич",
     "block.gtceu.small_red_granite_bricks": "Маленький красный гранитный кирпич",
     "block.gtceu.square_light_concrete_bricks": "Квадратный светлый бетонный кирпич",
     "block.gtceu.void_hazard_sign_block": "Блок со знаком пустотной опасности",
@@ -6916,5 +6916,9 @@
     "block.gtceu.stripped_rubber_log": "Обтёсанное каучуковое бревно",
     "block.gtceu.treated_wood_fence_gate": "Обработанная деревянная калитка",
     "block.gtceu.treated_wood_slab": "Обработанная деревянная плита",
-    "block.gtceu.turret_hazard_sign_block": "Блок со знаком опасности автоматизированной защиты"
+    "block.gtceu.turret_hazard_sign_block": "Блок со знаком опасности автоматизированной защиты",
+    "block.gtceu.smooth_dark_concrete": "Гладкий темный бетон",
+    "block.gtceu.smooth_light_concrete": "Гладкий светлый бетон",
+    "block.gtceu.smooth_marble": "Гладкий мрамор",
+    "block.gtceu.smooth_red_granite": "Гладкий красный гранит"
 }
