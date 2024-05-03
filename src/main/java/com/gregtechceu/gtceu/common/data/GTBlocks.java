@@ -1182,7 +1182,6 @@ public class GTBlocks {
         .lang("Treated Wood Sign")
         .blockstate((ctx, prov) -> prov.signBlock(ctx.get(), GTBlocks.TREATED_WOOD_WALL_SIGN.get(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
         .tag(BlockTags.STANDING_SIGNS)
-        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .item((b, p) -> new SignItem(p, b, GTBlocks.TREATED_WOOD_WALL_SIGN.get()))
         .defaultModel()
         .tag(ItemTags.SIGNS)
@@ -1193,6 +1192,7 @@ public class GTBlocks {
         .initialProperties(() -> Blocks.SPRUCE_WALL_SIGN)
         .lang("Treated Wood Wall Sign")
         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
+        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .tag(BlockTags.WALL_SIGNS)
         .loot((table, block) -> table.dropOther(block, TREATED_WOOD_SIGN.asItem()))
         .register();
@@ -1205,7 +1205,6 @@ public class GTBlocks {
             prov.simpleBlock(ctx.get(), model);
         })
         .tag(BlockTags.CEILING_HANGING_SIGNS)
-        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_HANGING_SIGN.get(), p))
         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .tag(ItemTags.HANGING_SIGNS)

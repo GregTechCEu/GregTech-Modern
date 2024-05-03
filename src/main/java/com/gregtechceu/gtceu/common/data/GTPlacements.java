@@ -11,11 +11,9 @@ import net.minecraft.data.worldgen.BootstapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.SurfaceWaterDepthFilter;
+import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
 
@@ -46,10 +44,16 @@ public class GTPlacements {
         );
 
         PlacementUtils.register(ctx, RED_GRANITE_BLOB, featureLookup.getOrThrow(GTConfiguredFeatures.RED_GRANITE_BLOB),
-            InSquarePlacement.spread()
+            RarityFilter.onAverageOnceEvery(10),
+            InSquarePlacement.spread(),
+            BiomeFilter.biome(),
+            HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
         );
         PlacementUtils.register(ctx, MARBLE_BLOB, featureLookup.getOrThrow(GTConfiguredFeatures.MARBLE_BLOB),
-            InSquarePlacement.spread()
+            RarityFilter.onAverageOnceEvery(10),
+            InSquarePlacement.spread(),
+            BiomeFilter.biome(),
+            HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
         );
     }
 }

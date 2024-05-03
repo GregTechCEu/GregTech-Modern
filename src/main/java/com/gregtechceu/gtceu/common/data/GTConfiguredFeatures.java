@@ -38,8 +38,8 @@ public class GTConfiguredFeatures {
                 new TwoLayersFeatureSize(1, 0, 2)).ignoreVines().build());
 
         FeatureUtils.register(ctx, RED_GRANITE_BLOB, GTFeatures.STONE_BLOB.get(),
-            new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), GTBlocks.RED_GRANITE.getDefaultState()), UniformInt.of(10, 20)));
+            new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), GTBlocks.RED_GRANITE.getDefaultState()), UniformInt.of(20, 30)));
         FeatureUtils.register(ctx, MARBLE_BLOB, GTFeatures.STONE_BLOB.get(),
-            new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), GTBlocks.MARBLE.getDefaultState()), UniformInt.of(10, 20)));
+            new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), GTBlocks.MARBLE.getDefaultState()), UniformInt.of(20, 30)));
     }
 }
