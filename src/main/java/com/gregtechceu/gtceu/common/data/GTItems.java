@@ -433,6 +433,7 @@ public class GTItems {
                 }
                 return Component.translatable(stack.getDescriptionId(), prefix);
             }
+            return "%s %s".formatted(prefix, itemStack.getItem().getDescription().getString());
         };
     }
 
@@ -440,21 +441,21 @@ public class GTItems {
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, false), new ItemFluidContainer(), cellName())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE.item("universal_fluid_cell", ComponentItem::new)
         .lang("Universal Cell")
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, true), new ItemFluidContainer())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE.item("steel_fluid_cell", ComponentItem::new)
         .lang("Steel Cell")
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 8, GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
         .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE.item("aluminium_fluid_cell", ComponentItem::new)
@@ -462,7 +463,7 @@ public class GTItems {
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 32, GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
         .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE.item("stainless_steel_fluid_cell", ComponentItem::new)
@@ -470,7 +471,7 @@ public class GTItems {
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 64, GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
         .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE.item("titanium_fluid_cell", ComponentItem::new)
@@ -478,7 +479,7 @@ public class GTItems {
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 128, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
         .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE.item("tungstensteel_fluid_cell", ComponentItem::new)
@@ -487,14 +488,14 @@ public class GTItems {
         .color(() -> GTItems::cellColor)
         .properties(p -> p.stacksTo(32))
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 512, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
         .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::new)
         .model(GTModels::cellModel)
         .color(() -> GTItems::cellColor)
         .onRegister(compassNode(GTCompassSections.ITEMS))
-        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
+        .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
         .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket(), 1200, false, true, false, false, true), new ItemFluidContainer()))
         .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4)))).register();
 

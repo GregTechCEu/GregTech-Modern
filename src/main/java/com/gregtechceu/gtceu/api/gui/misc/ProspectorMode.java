@@ -21,6 +21,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
@@ -107,14 +108,14 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public String getDescriptionId(String item) {
+        public MutableComponent getDescription(String item) {
             if (item.startsWith("material_")) {
                 var mat = GTMaterials.get(item.substring(9));
                 if (mat != null) {
-                    return mat.getUnlocalizedName();
+                    return mat.getLocalizedName();
                 }
             }
-            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getDescriptionId();
+            return BuiltInRegistries.BLOCK.get(new ResourceLocation(item)).getName();
         }
 
         @Override
@@ -147,8 +148,7 @@ public abstract class ProspectorMode<T> {
                     }
                 }
             }
-            counter.forEach((item, count) -> tooltips
-                    .add(Component.translatable(getDescriptionId(item)).append(" --- " + count)));
+            counter.forEach((item, count) -> tooltips.add(getDescription(item).append(" --- " + count)));
         }
     };
 
@@ -189,8 +189,8 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public String getDescriptionId(FluidInfo item) {
-            return item.fluid.getFluidType().getDescription().getString();
+        public MutableComponent getDescription(FluidInfo item) {
+            return (MutableComponent) item.fluid.getFluidType().getDescription(new FluidStack(item.fluid, item.left));
         }
 
         @Override
@@ -220,8 +220,7 @@ public abstract class ProspectorMode<T> {
         public void appendTooltips(List<FluidInfo[]> items, List<Component> tooltips, String selected) {
             for (var array : items) {
                 for (FluidInfo item : array) {
-                    tooltips.add(Component.translatable(getDescriptionId(item))
-                            .append(" --- %s (%s%%)".formatted(item.yield, item.left)));
+                    tooltips.add(getDescription(item).append(" --- %s (%s%%)".formatted(item.yield, item.left)));
                 }
             }
         }
@@ -279,8 +278,8 @@ public abstract class ProspectorMode<T> {
         }
 
         @Override
-        public String getDescriptionId(OreInfo item) {
-            return item.material.getUnlocalizedName();
+        public MutableComponent getDescription(OreInfo item) {
+            return item.material.getLocalizedName();
         }
 
         @Override
@@ -315,7 +314,7 @@ public abstract class ProspectorMode<T> {
                 int totalWeight = Arrays.stream(array).mapToInt(OreInfo::weight).sum();
                 for (OreInfo item : array) {
                     float chance = (float) item.weight / totalWeight * 100;
-                    tooltips.add(Component.translatable(getDescriptionId(item)).append(" (").append(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance) + "%")).append(") --- %s (%s%%)".formatted(item.yield, item.left)));
+                    tooltips.add(getDescription(item).append(" (").append(Component.translatable("gtceu.gui.content.chance_1", String.format("%.1f", chance) + "%")).append(") --- %s (%s%%)".formatted(item.yield, item.left)));
                 }
             }
         }
@@ -334,9 +333,7 @@ public abstract class ProspectorMode<T> {
     public abstract int getItemColor(T item);
 
     public abstract IGuiTexture getItemIcon(T item);
-
-    public abstract String getDescriptionId(T item);
-
+    public abstract MutableComponent getDescription(T item);
     public abstract String getUniqueID(T item);
 
     public abstract void serialize(T item, FriendlyByteBuf buf);

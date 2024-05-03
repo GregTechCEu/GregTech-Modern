@@ -66,18 +66,12 @@ public class PageSwitcher implements IFancyUIProvider {
                         var index = currentPage.getAndIncrement();
                         var y = currentY.addAndGet(index % 5 == 0 ? 30 : 0); // Jump to the next row every 5 parts
 
-                        var pageWidget = new WidgetGroup((index % 5) * 30, y, 25, 25);
-                        pageWidget.addWidget(new ButtonWidget(0, 0, 25, 25, GuiTextures.BACKGROUND,
-                                clickData -> onPageSwitched.accept(page)));
-                        pageWidget.addWidget(new ImageWidget(4, 4, 17, 17, page.getTabIcon()));
-                        // For some reason, this doesn't work in any other way:
-                        pageWidget.widgets.get(0).setHoverTooltips(page.getTitle().getString());
-                        scrollableGroup.addWidget(pageWidget);
-                    });
-
-                    if (!groupedPages.get(group).isEmpty()) {
-                        currentY.add(30);
-                    }
+                    var pageWidget = new WidgetGroup((index % 5) * 30, y, 25, 25);
+                    pageWidget.addWidget(new ButtonWidget(0, 0, 25, 25, GuiTextures.BACKGROUND, clickData -> onPageSwitched.accept(page)));
+                    pageWidget.addWidget(new ImageWidget(4, 4, 17, 17, page.getTabIcon()));
+                    // For some reason, this doesn't work in any other way:
+                    pageWidget.widgets.getFirst().setHoverTooltips(page.getTitle());
+                    scrollableGroup.addWidget(pageWidget);
                 });
 
         return container;
