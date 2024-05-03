@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "gtceu:block/rubber_slab"
+    },
+    "type=double": {
+      "model": "gtceu:block/rubber_planks"
+    },
+    "type=top": {
+      "model": "gtceu:block/rubber_slab_top"
+    }
+  }
+}
