@@ -33,3 +33,5 @@ machete {
     // disable machete locally for faster builds
     enabled = false
 }
+
+compileJava.options.encoding = 'UTF-8'
