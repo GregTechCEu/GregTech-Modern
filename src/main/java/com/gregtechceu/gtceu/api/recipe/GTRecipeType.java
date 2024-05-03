@@ -45,6 +45,7 @@ import java.util.function.Supplier;
  */
 @Accessors(chain = true)
 public class GTRecipeType implements RecipeType<GTRecipe> {
+    public static final String LANGUAGE_KEY_PATH = "recipe_type";
     public static final List<ICustomScannerLogic> CUSTOM_SCANNER_LOGICS = new ArrayList<>();
 
     @Getter @Setter(onMethod_ = {@ApiStatus.Internal})
@@ -296,6 +297,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
             }
         }
         return recipes;
+    }
+
+    public String getTranslationKey() {
+        return this.registryName.toLanguageKey(LANGUAGE_KEY_PATH);
     }
 
     /**
