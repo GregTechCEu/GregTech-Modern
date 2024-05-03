@@ -189,7 +189,9 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
 
             // Do RecipeLogic#setupRecipe but without any i/o
             if (handleFuelRecipe()) {
-                machine.beforeWorking();
+                if (!machine.beforeWorking(recipe)) {
+                    return;
+                }
                 recipe.preWorking(this.machine);
 
                 // do not consume inputs here, consume them on completion

@@ -2,12 +2,14 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -15,6 +17,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
@@ -137,7 +140,6 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
-
         if (slots == 1) {
             return createSingleSlotGUI();
         } else {
@@ -147,14 +149,72 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     protected Widget createSingleSlotGUI() {
         var group = new WidgetGroup(0, 0, 89, 63);
+        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY));
+        TankWidget tankWidget;
 
-        group.addWidget(new ImageWidget(4, 4, 81, 55, GuiTextures.DISPLAY))
-                .addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
-                .addWidget(new LabelWidget(8, 18, () -> String.valueOf(tank.getFluidInTank(0).getAmount())).setTextColor(-1).setDropShadow(true))
-                .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
+        // Add input/output-specific widgets
+        if (this.io == IO.OUT) {
+            // if this is an output hatch, assign tankWidget to the phantom widget displaying the locked fluid...
+            group.addWidget(tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 67, 40, 18, 18)
+                .setIFluidStackUpdater(f -> {
+                    if (this.tank.getFluidInTank(0).getAmount() != 0) {
+                        return;
+                    }
+                    if (f.isEmpty()) {
+                        this.tank.setLocked(false);
+                    } else {
+                        this.tank.setLocked(true);
+                        FluidStack newFluid = f.copy();
+                        newFluid.setAmount(1);
+                        this.tank.getLockedFluid().setFluid(newFluid);
+                    }
+                }).setShowAmount(true).setDrawHoverTips(false).setBackground(GuiTextures.FLUID_SLOT));
+
+            group.addWidget(new ToggleButtonWidget(7, 40, 18, 18,
+                    GuiTextures.BUTTON_LOCK, this.tank::isLocked, this.tank::setLocked)
+                    .setTooltipText("gtceu.gui.fluid_lock.tooltip")
+                    .setShouldUseBaseBackground())
+                // ...and add the actual tank widget separately.
+                .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
+                    .setShowAmount(true).setDrawHoverTips(false).setBackground(GuiTextures.FLUID_SLOT));
+        } else {
+            group.addWidget(tankWidget = new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
+                    .setShowAmount(true).setDrawHoverTips(false).setBackground(GuiTextures.FLUID_SLOT));
+        }
+
+        group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
+            .addWidget(new LabelWidget(8, 18, () -> getFluidAmountText(tankWidget)))
+            .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()));
 
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
+    }
+
+    private Component getFluidNameText(TankWidget tankWidget) {
+        Component translation;
+        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
+            translation = tank.getFluidInTank(tankWidget.getTank()).getDisplayName();
+        } else {
+            translation = this.tank.getLockedFluid().getFluid().getDisplayName();
+        }
+        return translation;
+    }
+
+    private String getFluidAmountText(TankWidget tankWidget) {
+        String fluidAmount = "";
+        if (!tank.getFluidInTank(tankWidget.getTank()).isEmpty()) {
+            fluidAmount = getFormattedFluidAmount(tank.getFluidInTank(tankWidget.getTank()));
+        } else {
+            // Display Zero to show information about the locked fluid
+            if (!this.tank.getLockedFluid().getFluid().isEmpty()) {
+                fluidAmount = "0";
+            }
+        }
+        return fluidAmount;
+    }
+
+    public String getFormattedFluidAmount(FluidStack fluidStack) {
+        return String.format("%,d", fluidStack.isEmpty() ? 0 : fluidStack.getAmount());
     }
 
     protected Widget createMultiSlotGUI() {

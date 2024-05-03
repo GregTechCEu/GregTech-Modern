@@ -402,6 +402,7 @@ public class LangHandler {
         replace(provider, GTMaterials.UUMatter.getUnlocalizedName(), "UU-Matter");
         replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
+        replace(provider, GTMaterials.Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
         replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
         replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
         replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
@@ -1072,6 +1073,12 @@ public class LangHandler {
         provider.add("gtceu.gui.config_slot.set", "§7Click to §bset/select§7 config slot.§r");
         provider.add("gtceu.gui.config_slot.scroll", "§7Scroll wheel to §achange§7 config amount.§r");
         provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
+
+        // Decor Stuff
+        replace(provider,"block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");
+        replace(provider,"block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
+        replace(provider,"block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
+        replace(provider,"block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
     }
 
     /**

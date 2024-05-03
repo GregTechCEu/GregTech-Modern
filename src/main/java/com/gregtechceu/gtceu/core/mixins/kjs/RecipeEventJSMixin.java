@@ -62,6 +62,7 @@ public class RecipeEventJSMixin {
                 if (gtRecipe.getValue(GTRecipeSchema.IS_FUEL) != null) {
                     builder.isFuel = gtRecipe.getValue(GTRecipeSchema.IS_FUEL);
                 }
+                builder.researchRecipeEntries().addAll(gtRecipe.researchRecipeEntries());
 
                 if (gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS) != null) {
                     builder.input.putAll(gtRecipe.getValue(GTRecipeSchema.ALL_INPUTS).entrySet().stream()

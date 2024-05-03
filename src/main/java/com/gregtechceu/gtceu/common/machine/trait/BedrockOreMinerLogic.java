@@ -71,12 +71,15 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
-            var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
-            Material material = veinMaterials.get(GTUtil.getRandomItem(veinMaterials, veinMaterials.size())).getValue();
-            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ())));
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()))); // backup 1: crushed; if raw ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()))); // backup 2: gem; if crushed ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()))); // backup 3: just fallback to normal ore...
+            Material material = veinMaterials.get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
+            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material, getOreToProduce());
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup 1: crushed; if raw ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2: gem; if crushed ore doesn't exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3: normal ore; if gem doesn't exist.
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4: fallback to dust
+            if (stack.isEmpty()) {
+                return null;
+            }
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
@@ -99,11 +102,19 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
             produced *= BedrockOreMinerMachine.getRigMultiplier(getMachine().getTier());
 
-            // Overclocks produce 50% more fluid
+            // Overclocks produce 50% more ore
             if (isOverclocked()) {
                 produced = produced * 3 / 2;
             }
             return produced;
+        }
+        return 0;
+    }
+
+    public int getOreToProduce() {
+        if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
+            var data = BedrockOreVeinSavedData.getOrCreate(serverLevel);
+            return getOreToProduce(data.getOreVeinWorldEntry(getChunkX(), getChunkZ()));
         }
         return 0;
     }

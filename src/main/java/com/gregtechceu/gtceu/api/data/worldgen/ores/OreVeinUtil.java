@@ -42,7 +42,7 @@ public class OreVeinUtil {
 
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                       RandomSource pRandom, GTOreDefinition entry, OreConfiguration.TargetBlockState pTargetState,
-                                      BlockPos.MutableBlockPos pMatablePos) {
+                                      BlockPos pMatablePos) {
         if (!pTargetState.target.test(pState, pRandom))
             return false;
         if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure()))
@@ -53,7 +53,7 @@ public class OreVeinUtil {
 
     public static boolean canPlaceOre(BlockState pState, Function<BlockPos, BlockState> pAdjacentStateAccessor,
                                       RandomSource pRandom, GTOreDefinition entry,
-                                      BlockPos.MutableBlockPos pMatablePos) {
+                                      BlockPos pMatablePos) {
         if (!entry.layer().getTarget().test(pState, pRandom))
             return false;
         if (shouldSkipAirCheck(pRandom, entry.discardChanceOnAirExposure()))
@@ -121,8 +121,7 @@ public class OreVeinUtil {
         RegistryOps<JsonElement> registryOps = RegistryOps.create(JsonOps.INSTANCE, GTRegistries.builtinRegistry());
         JsonElement codecInput = resolveBiomeCodecInput(biomes);
         return () -> RegistryCodecs.homogeneousList(BuiltinRegistries.BIOME.key())
-                .decode(registryOps, codecInput)
-                .map(Pair::getFirst)
+                .parse(registryOps, codecInput)
                 .getOrThrow(false, GTCEu.LOGGER::error);
     }
 

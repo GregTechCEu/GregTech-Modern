@@ -41,6 +41,9 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     }
 
     public void updateNetwork() {
+        if (this.getLevel().isClientSide) {
+            return;
+        }
         LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());
         if (network != null) {
             // manually remove this endpoint from the network
@@ -73,6 +76,12 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
     }
 
     @Override
+    public void onLoad() {
+        super.onLoad();
+        this.updateNetwork();
+    }
+
+    @Override
     public void onUnload() {
         super.onUnload();
         if (this.getLevel().isClientSide) return;
@@ -89,9 +98,10 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
 
     @Override
     public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-        if (!placed || getLevel() == null || getLevel().isClientSide) return;
+        if (!placed || getLevel().isClientSide) return;
 
         List<LongDistanceNetwork> networks = findNetworks();
+        this.updateNetwork();
         LongDistanceNetwork network = LongDistanceNetwork.get(getLevel(), getPos());
         if (network == null) {
             // shouldn't happen
@@ -112,6 +122,12 @@ public abstract class LongDistanceEndpointMachine extends MetaMachine implements
         if (networks.size() != 1) {
             setIoType(IO.NONE);
         }
+    }
+
+    @Override
+    public void notifyBlockUpdate() {
+        super.notifyBlockUpdate();
+        this.updateNetwork();
     }
 
     private List<LongDistanceNetwork> findNetworks() {

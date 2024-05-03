@@ -37,7 +37,12 @@ public class KJSTagPrefix extends TagPrefix {
 
     @Override
     public KJSTagPrefix defaultTagPath(String path) {
-        this.tags.add(TagType.withDefaultFormatter(path));
+        return this.defaultTagPath(path, false);
+    }
+
+    @Override
+    public KJSTagPrefix defaultTagPath(String path, boolean isVanilla) {
+        this.tags.add(TagType.withDefaultFormatter(path, isVanilla));
         return this;
     }
 

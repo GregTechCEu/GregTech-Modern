@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -23,14 +25,12 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
-import java.util.function.BiConsumer;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.*;
 
 /**
  * @author KilaBash
@@ -56,9 +56,22 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter @Setter
     private int defaultPaintingColor;
     @Getter @Setter
-    private BiFunction<MetaMachine, GTRecipe, GTRecipe> recipeModifier;
+    private RecipeModifier recipeModifier;
     @Getter @Setter
     private boolean alwaysTryModifyRecipe;
+    @NotNull
+    @Getter @Setter
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
+    @NotNull
+    @Getter @Setter
+    private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
+    @NotNull
+    @Getter @Setter
+    private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
+    @NotNull
+    @Getter @Setter
+    private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
+
     @Getter @Setter
     private IRenderer renderer;
     @Setter

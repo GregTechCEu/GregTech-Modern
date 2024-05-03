@@ -39,11 +39,15 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
 
     public OreDataLoader() {
         super(GSON_INSTANCE, FOLDER);
+        INSTANCE = this;
     }
 
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> resourceList, ResourceManager resourceManager, ProfilerFiller profiler) {
-        GTRegistries.ORE_VEINS.unfreeze();
+        // Check condition in cause of reload failing which makes the registry not freeze.
+        if (GTRegistries.ORE_VEINS.isFrozen()) {
+            GTRegistries.ORE_VEINS.unfreeze();
+        }
         GTRegistries.ORE_VEINS.registry().clear();
 
         GTOres.init();
@@ -76,7 +80,9 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
         buildVeinGenerator();
 
         GTOres.updateLargestVeinSize();
-        GTRegistries.ORE_VEINS.freeze();
+        if (!GTRegistries.ORE_VEINS.isFrozen()) {
+            GTRegistries.ORE_VEINS.freeze();
+        }
     }
 
     public static void buildVeinGenerator() {
@@ -92,7 +98,7 @@ public class OreDataLoader extends SimpleJsonResourceReloadListener {
     }
 
     public static GTOreDefinition fromJson(ResourceLocation id, JsonObject json, RegistryOps<JsonElement> ops) {
-        return GTOreDefinition.FULL_CODEC.decode(ops, json).map(Pair::getFirst).getOrThrow(false, LOGGER::error);
+        return GTOreDefinition.FULL_CODEC.parse(ops, json).getOrThrow(false, LOGGER::error);
     }
 
     /**

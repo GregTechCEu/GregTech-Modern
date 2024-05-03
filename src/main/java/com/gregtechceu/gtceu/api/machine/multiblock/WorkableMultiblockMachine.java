@@ -65,7 +65,7 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         this.recipeTypes = getDefinition().getRecipeTypes();
         this.activeRecipeType = 0;
         this.recipeLogic = createRecipeLogic(args);
-        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), HashMap::new);
+        this.capabilitiesProxy = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
         this.traitSubscriptions = new ArrayList<>();
     }
 
@@ -224,20 +224,27 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         for (IMultiPart part : getParts()) {
             part.afterWorking(this);
         }
+        IWorkableMultiController.super.afterWorking();
     }
 
     @Override
-    public void beforeWorking() {
+    public boolean beforeWorking(@Nullable GTRecipe recipe) {
         for (IMultiPart part : getParts()) {
-            part.beforeWorking(this);
+            if (!part.beforeWorking(this)) {
+                return false;
+            }
         }
+        return IWorkableMultiController.super.beforeWorking(recipe);
     }
 
     @Override
-    public void onWorking() {
+    public boolean onWorking() {
         for (IMultiPart part : getParts()) {
-            part.onWorking(this);
+            if (!part.onWorking(this)) {
+                return false;
+            }
         }
+        return IWorkableMultiController.super.onWorking();
     }
 
     @Override
@@ -245,6 +252,17 @@ public abstract class WorkableMultiblockMachine extends MultiblockControllerMach
         for (IMultiPart part : getParts()) {
             part.onWaiting(this);
         }
+        IWorkableMultiController.super.onWaiting();
+    }
+
+    @Override
+    public void setWorkingEnabled(boolean isWorkingAllowed) {
+        if (!isWorkingAllowed) {
+            for (IMultiPart part : getParts()) {
+                part.onPaused(this);
+            }
+        }
+        IWorkableMultiController.super.setWorkingEnabled(isWorkingAllowed);
     }
 
     @NotNull

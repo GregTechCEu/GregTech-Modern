@@ -228,6 +228,14 @@ public class GTRecipeBuilder {
         return input(ItemRecipeCapability.CAP, inputs);
     }
 
+    public GTRecipeBuilder inputItems(ItemStack input) {
+        if (input.isEmpty()) {
+            GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
+            throw new IllegalArgumentException(id + ": input items is empty");
+        }
+        return input(ItemRecipeCapability.CAP, SizedIngredient.create(input));
+    }
+
     public GTRecipeBuilder inputItems(ItemStack... inputs) {
         for (ItemStack itemStack : inputs) {
             if (itemStack.isEmpty()) {
@@ -301,6 +309,14 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder itemOutput(UnificationEntry unificationEntry, int count) {
         return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
+    }
+
+    public GTRecipeBuilder outputItems(ItemStack output) {
+        if (output.isEmpty()) {
+            GTCEu.LOGGER.error("gt recipe {} output items is empty", id);
+            throw new IllegalArgumentException(id + ": output items is empty");
+        }
+        return output(ItemRecipeCapability.CAP, SizedIngredient.create(output));
     }
 
     public GTRecipeBuilder outputItems(ItemStack... outputs) {
@@ -385,6 +401,19 @@ public class GTRecipeBuilder {
         return this;
     }
 
+    public GTRecipeBuilder notConsumableFluid(FluidStack fluid) {
+        chancedInput(fluid, 0, 0);
+        return this;
+    }
+
+    public GTRecipeBuilder notConsumableFluid(FluidIngredient ingredient) {
+        float lastChance = this.chance;
+        this.chance = 0;
+        inputFluids(ingredient);
+        this.chance = lastChance;
+        return this;
+    }
+
     public GTRecipeBuilder circuitMeta(int configuration) {
         return notConsumable(IntCircuitIngredient.circuitInput(configuration));
     }
@@ -441,6 +470,10 @@ public class GTRecipeBuilder {
         return chancedOutput(ChemicalHelper.get(tag, mat, count), chance, tierChanceBoost);
     }
 
+    public GTRecipeBuilder inputFluids(FluidStack input) {
+        return input(FluidRecipeCapability.CAP, FluidIngredient.of(TagUtil.createFluidTag(Registry.FLUID.getKey(input.getFluid()).getPath()), input.getAmount()));
+    }
+
     public GTRecipeBuilder inputFluids(FluidStack... inputs) {
         return input(FluidRecipeCapability.CAP, Arrays.stream(inputs).map(fluid -> {
             if (!Platform.isForge() && fluid.getFluid() == Fluids.WATER) { // Special case for fabric, because there all fluids have to be tagged as water to function as water when placed.
@@ -453,6 +486,10 @@ public class GTRecipeBuilder {
 
     public GTRecipeBuilder inputFluids(FluidIngredient... inputs) {
         return input(FluidRecipeCapability.CAP, inputs);
+    }
+
+    public GTRecipeBuilder outputFluids(FluidStack output) {
+        return output(FluidRecipeCapability.CAP, FluidIngredient.of(output));
     }
 
     public GTRecipeBuilder outputFluids(FluidStack... outputs) {
@@ -599,7 +636,7 @@ public class GTRecipeBuilder {
     private boolean applyResearchProperty(ResearchData.ResearchEntry researchEntry) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return false;
         if (researchEntry == null) {
-            GTCEu.LOGGER.error("Assembly Line Research Entry cannot be empty.", new IllegalArgumentException());
+            GTCEu.LOGGER.error("Research Entry cannot be empty.", new IllegalArgumentException());
             return false;
         }
 
@@ -756,7 +793,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipe buildRawRecipe() {
-        return new GTRecipe(recipeType, new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath()), input, output, tickInput, tickOutput, conditions, data, duration, isFuel);
+        return new GTRecipe(recipeType, new ResourceLocation(id.getNamespace(), recipeType.registryName.getPath() + "/" + id.getPath()), input, output, tickInput, tickOutput, conditions, List.of(), data, duration, isFuel);
     }
 
     //////////////////////////////////////
@@ -784,14 +821,13 @@ public class GTRecipeBuilder {
      * @param EUt           the EUt of the recipe
      * @param CWUt          how much computation per tick this recipe needs if in Research Station
      */
-    @Accessors(fluent = false)
     public record ResearchRecipeEntry(
-            @NotNull @Getter String researchId,
-            @NotNull @Getter ItemStack researchStack,
-            @NotNull @Getter ItemStack dataStack,
-            @Getter int duration,
-            @Getter int EUt,
-            @Getter int CWUt) {
+            @NotNull String researchId,
+            @NotNull ItemStack researchStack,
+            @NotNull ItemStack dataStack,
+            int duration,
+            int EUt,
+            int CWUt) {
     }
 
 }

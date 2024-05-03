@@ -82,7 +82,7 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     public SteamBoilerMachine(IMachineBlockEntity holder, boolean isHighPressure, Object... args) {
         super(holder, isHighPressure, args);
         this.waterTank = createWaterTank(args);
-        this.waterTank.setFilter(fluid -> Fluids.WATER == fluid.getFluid());
+        this.waterTank.setFilter(fluid -> fluid.getFluid().is(GTMaterials.Water.getFluidTag()));
     }
 
     //////////////////////////////////////
@@ -256,11 +256,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine implements
     }
 
     @Override
-    public void onWorking() {
+    public boolean onWorking() {
+        boolean value = super.onWorking();
         if (currentTemperature < getMaxTemperature()) {
             currentTemperature = Math.max(1, currentTemperature);
             updateSteamSubscription();
         }
+        return value;
     }
 
     @Override

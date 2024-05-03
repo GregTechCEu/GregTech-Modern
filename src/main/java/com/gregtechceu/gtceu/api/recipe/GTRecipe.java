@@ -22,7 +22,6 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
@@ -44,13 +43,26 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public final Map<RecipeCapability<?>, List<Content>> tickInputs;
     public final Map<RecipeCapability<?>, List<Content>> tickOutputs;
     public final List<RecipeCondition> conditions;
+    // for KubeJS. actual type is List<IngredientAction>.
+    // Must be List<?> to not cause crashes without KubeJS.
+    public final List<?> ingredientActions;
     @NotNull
     public CompoundTag data;
     public int duration;
     @Getter
     public boolean isFuel;
 
-    public GTRecipe(GTRecipeType recipeType, ResourceLocation id, Map<RecipeCapability<?>, List<Content>> inputs, Map<RecipeCapability<?>, List<Content>> outputs, Map<RecipeCapability<?>, List<Content>> tickInputs, Map<RecipeCapability<?>, List<Content>> tickOutputs, List<RecipeCondition> conditions, @NotNull CompoundTag data, int duration, boolean isFuel) {
+    public GTRecipe(GTRecipeType recipeType,
+                    ResourceLocation id,
+                    Map<RecipeCapability<?>, List<Content>> inputs,
+                    Map<RecipeCapability<?>, List<Content>> outputs,
+                    Map<RecipeCapability<?>, List<Content>> tickInputs,
+                    Map<RecipeCapability<?>, List<Content>> tickOutputs,
+                    List<RecipeCondition> conditions,
+                    List<?> ingredientActions,
+                    @NotNull CompoundTag data,
+                    int duration,
+                    boolean isFuel) {
         this.recipeType = recipeType;
         this.id = id;
         this.inputs = inputs;
@@ -58,6 +70,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         this.tickInputs = tickInputs;
         this.tickOutputs = tickOutputs;
         this.conditions = conditions;
+        this.ingredientActions = ingredientActions;
         this.data = data;
         this.duration = duration;
         this.isFuel = isFuel;
@@ -80,7 +93,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, id, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), data, duration, isFuel);
+        return new GTRecipe(recipeType, id, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -88,7 +101,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType, id, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), data, duration, isFuel);
+        var copied = new GTRecipe(recipeType, id, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
@@ -283,7 +296,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         if (!capabilityProxies.contains(capIO, capability))
             return new Tuple<>(content, contentSlot);
 
-        var handlers = capabilityProxies.get(capIO, capability);
+        //noinspection DataFlowIssue checked above.
+        var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
+        handlers.sort(IRecipeHandler.ENTRY_COMPARATOR);
+
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
