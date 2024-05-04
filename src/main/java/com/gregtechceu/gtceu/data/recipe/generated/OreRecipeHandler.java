@@ -33,18 +33,18 @@ public class OreRecipeHandler {
     public static void init(Consumer<FinishedRecipe> provider) {
         for (TagPrefix ore : ORES.keySet()) {
             if (ConfigHolder.INSTANCE.worldgen.allUniqueStoneTypes || ORES.get(ore).shouldDropAsItem()) {
-                ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOre(tagPrefix, material, property, provider));
+                ore.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processOre);
             }
         }
-        ore.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processOreForgeHammer(tagPrefix, material, property, provider));
+        ore.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processOreForgeHammer);
 
-        rawOre.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processRawOre(tagPrefix, material, property, provider));
+        rawOre.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processRawOre);
 
-        crushed.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedOre(tagPrefix, material, property, provider));
-        crushedPurified.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedPurified(tagPrefix, material, property, provider));
-        crushedRefined.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processCrushedCentrifuged(tagPrefix, material, property, provider));
-        dustImpure.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processDirtyDust(tagPrefix, material, property, provider));
-        dustPure.executeHandler(PropertyKey.ORE, (tagPrefix, material, property) -> processPureDust(tagPrefix, material, property, provider));
+        crushed.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processCrushedOre);
+        crushedPurified.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processCrushedPurified);
+        crushedRefined.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processCrushedCentrifuged);
+        dustImpure.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processDirtyDust);
+        dustPure.executeHandler(provider, PropertyKey.ORE, OreRecipeHandler::processPureDust);
     }
 
 

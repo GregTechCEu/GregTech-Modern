@@ -17,13 +17,10 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -42,18 +39,18 @@ public class MaterialRecipeHandler {
             Arrays.asList(gem, gemFlawless, gemExquisite);
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        ingot.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processIngot(tagPrefix, material, property, provider));
-        nugget.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processNugget(tagPrefix, material, property, provider));
+        ingot.executeHandler(provider, PropertyKey.INGOT, MaterialRecipeHandler::processIngot);
+        nugget.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processNugget);
 
-        block.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processBlock(tagPrefix, material, property, provider));
-        frameGt.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processFrame(tagPrefix, material, property, provider));
+        block.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processBlock);
+        frameGt.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processFrame);
 
-        dust.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processDust(tagPrefix, material, property, provider));
-        dustSmall.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processSmallDust(tagPrefix, material, property, provider));
-        dustTiny.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processTinyDust(tagPrefix, material, property, provider));
+        dust.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processDust);
+        dustSmall.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processSmallDust);
+        dustTiny.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processTinyDust);
 
         for (TagPrefix orePrefix : GEM_ORDER) {
-            orePrefix.executeHandler(PropertyKey.GEM, (tagPrefix, material, property) -> processGemConversion(tagPrefix, material, property, provider));
+            orePrefix.executeHandler(provider, PropertyKey.GEM, MaterialRecipeHandler::processGemConversion);
         }
     }
 
