@@ -1,7 +1,6 @@
 {
   "values": [
     "gtceu:red_granite",
-    "gtceu:smooth_red_granite",
     "gtceu:red_granite_cobblestone",
     "gtceu:mossy_red_granite_cobblestone",
     "gtceu:polished_red_granite",
@@ -16,7 +15,6 @@
     "gtceu:small_red_granite_bricks",
     "gtceu:square_red_granite_bricks",
     "gtceu:marble",
-    "gtceu:smooth_marble",
     "gtceu:marble_cobblestone",
     "gtceu:mossy_marble_cobblestone",
     "gtceu:polished_marble",
@@ -31,7 +29,6 @@
     "gtceu:small_marble_bricks",
     "gtceu:square_marble_bricks",
     "gtceu:light_concrete",
-    "gtceu:smooth_light_concrete",
     "gtceu:light_concrete_cobblestone",
     "gtceu:mossy_light_concrete_cobblestone",
     "gtceu:polished_light_concrete",
@@ -46,7 +43,6 @@
     "gtceu:small_light_concrete_bricks",
     "gtceu:square_light_concrete_bricks",
     "gtceu:dark_concrete",
-    "gtceu:smooth_dark_concrete",
     "gtceu:dark_concrete_cobblestone",
     "gtceu:mossy_dark_concrete_cobblestone",
     "gtceu:polished_dark_concrete",
