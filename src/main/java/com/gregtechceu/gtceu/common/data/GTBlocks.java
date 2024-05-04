@@ -1448,6 +1448,8 @@ public class GTBlocks {
     }
 
     public static void init() {
+        // Decor Blocks
+        generateStoneBlocks();
 
         // Procedural Blocks
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_BLOCK);
@@ -1455,9 +1457,6 @@ public class GTBlocks {
         generateOreBlocks();        // Ore Blocks
         generateOreIndicators();    // Ore Indicators
         MATERIAL_BLOCKS = MATERIAL_BLOCKS_BUILDER.build();
-
-        // Decor Blocks
-        generateStoneBlocks();
 
         // Procedural Pipes/Wires
         REGISTRATE.creativeModeTab(() -> GTCreativeModeTabs.MATERIAL_PIPE);
