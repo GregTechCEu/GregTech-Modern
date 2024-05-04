@@ -156,7 +156,7 @@ public class MiscRecipeLoader {
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
-
+        
         ROCK_BREAKER_RECIPES.recipeBuilder("marble")
                 .notConsumable(rock, Marble)
                 .outputItems(rock, Marble)

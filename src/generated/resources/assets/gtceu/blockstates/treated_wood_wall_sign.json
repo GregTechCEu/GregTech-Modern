@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/treated_wood_wall_sign"
+      "model": "gtceu:block/treated_wood_sign"
     }
   }
 }

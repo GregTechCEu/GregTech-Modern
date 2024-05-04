@@ -6,7 +6,15 @@ import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndic
 import com.gregtechceu.gtceu.api.data.worldgen.generator.veins.*;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderSet;
 import net.minecraft.core.RegistryCodecs;
@@ -20,16 +28,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.placement.HeightRangePlacement;
-
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import dev.latvian.mods.rhino.util.HideFromJS;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -113,8 +111,7 @@ public class GTOreDefinition {
     @Setter
     private VeinGenerator veinGenerator;
 
-    @Getter
-    @Setter
+    @Getter @Setter
     private List<IndicatorGenerator> indicatorGenerators;
 
     public GTOreDefinition(GTOreDefinition other) {
@@ -124,11 +121,7 @@ public class GTOreDefinition {
                 other.biomes, other.biomeWeightModifier, other.veinGenerator, List.copyOf(other.indicatorGenerators));
     }
 
-    public GTOreDefinition(IntProvider clusterSize, float density, int weight, IWorldGenLayer layer,
-                           Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range,
-                           float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes,
-                           @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator,
-                           @Nullable List<IndicatorGenerator> indicatorGenerators) {
+    public GTOreDefinition(IntProvider clusterSize, float density, int weight, IWorldGenLayer layer, Set<ResourceKey<Level>> dimensionFilter, HeightRangePlacement range, float discardChanceOnAirExposure, @Nullable Supplier<HolderSet<Biome>> biomes, @Nullable BiomeWeightModifier biomeWeightModifier, @Nullable VeinGenerator veinGenerator, @Nullable List<IndicatorGenerator> indicatorGenerators) {
         this.clusterSize = clusterSize;
         this.density = density;
         this.weight = weight;

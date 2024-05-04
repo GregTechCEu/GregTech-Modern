@@ -18,15 +18,15 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import com.tterrag.registrate.util.entry.ItemEntry;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -246,37 +246,21 @@ public class MachineRecipeLoader {
     }
 
     private static void registerStoneBricksRecipes(RecipeOutput provider) {
-        // TODO Stone type decorative blocks
-        /*
         // normal variant -> cobble variant
-        List<ItemStack> cobbles = GTBlocks.STONE_BLOCKS.row(StoneBlockType.COBBLE).values().stream().map(ItemStack::new)
-                .toList();
-        List<ItemStack> mossCobbles = GTBlocks.STONE_BLOCKS.row(StoneBlockType.COBBLE_MOSSY).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> stones = GTBlocks.STONE_BLOCKS.row(StoneBlockType.STONE).values().stream().map(ItemStack::new)
-                .toList();
-        List<ItemStack> polisheds = GTBlocks.STONE_BLOCKS.row(StoneBlockType.POLISHED).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> bricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS).values().stream().map(ItemStack::new)
-                .toList();
-        List<ItemStack> crackedBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_CRACKED).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> mossBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_MOSSY).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> chiseledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.CHISELED).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> tiledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.TILED).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> smallTiledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.TILED_SMALL).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> windmillA = GTBlocks.STONE_BLOCKS.row(StoneBlockType.WINDMILL_A).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> windmillB = GTBlocks.STONE_BLOCKS.row(StoneBlockType.WINDMILL_B).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> squareBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SQUARE).values().stream()
-                .map(ItemStack::new).toList();
-        List<ItemStack> smallBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SMALL).values().stream()
-                .map(ItemStack::new).toList();
+        List<ItemStack> cobbles = GTBlocks.STONE_BLOCKS.row(StoneBlockType.COBBLE).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> mossCobbles = GTBlocks.STONE_BLOCKS.row(StoneBlockType.COBBLE_MOSSY).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> stones = GTBlocks.STONE_BLOCKS.row(StoneBlockType.STONE).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> polisheds = GTBlocks.STONE_BLOCKS.row(StoneBlockType.POLISHED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> bricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> crackedBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_CRACKED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> mossBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_MOSSY).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> chiseledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.CHISELED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> tiledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.TILED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> smallTiledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.TILED_SMALL).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> windmillA = GTBlocks.STONE_BLOCKS.row(StoneBlockType.WINDMILL_A).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> windmillB = GTBlocks.STONE_BLOCKS.row(StoneBlockType.WINDMILL_B).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> squareBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SQUARE).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> smallBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SMALL).values().stream().map(ItemStack::new).toList();
 
         registerSmoothRecipe(provider, cobbles, stones);
         registerCobbleRecipe(provider, stones, cobbles);
@@ -1183,28 +1167,26 @@ public class MachineRecipeLoader {
                 .save(provider);
     }
 
-    // TODO stone types
-    /*
-    private static void registerSmoothRecipe(RecipeOutput provider, List<ItemStack> roughStack, List<ItemStack> smoothStack) {
+    private static void registerSmoothRecipe(RecipeOutput provider, List<ItemStack> roughStack, List<ItemStack> stoneStack) {
         for (int i = 0; i < roughStack.size(); i++) {
             ResourceLocation stoneId = BuiltInRegistries.ITEM.getKey(stoneStack.get(i).getItem());
-            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + stoneId.getPath(), roughStack.get(i),
-                    stoneStack.get(i), 0.1f);
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + stoneId.getPath(), roughStack.get(i), stoneStack.get(i), 0.1f);
 
             EXTRUDER_RECIPES.recipeBuilder("extrude_" + stoneId.getPath())
-                    .inputItems(roughStack.get(i))
-                    .notConsumable(SHAPE_EXTRUDER_BLOCK.asStack())
-                    .outputItems(stoneStack.get(i))
-                    .duration(24).EUt(8).save(provider);
+                .inputItems(roughStack.get(i))
+                .notConsumable(SHAPE_EXTRUDER_BLOCK.asStack())
+                .outputItems(stoneStack.get(i))
+                .duration(24).EUt(8).save(provider);
         }
     }
 
-    private static void registerCobbleRecipe(RecipeOutput provider, List<ItemStack> smoothStack, List<ItemStack> cobbleStack) {
-        for (int i = 0; i < smoothStack.size(); i++) {
-            FORGE_HAMMER_RECIPES.recipeBuilder()
-                    .inputItems(smoothStack.get(i))
-                    .outputItems(cobbleStack.get(i))
-                    .duration(12).EUt(4).save(provider);
+    private static void registerCobbleRecipe(RecipeOutput provider, List<ItemStack> stoneStack, List<ItemStack> cobbleStack) {
+        for (int i = 0; i < stoneStack.size(); i++) {
+            ResourceLocation cobbleId = BuiltInRegistries.ITEM.getKey(cobbleStack.get(i).getItem());
+            FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + cobbleId.getPath())
+                .inputItems(stoneStack.get(i))
+                .outputItems(cobbleStack.get(i))
+                .duration(12).EUt(4).save(provider);
         }
     }
 
@@ -1212,10 +1194,10 @@ public class MachineRecipeLoader {
         for (int i = 0; i < polishedStack.size(); i++) {
             ResourceLocation brickId = BuiltInRegistries.ITEM.getKey(brickStack.get(i).getItem());
             LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + brickId.getPath())
-                    .inputItems(polishedStack.get(i))
-                    .notConsumable(lens, color)
-                    .outputItems(brickStack.get(i))
-                    .duration(50).EUt(16).save(provider);
+                .inputItems(polishedStack.get(i))
+                .notConsumable(lens, color)
+                .outputItems(brickStack.get(i))
+                .duration(50).EUt(16).save(provider);
         }
     }
 
@@ -1223,10 +1205,10 @@ public class MachineRecipeLoader {
         for (int i = 0; i < regularStack.size(); i++) {
             ResourceLocation mossId = BuiltInRegistries.ITEM.getKey(mossStack.get(i).getItem());
             CHEMICAL_BATH_RECIPES.recipeBuilder("bath_" + mossId.getPath())
-                    .inputItems(regularStack.get(i))
-                    .inputFluids(Water.getFluid(100))
-                    .outputItems(mossStack.get(i))
-                    .duration(50).EUt(16).save(provider);
+                .inputItems(regularStack.get(i))
+                .inputFluids(Water.getFluid(100))
+                .outputItems(mossStack.get(i))
+                .duration(50).EUt(16).save(provider);
         }
     }
 

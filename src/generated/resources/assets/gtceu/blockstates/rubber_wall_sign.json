@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/rubber_wall_sign"
+      "model": "gtceu:block/rubber_sign"
     }
   }
 }

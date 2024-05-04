@@ -1,3 +1,6 @@
 {
-  "parent": "gtceu:block/treated_wood_fence"
+  "parent": "minecraft:block/fence_inventory",
+  "textures": {
+    "texture": "gtceu:block/treated_wood_planks"
+  }
 }

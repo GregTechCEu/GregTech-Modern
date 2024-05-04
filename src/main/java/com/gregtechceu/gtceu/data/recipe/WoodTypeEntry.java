@@ -100,7 +100,7 @@ public final class WoodTypeEntry {
                           @Nullable Item fence, @Nullable String fenceRecipeName,
                           @Nullable Item fenceGate, @Nullable String fenceGateRecipeName,
                           @Nullable Item stairs, @Nullable String stairsRecipeName, boolean addStairsCraftingRecipe,
-                          @NotNull Item boat, @Nullable String boatRecipeName,
+                          @Nullable Item boat, @Nullable String boatRecipeName,
                           @Nullable Material material,
                           boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict, boolean addSlabsOreDict,
                           boolean addFencesOreDict, boolean addFenceGatesOreDict, boolean addStairsOreDict,

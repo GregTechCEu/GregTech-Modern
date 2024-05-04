@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen.feature;
 
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.StoneBlobConfiguration;
-
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -18,7 +17,6 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import java.util.function.Function;
 
 public class StoneBlobFeature extends Feature<StoneBlobConfiguration> {
-
     public StoneBlobFeature() {
         super(StoneBlobConfiguration.CODEC);
     }
@@ -80,8 +78,7 @@ public class StoneBlobFeature extends Feature<StoneBlobConfiguration> {
                         int sectionZ = SectionPos.sectionRelative(currentZ);
                         BlockState blockstate = levelchunksection.getBlockState(sectionX, sectionY, sectionZ);
 
-                        if (!canPlaceOre(blockstate, bulkSectionAccess::getBlockState, random, config.state(),
-                                mutablePos))
+                        if (!canPlaceOre(blockstate, bulkSectionAccess::getBlockState, random, config.state(), mutablePos))
                             continue;
                         if (config.state().state.isAir())
                             continue;

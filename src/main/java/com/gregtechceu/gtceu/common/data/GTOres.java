@@ -139,7 +139,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SCHEELITE_VEIN = create("scheelite_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.7f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(20)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(20, 60)
             .biomes(BiomeTags.IS_END)
@@ -194,7 +194,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition BERYLLIUM_VEIN = create("beryllium_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(30)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -222,7 +222,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
     public static final GTOreDefinition MANGANESE_VEIN = create("manganese_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -460,7 +460,7 @@ public class GTOres {
                     .surfaceRock(Galena)));
 
     public static final GTOreDefinition GARNET_TIN_VEIN = create("garnet_tin_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.4f).weight(80)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(30, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -476,7 +476,7 @@ public class GTOres {
                     .surfaceRock(GarnetSand)));
 
     public static final GTOreDefinition GARNET_VEIN = create("garnet_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 50)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -643,7 +643,7 @@ public class GTOres {
                     .radius(2)));
 
     public static final GTOreDefinition LAPIS_VEIN = create("lapis_vein", vein -> vein
-            .clusterSize(UniformInt.of(40, 52)).density(0.75f).weight(40)
+            .clusterSize(UniformInt.of(40, 52)).density(0.25f).weight(40)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-60, 10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -659,7 +659,7 @@ public class GTOres {
                     .radius(3)));
 
     public static final GTOreDefinition MANGANESE_VEIN_OW = create("manganese_vein_ow", vein -> vein
-            .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(20)
+            .clusterSize(UniformInt.of(50, 64)).density(0.25f).weight(20)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-30, 0)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -779,25 +779,24 @@ public class GTOres {
 
     public static void updateLargestVeinSize() {
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
-                .map(GTOreDefinition::clusterSize)
-                .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of
-                                                                                                 // min & max values.
-                .max(Integer::compareTo)
-                .orElse(0);
+            .map(GTOreDefinition::clusterSize)
+            .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of min & max values.
+            .max(Integer::compareTo)
+            .orElse(0);
 
         GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
-                .flatMap(definition -> definition.indicatorGenerators().stream()
-                        .map(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
-                                (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))
+                .flatMap(definition -> definition.indicatorGenerators().stream().map(indicatorGenerator ->
+                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))
+                ))
                 .max(Integer::compareTo)
                 .orElse(0);
     }
 
     public static GTOreDefinition blankOreDefinition() {
         return new GTOreDefinition(
-                ConstantInt.ZERO, 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
-                0, HolderSet::direct, BiomeWeightModifier.EMPTY, NoopVeinGenerator.INSTANCE,
-                new ArrayList<>());
+            ConstantInt.of(0), 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
+            HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
+            0, null, null, null, null
+        );
     }
 }

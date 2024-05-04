@@ -100,9 +100,6 @@ public class GTModels {
                                               RegistrateItemModelProvider provider) {
         provider.generated(context, provider.modLoc("block/" + provider.name(context)));
     }
-    public static void rubberDoorModel(DataGenContext<Block, DoorBlock> ctx, RegistrateBlockstateProvider prov) {
-        prov.doorBlock(ctx.getEntry(), GTCEu.id("block/rubber_door_bottom"), GTCEu.id("block/rubber_door_top"));
-    }
 
     public static void longDistanceItemPipeModel(DataGenContext<Block, ? extends Block> ctx,
                                                  RegistrateBlockstateProvider prov) {

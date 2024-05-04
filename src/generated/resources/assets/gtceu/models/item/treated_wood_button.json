@@ -1,3 +1,6 @@
 {
-  "parent": "gtceu:block/treated_wood_button"
+  "parent": "minecraft:block/button_inventory",
+  "textures": {
+    "texture": "gtceu:block/treated_wood_planks"
+  }
 }

@@ -115,6 +115,14 @@ public class TagPrefix {
                             .mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F),
                     GTCEu.id("block/marble"));
 
+    public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
+        .langValue("Red Granite %s Ore")
+        .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed, BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops().strength(3.0F, 3.0F), GTCEu.id("block/red_granite"));
+
+    public static final TagPrefix oreMarble = oreTagPrefix("marble", BlockTags.MINEABLE_WITH_PICKAXE)
+        .langValue("Red Granite %s Ore")
+        .registerOre(() -> GTBlocks.MARBLE.getDefaultState(), () -> GTMaterials.Marble, BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F), GTCEu.id("block/marble"));
+
     public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Deepslate %s Ore")
             .registerOre(

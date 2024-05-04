@@ -1,3 +1,6 @@
 {
-  "parent": "gtceu:block/rubber_fence"
+  "parent": "minecraft:block/fence_inventory",
+  "textures": {
+    "texture": "gtceu:block/rubber_planks"
+  }
 }

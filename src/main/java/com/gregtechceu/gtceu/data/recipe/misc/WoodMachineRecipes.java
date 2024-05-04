@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -558,6 +557,11 @@ public class WoodMachineRecipes {
                 "s", "L", "L",
                 'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         }
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_button", GTBlocks.RUBBER_BUTTON.asStack(), GTBlocks.RUBBER_PLANK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "treated_wood_button", GTBlocks.TREATED_WOOD_BUTTON.asStack(), GTBlocks.TREATED_WOOD_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_pressure_plate", GTBlocks.RUBBER_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.RUBBER_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate", GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {

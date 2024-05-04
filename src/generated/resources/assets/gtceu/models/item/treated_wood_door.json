@@ -1,3 +1,6 @@
 {
-  "parent": "gtceu:block/treated_wood_door"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "gtceu:item/treated_wood_door"
+  }
 }
