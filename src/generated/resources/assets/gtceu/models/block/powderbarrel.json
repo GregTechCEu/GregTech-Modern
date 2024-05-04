@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "gtceu:block/stones/red_granite/smooth"
+    "all": "gtceu:block/powderbarrel"
   }
 }

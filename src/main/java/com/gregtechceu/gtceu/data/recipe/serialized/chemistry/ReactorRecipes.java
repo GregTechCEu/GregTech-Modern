@@ -1,8 +1,11 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -597,6 +600,13 @@ public class ReactorRecipes {
                 .outputItems(Blocks.TNT.asItem())
                 .duration(200).EUt(24).save(provider);
 
+        CHEMICAL_RECIPES.recipeBuilder("itnt_from_toluene")
+            .inputItems(GELLED_TOLUENE, 4)
+            .inputFluids(NitrationMixture.getFluid(200))
+            .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
+            .outputFluids(DilutedSulfuricAcid.getFluid(150))
+            .duration(80).EUt(VA[HV]).save(provider);
+
         CHEMICAL_RECIPES.recipeBuilder("phenol_from_dichlorobenzene")
                 .inputItems(dust, SodiumHydroxide, 6)
                 .inputFluids(Dichlorobenzene.getFluid(1000))
@@ -621,13 +631,12 @@ public class ReactorRecipes {
                 .outputFluids(Radon.getFluid(1000))
                 .duration(4000).EUt(VA[HV]).save(provider);
 
-        // TODO Dynamite
-        //CHEMICAL_RECIPES.recipeBuilder("dynamite")
-        //        .inputItems(Items.PAPER)
-        //        .inputItems(Items.STRING)
-        //        .inputFluids(GlycerylTrinitrate.getFluid(500))
-        //        .outputItems(DYNAMITE)
-        //        .duration(160).EUt(4).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("dynamite")
+                .inputItems(Items.PAPER)
+                .inputItems(Items.STRING)
+                .inputFluids(GlycerylTrinitrate.getFluid(500))
+                .outputItems(GTItems.DYNAMITE.get())
+                .duration(160).EUt(4).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("niobium_nitride")
                 .inputItems(dust, Niobium)

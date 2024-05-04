@@ -30,6 +30,7 @@
     "LootPoolAccessor",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
+    "PrimedTntAccessor",
     "RecipeManagerAccessor",
     "RecipeManagerMixin",
     "ReloadableServerResourcesMixin",

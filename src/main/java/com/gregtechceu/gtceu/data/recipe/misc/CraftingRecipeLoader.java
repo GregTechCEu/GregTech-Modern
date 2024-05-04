@@ -162,6 +162,12 @@ public class CraftingRecipeLoader {
         //VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced", MetaItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J', MetaItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', MetaItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N', MetaItems.NANO_CHESTPLATE.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Platinum), 'C', new UnificationEntry(circuit, Tier.IV));
         //VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", MetaItems.GRAVITATION_ENGINE.asStack(), "ESE", "POP", "ESE", 'E', MetaItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium), 'P', new UnificationEntry(plateDouble, Iridium), 'O', MetaItems.ENERGY_LAPOTRONIC_ORB.asStack());
 
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP", "GGG", "PGP",
+            'P', new UnificationEntry(plate, Wood),
+            'S', new ItemStack(Items.STRING),
+            'G', new UnificationEntry(dust, Gunpowder));
+
         ///////////////////////////////////////////////////
         //                    Special                    //
         ///////////////////////////////////////////////////

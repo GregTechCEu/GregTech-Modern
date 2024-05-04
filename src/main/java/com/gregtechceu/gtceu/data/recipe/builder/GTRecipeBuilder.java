@@ -37,6 +37,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.fluids.FluidStack;
 
@@ -559,11 +560,11 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder explosivesAmount(int explosivesAmount) {
-        return addData("explosives_amount", explosivesAmount);
+        return inputItems(new ItemStack(Blocks.TNT, explosivesAmount));
     }
 
     public GTRecipeBuilder explosivesType(ItemStack explosivesType) {
-        return addData("explosives_type", explosivesType.save(Platform.getFrozenRegistry()));
+        return inputItems(explosivesType);
     }
 
     public GTRecipeBuilder solderMultiplier(int multiplier) {

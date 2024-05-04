@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:smooth_marble"
+          "name": "gtceu:powderbarrel"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/smooth_marble"
+  "random_sequence": "gtceu:blocks/powderbarrel"
 }
