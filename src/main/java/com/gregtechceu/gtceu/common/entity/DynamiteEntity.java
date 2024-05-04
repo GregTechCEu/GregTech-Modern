@@ -77,29 +77,5 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         }
 
         super.tick();
-
-        Vec3 motion = getDeltaMovement();
-        float f = (float) Math.sqrt(motion.x * motion.x + motion.z * motion.z);
-        this.setYRot((float) (Mth.atan2(motion.z, motion.z) * (180D / Math.PI)));
-        this.setXRot((float) (Mth.atan2(motion.y, f) * (180D / Math.PI)));
-
-        while (this.getXRot() - this.xRotO < -180.0F) {
-            this.xRotO -= 360.0F;
-        }
-
-        while (this.getXRot() - this.xRotO >= 180.0F) {
-            this.xRotO += 360.0F;
-        }
-
-        while (this.getYRot() - this.yRotO < -180.0F) {
-            this.yRotO -= 360.0F;
-        }
-
-        while (this.getYRot() - this.yRotO >= 180.0F) {
-            this.yRotO += 360.0F;
-        }
-
-        this.setXRot(this.xRotO + (this.getXRot() - this.xRotO) * 0.2F);
-        this.setYRot(this.yRotO + (this.getYRot() - this.yRotO) * 0.2F);
     }
 }

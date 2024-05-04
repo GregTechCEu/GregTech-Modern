@@ -1,35 +1,21 @@
 package com.gregtechceu.gtceu.common.entity;
 
 import com.gregtechceu.gtceu.core.mixins.PrimedTntAccessor;
-import com.mojang.authlib.GameProfile;
-import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.server.level.ServerLevel;
-import net.minecraft.tags.FluidTags;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.MoverType;
-import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.item.PrimedTnt;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.common.util.FakePlayerFactory;
+import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.UUID;
-
 public abstract class GTExplosiveEntity extends PrimedTnt {
-    private static final GameProfile EXPLOSION_TEST = new GameProfile(UUID.fromString("b671a0e1-909b-455d-9470-cb921b1ea953"), "EXPLOSION");
-
     public GTExplosiveEntity(EntityType<? extends GTExplosiveEntity> type, Level level, double x, double y, double z, @Nullable LivingEntity owner) {
         this(type, level);
         this.setPos(x, y, z);
@@ -68,7 +54,6 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
      */
     public abstract @NotNull BlockState getExplosiveState();
 
-
     @Override
     public void tick() {
         this.xOld = this.getX();
@@ -100,50 +85,28 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
     }
 
     protected void explodeTNT() {
-        Explosion explosion = this.level().explode(this, this.getX(), this.getY() + (double) (this.getBbHeight() / 16.0F), this.getZ(),
-            getStrength(), dropsAllBlocks() ? Level.ExplosionInteraction.NONE : Level.ExplosionInteraction.TNT);
-
-        // If we don't drop all blocks, then skip the drop capture logic
-        if (!dropsAllBlocks())
-            return;
-
-        // Create the fake explosion but don't destroy any blocks in water, per MC behavior
-        if (this.isInFluidType())
-            return;
-
-        Player player = FakePlayerFactory.get((ServerLevel) level(), EXPLOSION_TEST);
-
-        int range = getRange();
-        for (BlockPos pos : BlockPos.betweenClosed(this.getOnPos().offset(-range, -range, -range), this.getOnPos().offset(range, range, range))) {
-            BlockState state = level().getBlockState(pos);
-
-            if (level().isEmptyBlock(pos))
-                continue;
-            if (state.getFluidState().is(FluidTags.WATER) || state.getFluidState().is(FluidTags.LAVA))
-                continue;
-
-            float hardness = state.getDestroySpeed(level(), pos);
-            float resistance = state.getExplosionResistance(level(), pos, explosion);
-
-            if (hardness >= 0.0f && resistance < 100 && level().isInWorldBounds(pos)) {
-                List<ItemStack> drops = attemptBreakBlockAndObtainDrops(pos, state, player);
-
-                for (ItemStack stack : drops) {
-                    ItemEntity entity = new ItemEntity(level(), pos.getX(), pos.getY(), pos.getZ(), stack);
-                    entity.setDefaultPickUpDelay();
-                    level().addFreshEntity(entity);
-                }
-            }
-        }
+        explode(level(), this, this.getX(), this.getY() + (double) (this.getBbHeight() / 16.0F), this.getZ(),
+            getStrength(), dropsAllBlocks());
     }
 
-    private List<ItemStack> attemptBreakBlockAndObtainDrops(BlockPos pos, BlockState state, Player player) {
-        if (state.getBlock().onDestroyedByPlayer(state, level(), pos, player, true, level().getFluidState(pos))) {
-            level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
-            state.getBlock().destroy(level(), pos, state);
-
-            return Block.getDrops(state, (ServerLevel) level(), pos, level().getBlockEntity(pos), player, ItemStack.EMPTY);
+    protected void explode(
+        Level level,
+        @Nullable Entity source,
+        double x,
+        double y,
+        double z,
+        float radius,
+        boolean dropBlocks) {
+        Explosion explosion = new Explosion(
+            level, source,
+            x, y, z,
+            radius,
+            false,
+            dropBlocks ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY
+        );
+        if (!ForgeEventFactory.onExplosionStart(level, explosion)) {
+            explosion.explode();
+            explosion.finalizeExplosion(true);
         }
-        return Collections.emptyList();
     }
 }
