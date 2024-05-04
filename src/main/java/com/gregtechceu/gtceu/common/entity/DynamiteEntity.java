@@ -46,18 +46,10 @@ public class DynamiteEntity extends ThrowableItemProjectile {
     @Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
-        if (result.getDirection() == Direction.UP) {
-            setOnGround(true);
-        } else {
-            Vec3 delta = this.getDeltaMovement();
-            if (result.getDirection().getAxis() == Direction.Axis.Z) {
-                this.setDeltaMovement(delta.x, delta.y, 0);
-            } else if (result.getDirection().getAxis() == Direction.Axis.X) {
-                this.setDeltaMovement(0, delta.y, delta.z);
-            } else if (result.getDirection().getAxis() == Direction.Axis.Y) {
-                this.setDeltaMovement(delta.x, 0, delta.z);
-            }
-        }
+        Vec3 vec3 = result.getLocation().subtract(this.getX(), this.getY(), this.getZ());
+        this.setDeltaMovement(vec3);
+        Vec3 vec31 = vec3.normalize().scale(0.05F);
+        this.setPosRaw(this.getX() - vec31.x, this.getY() - vec31.y, this.getZ() - vec31.z);
     }
 
     @Override
@@ -72,7 +64,7 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         if (ticksUntilExplosion < 0 && !level().isClientSide) {
             Entity thrower = getOwner();
             level().explode(thrower == null ? this : thrower, this.getX(), this.getY(), this.getZ(), 1.5f, Level.ExplosionInteraction.TNT);
-            this.kill();
+            this.discard();
             return;
         }
 

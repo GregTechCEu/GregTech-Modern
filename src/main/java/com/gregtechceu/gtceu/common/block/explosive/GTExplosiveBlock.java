@@ -19,14 +19,11 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -57,11 +54,6 @@ public abstract class GTExplosiveBlock extends Block {
     protected abstract GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos, @NotNull LivingEntity exploder);
 
     @Override
-    public boolean canBeReplaced(BlockState state, Fluid fluid) {
-        return super.canBeReplaced(state, fluid);
-    }
-
-    @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
         return true;
     }
@@ -82,13 +74,9 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     @Override
-    public void onBlockExploded(BlockState state, Level level, BlockPos pos, Explosion explosion) {
+    public void wasExploded(Level level, BlockPos pos, Explosion explosion) {
         if (!level.isClientSide) {
-            LivingEntity exploder = null;
-            if (explosion.getExploder() instanceof LivingEntity living) {
-                exploder = living;
-            }
-            GTExplosiveEntity entity = createEntity(level, pos, exploder);
+            GTExplosiveEntity entity = createEntity(level, pos, explosion.getIndirectSourceEntity());
             entity.setFuse(level.random.nextInt(fuseLength / 4) + fuseLength / 8);
             level.addFreshEntity(entity);
         }
@@ -99,9 +87,9 @@ public abstract class GTExplosiveBlock extends Block {
         ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && (stack.getItem() == Items.FLINT_AND_STEEL || stack.getItem() == Items.FIRE_CHARGE)) {
             this.explode(level, pos, player);
-            level.setBlock(pos, Blocks.AIR.defaultBlockState(), Block.UPDATE_ALL_IMMEDIATE);
+            level.removeBlock(pos, false);
             if (stack.getItem() == Items.FLINT_AND_STEEL) {
-                stack.hurtAndBreak(1, player, onBroken -> {});
+                stack.hurtAndBreak(1, player, playerx -> playerx.broadcastBreakEvent(hand));
             } else if (!player.isCreative()) {
                 stack.shrink(1);
             }
@@ -113,10 +101,9 @@ public abstract class GTExplosiveBlock extends Block {
     @Override
     public List<ItemStack> getDrops(BlockState state, LootParams.Builder params) {
         if (explodeOnMine) {
-            Entity player = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
-            if (!player.isCrouching() && player instanceof LivingEntity living) {
-                Vec3 origin = params.getParameter(LootContextParams.ORIGIN);
-                this.explode(params.getLevel(), BlockPos.containing(origin.x, origin.y, origin.z), living);
+            Entity entity = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
+            if (entity != null && !entity.isCrouching() && entity instanceof LivingEntity living) {
+                this.explode(params.getLevel(), BlockPos.containing(params.getParameter(LootContextParams.ORIGIN)), living);
                 return List.of();
             }
         }

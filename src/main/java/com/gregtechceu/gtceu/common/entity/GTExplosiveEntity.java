@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.entity;
 
 import com.gregtechceu.gtceu.core.mixins.PrimedTntAccessor;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundExplodePacket;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -55,38 +55,8 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
     public abstract @NotNull BlockState getExplosiveState();
 
     @Override
-    public void tick() {
-        this.xOld = this.getX();
-        this.yOld = this.getY();
-        this.xOld = this.getZ();
-        Vec3 motion = this.getDeltaMovement();
-        if (!this.isNoGravity()) {
-            motion = new Vec3(motion.x, motion.y - 0.03999999910593033D, motion.z);
-        }
-
-        this.move(MoverType.SELF, motion);
-        motion = new Vec3(motion.x * 0.9800000190734863D, motion.y * 0.9800000190734863D, motion.z * 0.9800000190734863D);
-        if (this.onGround()) {
-            motion = new Vec3(motion.x * 0.699999988079071D, motion.y * -0.5D, motion.z * 0.699999988079071D);
-        }
-        this.setDeltaMovement(motion);
-
-        setFuse(this.getFuse() - 1);
-        if (this.getFuse() <= 0) {
-            this.kill();
-            if (!this.level().isClientSide) {
-                this.explodeTNT();
-            }
-        } else {
-            this.updateInWaterStateAndDoFluidPushing();
-            this.level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY() + 0.5D, this.getZ(), 0.0D, 0.0D,
-                0.0D);
-        }
-    }
-
-    protected void explodeTNT() {
-        explode(level(), this, this.getX(), this.getY() + (double) (this.getBbHeight() / 16.0F), this.getZ(),
-            getStrength(), dropsAllBlocks());
+    protected void explode() {
+        explode(level(), this, this.getX(), this.getY(0.0625), this.getZ(), getStrength(), dropsAllBlocks());
     }
 
     protected void explode(
@@ -106,7 +76,15 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
         );
         if (!ForgeEventFactory.onExplosionStart(level, explosion)) {
             explosion.explode();
-            explosion.finalizeExplosion(true);
+            explosion.finalizeExplosion(false);
+        }
+
+        if (level instanceof ServerLevel serverLevel) {
+            for(ServerPlayer serverplayer : serverLevel.players()) {
+                if (serverplayer.distanceToSqr(x, y, z) < 4096.0) {
+                    serverplayer.connection.send(new ClientboundExplodePacket(x, y, z, radius, explosion.getToBlow(), explosion.getHitPlayers().get(serverplayer)));
+                }
+            }
         }
     }
 }
