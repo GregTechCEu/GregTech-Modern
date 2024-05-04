@@ -1752,6 +1752,10 @@ public class GTItems {
         return item -> item.burnTime(burnTime);
     }
 
+    public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
+        return item -> item.attachComponents(components);
+    }
+
     public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {
         return item -> item.attachComponents(components);
     }
