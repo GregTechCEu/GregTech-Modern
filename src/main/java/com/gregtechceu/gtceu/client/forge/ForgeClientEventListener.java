@@ -7,15 +7,14 @@ import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
+import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
+import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.client.renderer.LevelRenderer;
+import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.RegisterClientCommandsEvent;
-import net.minecraftforge.client.event.RegisterItemDecorationsEvent;
-import net.minecraftforge.client.event.RenderHighlightEvent;
-import net.minecraftforge.client.event.RenderLevelStageEvent;
+import net.minecraftforge.client.event.*;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
@@ -64,5 +63,12 @@ public class ForgeClientEventListener {
             MultiblockInWorldPreviewRenderer.onClientTick();
             GTValues.CLIENT_TIME++;
         }
+    }
+
+    @SubscribeEvent
+    public static void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
+        event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
+        event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
+        event.registerEntityRenderer(GTEntityTypes.ITNT.get(), GTExplosiveRenderer::new);
     }
 }

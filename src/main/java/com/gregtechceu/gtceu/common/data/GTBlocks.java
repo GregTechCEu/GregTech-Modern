@@ -11,6 +11,8 @@ import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.common.block.explosive.ITNTBlock;
+import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.HangingSignItem;
@@ -71,6 +73,7 @@ import net.minecraft.world.level.block.grower.AbstractTreeGrower;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
@@ -93,7 +96,6 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.common.data.GCyMBlocks.*;
 import static com.gregtechceu.gtceu.common.data.GTModels.createModelBlockState;
-import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
  * @author KilaBash
@@ -902,6 +904,25 @@ public class GTBlocks {
     //////////////////////////////////////
     //**********     Misc     **********//
     //////////////////////////////////////
+
+    public static final BlockEntry<PowderbarrelBlock> POWDERBARREL = REGISTRATE.block("powderbarrel", PowderbarrelBlock::new)
+        .lang("Powderbarrel")
+        .properties(p -> p.destroyTime(0.5F).sound(SoundType.WOOD).mapColor(MapColor.STONE).pushReaction(PushReaction.BLOCK))
+        .tag(BlockTags.MINEABLE_WITH_AXE)
+        .simpleItem()
+        .register();
+
+    public static final BlockEntry<ITNTBlock> ITNT = REGISTRATE.block("industrial_tnt", ITNTBlock::new)
+        .lang("Industrial TNT")
+        .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
+        .tag(BlockTags.MINEABLE_WITH_AXE)
+        .blockstate((ctx, prov) ->
+            prov.simpleBlock(ctx.get(), prov.models().cubeBottomTop(ctx.getName(),
+                prov.blockTexture(ctx.get()).withSuffix("_side"),
+                new ResourceLocation("minecraft", "block/tnt_bottom"),
+                new ResourceLocation("minecraft", "block/tnt_top"))))
+        .simpleItem()
+        .register();
 
     public static final BlockEntry<SaplingBlock> RUBBER_SAPLING = REGISTRATE.block("rubber_sapling", properties -> new SaplingBlock(new AbstractTreeGrower() {
             protected ResourceKey<ConfiguredFeature<?, ?>> getConfiguredFeature(@NotNull RandomSource random, boolean largeHive) {

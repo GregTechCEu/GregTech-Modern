@@ -19,6 +19,7 @@ import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.CropBlock;
+import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
@@ -95,7 +96,7 @@ public class HarvestCropsBehavior implements IToolBehavior {
             NonNullList<ItemStack> drops = NonNullList.create();
             drops.addAll(Block.getDrops(blockState, (ServerLevel) player.level(), pos, null));
             dropListOfItems(player.level(), pos, drops);
-            player.level().levelEvent(2001, pos, Block.getId(blockState));
+            player.level().levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(blockState));
             player.level().setBlock(pos, blockCrops.getStateForAge(0), Block.UPDATE_ALL);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(stack, player);
