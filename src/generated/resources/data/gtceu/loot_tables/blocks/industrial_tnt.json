@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "gtceu:smooth_red_granite"
+          "name": "gtceu:industrial_tnt"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "gtceu:blocks/smooth_red_granite"
+  "random_sequence": "gtceu:blocks/industrial_tnt"
 }

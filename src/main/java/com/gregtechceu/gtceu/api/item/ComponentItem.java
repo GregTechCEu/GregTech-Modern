@@ -58,6 +58,11 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         return new ComponentItem(properties);
     }
 
+    public void attachComponents(IItemComponent component) {
+        this.components.add(component);
+        component.onAttached(this);
+    }
+
     public void attachComponents(IItemComponent... components) {
         this.components.addAll(Arrays.asList(components));
         for (IItemComponent component : components) {
