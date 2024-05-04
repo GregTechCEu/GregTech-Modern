@@ -108,10 +108,7 @@ public class SimpleFluidFilter implements FluidFilter {
                 fluidStorageSlots[index] = new CustomFluidTank(maxStackSize);
                 fluidStorageSlots[index].setFluid(matches[index]);
 
-                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18,
-                        () -> fluidStorageSlots[index].getFluid(),
-                        (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
-
+                var tank = new ScrollablePhantomFluidWidget(fluidStorageSlots[index], 0, i * 18, j * 18, 18, 18, () -> fluidStorageSlots[index].getFluid(), (fluid) -> fluidStorageSlots[index].setFluid(fluid)) {
                     @Override
                     public void updateScreen() {
                         super.updateScreen();
