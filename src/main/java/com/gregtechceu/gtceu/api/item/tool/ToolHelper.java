@@ -507,7 +507,7 @@ public class ToolHelper {
         boolean successful = world.removeBlock(pos, false);
 
         if (playSound)
-            world.levelEvent(2001, pos, Block.getId(state));
+            world.levelEvent(LevelEvent.PARTICLES_DESTROY_BLOCK, pos, Block.getId(state));
 
         if (successful) {
             state.getBlock().destroy(world, pos, state);
