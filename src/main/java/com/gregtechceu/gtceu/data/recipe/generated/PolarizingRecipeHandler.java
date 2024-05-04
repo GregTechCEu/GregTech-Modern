@@ -21,7 +21,7 @@ public class PolarizingRecipeHandler {
 
     public static void init(RecipeOutput provider) {
         for (TagPrefix orePrefix : POLARIZING_PREFIXES) {
-            orePrefix.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPolarizing(tagPrefix, material, property, provider));
+            orePrefix.executeHandler(provider, PropertyKey.INGOT, PolarizingRecipeHandler::processPolarizing);
         }
     }
 

@@ -29,26 +29,26 @@ public class PartsRecipeHandler {
     }
 
     public static void init(RecipeOutput provider) {
-        rod.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processStick(tagPrefix, material, property, provider));
-        rodLong.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processLongStick(tagPrefix, material, property, provider));
-        plate.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processPlate(tagPrefix, material, property, provider));
-        plateDouble.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDouble(tagPrefix, material, property, provider));
-        plateDense.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDense(tagPrefix, material, property, provider));
+        rod.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processStick);
+        rodLong.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processLongStick);
+        plate.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlate);
+        plateDouble.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDouble);
+        plateDense.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDense);
 
-        turbineBlade.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processTurbine(tagPrefix, material, property, provider));
-        rotor.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processRotor(tagPrefix, material, property, provider));
-        bolt.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processBolt(tagPrefix, material, property, provider));
-        screw.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processScrew(tagPrefix, material, property, provider));
-        wireFine.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processFineWire(tagPrefix, material, property, provider));
-        foil.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processFoil(tagPrefix, material, property, provider));
-        lens.executeHandler(PropertyKey.GEM, (tagPrefix, material, property) -> processLens(tagPrefix, material, property, provider));
+        turbineBlade.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processTurbine);
+        rotor.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRotor);
+        bolt.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processBolt);
+        screw.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processScrew);
+        wireFine.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processFineWire);
+        foil.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processFoil);
+        lens.executeHandler(provider, PropertyKey.GEM, PartsRecipeHandler::processLens);
 
-        gear.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processGear(tagPrefix, material, property, provider));
-        gearSmall.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processGear(tagPrefix, material, property, provider));
-        ring.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processRing(tagPrefix, material, property, provider));
-        springSmall.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processSpringSmall(tagPrefix, material, property, provider));
-        spring.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processSpring(tagPrefix, material, property, provider));
-        round.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processRound(tagPrefix, material, property, provider));
+        gear.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processGear);
+        gearSmall.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processGear);
+        ring.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRing);
+        springSmall.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processSpringSmall);
+        spring.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processSpring);
+        round.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRound);
     }
 
     public static void processBolt(TagPrefix boltPrefix, Material material, DustProperty property, RecipeOutput provider) {

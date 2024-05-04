@@ -35,16 +35,16 @@ public class WireCombiningHandler {
     public static void init(RecipeOutput provider) {
 
         // Generate Wire Packer/Unpacker recipes
-        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireCompression(tagPrefix, material, property, provider));
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
 
         // Generate manual recipes for combining Wires/Cables
         for (TagPrefix wirePrefix : WIRE_DOUBLING_ORDER) {
-            wirePrefix.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateWireCombiningRecipe(tagPrefix, material, property, provider));
+            wirePrefix.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::generateWireCombiningRecipe);
         }
 
         // Generate Cable -> Wire recipes in the unpacker
         for (TagPrefix cablePrefix : cableToWireMap.keySet()) {
-            cablePrefix.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processCableStripping(tagPrefix, material, property, provider));
+            cablePrefix.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processCableStripping);
         }
     }
 

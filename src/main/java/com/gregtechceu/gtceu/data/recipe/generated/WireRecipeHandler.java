@@ -58,14 +58,14 @@ public class WireRecipeHandler {
         // Wiremill: 1x Wire -> Fine
         // Extruder: Ingot -> 1x Wire
         // Wire Cutter: Plate -> 1x Wire
-        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWires(tagPrefix, material, property, provider));
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
 
         // Generate Cable Covering Recipes
-        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateCableCovering(tagPrefix, material, property, provider));
-        wireGtDouble.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateCableCovering(tagPrefix, material, property, provider));
-        wireGtQuadruple.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateCableCovering(tagPrefix, material, property, provider));
-        wireGtOctal.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateCableCovering(tagPrefix, material, property, provider));
-        wireGtHex.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateCableCovering(tagPrefix, material, property, provider));
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtDouble.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtQuadruple.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtOctal.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
+        wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
     }
 
 

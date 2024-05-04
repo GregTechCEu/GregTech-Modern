@@ -15,7 +15,6 @@ import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.function.Consumer;
 
@@ -298,7 +297,7 @@ public class GCyMRecipes {
                 .inputItems(TagPrefix.dust, input1, input1Amount)
                 .inputItems(TagPrefix.dust, input2, input2Amount)
                 .circuitMeta(input1Amount + input2Amount)
-                .outputFluids(output.getFluid(GTValues.L * outputAmount))
+                .outputFluids(output.getFluid((long) GTValues.L * outputAmount))
                 .duration(duration * 3 / 4)
                 .EUt(16)
                 .blastFurnaceTemp(FluidHelper.getTemperature(output.getFluid(1)))
@@ -317,7 +316,7 @@ public class GCyMRecipes {
                 .inputItems(TagPrefix.dust, input2, input2Amount)
                 .inputItems(TagPrefix.dust, input3, input3Amount)
                 .circuitMeta(input1Amount + input2Amount + input3Amount)
-                .outputFluids(output.getFluid(GTValues.L * outputAmount))
+                .outputFluids(output.getFluid((long) GTValues.L * outputAmount))
                 .duration(duration * 3 / 4)
                 .EUt(16)
                 .blastFurnaceTemp(FluidHelper.getTemperature(output.getFluid(1)))
@@ -327,7 +326,7 @@ public class GCyMRecipes {
     private static void registerBlastAlloyRecipes(RecipeOutput provider) {
         registerFormulaic(provider);
         registerManual(provider);
-        ingot.executeHandler(PropertyKey.ALLOY_BLAST, (tagPrefix, material, property) -> generateAlloyBlastRecipes(tagPrefix, material, property, provider));
+        ingot.executeHandler(provider, PropertyKey.ALLOY_BLAST, GCyMRecipes::generateAlloyBlastRecipes);
     }
 
     /**
