@@ -18,13 +18,10 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -107,7 +104,7 @@ public class MaterialRecipeHandler {
                     .inputItems(GTUtil.copyAmount(4, dustStack))
                     .outputItems(GTUtil.copyAmount(3, gemStack))
                     .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                    .explosivesType(new ItemStack(GTBlocks.ITNT))
+                    .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
                     .save(provider);
             }
 

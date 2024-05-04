@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.addon.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.block.*;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.block.explosive.ITNTBlock;
+import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;
 import com.gregtechceu.gtceu.common.block.explosive.PowderbarrelBlock;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.DyeColor;
@@ -912,7 +912,7 @@ public class GTBlocks {
         .simpleItem()
         .register();
 
-    public static final BlockEntry<ITNTBlock> ITNT = REGISTRATE.block("industrial_tnt", ITNTBlock::new)
+    public static final BlockEntry<IndustrialTNTBlock> INDUSTRIAL_TNT = REGISTRATE.block("industrial_tnt", IndustrialTNTBlock::new)
         .lang("Industrial TNT")
         .properties(p -> p.mapColor(MapColor.FIRE).instabreak().sound(SoundType.GRASS).ignitedByLava())
         .tag(BlockTags.MINEABLE_WITH_AXE)

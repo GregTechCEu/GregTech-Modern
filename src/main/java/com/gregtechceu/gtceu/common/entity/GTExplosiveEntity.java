@@ -60,13 +60,8 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
     }
 
     protected void explode(
-        Level level,
-        @Nullable Entity source,
-        double x,
-        double y,
-        double z,
-        float radius,
-        boolean dropBlocks) {
+        Level level, @Nullable Entity source,
+        double x, double y, double z, float radius, boolean dropBlocks) {
         Explosion explosion = new Explosion(
             level, source,
             x, y, z,

@@ -37,6 +37,6 @@ public class ClientProxy extends CommonProxy {
     public void onRegisterEntityRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
-        event.registerEntityRenderer(GTEntityTypes.ITNT.get(), GTExplosiveRenderer::new);
+        event.registerEntityRenderer(GTEntityTypes.INDUSTRIAL_TNT.get(), GTExplosiveRenderer::new);
     }
 }

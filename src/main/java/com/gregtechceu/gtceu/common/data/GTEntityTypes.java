@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
-import com.gregtechceu.gtceu.common.entity.ITNTEntity;
+import com.gregtechceu.gtceu.common.entity.IndustrialTNTEntity;
 import com.gregtechceu.gtceu.common.entity.PowderbarrelEntity;
 import com.tterrag.registrate.util.entry.EntityEntry;
 import net.minecraft.tags.EntityTypeTags;
@@ -22,7 +22,7 @@ public class GTEntityTypes {
         .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
         .register();
 
-    public static final EntityEntry<ITNTEntity> ITNT = REGISTRATE.<ITNTEntity>entity("industrial_tnt", ITNTEntity::new, MobCategory.MISC)
+    public static final EntityEntry<IndustrialTNTEntity> INDUSTRIAL_TNT = REGISTRATE.<IndustrialTNTEntity>entity("industrial_tnt", IndustrialTNTEntity::new, MobCategory.MISC)
         .lang("Industrial TNT")
         .properties(builder -> builder.sized(0.98F, 0.98F).fireImmune().clientTrackingRange(10).updateInterval(10))
         .register();

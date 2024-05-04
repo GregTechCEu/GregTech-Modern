@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.block.explosive;
 
 import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
-import com.gregtechceu.gtceu.common.entity.ITNTEntity;
+import com.gregtechceu.gtceu.common.entity.IndustrialTNTEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
@@ -15,9 +15,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 
-public class ITNTBlock extends GTExplosiveBlock {
+public class IndustrialTNTBlock extends GTExplosiveBlock {
 
-    public ITNTBlock(BlockBehaviour.Properties properties) {
+    public IndustrialTNTBlock(BlockBehaviour.Properties properties) {
         super(properties, true, true, 40);
     }
 
@@ -30,6 +30,6 @@ public class ITNTBlock extends GTExplosiveBlock {
     @Override
     protected GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos, @NotNull LivingEntity exploder) {
         float x = pos.getX() + 0.5F, y = pos.getY(), z = pos.getZ() + 0.5F;
-        return new ITNTEntity(world, x, y, z, exploder);
+        return new IndustrialTNTEntity(world, x, y, z, exploder);
     }
 }

@@ -9,13 +9,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class ITNTEntity extends GTExplosiveEntity {
-    public ITNTEntity(Level world, double x, double y, double z, @Nullable LivingEntity owner) {
-        super(GTEntityTypes.ITNT.get(), world, x, y, z, owner);
+public class IndustrialTNTEntity extends GTExplosiveEntity {
+    public IndustrialTNTEntity(Level world, double x, double y, double z, @Nullable LivingEntity owner) {
+        super(GTEntityTypes.INDUSTRIAL_TNT.get(), world, x, y, z, owner);
     }
 
     @SuppressWarnings("unused")
-    public ITNTEntity(EntityType<? extends ITNTEntity> type, Level world) {
+    public IndustrialTNTEntity(EntityType<? extends IndustrialTNTEntity> type, Level world) {
         super(type, world);
     }
 
@@ -36,6 +36,6 @@ public class ITNTEntity extends GTExplosiveEntity {
 
     @Override
     public @NotNull BlockState getExplosiveState() {
-        return GTBlocks.ITNT.getDefaultState();
+        return GTBlocks.INDUSTRIAL_TNT.getDefaultState();
     }
 }
