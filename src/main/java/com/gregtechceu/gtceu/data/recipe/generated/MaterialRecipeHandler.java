@@ -81,32 +81,32 @@ public class MaterialRecipeHandler {
 
             if (!mat.hasFlag(EXPLOSIVE) && !mat.hasFlag(FLAMMABLE)) {
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_powderbarrel")
-                        .inputItems(GTUtil.copyAmount(4, dustStack))
-                        .outputItems(GTUtil.copyAmount(3, gemStack))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                        .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
-                        .save(provider);
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
+                    .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
-                        .inputItems(GTUtil.copyAmount(4, dustStack))
-                        .outputItems(GTUtil.copyAmount(3, gemStack))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                        .explosivesAmount(4)
-                        .save(provider);
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesAmount(4)
+                    .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
-                        .inputItems(GTUtil.copyAmount(4, dustStack))
-                        .outputItems(GTUtil.copyAmount(3, gemStack))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                        .explosivesType(GTItems.DYNAMITE.asStack(2))
-                        .save(provider);
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesType(GTItems.DYNAMITE.asStack(2))
+                    .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_itnt")
-                        .inputItems(GTUtil.copyAmount(4, dustStack))
-                        .outputItems(GTUtil.copyAmount(3, gemStack))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                        .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
-                        .save(provider);
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
+                    .save(provider);
             }
 
             if (oreProperty != null) {

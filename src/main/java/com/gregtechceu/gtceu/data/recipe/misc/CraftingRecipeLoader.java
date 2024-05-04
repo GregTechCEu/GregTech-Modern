@@ -320,6 +320,12 @@ public class CraftingRecipeLoader {
                 'S', new ItemStack(Items.STRING),
                 'G', new UnificationEntry(dust, Gunpowder));
 
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP", "GGG", "PGP",
+            'P', new UnificationEntry(plate, Wood),
+            'S', new ItemStack(Items.STRING),
+            'G', new UnificationEntry(dust, Gunpowder));
+
         ///////////////////////////////////////////////////
         // Special //
         ///////////////////////////////////////////////////

@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.data.recipes.RecipeOutput;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
@@ -606,11 +607,11 @@ public class ReactorRecipes {
                 .duration(200).EUt(24).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("itnt_from_toluene")
-                .inputItems(GELLED_TOLUENE, 4)
-                .inputFluids(NitrationMixture.getFluid(200))
-                .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
-                .outputFluids(DilutedSulfuricAcid.getFluid(150))
-                .duration(80).EUt(VA[HV]).save(provider);
+            .inputItems(GELLED_TOLUENE, 4)
+            .inputFluids(NitrationMixture.getFluid(200))
+            .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
+            .outputFluids(DilutedSulfuricAcid.getFluid(150))
+            .duration(80).EUt(VA[HV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("phenol_from_dichlorobenzene")
                 .inputItems(dust, SodiumHydroxide, 6)

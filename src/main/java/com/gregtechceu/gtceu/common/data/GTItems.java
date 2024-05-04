@@ -1007,10 +1007,10 @@ public class GTItems {
         .register() : null;
 
     public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::create)
-            .lang("Dynamite")
-            .onRegister(attach(new DynamiteBehaviour()))
-            .tab(TOOL.getKey())
-            .register();
+        .lang("Dynamite")
+        .onRegister(attach(new DynamiteBehaviour()))
+        .tab(TOOL.getKey())
+        .register();
 
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("lv_conveyor_module", ComponentItem::new)
         .lang("LV Conveyor Module")

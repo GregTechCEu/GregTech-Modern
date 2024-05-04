@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
-
 import net.minecraft.Util;
 import net.minecraft.core.Position;
 import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
@@ -20,11 +19,9 @@ public class DynamiteBehaviour implements IInteractionItem {
     @Override
     public void onAttached(Item item) {
         DispenserBlock.registerBehavior(item, new AbstractProjectileDispenseBehavior() {
-
             @Override
             protected Projectile getProjectile(Level level, Position position, ItemStack stack) {
-                return Util.make(new DynamiteEntity(position.x(), position.y(), position.z(), level),
-                        entity -> entity.setItem(stack));
+                return Util.make(new DynamiteEntity(position.x(), position.y(), position.z(), level), entity -> entity.setItem(stack));
             }
         });
     }

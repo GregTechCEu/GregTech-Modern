@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.block.explosive;
 
 import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
-
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -25,13 +24,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.List;
-
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -47,16 +44,14 @@ public abstract class GTExplosiveBlock extends Block {
      * @param explodeOnMine       whether mining this block should prime it (sneak mine to drop normally)
      * @param fuseLength          explosion countdown after priming. Vanilla TNT is 80.
      */
-    public GTExplosiveBlock(BlockBehaviour.Properties properties, boolean canRedstoneActivate, boolean explodeOnMine,
-                            int fuseLength) {
+    public GTExplosiveBlock(BlockBehaviour.Properties properties, boolean canRedstoneActivate, boolean explodeOnMine, int fuseLength) {
         super(properties.isValidSpawn((state, level, pos, ent) -> false).explosionResistance(1.0f));
         this.canRedstoneActivate = canRedstoneActivate;
         this.explodeOnMine = explodeOnMine;
         this.fuseLength = fuseLength;
     }
 
-    protected abstract GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos,
-                                                      @NotNull LivingEntity exploder);
+    protected abstract GTExplosiveEntity createEntity(@NotNull Level world, @NotNull BlockPos pos, @NotNull LivingEntity exploder);
 
     @Override
     public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
@@ -88,8 +83,7 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     @Override
-    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
-                                 BlockHitResult hit) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         ItemStack stack = player.getItemInHand(hand);
         if (!stack.isEmpty() && (stack.getItem() == Items.FLINT_AND_STEEL || stack.getItem() == Items.FIRE_CHARGE)) {
             this.explode(level, pos, player);
@@ -109,8 +103,7 @@ public abstract class GTExplosiveBlock extends Block {
         if (explodeOnMine) {
             Entity entity = params.getOptionalParameter(LootContextParams.THIS_ENTITY);
             if (entity != null && !entity.isCrouching() && entity instanceof LivingEntity living) {
-                this.explode(params.getLevel(), BlockPos.containing(params.getParameter(LootContextParams.ORIGIN)),
-                        living);
+                this.explode(params.getLevel(), BlockPos.containing(params.getParameter(LootContextParams.ORIGIN)), living);
                 return List.of();
             }
         }
@@ -140,8 +133,7 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
-                                boolean movedByPiston) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
         if (canRedstoneActivate) {
             if (level.hasNeighborSignal(pos)) {
                 this.explode(level, pos, null);
@@ -151,8 +143,7 @@ public abstract class GTExplosiveBlock extends Block {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip,
-                                TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable BlockGetter level, List<Component> tooltip, TooltipFlag flag) {
         super.appendHoverText(stack, level, tooltip, flag);
         if (explodeOnMine) {
             tooltip.add(Component.translatable("block.gtceu.explosive.breaking_tooltip"));

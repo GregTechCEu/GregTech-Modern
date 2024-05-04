@@ -2,8 +2,9 @@ package com.gregtechceu.gtceu.common.entity;
 
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.gregtechceu.gtceu.common.data.GTItems;
-
+import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -12,7 +13,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
-
 import org.jetbrains.annotations.NotNull;
 
 public class DynamiteEntity extends ThrowableItemProjectile {
@@ -57,15 +57,13 @@ public class DynamiteEntity extends ThrowableItemProjectile {
         ticksUntilExplosion--;
 
         if (level().random.nextInt(3) == 2) {
-            level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(),
-                    -this.getDeltaMovement().x * 0.05f,
-                    this.onGround() ? 0.05f : -this.getDeltaMovement().y * 0.05f, -this.getDeltaMovement().z * 0.05f);
+            level().addParticle(ParticleTypes.SMOKE, this.getX(), this.getY(), this.getZ(), -this.getDeltaMovement().x * 0.05f,
+                this.onGround() ? 0.05f : -this.getDeltaMovement().y * 0.05f, -this.getDeltaMovement().z * 0.05f);
         }
 
         if (ticksUntilExplosion < 0 && !level().isClientSide) {
             Entity thrower = getOwner();
-            level().explode(thrower == null ? this : thrower, this.getX(), this.getY(), this.getZ(), 1.5f,
-                    Level.ExplosionInteraction.TNT);
+            level().explode(thrower == null ? this : thrower, this.getX(), this.getY(), this.getZ(), 1.5f, Level.ExplosionInteraction.TNT);
             this.discard();
             return;
         }

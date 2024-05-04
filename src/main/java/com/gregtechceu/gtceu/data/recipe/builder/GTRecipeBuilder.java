@@ -565,7 +565,7 @@ public class GTRecipeBuilder {
     }
 
     public GTRecipeBuilder explosivesType(ItemStack explosivesType) {
-        return addData("explosives_type", explosivesType.save(Platform.getFrozenRegistry()));
+        return inputItems(explosivesType);
     }
 
     public GTRecipeBuilder solderMultiplier(int multiplier) {
