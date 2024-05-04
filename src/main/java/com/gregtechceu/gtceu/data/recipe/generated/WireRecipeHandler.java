@@ -53,8 +53,12 @@ public class WireRecipeHandler {
 
     public static void init(RecipeOutput provider) {
 
-        // Generate 1x Wire creation recipes (Wiremill, Extruder, Wire Cutters)
-        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireSingle(tagPrefix, material, property, provider));
+        // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
+        // Wiremill: Ingot -> 1x, 2x, 4x, 8x, 16x, Fine
+        // Wiremill: 1x Wire -> Fine
+        // Extruder: Ingot -> 1x Wire
+        // Wire Cutter: Plate -> 1x Wire
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::processWires);
 
         // Generate Cable Covering Recipes
         wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);

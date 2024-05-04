@@ -41,8 +41,8 @@ public class MaterialRecipeHandler {
             Arrays.asList(gem, gemFlawless, gemExquisite);
 
     public static void init(RecipeOutput provider) {
-        ingot.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processIngot(tagPrefix, material, property, provider));
-        nugget.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processNugget(tagPrefix, material, property, provider));
+        ingot.executeHandler(provider, PropertyKey.INGOT, MaterialRecipeHandler::processIngot);
+        nugget.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processNugget);
 
         block.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processBlock);
         frameGt.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processFrame);
@@ -432,14 +432,12 @@ public class MaterialRecipeHandler {
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
                 if (!ingot.isIgnored(material)) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider,
-                            String.format("nugget_disassembling_%s", material.getName()),
-                            GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(ingot, material));
+                    VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
+                        GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(ingot, material));
                 }
                 if (!orePrefix.isIgnored(material)) {
-                    VanillaRecipeHelper.addShapedRecipe(provider,
-                            String.format("nugget_assembling_%s", material.getName()),
-                            ingotStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
+                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
+                        ingotStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
                 }
             }
 
@@ -469,14 +467,12 @@ public class MaterialRecipeHandler {
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
                 if (!gem.isIgnored(material)) {
-                    VanillaRecipeHelper.addShapelessRecipe(provider,
-                            String.format("nugget_disassembling_%s", material.getName()),
-                            GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(gem, material));
+                    VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
+                        GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(gem, material));
                 }
                 if (!orePrefix.isIgnored(material)) {
-                    VanillaRecipeHelper.addShapedRecipe(provider,
-                            String.format("nugget_assembling_%s", material.getName()),
-                            gemStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
+                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
+                        gemStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
                 }
             }
         }
@@ -537,10 +533,8 @@ public class MaterialRecipeHandler {
             // do not allow non-perfect square root material amounts
             int size = (int) (materialAmount / M);
             int sizeSqrt = Math.round(Mth.sqrt(size));
-            // do not allow handcrafting or uncrafting of blacklisted blocks
-            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) &&
-                    !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt * sizeSqrt == size &&
-                    !block.isIgnored(material)) {
+            //do not allow handcrafting or uncrafting of blacklisted blocks
+            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size && !block.isIgnored(material)) {
                 String patternString = "B".repeat(Math.max(0, sizeSqrt));
                 String[] pattern = new String[sizeSqrt];
                 Arrays.fill(pattern, patternString);

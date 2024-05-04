@@ -27,7 +27,7 @@ import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -42,6 +42,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
+import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.Nullable;
 
@@ -1013,16 +1014,12 @@ public class TagPrefix {
 
     @FunctionalInterface
     public interface MaterialRecipeHandler<T extends IMaterialProperty<T>> {
-
-        void accept(TagPrefix prefix, Material material, T property, Consumer<FinishedRecipe> provider);
+        void accept(TagPrefix prefix, Material material, T property, RecipeOutput provider);
     }
 
-    public <T extends IMaterialProperty<T>> void executeHandler(Consumer<FinishedRecipe> provider,
-                                                                PropertyKey<T> propertyKey,
-                                                                MaterialRecipeHandler<T> handler) {
+    public <T extends IMaterialProperty<T>> void executeHandler(RecipeOutput provider, PropertyKey<T> propertyKey, MaterialRecipeHandler<T> handler) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-            if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) &&
-                    !ChemicalHelper.get(this, material).isEmpty()) {
+            if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) && !ChemicalHelper.get(this, material).isEmpty()) {
                 handler.accept(this, material, material.getProperty(propertyKey), provider);
             }
         }

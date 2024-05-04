@@ -28,7 +28,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
 public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler {
 
     @Override
-    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
         turbineBlade.executeHandler(null, PropertyKey.INGOT, (tagPrefix, material, property, provider) -> {
             var rotorStack = new ItemStack(item);
             var behavior = TurbineRotorBehaviour.getBehaviour(rotorStack);

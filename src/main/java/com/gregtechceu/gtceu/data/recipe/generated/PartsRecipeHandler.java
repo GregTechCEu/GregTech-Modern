@@ -28,11 +28,11 @@ public class PartsRecipeHandler {
     private PartsRecipeHandler() {}
 
     public static void init(RecipeOutput provider) {
-        rod.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processStick(tagPrefix, material, property, provider));
-        rodLong.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processLongStick(tagPrefix, material, property, provider));
-        plate.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processPlate(tagPrefix, material, property, provider));
-        plateDouble.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDouble(tagPrefix, material, property, provider));
-        plateDense.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processPlateDense(tagPrefix, material, property, provider));
+        rod.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processStick);
+        rodLong.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processLongStick);
+        plate.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlate);
+        plateDouble.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDouble);
+        plateDense.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDense);
 
         turbineBlade.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processTurbine);
         rotor.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRotor);
