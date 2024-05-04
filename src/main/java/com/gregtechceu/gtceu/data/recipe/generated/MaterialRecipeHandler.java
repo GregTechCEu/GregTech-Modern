@@ -404,10 +404,14 @@ public class MaterialRecipeHandler {
             ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-                VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
+                if (!ingot.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
                         GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(ingot, material));
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
+                }
+                if (!orePrefix.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
                         ingotStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
+                }
             }
 
             COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_nugget_to_ingot")
@@ -435,10 +439,14 @@ public class MaterialRecipeHandler {
             ItemStack gemStack = ChemicalHelper.get(gem, material);
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-                VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
+                if (!gem.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
                         GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(gem, material));
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
+                }
+                if (!orePrefix.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
                         gemStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
+                }
             }
         }
     }
@@ -499,7 +507,7 @@ public class MaterialRecipeHandler {
             int size = (int) (materialAmount / M);
             int sizeSqrt = Math.round(Mth.sqrt(size));
             //do not allow handcrafting or uncrafting of blacklisted blocks
-            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size) {
+            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size && !block.isIgnored(material)) {
                 String patternString = "B".repeat(Math.max(0, sizeSqrt));
                 String[] pattern = new String[sizeSqrt];
                 Arrays.fill(pattern, patternString);
