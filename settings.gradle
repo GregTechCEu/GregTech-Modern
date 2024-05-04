@@ -42,7 +42,7 @@ dependencyResolutionManagement {
         def architecturyPluginVersion = "3.4-SNAPSHOT"
         def architecturyLoomVersion = "1.5-SNAPSHOT"
         def macheteVersion = "1.+"
-        def ldLibVersion = "1.0.25.f"
+        def ldLibVersion = "1.0.25.g"
         def mixinextrasVersion = "0.2.0"
 
         forge {
