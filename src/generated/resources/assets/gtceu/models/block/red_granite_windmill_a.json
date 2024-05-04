@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "gtceu:block/rubber_wall_sign"
+    "all": "gtceu:block/stones/red_granite/windmill_a"
   }
 }

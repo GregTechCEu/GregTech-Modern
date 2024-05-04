@@ -101,7 +101,7 @@ public class MiscRecipeLoader {
                 .notConsumable(Blocks.ANDESITE.asItem())
                 .outputItems(Blocks.ANDESITE.asItem())
                 .duration(16)
-                .EUt(60)
+                .EUt(VHA[MV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
@@ -110,7 +110,7 @@ public class MiscRecipeLoader {
                 .notConsumable(Blocks.GRANITE.asItem())
                 .outputItems(Blocks.GRANITE.asItem())
                 .duration(16)
-                .EUt(60)
+                .EUt(VHA[MV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
@@ -119,7 +119,7 @@ public class MiscRecipeLoader {
                 .notConsumable(Blocks.DIORITE.asItem())
                 .outputItems(Blocks.DIORITE.asItem())
                 .duration(16)
-                .EUt(60)
+                .EUt(VHA[MV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
@@ -128,7 +128,7 @@ public class MiscRecipeLoader {
                 .notConsumable(dust, Redstone)
                 .outputItems(Blocks.OBSIDIAN.asItem())
                 .duration(16)
-                .EUt(240)
+                .EUt(VHA[HV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
@@ -137,7 +137,7 @@ public class MiscRecipeLoader {
                 .notConsumable(Blocks.BASALT.asItem())
                 .outputItems(Blocks.BASALT.asItem())
                 .duration(16)
-                .EUt(VA[HV])
+                .EUt(VHA[HV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
@@ -146,7 +146,7 @@ public class MiscRecipeLoader {
                 .notConsumable(Blocks.BLACKSTONE.asItem())
                 .outputItems(Blocks.BLACKSTONE.asItem())
                 .duration(16)
-                .EUt(VA[HV])
+                .EUt(VHA[HV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
@@ -156,40 +156,38 @@ public class MiscRecipeLoader {
                 .notConsumable(Blocks.DEEPSLATE.asItem())
                 .outputItems(Blocks.DEEPSLATE.asItem())
                 .duration(16)
-                .EUt(VA[EV])
+                .EUt(VHA[EV])
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
-        // TODO stone types
-/*
+        
         ROCK_BREAKER_RECIPES.recipeBuilder("marble")
-                .notConsumable(stone, Marble)
-                .outputItems(stone, Marble)
+                .notConsumable(rock, Marble)
+                .outputItems(rock, Marble)
                 .duration(16)
-                .EUt(240)
+                .EUt(VHA[HV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("basalt")
-                .notConsumable(stone, Basalt)
-                .outputItems(stone, Basalt)
+                .notConsumable(rock, Basalt)
+                .outputItems(rock, Basalt)
                 .duration(16)
-                .EUt(240)
+                .EUt(VHA[HV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("red_granite")
-                .notConsumable(stone, GraniteRed)
-                .outputItems(stone, GraniteRed)
+                .notConsumable(rock, GraniteRed)
+                .outputItems(rock, GraniteRed)
                 .duration(16)
-                .EUt(960)
+                .EUt(VHA[EV])
+                .addData("fluidA", "minecraft:lava")
+                .addData("fluidB", "minecraft:water")
                 .save(provider);
 
-        ROCK_BREAKER_RECIPES.recipeBuilder("black_granite")
-                .notConsumable(stone, GraniteBlack)
-                .outputItems(stone, GraniteBlack)
-                .duration(16)
-                .EUt(960)
-                .save(provider);
-*/
         // Jetpacks
         ASSEMBLER_RECIPES.recipeBuilder("power_thruster").duration(200).EUt(30)
                 .inputItems(ELECTRIC_MOTOR_MV)

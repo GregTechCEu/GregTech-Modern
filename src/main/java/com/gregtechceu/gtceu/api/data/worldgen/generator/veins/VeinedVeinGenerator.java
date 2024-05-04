@@ -133,7 +133,7 @@ public class VeinedVeinGenerator extends VeinGenerator {
         DensityFunction veinToggle = mapToNoise(BuiltinRegistries.DENSITY_FUNCTION.get(GTFeatures.NEW_ORE_VEIN_TOGGLE), randomState);
         DensityFunction veinRidged = mapToNoise(BuiltinRegistries.DENSITY_FUNCTION.get(GTFeatures.NEW_ORE_VEIN_RIDGED), randomState);
 
-        int size = entry.clusterSize();
+        int size = entry.clusterSize().sample(random);
 
         int radius = Mth.ceil(size / 2f);
 
