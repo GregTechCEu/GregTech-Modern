@@ -101,7 +101,7 @@ public class ChemicalHelper {
     }
 
     @SafeVarargs
-    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, Supplier<ItemLike>... items) {
+    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, Supplier<? extends ItemLike>... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
     }
 
