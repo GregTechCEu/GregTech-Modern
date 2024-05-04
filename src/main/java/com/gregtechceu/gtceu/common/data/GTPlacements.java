@@ -11,11 +11,9 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
-import net.minecraft.world.level.levelgen.placement.SurfaceWaterDepthFilter;
+import net.minecraft.world.level.levelgen.placement.*;
 
 import java.util.List;
 
@@ -26,6 +24,8 @@ import java.util.List;
  */
 public class GTPlacements {
     public static final ResourceKey<PlacedFeature> RUBBER_CHECKED = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("rubber_checked"));
+    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("red_granite_blob"));
+    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE, GTCEu.id("marble_blob"));
 
     public static void bootstrap(BootstrapContext<PlacedFeature> ctx) {
         HolderGetter<ConfiguredFeature<?, ?>> featureLookup = ctx.lookup(Registries.CONFIGURED_FEATURE);
@@ -41,6 +41,19 @@ public class GTPlacements {
                 PlacementUtils.HEIGHTMAP_TOP_SOLID,
                 BiomeFilter.biome(),
                 PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get())
+        );
+
+        PlacementUtils.register(ctx, RED_GRANITE_BLOB, featureLookup.getOrThrow(GTConfiguredFeatures.RED_GRANITE_BLOB),
+            RarityFilter.onAverageOnceEvery(10),
+            InSquarePlacement.spread(),
+            BiomeFilter.biome(),
+            HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
+        );
+        PlacementUtils.register(ctx, MARBLE_BLOB, featureLookup.getOrThrow(GTConfiguredFeatures.MARBLE_BLOB),
+            RarityFilter.onAverageOnceEvery(10),
+            InSquarePlacement.spread(),
+            BiomeFilter.biome(),
+            HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
         );
     }
 }

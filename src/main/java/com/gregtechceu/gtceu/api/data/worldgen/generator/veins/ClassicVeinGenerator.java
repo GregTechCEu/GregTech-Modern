@@ -101,7 +101,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
     public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
-        int radius = entry.clusterSize();
+        int radius = entry.clusterSize().sample(random);
         int ySize = radius / 2;
         int xy2 = radius * radius * ySize * ySize;
         int xz2 = radius * radius * radius * radius;

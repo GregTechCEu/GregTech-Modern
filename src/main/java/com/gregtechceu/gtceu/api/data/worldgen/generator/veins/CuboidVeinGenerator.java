@@ -79,7 +79,7 @@ public class CuboidVeinGenerator extends VeinGenerator {
     public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
-        int size = entry.clusterSize();
+        int size = entry.clusterSize().sample(random);
 
         int westBound = origin.getX() - random.nextInt(size);
         int eastBound = origin.getX() + random.nextInt(size);
