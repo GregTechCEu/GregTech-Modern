@@ -637,6 +637,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> COMPUTER_CASING = REGISTRATE.block("computer_casing", p -> (Block) new RendererBlock(p,
                     Platform.isClient() ? new IModelRenderer(GTCEu.id("block/computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item(RendererBlockItem::new)
@@ -646,6 +647,7 @@ public class GTBlocks {
     public static final BlockEntry<Block> ADVANCED_COMPUTER_CASING = REGISTRATE.block("advanced_computer_casing", p -> (Block) new RendererBlock(p,
                     Platform.isClient() ? new IModelRenderer(GTCEu.id("block/advanced_computer_casing")) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
             .item(RendererBlockItem::new)
@@ -657,6 +659,7 @@ public class GTBlocks {
                             Map.of("side", GTCEu.id("block/casings/hpca/computer_heat_vent_side"),
                                     "end", GTCEu.id("block/casings/hpca/computer_heat_vent_top_bot"))) : null))
             .initialProperties(() -> Blocks.IRON_BLOCK)
+            .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
             .addLayer(() -> RenderType::cutoutMipped)
             .blockstate(NonNullBiConsumer.noop())
             .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -678,6 +681,7 @@ public class GTBlocks {
                                 Map.of("all", texture)) : null))
                 .lang("%s Pipe Casing".formatted(name))
                 .initialProperties(properties)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -713,6 +717,7 @@ public class GTBlocks {
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
                         Map.of("all", texture)) : null))
                 .initialProperties(properties)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(type)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -731,6 +736,7 @@ public class GTBlocks {
                                         "side",  GTCEu.id("block/casings/voltage/%s/side".formatted(tierName)))) : null))
                 .lang("%s Machine Casing".formatted(GTValues.VN[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -754,6 +760,7 @@ public class GTBlocks {
                                         "top_side",  GTCEu.id("block/casings/hermetic_casing/hermetic_casing_overlay"))) : null))
                 .lang("Hermetic Casing %s".formatted(GTValues.LVT[tier]))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -786,6 +793,7 @@ public class GTBlocks {
     private static BlockEntry<CoilBlock> createCoilBlock(ICoilType coilType) {
         BlockEntry<CoilBlock> coilBlock = REGISTRATE.block("%s_coil_block".formatted(coilType.getName()), p -> new CoilBlock(p, coilType))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -807,6 +815,7 @@ public class GTBlocks {
                                                 "side", GTCEu.id("block/casings/battery/" + batteryData.getBatteryName() + "/side"))) :
                                 null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, entityType) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
@@ -878,6 +887,7 @@ public class GTBlocks {
                                         "top", type.top(),
                                         "side", type.side())) : null))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(() -> RenderType::cutoutMipped)
                 .blockstate(NonNullBiConsumer.noop())
                 .tag(GTToolType.WRENCH.harvestTags.get(0), BlockTags.MINEABLE_WITH_PICKAXE)
