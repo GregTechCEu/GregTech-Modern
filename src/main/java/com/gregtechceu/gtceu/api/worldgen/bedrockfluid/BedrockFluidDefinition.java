@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.api.worldgen.bedrockfluid;
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
+import com.gregtechceu.gtceu.utils.RegistryUtil;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -122,7 +124,6 @@ public class BedrockFluidDefinition {
         private int depletedYield; // yield after the vein is depleted
         @Setter
         private Supplier<Fluid> fluid; // the fluid which the vein contains
-        @Setter
         private Set<ResourceKey<Level>> dimensions;
         private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
@@ -162,6 +163,16 @@ public class BedrockFluidDefinition {
         public Builder biomes(int weight, HolderSet<Biome> biomes) {
             this.biomes.add(new BiomeWeightModifier(() -> biomes, weight));
             return this;
+        }
+
+        @HideFromJS
+        public Builder dimensions(Set<ResourceKey<Level>> dimensions) {
+            this.dimensions = dimensions;
+            return this;
+        }
+
+        public Builder dimensions(String... dimensions) {
+            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
         }
 
         public BedrockFluidDefinition register() {
