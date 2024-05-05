@@ -96,8 +96,8 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
                     //this is necessary to prevent over-consumption of fuel
                     turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
                     var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
-                    recipe = parallelResult.getA() == recipe ? recipe.copy() : parallelResult.getA();
-                    long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getB()));
+                    recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
+                    long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
                     recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
                     return recipe;
                 }

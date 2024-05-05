@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -10,5 +11,6 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @FunctionalInterface
 public interface RecipeModifier {
-    GTRecipe apply(MetaMachine machine, GTRecipe recipe);
+    @Nullable
+    GTRecipe apply(MetaMachine machine, @Nullable GTRecipe recipe);
 }
