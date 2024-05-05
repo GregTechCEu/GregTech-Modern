@@ -6934,5 +6934,16 @@
     "block.gtceu.light_concrete_windmill_a": "Светлая бетонная плитка \"Ветряная мельница\" А",
     "block.gtceu.light_concrete_windmill_b": "Светлая бетонная плитка \"Ветряная мельница\" Б",
     "block.gtceu.marble_windmill_a": "Мраморная плитка \"Ветряная мельница\" А",
-    "block.gtceu.powderbarrel.drops_tooltip": "Немного мощнее, чем TNT. Все взорванные блоки выпадают как предметы"
+    "block.gtceu.powderbarrel.drops_tooltip": "Немного мощнее, чем TNT. Все взорванные блоки выпадают как предметы",
+    "compass.node.gtceu.generation/marble": "Мрамор",
+    "entity.gtceu.industrial_tnt": "Промышленный динамит",
+    "entity.gtceu.powderbarrel": "Пороховая бочка",
+    "entity.gtceu.dynamite": "Динамит",
+    "tagprefix.red_granite": "%s (Красно-гранитная руда)",
+    "block.gtceu.treated_wood_sign": "Табличка из обработанного дерева",
+    "block.minecraft.air": "Подвесная табличка из обработанного дерева",
+    "compass.node.gtceu.generation/red_granite": "Красный гранит",
+    "item.gtceu.dynamite": "Динамит",
+    "tagprefix.marble": "%s (Красно-гранитная руда)",
+    "block.gtceu.rubber_sign": "Каучуковая табличка"
 }
