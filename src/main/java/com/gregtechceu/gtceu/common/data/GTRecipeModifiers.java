@@ -130,7 +130,10 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe ebfOverclock(MetaMachine machine, @Nullable GTRecipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() + 100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
             if (!recipe.data.contains("ebf_temp") || recipe.data.getInt("ebf_temp") > blastFurnaceTemperature) {
@@ -151,7 +154,10 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @Nullable GTRecipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
@@ -170,18 +176,20 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe multiSmelterOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe multiSmelterParallel(MetaMachine machine, @Nullable GTRecipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
-            var energyCost = Math.max(1L, 16 / coilMachine.getCoilType().getEnergyDiscount());
+
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
-            var parallelLimit = Math.min(maxParallel, (int) (coilMachine.getOverclockVoltage() / energyCost));
 
-            var result = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
-            recipe = result.getA() == recipe ? result.getA().copy() : result.getA();
+            var result = GTRecipeModifiers.accurateParallel(machine, recipe, maxParallel, false);
+            recipe = result.getFirst() == recipe ? result.getFirst().copy() : result.getFirst();
 
-            int parallelValue = result.getB();
+            int parallelValue = result.getSecond();
             recipe.duration = Math.max(1, 256 * parallelValue / maxParallel);
-            long eut = parallelValue * energyCost;
+            long eut = 4 * (parallelValue / 8) / coilMachine.getCoilType().getEnergyDiscount();
             recipe.tickInputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
             return recipe;
         }
