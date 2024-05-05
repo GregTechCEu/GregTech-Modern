@@ -3,10 +3,10 @@ package com.gregtechceu.gtceu.api.recipe.modifier;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.List;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -19,11 +19,13 @@ public class RecipeModifierList implements RecipeModifier {
 
     @Nullable
     @Override
-    public GTRecipe apply(MetaMachine machine, @Nullable GTRecipe recipe) {
+    public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
         GTRecipe modifiedRecipe = recipe;
 
         for (RecipeModifier modifier : modifiers) {
-            modifiedRecipe = modifier.apply(machine, modifiedRecipe);
+            if (modifiedRecipe != null) {
+                modifiedRecipe = modifier.apply(machine, modifiedRecipe);
+            }
         }
 
         return modifiedRecipe;
