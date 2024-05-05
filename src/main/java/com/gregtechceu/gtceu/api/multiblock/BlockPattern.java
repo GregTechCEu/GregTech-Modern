@@ -18,6 +18,7 @@ import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -187,6 +188,7 @@ public class BlockPattern {
         Map<SimplePredicate, Integer> cacheGlobal = worldState.getGlobalCount();
         Map<SimplePredicate, Integer> cacheLayer = worldState.getLayerCount();
         Map<BlockPos, Object> blocks = new HashMap<>();
+        Set<BlockPos> placeBlockPos = new HashSet<>();
         blocks.put(centerPos, controller);
         for (int c = 0, z = minZ++, r; c < this.fingerLength; c++) {
             for (r = 0; r < aisleRepetitions[c][0]; r++) {
@@ -272,11 +274,12 @@ public class BlockPattern {
 
                             // check inventory
                             ItemStack found = null;
+                            ItemStack originalItemStack = null;
                             if (!player.isCreative()) {
                                 for (ItemStack itemStack : player.getInventory().items) {
                                     if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, itemStack)) && !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
                                         found = itemStack.copy();
-                                        itemStack.setCount(itemStack.getCount() - 1);
+                                        originalItemStack = itemStack;
                                         break;
                                     }
                                 }
@@ -292,7 +295,13 @@ public class BlockPattern {
                             if (found == null) continue;
                             BlockItem itemBlock = (BlockItem) found.getItem();
                             BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
-                            itemBlock.place(context);
+                            InteractionResult interactionResult = itemBlock.place(context);
+                            if(interactionResult != InteractionResult.FAIL) {
+                                placeBlockPos.add(pos);
+                                if(originalItemStack != null) {
+                                    originalItemStack.setCount(originalItemStack.getCount() - 1);
+                                }
+                            }
                             if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
                                 blocks.put(pos, machineBlockEntity.getMetaMachine());
                             } else {
@@ -307,7 +316,7 @@ public class BlockPattern {
         Direction frontFacing = controller.self().getFrontFacing();
         blocks.forEach((pos, block) -> { // adjust facing
             if (!(block instanceof IMultiController)) {
-                if (block instanceof BlockState) {
+                if (block instanceof BlockState && placeBlockPos.contains(pos)) {
                     resetFacing(pos, (BlockState) block, frontFacing, (p, f) -> {
                         Object object = blocks.get(p.relative(f));
                         return object == null || (object instanceof BlockState && ((BlockState) object).getBlock() == Blocks.AIR);
