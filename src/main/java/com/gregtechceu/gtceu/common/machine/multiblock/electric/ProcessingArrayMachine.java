@@ -207,8 +207,8 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             var parallel = Objects.requireNonNull(GTRecipeModifiers.accurateParallel(
                 machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())), false
             ));
-            int parallelCount = parallel.getB();
-            recipe = parallel.getA();
+            int parallelCount = parallel.getSecond();
+            recipe = parallel.getFirst();
 
             // apply overclock afterward
             long maxVoltage = Math.min(processingArray.getOverclockVoltage() * parallelCount, processingArray.getMaxVoltage());

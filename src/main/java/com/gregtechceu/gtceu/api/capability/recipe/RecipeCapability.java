@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -93,19 +93,6 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     }
 
     /**
-     * Convert the passed object to a list of recipe lookup filters.
-     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
-     * @return a list of recipe lookup filters.
-     */
-    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
-        return List.of();
-    }
-
-    public List<Object> compressIngredients(Collection<Object> ingredients) {
-        return new ArrayList<>(ingredients);
-    }
-
-    /**
      * used for recipe builder via KubeJs.
      */
     public T of(Object o) {
@@ -129,10 +116,51 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     }
 
     /**
+     * Convert the passed object to a list of recipe lookup filters.
+     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
+     * @return a list of recipe lookup filters.
+     */
+    public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
+        return List.of();
+    }
+
+    public List<Object> compressIngredients(Collection<Object> ingredients) {
+        return new ArrayList<>(ingredients);
+    }
+
+    /**
      * Does the recipe test if this capability is workable? if not, you should test validity somewhere else.
      */
+    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public boolean doMatchInRecipe() {
         return true;
+    }
+
+    /**
+     * maximum parallel amount based on the inputs (and possibly outputs) provided.
+     *
+     * @param recipe     the recipe from which we get the input to product ratio
+     * @param holder     the {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param multiplier the maximum possible multiplied we can get from the input inventory
+     *                   see {@link ParallelLogic#getMaxRecipeMultiplier(GTRecipe, IRecipeCapabilityHolder, int)}
+     * @return the amount of times a {@link GTRecipe} outputs can be merged into an inventory without voiding products.
+     */
+    // returns Integer.MAX_VALUE by default, to skip processing.
+    public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+        return Integer.MAX_VALUE;
+    }
+
+    /**
+     * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input inventories
+     *
+     * @param holder           The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param recipe           The {@link GTRecipe} for which to find the maximum that can be run simultaneously
+     * @param parallelAmount   The limit on the amount of recipes that can be performed at one time
+     * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
+     */
+    // returns Integer.MAX_VALUE by default, to skip processing.
+    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
+        return Integer.MAX_VALUE;
     }
 
     public boolean doAddGuiSlots() {
@@ -153,7 +181,7 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
         return null;
     }
 
-    @UnknownNullability("null when getWidgetClass() == null")
+    @Nullable("null when getWidgetClass() == null")
     public Widget createWidget() {
         return null;
     }
@@ -167,9 +195,9 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
                                 int index,
                                 boolean isXEI,
                                 IO io,
-                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
-                                @UnknownNullability("null when content == null") GTRecipe recipe,
+                                @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage) {
 
