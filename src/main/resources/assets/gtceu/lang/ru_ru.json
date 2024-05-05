@@ -6920,5 +6920,19 @@
     "block.gtceu.smooth_dark_concrete": "Гладкий темный бетон",
     "block.gtceu.smooth_light_concrete": "Гладкий светлый бетон",
     "block.gtceu.smooth_marble": "Гладкий мрамор",
-    "block.gtceu.smooth_red_granite": "Гладкий красный гранит"
+    "block.gtceu.smooth_red_granite": "Гладкий красный гранит",
+    "block.gtceu.dark_concrete_windmill_b": "Тёмная бетонная плитка \"Ветряная мельница\" Б",
+    "block.gtceu.itnt.drops_tooltip": "Намного мощнее, чем TNT. Все взорванные блоки выпадают как предметы",
+    "block.gtceu.marble_windmill_b": "Мраморная плитка \"Ветряная мельница\" Б",
+    "block.gtceu.powderbarrel": "Пороховая бочка",
+    "block.gtceu.red_granite_windmill_a": "Красная гранитная плитка \"Ветряная мельница\" A",
+    "block.gtceu.red_granite_windmill_b": "Красная гранитная плитка \"Ветряная мельница\" Б",
+    "block.gtceu.dark_concrete_windmill_a": "Тёмная бетонная плитка \"Ветряная мельница\" A",
+    "block.gtceu.explosive.breaking_tooltip": "При обычной добыче взрывается, добудьте в присяде, чтобы забрать обратно",
+    "block.gtceu.explosive.lighting_tooltip": "Нельзя зажечь с помощью Редстоуна",
+    "block.gtceu.industrial_tnt": "Промышленный динамит",
+    "block.gtceu.light_concrete_windmill_a": "Светлая бетонная плитка \"Ветряная мельница\" А",
+    "block.gtceu.light_concrete_windmill_b": "Светлая бетонная плитка \"Ветряная мельница\" Б",
+    "block.gtceu.marble_windmill_a": "Мраморная плитка \"Ветряная мельница\" А",
+    "block.gtceu.powderbarrel.drops_tooltip": "Немного мощнее, чем TNT. Все взорванные блоки выпадают как предметы"
 }
