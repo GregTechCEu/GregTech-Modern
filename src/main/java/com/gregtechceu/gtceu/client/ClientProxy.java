@@ -7,12 +7,14 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
+import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.client.event.EntityRenderersEvent;
+import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 /**
@@ -38,5 +40,10 @@ public class ClientProxy extends CommonProxy {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.INDUSTRIAL_TNT.get(), GTExplosiveRenderer::new);
+    }
+
+    @SubscribeEvent
+    public void registerKeyBindings(RegisterKeyMappingsEvent event) {
+        KeyBind.onRegisterKeyBinds(event);
     }
 }

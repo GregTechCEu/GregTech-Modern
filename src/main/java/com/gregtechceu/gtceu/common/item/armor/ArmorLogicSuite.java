@@ -1,7 +1,10 @@
-package com.gregtechceu.gtceu.api.item.armor;
+package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 import net.minecraft.network.chat.Component;
@@ -10,7 +13,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -38,12 +40,12 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
-    public abstract void onArmorTick(Level Level, Entity player, ItemStack itemStack);
+    public abstract void onArmorTick(Level world, Entity player, ItemStack itemStack);
 
     /*
     @Override
     public int getArmorDisplay(Player player, ItemStack armor, int slot) {
-        IElectricItem item = GTCapabilityHelper.getElectricItem(armor);
+        IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
         if (item == null) return 0;
         if (item.getCharge() >= energyPerUse) {
             return (int) Math.round(20.0F * this.getAbsorption(armor) * this.getDamageAbsorption());
@@ -51,7 +53,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
             return (int) Math.round(4.0F * this.getAbsorption(armor) * this.getDamageAbsorption());
         }
     }
-     */
+    */
 
     @Override
     public void addToolComponents(ArmorComponentItem mvi) {
@@ -70,18 +72,18 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     public void addInfo(ItemStack itemStack, List<Component> lines) {
-        int armor = (int) Math.round(20.0F * this.getAbsorption() * this.getDamageAbsorption());
+        int armor = (int) Math.round(20.0F * this.getAbsorption(itemStack) * this.getDamageAbsorption());
         if (armor > 0)
             lines.add(Component.translatable("attribute.modifier.plus.0", armor, Component.translatable("attribute.name.generic.armor")));
     }
 
-    public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> onRightClick(Level world, Player player, InteractionHand hand) {
         if (player.getItemInHand(hand).getItem() instanceof ArmorComponentItem) {
             ItemStack armor = player.getItemInHand(hand);
-            if (armor.getItem() instanceof ArmorComponentItem && player.getInventory().armor.get(type.getSlot().getIndex()).isEmpty() && !player.isCrouching()) {
+            if (armor.getItem() instanceof ArmorComponentItem && player.getInventory().armor.get(type.getSlot().getIndex()).isEmpty() && !player.isShiftKeyDown()) {
                 player.getInventory().armor.set(type.getSlot().getIndex(), armor.copy());
                 player.setItemInHand(hand, ItemStack.EMPTY);
-                player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC);
+                player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
                 return InteractionResultHolder.success(armor);
             }
         }
@@ -122,14 +124,18 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         return this.energyPerUse;
     }
 
-    protected float getAbsorption() {
+    protected float getAbsorption(ItemStack itemStack) {
         return switch (this.getArmorType()) {
-            case HELMET, BOOTS ->
-                    0.15F;
-            case CHESTPLATE ->
-                    0.4F;
-            case LEGGINGS ->
-                    0.3F;
+            case
+                HELMET,
+                BOOTS ->
+                0.15F;
+            case
+                CHESTPLATE ->
+                0.4F;
+            case
+                LEGGINGS ->
+                0.3F;
         };
     }
 }

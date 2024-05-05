@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.item.armor;
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -27,7 +28,7 @@ public interface IArmorLogic {
     default void addToolComponents(ArmorComponentItem metaValueItem) {
     }
 
-    ArmorItem.Type getEquipmentSlot();
+    ArmorItem.Type getArmorType();
 
     default boolean canBreakWithDamage(ItemStack stack) {
         return false;
@@ -42,7 +43,7 @@ public interface IArmorLogic {
     }
 
     default boolean isValidArmor(ItemStack itemStack, Entity entity, EquipmentSlot equipmentSlot) {
-        return getEquipmentSlot().getSlot() == equipmentSlot;
+        return getArmorType().getSlot() == equipmentSlot;
     }
 
     default void onArmorTick(Level world, Entity player, ItemStack itemStack) {
@@ -60,7 +61,7 @@ public interface IArmorLogic {
         return 0xFFFFFF;
     }
 
-    String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type);
+    ResourceLocation getArmorTexture(ItemStack stack, Entity entity, ArmorItem.Type slot, String type);
 
     @Nullable
     default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel) {

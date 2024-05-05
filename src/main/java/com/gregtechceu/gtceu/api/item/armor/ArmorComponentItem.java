@@ -62,7 +62,7 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
 
     @Override
     public ArmorItem.Type getType() {
-        return armorLogic.getEquipmentSlot();
+        return armorLogic.getArmorType();
     }
 
     @Override
