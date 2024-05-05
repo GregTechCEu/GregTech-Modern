@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.IContentSerializer;
 import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.Component;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -116,7 +116,9 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     }
 
     /**
-     * Does the recipe test if this capability is workable? if not, you should test validity somewhere else.
+     * Convert the passed object to a list of recipe lookup filters.
+     * @param ingredient ingredient. e.g. for ITEM, this can be Ingredient or ItemStack
+     * @return a list of recipe lookup filters.
      */
     public List<AbstractMapIngredient> convertToMapIngredient(Object ingredient) {
         return List.of();
@@ -149,13 +151,11 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
     }
 
     /**
-     * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input
-     * inventories
+     * Finds the maximum number of GTRecipes that can be performed at the same time based on the contents of input inventories
      *
-     * @param holder         The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the
-     *                       machine.
-     * @param recipe         The {@link GTRecipe} for which to find the maximum that can be run simultaneously
-     * @param parallelAmount The limit on the amount of recipes that can be performed at one time
+     * @param holder           The {@link IRecipeCapabilityHolder} that contains all the inputs and outputs of the machine.
+     * @param recipe           The {@link GTRecipe} for which to find the maximum that can be run simultaneously
+     * @param parallelAmount   The limit on the amount of recipes that can be performed at one time
      * @return The Maximum number of GTRecipes that can be performed at a single time based on the available Items
      */
     // returns Integer.MAX_VALUE by default, to skip processing.
@@ -185,7 +185,7 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
         return null;
     }
 
-    @UnknownNullability("null when getWidgetClass() == null")
+    @Nullable("null when getWidgetClass() == null")
     public Widget createWidget() {
         return null;
     }
@@ -199,9 +199,9 @@ public abstract class RecipeCapability<T> implements GenericRecipeCapability {
                                 int index,
                                 boolean isXEI,
                                 IO io,
-                                GTRecipeTypeUI.@UnknownNullability("null when storage == null") RecipeHolder recipeHolder,
+                                @Nullable("null when storage == null") GTRecipeTypeUI.RecipeHolder recipeHolder,
                                 @NotNull GTRecipeType recipeType,
-                                @UnknownNullability("null when content == null") GTRecipe recipe,
+                                @Nullable("null when content == null") GTRecipe recipe,
                                 @Nullable Content content,
                                 @Nullable Object storage) {
 

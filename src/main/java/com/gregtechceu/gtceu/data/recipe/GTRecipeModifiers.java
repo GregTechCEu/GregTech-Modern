@@ -14,17 +14,18 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipe.modifier.ParallelLogic;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
-import lombok.val;
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
-import net.minecraft.util.Tuple;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 
 import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
@@ -44,19 +45,23 @@ public class GTRecipeModifiers {
      * Use it if machines are {@link IOverclockMachine}.
      */
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util.memoize(ElectricOverclockModifier::new);
-    public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers.hatchParallel(machine, recipe, false).getA();
+    public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers.hatchParallel(machine, recipe, false).getFirst();
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault
     public static class ElectricOverclockModifier implements RecipeModifier {
         private final OverclockingLogic overclockingLogic;
 
-
         public ElectricOverclockModifier(OverclockingLogic overclockingLogic) {
             this.overclockingLogic = overclockingLogic;
         }
+
+        @Nullable
         @Override
-        public GTRecipe apply(MetaMachine machine, GTRecipe recipe) {
+        public GTRecipe apply(MetaMachine machine, @Nullable GTRecipe recipe) {
+            if (recipe == null) {
+                return null;
+            }
             if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
                 return null;
             }
@@ -76,8 +81,7 @@ public class GTRecipeModifiers {
      * @param modifyDuration should multiply the duration
      * @return modified recipe and parallel amount
      */
-    public static Pair<GTRecipe, Integer> fastParallel(MetaMachine machine, @NotNull GTRecipe recipe, int maxParallel,
-                                                       boolean modifyDuration) {
+    public static Pair<GTRecipe, Integer> fastParallel(MetaMachine machine, @NotNull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
         if (machine instanceof IRecipeCapabilityHolder holder) {
             while (maxParallel > 0) {
                 var copied = recipe.copy(ContentModifier.multiplier(maxParallel), modifyDuration);
@@ -99,16 +103,14 @@ public class GTRecipeModifiers {
      * @param modifyDuration should multiply the duration
      * @return modified recipe and parallel amount
      */
-    public static Pair<GTRecipe, Integer> accurateParallel(MetaMachine machine, @NotNull GTRecipe recipe,
-                                                           int maxParallel, boolean modifyDuration) {
+    public static Pair<GTRecipe, Integer> accurateParallel(MetaMachine machine, @NotNull GTRecipe recipe, int maxParallel, boolean modifyDuration) {
         if (maxParallel == 1) {
             return Pair.of(recipe, 1);
         }
         return ParallelLogic.applyParallel(machine, recipe, maxParallel, modifyDuration);
     }
 
-    public static Pair<GTRecipe, Integer> hatchParallel(MetaMachine machine, @NotNull GTRecipe recipe,
-                                                        boolean modifyDuration) {
+    public static Pair<GTRecipe, Integer> hatchParallel(MetaMachine machine, @Nullable GTRecipe recipe, boolean modifyDuration) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance)
                     .map(IParallelHatch.class::cast).findAny();
@@ -139,10 +141,12 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe ebfOverclock(MetaMachine machine, @Nullable GTRecipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
-            final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() +
-                    100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
+            final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() + 100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
             if (!recipe.data.contains("ebf_temp") || recipe.data.getInt("ebf_temp") > blastFurnaceTemperature) {
                 return null;
             }
@@ -163,7 +167,10 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @Nullable GTRecipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
@@ -184,7 +191,10 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe multiSmelterParallel(MetaMachine machine, @NotNull GTRecipe recipe) {
+    public static GTRecipe multiSmelterParallel(MetaMachine machine, @Nullable GTRecipe recipe) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
 
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();

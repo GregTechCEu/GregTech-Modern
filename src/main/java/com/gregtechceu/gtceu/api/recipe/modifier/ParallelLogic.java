@@ -1,36 +1,40 @@
 package com.gregtechceu.gtceu.api.recipe.modifier;
 
+import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-
-import net.minecraft.MethodsReturnNonnullByDefault;
-
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 import it.unimi.dsi.fastutil.ints.IntSet;
 import it.unimi.dsi.fastutil.objects.*;
 import lombok.AllArgsConstructor;
+import net.minecraft.MethodsReturnNonnullByDefault;
 import org.jetbrains.annotations.NotNull;
-
-import java.util.function.Predicate;
+import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.function.Predicate;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 @AllArgsConstructor
 public class ParallelLogic {
 
-    @NotNull
-    public static Pair<GTRecipe, Integer> applyParallel(MetaMachine machine, @NotNull GTRecipe recipe,
-                                                        int parallelLimit, boolean modifyDuration) {
+    @Nullable
+    public static Pair<GTRecipe, Integer> applyParallel(MetaMachine machine, @Nullable GTRecipe recipe, int parallelLimit, boolean modifyDuration) {
+        if (recipe == null) {
+            return null;
+        }
         if (machine instanceof IRecipeLogicMachine rlm) {
             return doParallelRecipes(recipe, rlm, parallelLimit, modifyDuration);
         }
-        return Pair.of(recipe, 1);
+        return null;
     }
 
     /**
@@ -39,8 +43,7 @@ public class ParallelLogic {
      * @param parallelAmount hard cap on the amount returned
      * @return returns the amount of possible time a recipe can be made from a given input inventory
      */
-    public static int getMaxRecipeMultiplier(@NotNull GTRecipe recipe, @NotNull IRecipeCapabilityHolder holder,
-                                             int parallelAmount) {
+    public static int getMaxRecipeMultiplier(@NotNull GTRecipe recipe, @NotNull IRecipeCapabilityHolder holder, int parallelAmount) {
         IntSet multipliers = new IntOpenHashSet();
 
         // non-tick inputs.
@@ -50,7 +53,9 @@ public class ParallelLogic {
                 multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelAmount));
             }
         }
-
+        if (multipliers.intStream().allMatch(value -> value == Integer.MAX_VALUE)) {
+            return 0;
+        }
         // tick inputs.
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe()) {
@@ -76,13 +81,13 @@ public class ParallelLogic {
                                            int parallelAmount, Predicate<RecipeCapability<?>> canVoid) {
         Object2IntMap<RecipeCapability<?>> modifiedParallelAmounts = new Object2IntOpenHashMap<>();
         boolean canVoidAll = true;
-        for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
             modifiedParallelAmounts.put(cap, Integer.MAX_VALUE);
             if (!canVoid.test(cap)) {
                 canVoidAll = false;
             }
         }
-        for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             modifiedParallelAmounts.put(cap, Integer.MAX_VALUE);
             if (!canVoid.test(cap)) {
                 canVoidAll = false;
@@ -94,7 +99,7 @@ public class ParallelLogic {
             return parallelAmount;
         }
 
-        for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
             if (!cap.doMatchInRecipe()) {
                 continue;
             }
@@ -114,7 +119,7 @@ public class ParallelLogic {
                 }
             }
         }
-        for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (!cap.doMatchInRecipe()) {
                 continue;
             }
@@ -130,8 +135,7 @@ public class ParallelLogic {
                     }
                 } else {
                     if (modifiedParallelAmounts.containsKey(cap)) {
-                        modifiedParallelAmounts.put(cap, modifiedParallelAmounts.getInt(cap) +
-                                cap.limitParallel(recipe, holder, parallelAmount));
+                        modifiedParallelAmounts.put(cap, modifiedParallelAmounts.getInt(cap) + cap.limitParallel(recipe, holder, parallelAmount));
                     } else {
                         modifiedParallelAmounts.put(cap, cap.limitParallel(recipe, holder, parallelAmount));
                     }
@@ -181,20 +185,19 @@ public class ParallelLogic {
 
     // At this point, the recipe is already trimmed according to the item and fluid output limit, so we just need to
     // take care of voiding
-    @NotNull
+    @Nullable
     public static Pair<GTRecipe, Integer> doParallelRecipes(@NotNull GTRecipe currentRecipe,
-                                                            @NotNull IRecipeLogicMachine machine,
-                                                            int parallelAmount, boolean modifyDuration) {
+                                             @NotNull IRecipeLogicMachine machine,
+                                             int parallelAmount, boolean modifyDuration) {
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
         int multiplierByInputs = getMaxRecipeMultiplier(currentRecipe, machine, parallelAmount);
         if (multiplierByInputs == 0) {
-            return Pair.of(currentRecipe, 1);
+            return null;
         }
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
         // and limit by the amount we can successfully merge
-        int limitByOutput = ParallelLogic.limitByOutputMerging(currentRecipe, machine, multiplierByInputs,
-                machine::canVoidRecipeOutputs);
+        int limitByOutput = ParallelLogic.limitByOutputMerging(currentRecipe, machine, multiplierByInputs, machine::canVoidRecipeOutputs);
         if (limitByOutput > 0) {
             currentRecipe = currentRecipe.copy(ContentModifier.multiplier(limitByOutput), modifyDuration);
         }

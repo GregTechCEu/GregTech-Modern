@@ -213,8 +213,8 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
             // apply parallel first
             var parallel = Objects.requireNonNull(GTRecipeModifiers.accurateParallel(
-                    machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())),
-                    false));
+                machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())), false
+            ));
             int parallelCount = parallel.getSecond();
             recipe = parallel.getFirst();
 

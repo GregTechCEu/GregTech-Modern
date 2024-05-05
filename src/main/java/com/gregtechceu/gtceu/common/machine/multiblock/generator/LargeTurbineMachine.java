@@ -86,19 +86,26 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     //////////////////////////////////////
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (!(machine instanceof LargeTurbineMachine turbineMachine))
-            return null;
-
-        var rotorHolder = turbineMachine.getRotorHolder();
-        var EUt = RecipeHelper.getOutputEUt(recipe);
-
-        if (rotorHolder == null || EUt <= 0)
-            return null;
-
-        var turbineMaxVoltage = (int) turbineMachine.getOverclockVoltage();
-        if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
-            turbineMachine.excessVoltage -= turbineMaxVoltage;
-            return null;
+        if (machine instanceof LargeTurbineMachine turbineMachine) {
+            var rotorHolder = turbineMachine.getRotorHolder();
+            var EUt = RecipeHelper.getOutputEUt(recipe);
+            if (rotorHolder != null && EUt > 0) {
+                var turbineMaxVoltage = (int)turbineMachine.getOverclockVoltage();
+                if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
+                    turbineMachine.excessVoltage -= turbineMaxVoltage;
+                } else {
+                    double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
+                    //get the amount of parallel required to match the desired output voltage
+                    var maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
+                    //this is necessary to prevent over-consumption of fuel
+                    turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
+                    var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
+                    recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
+                    long eut = turbineMachine.boostProduction((long) (EUt * holderEfficiency * parallelResult.getSecond()));
+                    recipe.tickOutputs.put(EURecipeCapability.CAP, List.of(new Content(eut, 1.0f, 0.0f, null, null)));
+                    return recipe;
+                }
+            }
         }
 
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;

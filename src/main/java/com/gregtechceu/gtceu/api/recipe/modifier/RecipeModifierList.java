@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import net.minecraft.MethodsReturnNonnullByDefault;
 
+import javax.annotation.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 
@@ -16,8 +17,9 @@ public class RecipeModifierList implements RecipeModifier {
         this.modifiers = modifiers;
     }
 
+    @Nullable
     @Override
-    public GTRecipe apply(MetaMachine machine, GTRecipe recipe) {
+    public GTRecipe apply(MetaMachine machine, @Nullable GTRecipe recipe) {
         GTRecipe modifiedRecipe = recipe;
 
         for (RecipeModifier modifier : modifiers) {

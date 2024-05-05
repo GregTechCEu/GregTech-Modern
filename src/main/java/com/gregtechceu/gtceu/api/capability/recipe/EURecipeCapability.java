@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -8,7 +10,9 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author KilaBash
@@ -41,36 +45,28 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
         long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = tieredMachine.getMaxVoltage();
-        } else if (holder instanceof IOverclockMachine overclockMachine) {
+        if (holder instanceof IOverclockMachine overclockMachine) {
             maxVoltage = overclockMachine.getOverclockVoltage();
+        } else if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = GTValues.V[tieredMachine.getTier()];
         }
 
-        long recipeEUt = RecipeHelper.getOutputEUt(recipe);
+        long recipeEUt = RecipeHelper.getInputEUt(recipe);
         if (recipeEUt == 0) {
-            return Integer.MAX_VALUE;
+            recipeEUt = RecipeHelper.getOutputEUt(recipe);
         }
         return Math.abs((int) (maxVoltage / recipeEUt));
     }
 
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
-        long maxVoltage = Long.MAX_VALUE;
-        if (holder instanceof ITieredMachine tieredMachine) {
-            maxVoltage = tieredMachine.getMaxVoltage();
-        } else if (holder instanceof IOverclockMachine overclockMachine) {
-            maxVoltage = overclockMachine.getOverclockVoltage();
-        }
-
-        long recipeEUt = RecipeHelper.getInputEUt(recipe);
-        if (recipeEUt == 0) {
-            return Integer.MAX_VALUE;
-        }
-        return Math.abs(safeCastLongToInt(maxVoltage / recipeEUt));
-    }
-
-    public static int safeCastLongToInt(long v) {
-        return v > Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) v;
+        long needed = RecipeHelper.getInputEUt(recipe);
+        long available = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP), Collections::emptyList)
+            .stream()
+            .filter(IEnergyContainer.class::isInstance)
+            .map(IEnergyContainer.class::cast)
+            .map(IEnergyContainer::getEnergyStored)
+            .reduce(0L, Long::sum);
+        return (int) Math.min(parallelAmount, available / needed);
     }
 }
