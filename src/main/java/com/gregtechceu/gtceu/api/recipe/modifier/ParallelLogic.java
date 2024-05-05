@@ -26,15 +26,12 @@ import java.util.function.Predicate;
 @AllArgsConstructor
 public class ParallelLogic {
 
-    @Nullable
-    public static Pair<GTRecipe, Integer> applyParallel(MetaMachine machine, @Nullable GTRecipe recipe, int parallelLimit, boolean modifyDuration) {
-        if (recipe == null) {
-            return null;
-        }
+    @NotNull
+    public static Pair<GTRecipe, Integer> applyParallel(MetaMachine machine, @NotNull GTRecipe recipe, int parallelLimit, boolean modifyDuration) {
         if (machine instanceof IRecipeLogicMachine rlm) {
             return doParallelRecipes(recipe, rlm, parallelLimit, modifyDuration);
         }
-        return null;
+        return Pair.of(recipe, 1);
     }
 
     /**
@@ -53,9 +50,9 @@ public class ParallelLogic {
                 multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelAmount));
             }
         }
-        if (multipliers.intStream().allMatch(value -> value == Integer.MAX_VALUE)) {
-            return 0;
-        }
+
+
+
         // tick inputs.
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe()) {
@@ -185,14 +182,14 @@ public class ParallelLogic {
 
     // At this point, the recipe is already trimmed according to the item and fluid output limit, so we just need to
     // take care of voiding
-    @Nullable
+    @NotNull
     public static Pair<GTRecipe, Integer> doParallelRecipes(@NotNull GTRecipe currentRecipe,
-                                             @NotNull IRecipeLogicMachine machine,
-                                             int parallelAmount, boolean modifyDuration) {
+                                                                     @NotNull IRecipeLogicMachine machine,
+                                                                     int parallelAmount, boolean modifyDuration) {
         // First check if we are limited by recipe inputs. This can short circuit a lot of consecutive checking
         int multiplierByInputs = getMaxRecipeMultiplier(currentRecipe, machine, parallelAmount);
         if (multiplierByInputs == 0) {
-            return null;
+            return Pair.of(currentRecipe, 1);
         }
 
         // Simulate the merging of the maximum amount of recipes that can be run with these items
