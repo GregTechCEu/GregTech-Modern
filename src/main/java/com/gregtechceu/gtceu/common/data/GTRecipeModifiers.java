@@ -52,10 +52,7 @@ public class GTRecipeModifiers {
 
         @Nullable
         @Override
-        public GTRecipe apply(MetaMachine machine, @Nullable GTRecipe recipe) {
-            if (recipe == null) {
-                return null;
-            }
+        public GTRecipe apply(MetaMachine machine, @NotNull GTRecipe recipe) {
             if (machine instanceof ITieredMachine tieredMachine && RecipeHelper.getRecipeEUtTier(recipe) > tieredMachine.getTier()) {
                 return null;
             }
@@ -102,7 +99,7 @@ public class GTRecipeModifiers {
         return ParallelLogic.applyParallel(machine, recipe, maxParallel, modifyDuration);
     }
 
-    public static Pair<GTRecipe, Integer> hatchParallel(MetaMachine machine, @Nullable GTRecipe recipe, boolean modifyDuration) {
+    public static Pair<GTRecipe, Integer> hatchParallel(MetaMachine machine, @NotNull GTRecipe recipe, boolean modifyDuration) {
         if (machine instanceof IMultiController controller && controller.isFormed()) {
             Optional<IParallelHatch> optional = controller.getParts().stream().filter(IParallelHatch.class::isInstance).map(IParallelHatch.class::cast).findAny();
             if (optional.isPresent()) {
@@ -130,10 +127,7 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe ebfOverclock(MetaMachine machine, @Nullable GTRecipe recipe) {
-        if (recipe == null) {
-            return null;
-        }
+    public static GTRecipe ebfOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             final var blastFurnaceTemperature = coilMachine.getCoilType().getCoilTemperature() + 100 * Math.max(0, coilMachine.getTier() - GTValues.MV);
             if (!recipe.data.contains("ebf_temp") || recipe.data.getInt("ebf_temp") > blastFurnaceTemperature) {
@@ -154,10 +148,7 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @Nullable GTRecipe recipe) {
-        if (recipe == null) {
-            return null;
-        }
+    public static GTRecipe pyrolyseOvenOverclock(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > coilMachine.getTier()) {
                 return null;
@@ -176,10 +167,7 @@ public class GTRecipeModifiers {
         return null;
     }
 
-    public static GTRecipe multiSmelterParallel(MetaMachine machine, @Nullable GTRecipe recipe) {
-        if (recipe == null) {
-            return null;
-        }
+    public static GTRecipe multiSmelterParallel(MetaMachine machine, @NotNull GTRecipe recipe) {
         if (machine instanceof CoilWorkableElectricMultiblockMachine coilMachine) {
 
             var maxParallel = 32 * coilMachine.getCoilType().getLevel();
