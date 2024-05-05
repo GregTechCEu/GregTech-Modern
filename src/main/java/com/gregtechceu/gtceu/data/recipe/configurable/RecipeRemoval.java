@@ -107,6 +107,8 @@ public class RecipeRemoval {
 
     private static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
         registry.accept(new ResourceLocation("minecraft:ladder"));
+        registry.accept(new ResourceLocation("minecraft:bowl"));
+        registry.accept(new ResourceLocation("minecraft:chest"));
     }
 
     private static void hardIronRecipes(Consumer<ResourceLocation> registry) {
