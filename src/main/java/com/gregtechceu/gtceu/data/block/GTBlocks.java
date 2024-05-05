@@ -387,7 +387,7 @@ public class GTBlocks {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+            .properties(p -> p.dynamicShape().noOcclusion())
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
@@ -413,7 +413,7 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE.block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+            .properties(p -> p.dynamicShape().noOcclusion())
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(CustomTags.MINEABLE_WITH_WIRE_CUTTER)
