@@ -307,13 +307,12 @@ public class BlockPattern {
 
                             // check inventory
                             ItemStack found = null;
-                            int foundSlot = -1;
-                            IItemHandler handler = null;
+                            ItemStack originalItemStack = null;
                             if (!player.isCreative()) {
                                 for (ItemStack itemStack : player.getInventory().items) {
                                     if (candidates.stream().anyMatch(candidate -> ItemStack.isSameItemSameComponents(candidate, itemStack)) && !itemStack.isEmpty() && itemStack.getItem() instanceof BlockItem) {
                                         found = itemStack.copy();
-                                        itemStack.setCount(itemStack.getCount() - 1);
+                                        originalItemStack = itemStack;
                                         break;
                                     }
                                 }
@@ -328,13 +327,12 @@ public class BlockPattern {
                             }
                             if (found == null) continue;
                             BlockItem itemBlock = (BlockItem) found.getItem();
-                            BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND,
-                                    found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
+                            BlockPlaceContext context = new BlockPlaceContext(world, player, InteractionHand.MAIN_HAND, found, BlockHitResult.miss(player.getEyePosition(0), Direction.UP, pos));
                             InteractionResult interactionResult = itemBlock.place(context);
-                            if (interactionResult != InteractionResult.FAIL) {
+                            if(interactionResult != InteractionResult.FAIL) {
                                 placeBlockPos.add(pos);
-                                if (handler != null) {
-                                    handler.extractItem(foundSlot, 1, false);
+                                if(originalItemStack != null) {
+                                    originalItemStack.setCount(originalItemStack.getCount() - 1);
                                 }
                             }
                             if (world.getBlockEntity(pos) instanceof IMachineBlockEntity machineBlockEntity) {
