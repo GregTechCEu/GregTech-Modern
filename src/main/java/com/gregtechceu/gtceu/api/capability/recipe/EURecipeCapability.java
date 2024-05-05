@@ -61,11 +61,9 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         long needed = RecipeHelper.getInputEUt(recipe);
-        long available = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP), Collections::emptyList)
+        long available = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
             .stream()
-            .filter(IEnergyContainer.class::isInstance)
-            .map(IEnergyContainer.class::cast)
-            .map(IEnergyContainer::getEnergyStored)
+            .map(handler -> Double.valueOf(handler.getTotalContentAmount()).longValue())
             .reduce(0L, Long::sum);
         return (int) Math.min(parallelAmount, available / needed);
     }
