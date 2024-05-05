@@ -85,7 +85,7 @@ public class RecipeHelper {
      * @param recipe the recipe to overclock
      * @return an int array of {OverclockedEUt, OverclockedDuration}
      */
-    private static LongIntPair performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt, long maxOverclockVoltage) {
+    public static LongIntPair performOverclocking(OverclockingLogic logic, @NotNull GTRecipe recipe, long EUt, long maxOverclockVoltage) {
         int recipeTier = GTUtil.getTierByVoltage(EUt);
         int maximumTier = logic.getOverclockForTier(maxOverclockVoltage);
         // The maximum number of overclocks is determined by the difference between the tier the recipe is running at,
