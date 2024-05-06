@@ -1719,7 +1719,7 @@ public class GTItems {
                 8192,
                 100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                 ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-        .lang("QuarkTech™ Suite Leggings")
+        .lang("QuarkTech™ Suite Helmet")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
 

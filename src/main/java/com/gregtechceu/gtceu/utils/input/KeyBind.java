@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.utils.input;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
+import com.gregtechceu.gtceu.common.network.packets.CPacketKeysPressed;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
@@ -60,7 +62,7 @@ public enum KeyBind {
             }
         }
         if (!updating.isEmpty()) {
-            //GregTechAPI.networkHandler.sendToServer(new PacketKeysPressed(updating));
+            GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updating));
         }
     }
 
@@ -165,6 +167,4 @@ public enum KeyBind {
             return pair != null && pair.right;
         }
     }
-    
-    
 }

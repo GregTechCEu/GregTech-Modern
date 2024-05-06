@@ -2,8 +2,9 @@
   "loader": "forge:fluid_container",
   "parent": "forge:item/default",
   "textures": {
-    "base": "gtceu:items/aluminium_fluid_cell/base",
-    "fluid": "gtceu:items/aluminium_fluid_cell/overlay",
-    "cover": "gtceu:items/aluminium_fluid_cell/base"
-  }
+    "base": "gtceu:item/aluminium_fluid_cell/base",
+    "fluid": "gtceu:item/aluminium_fluid_cell/overlay",
+    "cover": "gtceu:item/aluminium_fluid_cell/base"
+  },
+  "fluid": "minecraft:empty"
 }

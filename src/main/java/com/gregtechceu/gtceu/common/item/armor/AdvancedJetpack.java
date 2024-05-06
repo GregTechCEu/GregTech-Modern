@@ -100,6 +100,6 @@ public class AdvancedJetpack extends Jetpack {
 
     @Override
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return GTCEu.id("textures/armor/advanced_jetpack_layer_1.png");
+        return GTCEu.id("textures/armor/advanced_jetpack.png");
     }
 }

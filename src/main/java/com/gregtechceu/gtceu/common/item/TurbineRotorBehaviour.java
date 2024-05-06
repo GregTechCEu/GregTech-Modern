@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -26,7 +27,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
 public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler {
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         turbineBlade.executeHandler(null, PropertyKey.INGOT, (tagPrefix, material, property, provider) -> {
             var rotorStack = new ItemStack(item);
             var behavior = TurbineRotorBehaviour.getBehaviour(rotorStack);

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
@@ -54,7 +55,7 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-        if (event.getObject().getItem() instanceof ComponentItem componentItem) {
+        if (event.getObject().getItem() instanceof IComponentItem componentItem) {
 
             final ItemStack itemStack = event.getObject();
             event.addCapability(GTCEu.id("capability"), new ICapabilityProvider() {

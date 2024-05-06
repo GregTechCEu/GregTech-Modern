@@ -2,8 +2,9 @@
   "loader": "forge:fluid_container",
   "parent": "forge:item/default",
   "textures": {
-    "base": "gtceu:items/titanium_fluid_cell/base",
-    "fluid": "gtceu:items/titanium_fluid_cell/overlay",
-    "cover": "gtceu:items/titanium_fluid_cell/base"
-  }
+    "base": "gtceu:item/titanium_fluid_cell/base",
+    "fluid": "gtceu:item/titanium_fluid_cell/overlay",
+    "cover": "gtceu:item/titanium_fluid_cell/base"
+  },
+  "fluid": "minecraft:empty"
 }

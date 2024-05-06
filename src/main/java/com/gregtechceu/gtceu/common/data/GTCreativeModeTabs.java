@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
@@ -102,6 +103,10 @@ public class GTCreativeModeTabs {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
+                } else if (item instanceof ArmorComponentItem armorComponentItem) {
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    armorComponentItem.fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
                 } else if (item instanceof IGTTool tool) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     tool.definition$fillItemCategory(tab.get(), list);
@@ -120,7 +125,11 @@ public class GTCreativeModeTabs {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
-                } else if (item instanceof IGTTool tool) {
+                } else if (item instanceof ArmorComponentItem armorComponentItem) {
+                    NonNullList<ItemStack> list = NonNullList.create();
+                    armorComponentItem.fillItemCategory(tab.get(), list);
+                    list.forEach(output::accept);
+                }else if (item instanceof IGTTool tool) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     tool.definition$fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);

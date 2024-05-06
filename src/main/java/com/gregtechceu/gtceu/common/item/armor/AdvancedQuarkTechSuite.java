@@ -239,7 +239,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
     @Override
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        return GTCEu.id("textures/armor/advanced_quark_tech_suite_layer_1.png");
+        return GTCEu.id("textures/armor/advanced_quark_tech_suite_1.png");
     }
 
     @Override

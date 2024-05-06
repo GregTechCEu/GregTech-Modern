@@ -76,16 +76,6 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
-        if (player.getItemInHand(hand).getItem() instanceof ArmorComponentItem) {
-            ItemStack armor = player.getItemInHand(hand);
-            if (armor.getItem() instanceof ArmorComponentItem && player.getInventory().armor.get(type.getSlot().getIndex()).isEmpty() && !player.isCrouching()) {
-                player.getInventory().armor.set(type.getSlot().getIndex(), armor.copy());
-                player.setItemInHand(hand, ItemStack.EMPTY);
-                player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC);
-                return InteractionResultHolder.success(armor);
-            }
-        }
-
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
 

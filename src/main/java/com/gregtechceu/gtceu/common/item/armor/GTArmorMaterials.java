@@ -28,12 +28,12 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
         map.put(ArmorItem.Type.CHESTPLATE, 0);
         map.put(ArmorItem.Type.HELMET, 0);
     }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
-    ARMOR("armor", 33, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-        map.put(ArmorItem.Type.BOOTS, 0);
-        map.put(ArmorItem.Type.LEGGINGS, 0);
-        map.put(ArmorItem.Type.CHESTPLATE, 0);
-        map.put(ArmorItem.Type.HELMET, 0);
-    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
+    ARMOR("armor", 40, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+        map.put(ArmorItem.Type.BOOTS, 3);
+        map.put(ArmorItem.Type.LEGGINGS, 6);
+        map.put(ArmorItem.Type.CHESTPLATE, 12);
+        map.put(ArmorItem.Type.HELMET, 3);
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 5.0F, 0.0F, () -> Ingredient.EMPTY),
     ;
 
     public static final Codec<GTArmorMaterials> CODEC = StringRepresentable.fromEnum(GTArmorMaterials::values);
@@ -50,7 +50,7 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
     @Getter
     private final int enchantmentValue;
     @Getter
-    private final SoundEvent sound;
+    private final SoundEvent equipSound;
     @Getter
     private final float toughness;
     @Getter
@@ -65,11 +65,6 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
     @Override
     public int getDefenseForType(ArmorItem.Type type) {
         return this.protectionFunctionForType.get(type);
-    }
-
-    @Override
-    public SoundEvent getEquipSound() {
-        return null;
     }
 
     @Override
