@@ -2,6 +2,8 @@ package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
+import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
@@ -54,7 +56,7 @@ public class OreRecipeHandler {
         if (smeltingResult.hasProperty(PropertyKey.INGOT)) {
             ItemStack ingotStack = ChemicalHelper.get(ingot, smeltingResult);
 
-            if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult)) {
+            if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingResult) && !crushedPrefix.isIgnored(material)) {
                 VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + crushedPrefix.name + "_" + material.getName() + "_to_ingot",
                         ChemicalHelper.getTag(crushedPrefix, material), ingotStack, 0.5f);
             }
@@ -161,7 +163,7 @@ public class OreRecipeHandler {
                     .save(provider);
         }
 
-        //do not try to add smelting recipes for materials which require blast furnace
+        //do not try to add smelting recipes for materials which require blast furnace, or don't have smelting recipes at all.
         if (!ingotStack.isEmpty() && doesMaterialUseNormalFurnace(smeltingMaterial) && !orePrefix.isIgnored(material)) {
             float xp = Math.round(((1 + property.getOreMultiplier() * 0.33f) / 3) * 10f) / 10f;
             VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + orePrefix.name + "_" + material.getName() + "_ore_to_ingot",
@@ -429,7 +431,7 @@ public class OreRecipeHandler {
     }
 
     private static boolean doesMaterialUseNormalFurnace(Material material) {
-        return !material.hasProperty(PropertyKey.BLAST);
+        return !material.hasProperty(PropertyKey.BLAST) && !material.hasFlag(MaterialFlags.NO_SMELTING);
     }
 
 
