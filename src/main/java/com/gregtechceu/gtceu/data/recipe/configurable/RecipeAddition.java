@@ -102,6 +102,13 @@ public class RecipeAddition {
 
     private static void hardWoodRecipes(Consumer<FinishedRecipe> provider) {
         VanillaRecipeHelper.addShapedRecipe(provider, "ladder", new ItemStack(Blocks.LADDER, 2), "SrS", "SRS", "ShS", 'S', new UnificationEntry(TagPrefix.rod, GTMaterials.Wood), 'R', new UnificationEntry(TagPrefix.bolt, GTMaterials.Wood));
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "bowl", new ItemStack(Items.BOWL), "k", "X", 'X', ItemTags.PLANKS);
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "chest", new ItemStack(Blocks.CHEST), "LPL", "PFP", "LPL",
+            'L', ItemTags.LOGS,
+            'P', ItemTags.PLANKS,
+            'F', new ItemStack(Items.FLINT));
     }
 
     private static void hardIronRecipes(Consumer<FinishedRecipe> provider) {

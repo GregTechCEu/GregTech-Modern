@@ -1,6 +1,5 @@
 {
-  "parent": "minecraft:block/cube_all",
   "textures": {
-    "all": "gtceu:block/rubber_sign"
+    "particle": "gtceu:block/rubber_planks"
   }
 }

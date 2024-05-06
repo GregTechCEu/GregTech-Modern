@@ -50,7 +50,7 @@ public class ParallelLogicTest {
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled.getB() == 2,"Expected Parallel amount to be 2, is %s.".formatted(paralleled.getB()));
+        helper.assertTrue(paralleled.getSecond() == 2,"Expected Parallel amount to be 2, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
@@ -84,7 +84,7 @@ public class ParallelLogicTest {
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled == null || paralleled.getB() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getB()));
+        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
@@ -118,7 +118,7 @@ public class ParallelLogicTest {
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled == null || paralleled.getB() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getB()));
+        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }

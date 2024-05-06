@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.google.common.base.CaseFormat;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.function.Consumer;
@@ -28,24 +26,24 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class PipeRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        pipeTinyFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeTiny(tagPrefix, material, property, provider));
-        pipeSmallFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeSmall(tagPrefix, material, property, provider));
-        pipeNormalFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeNormal(tagPrefix, material, property, provider));
-        pipeLargeFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeLarge(tagPrefix, material, property, provider));
-        pipeHugeFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeHuge(tagPrefix, material, property, provider));
+        pipeTinyFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeTiny);
+        pipeSmallFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeSmall);
+        pipeNormalFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNormal);
+        pipeLargeFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeLarge);
+        pipeHugeFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeHuge);
 
-        pipeQuadrupleFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeQuadruple(tagPrefix, material, property, provider));
-        pipeNonupleFluid.executeHandler(PropertyKey.FLUID_PIPE, (tagPrefix, material, property) -> processPipeNonuple(tagPrefix, material, property, provider));
+        pipeQuadrupleFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeQuadruple);
+        pipeNonupleFluid.executeHandler(provider, PropertyKey.FLUID_PIPE, PipeRecipeHandler::processPipeNonuple);
 
-        pipeSmallItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeSmall(tagPrefix, material, property, provider));
-        pipeNormalItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeNormal(tagPrefix, material, property, provider));
-        pipeLargeItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeLarge(tagPrefix, material, property, provider));
-        pipeHugeItem.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processPipeHuge(tagPrefix, material, property, provider));
+        pipeSmallItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeSmall);
+        pipeNormalItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeNormal);
+        pipeLargeItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeLarge);
+        pipeHugeItem.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processPipeHuge);
 
-        pipeSmallRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
-        pipeNormalRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
-        pipeLargeRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
-        pipeHugeRestrictive.executeHandler(PropertyKey.ITEM_PIPE, (tagPrefix, material, property) -> processRestrictivePipe(tagPrefix, material, property, provider));
+        pipeSmallRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
+        pipeNormalRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
+        pipeLargeRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
+        pipeHugeRestrictive.executeHandler(provider, PropertyKey.ITEM_PIPE, PipeRecipeHandler::processRestrictivePipe);
     }
 
     private static void processRestrictivePipe(TagPrefix pipePrefix, Material material, ItemPipeProperties property, Consumer<FinishedRecipe> provider) {

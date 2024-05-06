@@ -135,9 +135,10 @@ public class StandardVeinGenerator extends VeinGenerator {
     public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
+        int size = entry.clusterSize().sample(random);
         float f = random.nextFloat() * (float) Math.PI;
-        float f1 = (float) entry.clusterSize() / 8.0F;
-        int i = Mth.ceil(((float) entry.clusterSize() / 16.0F * 2.0F + 1.0F) / 2.0F);
+        float f1 = size / 8.0F;
+        int i = Mth.ceil((size / 16.0F * 2.0F + 1.0F) / 2.0F);
         double minX = origin.getX() + Math.sin(f) * f1;
         double maxX = origin.getX() - Math.sin(f) * f1;
         double minZ = origin.getZ() + Math.cos(f) * f1;
@@ -170,7 +171,7 @@ public class StandardVeinGenerator extends VeinGenerator {
         MutableInt placedAmount = new MutableInt(1);
         BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
-        int size = entry.clusterSize();
+        int size = entry.clusterSize().sample(random);
         float density = entry.density();
         double[] shape = new double[size * 4];
 
