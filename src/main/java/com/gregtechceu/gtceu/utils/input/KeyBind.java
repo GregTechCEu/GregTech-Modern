@@ -121,7 +121,7 @@ public enum KeyBind {
 
     KeyBind(String langKey, IKeyConflictContext ctx, int button) {
         if (Platform.isClient()) {
-            this.keybinding = new KeyMapping(langKey, ctx, InputConstants.Type.SCANCODE, button, GTCEu.NAME);
+            this.keybinding = new KeyMapping(langKey, ctx, InputConstants.Type.KEYSYM, button, GTCEu.NAME);
         }
     }
 
