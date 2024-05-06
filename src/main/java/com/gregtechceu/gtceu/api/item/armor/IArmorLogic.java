@@ -16,8 +16,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
 import java.util.UUID;
 
 public interface IArmorLogic {
@@ -25,7 +26,7 @@ public interface IArmorLogic {
     UUID ATTACK_DAMAGE_MODIFIER = UUID.fromString("648D7064-6A60-4F59-8ABE-C2C23A6DD7A9");
     UUID ATTACK_SPEED_MODIFIER = UUID.fromString("FA233E1C-4180-4288-B05C-BCCE9785ACA3");
 
-    default void addToolComponents(ArmorComponentItem metaValueItem) {
+    default void addToolComponents(ArmorComponentItem item) {
     }
 
     ArmorItem.Type getArmorType();
@@ -38,7 +39,7 @@ public interface IArmorLogic {
 
     }
 
-    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot) {
+    default Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return ImmutableMultimap.of();
     }
 
@@ -61,11 +62,12 @@ public interface IArmorLogic {
         return 0xFFFFFF;
     }
 
-    ResourceLocation getArmorTexture(ItemStack stack, Entity entity, ArmorItem.Type slot, String type);
-
     @Nullable
+    ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type);
+
+    @NotNull
     default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel) {
-        return null;
+        return defaultModel;
     }
 
     /**

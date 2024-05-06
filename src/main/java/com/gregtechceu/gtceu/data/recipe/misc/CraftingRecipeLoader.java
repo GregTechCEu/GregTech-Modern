@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
@@ -152,17 +153,16 @@ public class CraftingRecipeLoader {
         ///////////////////////////////////////////////////
         //                   Armors                      //
         ///////////////////////////////////////////////////
-        // TODO armor
-        //VanillaRecipeHelper.addShapedRecipe(provider, "nightvision_goggles", MetaItems.NIGHTVISION_GOGGLES.asStack(), "CSC", "RBR", "LdL", 'C', new UnificationEntry(circuit, Tier.ULV), 'S', new UnificationEntry(screw, Steel), 'R', new UnificationEntry(ring, Rubber), 'B', MetaItems.BATTERY_LV_SODIUM, 'L', new UnificationEntry(lens, Glass));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "fluid_jetpack", MetaItems.SEMIFLUID_JETPACK.asStack(), "xCw", "SUS", "RIR", 'C', new UnificationEntry(circuit, Tier.LV), 'S', MetaItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U', MetaItems.ELECTRIC_PUMP_LV.asStack(), 'R', new UnificationEntry(rotor, Lead), 'I', new UnificationEntry(pipeSmallFluid, Potin));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack", MetaItems.ELECTRIC_JETPACK.asStack(), "xCd", "TBT", "I I", 'C', new UnificationEntry(circuit, Tier.MV), 'T', MetaItems.POWER_THRUSTER.asStack(), 'B', MetaItems.BATTERY_MV_LITHIUM.asStack(), 'I', new UnificationEntry(wireGtDouble, AnnealedCopper));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack_advanced", MetaItems.ELECTRIC_JETPACK_ADVANCED.asStack(), "xJd", "TBT", "WCW", 'J', MetaItems.ELECTRIC_JETPACK.asStack(), 'T', MetaItems.POWER_THRUSTER_ADVANCED.asStack(), 'B', ENERGIUM_CRYSTAL.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Gold), 'C', new UnificationEntry(circuit, Tier.HV));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "nano_helmet", MetaItems.NANO_HELMET.asStack(), "PPP", "PNP", "xEd", 'P', MetaItems.CARBON_FIBER_PLATE.asStack(), 'N', MetaItems.NIGHTVISION_GOGGLES.asStack(), 'E', MetaItems.ENERGIUM_CRYSTAL.asStack());
-        //VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate", MetaItems.NANO_CHESTPLATE.asStack(), "PEP", "PPP", "PPP", 'P', MetaItems.CARBON_FIBER_PLATE.asStack(), 'E', MetaItems.ENERGIUM_CRYSTAL.asStack());
-        //VanillaRecipeHelper.addShapedRecipe(provider, "nano_leggings", MetaItems.NANO_LEGGINGS.asStack(), "PPP", "PEP", "PxP", 'P', MetaItems.CARBON_FIBER_PLATE.asStack(), 'E', MetaItems.ENERGIUM_CRYSTAL.asStack());
-        //VanillaRecipeHelper.addShapedRecipe(provider, "nano_boots", MetaItems.NANO_BOOTS.asStack(), "PxP", "PEP", 'P', MetaItems.CARBON_FIBER_PLATE.asStack(), 'E', MetaItems.ENERGIUM_CRYSTAL.asStack());
-        //VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced", MetaItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J', MetaItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', MetaItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N', MetaItems.NANO_CHESTPLATE.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Platinum), 'C', new UnificationEntry(circuit, Tier.IV));
-        //VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", MetaItems.GRAVITATION_ENGINE.asStack(), "ESE", "POP", "ESE", 'E', MetaItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium), 'P', new UnificationEntry(plateDouble, Iridium), 'O', MetaItems.ENERGY_LAPOTRONIC_ORB.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "nightvision_goggles", GTItems.NIGHTVISION_GOGGLES.asStack(), "CSC", "RBR", "LdL", 'C', CustomTags.ULV_CIRCUITS, 'S', new UnificationEntry(screw, Steel), 'R', new UnificationEntry(ring, Rubber), 'B', GTItems.BATTERY_LV_SODIUM, 'L', new UnificationEntry(lens, Glass));
+        VanillaRecipeHelper.addShapedRecipe(provider, "fluid_jetpack", GTItems.SEMIFLUID_JETPACK.asStack(), "xCw", "SUS", "RIR", 'C', CustomTags.LV_CIRCUITS, 'S', GTItems.FLUID_CELL_LARGE_STEEL.asStack(), 'U', GTItems.ELECTRIC_PUMP_LV.asStack(), 'R', new UnificationEntry(rotor, Lead), 'I', new UnificationEntry(pipeSmallFluid, Potin));
+        VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack", GTItems.ELECTRIC_JETPACK.asStack(), "xCd", "TBT", "I I", 'C', CustomTags.MV_CIRCUITS, 'T', GTItems.POWER_THRUSTER.asStack(), 'B', GTItems.BATTERY_MV_LITHIUM.asStack(), 'I', new UnificationEntry(wireGtDouble, AnnealedCopper));
+        VanillaRecipeHelper.addShapedRecipe(provider, "electric_jetpack_advanced", GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), "xJd", "TBT", "WCW", 'J', GTItems.ELECTRIC_JETPACK.asStack(), 'T', GTItems.POWER_THRUSTER_ADVANCED.asStack(), 'B', ENERGIUM_CRYSTAL.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Gold), 'C', CustomTags.HV_CIRCUITS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "nano_helmet", GTItems.NANO_HELMET.asStack(), "PPP", "PNP", "xEd", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'N', GTItems.NIGHTVISION_GOGGLES.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate", GTItems.NANO_CHESTPLATE.asStack(), "PEP", "PPP", "PPP", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "nano_leggings", GTItems.NANO_LEGGINGS.asStack(), "PPP", "PEP", "PxP", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "nano_boots", GTItems.NANO_BOOTS.asStack(), "PxP", "PEP", 'P', GTItems.CARBON_FIBER_PLATE.asStack(), 'E', GTItems.ENERGIUM_CRYSTAL.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced", GTItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J', GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N', GTItems.NANO_CHESTPLATE.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Platinum), 'C', CustomTags.IV_CIRCUITS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE", "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium), 'P', new UnificationEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());
 
 
         VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP", "GGG", "PGP",

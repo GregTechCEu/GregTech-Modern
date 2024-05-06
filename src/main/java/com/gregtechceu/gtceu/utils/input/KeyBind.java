@@ -66,7 +66,11 @@ public enum KeyBind {
 
     public static void onRegisterKeyBinds(RegisterKeyMappingsEvent event) {
         Arrays.stream(VALUES).forEach(value -> {
-            event.register(value.keybinding);
+            if (value.keybindingGetter == null) {
+                event.register(value.keybinding);
+            } else {
+                value.keybinding = value.keybindingGetter.get().get();
+            }
         });
     }
 
@@ -91,6 +95,8 @@ public enum KeyBind {
     }
 
     @OnlyIn(Dist.CLIENT)
+    private Supplier<Supplier<KeyMapping>> keybindingGetter;
+    @OnlyIn(Dist.CLIENT)
     private KeyMapping keybinding;
     @OnlyIn(Dist.CLIENT)
     private boolean isPressed, isKeyDown;
@@ -101,7 +107,7 @@ public enum KeyBind {
     // Double Supplier to keep client classes from loading
     KeyBind(Supplier<Supplier<KeyMapping>> keybindingGetter) {
         if (Platform.isClient()) {
-            this.keybinding = keybindingGetter.get().get();
+            this.keybindingGetter = keybindingGetter;
         }
     }
 

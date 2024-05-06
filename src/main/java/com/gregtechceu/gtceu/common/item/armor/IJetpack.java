@@ -8,6 +8,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 
 /**
  * Logic from
@@ -43,6 +44,7 @@ public interface IJetpack {
         return 0.0D;
     }
 
+    @Nullable
     default ParticleOptions getParticle() {
         return ParticleTypes.LARGE_SMOKE;
     }

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.FluidRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
@@ -19,6 +20,7 @@ import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -28,14 +30,17 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ICapabilityProvider;
+import net.minecraftforge.common.capabilities.Capability;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import net.minecraftforge.fluids.capability.IFluidHandlerItem;
+import net.minecraftforge.common.util.LazyOptional;
+import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -56,7 +61,6 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     public PowerlessJetpack() {
         if (Platform.isClient())
-            // noinspection NewExpressionSideOnly
             HUD = new ArmorUtils.ModularHUD();
     }
 
@@ -108,13 +112,13 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     @Override
-    public void addToolComponents(@NotNull ArmorComponentItem mvi) {
-        mvi.attachComponents(new Behaviour(tankCapacity));
+    public void addToolComponents(@NotNull ArmorComponentItem item) {
+        item.attachComponents(new Behaviour(tankCapacity));
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, ArmorItem.Type slot, String type) {
-        return GTCEu.id("textures/armor/liquid_fuel_jetpack.png");
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return GTCEu.id("textures/armor/liquid_fuel_jetpack_layer_1.png");
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -256,24 +260,20 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
     */
 
-    public class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation, IInteractionItem {
+    public class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation, IInteractionItem, IComponentCapability {
 
-        private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = new Predicate<FluidStack>() {
-
-            @Override
-            public boolean test(@NotNull FluidStack fluidStack) {
-                Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-                FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
-                table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
-                IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
-                    @Override
-                    public @NotNull Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> getCapabilitiesProxy() {
-                        return table;
-                    }
-                };
-                Iterator<GTRecipe> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
-                return iterator.hasNext() && iterator.next() != null;
-            }
+        private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
+            Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
+            FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+            table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
+            IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
+                @Override
+                public @NotNull Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> getCapabilitiesProxy() {
+                    return table;
+                }
+            };
+            Iterator<GTRecipe> iterator = GTRecipeTypes.COMBUSTION_GENERATOR_FUELS.searchRecipe(holder);
+            return iterator.hasNext() && iterator.next() != null;
         };
 
         public final int maxCapacity;
@@ -298,13 +298,15 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             return durabilityBarColors;
         }
 
-        /*
         @Override
-        public ICapabilityProvider createProvider(ItemStack itemStack) {
-            return new GTFluidHandlerItemStack(itemStack, maxCapacity)
-                    .setFilter(JETPACK_FUEL_FILTER);
+        public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
+            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> new FluidHandlerItemStack(itemStack, maxCapacity) {
+                @Override
+                public boolean canFillFluidType(net.minecraftforge.fluids.FluidStack fluid) {
+                    return JETPACK_FUEL_FILTER.test(FluidHelperImpl.toFluidStack(fluid));
+                }
+            }));
         }
-        */
 
         @Override
         public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {

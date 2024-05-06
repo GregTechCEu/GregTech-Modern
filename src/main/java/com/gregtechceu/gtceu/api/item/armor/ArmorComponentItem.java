@@ -4,41 +4,37 @@ import com.google.common.base.Preconditions;
 import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import lombok.Getter;
-import net.minecraft.world.InteractionResult;
+import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
+import net.minecraftforge.client.extensions.common.IClientItemExtensions;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
-public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
+public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Getter
     private IArmorLogic armorLogic = new DummyArmorLogic();
     @Getter
     protected List<IItemComponent> components;
 
-
     public ArmorComponentItem(ArmorMaterial material, ArmorItem.Type type, Properties properties) {
         super(material, type, properties);
-    }
-
-    @Override
-    public InteractionResult onItemUseFirst(ItemStack itemStack, UseOnContext context) {
-        return null;
+        components = new ArrayList<>();
     }
 
     public ArmorComponentItem setArmorLogic(IArmorLogic armorLogic) {
@@ -56,8 +52,11 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getDefaultAttributeModifiers(EquipmentSlot slot) {
-        return armorLogic.getAttributeModifiers(slot);
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        Multimap<Attribute, AttributeModifier> multimap = super.getAttributeModifiers(slot, stack);
+        IArmorLogic armorLogic = getArmorLogic();
+        multimap.putAll(armorLogic.getAttributeModifiers(slot, stack));
+        return multimap;
     }
 
     @Override
@@ -74,18 +73,7 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
 
     @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
-        return super.isValidRepairItem(stack, repairCandidate);
-    }
-
-    @Nullable
-    @Override
-    public IRenderer getRenderer(ItemStack stack) {
-        return null;
-    }
-
-    @Override
-    public ModularUI createUI(Player entityPlayer, HeldItemUIFactory.HeldItemHolder holder) {
-        return null;
+        return false;
     }
 
     @Override
@@ -96,5 +84,21 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
     @Override
     public int getEnchantmentValue() {
         return 50;
+    }
+
+    @Override
+    public void initializeClient(Consumer<IClientItemExtensions> consumer) {
+        consumer.accept(new IClientItemExtensions() {
+            @Override
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+                return armorLogic.getArmorModel(livingEntity, itemStack, equipmentSlot, original);
+            }
+        });
+    }
+
+    @Nullable
+    @Override
+    public String getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return armorLogic.getArmorTexture(stack, entity, slot, type).toString();
     }
 }

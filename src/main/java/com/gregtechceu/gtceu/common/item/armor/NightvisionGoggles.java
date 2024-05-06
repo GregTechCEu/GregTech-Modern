@@ -81,8 +81,8 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, ArmorItem.Type slot, String type) {
-        return GTCEu.id("textures/armor/nightvision_goggles.png");
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+        return GTCEu.id("textures/armor/nightvision_goggles_layer_1.png");
     }
 
     @Override
