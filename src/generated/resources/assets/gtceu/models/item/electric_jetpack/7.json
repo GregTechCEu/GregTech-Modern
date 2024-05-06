@@ -1,6 +1,6 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "gtceu:item/stainless_steel_fluid_cell/base"
+    "layer0": "gtceu:item/electric_jetpack/8"
   }
 }
