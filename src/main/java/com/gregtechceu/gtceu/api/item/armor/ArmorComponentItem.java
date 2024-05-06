@@ -67,8 +67,8 @@ public class ArmorComponentItem extends ArmorItem implements HeldItemUIFactory.I
 
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
-        if (this.getType().getSlot().getFilterFlag() + 100 == slotId) {
-            this.armorLogic.onArmorTick(level, entity, stack);
+        if (this.getType().getSlot().getFilterFlag() + 100 == slotId && entity instanceof Player player) {
+            this.armorLogic.onArmorTick(level, player, stack);
         }
     }
 

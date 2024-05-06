@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
@@ -1662,25 +1663,24 @@ public class GTItems {
 
     public static ItemEntry<Item> CLIPBOARD;
 
-    // TODO ARMOR
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem NIGHTVISION_GOGGLES;
-//
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem NANO_CHESTPLATE;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem NANO_LEGGINGS;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem NANO_BOOTS;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem NANO_HELMET;
-//
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem QUANTUM_CHESTPLATE;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem QUANTUM_LEGGINGS;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem QUANTUM_BOOTS;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem QUANTUM_HELMET;
-//
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem SEMIFLUID_JETPACK;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem ELECTRIC_JETPACK;
-//
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem ELECTRIC_JETPACK_ADVANCED;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem NANO_CHESTPLATE_ADVANCED;
-//    public static ArmorMetaItem<?>.ArmorMetaValueItem QUANTUM_CHESTPLATE_ADVANCED;
+    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES;
+
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE;
+    public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS;
+    public static ItemEntry<ArmorComponentItem> NANO_BOOTS;
+    public static ItemEntry<ArmorComponentItem> NANO_HELMET;
+
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE;
+    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS;
+    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS;
+    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET;
+
+    public static ItemEntry<ArmorComponentItem> SEMIFLUID_JETPACK;
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK;
+
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED;
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED;
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED;
 
     public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new).properties(p -> p.rarity(Rarity.UNCOMMON)).onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> POWER_THRUSTER_ADVANCED = REGISTRATE.item("advanced_power_thruster", Item::new).lang("Advanced Power Thruster").properties(p -> p.rarity(Rarity.RARE)).onRegister(compassNode(GTCompassSections.MISC)).register();

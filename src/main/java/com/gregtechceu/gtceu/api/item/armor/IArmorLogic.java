@@ -46,7 +46,7 @@ public interface IArmorLogic {
         return getArmorType().getSlot() == equipmentSlot;
     }
 
-    default void onArmorTick(Level world, Entity player, ItemStack itemStack) {
+    default void onArmorTick(Level world, Player player, ItemStack itemStack) {
     }
 
     @OnlyIn(Dist.CLIENT)

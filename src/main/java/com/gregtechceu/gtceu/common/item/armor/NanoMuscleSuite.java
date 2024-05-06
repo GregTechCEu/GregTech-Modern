@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.item.armor;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
@@ -43,58 +44,55 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     @Override
-    public void onArmorTick(Level world, Entity player, ItemStack itemStack) {
+    public void onArmorTick(Level world, Player player, ItemStack itemStack) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
         if (item == null) {
             return;
         }
         CompoundTag nbtData = itemStack.getOrCreateTag();
         byte toggleTimer = nbtData.getByte("toggleTimer");
-        if (player instanceof Player player1) {
-            if (type == ArmorItem.Type.HELMET) {
-                boolean nightvision = nbtData.getBoolean("Nightvision");
-                if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player1)) {
-                    toggleTimer = 5;
-                    if (!nightvision && item.getCharge() >= 4) {
-                        nightvision = true;
-                        if (!world.isClientSide)
-                            player1.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.enabled"), true);
-                    } else if (nightvision) {
-                        nightvision = false;
-                        disableNightVision(world, player1, true);
-                    } else {
-                        if (!world.isClientSide) {
-                            player1.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
-                        }
-                    }
-
+        if (type == ArmorItem.Type.HELMET) {
+            boolean nightvision = nbtData.getBoolean("Nightvision");
+            if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
+                toggleTimer = 5;
+                if (!nightvision && item.getCharge() >= 4) {
+                    nightvision = true;
+                    if (!world.isClientSide)
+                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.enabled"), true);
+                } else if (nightvision) {
+                    nightvision = false;
+                    disableNightVision(world, player, true);
+                } else {
                     if (!world.isClientSide) {
-                        nbtData.putBoolean("Nightvision", nightvision);
+                        player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.error"), true);
                     }
                 }
 
-                if (nightvision && !world.isClientSide && item.getCharge() >= 4) {
-                    player1.removeEffect(MobEffects.BLINDNESS);
-                    player1.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999, 0, true, false));
-                    item.discharge((4), this.tier, true, false, false);
+                if (!world.isClientSide) {
+                    nbtData.putBoolean("Nightvision", nightvision);
                 }
-
-                if (!world.isClientSide && toggleTimer > 0) {
-                    --toggleTimer;
-                    nbtData.putByte("toggleTimer", toggleTimer);
-                }
-            } else if (type == ArmorItem.Type.BOOTS) {
-                updateStepHeight(player1);
             }
-            player1.inventoryMenu.broadcastChanges();
+
+            if (nightvision && !world.isClientSide && item.getCharge() >= 4) {
+                player.removeEffect(MobEffects.BLINDNESS);
+                player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 999999, 0, true, false));
+                item.discharge((4), this.tier, true, false, false);
+            }
+
+            if (!world.isClientSide && toggleTimer > 0) {
+                --toggleTimer;
+                nbtData.putByte("toggleTimer", toggleTimer);
+            }
+        } else if (type == ArmorItem.Type.BOOTS) {
+            updateStepHeight(player);
         }
+        player.inventoryMenu.broadcastChanges();
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
-            if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
+            if (sendMsg) player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
         }
     }
 
@@ -131,7 +129,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, ArmorItem.Type slot, String type) {
         ItemStack currentChest = Minecraft.getInstance().player.getInventory()
                 .getArmor(ArmorItem.Type.CHESTPLATE.getSlot().getIndex());
-        ItemStack advancedChest = GTItems.NANO_CHESTPLATE_ADVANCED.getStackForm();
+        ItemStack advancedChest = GTItems.NANO_CHESTPLATE_ADVANCED.asStack();
         String armorTexture = "nano_muscule_suite";
         if (advancedChest.is(currentChest.getItem())) armorTexture = "advanced_nano_muscle_suite";
         return slot != ArmorItem.Type.LEGGINGS ?
