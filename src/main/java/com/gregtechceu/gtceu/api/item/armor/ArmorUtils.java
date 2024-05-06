@@ -258,7 +258,7 @@ public class ArmorUtils {
                     posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
                 }
                 default ->
-                        throw new IllegalArgumentException("Armor Hud config hudLocation is improperly configured.");
+                        throw new IllegalArgumentException("Armor Hud config hudLocation is improperly configured. Allowed values: [1,2,3,4]");
             }
             return Pair.of(posX, posY);
         }

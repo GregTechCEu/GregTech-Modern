@@ -1726,6 +1726,7 @@ public class GTItems {
     public static ItemEntry<ArmorComponentItem> SEMIFLUID_JETPACK = REGISTRATE.item("liquid_fuel_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
             .setArmorLogic(new PowerlessJetpack()))
         .lang("Liquid Fuel Jetpack")
+        .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
         .register();
     public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE.item("electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
             .setArmorLogic(new Jetpack(30,

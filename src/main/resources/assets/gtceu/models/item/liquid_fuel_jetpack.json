@@ -1,0 +1,9 @@
+{
+  "loader": "forge:fluid_container",
+  "parent": "forge:item/default",
+  "textures": {
+    "base": "gtceu:items/liquid_fuel_jetpack/base",
+    "fluid": "gtceu:items/liquid_fuel_jetpack/overlay",
+    "cover": "gtceu:items/liquid_fuel_jetpack/base"
+  }
+}
