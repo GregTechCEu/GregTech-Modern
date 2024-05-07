@@ -2,14 +2,9 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.*;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import lombok.Getter;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.NonNullList;
@@ -17,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -25,7 +21,6 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.context.UseOnContext;
-import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
@@ -101,6 +96,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Override
     public int getEnchantmentValue() {
         return 50;
+    }
+
+    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage, EquipmentSlot slot) {
+        IArmorLogic armorLogic = getArmorLogic();
+        armorLogic.damageArmor(entity, stack, source, damage, slot);
     }
 
     @Override

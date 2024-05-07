@@ -28,6 +28,7 @@
     "ItemValueAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
+    "LivingEntityMixin",
     "LootDataManagerMixin",
     "LootPoolAccessor",
     "OreConfigurationMixin",
