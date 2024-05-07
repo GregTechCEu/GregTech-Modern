@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.FluidRecipeHandler;
+import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
@@ -25,9 +26,6 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
@@ -257,6 +255,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
             handler.getStorages()[0].setFluid(fluidStack);
             table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
+            table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
             IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
                 @Override
                 public @NotNull Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> getCapabilitiesProxy() {
