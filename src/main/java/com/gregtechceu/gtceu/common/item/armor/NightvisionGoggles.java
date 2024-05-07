@@ -69,7 +69,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
 
             nbtData.putByte("toggleTimer", toggleTimer);
         }
-        player.inventoryMenu.broadcastChanges();;
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
