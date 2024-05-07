@@ -239,20 +239,6 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         return FluidStack.empty();
     }
 
-    public InteractionResultHolder<ItemStack> onRightClick(Level world, Player player, InteractionHand hand) {
-        ItemStack armor = player.getItemInHand(hand);
-        if (armor.getItem() instanceof ArmorComponentItem && player.getInventory().armor
-            .get(getArmorType().getSlot().getIndex()).isEmpty() && !player.isShiftKeyDown()) {
-            player.getInventory().armor.set(getArmorType().getSlot().getIndex(),
-                armor.copy());
-            player.setItemInHand(hand, ItemStack.EMPTY);
-            player.playSound(SoundEvents.ARMOR_EQUIP_GENERIC, 1.0F, 1.0F);
-            return InteractionResultHolder.success(armor);
-        }
-
-        return InteractionResultHolder.pass(armor);
-    }
-
     /*
     @Override
     public ISpecialArmor.ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor,
@@ -264,7 +250,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
     */
 
-    public class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation, IInteractionItem, IComponentCapability {
+    public static class Behaviour implements IDurabilityBar, IItemComponent, ISubItemHandler, IAddInformation, IInteractionItem, IComponentCapability {
 
         private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
             Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
@@ -322,11 +308,6 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                     status = Component.translatable("metaarmor.hud.status.enabled");
             }
             tooltipComponents.add(Component.translatable("metaarmor.hud.hover_mode", status));
-        }
-
-        @Override
-        public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
-            return onRightClick(level, player, usedHand);
         }
 
         @Override
