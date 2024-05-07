@@ -34,6 +34,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -48,7 +49,6 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import org.apache.logging.log4j.util.TriConsumer;
 import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.Nullable;
@@ -92,6 +92,14 @@ public class TagPrefix {
     public static final TagPrefix oreAndesite = oreTagPrefix("andesite", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Andesite %s Ore")
             .registerOre(Blocks.ANDESITE::defaultBlockState, () -> GTMaterials.Andesite, BlockBehaviour.Properties.of().mapColor(MapColor.DIRT).requiresCorrectToolForDrops().strength(3.0F, 3.0F), new ResourceLocation("block/andesite"));
+
+    public static final TagPrefix oreRedGranite = oreTagPrefix("red_granite", BlockTags.MINEABLE_WITH_PICKAXE)
+        .langValue("Red Granite %s Ore")
+        .registerOre(() -> GTBlocks.RED_GRANITE.getDefaultState(), () -> GTMaterials.GraniteRed, BlockBehaviour.Properties.of().mapColor(MapColor.TERRACOTTA_RED).requiresCorrectToolForDrops().strength(3.0F, 3.0F), GTCEu.id("block/red_granite"));
+
+    public static final TagPrefix oreMarble = oreTagPrefix("marble", BlockTags.MINEABLE_WITH_PICKAXE)
+        .langValue("Red Granite %s Ore")
+        .registerOre(() -> GTBlocks.MARBLE.getDefaultState(), () -> GTMaterials.Marble, BlockBehaviour.Properties.of().mapColor(MapColor.QUARTZ).requiresCorrectToolForDrops().strength(3.0F, 3.0F), GTCEu.id("block/marble"));
 
     public static final TagPrefix oreDeepslate = oreTagPrefix("deepslate", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Deepslate %s Ore")
@@ -721,7 +729,7 @@ public class TagPrefix {
     @Setter
     private BiConsumer<Material, List<Component>> tooltip;
 
-    private final Map<Material, Supplier<ItemLike>[]> ignoredMaterials = new HashMap<>();
+    private final Map<Material, Supplier<? extends ItemLike>[]> ignoredMaterials = new HashMap<>();
     private final Object2FloatMap<Material> materialAmounts = new Object2FloatOpenHashMap<>();
 
     @Getter
@@ -889,10 +897,15 @@ public class TagPrefix {
         return generateBlock && !isIgnored(material) && (generationCondition == null || generationCondition.test(material)) || hasItemTable() && this.itemTable.get() != null && getItemFromTable(material) != null;
     }
 
-    public <T extends IMaterialProperty<T>> void executeHandler(PropertyKey<T> propertyKey, TriConsumer<TagPrefix, Material, T> handler) {
+    @FunctionalInterface
+    public interface MaterialRecipeHandler<T extends IMaterialProperty<T>> {
+        void accept(TagPrefix prefix, Material material, T property, Consumer<FinishedRecipe> provider);
+    }
+
+    public <T extends IMaterialProperty<T>> void executeHandler(Consumer<FinishedRecipe> provider, PropertyKey<T> propertyKey, MaterialRecipeHandler<T> handler) {
         for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
             if (material.hasProperty(propertyKey) && !material.hasFlag(MaterialFlags.NO_UNIFICATION) && !ChemicalHelper.get(this, material).isEmpty()) {
-                handler.accept(this, material, material.getProperty(propertyKey));
+                handler.accept(this, material, material.getProperty(propertyKey), provider);
             }
         }
     }
@@ -927,7 +940,7 @@ public class TagPrefix {
     }
 
     @SafeVarargs
-    public final void setIgnored(Material material, Supplier<ItemLike>... items) {
+    public final void setIgnored(Material material, Supplier<? extends ItemLike>... items) {
         ignoredMaterials.put(material, items);
         if (items.length > 0) {
             ChemicalHelper.registerUnificationItems(this, material, items);
@@ -958,7 +971,7 @@ public class TagPrefix {
         ignoredMaterials.remove(material);
     }
 
-    public Map<Material, Supplier<ItemLike>[]> getIgnored() {
+    public Map<Material, Supplier<? extends ItemLike>[]> getIgnored() {
         return new HashMap<>(ignoredMaterials);
     }
 

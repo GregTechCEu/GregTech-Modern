@@ -44,9 +44,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Persisted @DescSynced
     @Getter
-    private boolean locked = false;
-    @Persisted @DescSynced
-    @Getter
     protected FluidStorage lockedFluid = new FluidStorage(FluidHelper.getBucket());
 
     public NotifiableFluidTank(MetaMachine machine, int slots, long capacity, IO io, IO capabilityIO) {
@@ -156,28 +153,45 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
 
     @Override
     public boolean test(FluidIngredient ingredient) {
-        return !this.locked || ingredient.test(this.lockedFluid.getFluid());
+        return !this.isLocked() || ingredient.test(this.lockedFluid.getFluid());
     }
 
     @Override
     public int getPriority() {
-        return !locked || lockedFluid.getFluid().isEmpty() ? super.getPriority() : Integer.MAX_VALUE - getTanks();
+        return !isLocked() || lockedFluid.getFluid().isEmpty() ? super.getPriority() : Integer.MAX_VALUE - getTanks();
+    }
+
+    public boolean isLocked() {
+        return !lockedFluid.getFluid().isEmpty();
     }
 
     public void setLocked(boolean locked) {
-        if (this.locked == locked) return;
-        this.locked = locked;
+        if (this.isLocked() == locked) return;
         FluidStack fluidStack = getStorages()[0].getFluid();
         if (locked && !fluidStack.isEmpty()) {
             this.lockedFluid.setFluid(fluidStack.copy());
             this.lockedFluid.getFluid().setAmount(1);
             onContentsChanged();
             setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
-            return;
+        } else {
+            this.lockedFluid.setFluid(FluidStack.empty());
+            setFilter(stack -> true);
+            onContentsChanged();
         }
-        this.lockedFluid.setFluid(FluidStack.empty());
-        setFilter(stack -> true);
-        onContentsChanged();
+    }
+
+    public void setLocked(boolean locked, FluidStack fluidStack) {
+        if (this.isLocked() == locked) return;
+        if (locked && !fluidStack.isEmpty()) {
+            this.lockedFluid.setFluid(fluidStack.copy());
+            this.lockedFluid.getFluid().setAmount(1);
+            onContentsChanged();
+            setFilter(stack -> stack.isFluidEqual(this.lockedFluid.getFluid()));
+        } else {
+            this.lockedFluid.setFluid(FluidStack.empty());
+            setFilter(stack -> true);
+            onContentsChanged();
+        }
     }
 
     public NotifiableFluidTank setFilter(Predicate<FluidStack> filter) {

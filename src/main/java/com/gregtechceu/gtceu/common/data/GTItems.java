@@ -430,8 +430,8 @@ public class GTItems {
             .color(() -> GTItems::cellColor)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack) == null ? 0f : 1f))
-            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 128, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 6)))).register();
+            .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 128, GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE.item("tungstensteel_fluid_cell", ComponentItem::create)
             .lang("Tungstensteel Cell")
             .model(GTModels::cellModel)
@@ -889,7 +889,11 @@ public class GTItems {
             })))
             .register() : null;
 
-    public static ItemEntry<ComponentItem> DYNAMITE; // TODO
+    public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::create)
+        .lang("Dynamite")
+        .onRegister(attach(new DynamiteBehaviour()))
+        .tab(TOOL.getKey())
+        .register();
 
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("lv_conveyor_module", ComponentItem::create)
             .lang("LV Conveyor Module")
@@ -1612,8 +1616,9 @@ public class GTItems {
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
-        for (int i = 0; i < DyeColor.values().length; i++) {
-            var dyeColor = DyeColor.values()[i];
+        DyeColor[] colors = DyeColor.values();
+        for (int i = 0; i < colors.length; i++) {
+            var dyeColor = colors[i];
             DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
                     .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
                     .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
@@ -1749,6 +1754,10 @@ public class GTItems {
 
     public static <T extends ComponentItem> NonNullConsumer<T> burnTime(int burnTime) {
         return item -> item.burnTime(burnTime);
+    }
+
+    public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent components) {
+        return item -> item.attachComponents(components);
     }
 
     public static <T extends ComponentItem> NonNullConsumer<T> attach(IItemComponent... components) {

@@ -302,6 +302,12 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         return false;
     }
 
+    @Override
+    public void setChanged() {
+        if (getLevel() != null) {
+            getLevel().blockEntityChanged(getBlockPos());
+        }
+    }
 
     //////////////////////////////////////
     //*******     Interaction    *******//

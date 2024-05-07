@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.common.block.StoneBlockType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -15,13 +17,16 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.tterrag.registrate.util.entry.ItemEntry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
+import java.util.List;
 import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -217,48 +222,45 @@ public class MachineRecipeLoader {
     }
 
     private static void registerStoneBricksRecipes(Consumer<FinishedRecipe> provider) {
-        // TODO Stone type decorative blocks
-        /*
         // normal variant -> cobble variant
-        List<ItemStack> cobbles = Arrays.stream(BlockStoneCobble.BlockType.values()).map(MetaBlocks.STONE_COBBLE::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> mossCobbles = Arrays.stream(BlockStoneCobbleMossy.BlockType.values()).map(MetaBlocks.STONE_COBBLE_MOSSY::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> smooths = Arrays.stream(BlockStoneSmooth.BlockType.values()).map(MetaBlocks.STONE_SMOOTH::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> polisheds = Arrays.stream(BlockStonePolished.BlockType.values()).map(MetaBlocks.STONE_POLISHED::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> bricks = Arrays.stream(BlockStoneBricks.BlockType.values()).map(MetaBlocks.STONE_BRICKS::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> crackedBricks = Arrays.stream(BlockStoneBricksCracked.BlockType.values()).map(MetaBlocks.STONE_BRICKS_CRACKED::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> mossBricks = Arrays.stream(BlockStoneBricksMossy.BlockType.values()).map(MetaBlocks.STONE_BRICKS_MOSSY::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> chiseledBricks = Arrays.stream(BlockStoneChiseled.BlockType.values()).map(MetaBlocks.STONE_CHISELED::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> tiledBricks = Arrays.stream(BlockStoneTiled.BlockType.values()).map(MetaBlocks.STONE_TILED::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> smallTiledBricks = Arrays.stream(BlockStoneTiledSmall.BlockType.values()).map(MetaBlocks.STONE_TILED_SMALL::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> windmillA = Arrays.stream(BlockStoneWindmillA.BlockType.values()).map(MetaBlocks.STONE_WINDMILL_A::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> windmillB = Arrays.stream(BlockStoneWindmillB.BlockType.values()).map(MetaBlocks.STONE_WINDMILL_B::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> squareBricks = Arrays.stream(BlockStoneBricksSquare.BlockType.values()).map(MetaBlocks.STONE_BRICKS_SQUARE::getItemVariant).collect(Collectors.toList());
-        List<ItemStack> smallBricks = Arrays.stream(BlockStoneBricksSmall.BlockType.values()).map(MetaBlocks.STONE_BRICKS_SMALL::getItemVariant).collect(Collectors.toList());
+        List<ItemStack> cobbles = GTBlocks.STONE_BLOCKS.row(StoneBlockType.COBBLE).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> mossCobbles = GTBlocks.STONE_BLOCKS.row(StoneBlockType.COBBLE_MOSSY).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> stones = GTBlocks.STONE_BLOCKS.row(StoneBlockType.STONE).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> polisheds = GTBlocks.STONE_BLOCKS.row(StoneBlockType.POLISHED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> bricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> crackedBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_CRACKED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> mossBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_MOSSY).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> chiseledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.CHISELED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> tiledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.TILED).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> smallTiledBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.TILED_SMALL).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> windmillA = GTBlocks.STONE_BLOCKS.row(StoneBlockType.WINDMILL_A).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> windmillB = GTBlocks.STONE_BLOCKS.row(StoneBlockType.WINDMILL_B).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> squareBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SQUARE).values().stream().map(ItemStack::new).toList();
+        List<ItemStack> smallBricks = GTBlocks.STONE_BLOCKS.row(StoneBlockType.BRICKS_SMALL).values().stream().map(ItemStack::new).toList();
 
+        registerSmoothRecipe(provider, cobbles, stones);
+        registerCobbleRecipe(provider, stones, cobbles);
+        registerMossRecipe(provider, cobbles, mossCobbles);
+        registerSmoothRecipe(provider, stones, polisheds);
+        registerBricksRecipe(provider, polisheds, bricks, MarkerMaterials.Color.LightBlue);
+        registerCobbleRecipe(provider, bricks, crackedBricks);
+        registerMossRecipe(provider, bricks, mossBricks);
+        registerBricksRecipe(provider, polisheds, chiseledBricks, MarkerMaterials.Color.White);
+        registerBricksRecipe(provider, polisheds, tiledBricks, MarkerMaterials.Color.Red);
+        registerBricksRecipe(provider, tiledBricks, smallTiledBricks, MarkerMaterials.Color.Red);
+        registerBricksRecipe(provider, polisheds, windmillA, MarkerMaterials.Color.Blue);
+        registerBricksRecipe(provider, polisheds, windmillB, MarkerMaterials.Color.Yellow);
+        registerBricksRecipe(provider, polisheds, squareBricks, MarkerMaterials.Color.Green);
+        registerBricksRecipe(provider, polisheds, smallBricks, MarkerMaterials.Color.Pink);
 
-        registerSmoothRecipe(cobbles, smooths);
-        registerCobbleRecipe(smooths, cobbles);
-        registerMossRecipe(cobbles, mossCobbles);
-        registerSmoothRecipe(smooths, polisheds);
-        registerBricksRecipe(polisheds, bricks, MarkerColor.LightBlue);
-        registerCobbleRecipe(bricks, crackedBricks);
-        registerMossRecipe(bricks, mossBricks);
-        registerBricksRecipe(polisheds, chiseledBricks, MarkerColor.White);
-        registerBricksRecipe(polisheds, tiledBricks, MarkerColor.Red);
-        registerBricksRecipe(tiledBricks, smallTiledBricks, MarkerColor.Red);
-        registerBricksRecipe(polisheds, windmillA, MarkerColor.Blue);
-        registerBricksRecipe(polisheds, windmillB, MarkerColor.Yellow);
-        registerBricksRecipe(polisheds, squareBricks, MarkerColor.Green);
-        registerBricksRecipe(polisheds, smallBricks, MarkerColor.Pink);
-
-        for (int i = 0; i < smooths.size(); i++) {
-            EXTRUDER_RECIPES.recipeBuilder()
-                    .inputItems(smooths.get(i))
+        for (int i = 0; i < stones.size(); i++) {
+            ResourceLocation bricksId = BuiltInRegistries.ITEM.getKey(bricks.get(i).getItem());
+            EXTRUDER_RECIPES.recipeBuilder("extrude_" + bricksId.getPath())
+                    .inputItems(stones.get(i))
                     .notConsumable(SHAPE_EXTRUDER_INGOT)
                     .outputItems(bricks.get(i))
                     .duration(24).EUt(8).save(provider);
         }
-         */
     }
 
     private static void registerMixingCrystallizationRecipes(Consumer<FinishedRecipe> provider) {
@@ -589,8 +591,8 @@ public class MachineRecipeLoader {
         ASSEMBLER_RECIPES.recipeBuilder("hull_uv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UV.asStack()).inputItems(cableGtSingle, YttriumBariumCuprate, 2).inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[8]).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("hull_uhv").duration(50).EUt(16).inputItems(GTBlocks.MACHINE_CASING_UHV.asStack()).inputItems(cableGtSingle, Europium, 2).inputFluids(Polybenzimidazole.getFluid(L * 2)).outputItems(GTMachines.HULL[9]).save(provider);
 
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.TAG_WOODEN_CHESTS).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
-        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.TAG_WOODEN_CHESTS).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS).inputItems(plate, Iron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("hopper_wrought_iron").EUt(2).inputItems(CustomTags.WOODEN_CHESTS).inputItems(plate, WroughtIron, 5).outputItems(new ItemStack(Blocks.HOPPER)).duration(800).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("wooden_crate").EUt(16).inputItems(ItemTags.PLANKS, 4).inputItems(screw, Iron, 4).outputItems(WOODEN_CRATE).duration(100).circuitMeta(5).save(provider);
         ASSEMBLER_RECIPES.recipeBuilder("bronze_crate").EUt(16).inputItems(rodLong, Bronze, 4).inputItems(plate, Bronze, 4).outputItems(BRONZE_CRATE).duration(200).circuitMeta(1).save(provider);
@@ -931,49 +933,50 @@ public class MachineRecipeLoader {
         FLUID_HEATER_RECIPES.recipeBuilder("heat_distilled_to_steam").duration(30).EUt(VA[LV]).inputFluids(DistilledWater.getFluid(6)).circuitMeta(1).outputFluids(Steam.getFluid(960)).save(provider);
     }
 
-    // TODO stone types
-    /*
-    private static void registerSmoothRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> roughStack, List<ItemStack> smoothStack) {
+    private static void registerSmoothRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> roughStack, List<ItemStack> stoneStack) {
         for (int i = 0; i < roughStack.size(); i++) {
-            ModHandler.addSmeltingRecipe(roughStack.get(i), smoothStack.get(i), 0.1f);
+            ResourceLocation stoneId = BuiltInRegistries.ITEM.getKey(stoneStack.get(i).getItem());
+            VanillaRecipeHelper.addSmeltingRecipe(provider, "smelt_" + stoneId.getPath(), roughStack.get(i), stoneStack.get(i), 0.1f);
 
-            EXTRUDER_RECIPES.recipeBuilder()
-                    .inputItems(roughStack.get(i))
-                    .notConsumable(SHAPE_EXTRUDER_BLOCK)
-                    .outputItems(smoothStack.get(i))
-                    .duration(24).EUt(8).save(provider);
+            EXTRUDER_RECIPES.recipeBuilder("extrude_" + stoneId.getPath())
+                .inputItems(roughStack.get(i))
+                .notConsumable(SHAPE_EXTRUDER_BLOCK.asStack())
+                .outputItems(stoneStack.get(i))
+                .duration(24).EUt(8).save(provider);
         }
     }
 
-    private static void registerCobbleRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> smoothStack, List<ItemStack> cobbleStack) {
-        for (int i = 0; i < smoothStack.size(); i++) {
-            FORGE_HAMMER_RECIPES.recipeBuilder()
-                    .inputItems(smoothStack.get(i))
-                    .outputItems(cobbleStack.get(i))
-                    .duration(12).EUt(4).save(provider);
+    private static void registerCobbleRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> stoneStack, List<ItemStack> cobbleStack) {
+        for (int i = 0; i < stoneStack.size(); i++) {
+            ResourceLocation cobbleId = BuiltInRegistries.ITEM.getKey(cobbleStack.get(i).getItem());
+            FORGE_HAMMER_RECIPES.recipeBuilder("hammer_" + cobbleId.getPath())
+                .inputItems(stoneStack.get(i))
+                .outputItems(cobbleStack.get(i))
+                .duration(12).EUt(4).save(provider);
         }
     }
 
     private static void registerBricksRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> polishedStack, List<ItemStack> brickStack, MarkerMaterial color) {
         for (int i = 0; i < polishedStack.size(); i++) {
-            LASER_ENGRAVER_RECIPES.recipeBuilder()
-                    .inputItems(polishedStack.get(i))
-                    .notConsumable(craftingLens, color)
-                    .outputItems(brickStack.get(i))
-                    .duration(50).EUt(16).save(provider);
+            ResourceLocation brickId = BuiltInRegistries.ITEM.getKey(brickStack.get(i).getItem());
+            LASER_ENGRAVER_RECIPES.recipeBuilder("engrave_" + brickId.getPath())
+                .inputItems(polishedStack.get(i))
+                .notConsumable(lens, color)
+                .outputItems(brickStack.get(i))
+                .duration(50).EUt(16).save(provider);
         }
     }
 
     private static void registerMossRecipe(Consumer<FinishedRecipe> provider, List<ItemStack> regularStack, List<ItemStack> mossStack) {
         for (int i = 0; i < regularStack.size(); i++) {
-            CHEMICAL_BATH_RECIPES.recipeBuilder()
-                    .inputItems(regularStack.get(i))
-                    .inputFluids(Water.getFluid(100))
-                    .outputItems(mossStack.get(i))
-                    .duration(50).EUt(16).save(provider);
+            ResourceLocation mossId = BuiltInRegistries.ITEM.getKey(mossStack.get(i).getItem());
+            CHEMICAL_BATH_RECIPES.recipeBuilder("bath_" + mossId.getPath())
+                .inputItems(regularStack.get(i))
+                .inputFluids(Water.getFluid(100))
+                .outputItems(mossStack.get(i))
+                .duration(50).EUt(16).save(provider);
         }
     }
-     */
 
     private static void registerNBTRemoval(Consumer<FinishedRecipe> provider) {
 

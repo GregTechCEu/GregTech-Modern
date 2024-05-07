@@ -196,30 +196,28 @@ public class WoodMachineRecipes {
                 new WoodTypeEntry.Builder(GTCEu.MOD_ID, "rubber")
                     .planks(GTBlocks.RUBBER_PLANK.asItem(), null)
                     .log(GTBlocks.RUBBER_LOG.asItem()).addCharcoalRecipe()
-                    // TODO rubber wood set
-                    //.strippedLog(GTBlocks.STRIPPED_RUBBER_LOG.asItem())
-                    //.wood(GTBlocks.RUBBER_WOOD.asItem())
-                    //.strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
-                    //.door(GTBlocks.RUBBER_DOOR.asItem(), null)
-                    //.trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
-                    //.slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
-                    //.fence(GTBlocks.RUBBER_FENCE.asItem(), null)
-                    //.fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
-                    //.stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
-                    //.boat(GTItems.RUBBER_STAIRS.asItem(), null)
+                    .strippedLog(GTBlocks.STRIPPED_RUBBER_LOG.asItem())
+                    .wood(GTBlocks.RUBBER_WOOD.asItem())
+                    .strippedWood(GTBlocks.STRIPPED_RUBBER_WOOD.asItem())
+                    .door(GTBlocks.RUBBER_DOOR.asItem(), null)
+                    .trapdoor(GTBlocks.RUBBER_TRAPDOOR.asItem(), null)
+                    .slab(GTBlocks.RUBBER_SLAB.asItem(), null).addSlabRecipe()
+                    .fence(GTBlocks.RUBBER_FENCE.asItem(), null)
+                    .fenceGate(GTBlocks.RUBBER_FENCE_GATE.asItem(), null)
+                    .stairs(GTBlocks.RUBBER_STAIRS.asItem(), null).addStairsRecipe()
+                    //.boat(GTItems.RUBBER_BOAT.asItem(), null) // TODO someone forgot boat textures.
                     .registerAllTags()
                     .registerAllUnificationInfo()
                     .build(),
                 new WoodTypeEntry.Builder(GTCEu.MOD_ID, "treated")
                     .planks(GTBlocks.TREATED_WOOD_PLANK.asItem(), null)
-                    // TODO treated wood set
-                    //.door(GTBlocks.TREATED_WOOD_DOOR.asItem(), null)
-                    //.trapdoor(GTBlocks.TREATED_WOOD_TRAPDOOR.asItem(), null)
-                    //.slab(GTBlocks.TREATED_WOOD_SLAB.asItem(), null).addSlabRecipe()
-                    //.fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
-                    //.fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
-                    //.stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
-                    //.boat(GTBlocks.TREATED_WOOD_BOAT.asItem(), null)
+                    .door(GTBlocks.TREATED_WOOD_DOOR.asItem(), null)
+                    .trapdoor(GTBlocks.TREATED_WOOD_TRAPDOOR.asItem(), null)
+                    .slab(GTBlocks.TREATED_WOOD_SLAB.asItem(), null).addSlabRecipe()
+                    .fence(GTBlocks.TREATED_WOOD_FENCE.asItem(), null)
+                    .fenceGate(GTBlocks.TREATED_WOOD_FENCE_GATE.asItem(), null)
+                    .stairs(GTBlocks.TREATED_WOOD_STAIRS.asItem(), null).addStairsRecipe()
+                    //.boat(GTItems.TREATED_WOOD_BOAT.asItem(), null) // TODO someone forgot boat textures.
                     .material(TreatedWood)
                     .registerAllTags()
                     .registerAllUnificationInfo()
@@ -548,7 +546,7 @@ public class WoodMachineRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_planks",
             GTBlocks.TREATED_WOOD_PLANK.asStack(8),
             "PPP", "PBP", "PPP",
-            'P', "plankWood",
+            'P', ItemTags.PLANKS,
             'B', FluidUtil.getFilledBucket(FluidHelperImpl.toFluidStack(Creosote.getFluid(1000))));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_stick",
@@ -560,6 +558,11 @@ public class WoodMachineRecipes {
                 "s", "L", "L",
                 'L', GTBlocks.TREATED_WOOD_PLANK.asItem());
         }
+
+        VanillaRecipeHelper.addShapelessRecipe(provider, "rubber_button", GTBlocks.RUBBER_BUTTON.asStack(), GTBlocks.RUBBER_PLANK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "treated_wood_button", GTBlocks.TREATED_WOOD_BUTTON.asStack(), GTBlocks.TREATED_WOOD_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_pressure_plate", GTBlocks.RUBBER_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.RUBBER_PLANK.asStack());
+        VanillaRecipeHelper.addShapedRecipe(provider, "treated_wood_plate", GTBlocks.TREATED_WOOD_PRESSURE_PLATE.asStack(), "aa", 'a', GTBlocks.TREATED_WOOD_PLANK.asStack());
     }
 
     public static void hardWoodRecipes(Consumer<ResourceLocation> registry) {
