@@ -153,7 +153,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 player.extinguishFire();
         } else if (type == ArmorItem.Type.LEGGINGS) {
             if (item.canUse(energyPerUse / 100) && (player.onGround() || player.isInWater()) &&
-                    KeyBind.VANILLA_FORWARD.isKeyDown(player) && (player.isSprinting())) {
+                    KeyBind.VANILLA_FORWARD.isKeyDown(player) && player.isSprinting()) {
                 byte consumerTicks = data.getByte("consumerTicks");
                 ++consumerTicks;
                 if (consumerTicks >= 10) {
@@ -171,9 +171,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     }
                 }
                 player.moveRelative(speed, new Vec3(0, 0, 1));
-            } else
-                if (item.canUse(energyPerUse / 100) && player.isInWater() && KeyBind.VANILLA_SNEAK.isKeyDown(player) ||
-                        KeyBind.VANILLA_JUMP.isKeyDown(player)) {
+            } else if (item.canUse(energyPerUse / 100) && player.isInWater() &&
+                (KeyBind.VANILLA_SNEAK.isKeyDown(player) || KeyBind.VANILLA_JUMP.isKeyDown(player))) {
                             byte consumerTicks = data.getByte("consumerTicks");
                             ++consumerTicks;
                             if (consumerTicks >= 10) {
@@ -187,7 +186,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                                 player.push(0.0, -acceleration, 0.0);
                             if (KeyBind.VANILLA_JUMP.isKeyDown(player))
                                 player.push(0.0, acceleration, 0.0);
-                        }
+            }
         } else if (type == ArmorItem.Type.BOOTS) {
             if (!world.isClientSide) {
                 boolean onGround = !data.contains("onGround") || data.getBoolean("onGround");
@@ -222,7 +221,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         }
 
         if (ret) {
-            player.inventoryMenu.broadcastChanges();
+            player.inventoryMenu.sendAllDataToRemote();
         }
     }
 
