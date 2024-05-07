@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
@@ -10,6 +12,9 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
@@ -22,6 +27,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
+import java.util.UUID;
 
 public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
@@ -52,6 +58,19 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
+    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        if (slot != this.type.getSlot()) return ImmutableMultimap.of();
+        IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
+        UUID uuid = IArmorLogic.ARMOR_MODIFIER_UUID_PER_TYPE.get(type);
+        if (item == null) return ImmutableMultimap.of();
+        if (item.getCharge() >= energyPerUse) {
+            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", 20.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
+        } else {
+            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", 4.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
+        }
+    }
+
+    @Override
     public void addToolComponents(ArmorComponentItem mvi) {
         mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
             @Override
@@ -67,9 +86,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     public void addInfo(ItemStack itemStack, List<Component> lines) {
-        int armor = (int) Math.round(20.0F * this.getAbsorption() * this.getDamageAbsorption());
-        if (armor > 0)
-            lines.add(Component.translatable("attribute.modifier.plus.0", armor, Component.translatable("attribute.name.generic.armor")));
+
     }
 
     public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
