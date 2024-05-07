@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -99,15 +99,11 @@ public class GTCreativeModeTabs {
                 Item item = entry.get().asItem();
                 if (item == Items.AIR)
                     continue;
-                if (item instanceof ComponentItem componentItem) {
+                if (item instanceof IComponentItem componentItem) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
-                } else if (item instanceof ArmorComponentItem armorComponentItem) {
-                    NonNullList<ItemStack> list = NonNullList.create();
-                    armorComponentItem.fillItemCategory(tab.get(), list);
-                    list.forEach(output::accept);
-                } else if (item instanceof IGTTool tool) {
+                }  else if (item instanceof IGTTool tool) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     tool.definition$fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
@@ -121,15 +117,11 @@ public class GTCreativeModeTabs {
                 Item item = entry.get();
                 if (item instanceof BlockItem)
                     continue;
-                if (item instanceof ComponentItem componentItem) {
+                if (item instanceof IComponentItem componentItem) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);
-                } else if (item instanceof ArmorComponentItem armorComponentItem) {
-                    NonNullList<ItemStack> list = NonNullList.create();
-                    armorComponentItem.fillItemCategory(tab.get(), list);
-                    list.forEach(output::accept);
-                }else if (item instanceof IGTTool tool) {
+                } else if (item instanceof IGTTool tool) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     tool.definition$fillItemCategory(tab.get(), list);
                     list.forEach(output::accept);

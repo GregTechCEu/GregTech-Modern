@@ -167,9 +167,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     speed = 0.1F;
                     if (KeyBind.VANILLA_JUMP.isKeyDown(player)) {
                         player.push(0.0, 0.1, 0.0);
+                        player.hurtMarked = true;
                     }
                 }
-                player.moveRelative(0.0F, new Vec3(0.0F, 1.0F, speed));
+                player.moveRelative(speed, new Vec3(0, 0, 1));
             } else
                 if (item.canUse(energyPerUse / 100) && player.isInWater() && KeyBind.VANILLA_SNEAK.isKeyDown(player) ||
                         KeyBind.VANILLA_JUMP.isKeyDown(player)) {

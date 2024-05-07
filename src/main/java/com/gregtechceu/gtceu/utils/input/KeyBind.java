@@ -19,7 +19,6 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -32,10 +31,10 @@ public enum KeyBind {
     VANILLA_BACKWARD(() -> () -> Minecraft.getInstance().options.keyDown),
     VANILLA_LEFT(() -> () -> Minecraft.getInstance().options.keyLeft),
     VANILLA_RIGHT(() -> () -> Minecraft.getInstance().options.keyRight),
-    ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_M),
-    ARMOR_HOVER("gtceu.key.armor_hover", KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_H),
-    ARMOR_CHARGING("gtceu.key.armor_charging", KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_N),
-    TOOL_AOE_CHANGE("gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, GLFW.GLFW_KEY_V);
+    ARMOR_MODE_SWITCH("gtceu.key.armor_mode_switch", KeyConflictContext.IN_GAME, InputConstants.KEY_M),
+    ARMOR_HOVER("gtceu.key.armor_hover", KeyConflictContext.IN_GAME, InputConstants.KEY_H),
+    ARMOR_CHARGING("gtceu.key.armor_charging", KeyConflictContext.IN_GAME, InputConstants.KEY_N),
+    TOOL_AOE_CHANGE("gtceu.key.tool_aoe_change", KeyConflictContext.IN_GAME, InputConstants.KEY_V);
 
     public static final KeyBind[] VALUES = values();
 

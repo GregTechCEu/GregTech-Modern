@@ -96,13 +96,13 @@ public interface IJetpack {
 
                     player.hurtMarked = true;
                     if (KeyBind.VANILLA_FORWARD.isKeyDown(player))
-                        player.moveRelative(0, new Vec3(0, speedForward, speedForward));
+                        player.moveRelative(speedForward, new Vec3(0, 0, speedForward));
                     if (KeyBind.VANILLA_BACKWARD.isKeyDown(player))
-                        player.moveRelative(0, new Vec3(0, -speedSideways, speedSideways * 0.8f));
+                        player.moveRelative(speedSideways * 0.8f, new Vec3(0, 0, -speedForward));
                     if (KeyBind.VANILLA_LEFT.isKeyDown(player))
-                        player.moveRelative(speedSideways, new Vec3(0, 0, speedSideways));
+                        player.moveRelative(speedSideways, new Vec3(speedSideways, 0, 0));
                     if (KeyBind.VANILLA_RIGHT.isKeyDown(player))
-                        player.moveRelative(-speedSideways, new Vec3(0, 0, speedSideways));
+                        player.moveRelative(-speedSideways, new Vec3(speedSideways, 0, 0));
                     if (!player.level().isClientSide) {
                         player.fallDistance = 0;
                     }

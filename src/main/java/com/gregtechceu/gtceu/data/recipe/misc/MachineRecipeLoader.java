@@ -1016,7 +1016,7 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(), TOOL_DATA_MODULE.asStack());
 
         //Jetpacks
-        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", SEMIFLUID_JETPACK.asStack(), SEMIFLUID_JETPACK.asStack());
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(), LIQUID_FUEL_JETPACK.asStack());
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {
