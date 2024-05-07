@@ -7,7 +7,11 @@ import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
+
 public interface IComponentItem extends ItemLike {
+
+    List<IItemComponent> getComponents();
 
     void attachComponents(IItemComponent... components);
 

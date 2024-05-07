@@ -31,6 +31,13 @@ public interface IArmorLogic {
 
     ArmorItem.Type getArmorType();
 
+    /**
+     * Get the displayed effective armor.
+     *
+     * @return The number of armor points for display, 2 per shield.
+     */
+    int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot);
+
     default boolean canBreakWithDamage(ItemStack stack) {
         return false;
     }

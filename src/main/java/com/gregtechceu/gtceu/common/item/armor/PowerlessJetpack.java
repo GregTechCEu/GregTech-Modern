@@ -111,6 +111,11 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     @Override
+    public int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot) {
+        return 0;
+    }
+
+    @Override
     public void addToolComponents(@NotNull ArmorComponentItem item) {
         item.attachComponents(new Behaviour(tankCapacity));
     }
@@ -264,6 +269,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
             Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
             FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+            handler.getStorages()[0].setFluid(fluidStack);
             table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
             IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
                 @Override

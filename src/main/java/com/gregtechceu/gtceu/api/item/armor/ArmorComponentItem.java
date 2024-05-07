@@ -98,8 +98,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return 50;
     }
 
+    public int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot) {
+        return armorLogic.getArmorDisplay(player, armor, slot);
+    }
+
     public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage, EquipmentSlot slot) {
-        IArmorLogic armorLogic = getArmorLogic();
         armorLogic.damageArmor(entity, stack, source, damage, slot);
     }
 

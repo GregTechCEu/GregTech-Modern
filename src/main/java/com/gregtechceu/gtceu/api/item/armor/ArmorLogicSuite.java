@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
@@ -19,6 +18,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -40,23 +40,20 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @Override
     public abstract void onArmorTick(Level Level, Player player, ItemStack itemStack);
 
-    /*
     @Override
-    public int getArmorDisplay(Player player, ItemStack armor, int slot) {
+    public int getArmorDisplay(Player player, @NotNull ItemStack armor, EquipmentSlot slot) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(armor);
         if (item == null) return 0;
         if (item.getCharge() >= energyPerUse) {
-            return (int) Math.round(20.0F * this.getAbsorption(armor) * this.getDamageAbsorption());
+            return (int) Math.round(20.0F * this.getAbsorption() * this.getDamageAbsorption());
         } else {
-            return (int) Math.round(4.0F * this.getAbsorption(armor) * this.getDamageAbsorption());
+            return (int) Math.round(4.0F * this.getAbsorption() * this.getDamageAbsorption());
         }
     }
-     */
 
     @Override
     public void addToolComponents(ArmorComponentItem mvi) {
         mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
-
             @Override
             public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
                 return onRightClick(level, player, usedHand);
