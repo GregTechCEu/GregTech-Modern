@@ -34,13 +34,13 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
 
     @Override
     public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-        return NotifiableFluidTank.handleIngredient(io, recipe, left, simulate, this.handlerIO, storages);
+        return NotifiableFluidTank.handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
     }
 
     @Override
     public List<Object> getContents() {
         List<FluidStack> ingredients = new ArrayList<>();
-        for (FluidStorage storage : storages) {
+        for (FluidStorage storage : getStorages()) {
             FluidStack stack = storage.getFluid();
             if (!stack.isEmpty()) {
                 ingredients.add(stack);
@@ -52,13 +52,18 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     @Override
     public double getTotalContentAmount() {
         long amount = 0;
-        for (FluidStorage storage : storages) {
+        for (FluidStorage storage : getStorages()) {
             FluidStack stack = storage.getFluid();
             if (!stack.isEmpty()) {
                 amount += stack.getAmount();
             }
         }
         return amount;
+    }
+
+    @Override
+    public int getSize() {
+        return getStorages().length;
     }
 
     @Override
