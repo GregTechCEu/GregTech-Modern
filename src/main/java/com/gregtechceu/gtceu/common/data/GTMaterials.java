@@ -101,7 +101,6 @@ public class GTMaterials {
         gem.setIgnored(NetherQuartz, Items.QUARTZ);
         gem.setIgnored(Coal, Items.COAL);
         gem.setIgnored(Amethyst, Items.AMETHYST_SHARD);
-        gem.setIgnored(Echo, Items.ECHO_SHARD);
         excludeAllGems(Charcoal, Items.CHARCOAL);
         excludeAllGems(Flint, Items.FLINT);
         excludeAllGems(EnderPearl, Items.ENDER_PEARL);
@@ -124,7 +123,6 @@ public class GTMaterials {
         ingot.setIgnored(Iron, Items.IRON_INGOT);
         ingot.setIgnored(Gold, Items.GOLD_INGOT);
         ingot.setIgnored(Copper, Items.COPPER_INGOT);
-        ingot.setIgnored(Netherite, Items.NETHERITE_INGOT);
 
         nugget.setIgnored(Gold, Items.GOLD_NUGGET);
         nugget.setIgnored(Iron, Items.IRON_NUGGET);
@@ -138,7 +136,6 @@ public class GTMaterials {
         block.setIgnored(Emerald, Blocks.EMERALD_BLOCK);
         block.setIgnored(Redstone, Blocks.REDSTONE_BLOCK);
         block.setIgnored(Diamond, Blocks.DIAMOND_BLOCK);
-        block.setIgnored(Netherite, Blocks.NETHERITE_BLOCK);
         block.setIgnored(Coal, Blocks.COAL_BLOCK);
         block.setIgnored(Amethyst, Blocks.AMETHYST_BLOCK);
         block.setIgnored(Glass, Blocks.GLASS);
@@ -630,7 +627,6 @@ public class GTMaterials {
     public static Material AntimonyTrifluoride;
     public static Material EnrichedNaquadahSulfate;
     public static Material NaquadriaSulfate;
-    public static Material Netherite;
     public static Material Pyrochlore;
 
     /**
@@ -845,8 +841,6 @@ public class GTMaterials {
     public static Material AcidicNaquadriaSolution;
     public static Material NaquadriaWaste;
     public static Material Lapotron;
-    public static Material Echo;
-    public static Material QuantumEcho;
     public static Material UUMatter;
     public static Material PCBCoolant;
 

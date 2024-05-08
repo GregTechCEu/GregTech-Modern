@@ -1455,15 +1455,6 @@ public class FirstDegreeMaterials {
                 .components(Naquadria, 1, Sulfur, 1, Oxygen, 4)
                 .buildAndRegister();
 
-        Netherite = new Material.Builder(GTCEu.id("netherite"))
-                .ingot()
-                .color(0x4d494d).iconSet(DULL)
-                .flags(GENERATE_PLATE)
-                .components(Gold, 2, Tungsten, 1, Platinum, 1)
-                .toolStats(ToolProperty.Builder.of(9.5F, 4.5F, 2073, 4)
-                        .enchantability(18).addTypes(GTToolType.MORTAR).build())
-                .buildAndRegister();
-
         Pyrochlore = new Material.Builder(GTCEu.id("pyrochlore"))
                 .dust().ore()
                 .color(0x5b4838).secondaryColor(0x331400).iconSet(METALLIC)
