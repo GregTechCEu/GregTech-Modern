@@ -1273,6 +1273,7 @@ public class GTBlocks {
         .lang("Treated Wood Sign")
         .blockstate((ctx, prov) -> prov.signBlock(ctx.get(), GTBlocks.TREATED_WOOD_WALL_SIGN.get(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
         .tag(BlockTags.STANDING_SIGNS)
+        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .item((b, p) -> new SignItem(p, b, GTBlocks.TREATED_WOOD_WALL_SIGN.get()))
         .defaultModel()
         .tag(ItemTags.SIGNS)
@@ -1281,9 +1282,8 @@ public class GTBlocks {
     public static final BlockEntry<WallSignBlock> TREATED_WOOD_WALL_SIGN = REGISTRATE
         .block("treated_wood_wall_sign", (p) -> new WallSignBlock(TREATED_WOOD_TYPE, p))
         .initialProperties(() -> Blocks.SPRUCE_WALL_SIGN)
-        .lang("Treated Wood Wall Sign")
+        .lang("Treated Wood Sign")
         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
-        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .tag(BlockTags.WALL_SIGNS)
         .loot((table, block) -> table.dropOther(block, TREATED_WOOD_SIGN.asItem()))
         .register();
@@ -1292,25 +1292,26 @@ public class GTBlocks {
         .initialProperties(() -> Blocks.SPRUCE_HANGING_SIGN)
         .lang("Treated Wood Hanging Sign")
         .blockstate((ctx, prov) -> {
-            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get()));
+            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get()));
             prov.simpleBlock(ctx.get(), model);
         })
         .tag(BlockTags.CEILING_HANGING_SIGNS)
-        .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_HANGING_SIGN.get(), p))
         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+        .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_WALL_HANGING_SIGN.get(), p))
         .tag(ItemTags.HANGING_SIGNS)
+        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .build()
         .register();
     public static final BlockEntry<WallHangingSignBlock> TREATED_WOOD_WALL_HANGING_SIGN = REGISTRATE
         .block("treated_wood_wall_hanging_sign", (p) -> new WallHangingSignBlock(TREATED_WOOD_TYPE, p))
         .initialProperties(() -> Blocks.SPRUCE_WALL_HANGING_SIGN)
-        .lang("Treated Wood Wall Hanging Sign")
+        .lang("Treated Wood Hanging Sign")
         .blockstate((ctx, prov) -> {
-            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get()));
+            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get()));
             prov.simpleBlock(ctx.get(), model);
         })
         .tag(BlockTags.WALL_HANGING_SIGNS)
-        .loot((table, block) -> table.dropOther(block, TREATED_WOOD_WALL_SIGN.asItem()))
+        .loot((table, block) -> table.dropOther(block, TREATED_WOOD_HANGING_SIGN.asItem()))
         .register();
     public static final BlockEntry<PressurePlateBlock> TREATED_WOOD_PRESSURE_PLATE = REGISTRATE
         .block("treated_wood_pressure_plate", (p) -> new PressurePlateBlock(TREATED_WOOD_SET, p))
