@@ -1508,7 +1508,6 @@
   "block.gtceu.zpm_transformer_4a": "ZPM Voltage Hi-Amp (4x) Transformer",
   "block.gtceu.zpm_wiremill": "§cElite Wiremill III§r",
   "block.gtceu.zpm_world_accelerator": "§cElite World Accelerator III§r",
-  "block.minecraft.air": "Treated Wood Wall Hanging Sign",
   "block.sterilizing_filter_casing.tooltip": "Creates a §aSterilized§7 environment",
   "block.surface_rock": "%s Surface Rock",
   "compass.node.gtceu.batteries/energy_cluster": "Energy Cluster",
