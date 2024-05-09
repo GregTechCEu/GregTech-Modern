@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.blocks;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.tags.TagPrefix;

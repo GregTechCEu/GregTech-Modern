@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block.explosive;
+package com.gregtechceu.gtceu.common.blocks.explosive;
 
 import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -27,7 +27,6 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;

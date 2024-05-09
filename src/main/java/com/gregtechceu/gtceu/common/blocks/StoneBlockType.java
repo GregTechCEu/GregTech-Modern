@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.blocks;
 
 import javax.annotation.Nonnull;
 

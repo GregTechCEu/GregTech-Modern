@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipes.RecipeHelper;
-import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
+import com.gregtechceu.gtceu.common.blocks.FusionCasingBlock;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;

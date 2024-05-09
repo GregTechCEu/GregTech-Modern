@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machines.TickableSubscription;
 import com.gregtechceu.gtceu.api.machines.feature.IDataInfoProvider;
-import com.gregtechceu.gtceu.common.block.CableBlock;
+import com.gregtechceu.gtceu.common.blocks.CableBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;

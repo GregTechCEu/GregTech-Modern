@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machines.multiblock;
 
 import com.gregtechceu.gtceu.api.blocks.ICoilType;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
-import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.common.blocks.CoilBlock;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 

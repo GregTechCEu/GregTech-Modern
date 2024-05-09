@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.machines.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.common.block.StoneBlockType;
+import com.gregtechceu.gtceu.common.blocks.StoneBlockType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;

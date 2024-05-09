@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipes.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
-import com.gregtechceu.gtceu.common.block.KineticMachineBlock;
+import com.gregtechceu.gtceu.common.blocks.KineticMachineBlock;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block.explosive;
+package com.gregtechceu.gtceu.common.blocks.explosive;
 
 import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
 import com.gregtechceu.gtceu.common.entity.PowderbarrelEntity;
@@ -8,10 +8,8 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 

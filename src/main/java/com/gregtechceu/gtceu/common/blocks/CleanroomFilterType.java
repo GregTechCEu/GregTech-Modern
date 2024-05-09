@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.block;
+package com.gregtechceu.gtceu.common.blocks;
 
 import com.gregtechceu.gtceu.api.blocks.IFilterType;
 import com.gregtechceu.gtceu.api.machines.multiblock.CleanroomType;

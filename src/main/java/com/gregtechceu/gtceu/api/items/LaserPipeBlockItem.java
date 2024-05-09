@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.items;
 
 import com.gregtechceu.gtceu.api.blocks.PipeBlock;
-import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.blocks.LaserPipeBlock;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.client.color.item.ItemColor;

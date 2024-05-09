@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.items;
 
-import com.gregtechceu.gtceu.common.block.OpticalPipeBlock;
+import com.gregtechceu.gtceu.common.blocks.OpticalPipeBlock;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;

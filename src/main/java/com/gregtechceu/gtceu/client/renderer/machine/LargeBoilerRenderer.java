@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.block.BoilerFireboxType;
+import com.gregtechceu.gtceu.common.blocks.BoilerFireboxType;
 import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiPart;

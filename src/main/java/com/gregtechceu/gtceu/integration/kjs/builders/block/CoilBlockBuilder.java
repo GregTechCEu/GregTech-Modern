@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
 import com.gregtechceu.gtceu.api.blocks.SimpleCoilType;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.common.block.CoilBlock;
+import com.gregtechceu.gtceu.common.blocks.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.integration.kjs.builders.RendererBlockItemBuilder;
 import dev.latvian.mods.kubejs.block.BlockBuilder;
