@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.unification.material;
+package com.gregtechceu.gtceu.common.materials;
 
 import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.GTCEu;
