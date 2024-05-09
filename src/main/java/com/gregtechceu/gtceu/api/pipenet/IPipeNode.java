@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.api.blocks.PipeBlock;
-import com.gregtechceu.gtceu.api.blockentity.IPaintable;
-import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
-import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
+import com.gregtechceu.gtceu.api.blockentities.IPaintable;
+import com.gregtechceu.gtceu.api.blockentities.ITickSubscription;
+import com.gregtechceu.gtceu.api.blockentities.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.chemical.material.Material;
 import com.lowdragmc.lowdraglib.LDLib;

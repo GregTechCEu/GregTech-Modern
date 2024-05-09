@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.blockentity;
+package com.gregtechceu.gtceu.api.blockentities;
 
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import net.minecraft.world.level.block.entity.BlockEntity;

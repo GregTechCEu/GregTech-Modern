@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.blockentity;
+package com.gregtechceu.gtceu.api.blockentities;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
