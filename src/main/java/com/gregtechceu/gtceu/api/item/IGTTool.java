@@ -363,7 +363,7 @@ public interface IGTTool extends IItemUIFactory, ItemLike {
                     } else {
                         if (result == -1) {
                             if (stack.get(GTDataComponents.TOOL_BEHAVIOURS).hasBehavior(GTToolBehaviors.TREE_FELLING) && state.is(BlockTags.LOGS)) {
-                                new TreeFellingHelper().fellTree(stack, player.level(), state, pos, player);
+                                TreeFellingHelper.fellTree(stack, player.level(), state, pos, player);
                             }
                             if (playSoundOnBlockDestroy()) playSound(player);
                         } else {
