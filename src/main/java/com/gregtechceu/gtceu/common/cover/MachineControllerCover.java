@@ -28,6 +28,7 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -177,7 +178,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         Level level = coverHolder.getLevel();
         BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
 
-        return level.getBlockState(sourcePos).getSignal(level, sourcePos, attachedSide);
+        return level.getSignal(sourcePos, attachedSide);
     }
 
 
