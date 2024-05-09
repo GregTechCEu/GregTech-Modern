@@ -464,7 +464,7 @@ public class GTRecipeTypes {
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
                 List<List<ItemStack>> items = new ArrayList<>();
-                items.add(GTBlocks.ALL_COILS.entrySet().stream().filter(coil -> coil.getKey().getCoilTemperature() >= temp).map(coil -> new ItemStack(coil.getValue().get())).toList());
+                items.add(GTCEuAPI.HEATING_COILS.entrySet().stream().filter(coil -> coil.getKey().getCoilTemperature() >= temp).map(coil -> new ItemStack(coil.getValue().get())).toList());
                 widgetGroup.addWidget(new SlotWidget(new CycleItemStackHandler(items), 0, widgetGroup.getSize().width - 25, widgetGroup.getSize().height - 32, false, false));
             })
             .setSound(GTSoundEntries.FURNACE);
