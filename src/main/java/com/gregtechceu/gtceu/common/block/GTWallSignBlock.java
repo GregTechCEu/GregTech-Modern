@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-
+import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.WallSignBlock;
@@ -15,9 +14,8 @@ import net.minecraft.world.level.block.state.properties.WoodType;
 import javax.annotation.Nullable;
 
 public class GTWallSignBlock extends WallSignBlock {
-
-    public GTWallSignBlock(Properties properties, WoodType type) {
-        super(properties, type);
+    public GTWallSignBlock(WoodType type, Properties properties) {
+        super(type, properties);
     }
 
     @Override
@@ -27,8 +25,7 @@ public class GTWallSignBlock extends WallSignBlock {
 
     @Nullable
     @Override
-    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
-                                                                  BlockEntityType<T> blockEntityType) {
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
         return createTickerHelper(blockEntityType, GTBlockEntities.GT_SIGN.get(), SignBlockEntity::tick);
     }
 }

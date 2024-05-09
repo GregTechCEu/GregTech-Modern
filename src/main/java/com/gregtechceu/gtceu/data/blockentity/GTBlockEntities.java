@@ -4,6 +4,8 @@ import com.gregtechceu.gtceu.common.blockentity.*;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
+import net.minecraft.world.level.block.entity.HangingSignBlockEntity;
+import net.minecraft.world.level.block.entity.SignBlockEntity;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -43,12 +45,22 @@ public class GTBlockEntities {
             .register();
 
     public static final BlockEntityEntry<SignBlockEntity> GT_SIGN = REGISTRATE
-            .<SignBlockEntity>blockEntity("sign", SignBlockEntity::new)
-            .validBlocks(GTBlocks.RUBBER_SIGN,
-                    GTBlocks.RUBBER_WALL_SIGN,
-                    GTBlocks.TREATED_WOOD_SIGN,
-                    GTBlocks.TREATED_WOOD_WALL_SIGN)
-            .register();
+        .<SignBlockEntity>blockEntity("sign", SignBlockEntity::new)
+        .validBlocks(GTBlocks.RUBBER_SIGN,
+            GTBlocks.RUBBER_WALL_SIGN,
+            GTBlocks.TREATED_WOOD_SIGN,
+            GTBlocks.TREATED_WOOD_WALL_SIGN)
+        .register();
+
+    public static final BlockEntityEntry<GTHangingSignBlockEntity> GT_HANGING_SIGN = REGISTRATE
+        .blockEntity("hanging_sign", GTHangingSignBlockEntity::new)
+        .validBlocks(GTBlocks.RUBBER_HANGING_SIGN,
+            GTBlocks.RUBBER_WALL_HANGING_SIGN,
+            GTBlocks.TREATED_WOOD_HANGING_SIGN,
+            GTBlocks.TREATED_WOOD_WALL_HANGING_SIGN)
+        .register();
+
+    public static void init() {
 
     public static final BlockEntityEntry<GTHangingSignBlockEntity> GT_HANGING_SIGN = REGISTRATE
             .blockEntity("hanging_sign", GTHangingSignBlockEntity::new)
