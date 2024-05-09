@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
@@ -23,8 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Iterator;
@@ -134,6 +132,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         data.putBoolean("canShare", canShare);
         data.putBoolean("hover", hoverMode);
         data.putByte("toggleTimer", toggleTimer);
+        player.inventoryMenu.sendAllDataToRemote();
 
         timer++;
         if (timer == Long.MAX_VALUE)
@@ -217,26 +216,26 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     }
 
     /*
-     * @Override
-     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-     * double damage, EntityEquipmentSlot equipmentSlot) {
-     * int damageLimit = Integer.MAX_VALUE;
-     * IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
-     * if (item == null) {
-     * return new ArmorProperties(0, 0, damageLimit);
-     * }
-     * if (energyPerUse > 0) {
-     * damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 250.0D));
-     * }
-     * return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
-     * }
-     * 
-     * @Override
-     * public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
-     * double damage, EntityEquipmentSlot equipmentSlot) {
-     * return source != DamageSource.FALL && source != DamageSource.DROWN && source != DamageSource.STARVE;
-     * }
-     */
+    @Override
+    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+                                         double damage, EntityEquipmentSlot equipmentSlot) {
+        int damageLimit = Integer.MAX_VALUE;
+        IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+        if (item == null) {
+            return new ArmorProperties(0, 0, damageLimit);
+        }
+        if (energyPerUse > 0) {
+            damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 250.0D));
+        }
+        return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
+    }
+
+    @Override
+    public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
+                                           double damage, EntityEquipmentSlot equipmentSlot) {
+        return source != DamageSource.FALL && source != DamageSource.DROWN && source != DamageSource.STARVE;
+    }
+    */
 
     @Override
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {

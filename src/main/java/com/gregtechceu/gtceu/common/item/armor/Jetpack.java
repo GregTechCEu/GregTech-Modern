@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
 import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,7 +21,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,6 +63,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         data.putBoolean("hover", hover);
         data.putByte("toggleTimer", toggleTimer);
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     @Override
@@ -103,12 +101,12 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     /*
-     * @Override
-     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-     * double damage, ArmorItem.Type equipmentSlot) {
-     * return new ArmorProperties(0, 0, 0);
-     * }
-     */
+    @Override
+    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+                                         double damage, ArmorItem.Type equipmentSlot) {
+        return new ArmorProperties(0, 0, 0);
+    }
+    */
 
     @OnlyIn(Dist.CLIENT)
     @Override
@@ -118,7 +116,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         if (data != null) {
             if (data.contains("hover")) {
                 Component status = (data.getBoolean("hover") ? Component.translatable("metaarmor.hud.status.enabled") :
-                        Component.translatable("metaarmor.hud.status.disabled"));
+                    Component.translatable("metaarmor.hud.status.disabled"));
                 Component result = Component.translatable("metaarmor.hud.hover_mode", status);
                 this.HUD.newString(result);
             }

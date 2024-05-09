@@ -398,72 +398,55 @@ public class ConfigHolder {
         @Configurable.Comment({ "Amount of blocks that can be spray painted at once", "Default: 16" })
         @Configurable.Range(min = 1, max = 512)
         public int sprayCanChainLength = 16;
-        @Configurable
         @Configurable.Comment("NanoSaber Options")
         public NanoSaber nanoSaber = new NanoSaber();
-        @Configurable
         @Configurable.Comment("NightVision Goggles Voltage Tier. Default: 1 (LV)")
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierNightVision = 1;
-        @Configurable
         @Configurable.Comment("NanoSuit Voltage Tier. Default: 3 (HV)")
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierNanoSuit = 3;
-        @Configurable
         @Configurable.Comment({ "Advanced NanoSuit Chestplate Voltage Tier.", "Default: 3 (HV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvNanoSuit = 3;
-        @Configurable
         @Configurable.Comment({ "QuarkTech Suit Voltage Tier.", "Default: 5 (IV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierQuarkTech = 5;
-        @Configurable
         @Configurable.Comment({ "Advanced QuarkTech Suit Chestplate Voltage Tier.", "Default: 5 (LuV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvQuarkTech = 6;
-        @Configurable
         @Configurable.Comment({ "Electric Impeller Jetpack Voltage Tier.", "Default: 2 (MV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierImpeller = 2;
-        @Configurable
         @Configurable.Comment({ "Advanced Electric Jetpack Voltage Tier.", "Default: 3 (HV)" })
         @Configurable.Range(min = 0, max = 14)
         public int voltageTierAdvImpeller = 3;
+        @Configurable.Comment("Armor HUD Location")
+        public ArmorHud armorHud = new ArmorHud();
+
+        public static class ArmorHud {
+            @Configurable.Comment({ "Sets HUD location", "1 - left-upper corner", "2 - right-upper corner",
+                "3 - left-bottom corner", "4 - right-bottom corner" })
+            public byte hudLocation = 1;
+            @Configurable.Comment("Horizontal offset of HUD [0 ~ 100)")
+            public byte hudOffsetX = 0;
+            @Configurable.Comment("Vertical offset of HUD [0 ~ 100)")
+            public byte hudOffsetY = 0;
+        }
 
         public static class NanoSaber {
-
-            @Configurable
             @Configurable.DecimalRange(min = 0, max = 100)
             @Configurable.Comment({ "The additional damage added when the NanoSaber is powered.", "Default: 20.0" })
             public double nanoSaberDamageBoost = 20;
-            @Configurable
             @Configurable.DecimalRange(min = 0, max = 100)
             @Configurable.Comment({ "The base damage of the NanoSaber.", "Default: 5.0" })
             public double nanoSaberBaseDamage = 5;
-            @Configurable
-            @Configurable.Comment({ "Should Zombies spawn with charged, active NanoSabers on hard difficulty?",
-                    "Default: true" })
+            @Configurable.Comment({ "Should Zombies spawn with charged, active NanoSabers on hard difficulty?", "Default: true" })
             public boolean zombieSpawnWithSabers = true;
-            @Configurable
             @Configurable.Range(min = 1, max = 512)
             @Configurable.Comment({ "The EU/t consumption of the NanoSaber.", "Default: 64" })
             public int energyConsumption = 64;
         }
-    }
-
-    public static class GameplayConfigs {
-
-        @Configurable
-        @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
-        public boolean hazardsEnabled = true;
-        @Configurable
-        @Configurable.Comment({ "Whether hazards are applied to all valid items, or just GT's.",
-                "true = all, false = GT only.", "Default: true" })
-        public boolean universalHazards = true;
-        @Configurable
-        @Configurable.Comment({ "Whether the GTCEu's ingame guidebook, 'Compass', be enabled.", "WARNING: INCOMPLETE",
-                "Default: false" })
-        public boolean enableCompass = false;
     }
 
     public static class ClientConfigs {
@@ -508,18 +491,16 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
 
         public static class ArmorHud {
-
             @Configurable
-            @Configurable.Comment({ "Sets HUD location", "1 - left-upper corner", "2 - right-upper corner",
-                    "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1" })
+            @Configurable.Comment({"Sets HUD location", "1 - left-upper corner", "2 - right-upper corner", "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1"})
             @Configurable.Range(min = 1, max = 4)
             public int hudLocation = 1;
             @Configurable
-            @Configurable.Comment({ "Horizontal offset of HUD.", "Default: 0" })
+            @Configurable.Comment({"Horizontal offset of HUD.", "Default: 0"})
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetX = 0;
             @Configurable
-            @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
+            @Configurable.Comment({"Vertical offset of HUD.", "Default: 0"})
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
         }

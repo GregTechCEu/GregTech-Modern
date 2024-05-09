@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
@@ -15,7 +14,6 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.NotNull;
 
 public class AdvancedJetpack extends Jetpack {
@@ -52,6 +50,7 @@ public class AdvancedJetpack extends Jetpack {
 
         data.putBoolean("hover", hoverMode);
         data.putByte("toggleTimer", toggleTimer);
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     @Override

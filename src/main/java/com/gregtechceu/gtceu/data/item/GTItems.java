@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
@@ -31,6 +32,7 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.common.item.armor.*;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.GTModels;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
@@ -42,6 +44,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
@@ -442,64 +445,56 @@ public class GTItems {
     }
 
     public static ItemEntry<ComponentItem> FLUID_CELL = REGISTRATE.item("fluid_cell", ComponentItem::new)
-            .model(GTModels::cellModel)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .color(() -> GTItems::cellColor)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, false), new ItemFluidContainer(), cellName())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE.item("universal_fluid_cell", ComponentItem::new)
             .lang("Universal Cell")
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, true), new ItemFluidContainer())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE.item("steel_fluid_cell", ComponentItem::new)
             .lang("Steel Cell")
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 8, GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE.item("aluminium_fluid_cell", ComponentItem::new)
             .lang("Aluminium Cell")
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 32, GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE.item("stainless_steel_fluid_cell", ComponentItem::new)
             .lang("Stainless Steel Cell")
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 64, GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE.item("titanium_fluid_cell", ComponentItem::new)
             .lang("Titanium Cell")
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 128, GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE.item("tungstensteel_fluid_cell", ComponentItem::new)
             .lang("Tungstensteel Cell")
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .properties(p -> p.stacksTo(32))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 512, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::new)
-            .model(GTModels::cellModel)
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNode(GTCompassSections.ITEMS))
-            .onRegister(modelPredicate(GTCEu.id("fluid_cell"), (itemStack) -> FluidTransferHelper.getFluidContained(itemStack).isEmpty() ? 0f : 1f))
             .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket(), 1200, false, true, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4)))).register();
 
@@ -1010,7 +1005,7 @@ public class GTItems {
         })))
         .register() : null;
 
-    public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::create)
+    public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::new)
         .lang("Dynamite")
         .onRegister(attach(new DynamiteBehaviour()))
         .tab(TOOL.getKey())
@@ -2042,15 +2037,116 @@ public class GTItems {
 
     public static ItemEntry<Item> CLIPBOARD;
 
-    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE
-            .item("nightvision_goggles",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES, ArmorItem.Type.HELMET, p)
-                            .setArmorLogic(new NightvisionGoggles(2,
-                                    80_000L * (long) Math.max(1,
-                                            Math.pow(1, ConfigHolder.INSTANCE.tools.voltageTierNightVision - 1)),
-                                    ConfigHolder.INSTANCE.tools.voltageTierNightVision, ArmorItem.Type.HELMET)))
-            .lang("Nightvision Goggles")
-            .register();
+    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE.item("nightvision_goggles", (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES, ArmorItem.Type.HELMET, p)
+            .setArmorLogic(new NightvisionGoggles(2,
+                80_000L * (long) Math.max(1, Math.pow(1, ConfigHolder.INSTANCE.tools.voltageTierNightVision - 1)),
+                ConfigHolder.INSTANCE.tools.voltageTierNightVision, ArmorItem.Type.HELMET)))
+        .lang("Nightvision Goggles")
+        .register();
+
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE.item("nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.CHESTPLATE,
+                512,
+                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
+                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
+        .lang("NanoMuscle™ Suite Chestplate")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+    public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE.item("nanomuscle_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
+            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.LEGGINGS,
+                512,
+                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
+                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
+        .lang("NanoMuscle™ Suite Leggings")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+    public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE.item("nanomuscle_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
+            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
+                512,
+                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
+                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
+        .lang("NanoMuscle™ Suite Boots")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+    public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE.item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
+            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
+                512,
+                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
+                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
+        .lang("NanoMuscle™ Suite Helmet")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE.item("quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.CHESTPLATE,
+                8192,
+                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+        .lang("QuarkTech™ Suite Chestplate")
+        .properties(p -> p.rarity(Rarity.RARE))
+        .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE.item("quarktech_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
+            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.LEGGINGS,
+                8192,
+                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+        .lang("QuarkTech™ Suite Leggings")
+        .properties(p -> p.rarity(Rarity.RARE))
+        .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE.item("quarktech_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
+            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.BOOTS,
+                8192,
+                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+        .lang("QuarkTech™ Suite Leggings")
+        .properties(p -> p.rarity(Rarity.RARE))
+        .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE.item("quarktech_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
+            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.HELMET,
+                8192,
+                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+        .lang("QuarkTech™ Suite Helmet")
+        .properties(p -> p.rarity(Rarity.RARE))
+        .register();
+
+    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE.item("liquid_fuel_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new PowerlessJetpack()))
+        .lang("Liquid Fuel Jetpack")
+        .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+        .register();
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE.item("electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new Jetpack(30,
+                1_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
+                ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
+        .lang("Electric Jetpack")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .model(overrideModel(GTCEu.id("electric_jetpack"), 8))
+        .onRegister(modelPredicate(GTCEu.id("electric_jetpack"), ElectricStats::getStoredPredicate))
+        .register();
+
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE.item("advanced_electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new AdvancedJetpack(512,
+                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
+                ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
+        .lang("Advanced Electric Jetpack")
+        .properties(p -> p.rarity(Rarity.RARE))
+        .register();
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE.item("avanced_nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new AdvancedJetpack(512,
+                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
+                ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
+        .lang("Advanced NanoMuscle™ Suite Chestplate")
+        .properties(p -> p.rarity(Rarity.RARE))
+        .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE.item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new AdvancedQuarkTechSuite(8192,
+                1_000_000_000L *
+                    (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech - 6)),
+                ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech)))
+        .lang("Advanced QuarkTech™ Suite Chestplate")
+        .properties(p -> p.rarity(Rarity.EPIC))
+        .register();
 
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE
             .item("nanomuscle_chestplate",
@@ -2095,52 +2191,10 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .register();
 
-    public static ItemEntry<ArmorComponentItem> FACE_MASK = REGISTRATE
-            .item("face_mask",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.BAD_PPE_EQUIPMENT, ArmorItem.Type.HELMET, p)
-                            .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "bad_hazmat")))
-            .lang("Face Mask")
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE
-            .item("rubber_gloves",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.BAD_PPE_EQUIPMENT, ArmorItem.Type.HELMET, p)
-                            .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "bad_hazmat")))
-            .lang("Rubber Gloves")
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE
-            .item("hazmat_chestpiece",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.CHESTPLATE, p)
-                            .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "hazmat")))
-            .lang("Hazardous Materials Suit Chestpiece")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_LEGGINGS = REGISTRATE
-            .item("hazmat_leggings",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.LEGGINGS, p)
-                            .setArmorLogic(new HazmatSuit(ArmorItem.Type.LEGGINGS, "hazmat")))
-            .lang("Hazardous Materials Suit Leggings")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_BOOTS = REGISTRATE
-            .item("hazmat_boots",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.BOOTS, p)
-                            .setArmorLogic(new HazmatSuit(ArmorItem.Type.BOOTS, "hazmat")))
-            .lang("Hazardous Materials Suit Boots")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_HELMET = REGISTRATE
-            .item("hazmat_headpiece",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.HELMET, p)
-                            .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "hazmat")))
-            .lang("Hazardous Materials Suit Headpiece")
-            .properties(p -> p.rarity(Rarity.UNCOMMON))
-            .tag(CustomTags.PPE_ARMOR)
-            .register();
+    public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE.item("sus_record", p -> new RecordItem(15, () -> GTSoundEntries.SUS_RECORD.getMainEvent(), p, 820))
+        .lang("Music Disc")
+        .register();
+    public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new).lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC)).onRegister(compassNodeExist(GTCompassSections.MISC, "certificate_of_not_being_a_noob_anymore")).register();
 
     public static ItemEntry<ComponentItem> FERTILIZER = REGISTRATE.item("fertilizer", ComponentItem::new).onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();

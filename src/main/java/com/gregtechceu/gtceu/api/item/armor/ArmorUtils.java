@@ -6,7 +6,9 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-
+import com.mojang.datafixers.util.Pair;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
@@ -22,18 +24,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.event.ForgeEventFactory;
 
-import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-
+import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import javax.annotation.Nonnull;
 
 public class ArmorUtils {
 
@@ -43,8 +39,7 @@ public class ArmorUtils {
     public static boolean isPossibleToCharge(ItemStack chargeable) {
         IElectricItem container = GTCapabilityHelper.getElectricItem(chargeable);
         if (container != null) {
-            return container.getCharge() < container.getMaxCharge() &&
-                    (container.getCharge() + container.getTransferLimit()) <= container.getMaxCharge();
+            return container.getCharge() < container.getMaxCharge() && (container.getCharge() + container.getTransferLimit()) <= container.getMaxCharge();
         }
         return false;
     }
@@ -69,34 +64,35 @@ public class ArmorUtils {
             }
         }
 
-        if (!openMainSlots.isEmpty()) {
+        if(!openMainSlots.isEmpty()) {
             inventorySlotMap.add(Pair.of(player.getInventory().items, openMainSlots));
         }
 
+
         List<Integer> openArmorSlots = new ArrayList<>();
-        for (int i = 0; i < player.getInventory().armor.size(); i++) {
+        for(int i = 0; i < player.getInventory().armor.size(); i++) {
             ItemStack current = player.getInventory().armor.get(i);
             IElectricItem item = GTCapabilityHelper.getElectricItem(current);
-            if (item == null) {
+            if(item == null) {
                 continue;
             }
 
-            if (isPossibleToCharge(current) && item.getTier() <= tier) {
+            if(isPossibleToCharge(current) && item.getTier() <= tier) {
                 openArmorSlots.add(i);
             }
         }
 
-        if (!openArmorSlots.isEmpty()) {
+        if(!openArmorSlots.isEmpty()) {
             inventorySlotMap.add(Pair.of(player.getInventory().armor, openArmorSlots));
         }
 
         ItemStack offHand = player.getInventory().offhand.get(0);
         IElectricItem offHandItem = GTCapabilityHelper.getElectricItem(offHand);
-        if (offHandItem == null) {
+        if(offHandItem == null) {
             return inventorySlotMap;
         }
 
-        if (isPossibleToCharge(offHand) && offHandItem.getTier() <= tier) {
+        if(isPossibleToCharge(offHand) && offHandItem.getTier() <= tier) {
             inventorySlotMap.add(Pair.of(player.getInventory().offhand, Collections.singletonList(0)));
         }
 
@@ -109,8 +105,7 @@ public class ArmorUtils {
     public static void spawnParticle(Level world, Player player, ParticleOptions type, double speedY) {
         if (type != null) {
             Vec3 forward = player.getForward();
-            world.addParticle(type, player.getX() - forward.x, player.getY() + 0.5D, player.getZ() - forward.z, 0.0D,
-                    speedY, 0.0D);
+            world.addParticle(type, player.getX() - forward.x, player.getY() + 0.5D, player.getZ() - forward.z, 0.0D, speedY, 0.0D);
         }
     }
 
@@ -136,7 +131,7 @@ public class ArmorUtils {
      */
     public static void resetPlayerFloatingTime(Player player) {
         if (player instanceof ServerPlayer serverPlayer) {
-            ((ServerGamePacketListenerImplAccessor) serverPlayer.connection).setAboveGroundTickCount(0);
+            ((ServerGamePacketListenerImplAccessor)serverPlayer.connection).setAboveGroundTickCount(0);
         }
     }
 
@@ -146,16 +141,30 @@ public class ArmorUtils {
      *
      * @return result of eating food
      */
-    public static InteractionResultHolder<ItemStack> eat(Player player, ItemStack food) {
+    public static InteractionResultHolder<ItemStack> canEat(Player player, ItemStack food) {
         if (!food.isEdible()) {
             return InteractionResultHolder.fail(food);
         }
 
-        FoodProperties foodItem = food.getFoodProperties(player);
+        FoodProperties foodItem = food.getItem().getFoodProperties();
         if (foodItem != null && player.getFoodData().needsFood()) {
-            ItemStack result = ForgeEventFactory.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(),
-                    food.finishUsingItem(player.level(), player));
-            return InteractionResultHolder.success(result);
+            if(!player.isCreative()) {
+                food.setCount(food.getCount() - 1);
+            }
+
+            // Find the saturation of the food
+            float saturation = foodItem.getSaturationModifier();
+
+            // The amount of empty food haunches of the player
+            int hunger = 20 - player.getFoodData().getFoodLevel();
+
+            // Increase the saturation of the food if the food replenishes more than the amount of missing haunches
+            saturation += (hunger - foodItem.getNutrition()) < 0 ? foodItem.getNutrition() - hunger : 1.0F;
+
+            // Use this method to add stats for compat with TFC, who overrides addStats(int amount, float saturation) for their food and does nothing
+            player.getFoodData().eat(hunger, saturation);
+
+            return InteractionResultHolder.success(food);
         } else {
             return InteractionResultHolder.fail(food);
         }
@@ -168,8 +177,7 @@ public class ArmorUtils {
      * @return Formated list
      */
     public static List<ItemStack> format(List<ItemStack> input) {
-        Object2IntMap<ItemStack> items = new Object2IntOpenCustomHashMap<>(
-                ItemStackHashStrategy.comparingAllButCount());
+        Object2IntMap<ItemStack> items = new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
         List<ItemStack> output = new ArrayList<>();
         for (ItemStack itemStack : input) {
             if (items.containsKey(itemStack)) {
@@ -187,6 +195,7 @@ public class ArmorUtils {
         return output;
     }
 
+
     @Nonnull
     public static String format(long value) {
         return new DecimalFormat("###,###.##").format(value);
@@ -203,7 +212,6 @@ public class ArmorUtils {
      */
     @OnlyIn(Dist.CLIENT)
     public static class ModularHUD {
-
         private byte stringAmount = 0;
         private final List<Component> stringList;
         private static final Minecraft mc = Minecraft.getInstance();
@@ -220,8 +228,7 @@ public class ArmorUtils {
         public void draw(GuiGraphics poseStack) {
             for (int i = 0; i < stringAmount; i++) {
                 Pair<Integer, Integer> coords = this.getStringCoord(i);
-                poseStack.drawString(mc.font, stringList.get(i), coords.getFirst(), coords.getSecond(), 0xFFFFFF,
-                        false);
+                poseStack.drawString(mc.font, stringList.get(i), coords.getFirst(), coords.getSecond(), 0xFFFFFF, false);
             }
         }
 
@@ -244,16 +251,14 @@ public class ArmorUtils {
                 }
                 case 3 -> {
                     posX = 1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX;
-                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
-                            ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
+                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
                 }
                 case 4 -> {
                     posX = windowWidth - (1 + ConfigHolder.INSTANCE.client.armorHud.hudOffsetX) - stringWidth;
-                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 -
-                            ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
+                    posY = windowHeight - fontHeight * (stringAmount - index) - 1 - ConfigHolder.INSTANCE.client.armorHud.hudOffsetY;
                 }
-                default -> throw new IllegalArgumentException(
-                        "Armor Hud config hudLocation is improperly configured. Allowed values: [1,2,3,4]");
+                default ->
+                        throw new IllegalArgumentException("Armor Hud config hudLocation is improperly configured. Allowed values: [1,2,3,4]");
             }
             return Pair.of(posX, posY);
         }
@@ -262,5 +267,6 @@ public class ArmorUtils {
             this.stringAmount = 0;
             this.stringList.clear();
         }
+
     }
 }

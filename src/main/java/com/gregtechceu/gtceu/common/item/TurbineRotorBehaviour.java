@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item;
 
 
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 
@@ -28,7 +28,7 @@ import static com.gregtechceu.gtceu.api.tag.TagPrefix.turbineBlade;
 public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler {
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         turbineBlade.executeHandler(null, PropertyKey.INGOT, (tagPrefix, material, property, provider) -> {
             var rotorStack = new ItemStack(item);
             var behavior = TurbineRotorBehaviour.getBehaviour(rotorStack);

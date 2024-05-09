@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
+import com.mojang.datafixers.util.Pair;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
@@ -23,8 +23,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -131,6 +129,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         data.putBoolean("canShare", canShare);
         data.putBoolean("hover", hoverMode);
         data.putByte("toggleTimer", toggleTimer);
+        player.inventoryMenu.sendAllDataToRemote();
 
         timer++;
         if (timer == Long.MAX_VALUE)
@@ -293,10 +292,5 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     @Override
     public float getFallDamageReduction() {
         return 3.5f;
-    }
-
-    @Override
-    public boolean isPPE() {
-        return true;
     }
 }

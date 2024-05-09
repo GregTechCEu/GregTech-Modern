@@ -5,7 +5,6 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -17,7 +16,6 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,15 +44,13 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 if (!nightvision && item.getCharge() >= energyPerUse) {
                     nightvision = true;
                     if (!world.isClientSide)
-                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.enabled"),
-                                true);
+                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.enabled"), true);
                 } else if (nightvision) {
                     nightvision = false;
                     disableNightVision(world, player, true);
                 } else {
                     if (!world.isClientSide) {
-                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.error"),
-                                true);
+                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.error"), true);
                     }
                 }
 
@@ -73,6 +69,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
 
             nbtData.putByte("toggleTimer", toggleTimer);
         }
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {

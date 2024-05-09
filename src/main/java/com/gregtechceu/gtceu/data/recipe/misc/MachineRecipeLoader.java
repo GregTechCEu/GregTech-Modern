@@ -1213,8 +1213,7 @@ public class MachineRecipeLoader {
 
     // TODO NBT removal recipes
     private static void registerNBTRemoval(RecipeOutput provider) {
-        /*
-        for (MetaTileEntityQuantumChest chest : MetaTileEntities.QUANTUM_CHEST)
+        for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(),
                         chest.asStack(), chest.asStack());
@@ -1265,16 +1264,12 @@ public class MachineRecipeLoader {
                 FLUID_CELL_GLASS_VIAL.asStack());
 
         // Data Items
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_stick_nbt", TOOL_DATA_STICK.asStack(),
-                TOOL_DATA_STICK.asStack());
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_orb_nbt", TOOL_DATA_ORB.asStack(),
-                TOOL_DATA_ORB.asStack());
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(),
-                TOOL_DATA_MODULE.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_stick_nbt", TOOL_DATA_STICK.asStack(), TOOL_DATA_STICK.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_orb_nbt", TOOL_DATA_ORB.asStack(), TOOL_DATA_ORB.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(), TOOL_DATA_MODULE.asStack());
 
-        // Jetpacks
-        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(),
-                LIQUID_FUEL_JETPACK.asStack());
+        //Jetpacks
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(), LIQUID_FUEL_JETPACK.asStack());
     }
 
     private static void registerHatchConversion(RecipeOutput provider) {

@@ -58,7 +58,7 @@ public class GTMaterials {
         SecondDegreeMaterials.register();
         HigherDegreeMaterials.register();
 
-        // Gregicality Multiblocks
+        //Gregicality Multiblocks
         GCyMMaterials.register();
 
         /*
@@ -66,7 +66,7 @@ public class GTMaterials {
          */
         MaterialFlagAddition.register();
 
-        CHEMICAL_DYES = new Material[] {
+        CHEMICAL_DYES = new Material[]{
                 DyeWhite, DyeOrange,
                 DyeMagenta, DyeLightBlue,
                 DyeYellow, DyeLime,

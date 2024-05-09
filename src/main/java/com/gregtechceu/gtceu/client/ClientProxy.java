@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.data.entity.GTEntityTypes;
 import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 import net.minecraft.client.renderer.blockentity.HangingSignRenderer;
@@ -17,6 +18,8 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.client.event.EntityRenderersEvent;
+import net.neoforged.neoforge.client.event.RegisterGuiLayersEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 
 /**
  * @author KilaBash
@@ -28,6 +31,8 @@ public class ClientProxy {
     public ClientProxy(IEventBus modBus) {
         init();
         modBus.addListener(ClientProxy::onRegisterEntityRenderers);
+        modBus.addListener(ClientProxy::registerKeyBindings);
+        modBus.addListener(ClientProxy::onRegisterGuiOverlays);
     }
 
     public static void init() {
@@ -44,5 +49,15 @@ public class ClientProxy {
 
         event.registerBlockEntityRenderer(GTBlockEntities.GT_SIGN.get(), SignRenderer::new);
         event.registerBlockEntityRenderer(GTBlockEntities.GT_HANGING_SIGN.get(), HangingSignRenderer::new);
+    }
+
+    @SubscribeEvent
+    public static void registerKeyBindings(RegisterKeyMappingsEvent event) {
+        KeyBind.onRegisterKeyBinds(event);
+    }
+
+    @SubscribeEvent
+    public static void onRegisterGuiOverlays(RegisterGuiLayersEvent event) {
+        event.registerAboveAll(GTCEu.id("hud"), new HudGuiOverlay());
     }
 }

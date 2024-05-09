@@ -144,7 +144,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(WrappingFluidStorage[]::new));
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
         }
 
         public FluidStack drainInternal(int maxDrain, FluidAction action) {

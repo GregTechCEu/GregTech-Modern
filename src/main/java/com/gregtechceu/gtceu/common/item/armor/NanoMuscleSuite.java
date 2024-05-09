@@ -7,9 +7,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
 import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
@@ -28,7 +26,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -89,13 +86,13 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         } else if (type == ArmorItem.Type.BOOTS) {
             updateStepHeight(player);
         }
+        player.inventoryMenu.sendAllDataToRemote();
     }
 
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
-            if (sendMsg)
-                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
+            if (sendMsg) player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
         }
     }
 
@@ -105,24 +102,23 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     /*
-     * @Override
-     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-     * double damage, ArmorItem.Type equipmentSlot) {
-     * IElectricItem container = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
-     * int damageLimit = Integer.MAX_VALUE;
-     * if (source == DamageSource.FALL && this.getEquipmentSlot(armor) == ArmorItem.Type.FEET) {
-     * if (energyPerUse > 0 && container != null) {
-     * damageLimit = (int) Math.min(damageLimit, 25.0 * container.getCharge() / (energyPerUse * 10.0D));
-     * }
-     * return new ArmorProperties(10, (damage < 8.0) ? 1.0 : 0.875, damageLimit);
-     * }
-     * return super.getProperties(player, armor, source, damage, equipmentSlot);
-     * }
-     */
+    @Override
+    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+                                         double damage, ArmorItem.Type equipmentSlot) {
+        IElectricItem container = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+        int damageLimit = Integer.MAX_VALUE;
+        if (source == DamageSource.FALL && this.getEquipmentSlot(armor) == ArmorItem.Type.FEET) {
+            if (energyPerUse > 0 && container != null) {
+                damageLimit = (int) Math.min(damageLimit, 25.0 * container.getCharge() / (energyPerUse * 10.0D));
+            }
+            return new ArmorProperties(10, (damage < 8.0) ? 1.0 : 0.875, damageLimit);
+        }
+        return super.getProperties(player, armor, source, damage, equipmentSlot);
+    }
+    */
 
     @Override
-    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
-                            EquipmentSlot equipmentSlot) {
+    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, EquipmentSlot equipmentSlot) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
         if (item != null) {
             item.discharge((long) energyPerUse / 10 * damage, item.getTier(), true, false, false);
@@ -137,7 +133,7 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
         String armorTexture = "nano_muscule_suite";
         if (advancedChest.is(currentChest.getItem())) armorTexture = "advanced_nano_muscle_suite";
         return slot != EquipmentSlot.LEGS ?
-                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
+            GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
                 GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
     }
 

@@ -6,6 +6,7 @@
   "plugin": "com.gregtechceu.gtceu.core.mixins.GregTechMixinPlugin",
   "client": [
     "BlockModelMixin",
+    "ForgeGuiMixin",
     "GuiGraphicsAccessor",
     "GuiGraphicsMixin",
     "GuiHeartTypeMixin",
@@ -30,6 +31,7 @@
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",
     "LiquidBlockAccessor",
+    "LivingEntityMixin",
     "LootPoolAccessor",
     "OreConfigurationMixin",
     "OreVeinifierMixin",

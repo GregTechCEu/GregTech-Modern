@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
 import com.lowdragmc.lowdraglib.Platform;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.nbt.CompoundTag;
@@ -32,10 +30,6 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import net.minecraftforge.items.IItemHandler;
-import net.minecraftforge.items.IItemHandlerModifiable;
-
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;
@@ -72,9 +66,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         if (!player.getItemBySlot(EquipmentSlot.HEAD).is(GTItems.QUANTUM_HELMET.get())) {
             disableNightVision(world, player, false);
         } else if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
-                !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
-                    if (!world.isClientSide) ((IFireImmuneEntity) player).gtceu$setFireImmune(false);
-                }
+            !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
+                            if (!world.isClientSide) ((IFireImmuneEntity)player).gtceu$setFireImmune(false);
+                        }
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
@@ -87,29 +81,25 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
                 int slotId = -1;
-                IItemHandler playerInv = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
-                if (playerInv instanceof IItemHandlerModifiable items) {
-                    for (int i = 0; i < items.getSlots(); i++) {
-                        ItemStack current = items.getStackInSlot(i);
-                        if (current.getFoodProperties(player) != null) {
-                            slotId = i;
-                            break;
-                        }
+                for (int i = 0; i < player.getInventory().items.size(); i++) {
+                    ItemStack current = player.getInventory().items.get(i);
+                    if (current.getFoodProperties(player) != null) {
+                        slotId = i;
+                        break;
                     }
+                }
 
-                    if (slotId > -1) {
-                        ItemStack stack = items.getStackInSlot(slotId);
-                        InteractionResultHolder<ItemStack> result = ArmorUtils.eat(player, stack);
-                        stack = result.getObject();
-                        if (stack.isEmpty())
-                            items.setStackInSlot(slotId, ItemStack.EMPTY);
+                if (slotId > -1) {
+                    ItemStack stack = player.getInventory().items.get(slotId);
+                    InteractionResultHolder<ItemStack> result = ArmorUtils.canEat(player, stack);
+                    stack = result.getObject();
+                    if (stack.isEmpty())
+                        player.getInventory().items.set(slotId, ItemStack.EMPTY);
 
-                        if (result.getResult() == InteractionResult.SUCCESS)
-                            item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
+                    if (result.getResult() == InteractionResult.SUCCESS)
+                        item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
 
-                        ret = true;
-                    }
-
+                    ret = true;
                 }
             }
 
@@ -158,7 +148,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 data.putByte("toggleTimer", toggleTimer);
             }
         } else if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
-            ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
+            ((IFireImmuneEntity)player).gtceu$setFireImmune(true);
             if (player.isOnFire())
                 player.extinguishFire();
         } else if (type == ArmorItem.Type.LEGGINGS) {
@@ -182,21 +172,21 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 }
                 player.moveRelative(speed, new Vec3(0, 0, 1));
             } else if (item.canUse(energyPerUse / 100) && player.isInWater() &&
-                    (KeyBind.VANILLA_SNEAK.isKeyDown(player) || KeyBind.VANILLA_JUMP.isKeyDown(player))) {
-                        byte consumerTicks = data.getByte("consumerTicks");
-                        ++consumerTicks;
-                        if (consumerTicks >= 10) {
-                            consumerTicks = 0;
-                            item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-                            ret = true;
-                        }
-                        data.putByte("consumerTicks", consumerTicks);
-                        double acceleration = 0.085D;
-                        if (KeyBind.VANILLA_SNEAK.isKeyDown(player))
-                            player.push(0.0, -acceleration, 0.0);
-                        if (KeyBind.VANILLA_JUMP.isKeyDown(player))
-                            player.push(0.0, acceleration, 0.0);
-                    }
+                (KeyBind.VANILLA_SNEAK.isKeyDown(player) || KeyBind.VANILLA_JUMP.isKeyDown(player))) {
+                            byte consumerTicks = data.getByte("consumerTicks");
+                            ++consumerTicks;
+                            if (consumerTicks >= 10) {
+                                consumerTicks = 0;
+                                item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
+                                ret = true;
+                            }
+                            data.putByte("consumerTicks", consumerTicks);
+                            double acceleration = 0.085D;
+                            if (KeyBind.VANILLA_SNEAK.isKeyDown(player))
+                                player.push(0.0, -acceleration, 0.0);
+                            if (KeyBind.VANILLA_JUMP.isKeyDown(player))
+                                player.push(0.0, acceleration, 0.0);
+            }
         } else if (type == ArmorItem.Type.BOOTS) {
             if (!world.isClientSide) {
                 boolean onGround = !data.contains("onGround") || data.getBoolean("onGround");
@@ -244,41 +234,40 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     /*
-     * @Override
-     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-     * double damage, EntityEquipmentSlot equipmentSlot) {
-     * int damageLimit = Integer.MAX_VALUE;
-     * IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
-     * if (item == null) {
-     * return new ArmorProperties(0, 0, damageLimit);
-     * }
-     * if (energyPerUse > 0) {
-     * damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 100.0D));
-     * }
-     *
-     * if (source == DamageSource.FALL) {
-     * if (SLOT == EntityEquipmentSlot.FEET) {
-     * return new ArmorProperties(10, 1.0D, damageLimit);
-     * }
-     *
-     * if (SLOT == EntityEquipmentSlot.LEGS) {
-     * return new ArmorProperties(9, 0.8D, damageLimit);
-     * }
-     * }
-     * return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
-     * }
-     *
-     * @Override
-     * public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
-     * double damage, EntityEquipmentSlot equipmentSlot) {
-     * return source != DamageSource.FALL && source != DamageSource.DROWN && source != DamageSource.STARVE &&
-     * source != DamageSource.OUT_OF_WORLD;
-     * }
-     */
+    @Override
+    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+                                         double damage, EntityEquipmentSlot equipmentSlot) {
+        int damageLimit = Integer.MAX_VALUE;
+        IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+        if (item == null) {
+            return new ArmorProperties(0, 0, damageLimit);
+        }
+        if (energyPerUse > 0) {
+            damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 100.0D));
+        }
+
+        if (source == DamageSource.FALL) {
+            if (SLOT == EntityEquipmentSlot.FEET) {
+                return new ArmorProperties(10, 1.0D, damageLimit);
+            }
+
+            if (SLOT == EntityEquipmentSlot.LEGS) {
+                return new ArmorProperties(9, 0.8D, damageLimit);
+            }
+        }
+        return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
+    }
 
     @Override
-    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
-                            EquipmentSlot equipmentSlot) {
+    public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
+                                           double damage, EntityEquipmentSlot equipmentSlot) {
+        return source != DamageSource.FALL && source != DamageSource.DROWN && source != DamageSource.STARVE &&
+                source != DamageSource.OUT_OF_WORLD;
+    }
+    */
+
+    @Override
+    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, EquipmentSlot equipmentSlot) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
         if (item == null) {
             return;
@@ -288,13 +277,13 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
     @Override
     public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
-        ItemStack currentChest = Minecraft.getInstance().player.getInventory().armor
-                .get(EquipmentSlot.CHEST.getIndex());
+        ItemStack currentChest = Minecraft.getInstance().player.getInventory()
+            .armor.get(EquipmentSlot.CHEST.getIndex());
         String armorTexture = "quark_tech_suite";
         if (currentChest.is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) armorTexture = "advanced_quark_tech_suite";
         return slot != EquipmentSlot.LEGS ?
-                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
-                GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
+            GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
+            GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
     }
 
     @Override
@@ -338,10 +327,5 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }
-    }
-
-    @Override
-    public boolean isPPE() {
-        return true;
     }
 }

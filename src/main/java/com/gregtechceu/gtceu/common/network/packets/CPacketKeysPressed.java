@@ -1,20 +1,16 @@
 package com.gregtechceu.gtceu.common.network.packets;
 
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-
 import com.lowdragmc.lowdraglib.networking.IHandlerContext;
 import com.lowdragmc.lowdraglib.networking.IPacket;
-
-import net.minecraft.network.FriendlyByteBuf;
-
 import com.mojang.datafixers.util.Pair;
 import lombok.NoArgsConstructor;
+import net.minecraft.network.FriendlyByteBuf;
 
 import java.util.List;
 
 @NoArgsConstructor
 public class CPacketKeysPressed implements IPacket {
-
     private Object updateKeys;
 
     public CPacketKeysPressed(List<KeyBind> updateKeys) {

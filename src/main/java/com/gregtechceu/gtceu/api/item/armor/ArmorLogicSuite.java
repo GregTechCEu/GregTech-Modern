@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.google.common.collect.ImmutableMultimap;
+import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
 import com.gregtechceu.gtceu.api.item.component.IItemHUDProvider;
-
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
@@ -22,9 +23,6 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -66,33 +64,30 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         UUID uuid = IArmorLogic.ARMOR_MODIFIER_UUID_PER_TYPE.get(type);
         if (item == null) return ImmutableMultimap.of();
         if (item.getCharge() >= energyPerUse) {
-            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier",
-                    20.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
+            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", 20.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
         } else {
-            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier",
-                    4.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
+            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", 4.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
         }
     }
 
     @Override
     public void addToolComponents(ArmorComponentItem mvi) {
         mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
-
             @Override
-            public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player,
-                                                          InteractionHand usedHand) {
+            public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
                 return onRightClick(level, player, usedHand);
             }
 
             @Override
-            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                        TooltipFlag isAdvanced) {
+            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
                 addInfo(stack, tooltipComponents);
             }
         });
     }
 
-    public void addInfo(ItemStack itemStack, List<Component> lines) {}
+    public void addInfo(ItemStack itemStack, List<Component> lines) {
+
+    }
 
     public InteractionResultHolder<ItemStack> onRightClick(Level Level, Player player, InteractionHand hand) {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
@@ -118,8 +113,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
         if (cont == null) return;
         if (cont.getCharge() == 0) return;
         float energyMultiplier = cont.getCharge() * 100.0F / cont.getMaxCharge();
-        hud.newString(
-                Component.translatable("metaarmor.hud.energy_lvl", String.format("%.1f", energyMultiplier) + "%"));
+        hud.newString(Component.translatable("metaarmor.hud.energy_lvl", String.format("%.1f", energyMultiplier) + "%"));
     }
 
     @OnlyIn(Dist.CLIENT)
@@ -134,9 +128,12 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     protected float getAbsorption() {
         return switch (this.getArmorType()) {
-            case HELMET, BOOTS -> 0.15F;
-            case CHESTPLATE -> 0.4F;
-            case LEGGINGS -> 0.3F;
+            case HELMET, BOOTS ->
+                    0.15F;
+            case CHESTPLATE ->
+                    0.4F;
+            case LEGGINGS ->
+                    0.3F;
         };
     }
 }

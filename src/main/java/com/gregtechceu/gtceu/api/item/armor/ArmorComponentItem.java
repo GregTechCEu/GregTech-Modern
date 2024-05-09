@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.*;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-
+import lombok.Getter;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -23,10 +25,6 @@ import net.minecraft.world.level.Level;
 import net.minecraftforge.client.extensions.common.IClientItemExtensions;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
-
-import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
-import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,14 +34,13 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
-
     @Getter
     private IArmorLogic armorLogic = new DummyArmorLogic();
     @Getter
     protected List<IItemComponent> components;
 
     public ArmorComponentItem(ArmorMaterial material, ArmorItem.Type type, Properties properties) {
-        super(material, type, properties.durability(0));
+        super(material, type, properties);
         components = new ArrayList<>();
     }
 
@@ -87,11 +84,6 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public int getMaxDamage(ItemStack stack) {
-        return super.getMaxDamage(stack);
-    }
-
-    @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return false;
     }
@@ -110,19 +102,15 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return armorLogic.getArmorDisplay(player, armor, slot);
     }
 
-    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage,
-                            EquipmentSlot slot) {
+    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage, EquipmentSlot slot) {
         armorLogic.damageArmor(entity, stack, source, damage, slot);
     }
 
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
-
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
-                                                                   EquipmentSlot equipmentSlot,
-                                                                   HumanoidModel<?> original) {
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
                 return armorLogic.getArmorModel(livingEntity, itemStack, equipmentSlot, original);
             }
         });
@@ -135,7 +123,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     ///////////////////////////////////////////
-    ///// ALL component item things ///////
+    /////   ALL component item things   ///////
     ///////////////////////////////////////////
 
     public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
@@ -151,8 +139,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
-                                TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
                 addInformation.appendHoverText(stack, level, tooltipComponents, isAdvanced);
@@ -240,8 +227,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
-                                                  InteractionHand usedHand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 var result = interactionItem.interactLivingEntity(stack, player, interactionTarget, usedHand);
@@ -254,26 +240,10 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public Component getName(ItemStack stack) {
-        for (IItemComponent component : components) {
-            if (component instanceof ICustomDescriptionId customDescriptionId) {
-                Component name = customDescriptionId.getItemName(stack);
-                if (name != null) {
-                    return name;
-                }
-            }
-        }
-        return super.getName(stack);
-    }
-
-    @Override
     public String getDescriptionId(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof ICustomDescriptionId customDescriptionId) {
-                String langId = customDescriptionId.getItemDescriptionId(stack);
-                if (langId != null) {
-                    return langId;
-                }
+                return customDescriptionId.getItemStackDisplayName(stack);
             }
         }
         return super.getDescriptionId(stack);

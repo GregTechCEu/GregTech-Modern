@@ -120,7 +120,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new CustomFluidTank(0) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, Stream.generate(() -> new CustomFluidTank(0) {
                 @Override
                 public int fill(FluidStack resource, FluidAction action) {
                     return InaccessibleInfiniteSlot.this.fill(resource, action);
