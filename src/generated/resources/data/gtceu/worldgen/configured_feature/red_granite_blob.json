@@ -3,10 +3,8 @@
   "config": {
     "size": {
       "type": "minecraft:uniform",
-      "value": {
-        "max_inclusive": 30,
-        "min_inclusive": 20
-      }
+      "max_inclusive": 30,
+      "min_inclusive": 20
     },
     "state": {
       "state": {

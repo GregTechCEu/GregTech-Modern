@@ -19,13 +19,14 @@ dependencyResolutionManagement {
         // Minecraft Version
         def minecraftVersionVeryOld = "1.20.1"
         def minecraftVersionOld = "1.20.4"
-        def minecraftVersion = "1.20.5"
+        def minecraftVersionOldish = "1.20.5"
+        def minecraftVersion = "1.20.6"
 
         // Mod Dependencies Versions
         // Common
         def jeiVersion = "17.3.0.49"
-        def reiVersion = "14.0.688"
-        def emiVersion = "1.1.0"
+        def reiVersion = "15.0.728"
+        def emiVersion = "1.1.6"
         def ae2Version = "17.0.6-beta"
         def kjsVersion = "2004.7.0-build.14"
         def auVersion = "1.20.1-0.6.0"
@@ -75,11 +76,11 @@ dependencyResolutionManagement {
             library("jei-forge-impl", "mezz.jei", "jei-${minecraftVersionOld}-neoforge").versionRef(jei)
 
             def rei = version("rei", reiVersion)
-            library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-forge").versionRef(rei)
-            library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-forge").versionRef(rei)
-            library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-forge").versionRef(rei)
+            library("rei-plugin", "me.shedaniel", "RoughlyEnoughItems-default-plugin-neoforge").versionRef(rei)
+            library("rei-api", "me.shedaniel", "RoughlyEnoughItems-api-neoforge").versionRef(rei)
+            library("rei-forge", "me.shedaniel", "RoughlyEnoughItems-neoforge").versionRef(rei)
 
-            def emi = version("emi", emiVersion + "+" + minecraftVersionOld)
+            def emi = version("emi", emiVersion + "+" + minecraftVersion)
             library("emi", "dev.emi", "emi-neoforge").versionRef(emi)
 
             def theoneprobe = version("theoneprobe", topForgeVersion)
@@ -92,7 +93,7 @@ dependencyResolutionManagement {
             library("kubejs", "dev.latvian.mods", "kubejs-neoforge").versionRef(kubejs)
 
             def configuration = version("configuration", configurationVersion)
-            library("configuration", "dev.toma", "configuration-neoforge-${minecraftVersion}").versionRef(configuration)
+            library("configuration", "dev.toma", "configuration-neoforge-${minecraftVersionOldish}").versionRef(configuration)
 
             def worldStripper = version("worldStripper", worldStripperForgeFile)
             library("worldStripper", "curse.maven", "worldStripper-250603").versionRef(worldStripper)
