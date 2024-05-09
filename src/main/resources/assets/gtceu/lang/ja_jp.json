@@ -1535,7 +1535,7 @@
     "compass.node.gtceu.batteries/ultimate_battery": "アルティメットバッテリー",
     "compass.node.gtceu.batteries/zero_point_module": "ZPM (Zero Point Module) 時代",
     "compass.node.gtceu.blocks/coil_block": "コイルブロック",
-    "compass.node.gtceu.blocks/pss_battery": "Pssバッテリー",
+    "compass.node.gtceu.blocks/pss_battery": "蓄電器用バッテリー",
     "compass.node.gtceu.circuits/advanced_integrated_circuit": "発展型論理集積回路",
     "compass.node.gtceu.circuits/basic_electronic_circuit": "基本型電子回路",
     "compass.node.gtceu.circuits/basic_integrated_circuit": "基本型論理集積回路",
