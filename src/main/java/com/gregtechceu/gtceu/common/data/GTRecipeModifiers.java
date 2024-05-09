@@ -40,6 +40,7 @@ public class GTRecipeModifiers {
      */
     public static final Function<OverclockingLogic, RecipeModifier> ELECTRIC_OVERCLOCK = Util.memoize(ElectricOverclockModifier::new);
     public static final RecipeModifier PARALLEL_HATCH = (machine, recipe) -> GTRecipeModifiers.hatchParallel(machine, recipe, false).getFirst();
+    public static final RecipeModifier EBF_OVERCLOCK = GTRecipeModifiers::ebfOverclock;
 
     @MethodsReturnNonnullByDefault
     @ParametersAreNonnullByDefault

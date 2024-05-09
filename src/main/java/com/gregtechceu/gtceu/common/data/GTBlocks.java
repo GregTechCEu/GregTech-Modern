@@ -862,7 +862,7 @@ public class GTBlocks {
         return filterBlock;
     }
 
-    protected static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
+    public static BlockEntry<ActiveBlock> createActiveCasing(String name, String baseModelPath) {
         String finalName = "%s".formatted(name);
         return REGISTRATE.block(finalName, p -> new ActiveBlock(p,
                         Platform.isClient() ? new CTMModelRenderer(GTCEu.id(baseModelPath)) : null,
