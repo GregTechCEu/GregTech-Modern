@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.multiblock.predicates.SimplePredicate;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import net.minecraft.network.chat.Component;
 

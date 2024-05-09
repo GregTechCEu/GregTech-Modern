@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblock;
 
 import com.google.common.base.Joiner;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
 

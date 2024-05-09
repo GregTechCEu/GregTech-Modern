@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern.util;
+package com.gregtechceu.gtceu.api.multiblock.util;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

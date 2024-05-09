@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern.predicates;
+package com.gregtechceu.gtceu.api.multiblock.predicates;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import net.minecraft.world.level.block.Block;
