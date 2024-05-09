@@ -3,7 +3,7 @@
   "behavior.data_item.assemblyline.title": "§nAssembly Line Construction Data:",
   "behavior.item_magnet.disabled": "§cMagnetic Field Disabled",
   "behavior.item_magnet.enabled": "§aMagnetic Field Enabled",
-  "behavior.portable_scanner.amp_per_sec": "Last Second %s A",
+  "behavior.portable_scanner.amp_per_sec": "Average (last second): %s A",
   "behavior.portable_scanner.bedrock_fluid.amount": "Fluid In Deposit: %s %s - %s%%",
   "behavior.portable_scanner.bedrock_fluid.amount_unknown": "Fluid In Deposit: %s%%",
   "behavior.portable_scanner.bedrock_fluid.nothing": "Fluid In Deposit: §6Nothing§r",
