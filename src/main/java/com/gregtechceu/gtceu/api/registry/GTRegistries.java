@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.api.materials.Element;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;

@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.IUICover;
+import com.gregtechceu.gtceu.api.covers.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;

@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.blocks.IAppearance;
 import com.gregtechceu.gtceu.api.blockentities.ITickSubscription;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;

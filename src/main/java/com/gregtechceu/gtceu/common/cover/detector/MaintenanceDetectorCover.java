@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.Direction;

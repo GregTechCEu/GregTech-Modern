@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.IUICover;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;

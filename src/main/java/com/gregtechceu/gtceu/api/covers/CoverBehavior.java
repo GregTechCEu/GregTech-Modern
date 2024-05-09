@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover;
+package com.gregtechceu.gtceu.api.covers;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -25,7 +25,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
 import org.jetbrains.annotations.Nullable;

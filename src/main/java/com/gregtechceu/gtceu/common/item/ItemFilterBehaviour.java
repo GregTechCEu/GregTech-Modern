@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.covers.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;

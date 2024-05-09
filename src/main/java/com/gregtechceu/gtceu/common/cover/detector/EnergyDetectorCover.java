@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyInfoProvider;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;

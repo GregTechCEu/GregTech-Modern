@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.cover.voiding;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.covers.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;

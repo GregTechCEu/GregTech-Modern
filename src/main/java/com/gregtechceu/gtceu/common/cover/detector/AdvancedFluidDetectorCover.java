@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.cover.detector;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandler;
-import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.IUICover;
+import com.gregtechceu.gtceu.api.covers.filter.FilterHandler;
+import com.gregtechceu.gtceu.api.covers.filter.FilterHandlers;
+import com.gregtechceu.gtceu.api.covers.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;

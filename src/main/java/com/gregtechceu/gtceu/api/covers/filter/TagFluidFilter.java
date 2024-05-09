@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover.filter;
+package com.gregtechceu.gtceu.api.covers.filter;
 
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
@@ -6,13 +6,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-
-import java.util.Arrays;
-import java.util.function.Consumer;
 
 /**
  * @author KilaBash

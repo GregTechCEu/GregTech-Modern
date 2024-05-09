@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover.filter;
+package com.gregtechceu.gtceu.api.covers.filter;
 
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import net.minecraft.world.item.ItemStack;

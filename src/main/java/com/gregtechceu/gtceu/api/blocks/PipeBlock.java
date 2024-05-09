@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.blocks;
 import com.gregtechceu.gtceu.api.blockentities.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;

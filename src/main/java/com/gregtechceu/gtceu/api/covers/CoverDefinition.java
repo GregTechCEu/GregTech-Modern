@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover;
+package com.gregtechceu.gtceu.api.covers;
 
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;

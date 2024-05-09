@@ -1,20 +1,15 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
-import com.gregtechceu.gtceu.utils.FacingPos;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;
-import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import net.minecraft.core.Direction;
 import org.jetbrains.annotations.Nullable;
 

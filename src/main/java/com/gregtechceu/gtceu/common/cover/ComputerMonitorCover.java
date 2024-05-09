@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import net.minecraft.core.Direction;
 
 public class ComputerMonitorCover extends CoverBehavior {

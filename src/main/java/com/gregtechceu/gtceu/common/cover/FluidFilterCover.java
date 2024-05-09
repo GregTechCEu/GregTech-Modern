@@ -1,20 +1,16 @@
 package com.gregtechceu.gtceu.common.cover;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.cover.IUICover;
-import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.IUICover;
+import com.gregtechceu.gtceu.api.covers.filter.FluidFilter;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
-import net.minecraft.world.entity.player.Player;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 

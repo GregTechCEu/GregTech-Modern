@@ -1,20 +1,18 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
-import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
-import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
-import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.covers.filter.SimpleFluidFilter;
+import com.gregtechceu.gtceu.api.covers.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.covers.filter.TagFluidFilter;
+import com.gregtechceu.gtceu.api.covers.filter.TagItemFilter;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.*;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.mojang.serialization.Codec;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.util.Unit;
-import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.SimpleFluidContent;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredRegister;

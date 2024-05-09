@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.item;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+import com.gregtechceu.gtceu.api.covers.CoverBehavior;
 import com.gregtechceu.gtceu.api.materials.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;

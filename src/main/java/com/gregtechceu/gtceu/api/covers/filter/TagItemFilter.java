@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.cover.filter;
+package com.gregtechceu.gtceu.api.covers.filter;
 
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.utils.OreDictExprFilter;
