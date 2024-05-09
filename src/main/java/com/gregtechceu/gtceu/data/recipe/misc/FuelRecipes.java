@@ -13,8 +13,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 public class FuelRecipes {
 

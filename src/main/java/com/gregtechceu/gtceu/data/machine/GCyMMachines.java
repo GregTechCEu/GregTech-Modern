@@ -15,10 +15,10 @@ import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.data.GTCompassSections;
-import com.gregtechceu.gtceu.data.GTMaterials;
-import com.gregtechceu.gtceu.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.compass.GTCompassSections;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -33,12 +33,12 @@ import static com.gregtechceu.gtceu.api.machine.multiblock.PartAbility.*;
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
-import static com.gregtechceu.gtceu.data.GCyMBlocks.*;
-import static com.gregtechceu.gtceu.data.GCyMRecipeTypes.ALLOY_BLAST_RECIPES;
-import static com.gregtechceu.gtceu.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.data.GTMachines.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.NaquadahAlloy;
-import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.block.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.data.recipe.GCyMRecipeTypes.ALLOY_BLAST_RECIPES;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.NaquadahAlloy;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 /**
  * @author Rundas

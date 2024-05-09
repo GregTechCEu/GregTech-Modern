@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.material;
 import com.gregtechceu.gtceu.api.material.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 
 public class MaterialFlagAddition {
 

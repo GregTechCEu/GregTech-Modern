@@ -18,8 +18,8 @@ import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMa
 import com.gregtechceu.gtceu.client.renderer.machine.SplitShaftTieredHullMachineRenderer;
 import com.gregtechceu.gtceu.common.block.KineticMachineBlock;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
-import com.gregtechceu.gtceu.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.ElectricGearBoxMachine;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
@@ -41,7 +41,7 @@ import java.util.function.Function;
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
-import static com.gregtechceu.gtceu.data.GTMachines.*;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**

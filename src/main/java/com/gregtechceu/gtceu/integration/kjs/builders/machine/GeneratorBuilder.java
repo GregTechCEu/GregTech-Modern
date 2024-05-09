@@ -12,15 +12,14 @@ import com.gregtechceu.gtceu.api.machine.SimpleGeneratorMachine;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.renderer.machine.SimpleGeneratorMachineRenderer;
 
-import java.util.Arrays;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.data.GTMachines.defaultTankSizeFunction;
-import static com.gregtechceu.gtceu.data.GTMachines.explosion;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.defaultTankSizeFunction;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.explosion;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**

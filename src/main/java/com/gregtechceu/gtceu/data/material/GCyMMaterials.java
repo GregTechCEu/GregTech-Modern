@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty.GasT
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 
 public class GCyMMaterials {
 

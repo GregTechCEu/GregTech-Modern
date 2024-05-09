@@ -1,9 +1,8 @@
 package com.gregtechceu.gtceu.data.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.data.GTPlacements;
+import com.gregtechceu.gtceu.data.worldgen.GTPlacements;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.core.*;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.worldgen.BootstrapContext;

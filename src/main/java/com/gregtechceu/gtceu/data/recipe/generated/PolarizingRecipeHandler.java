@@ -11,7 +11,7 @@ import net.minecraft.world.item.ItemStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.GTRecipeTypes.POLARIZER_RECIPES;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.POLARIZER_RECIPES;
 
 public class PolarizingRecipeHandler {
 

@@ -8,11 +8,11 @@ import net.minecraft.world.item.ItemStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.GTItems.*;
-import static com.gregtechceu.gtceu.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.data.GTMachines.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.item.GTItems.*;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.data.machine.GTResearchMachines.*;
 
 public class ComputerRecipes {

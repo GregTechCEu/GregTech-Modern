@@ -17,8 +17,8 @@ import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.ore;
-import static com.gregtechceu.gtceu.data.GTMachines.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.Iron;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.Iron;
 
 public class GTOreProcessingInfoCategory extends ModularUIRecipeCategory<GTOreProcessingInfoWrapper> {
     public final static RecipeType<GTOreProcessingInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("ore_processing_diagram"), GTOreProcessingInfoWrapper.class);

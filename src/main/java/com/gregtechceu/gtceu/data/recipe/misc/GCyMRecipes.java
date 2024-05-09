@@ -7,9 +7,13 @@ import com.gregtechceu.gtceu.api.material.material.properties.AlloyBlastProperty
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.recipe.GCyMRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -19,12 +23,12 @@ import org.jetbrains.annotations.Nullable;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.GCyMBlocks.*;
-import static com.gregtechceu.gtceu.data.GTBlocks.CASING_TEMPERED_GLASS;
-import static com.gregtechceu.gtceu.data.GTItems.*;
-import static com.gregtechceu.gtceu.data.GTMachines.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.block.GCyMBlocks.*;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.CASING_TEMPERED_GLASS;
+import static com.gregtechceu.gtceu.data.item.GTItems.*;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.data.machine.GCyMMachines.*;
 import static com.gregtechceu.gtceu.data.recipe.CustomTags.*;
 

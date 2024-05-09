@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.tag;
 
-import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.item.GTItems;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
@@ -15,7 +15,7 @@ import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.material.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 
 /**
  * @author KilaBash
