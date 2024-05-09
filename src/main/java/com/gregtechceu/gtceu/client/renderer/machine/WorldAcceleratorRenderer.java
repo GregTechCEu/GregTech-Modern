@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.client.model.WorkableOverlayModel;
-import com.gregtechceu.gtceu.common.machine.electric.WorldAcceleratorMachine;
+import com.gregtechceu.gtceu.common.machines.electric.WorldAcceleratorMachine;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;

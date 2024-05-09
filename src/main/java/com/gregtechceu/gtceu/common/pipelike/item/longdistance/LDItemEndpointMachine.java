@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.pipelike.item.longdistance;
 
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
-import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
+import com.gregtechceu.gtceu.common.machines.storage.LongDistanceEndpointMachine;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandler;
 import org.jetbrains.annotations.NotNull;

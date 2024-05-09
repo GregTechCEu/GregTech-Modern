@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.instance;
 
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
-import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
+import com.gregtechceu.gtceu.common.machines.kinetic.IKineticMachine;
 import com.jozufozu.flywheel.api.InstanceData;
 import com.jozufozu.flywheel.api.Instancer;
 import com.jozufozu.flywheel.api.Material;

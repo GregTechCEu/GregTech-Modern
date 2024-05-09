@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins.create;
 
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
-import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
+import com.gregtechceu.gtceu.common.machines.kinetic.IKineticMachine;
 import com.simibubi.create.content.kinetics.RotationPropagator;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import net.minecraft.core.Direction;
