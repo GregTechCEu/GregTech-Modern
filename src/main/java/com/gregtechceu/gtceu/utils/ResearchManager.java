@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -87,7 +88,7 @@ public final class ResearchManager {
      * @return if the stack is a data item
      */
     public static boolean isStackDataItem(@NotNull ItemStack stack, boolean isDataBank) {
-        if (stack.getItem() instanceof ComponentItem metaItem) {
+        if (stack.getItem() instanceof IComponentItem metaItem) {
             for (IItemComponent behaviour : metaItem.getComponents()) {
                 if (behaviour instanceof IDataItem dataItem) {
                     return !dataItem.requireDataBank() || isDataBank;

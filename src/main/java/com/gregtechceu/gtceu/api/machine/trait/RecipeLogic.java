@@ -241,7 +241,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(getRecipeManager(), this.machine);
+        return machine.getRecipeType().searchRecipe(this.machine);
     }
 
     public void findAndHandleRecipe() {
@@ -282,7 +282,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        Iterator<GTRecipe> iterator = machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine);
+        Iterator<GTRecipe> iterator = machine.getRecipeType().searchFuelRecipe(machine);
 
         while (iterator != null && iterator.hasNext()) {
             GTRecipe recipe = iterator.next();

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
@@ -100,10 +101,9 @@ public class TagPrefixItem extends Item {
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
-                // TODO armor
-//                if (!armor.isEmpty() && armor.getItem() instanceof ArmorMetaItem<?>) {
-//                    heatDamage *= ((ArmorMetaItem<?>) armor.getItem()).getItem(armor).getArmorLogic().getHeatResistance();
-//                }
+                if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem) {
+                    heatDamage *= armorItem.getArmorLogic().getHeatResistance();
+                }
                 if (heatDamage > 0.0) {
                     livingEntity.hurt(GTDamageTypes.HEAT.source(level), heatDamage);
                 } else if (heatDamage < 0.0) {

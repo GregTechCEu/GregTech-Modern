@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
@@ -82,7 +83,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     @OnlyIn(Dist.CLIENT)
     static ItemColor getItemStackColor() {
         return (itemStack, i) -> {
-            if (itemStack.getItem() instanceof ComponentItem componentItem) {
+            if (itemStack.getItem() instanceof IComponentItem componentItem) {
                 for (IItemComponent component : componentItem.getComponents()) {
                     if (component instanceof IMaterialPartItem materialPartItem) {
                         return materialPartItem.getPartMaterial(itemStack).getMaterialARGB();

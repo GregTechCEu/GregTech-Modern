@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.util.ToolChargeBarRenderer;
 import net.minecraft.client.gui.Font;
@@ -24,7 +25,7 @@ public class GuiGraphicsMixin {
     private void gtceu$renderCustomDurabilityBars(Font font, ItemStack stack, int x, int y, String text, CallbackInfo ci) {
         if (stack.getItem() instanceof IGTTool toolItem) {
             ToolChargeBarRenderer.renderBarsTool((GuiGraphics) (Object) this, toolItem, stack, x, y);
-        } else if (stack.getItem() instanceof ComponentItem componentItem) {
+        } else if (stack.getItem() instanceof IComponentItem componentItem) {
             ToolChargeBarRenderer.renderBarsItem((GuiGraphics) (Object) this, componentItem, stack, x, y);
         }
     }

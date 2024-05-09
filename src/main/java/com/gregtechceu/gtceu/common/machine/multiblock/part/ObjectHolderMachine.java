@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IObjectHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.BlockableSlotWidget;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -150,7 +150,7 @@ public class ObjectHolderMachine extends MultiblockPartMachine implements IObjec
             }
 
             boolean isDataItem = false;
-            if (stack.getItem() instanceof ComponentItem metaItem) {
+            if (stack.getItem() instanceof IComponentItem metaItem) {
                 for (IItemComponent behaviour : metaItem.getComponents()) {
                     if (behaviour instanceof IDataItem) {
                         isDataItem = true;

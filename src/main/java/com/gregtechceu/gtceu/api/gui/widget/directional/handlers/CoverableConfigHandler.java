@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.gui.widget.CoverConfigurator;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
@@ -96,7 +96,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
         }
 
         if (!item.isEmpty() && machine.getCoverAtSide(side) == null) {
-            if (item.getItem() instanceof ComponentItem componentItem) {
+            if (item.getItem() instanceof IComponentItem componentItem) {
                 for (IItemComponent component : componentItem.getComponents()) {
                     if (component instanceof CoverPlaceBehavior placeBehavior) {
                         machine.placeCoverOnSide(side, item, placeBehavior.coverDefinition(), serverPlayer);

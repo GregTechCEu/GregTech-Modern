@@ -365,7 +365,7 @@ public class ToolHelper {
                 caps.put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(Platform.getMinecraftServer().getRecipeManager(), be.metaMachine);
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
                 GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine)) {
                     drops.clear();

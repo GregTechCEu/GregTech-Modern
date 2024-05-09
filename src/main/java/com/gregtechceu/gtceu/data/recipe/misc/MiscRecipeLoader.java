@@ -203,10 +203,8 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // QuarkTech Suite
-        // TODO armor
-        /*
         ASSEMBLER_RECIPES.recipeBuilder("quantum_helmet").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 5)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(SENSOR_IV)
@@ -216,25 +214,25 @@ public class MiscRecipeLoader {
                 .inputItems(foil, Ruthenium, 20)
                 .inputItems(wireFine, Rhodium, 32)
                 .inputFluids(Titanium.getFluid(L * 10))
-                .outputItems(QUANTUM_HELMET)
+                .outputItems(QUANTUM_HELMET.asStack())
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 8)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
-                .inputItems(EMITTER_IV.getStackForm(2))
+                .inputItems(EMITTER_IV.asStack(2))
                 .inputItems(FIELD_GENERATOR_IV)
                 .inputItems(screw, TungstenSteel, 4)
                 .inputItems(plate, Iridium, 8)
                 .inputItems(foil, Ruthenium, 32)
                 .inputItems(wireFine, Rhodium, 48)
                 .inputFluids(Titanium.getFluid(L * 16))
-                .outputItems(QUANTUM_CHESTPLATE)
+                .outputItems(QUANTUM_CHESTPLATE.asStack())
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 7)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_MOTOR_IV, 4)
@@ -244,11 +242,11 @@ public class MiscRecipeLoader {
                 .inputItems(foil, Ruthenium, 28)
                 .inputItems(wireFine, Rhodium, 40)
                 .inputFluids(Titanium.getFluid(L * 14))
-                .outputItems(QUANTUM_LEGGINGS)
+                .outputItems(QUANTUM_LEGGINGS.asStack())
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_PISTON_IV, 2)
@@ -258,25 +256,24 @@ public class MiscRecipeLoader {
                 .inputItems(foil, Ruthenium, 16)
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
-                .outputItems(QUANTUM_BOOTS)
+                .outputItems(QUANTUM_BOOTS.asStack())
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputNBT(((ArmorMetaItem<?>) QUANTUM_CHESTPLATE.getItem()).getItem(QUANTUM_CHESTPLATE), NBTMatcher.ANY, NBTCondition.ANY)
+                .inputItems(QUANTUM_CHESTPLATE.asItem())
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(wireFine, NiobiumTitanium, 64)
                 .inputItems(wireGtQuadruple, Osmium, 6)
                 .inputItems(plateDouble, Iridium, 4)
                 .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(circuit, Tier.ZPM)
+                .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(plateDense, RhodiumPlatedPalladium, 2)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
                 .inputItems(ELECTRIC_MOTOR_LuV, 2)
                 .inputItems(screw, HSSS, 8)
-                .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
+                .outputItems(QUANTUM_CHESTPLATE_ADVANCED.asStack())
                 .save(provider);
-        */
 
         // TODO Central monitor
         /*

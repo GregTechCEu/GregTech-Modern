@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
@@ -166,7 +166,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private boolean isMagnet(@NotNull ItemStack stack) {
-        if (stack.getItem() instanceof ComponentItem metaItem) {
+        if (stack.getItem() instanceof IComponentItem metaItem) {
             for (var behavior : metaItem.getComponents()) {
                 if (behavior instanceof ItemMagnetBehavior) {
                     return true;
