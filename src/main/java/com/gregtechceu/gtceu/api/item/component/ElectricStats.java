@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
@@ -164,7 +163,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         items.add(new ItemStack(item));
         var stack = new ItemStack(item);
         var electricItem = GTCapabilityHelper.getElectricItem(stack);

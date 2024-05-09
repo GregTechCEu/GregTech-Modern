@@ -161,6 +161,15 @@
     ],
     "subtitle": "gtceu.subtitle.furnace"
   },
+  "jet_engine": {
+    "sounds": [
+      {
+        "type": "file",
+        "name": "gtceu:jet_engine"
+      }
+    ],
+    "subtitle": "gtceu.subtitle.jet_engine"
+  },
   "macerator": {
     "sounds": [
       {

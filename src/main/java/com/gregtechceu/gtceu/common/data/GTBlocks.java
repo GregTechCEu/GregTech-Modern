@@ -584,7 +584,6 @@ public class GTBlocks {
     public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("steel_brick_casing", "bricked_steel");
 
     // Heating Coils
-    public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
     public static final BlockEntry<CoilBlock> COIL_KANTHAL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
     public static final BlockEntry<CoilBlock> COIL_NICHROME = createCoilBlock(CoilBlock.CoilType.NICHROME);
@@ -595,7 +594,6 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_TRITANIUM = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
     // PSS batteries
-    public static final Map<IBatteryData, Supplier<BatteryBlock>> PSS_BATTERIES = new HashMap<>();
     public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_I = createBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_I);
     public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_EV = createBatteryBlock(BatteryBlock.BatteryPartType.EV_LAPOTRONIC);
     public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_IV = createBatteryBlock(BatteryBlock.BatteryPartType.IV_LAPOTRONIC);
@@ -620,7 +618,6 @@ public class GTBlocks {
     public static final BlockEntry<Block> FUSION_GLASS = createGlassCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> RenderType::cutoutMipped);
 
     // Cleanroom
-    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
     public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
     public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
     public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
@@ -804,7 +801,7 @@ public class GTBlocks {
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
                 .build()
                 .register();
-        ALL_COILS.put(coilType, coilBlock);
+        GTCEuAPI.HEATING_COILS.put(coilType, coilBlock);
         return coilBlock;
     }
 
@@ -826,7 +823,7 @@ public class GTBlocks {
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
                 .build()
                 .register();
-        PSS_BATTERIES.put(batteryData, batteryBlock);
+        GTCEuAPI.PSS_BATTERIES.put(batteryData, batteryBlock);
         return batteryBlock;
     }
 
@@ -858,7 +855,7 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
-        ALL_FILTERS.put(filterType, filterBlock);
+        GTCEuAPI.CLEANROOM_FILTERS.put(filterType, filterBlock);
         return filterBlock;
     }
 
@@ -1053,8 +1050,8 @@ public class GTBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<StandingSignBlock> RUBBER_SIGN = REGISTRATE
-        .block("rubber_sign", (p) -> new StandingSignBlock(p, RUBBER_TYPE))
+    public static final BlockEntry<GTStandingSignBlock> RUBBER_SIGN = REGISTRATE
+        .block("rubber_sign", (p) -> new GTStandingSignBlock(p, RUBBER_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_SIGN)
         .lang("Rubber Sign")
         .blockstate((ctx, prov) -> prov.signBlock(ctx.get(), GTBlocks.RUBBER_WALL_SIGN.get(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get())))
@@ -1066,17 +1063,17 @@ public class GTBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<WallSignBlock> RUBBER_WALL_SIGN = REGISTRATE
-        .block("rubber_wall_sign", (p) -> new WallSignBlock(p, RUBBER_TYPE))
+    public static final BlockEntry<GTWallSignBlock> RUBBER_WALL_SIGN = REGISTRATE
+        .block("rubber_wall_sign", (p) -> new GTWallSignBlock(p, RUBBER_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_WALL_SIGN)
-        .lang("Rubber Sign")
+        .lang("Rubber Wall Sign")
         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
         .tag(BlockTags.WALL_SIGNS)
         .loot((table, block) -> table.dropOther(block, RUBBER_SIGN.asItem()))
         .register();
 
-    public static final BlockEntry<CeilingHangingSignBlock> RUBBER_HANGING_SIGN = REGISTRATE
-        .block("rubber_hanging_sign", (p) -> new CeilingHangingSignBlock(p, RUBBER_TYPE))
+    public static final BlockEntry<GTCeilingHangingSignBlock> RUBBER_HANGING_SIGN = REGISTRATE
+        .block("rubber_hanging_sign", (p) -> new GTCeilingHangingSignBlock(p, RUBBER_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_HANGING_SIGN)
         .lang("Rubber Hanging Sign")
         .blockstate((ctx, prov) -> {
@@ -1086,15 +1083,16 @@ public class GTBlocks {
         .tag(BlockTags.CEILING_HANGING_SIGNS)
         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .item((b, p) -> new HangingSignItem(b, GTBlocks.RUBBER_WALL_HANGING_SIGN.get(), p))
+        .defaultModel()
         .tag(ItemTags.HANGING_SIGNS)
         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .build()
         .register();
 
-    public static final BlockEntry<WallHangingSignBlock> RUBBER_WALL_HANGING_SIGN = REGISTRATE
-        .block("rubber_wall_hanging_sign", (p) -> new WallHangingSignBlock(p, RUBBER_TYPE))
+    public static final BlockEntry<GTWallHangingSignBlock> RUBBER_WALL_HANGING_SIGN = REGISTRATE
+        .block("rubber_wall_hanging_sign", (p) -> new GTWallHangingSignBlock(p, RUBBER_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_WALL_HANGING_SIGN)
-        .lang("Rubber Hanging Sign")
+        .lang("Rubber Wall Hanging Sign")
         .blockstate((ctx, prov) -> {
             ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get()));
             prov.simpleBlock(ctx.get(), model);
@@ -1207,50 +1205,52 @@ public class GTBlocks {
         .tag(ItemTags.WOODEN_FENCES)
         .build()
         .register();
-    public static final BlockEntry<StandingSignBlock> TREATED_WOOD_SIGN = REGISTRATE
-        .block("treated_wood_sign", (p) -> new StandingSignBlock(p, TREATED_WOOD_TYPE))
+    public static final BlockEntry<GTStandingSignBlock> TREATED_WOOD_SIGN = REGISTRATE
+        .block("treated_wood_sign", (p) -> new GTStandingSignBlock(p, TREATED_WOOD_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_SIGN)
         .lang("Treated Wood Sign")
         .blockstate((ctx, prov) -> prov.signBlock(ctx.get(), GTBlocks.TREATED_WOOD_WALL_SIGN.get(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
         .tag(BlockTags.STANDING_SIGNS)
+        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .item((b, p) -> new SignItem(p, b, GTBlocks.TREATED_WOOD_WALL_SIGN.get()))
         .defaultModel()
         .tag(ItemTags.SIGNS)
         .build()
         .register();
-    public static final BlockEntry<WallSignBlock> TREATED_WOOD_WALL_SIGN = REGISTRATE
-        .block("treated_wood_wall_sign", (p) -> new WallSignBlock(p, TREATED_WOOD_TYPE))
+    public static final BlockEntry<GTWallSignBlock> TREATED_WOOD_WALL_SIGN = REGISTRATE
+        .block("treated_wood_wall_sign", (p) -> new GTWallSignBlock(p, TREATED_WOOD_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_WALL_SIGN)
         .lang("Treated Wood Wall Sign")
         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
-        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .tag(BlockTags.WALL_SIGNS)
         .loot((table, block) -> table.dropOther(block, TREATED_WOOD_SIGN.asItem()))
         .register();
-    public static final BlockEntry<CeilingHangingSignBlock> TREATED_WOOD_HANGING_SIGN = REGISTRATE
-        .block("treated_wood_hanging_sign", (p) -> new CeilingHangingSignBlock(p, TREATED_WOOD_TYPE))
+    public static final BlockEntry<GTCeilingHangingSignBlock> TREATED_WOOD_HANGING_SIGN = REGISTRATE
+        .block("treated_wood_hanging_sign", (p) -> new GTCeilingHangingSignBlock(p, TREATED_WOOD_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_HANGING_SIGN)
         .lang("Treated Wood Hanging Sign")
         .blockstate((ctx, prov) -> {
-            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get()));
+            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get()));
             prov.simpleBlock(ctx.get(), model);
         })
         .tag(BlockTags.CEILING_HANGING_SIGNS)
-        .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_HANGING_SIGN.get(), p))
         .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+        .item((b, p) -> new HangingSignItem(b, GTBlocks.TREATED_WOOD_WALL_HANGING_SIGN.get(), p))
+        .defaultModel()
         .tag(ItemTags.HANGING_SIGNS)
+        .setData(ProviderType.LANG, NonNullBiConsumer.noop())
         .build()
         .register();
-    public static final BlockEntry<WallHangingSignBlock> TREATED_WOOD_WALL_HANGING_SIGN = REGISTRATE
-        .block("treated_wood_wall_hanging_sign", (p) -> new WallHangingSignBlock(p, TREATED_WOOD_TYPE))
+    public static final BlockEntry<GTWallHangingSignBlock> TREATED_WOOD_WALL_HANGING_SIGN = REGISTRATE
+        .block("treated_wood_wall_hanging_sign", (p) -> new GTWallHangingSignBlock(p, TREATED_WOOD_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_WALL_HANGING_SIGN)
         .lang("Treated Wood Wall Hanging Sign")
         .blockstate((ctx, prov) -> {
-            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get()));
+            ModelFile model = prov.models().sign(ctx.getName(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get()));
             prov.simpleBlock(ctx.get(), model);
         })
         .tag(BlockTags.WALL_HANGING_SIGNS)
-        .loot((table, block) -> table.dropOther(block, TREATED_WOOD_WALL_SIGN.asItem()))
+        .loot((table, block) -> table.dropOther(block, TREATED_WOOD_HANGING_SIGN.asItem()))
         .register();
     public static final BlockEntry<PressurePlateBlock> TREATED_WOOD_PRESSURE_PLATE = REGISTRATE
         .block("treated_wood_pressure_plate", (p) -> new PressurePlateBlock(PressurePlateBlock.Sensitivity.EVERYTHING, p, TREATED_WOOD_SET))

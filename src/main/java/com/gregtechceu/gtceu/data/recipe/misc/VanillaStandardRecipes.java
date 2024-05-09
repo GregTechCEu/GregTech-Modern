@@ -1044,8 +1044,9 @@ public class VanillaStandardRecipes {
 
         MIXER_RECIPES.recipeBuilder("mud")
                 .inputItems(new ItemStack(Blocks.DIRT))
+                .circuitMeta(1)
                 .inputFluids(Water.getFluid(L))
-                .outputItems(new ItemStack(Blocks.COARSE_DIRT, 2))
+                .outputItems(new ItemStack(Blocks.MUD, 1))
                 .duration(100).EUt(4).save(provider);
     }
 
