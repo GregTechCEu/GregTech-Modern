@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.jei.oreprocessing;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.integration.GTOreByProductWidget;
 
 import com.lowdragmc.lowdraglib.jei.ModularWrapper;

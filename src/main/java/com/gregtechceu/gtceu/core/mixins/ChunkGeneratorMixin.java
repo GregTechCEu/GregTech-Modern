@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.data.worldgen.ores.OrePlacer;
-
+import com.gregtechceu.gtceu.api.worldgen.ores.OrePlacer;
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;

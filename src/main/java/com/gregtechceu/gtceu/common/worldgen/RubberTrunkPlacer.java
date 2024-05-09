@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.worldgen;
 
-import com.gregtechceu.gtceu.common.data.GTPlacerTypes;
-import com.mojang.serialization.Codec;
+import com.google.common.collect.ImmutableList;
+import com.gregtechceu.gtceu.data.worldgen.GTPlacerTypes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;

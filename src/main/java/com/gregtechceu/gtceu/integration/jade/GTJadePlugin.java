@@ -1,24 +1,15 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.integration.jade.provider.*;
-
-import net.minecraft.world.item.Item;
+import com.gregtechceu.gtceu.integration.jade.provider.ControllableBlockProvider;
+import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockProvider;
+import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
+import com.gregtechceu.gtceu.integration.jade.provider.WorkableBlockProvider;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import snownee.jade.addon.harvest.HarvestToolProvider;
-import snownee.jade.addon.harvest.SimpleToolHandler;
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
-
-import java.util.Objects;
 
 @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {

@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.common.util.Lazy;
 

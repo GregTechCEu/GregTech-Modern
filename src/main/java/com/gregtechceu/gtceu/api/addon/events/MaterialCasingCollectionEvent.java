@@ -1,7 +1,8 @@
 package com.gregtechceu.gtceu.api.addon.events;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-
+import com.google.common.collect.ImmutableMap;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.tterrag.registrate.util.entry.BlockEntry;
 import net.minecraft.world.level.block.Block;
 
 import com.google.common.collect.ImmutableMap;

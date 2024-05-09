@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static com.gregtechceu.gtceu.common.data.GTMachines.defaultTankSizeFunction;
+import static com.gregtechceu.gtceu.data.machine.GTMachines.defaultTankSizeFunction;
 
 /**
  * @author h3tr

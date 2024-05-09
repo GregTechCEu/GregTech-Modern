@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
-
+import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
 import com.lowdragmc.lowdraglib.async.AsyncThreadData;
-
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkResult;
 import net.minecraft.server.level.ServerChunkCache;
