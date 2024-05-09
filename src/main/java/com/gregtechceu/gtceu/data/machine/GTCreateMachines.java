@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.machines;
+package com.gregtechceu.gtceu.data.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;

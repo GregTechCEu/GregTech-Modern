@@ -13,7 +13,7 @@ import static com.gregtechceu.gtceu.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.data.GTMachines.*;
 import static com.gregtechceu.gtceu.data.GTMaterials.*;
 import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.data.machines.GTResearchMachines.*;
+import static com.gregtechceu.gtceu.data.machine.GTResearchMachines.*;
 
 public class ComputerRecipes {
 

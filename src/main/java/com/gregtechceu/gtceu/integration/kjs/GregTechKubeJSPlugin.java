@@ -40,7 +40,7 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.*;
 import com.gregtechceu.gtceu.common.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.gregtechceu.gtceu.data.machines.GCyMMachines;
+import com.gregtechceu.gtceu.data.machine.GCyMMachines;
 import com.gregtechceu.gtceu.integration.kjs.builders.*;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.CoilBlockBuilder;
 import com.gregtechceu.gtceu.integration.kjs.builders.block.RendererBlockBuilder;

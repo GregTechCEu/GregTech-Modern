@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.data.machines.GTCreateMachines;
+import com.gregtechceu.gtceu.data.machine.GTCreateMachines;
 import com.simibubi.create.AllBlocks;
 import com.simibubi.create.AllItems;
 import net.minecraft.data.recipes.RecipeOutput;

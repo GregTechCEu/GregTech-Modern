@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
 import com.gregtechceu.gtceu.data.GTBlocks;
 import com.gregtechceu.gtceu.data.GTMachines;
-import com.gregtechceu.gtceu.data.machines.GTAEMachines;
+import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
