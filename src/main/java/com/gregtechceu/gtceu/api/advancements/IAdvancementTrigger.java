@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.advancement;
+package com.gregtechceu.gtceu.api.advancements;
 
 import net.minecraft.advancements.CriterionTrigger;
 import net.minecraft.server.level.ServerPlayer;

@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.api;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.addon.AddonFinder;
-import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.addons.AddonFinder;
+import com.gregtechceu.gtceu.api.addons.IGTAddon;
 import com.gregtechceu.gtceu.api.chemical.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;

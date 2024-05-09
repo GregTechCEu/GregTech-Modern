@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.addon.events;
+package com.gregtechceu.gtceu.api.addons.events;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.ContentJS;

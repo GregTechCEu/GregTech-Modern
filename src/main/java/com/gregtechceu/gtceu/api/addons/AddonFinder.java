@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.addon;
+package com.gregtechceu.gtceu.api.addons;
 
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforgespi.language.ModFileScanData;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.addon.events;
+package com.gregtechceu.gtceu.api.addons.events;
 
 import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.chemical.material.Material;
