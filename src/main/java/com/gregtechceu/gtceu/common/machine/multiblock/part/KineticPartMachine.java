@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IWorkableMultiController;
+import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.gregtechceu.gtceu.common.machine.trait.NotifiableStressTrait;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

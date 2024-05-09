@@ -6,11 +6,10 @@ import appeng.api.networking.IManagedGridNode;
 import appeng.api.util.AECableType;
 import appeng.me.helpers.BlockEntityNodeListener;
 import appeng.me.helpers.IGridConnectedBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
+import com.gregtechceu.gtceu.api.machines.MetaMachine;
+import com.gregtechceu.gtceu.api.machines.trait.MachineTrait;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
-import net.minecraft.world.item.ItemStack;
 
 public class GridNodeHostTrait extends MachineTrait implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
     protected final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(GridNodeHostTrait.class);

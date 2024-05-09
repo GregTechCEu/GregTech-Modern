@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.pattern;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.core.BlockPos;

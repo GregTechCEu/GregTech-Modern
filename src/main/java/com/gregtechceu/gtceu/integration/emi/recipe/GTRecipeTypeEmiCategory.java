@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import dev.emi.emi.api.EmiRegistry;

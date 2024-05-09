@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.machine.kinetic;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.SimpleTieredMachine;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.common.machine.trait.NotifiableStressTrait;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;

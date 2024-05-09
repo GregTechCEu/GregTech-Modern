@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance;
 
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.machine.storage.LongDistanceEndpointMachine;
 import net.neoforged.neoforge.fluids.FluidStack;

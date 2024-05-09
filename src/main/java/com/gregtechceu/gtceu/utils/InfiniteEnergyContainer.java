@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machines.MetaMachine;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableEnergyContainer;
 
 public class InfiniteEnergyContainer extends NotifiableEnergyContainer {
     public InfiniteEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {

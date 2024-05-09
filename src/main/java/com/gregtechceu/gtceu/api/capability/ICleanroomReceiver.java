@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.machine.feature.ICleanroomProvider;
+import com.gregtechceu.gtceu.api.machines.feature.ICleanroomProvider;
 
 import org.jetbrains.annotations.Nullable;
 

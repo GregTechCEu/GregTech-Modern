@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.covers.filter.ItemFilter;
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.guis.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.guis.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.machines.ConditionalSubscriptionHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;

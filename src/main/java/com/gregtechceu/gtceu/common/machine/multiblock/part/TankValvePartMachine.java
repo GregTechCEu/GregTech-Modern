@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
+import com.gregtechceu.gtceu.api.machines.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machines.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machines.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.MultiblockTankMachine;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;

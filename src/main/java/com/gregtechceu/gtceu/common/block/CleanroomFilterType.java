@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.blocks.IFilterType;
-import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machines.multiblock.CleanroomType;
 import lombok.Getter;
 
 import org.jetbrains.annotations.NotNull;

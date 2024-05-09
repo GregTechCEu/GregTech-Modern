@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
 
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;

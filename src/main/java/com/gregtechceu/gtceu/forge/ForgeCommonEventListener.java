@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blocks.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machines.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;

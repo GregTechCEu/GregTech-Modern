@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.api.items.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.items.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.items.datacomponents.GTTool;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;

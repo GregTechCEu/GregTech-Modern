@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.covers.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.guis.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.guis.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.guis.widget.NumberInputWidget;
-import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
+import com.gregtechceu.gtceu.api.machines.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;

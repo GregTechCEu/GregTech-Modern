@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiPart;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;

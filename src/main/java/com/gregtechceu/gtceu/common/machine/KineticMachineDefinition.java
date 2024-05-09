@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine;
 
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;

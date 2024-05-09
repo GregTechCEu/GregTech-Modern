@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.kinetic;
 
-import com.gregtechceu.gtceu.api.machine.feature.IMachineFeature;
+import com.gregtechceu.gtceu.api.machines.feature.IMachineFeature;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import net.minecraft.core.Direction;

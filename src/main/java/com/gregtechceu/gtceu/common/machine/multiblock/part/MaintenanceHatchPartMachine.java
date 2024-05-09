@@ -1,17 +1,17 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
+import com.gregtechceu.gtceu.api.machines.TickableSubscription;
+import com.gregtechceu.gtceu.api.machines.feature.IInteractedMachine;
+import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machines.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;

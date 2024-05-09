@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.api.RotationState;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.machines.MachineDefinition;
+import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
 import net.minecraft.network.chat.Component;
 
 import static com.gregtechceu.gtceu.api.GTValues.EV;
-import static com.gregtechceu.gtceu.api.GTValues.UHV;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
 @SuppressWarnings("unused")

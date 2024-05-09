@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableComputationContainer;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableComputationContainer;
 
 /**
  * Used in conjunction with {@link NotifiableComputationContainer}.

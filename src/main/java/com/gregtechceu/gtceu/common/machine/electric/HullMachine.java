@@ -3,12 +3,11 @@ package com.gregtechceu.gtceu.common.machine.electric;
 import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
-import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.multiblock.part.MultiblockPartMachine;
+import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredPartMachine;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -18,7 +17,6 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.EnumSet;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

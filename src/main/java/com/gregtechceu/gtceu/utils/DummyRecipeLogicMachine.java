@@ -4,9 +4,9 @@ import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.WorkableTieredMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
+import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machines.WorkableTieredMachine;
+import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
 import java.util.List;

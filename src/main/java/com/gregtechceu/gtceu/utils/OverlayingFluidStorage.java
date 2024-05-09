@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.machines.trait.NotifiableFluidTank;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import lombok.RequiredArgsConstructor;
 import net.neoforged.neoforge.fluids.FluidStack;

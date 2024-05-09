@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.blocks;
 
-import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+import com.gregtechceu.gtceu.api.machines.multiblock.CleanroomType;
 import net.minecraft.util.StringRepresentable;
 
 import org.jetbrains.annotations.NotNull;

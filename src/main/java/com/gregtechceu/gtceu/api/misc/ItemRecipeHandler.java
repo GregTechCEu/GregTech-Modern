@@ -8,7 +8,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import lombok.Getter;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
@@ -16,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler.handleIngredient;
+import static com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler.handleIngredient;
 
 /**
  * @author KilaBash

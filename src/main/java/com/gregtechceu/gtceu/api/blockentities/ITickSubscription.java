@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.blockentities;
 
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machines.TickableSubscription;
 import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.Nullable;
