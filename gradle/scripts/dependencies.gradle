@@ -21,7 +21,7 @@ dependencies {
     // REI
     compileOnly forge.rei.plugin
     compileOnly forge.rei.api
-    compileOnly forge.rei.forge
+    implementation forge.rei.forge
 
     // EMI
     compileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
