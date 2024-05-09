@@ -1,13 +1,13 @@
-package com.gregtechceu.gtceu.api.fluids;
+package com.gregtechceu.gtceu.api.fluid;
 
 import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -27,7 +27,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.fluids.FluidConstants.*;
+import static com.gregtechceu.gtceu.api.fluid.FluidConstants.*;
 
 @Accessors(fluent = true, chain = true)
 public class FluidBuilder {

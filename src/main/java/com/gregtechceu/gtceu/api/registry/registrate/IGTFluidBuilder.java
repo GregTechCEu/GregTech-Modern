@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
 
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.tterrag.registrate.util.entry.FluidEntry;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import net.minecraft.world.level.material.Fluid;
 

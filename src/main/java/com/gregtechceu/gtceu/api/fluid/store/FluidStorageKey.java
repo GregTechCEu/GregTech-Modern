@@ -1,8 +1,8 @@
-package com.gregtechceu.gtceu.api.fluids.store;
+package com.gregtechceu.gtceu.api.fluid.store;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;

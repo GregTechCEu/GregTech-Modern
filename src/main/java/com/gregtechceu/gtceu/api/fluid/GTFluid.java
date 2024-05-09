@@ -1,8 +1,8 @@
-package com.gregtechceu.gtceu.api.fluids;
+package com.gregtechceu.gtceu.api.fluid;
 
 
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluid.attribute.IAttributedFluid;
 import it.unimi.dsi.fastutil.objects.ObjectLinkedOpenHashSet;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;

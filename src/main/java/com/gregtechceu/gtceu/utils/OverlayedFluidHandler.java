@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;

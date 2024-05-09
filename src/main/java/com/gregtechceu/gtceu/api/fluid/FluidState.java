@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.fluids;
+package com.gregtechceu.gtceu.api.fluid;
 
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;

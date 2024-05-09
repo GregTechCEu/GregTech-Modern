@@ -1,7 +1,7 @@
-package com.gregtechceu.gtceu.api.fluids.forge;
+package com.gregtechceu.gtceu.api.fluid.forge;
 
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.GTFluid;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;

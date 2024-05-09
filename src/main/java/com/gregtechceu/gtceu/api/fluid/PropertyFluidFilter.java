@@ -1,8 +1,8 @@
-package com.gregtechceu.gtceu.api.fluids;
+package com.gregtechceu.gtceu.api.fluid;
 
 import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import lombok.Getter;
