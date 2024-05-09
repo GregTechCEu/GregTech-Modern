@@ -584,7 +584,6 @@ public class GTBlocks {
     public static final BlockEntry<Block> STEEL_BRICKS_HULL = createSteamCasing("steel_brick_casing", "bricked_steel");
 
     // Heating Coils
-    public static final Map<ICoilType, Supplier<CoilBlock>> ALL_COILS = new HashMap<>();
     public static final BlockEntry<CoilBlock> COIL_CUPRONICKEL = createCoilBlock(CoilBlock.CoilType.CUPRONICKEL);
     public static final BlockEntry<CoilBlock> COIL_KANTHAL = createCoilBlock(CoilBlock.CoilType.KANTHAL);
     public static final BlockEntry<CoilBlock> COIL_NICHROME = createCoilBlock(CoilBlock.CoilType.NICHROME);
@@ -595,7 +594,6 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_TRITANIUM = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
     // PSS batteries
-    public static final Map<IBatteryData, Supplier<BatteryBlock>> PSS_BATTERIES = new HashMap<>();
     public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_I = createBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_I);
     public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_EV = createBatteryBlock(BatteryBlock.BatteryPartType.EV_LAPOTRONIC);
     public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_IV = createBatteryBlock(BatteryBlock.BatteryPartType.IV_LAPOTRONIC);
@@ -620,7 +618,6 @@ public class GTBlocks {
     public static final BlockEntry<Block> FUSION_GLASS = createGlassCasingBlock("fusion_glass", GTCEu.id("block/casings/transparent/fusion_glass"), () -> RenderType::cutoutMipped);
 
     // Cleanroom
-    public static final Map<IFilterType, Supplier<Block>> ALL_FILTERS = new HashMap<>();
     public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
     public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
     public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(CleanroomFilterType.FILTER_CASING_STERILE);
@@ -804,7 +801,7 @@ public class GTBlocks {
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
                 .build()
                 .register();
-        ALL_COILS.put(coilType, coilBlock);
+        GTCEuAPI.HEATING_COILS.put(coilType, coilBlock);
         return coilBlock;
     }
 
@@ -826,7 +823,7 @@ public class GTBlocks {
                 .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
                 .build()
                 .register();
-        PSS_BATTERIES.put(batteryData, batteryBlock);
+        GTCEuAPI.PSS_BATTERIES.put(batteryData, batteryBlock);
         return batteryBlock;
     }
 
@@ -858,7 +855,7 @@ public class GTBlocks {
                 .model(NonNullBiConsumer.noop())
                 .build()
                 .register();
-        ALL_FILTERS.put(filterType, filterBlock);
+        GTCEuAPI.CLEANROOM_FILTERS.put(filterType, filterBlock);
         return filterBlock;
     }
 
