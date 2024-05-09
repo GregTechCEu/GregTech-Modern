@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.core.mixins.RecipeManagerAccessor;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import net.minecraft.core.BlockPos;

@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machines.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.recipes.*;
 import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipes.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.recipes.*;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;

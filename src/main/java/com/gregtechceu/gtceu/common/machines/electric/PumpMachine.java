@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machines.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidBlockTransfer;
 import com.gregtechceu.gtceu.core.mixins.LiquidBlockAccessor;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTBlocks;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machines.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;

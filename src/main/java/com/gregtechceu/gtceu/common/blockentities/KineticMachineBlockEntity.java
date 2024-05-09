@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentities.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
-import com.gregtechceu.gtceu.common.CommonProxy;
+import com.gregtechceu.gtceu.data.CommonProxy;
 import com.gregtechceu.gtceu.common.machines.KineticMachineDefinition;
 import com.jozufozu.flywheel.api.MaterialManager;
 import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;

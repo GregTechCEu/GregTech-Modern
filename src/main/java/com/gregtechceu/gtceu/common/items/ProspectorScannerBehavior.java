@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.guis.widget.ProspectingMapWidget;
 import com.gregtechceu.gtceu.api.items.component.IAddInformation;
 import com.gregtechceu.gtceu.api.items.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.items.component.IItemUIFactory;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;

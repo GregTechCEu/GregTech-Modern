@@ -4,7 +4,7 @@ package com.gregtechceu.gtceu.api.items.capability;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.items.datacomponents.SimpleEnergyContent;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.GTDataComponents;
 import lombok.AllArgsConstructor;
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;

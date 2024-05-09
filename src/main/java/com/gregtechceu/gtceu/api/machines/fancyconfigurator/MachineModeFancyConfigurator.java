@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.guis.fancy.FancyMachineUIWidget;
 import com.gregtechceu.gtceu.api.guis.fancy.IFancyUIProvider;
 import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.*;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;

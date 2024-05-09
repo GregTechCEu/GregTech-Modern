@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
+import com.gregtechceu.gtceu.data.GTBedrockFluids;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

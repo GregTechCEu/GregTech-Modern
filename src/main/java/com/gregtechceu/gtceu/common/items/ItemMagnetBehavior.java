@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.items.ComponentItem;
 import com.gregtechceu.gtceu.api.items.component.IAddInformation;
 import com.gregtechceu.gtceu.api.items.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.items.component.IItemLifeCycle;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.GTDataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;

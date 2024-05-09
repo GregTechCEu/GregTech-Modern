@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.machines.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machines.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;

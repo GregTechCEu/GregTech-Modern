@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.items.component.IAddInformation;
 import com.gregtechceu.gtceu.api.items.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
-import com.gregtechceu.gtceu.common.data.GTSoundEntries;
+import com.gregtechceu.gtceu.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GradientUtil;

@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockM
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.gregtechceu.gtceu.common.items.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machines.trait.miner.LargeMinerLogic;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
@@ -48,7 +48,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.common.data.GTMaterials.DrillingFluid;
+import static com.gregtechceu.gtceu.data.GTMaterials.DrillingFluid;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

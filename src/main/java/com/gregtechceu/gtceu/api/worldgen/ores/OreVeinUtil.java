@@ -6,7 +6,7 @@ import com.google.gson.JsonPrimitive;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTOres;
+import com.gregtechceu.gtceu.data.GTOres;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipes.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.data.GTMachines;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.tterrag.registrate.builders.BlockBuilder;

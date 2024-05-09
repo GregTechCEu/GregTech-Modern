@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.content.Content;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.*;
+import com.gregtechceu.gtceu.data.*;
 import com.gregtechceu.gtceu.api.items.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;

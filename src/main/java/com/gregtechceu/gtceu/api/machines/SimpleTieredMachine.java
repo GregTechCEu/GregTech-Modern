@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipes.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.items.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;

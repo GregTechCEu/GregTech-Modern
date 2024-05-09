@@ -28,7 +28,7 @@ import com.gregtechceu.gtceu.api.multiblocks.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblocks.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblocks.Predicates;
 import com.gregtechceu.gtceu.api.multiblocks.TraceabilityPredicate;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.GTBlocks;
 import com.gregtechceu.gtceu.common.items.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machines.electric.HullMachine;
 import com.gregtechceu.gtceu.common.machines.multiblock.part.DiodePartMachine;
