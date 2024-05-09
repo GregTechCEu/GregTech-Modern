@@ -646,7 +646,6 @@ public class LangHandler {
         provider.add("behavior.prospector.not_enough_energy", "Not Enough Energy!");
         provider.add("metaitem.tricorder_scanner.tooltip", "Tricorder");
         provider.add("metaitem.debug_scanner.tooltip", "Tricorder");
-        provider.add("behavior.portable_scanner.amp_per_sec", "Last Second %s A");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount", "Fluid In Deposit: %s %s - %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.amount_unknown", "Fluid In Deposit: %s%%");
         provider.add("behavior.portable_scanner.bedrock_fluid.nothing", "Fluid In Deposit: §6Nothing§r");
@@ -663,7 +662,8 @@ public class LangHandler {
         provider.add("behavior.portable_scanner.energy_container_in", "Max IN: %s (%s) EU at %s A");
         provider.add("behavior.portable_scanner.energy_container_out", "Max OUT: %s (%s) EU at %s A");
         provider.add("behavior.portable_scanner.energy_container_storage", "Energy: %s EU / %s EU");
-        provider.add("behavior.portable_scanner.eu_per_sec", "Last Second %s EU");
+        provider.add("behavior.portable_scanner.eu_per_sec", "Average (last second): %s EU/t");
+        provider.add("behavior.portable_scanner.amp_per_sec", "Average (last second): %s A");
         provider.add("behavior.portable_scanner.machine_disabled", "Disabled.");
         provider.add("behavior.portable_scanner.machine_power_loss", "Shut down due to power loss.");
         provider.add("behavior.portable_scanner.machine_progress", "Progress/Load: %s / %s");
