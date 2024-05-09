@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
 import com.gregtechceu.gtceu.client.renderer.machine.SplitShaftTieredHullMachineRenderer;
 import com.gregtechceu.gtceu.common.blocks.KineticMachineBlock;
-import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
+import com.gregtechceu.gtceu.common.blockentities.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.common.machines.KineticMachineDefinition;

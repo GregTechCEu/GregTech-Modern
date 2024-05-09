@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.guis.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machines.ConditionalSubscriptionHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.api.transfer.item.ItemTransferDelegate;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.blockentities.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.covers.data.DistributionMode;
 import com.gregtechceu.gtceu.common.covers.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;

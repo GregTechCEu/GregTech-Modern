@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.common.blockentity.*;
+import com.gregtechceu.gtceu.common.blockentities.*;
 import com.tterrag.registrate.util.entry.BlockEntityEntry;
 import com.tterrag.registrate.util.entry.BlockEntry;
 

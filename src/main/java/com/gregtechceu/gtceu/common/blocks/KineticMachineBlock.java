@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.blocks.BlockProperties;
 import com.gregtechceu.gtceu.api.blocks.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
-import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
+import com.gregtechceu.gtceu.common.blockentities.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machines.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machines.kinetic.IKineticMachine;
 import com.simibubi.create.content.kinetics.base.IRotate;

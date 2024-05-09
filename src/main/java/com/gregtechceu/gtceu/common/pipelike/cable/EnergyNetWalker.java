@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.materials.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
-import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
+import com.gregtechceu.gtceu.common.blockentities.CableBlockEntity;
 import com.llamalad7.mixinextras.lib.apache.commons.ArrayUtils;
 import com.lowdragmc.lowdraglib.LDLib;
 import net.minecraft.core.BlockPos;

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.covers.CoverBehavior;
-import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
+import com.gregtechceu.gtceu.common.blockentities.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.covers.ConveyorCover;
 import com.gregtechceu.gtceu.common.covers.ItemFilterCover;
 import com.gregtechceu.gtceu.common.covers.RobotArmCover;

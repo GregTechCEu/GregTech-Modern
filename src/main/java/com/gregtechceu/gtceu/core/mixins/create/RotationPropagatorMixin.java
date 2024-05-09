@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.create;
 
-import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
+import com.gregtechceu.gtceu.common.blockentities.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machines.kinetic.IKineticMachine;
 import com.simibubi.create.content.kinetics.RotationPropagator;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
