@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.FacadeWrapper;
+import com.gregtechceu.gtceu.api.items.ComponentItem;
+import com.gregtechceu.gtceu.api.items.datacomponents.FacadeWrapper;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
-import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
-import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
+import com.gregtechceu.gtceu.api.items.component.ICustomDescriptionId;
+import com.gregtechceu.gtceu.api.items.component.ICustomRenderer;
+import com.gregtechceu.gtceu.api.items.component.ISubItemHandler;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;

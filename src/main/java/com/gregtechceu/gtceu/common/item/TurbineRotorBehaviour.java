@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.item;
 
 
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
-import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
+import com.gregtechceu.gtceu.api.items.ComponentItem;
+import com.gregtechceu.gtceu.api.items.component.IMaterialPartItem;
+import com.gregtechceu.gtceu.api.items.component.ISubItemHandler;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;

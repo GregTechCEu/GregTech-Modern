@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 
-import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.api.items.component.IInteractionItem;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BoneMealItem;

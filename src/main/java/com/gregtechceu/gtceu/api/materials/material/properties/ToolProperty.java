@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.materials.material.properties;
 
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -12,7 +12,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
 
-import static com.gregtechceu.gtceu.api.item.tool.GTToolType.*;
+import static com.gregtechceu.gtceu.api.items.tool.GTToolType.*;
 
 public class ToolProperty implements IMaterialProperty<ToolProperty> {
 

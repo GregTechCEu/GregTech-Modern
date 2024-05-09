@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.items.ComponentItem;
+import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.client.util.ToolChargeBarRenderer;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;

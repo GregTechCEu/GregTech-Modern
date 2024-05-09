@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
-import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.items.ComponentItem;
+import com.gregtechceu.gtceu.api.items.IGTTool;
+import com.gregtechceu.gtceu.api.items.component.IDurabilityBar;
+import com.gregtechceu.gtceu.api.items.component.IItemComponent;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;

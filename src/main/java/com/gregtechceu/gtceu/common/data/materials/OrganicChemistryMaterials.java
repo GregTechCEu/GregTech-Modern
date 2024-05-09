@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet.FINE;

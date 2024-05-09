@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
 import com.google.common.collect.ImmutableSet;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
-import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
+import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.items.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.items.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.api.items.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Used to allow a tool to hoe the ground, only if it cannot extend the {@link com.gregtechceu.gtceu.api.item.tool.GTHoeItem}
+ * Used to allow a tool to hoe the ground, only if it cannot extend the {@link com.gregtechceu.gtceu.api.items.tool.GTHoeItem}
  * class.
  */
 public class HoeGroundBehavior implements IToolBehavior<HoeGroundBehavior> {

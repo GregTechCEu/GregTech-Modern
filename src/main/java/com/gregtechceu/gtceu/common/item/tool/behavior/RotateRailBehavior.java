@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
+import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.items.tool.behavior.IToolBehavior;
+import com.gregtechceu.gtceu.api.items.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;

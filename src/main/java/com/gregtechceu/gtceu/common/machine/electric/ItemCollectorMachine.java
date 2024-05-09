@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.guis.WidgetUtils;
 import com.gregtechceu.gtceu.api.guis.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.guis.editor.EditableUI;
 import com.gregtechceu.gtceu.api.guis.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;

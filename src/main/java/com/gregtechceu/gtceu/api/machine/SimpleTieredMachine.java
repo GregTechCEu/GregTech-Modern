@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.guis.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.guis.editor.EditableUI;
 import com.gregtechceu.gtceu.api.guis.fancy.ConfiguratorPanel;
 import com.gregtechceu.gtceu.api.guis.widget.GhostCircuitSlotWidget;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.fancyconfigurator.CircuitFancyConfigurator;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;

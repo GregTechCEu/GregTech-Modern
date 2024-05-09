@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.api.blocks;
 
 import com.gregtechceu.gtceu.api.RotationState;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.MetaMachineItem;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.items.IGTTool;
+import com.gregtechceu.gtceu.api.items.MetaMachineItem;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;

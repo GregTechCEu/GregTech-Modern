@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.mojang.datafixers.util.Pair;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.ItemStack;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.client.renderer.item;
 
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.items.TagPrefixItem;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;

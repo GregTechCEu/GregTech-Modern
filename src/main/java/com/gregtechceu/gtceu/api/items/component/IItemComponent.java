@@ -1,0 +1,19 @@
+package com.gregtechceu.gtceu.api.items.component;
+
+import com.gregtechceu.gtceu.api.items.ComponentItem;
+import net.minecraft.world.item.Item;
+
+/**
+ * @author KilaBash
+ * @date 2023/2/22
+ * @implNote IItemComponent
+ *
+ * Describes generic component attachable to {@link ComponentItem}
+ * Multiple components can be attached to one item
+ *
+ */
+public interface IItemComponent {
+    default void onAttached(Item item) {
+
+    }
+}

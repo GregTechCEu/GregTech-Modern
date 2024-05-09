@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins.rei;
 
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.llamalad7.mixinextras.injector.ModifyExpressionValue;
+import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import me.shedaniel.rei.impl.common.transfer.InputSlotCrafter;

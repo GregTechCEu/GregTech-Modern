@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.item.tool;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
+import com.gregtechceu.gtceu.api.items.IGTTool;
+import com.gregtechceu.gtceu.api.items.capability.ElectricItem;
+import com.gregtechceu.gtceu.api.items.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

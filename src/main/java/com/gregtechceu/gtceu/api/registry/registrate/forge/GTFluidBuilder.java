@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.forge.GTFluidImpl;
-import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
+import com.gregtechceu.gtceu.api.items.forge.GTBucketItem;
 import com.gregtechceu.gtceu.api.registry.registrate.IGTFluidBuilder;
 import com.tterrag.registrate.AbstractRegistrate;
 import com.tterrag.registrate.builders.AbstractBuilder;

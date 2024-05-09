@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.materials.material.properties.IMaterialProperty;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
