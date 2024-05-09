@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.block.SimpleCoilType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
@@ -49,7 +50,7 @@ public class CoilBlockBuilder extends BlockBuilder {
     public Block createObject() {
         SimpleCoilType coilType = new SimpleCoilType(this.id.getPath(), temperature, level, energyDiscount, tier, material, texture);
         CoilBlock result = new CoilBlock(this.createProperties(), coilType);
-        GTBlocks.ALL_COILS.put(coilType, () -> result);
+        GTCEuAPI.HEATING_COILS.put(coilType, () -> result);
         return result;
     }
 }
