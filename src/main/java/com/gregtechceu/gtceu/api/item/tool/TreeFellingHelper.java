@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.utils.TaskHandler;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 
 public class TreeFellingHelper {
 
-    public void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos, LivingEntity miner) {
+    public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos, LivingEntity miner) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
         Queue<BlockPos> checking = new ArrayDeque<>();
@@ -53,26 +52,17 @@ public class TreeFellingHelper {
             List<BlockPos> orderedBlocks = visited.stream()
                     .sorted(Comparator.comparingInt(pos -> pos.getY() - originPos.getY()))
                     .collect(Collectors.toCollection(LinkedList::new));
-
-            int durabilityLeft = stack.getMaxDamage() - stack.getDamageValue();
-
-            if (durabilityLeft < orderedBlocks.size()) {
-                orderedBlocks.subList(durabilityLeft, orderedBlocks.size()).clear();
-            }
-
-            ToolHelper.damageItem(stack, serverPlayer);
-
-            breakBlocksPerTick(serverPlayer, orderedBlocks, origin.getBlock());
+            breakBlocksPerTick(serverPlayer, stack, orderedBlocks, origin.getBlock());
         }
     }
 
-    public void breakBlocksPerTick(ServerPlayer player, List<BlockPos> posList, Block originBlock) {
+    public static void breakBlocksPerTick(ServerPlayer player, ItemStack tool, List<BlockPos> posList, Block originBlock) {
         for (int i = 0; i < posList.size(); i++) {
             int delayTick = i * 2; // 1 block per 2 tick
             BlockPos pos = posList.get(i);
             TaskHandler.enqueueServerTask(player.getLevel(), () -> {
-                if (player.getLevel().getBlockState(pos).is(originBlock)) {
-                    player.getLevel().destroyBlock(pos, true);
+                if (player.level.getBlockState(pos).is(originBlock)) {
+                    ToolHelper.breakBlockRoutine(player, tool, pos, true);
                 }
             }, delayTick);
         }
