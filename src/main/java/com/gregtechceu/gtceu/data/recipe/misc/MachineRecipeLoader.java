@@ -667,7 +667,6 @@ public class MachineRecipeLoader {
                 .blastFurnaceTemp(1700)
                 .duration(1600).EUt(VA[HV]).save(provider);
 
-        //TODO Tempered Glass
         BLAST_RECIPES.recipeBuilder("tempered_glass_blasting")
                 .inputItems(block, Glass)
                 .inputFluids(Oxygen.getFluid(100))
@@ -979,7 +978,6 @@ public class MachineRecipeLoader {
     }
 
     private static void registerNBTRemoval(Consumer<FinishedRecipe> provider) {
-
         for (MachineDefinition chest : GTMachines.QUANTUM_CHEST) {
             if (chest != null) {
                 VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "quantum_chest_nbt_" + chest.getTier(), chest.asStack(), chest.asStack());
@@ -1013,16 +1011,12 @@ public class MachineRecipeLoader {
         VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "cell_vial_nbt", FLUID_CELL_GLASS_VIAL.asStack(), FLUID_CELL_GLASS_VIAL.asStack());
 
         // Data Items
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_stick_nbt", TOOL_DATA_STICK.asStack(),
-            TOOL_DATA_STICK.asStack());
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_orb_nbt", TOOL_DATA_ORB.asStack(),
-            TOOL_DATA_ORB.asStack());
-        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(),
-            TOOL_DATA_MODULE.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_stick_nbt", TOOL_DATA_STICK.asStack(), TOOL_DATA_STICK.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_orb_nbt", TOOL_DATA_ORB.asStack(), TOOL_DATA_ORB.asStack());
+        VanillaRecipeHelper.addShapelessNBTClearingRecipe(provider, "data_module_nbt", TOOL_DATA_MODULE.asStack(), TOOL_DATA_MODULE.asStack());
 
         //Jetpacks
-        // TODO armor
-        //ModHandler.addShapelessRecipe("fluid_jetpack_clear", SEMIFLUID_JETPACK, SEMIFLUID_JETPACK);
+        VanillaRecipeHelper.addShapelessRecipe(provider, "fluid_jetpack_clear", LIQUID_FUEL_JETPACK.asStack(), LIQUID_FUEL_JETPACK.asStack());
     }
 
     private static void registerHatchConversion(Consumer<FinishedRecipe> provider) {
