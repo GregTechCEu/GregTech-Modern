@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
@@ -441,7 +442,7 @@ public class GCyMMachines {
                     .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
                     .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
                     .where('M', MAINTENANCE_HATCH, Direction.NORTH);
-                ALL_COILS.entrySet().stream()
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
@@ -780,7 +781,7 @@ public class GCyMMachines {
                     .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
                     .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
                     .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
-                ALL_COILS.entrySet().stream()
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;

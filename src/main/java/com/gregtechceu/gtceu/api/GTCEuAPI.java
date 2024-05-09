@@ -3,15 +3,25 @@ package com.gregtechceu.gtceu.api;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.block.ICoilType;
+import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.data.chemical.material.IMaterialRegistryManager;
+import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
+import com.gregtechceu.gtceu.common.block.BatteryBlock;
+import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.Block;
 import net.minecraftforge.eventbus.api.GenericEvent;
 import net.minecraftforge.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Supplier;
 
 public class GTCEuAPI {
 
@@ -24,6 +34,10 @@ public class GTCEuAPI {
     @Getter
     private static boolean highTier;
     private static boolean highTierInitialized;
+
+    public static final Map<ICoilType, Supplier<CoilBlock>> HEATING_COILS = new HashMap<>();
+    public static final Map<IFilterType, Supplier<Block>> CLEANROOM_FILTERS = new HashMap<>();
+    public static final Map<IBatteryData, Supplier<BatteryBlock>> PSS_BATTERIES = new HashMap<>();
 
     /**
      * Initializes High-Tier. Internal use only, do not attempt to call this.
