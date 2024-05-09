@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.ORE;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
 
 public class GTOreProcessingEmiCategory extends EmiRecipeCategory {
     public static final GTOreProcessingEmiCategory CATEGORY = new GTOreProcessingEmiCategory();

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
@@ -21,9 +21,9 @@ import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.GTItems.*;
+import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
 
 public class VanillaStandardRecipes {
 

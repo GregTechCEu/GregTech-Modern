@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.Blocks;
 import org.jetbrains.annotations.NotNull;
 
 import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.ORE;
-import static com.gregtechceu.gtceu.common.data.GTMachines.*;
+import static com.gregtechceu.gtceu.data.GTMachines.*;
 
 public class GTOreProcessingDisplayCategory extends ModularUIDisplayCategory<GTOreProcessingDisplay> {
     public static final CategoryIdentifier<GTOreProcessingDisplay> CATEGORY = CategoryIdentifier.of(GTCEu.id("ore_processing_diagram"));

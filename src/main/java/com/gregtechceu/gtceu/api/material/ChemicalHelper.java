@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tags.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;

@@ -8,9 +8,9 @@ import net.minecraft.world.level.block.Blocks;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dustTiny;
-import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.data.GTItems.*;
+import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.*;
 
 public class GrowthMediumRecipes {
 

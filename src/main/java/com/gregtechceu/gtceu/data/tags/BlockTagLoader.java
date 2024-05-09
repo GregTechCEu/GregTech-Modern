@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.core.registries.BuiltInRegistries;

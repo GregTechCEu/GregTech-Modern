@@ -4,7 +4,7 @@ package com.gregtechceu.gtceu.api.item.capability;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.GTDataComponents;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;

@@ -17,8 +17,8 @@ import java.util.List;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.dust;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CENTRIFUGE_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ELECTROLYZER_RECIPES;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.CENTRIFUGE_RECIPES;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.ELECTROLYZER_RECIPES;
 
 public class DecompositionRecipeHandler {
 

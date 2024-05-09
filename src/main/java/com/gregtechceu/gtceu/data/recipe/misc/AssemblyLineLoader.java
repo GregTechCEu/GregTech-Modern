@@ -7,12 +7,12 @@ import net.minecraft.data.recipes.RecipeOutput;
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.plateDouble;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.wireGtSingle;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_COIL;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.SUPERCONDUCTING_COIL;
-import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTMachines.FUSION_REACTOR;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
+import static com.gregtechceu.gtceu.data.GTBlocks.FUSION_COIL;
+import static com.gregtechceu.gtceu.data.GTBlocks.SUPERCONDUCTING_COIL;
+import static com.gregtechceu.gtceu.data.GTItems.*;
+import static com.gregtechceu.gtceu.data.GTMachines.FUSION_REACTOR;
+import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.GTRecipeTypes.ASSEMBLY_LINE_RECIPES;
 
 public class AssemblyLineLoader {
 

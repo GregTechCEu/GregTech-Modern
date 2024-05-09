@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTRecipeCapabilities;
+import com.gregtechceu.gtceu.data.GTRecipeCapabilities;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.JsonOps;
 import net.neoforged.neoforge.fluids.FluidStack;
