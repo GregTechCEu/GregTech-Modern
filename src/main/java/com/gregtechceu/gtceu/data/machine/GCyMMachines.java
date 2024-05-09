@@ -458,21 +458,21 @@ public class GCyMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
-                        .aisle("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                        .aisle("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
-                        .aisle("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                        .aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
-                        .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
-                        .where('S', definition, Direction.NORTH)
-                        .where('G', HEAT_VENT.getDefaultState())
-                        .where('A', Blocks.AIR.defaultBlockState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.WEST)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH);
+                    .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
+                    .aisle("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                    .aisle("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
+                    .aisle("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                    .aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
+                    .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
+                    .where('S', definition, Direction.NORTH)
+                    .where('G', HEAT_VENT.getDefaultState())
+                    .where('A', Blocks.AIR.defaultBlockState())
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.WEST)
+                    .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
+                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
+                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH);
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(
@@ -845,74 +845,35 @@ public class GCyMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#",
-                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
-                                "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
-                                "###PTAAATP###", "##TPPPHPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
-                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
-                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
-                                "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
-                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
-                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
-                                "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
-                                "######P######", "######P######", "######P######", "######P######", "######P######",
-                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
-                                "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
-                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
-                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
-                                "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "####FFFFF####", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############", "#############", "#############", "#############",
-                                "#############", "#############")
-                        .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
-                        .where('S', definition, Direction.NORTH)
-                        .where('A', Blocks.AIR.defaultBlockState())
-                        .where('T', CASING_TUNGSTENSTEEL_ROBUST.getDefaultState())
-                        .where('B', FIREBOX_TUNGSTENSTEEL.getDefaultState())
-                        .where('P', CASING_TUNGSTENSTEEL_PIPE.getDefaultState())
-                        .where('I', CASING_EXTREME_ENGINE_INTAKE.getDefaultState())
-                        .where('F', ChemicalHelper.getBlock(TagPrefix.frameGt, NaquadahAlloy))
-                        .where('V', HEAT_VENT.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('L', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('Q', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                        .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
+                    .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                    .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                    .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                    .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPHPPPT##")
+                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
+                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
+                    .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
+                    .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
+                    .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
+                    .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                    .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
+                    .where('S', definition, Direction.NORTH)
+                    .where('A', Blocks.AIR.defaultBlockState())
+                    .where('T', CASING_TUNGSTENSTEEL_ROBUST.getDefaultState())
+                    .where('B', FIREBOX_TUNGSTENSTEEL.getDefaultState())
+                    .where('P', CASING_TUNGSTENSTEEL_PIPE.getDefaultState())
+                    .where('I', CASING_EXTREME_ENGINE_INTAKE.getDefaultState())
+                    .where('F', ChemicalHelper.getBlock(TagPrefix.frameGt, NaquadahAlloy))
+                    .where('V', HEAT_VENT.getDefaultState())
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('L', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('Q', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
+                    .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(

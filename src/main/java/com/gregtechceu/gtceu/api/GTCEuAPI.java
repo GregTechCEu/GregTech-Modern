@@ -3,7 +3,10 @@ package com.gregtechceu.gtceu.api;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
+import com.gregtechceu.gtceu.api.block.ICoilType;
+import com.gregtechceu.gtceu.api.block.IFilterType;
 import com.gregtechceu.gtceu.api.material.material.IMaterialRegistryManager;
+import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
@@ -11,6 +14,7 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 import org.jetbrains.annotations.ApiStatus;

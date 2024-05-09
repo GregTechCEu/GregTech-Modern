@@ -638,24 +638,15 @@ public class GTBlocks {
     public static final BlockEntry<CoilBlock> COIL_TRITANIUM = createCoilBlock(CoilBlock.CoilType.TRITANIUM);
 
     // PSS batteries
-    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_I = createBatteryBlock(
-            BatteryBlock.BatteryPartType.EMPTY_TIER_I);
-    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_EV = createBatteryBlock(
-            BatteryBlock.BatteryPartType.EV_LAPOTRONIC);
-    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_IV = createBatteryBlock(
-            BatteryBlock.BatteryPartType.IV_LAPOTRONIC);
-    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_II = createBatteryBlock(
-            BatteryBlock.BatteryPartType.EMPTY_TIER_II);
-    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_LuV = createBatteryBlock(
-            BatteryBlock.BatteryPartType.LuV_LAPOTRONIC);
-    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_ZPM = createBatteryBlock(
-            BatteryBlock.BatteryPartType.ZPM_LAPOTRONIC);
-    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_III = createBatteryBlock(
-            BatteryBlock.BatteryPartType.EMPTY_TIER_III);
-    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_UV = createBatteryBlock(
-            BatteryBlock.BatteryPartType.UV_LAPOTRONIC);
-    public static final BlockEntry<BatteryBlock> BATTERY_ULTIMATE_UHV = createBatteryBlock(
-            BatteryBlock.BatteryPartType.UHV_ULTIMATE);
+    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_I = createBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_I);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_EV = createBatteryBlock(BatteryBlock.BatteryPartType.EV_LAPOTRONIC);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_IV = createBatteryBlock(BatteryBlock.BatteryPartType.IV_LAPOTRONIC);
+    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_II = createBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_II);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_LuV = createBatteryBlock(BatteryBlock.BatteryPartType.LuV_LAPOTRONIC);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_ZPM = createBatteryBlock(BatteryBlock.BatteryPartType.ZPM_LAPOTRONIC);
+    public static final BlockEntry<BatteryBlock> BATTERY_EMPTY_TIER_III = createBatteryBlock(BatteryBlock.BatteryPartType.EMPTY_TIER_III);
+    public static final BlockEntry<BatteryBlock> BATTERY_LAPOTRONIC_UV = createBatteryBlock(BatteryBlock.BatteryPartType.UV_LAPOTRONIC);
+    public static final BlockEntry<BatteryBlock> BATTERY_ULTIMATE_UHV = createBatteryBlock(BatteryBlock.BatteryPartType.UHV_ULTIMATE);
 
     // Intake casing
     public static final BlockEntry<ActiveBlock> CASING_ENGINE_INTAKE = createActiveCasing("engine_intake_casing",
@@ -679,8 +670,7 @@ public class GTBlocks {
             GTCEu.id("block/casings/transparent/fusion_glass"), () -> RenderType::cutoutMipped);
 
     // Cleanroom
-    public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete",
-            GTCEu.id("block/casings/cleanroom/plascrete"));
+    public static final BlockEntry<Block> PLASTCRETE = createCasingBlock("plascrete", GTCEu.id("block/casings/cleanroom/plascrete"));
     public static final BlockEntry<Block> FILTER_CASING = createCleanroomFilter(CleanroomFilterType.FILTER_CASING);
     public static final BlockEntry<Block> FILTER_CASING_STERILE = createCleanroomFilter(
             CleanroomFilterType.FILTER_CASING_STERILE);
@@ -869,7 +859,7 @@ public class GTBlocks {
             .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "coil_block"))
             .build()
             .register();
-        ALL_COILS.put(coilType, coilBlock);
+        GTCEuAPI.HEATING_COILS.put(coilType, coilBlock);
         return coilBlock;
     }
 
@@ -891,7 +881,7 @@ public class GTBlocks {
             .onRegister(compassNodeExist(GTCompassSections.BLOCKS, "pss_battery"))
             .build()
             .register();
-        PSS_BATTERIES.put(batteryData, batteryBlock);
+        GTCEuAPI.PSS_BATTERIES.put(batteryData, batteryBlock);
         return batteryBlock;
     }
 
@@ -923,7 +913,7 @@ public class GTBlocks {
             .model(NonNullBiConsumer.noop())
             .build()
             .register();
-        ALL_FILTERS.put(filterType, filterBlock);
+        GTCEuAPI.CLEANROOM_FILTERS.put(filterType, filterBlock);
         return filterBlock;
     }
 

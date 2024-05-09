@@ -1279,21 +1279,21 @@ public class GTMachines {
                     .build())
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
-                var builder = MultiblockShapeInfo.builder()
-                        .aisle("IXO", "XSX", "FMD")
-                        .aisle("CCC", "C#C", "CCC")
-                        .aisle("CCC", "C#C", "CCC")
-                        .aisle("EEX", "XHX", "XXX")
-                        .where('S', definition, Direction.NORTH)
-                        .where('X', MACHINE_CASING_ULV.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
+                var builder = MultiblockShapeInfo.builder()                
+                    .aisle("IXO", "XSX", "FMD")
+                    .aisle("CCC", "C#C", "CCC")
+                    .aisle("CCC", "C#C", "CCC")
+                    .aisle("EEX", "XHX", "XXX")
+                    .where('S', definition, Direction.NORTH)
+                    .where('X', MACHINE_CASING_ULV.getDefaultState())
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('#', Blocks.AIR.defaultBlockState());
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(
@@ -1337,17 +1337,17 @@ public class GTMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("ISO", "CCC", "XMX")
-                        .aisle("XXX", "C#C", "XHX")
-                        .aisle("EEX", "CCC", "XXX")
-                        .where('S', definition, Direction.NORTH)
-                        .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
+                    .aisle("ISO", "CCC", "XMX")
+                    .aisle("XXX", "C#C", "XHX")
+                    .aisle("EEX", "CCC", "XXX")
+                    .where('S', definition, Direction.NORTH)
+                    .where('X', CASING_INVAR_HEATPROOF.getDefaultState())
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('#', Blocks.AIR.defaultBlockState());
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(
@@ -1390,18 +1390,18 @@ public class GTMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                        .aisle("FCICD", "HCSCH", "HCMCH")
-                        .aisle("ECHCH", "H###H", "HCHCH")
-                        .aisle("ECHCH", "HCXCH", "HCHCH")
-                        .where('S', definition, Direction.NORTH)
-                        .where('H', CASING_STAINLESS_CLEAN.getDefaultState())
-                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.WEST)
-                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                        .where('M', MAINTENANCE_HATCH, Direction.NORTH)
-                        .where('X', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
-                        .where('#', Blocks.AIR.defaultBlockState());
+                    .aisle("FCICD", "HCSCH", "HCMCH")
+                    .aisle("ECHCH", "H###H", "HCHCH")
+                    .aisle("ECHCH", "HCXCH", "HCHCH")
+                    .where('S', definition, Direction.NORTH)
+                    .where('H', CASING_STAINLESS_CLEAN.getDefaultState()) 
+                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.WEST)
+                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                    .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
+                    .where('M', MAINTENANCE_HATCH, Direction.NORTH)
+                    .where('X', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
+                    .where('#', Blocks.AIR.defaultBlockState());
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(
@@ -1855,8 +1855,7 @@ public class GTMachines {
                 } else {
                     builder.where('M', GTBlocks.PLASTCRETE.get());
                 }
-                GTCEuAPI.CLEANROOM_FILTERS.values()
-                        .forEach(block -> shapeInfo.add(builder.where('F', block.get()).build()));
+                GTCEuAPI.CLEANROOM_FILTERS.values().forEach(block -> shapeInfo.add(builder.where('F', block.get()).build()));
                 return shapeInfo;
             })
             .allowExtendedFacing(false)
@@ -2311,11 +2310,9 @@ public class GTMachines {
                                          fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
                     TraceabilityPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
-                            .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1)
-                                    .setPreviewCount(1))
-                            .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
+                        .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1))
+                        .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
+                        .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));
 
                     if (ConfigHolder.INSTANCE.machines.enableMaintenance) {
                         fireboxPred = fireboxPred.or(Predicates.abilities(PartAbility.MAINTENANCE).setExactLimit(1));
