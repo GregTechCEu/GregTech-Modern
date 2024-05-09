@@ -72,7 +72,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
 
         GTLayerPattern layerPattern = patternPool.get(random.nextInt(patternPool.size()));
 
-        int size = entry.clusterSize();
+        int size = entry.clusterSize().sample(random);
         float density = entry.density();
 
         int radius = Mth.ceil(size / 2f);
