@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
 import com.gregtechceu.gtceu.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
-import com.gregtechceu.gtceu.data.tags.TagsHandler;
+import com.gregtechceu.gtceu.data.tag.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.Platform;
 import com.tterrag.registrate.util.entry.BlockEntry;

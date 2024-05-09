@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.tags;
+package com.gregtechceu.gtceu.data.tag;
 
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;

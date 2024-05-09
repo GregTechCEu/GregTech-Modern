@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.tags;
+package com.gregtechceu.gtceu.data.tag;
 
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.world.level.material.Fluid;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.tags;
+package com.gregtechceu.gtceu.data.tag;
 
 import com.gregtechceu.gtceu.data.GTItems;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
