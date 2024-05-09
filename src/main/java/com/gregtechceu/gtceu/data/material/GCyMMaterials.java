@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.materials;
+package com.gregtechceu.gtceu.data.material;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;

@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.data.materials.*;
+import com.gregtechceu.gtceu.data.material.*;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.materials;
+package com.gregtechceu.gtceu.data.material;
 
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;

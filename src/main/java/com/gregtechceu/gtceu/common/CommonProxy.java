@@ -30,7 +30,7 @@ import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
 import com.gregtechceu.gtceu.data.*;
-import com.gregtechceu.gtceu.data.materials.GTFoods;
+import com.gregtechceu.gtceu.data.material.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.data.materials;
+package com.gregtechceu.gtceu.data.material;
 
 import com.gregtechceu.gtceu.api.material.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
