@@ -2,9 +2,9 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.guis.widget.ProspectingMapWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;

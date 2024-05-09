@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.machine.trait;
 
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;

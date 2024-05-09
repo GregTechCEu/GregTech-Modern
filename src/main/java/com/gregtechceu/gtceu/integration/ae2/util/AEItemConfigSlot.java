@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.util;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
 import com.google.common.collect.Lists;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
@@ -12,12 +12,10 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 

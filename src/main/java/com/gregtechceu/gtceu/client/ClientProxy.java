@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.gui.compass.GTCompassUIConfig;
-import com.gregtechceu.gtceu.api.gui.compass.GTRecipeViewCreator;
-import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
+import com.gregtechceu.gtceu.api.guis.compass.GTCompassUIConfig;
+import com.gregtechceu.gtceu.api.guis.compass.GTRecipeViewCreator;
+import com.gregtechceu.gtceu.api.guis.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;

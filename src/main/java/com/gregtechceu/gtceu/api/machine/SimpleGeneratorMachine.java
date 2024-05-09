@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machine;
 import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
+import com.gregtechceu.gtceu.api.guis.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;

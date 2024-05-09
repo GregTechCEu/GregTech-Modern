@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.WidgetUtils;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.widget.directional.CombinedDirectionalConfigurator;
-import com.gregtechceu.gtceu.api.gui.widget.directional.IDirectionalConfigHandler;
-import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputFluidConfigHandler;
-import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.AutoOutputItemConfigHandler;
-import com.gregtechceu.gtceu.api.gui.widget.directional.handlers.CoverableConfigHandler;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.WidgetUtils;
+import com.gregtechceu.gtceu.api.guis.fancy.FancyMachineUIWidget;
+import com.gregtechceu.gtceu.api.guis.fancy.IFancyUIProvider;
+import com.gregtechceu.gtceu.api.guis.widget.directional.CombinedDirectionalConfigurator;
+import com.gregtechceu.gtceu.api.guis.widget.directional.IDirectionalConfigHandler;
+import com.gregtechceu.gtceu.api.guis.widget.directional.handlers.AutoOutputFluidConfigHandler;
+import com.gregtechceu.gtceu.api.guis.widget.directional.handlers.AutoOutputItemConfigHandler;
+import com.gregtechceu.gtceu.api.guis.widget.directional.handlers.CoverableConfigHandler;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputItem;

@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.covers.CoverBehavior;
 import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.api.covers.IUICover;
 import com.gregtechceu.gtceu.api.covers.filter.ItemFilter;
-import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.guis.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

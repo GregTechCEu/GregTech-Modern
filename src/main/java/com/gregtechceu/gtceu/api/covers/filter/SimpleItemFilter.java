@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.covers.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.Platform;

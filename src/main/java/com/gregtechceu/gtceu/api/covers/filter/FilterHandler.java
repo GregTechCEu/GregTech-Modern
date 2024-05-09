@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.covers.filter;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.multipage;
 
 
-import com.gregtechceu.gtceu.api.gui.widget.PatternPreviewWidget;
+import com.gregtechceu.gtceu.api.guis.widget.PatternPreviewWidget;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;

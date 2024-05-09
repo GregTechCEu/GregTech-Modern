@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.fancy.IFancyTooltip;
+import com.gregtechceu.gtceu.api.guis.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import lombok.val;
 import net.minecraft.ChatFormatting;
@@ -12,7 +12,6 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public interface IMufflerMachine extends IMultiPart {

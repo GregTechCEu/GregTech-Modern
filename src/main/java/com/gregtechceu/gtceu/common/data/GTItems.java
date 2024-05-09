@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.guis.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;

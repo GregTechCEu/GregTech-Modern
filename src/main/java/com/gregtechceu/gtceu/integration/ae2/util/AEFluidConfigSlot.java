@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.util;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
 import com.google.common.collect.Lists;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 import com.lowdragmc.lowdraglib.Platform;
@@ -18,10 +18,8 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -31,7 +29,6 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 

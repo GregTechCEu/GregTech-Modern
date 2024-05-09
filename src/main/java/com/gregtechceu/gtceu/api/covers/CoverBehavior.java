@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.covers;
 
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;

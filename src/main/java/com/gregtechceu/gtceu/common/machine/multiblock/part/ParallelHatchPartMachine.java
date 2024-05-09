@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IParallelHatch;
-import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
+import com.gregtechceu.gtceu.api.guis.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
@@ -17,8 +17,6 @@ import lombok.Getter;
 import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.function.Function;
-import java.util.function.IntSupplier;
 
 public class ParallelHatchPartMachine extends TieredPartMachine implements IFancyUIMachine, IParallelHatch {
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ParallelHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);

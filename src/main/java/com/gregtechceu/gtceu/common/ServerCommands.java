@@ -1,13 +1,11 @@
 package com.gregtechceu.gtceu.common;
 
-import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
+import com.gregtechceu.gtceu.api.guis.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.lowdragmc.lowdraglib.gui.factory.UIEditorFactory;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeHolder;
 
 import java.util.List;

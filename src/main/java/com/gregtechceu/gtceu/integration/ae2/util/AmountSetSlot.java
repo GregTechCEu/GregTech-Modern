@@ -1,18 +1,13 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
 import appeng.api.stacks.GenericStack;
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
-import io.netty.buffer.Unpooled;
 import lombok.Getter;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import org.jetbrains.annotations.NotNull;
 

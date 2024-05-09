@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.machine.feature.multiblock;
 
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.ConfiguratorPanel;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfiguratorButton;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.fancy.ConfiguratorPanel;
+import com.gregtechceu.gtceu.api.guis.fancy.IFancyConfiguratorButton;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;

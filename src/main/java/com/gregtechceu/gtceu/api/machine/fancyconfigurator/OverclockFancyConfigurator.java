@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.machine.fancyconfigurator;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyConfigurator;
-import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.fancy.IFancyConfigurator;
+import com.gregtechceu.gtceu.api.guis.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;

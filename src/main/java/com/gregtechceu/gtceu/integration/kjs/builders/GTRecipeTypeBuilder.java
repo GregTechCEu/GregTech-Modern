@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.gui.SteamTexture;
+import com.gregtechceu.gtceu.api.guis.SteamTexture;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;

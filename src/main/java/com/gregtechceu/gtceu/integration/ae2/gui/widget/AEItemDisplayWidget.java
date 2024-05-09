@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
