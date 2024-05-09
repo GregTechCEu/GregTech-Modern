@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data.machines;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;

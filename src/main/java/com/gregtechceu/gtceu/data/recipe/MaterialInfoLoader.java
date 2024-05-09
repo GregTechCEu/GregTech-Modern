@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.stack.ItemMaterialInfo;
+import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;

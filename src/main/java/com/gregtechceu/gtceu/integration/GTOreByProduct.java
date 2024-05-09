@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.integration;
 
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.OreProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.chemical.material.properties.OreProperty;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;

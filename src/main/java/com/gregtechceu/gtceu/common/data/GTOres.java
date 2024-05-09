@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.*;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.IndicatorGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerators;
-import com.gregtechceu.gtceu.api.data.worldgen.generator.indicators.SurfaceIndicatorGenerator;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.worldgen.*;
+import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
+import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
+import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
+import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import lombok.Getter;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -29,10 +29,10 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.oreNetherrack;
-import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
-import static com.gregtechceu.gtceu.api.data.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.ore;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.oreNetherrack;
+import static com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
+import static com.gregtechceu.gtceu.api.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**

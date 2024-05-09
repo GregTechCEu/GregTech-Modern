@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;

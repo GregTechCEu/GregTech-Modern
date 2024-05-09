@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import net.minecraft.resources.ResourceLocation;
 

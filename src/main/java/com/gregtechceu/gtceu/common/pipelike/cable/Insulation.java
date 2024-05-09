@@ -1,19 +1,19 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.PipeModel;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 
 public enum Insulation implements IMaterialPipeType<WireProperties> {
     WIRE_SINGLE("single_wire", 0.125f, 1, 2, wireGtSingle, -1, false),

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;

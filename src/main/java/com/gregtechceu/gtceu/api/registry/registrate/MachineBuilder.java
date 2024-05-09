@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifierList;
 import com.gregtechceu.gtceu.client.renderer.machine.*;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;

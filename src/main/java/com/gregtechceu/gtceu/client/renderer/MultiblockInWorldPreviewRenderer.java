@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.client.renderer;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;

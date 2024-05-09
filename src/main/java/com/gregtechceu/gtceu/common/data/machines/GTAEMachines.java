@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.data.machines;
 
-import com.gregtechceu.gtceu.api.data.RotationState;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;

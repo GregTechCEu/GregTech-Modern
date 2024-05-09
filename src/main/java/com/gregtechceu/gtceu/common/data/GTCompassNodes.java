@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import net.minecraft.world.item.Items;

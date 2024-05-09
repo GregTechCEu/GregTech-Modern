@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.data.recipe.generated;
 
 import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
 
 public class WireCombiningHandler {

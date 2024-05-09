@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.integration;
 
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidDefinition;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;

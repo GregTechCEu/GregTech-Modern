@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.gui.misc;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.data.tag.TagUtil;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreVeinSavedData;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;

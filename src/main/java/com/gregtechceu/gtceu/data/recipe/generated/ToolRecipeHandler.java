@@ -4,13 +4,13 @@ import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.recipe.ToolHeadReplaceRecipe;
@@ -40,8 +40,8 @@ import java.util.List;
 import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 
 public class ToolRecipeHandler {
 
