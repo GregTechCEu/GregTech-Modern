@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
-import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
-import com.gregtechceu.gtceu.common.entity.IndustrialTNTEntity;
-import com.gregtechceu.gtceu.common.entity.PowderbarrelEntity;
+import com.gregtechceu.gtceu.common.entities.DynamiteEntity;
+import com.gregtechceu.gtceu.common.entities.IndustrialTNTEntity;
+import com.gregtechceu.gtceu.common.entities.PowderbarrelEntity;
 import com.tterrag.registrate.util.entry.EntityEntry;
 import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.world.entity.MobCategory;

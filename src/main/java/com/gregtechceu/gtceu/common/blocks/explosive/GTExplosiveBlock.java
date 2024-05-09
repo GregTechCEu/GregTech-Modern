@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.blocks.explosive;
 
-import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
+import com.gregtechceu.gtceu.common.entities.GTExplosiveEntity;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;

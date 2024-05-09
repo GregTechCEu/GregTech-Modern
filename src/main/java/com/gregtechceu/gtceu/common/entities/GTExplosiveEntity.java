@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.entity;
+package com.gregtechceu.gtceu.common.entities;
 
 import com.gregtechceu.gtceu.core.mixins.PrimedTntAccessor;
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.blocks.explosive;
 
-import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
-import com.gregtechceu.gtceu.common.entity.IndustrialTNTEntity;
+import com.gregtechceu.gtceu.common.entities.GTExplosiveEntity;
+import com.gregtechceu.gtceu.common.entities.IndustrialTNTEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;

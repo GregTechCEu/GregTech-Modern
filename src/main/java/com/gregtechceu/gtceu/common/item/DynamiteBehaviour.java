@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.items.component.IInteractionItem;
-import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
+import com.gregtechceu.gtceu.common.entities.DynamiteEntity;
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.entity;
+package com.gregtechceu.gtceu.common.entities;
 
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;

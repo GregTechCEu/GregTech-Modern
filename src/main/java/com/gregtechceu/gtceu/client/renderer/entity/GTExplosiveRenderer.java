@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.entity;
 
-import com.gregtechceu.gtceu.common.entity.GTExplosiveEntity;
+import com.gregtechceu.gtceu.common.entities.GTExplosiveEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
