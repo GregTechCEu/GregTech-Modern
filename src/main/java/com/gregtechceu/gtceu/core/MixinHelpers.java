@@ -2,16 +2,15 @@ package com.gregtechceu.gtceu.core;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.properties.FluidProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.properties.FluidProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.registry.registrate.forge.GTClientFluidTypeExtensions;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -52,7 +51,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiConsumer;
-import java.util.function.Supplier;
 
 public class MixinHelpers {
 

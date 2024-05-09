@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.properties.AlloyBlastProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -16,7 +16,6 @@ import net.minecraft.data.recipes.RecipeOutput;
 import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.Nullable;
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;

@@ -2,12 +2,12 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
+import com.gregtechceu.gtceu.api.materials.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.materials.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
@@ -29,7 +29,6 @@ import net.minecraft.world.level.block.Blocks;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;

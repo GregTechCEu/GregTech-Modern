@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentities.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.materials.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.fluids.FluidConstants;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;

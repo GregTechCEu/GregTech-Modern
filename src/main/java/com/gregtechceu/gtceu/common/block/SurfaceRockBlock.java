@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;

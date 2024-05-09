@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blocks.MaterialBlock;
-import com.gregtechceu.gtceu.api.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.properties.DustProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;

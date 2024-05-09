@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.data.recipes.RecipeOutput;
 

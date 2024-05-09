@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.forge;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.event.PostMaterialEvent;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.chemical.material.properties.AlloyBlastProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.event.PostMaterialEvent;
+import com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.materials.material.properties.AlloyBlastProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;

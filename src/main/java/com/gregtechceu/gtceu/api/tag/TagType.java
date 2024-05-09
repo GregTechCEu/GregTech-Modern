@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.tag;
 
-import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import lombok.Getter;
 import net.minecraft.tags.TagKey;

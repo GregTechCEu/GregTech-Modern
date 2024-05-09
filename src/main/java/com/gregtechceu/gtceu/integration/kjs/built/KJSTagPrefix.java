@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.built;
 
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagType;
 import lombok.experimental.Accessors;

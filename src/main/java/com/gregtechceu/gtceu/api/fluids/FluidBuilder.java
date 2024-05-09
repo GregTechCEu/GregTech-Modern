@@ -1,11 +1,10 @@
 package com.gregtechceu.gtceu.api.fluids;
 
 import com.google.common.base.Preconditions;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.FluidProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.materials.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
@@ -23,7 +22,6 @@ import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;

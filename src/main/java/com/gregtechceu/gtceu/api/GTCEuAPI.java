@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addons.AddonFinder;
 import com.gregtechceu.gtceu.api.addons.IGTAddon;
-import com.gregtechceu.gtceu.api.chemical.material.IMaterialRegistryManager;
+import com.gregtechceu.gtceu.api.materials.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;

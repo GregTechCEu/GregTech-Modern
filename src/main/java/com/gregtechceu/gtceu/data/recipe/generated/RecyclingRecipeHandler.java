@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.properties.DustProperty;
-import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
+import com.gregtechceu.gtceu.api.materials.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.properties.DustProperty;
+import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import net.minecraft.data.recipes.RecipeOutput;

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
 import com.gregtechceu.gtceu.api.blocks.SimpleCoilType;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.integration.kjs.builders.RendererBlockItemBuilder;

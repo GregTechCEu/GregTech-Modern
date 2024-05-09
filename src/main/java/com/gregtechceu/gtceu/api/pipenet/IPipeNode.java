@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.blockentities.IPaintable;
 import com.gregtechceu.gtceu.api.blockentities.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentities.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.lowdragmc.lowdraglib.LDLib;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
