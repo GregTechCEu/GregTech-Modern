@@ -41,7 +41,7 @@ public class RecyclingRecipeHandler {
                 else if (object instanceof Predicate)
                     return ((Predicate<TagPrefix>) object).test(orePrefix);
                 else return false;
-            })) orePrefix.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processCrushing(tagPrefix, material, property, provider));
+            })) orePrefix.executeHandler(provider, PropertyKey.DUST, RecyclingRecipeHandler::processCrushing);
         }
     }
 

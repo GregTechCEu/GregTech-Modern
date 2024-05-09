@@ -71,7 +71,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         long duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
-        var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getA();
+        var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getFirst();
         recipe = result == recipe ? result.copy() : result;
 
         // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
