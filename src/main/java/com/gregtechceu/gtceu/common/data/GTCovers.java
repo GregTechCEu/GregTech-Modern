@@ -8,12 +8,12 @@ import com.gregtechceu.gtceu.api.addons.IGTAddon;
 import com.gregtechceu.gtceu.api.covers.CoverDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.client.renderer.cover.*;
-import com.gregtechceu.gtceu.common.cover.*;
-import com.gregtechceu.gtceu.common.cover.detector.*;
-import com.gregtechceu.gtceu.common.cover.voiding.AdvancedFluidVoidingCover;
-import com.gregtechceu.gtceu.common.cover.voiding.AdvancedItemVoidingCover;
-import com.gregtechceu.gtceu.common.cover.voiding.FluidVoidingCover;
-import com.gregtechceu.gtceu.common.cover.voiding.ItemVoidingCover;
+import com.gregtechceu.gtceu.common.covers.*;
+import com.gregtechceu.gtceu.common.covers.detector.*;
+import com.gregtechceu.gtceu.common.covers.voiding.AdvancedFluidVoidingCover;
+import com.gregtechceu.gtceu.common.covers.voiding.AdvancedItemVoidingCover;
+import com.gregtechceu.gtceu.common.covers.voiding.FluidVoidingCover;
+import com.gregtechceu.gtceu.common.covers.voiding.ItemVoidingCover;
 import it.unimi.dsi.fastutil.ints.Int2ObjectFunction;
 import net.neoforged.fml.ModLoader;
 

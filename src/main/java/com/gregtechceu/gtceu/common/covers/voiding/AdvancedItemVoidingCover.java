@@ -1,0 +1,162 @@
+package com.gregtechceu.gtceu.common.covers.voiding;
+
+import com.gregtechceu.gtceu.api.capability.ICoverable;
+import com.gregtechceu.gtceu.api.covers.CoverDefinition;
+import com.gregtechceu.gtceu.api.covers.filter.ItemFilter;
+import com.gregtechceu.gtceu.api.covers.filter.SimpleItemFilter;
+import com.gregtechceu.gtceu.api.guis.widget.EnumSelectorWidget;
+import com.gregtechceu.gtceu.api.guis.widget.IntInputWidget;
+import com.gregtechceu.gtceu.common.covers.data.VoidingMode;
+import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+import lombok.Getter;
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.Direction;
+import net.minecraft.world.item.ItemStack;
+import net.neoforged.neoforge.items.IItemHandler;
+import org.jetbrains.annotations.NotNull;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.Map;
+
+@MethodsReturnNonnullByDefault
+@ParametersAreNonnullByDefault
+public class AdvancedItemVoidingCover extends ItemVoidingCover {
+    @Persisted @DescSynced @Getter
+    private VoidingMode voidingMode = VoidingMode.VOID_ANY;
+
+    @Persisted @Getter
+    protected int globalVoidingLimit = 1;
+
+    private IntInputWidget stackSizeInput;
+
+    public AdvancedItemVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
+        super(definition, coverHolder, attachedSide);
+    }
+
+
+    //////////////////////////////////////////////
+    //***********     COVER LOGIC    ***********//
+    //////////////////////////////////////////////
+
+    @Override
+    protected void doVoidItems() {
+        IItemHandler itemTransfer = getOwnItemTransfer();
+        if (itemTransfer == null) {
+            return;
+        }
+
+        switch (voidingMode) {
+            case VOID_ANY -> voidAny(itemTransfer);
+            case VOID_OVERFLOW -> voidOverflow(itemTransfer);
+        }
+    }
+
+    private void voidOverflow(IItemHandler itemTransfer) {
+        Map<ItemStack, TypeItemInfo> sourceItemAmounts = countInventoryItemsByType(itemTransfer);
+
+        for (TypeItemInfo itemInfo : sourceItemAmounts.values()) {
+            int itemToVoidAmount = itemInfo.totalCount - getFilteredItemAmount(itemInfo.itemStack);
+
+            if (itemToVoidAmount <= 0) {
+                continue;
+            }
+
+            for (int slot = 0; slot < itemTransfer.getSlots(); slot++) {
+                ItemStack is = itemTransfer.getStackInSlot(slot);
+                if (!is.isEmpty() && ItemStack.isSameItemSameComponents(is, itemInfo.itemStack)) {
+                    ItemStack extracted = itemTransfer.extractItem(slot, itemToVoidAmount, false);
+
+                    if (!extracted.isEmpty()) {
+                        itemToVoidAmount -= extracted.getCount();
+                    }
+                }
+                if (itemToVoidAmount == 0) {
+                    break;
+                }
+            }
+        }
+    }
+
+    private int getFilteredItemAmount(ItemStack itemStack) {
+        if (!filterHandler.isFilterPresent())
+            return globalVoidingLimit;
+
+        ItemFilter filter = filterHandler.getFilter();
+        return filter.isBlackList() ? globalVoidingLimit : filter.testItemCount(itemStack);
+    }
+
+    public void setVoidingMode(VoidingMode voidingMode) {
+        this.voidingMode = voidingMode;
+
+        configureStackSizeInput();
+
+        if (!this.isRemote()) {
+            configureFilter();
+        }
+    }
+
+
+    //////////////////////////////////////
+    //***********     GUI    ***********//
+    //////////////////////////////////////
+
+    @Override
+    protected @NotNull String getUITitle() {
+        return "cover.item.voiding.advanced.title";
+    }
+
+    @Override
+    protected void buildAdditionalUI(WidgetGroup group) {
+        group.addWidget(new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
+
+
+        this.stackSizeInput = new IntInputWidget(64, 20, 80, 20,
+                () -> globalVoidingLimit, val -> globalVoidingLimit = val
+        );
+        configureStackSizeInput();
+
+        group.addWidget(this.stackSizeInput);
+    }
+
+    @Override
+    protected void configureFilter() {
+        if (filterHandler.getFilter() instanceof SimpleItemFilter filter) {
+            filter.setMaxStackSize(this.voidingMode.maxStackSize);
+        }
+
+        configureStackSizeInput();
+    }
+
+    private void configureStackSizeInput() {
+        if (this.stackSizeInput == null)
+            return;
+
+        this.stackSizeInput.setVisible(shouldShowStackSize());
+        this.stackSizeInput.setMin(1);
+        this.stackSizeInput.setMax(this.voidingMode.maxStackSize);
+    }
+
+    private boolean shouldShowStackSize() {
+        if (this.voidingMode == VoidingMode.VOID_ANY)
+            return false;
+
+        if (!this.filterHandler.isFilterPresent())
+            return true;
+
+        return this.filterHandler.getFilter().isBlackList();
+    }
+
+    //////////////////////////////////////
+    //*****     LDLib SyncData    ******//
+    //////////////////////////////////////
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedItemVoidingCover.class, ItemVoidingCover.MANAGED_FIELD_HOLDER);
+
+    @Override
+    public ManagedFieldHolder getFieldHolder() {
+        return MANAGED_FIELD_HOLDER;
+    }
+}
