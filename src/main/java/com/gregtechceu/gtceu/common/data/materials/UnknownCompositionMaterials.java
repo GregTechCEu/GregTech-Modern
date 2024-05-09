@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.common.data.materials;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;

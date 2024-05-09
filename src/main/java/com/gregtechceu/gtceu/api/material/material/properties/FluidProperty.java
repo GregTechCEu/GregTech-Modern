@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;

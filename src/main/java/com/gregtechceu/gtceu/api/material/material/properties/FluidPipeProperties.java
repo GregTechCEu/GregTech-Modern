@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
