@@ -605,7 +605,7 @@ public class ReactorRecipes {
         CHEMICAL_RECIPES.recipeBuilder("itnt_from_toluene")
             .inputItems(GELLED_TOLUENE, 4)
             .inputFluids(NitrationMixture.getFluid(200))
-            .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
+            .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT.get()))
             .outputFluids(DilutedSulfuricAcid.getFluid(150))
             .duration(80).EUt(VA[HV]).save(provider);
 

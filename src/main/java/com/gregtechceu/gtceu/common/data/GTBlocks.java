@@ -1051,8 +1051,8 @@ public class GTBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<StandingSignBlock> RUBBER_SIGN = REGISTRATE
-        .block("rubber_sign", (p) -> new StandingSignBlock(p, RUBBER_TYPE))
+    public static final BlockEntry<GTStandingSignBlock> RUBBER_SIGN = REGISTRATE
+        .block("rubber_sign", (p) -> new GTStandingSignBlock(p, RUBBER_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_SIGN)
         .lang("Rubber Sign")
         .blockstate((ctx, prov) -> prov.signBlock(ctx.get(), GTBlocks.RUBBER_WALL_SIGN.get(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get())))
@@ -1064,10 +1064,10 @@ public class GTBlocks {
         .build()
         .register();
 
-    public static final BlockEntry<WallSignBlock> RUBBER_WALL_SIGN = REGISTRATE
-        .block("rubber_wall_sign", (p) -> new WallSignBlock(p, RUBBER_TYPE))
+    public static final BlockEntry<GTWallSignBlock> RUBBER_WALL_SIGN = REGISTRATE
+        .block("rubber_wall_sign", (p) -> new GTWallSignBlock(p, RUBBER_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_WALL_SIGN)
-        .lang("Rubber Sign")
+        .lang("Rubber Wall Sign")
         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
         .tag(BlockTags.WALL_SIGNS)
         .loot((table, block) -> table.dropOther(block, RUBBER_SIGN.get().asItem()))
@@ -1175,8 +1175,8 @@ public class GTBlocks {
         .tag(ItemTags.WOODEN_FENCES)
         .build()
         .register();
-    public static final BlockEntry<StandingSignBlock> TREATED_WOOD_SIGN = REGISTRATE
-        .block("treated_wood_sign", (p) -> new StandingSignBlock(p, TREATED_WOOD_TYPE))
+    public static final BlockEntry<GTStandingSignBlock> TREATED_WOOD_SIGN = REGISTRATE
+        .block("treated_wood_sign", (p) -> new GTStandingSignBlock(p, TREATED_WOOD_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_SIGN)
         .lang("Treated Wood Sign")
         .blockstate((ctx, prov) -> prov.signBlock(ctx.get(), GTBlocks.TREATED_WOOD_WALL_SIGN.get(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
@@ -1187,10 +1187,10 @@ public class GTBlocks {
         .tag(ItemTags.SIGNS)
         .build()
         .register();
-    public static final BlockEntry<WallSignBlock> TREATED_WOOD_WALL_SIGN = REGISTRATE
-        .block("treated_wood_wall_sign", (p) -> new WallSignBlock(p, TREATED_WOOD_TYPE))
+    public static final BlockEntry<GTWallSignBlock> TREATED_WOOD_WALL_SIGN = REGISTRATE
+        .block("treated_wood_wall_sign", (p) -> new GTWallSignBlock(p, TREATED_WOOD_TYPE))
         .initialProperties(() -> Blocks.SPRUCE_WALL_SIGN)
-        .lang("Treated Wood Sign")
+        .lang("Treated Wood Wall Sign")
         .setData(ProviderType.BLOCKSTATE, NonNullBiConsumer.noop())
         .tag(BlockTags.WALL_SIGNS)
         .loot((table, block) -> table.dropOther(block, TREATED_WOOD_SIGN.get().asItem()))

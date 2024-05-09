@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.gui.compass.GTCompassUIConfig;
 import com.gregtechceu.gtceu.api.gui.compass.GTRecipeViewCreator;
 import com.gregtechceu.gtceu.api.gui.compass.MultiblockAction;
+import com.gregtechceu.gtceu.client.renderer.blockentity.GTSignRenderer;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
 import com.gregtechceu.gtceu.common.CommonProxy;
+import com.gregtechceu.gtceu.common.data.GTBlockEntities;
 import com.gregtechceu.gtceu.common.data.GTEntityTypes;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
@@ -38,5 +40,7 @@ public class ClientProxy extends CommonProxy {
         event.registerEntityRenderer(GTEntityTypes.DYNAMITE.get(), ThrownItemRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.POWDERBARREL.get(), GTExplosiveRenderer::new);
         event.registerEntityRenderer(GTEntityTypes.INDUSTRIAL_TNT.get(), GTExplosiveRenderer::new);
+
+        event.registerBlockEntityRenderer(GTBlockEntities.GT_SIGN.get(), GTSignRenderer::new);
     }
 }
