@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipes;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;

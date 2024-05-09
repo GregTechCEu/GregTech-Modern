@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipes;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
@@ -6,14 +6,17 @@ import com.gregtechceu.gtceu.api.recipes.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipes.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
+import net.minecraft.core.Holder;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.biome.Biome;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -23,26 +26,26 @@ import org.jetbrains.annotations.NotNull;
  * @implNote DimensionCondition, specific dimension
  */
 @NoArgsConstructor
-public class DimensionCondition extends RecipeCondition {
-    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(ResourceLocation.CODEC.fieldOf("dimension").forGetter(val -> val.dimension))
-        .apply(instance, DimensionCondition::new));
+public class BiomeCondition extends RecipeCondition {
+    public static final MapCodec<BiomeCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
+        .and(ResourceLocation.CODEC.fieldOf("biome").forGetter(val -> val.biome))
+        .apply(instance, BiomeCondition::new));
 
-    public final static DimensionCondition INSTANCE = new DimensionCondition();
-    private ResourceLocation dimension = new ResourceLocation("dummy");
+    public final static BiomeCondition INSTANCE = new BiomeCondition();
+    private ResourceLocation biome = new ResourceLocation("dummy");
 
-    public DimensionCondition(ResourceLocation dimension) {
-        this.dimension = dimension;
+    public BiomeCondition(boolean isReverse, ResourceLocation biome) {
+        super(isReverse);
+        this.biome = biome;
     }
 
-    public DimensionCondition(boolean isReverse, ResourceLocation dimension) {
-        super(isReverse);
-        this.dimension = dimension;
+    public BiomeCondition(ResourceLocation biome) {
+        this.biome = biome;
     }
 
     @Override
     public RecipeConditionType<?> getType() {
-        return GTRecipeConditions.DIMENSION;
+        return GTRecipeConditions.BIOME;
     }
 
     @Override
@@ -52,51 +55,53 @@ public class DimensionCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.dimension.tooltip", dimension);
+        return Component.translatable("recipe.condition.biome.tooltip", LocalizationUtils.format("biome.%s.%s", biome.getNamespace(), biome.getPath()));
     }
 
-    public ResourceLocation getDimension() {
-        return dimension;
+    public ResourceLocation getBiome() {
+        return biome;
     }
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
         Level level = recipeLogic.machine.self().getLevel();
-        return level != null && dimension.equals(level.dimension().location());
+        if (level == null) return false;
+        Holder<Biome> biome = level.getBiome(recipeLogic.machine.self().getPos());
+        return biome.is(this.biome);
     }
 
     @Override
     public RecipeCondition createTemplate() {
-        return new DimensionCondition();
+        return new BiomeCondition();
     }
 
     @NotNull
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
-        config.addProperty("dim", dimension.toString());
+        config.addProperty("biome", biome.toString());
         return config;
     }
 
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        dimension = new ResourceLocation(
-                GsonHelper.getAsString(config, "dim", "dummy"));
+        biome = new ResourceLocation(
+                GsonHelper.getAsString(config, "biome", "dummy"));
         return this;
     }
 
     @Override
     public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        dimension = new ResourceLocation(buf.readUtf());
+        biome = new ResourceLocation(buf.readUtf());
         return this;
     }
 
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buf) {
         super.toNetwork(buf);
-        buf.writeUtf(dimension.toString());
+        buf.writeUtf(biome.toString());
     }
 
 }

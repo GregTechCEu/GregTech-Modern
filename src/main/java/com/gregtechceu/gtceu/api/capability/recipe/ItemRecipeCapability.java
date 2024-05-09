@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.recipes.ingredient.IntCircuitIngredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.api.recipes.lookup.*;
 import com.gregtechceu.gtceu.api.recipes.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
+import com.gregtechceu.gtceu.common.recipes.ResearchCondition;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.gregtechceu.gtceu.utils.ResearchManager;

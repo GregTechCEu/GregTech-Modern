@@ -18,7 +18,7 @@ import com.gregtechceu.gtceu.api.machines.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.RecipeHelper;
-import com.gregtechceu.gtceu.common.recipe.VentCondition;
+import com.gregtechceu.gtceu.common.recipes.VentCondition;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;

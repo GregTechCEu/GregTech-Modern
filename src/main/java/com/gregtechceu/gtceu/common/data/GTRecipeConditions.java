@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.recipes.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.recipe.*;
+import com.gregtechceu.gtceu.common.recipes.*;
 import net.neoforged.fml.ModLoader;
 
 /**

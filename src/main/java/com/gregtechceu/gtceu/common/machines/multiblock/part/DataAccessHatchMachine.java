@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.gregtechceu.gtceu.common.items.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machines.multiblock.electric.research.DataBankMachine;
-import com.gregtechceu.gtceu.common.recipe.ResearchCondition;
+import com.gregtechceu.gtceu.common.recipes.ResearchCondition;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;

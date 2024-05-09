@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipes;
 
 import com.gregtechceu.gtceu.api.machines.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;

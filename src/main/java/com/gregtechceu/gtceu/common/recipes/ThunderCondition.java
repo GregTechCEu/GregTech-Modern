@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.common.recipe;
+package com.gregtechceu.gtceu.common.recipes;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
@@ -13,6 +13,7 @@ import lombok.NoArgsConstructor;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
+import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -22,87 +23,73 @@ import org.jetbrains.annotations.NotNull;
  * @implNote WhetherCondition, specific whether
  */
 @NoArgsConstructor
-public class PositionYCondition extends RecipeCondition {
-    public static final MapCodec<PositionYCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(instance.group(
-            Codec.INT.fieldOf("min").forGetter(val -> val.min),
-            Codec.INT.fieldOf("max").forGetter(val -> val.max)
-        )).apply(instance, PositionYCondition::new));
+public class ThunderCondition extends RecipeCondition {
+    public static final MapCodec<ThunderCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
+        .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
+        .apply(instance, ThunderCondition::new));
 
-    public final static PositionYCondition INSTANCE = new PositionYCondition();
-    private int min;
-    private int max;
+    public final static ThunderCondition INSTANCE = new ThunderCondition();
+    private float level;
 
-    public PositionYCondition(int min, int max) {
-        this.min = min;
-        this.max = max;
-    }
-
-    public PositionYCondition(boolean isReverse, int min, int max) {
+    public ThunderCondition(boolean isReverse, float level) {
         super(isReverse);
-        this.min = min;
-        this.max = max;
+        this.level = level;
+    }
+    public ThunderCondition(float level) {
+        this.level = level;
     }
 
     @Override
     public RecipeConditionType<?> getType() {
-        return GTRecipeConditions.POSITION_Y;
+        return GTRecipeConditions.THUNDER;
     }
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.pos_y.tooltip", this.min, this.max);
+        return Component.translatable("recipe.condition.thunder.tooltip", level);
     }
 
-    public int getMin() {
-        return min;
-    }
-
-    public int getMax() {
-        return max;
+    public float getLevel() {
+        return level;
     }
 
     @Override
     public boolean test(@NotNull GTRecipe recipe, @NotNull RecipeLogic recipeLogic) {
-        int y = recipeLogic.machine.self().getPos().getY();
-        return y >= this.min && y <= this.max;
+        Level level = recipeLogic.machine.self().getLevel();
+        return level != null && level.getThunderLevel(1) >= this.level;
     }
 
     @Override
     public RecipeCondition createTemplate() {
-        return new PositionYCondition();
+        return new ThunderCondition();
     }
 
     @NotNull
     @Override
     public JsonObject serialize() {
         JsonObject config = super.serialize();
-        config.addProperty("min", this.min);
-        config.addProperty("max", this.max);
+        config.addProperty("level", level);
         return config;
     }
 
     @Override
     public RecipeCondition deserialize(@NotNull JsonObject config) {
         super.deserialize(config);
-        min = GsonHelper.getAsInt(config, "min", Integer.MIN_VALUE);
-        max = GsonHelper.getAsInt(config, "max", Integer.MAX_VALUE);
+        level = GsonHelper.getAsFloat(config, "level", 0);
         return this;
     }
 
     @Override
     public RecipeCondition fromNetwork(RegistryFriendlyByteBuf buf) {
         super.fromNetwork(buf);
-        min = buf.readVarInt();
-        max = buf.readVarInt();
+        level = buf.readFloat();
         return this;
     }
 
     @Override
     public void toNetwork(RegistryFriendlyByteBuf buf) {
         super.toNetwork(buf);
-        buf.writeVarInt(min);
-        buf.writeVarInt(max);
+        buf.writeFloat(level);
     }
 
 }
