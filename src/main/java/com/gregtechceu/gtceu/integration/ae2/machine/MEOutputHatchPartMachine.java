@@ -33,7 +33,6 @@ import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -138,7 +137,7 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine implements IInW
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(0) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, Stream.generate(() -> new FluidStorage(0) {
                 @Override
                 public long fill(FluidStack resource, boolean simulate, boolean notifyChanges) {
                     return InaccessibleInfiniteSlot.this.fill(resource, simulate, notifyChanges);

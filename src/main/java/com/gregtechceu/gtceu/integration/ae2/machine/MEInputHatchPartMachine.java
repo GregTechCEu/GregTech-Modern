@@ -30,7 +30,6 @@ import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
@@ -158,7 +157,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine implements IInWo
 
         @Override
         public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, left, simulate, this.handlerIO, getStorages());
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
         }
 
         public FluidStack drainInternal(long maxDrain, boolean simulate) {

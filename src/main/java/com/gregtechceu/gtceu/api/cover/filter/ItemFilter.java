@@ -4,6 +4,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.ItemLike;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.HashMap;
@@ -18,7 +19,7 @@ import java.util.function.Function;
  */
 public interface ItemFilter extends Filter<ItemStack, ItemFilter> {
 
-    Map<Item, Function<ItemStack, ItemFilter>> FILTERS = new HashMap<>();
+    Map<ItemLike, Function<ItemStack, ItemFilter>> FILTERS = new HashMap<>();
 
     static ItemFilter loadFilter(ItemStack itemStack) {
         return FILTERS.get(itemStack.getItem()).apply(itemStack);

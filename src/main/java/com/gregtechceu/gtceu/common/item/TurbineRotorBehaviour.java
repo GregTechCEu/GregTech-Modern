@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.common.item;
 
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
@@ -26,7 +27,7 @@ import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
 public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler {
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         if (item.allowedIn(category)) {
             turbineBlade.executeHandler(null, PropertyKey.INGOT, (tagPrefix, material, property, provider) -> {
                 var rotorStack = new ItemStack(item);
@@ -78,7 +79,7 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
 
     @Nullable
     public static TurbineRotorBehaviour getBehaviour(@NotNull ItemStack itemStack) {
-        if (itemStack.getItem() instanceof ComponentItem componentItem) {
+        if (itemStack.getItem() instanceof IComponentItem componentItem) {
             for (var component : componentItem.getComponents()) {
                 if (component instanceof TurbineRotorBehaviour behaviour) {
                     return behaviour;

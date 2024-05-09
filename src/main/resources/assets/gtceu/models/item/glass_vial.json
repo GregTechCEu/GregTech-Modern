@@ -1,0 +1,10 @@
+{
+  "loader": "forge:fluid_container",
+  "parent": "forge:item/default",
+  "textures": {
+    "base": "gtceu:item/glass_vial/base",
+    "fluid": "gtceu:item/glass_vial/overlay",
+    "cover": "gtceu:item/glass_vial/base"
+  },
+  "fluid": "minecraft:empty"
+}

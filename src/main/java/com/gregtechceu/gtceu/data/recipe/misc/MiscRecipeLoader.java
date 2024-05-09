@@ -4,18 +4,15 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluids;
 
 import java.util.function.Consumer;
 
@@ -208,10 +205,8 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // QuarkTech Suite
-        // TODO armor
-        /*
         ASSEMBLER_RECIPES.recipeBuilder("quantum_helmet").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 5)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(SENSOR_IV)
@@ -225,10 +220,10 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 8)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
-                .inputItems(EMITTER_IV.getStackForm(2))
+                .inputItems(EMITTER_IV.asStack(2))
                 .inputItems(FIELD_GENERATOR_IV)
                 .inputItems(screw, TungstenSteel, 4)
                 .inputItems(plate, Iridium, 8)
@@ -239,7 +234,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 7)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_MOTOR_IV, 4)
@@ -253,7 +248,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_PISTON_IV, 2)
@@ -267,13 +262,13 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputNBT(((ArmorMetaItem<?>) QUANTUM_CHESTPLATE.getItem()).getItem(QUANTUM_CHESTPLATE), NBTMatcher.ANY, NBTCondition.ANY)
+                .inputItems(QUANTUM_CHESTPLATE.asItem())
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(wireFine, NiobiumTitanium, 64)
                 .inputItems(wireGtQuadruple, Osmium, 6)
                 .inputItems(plateDouble, Iridium, 4)
                 .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(circuit, Tier.ZPM)
+                .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(plateDense, RhodiumPlatedPalladium, 2)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
@@ -281,7 +276,6 @@ public class MiscRecipeLoader {
                 .inputItems(screw, HSSS, 8)
                 .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
                 .save(provider);
-        */
 
         // TODO Central monitor
         /*
