@@ -4,9 +4,11 @@ Version: 1.2.2
 
 ### ADDITIONS:
 - Ported Powder Barrels, Industrial TNT and Dynamite from 1.12
+- Ported Armor from 1.12
 
 ### CHANGES:
 - Updated Russian translation
+- Moved coils, filters, PSS battery maps out of GTBlocks, to make it easier for addons to add to them
 
 ### FIXES:
 - Made natural decor blocks obtainable
@@ -21,3 +23,9 @@ Version: 1.2.2
 - Fixed Overclocking display for ULV in recipe viewers
 - Fixed parallel processing for steam machines
 - Fixed machine controllers not working for indirectly powered blocks
+- Fixed raw ores being smeltable into ingots even with the NO_SMELTING flag
+- Fixed language entries for treated/rubber wood signs
+- Fixed sign rendering
+- Fixed wire throughput counting
+- Fixed chainsaw durability usage
+- Fixed recipe conflict between mud and fertilizer recipes
