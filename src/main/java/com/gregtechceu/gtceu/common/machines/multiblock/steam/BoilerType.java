@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machines.multiblock.steam;
 
 import net.minecraft.world.level.block.state.BlockState;
 
-import static com.gregtechceu.gtceu.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.blocks.GTBlocks.*;
 
 public enum BoilerType {
 

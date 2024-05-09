@@ -17,7 +17,7 @@ import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.GTDataComponents;
-import com.gregtechceu.gtceu.data.GTMachines;
+import com.gregtechceu.gtceu.data.machines.GTMachines;
 import com.gregtechceu.gtceu.common.items.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machines.trait.miner.MinerLogic;
 import com.gregtechceu.gtceu.data.lang.LangHandler;

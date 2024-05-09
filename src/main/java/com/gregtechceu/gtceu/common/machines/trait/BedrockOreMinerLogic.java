@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machines.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipes.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import lombok.Getter;
 import net.minecraft.core.SectionPos;

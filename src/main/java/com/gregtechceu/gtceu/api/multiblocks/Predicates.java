@@ -16,7 +16,7 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.gregtechceu.gtceu.common.blocks.BatteryBlock;
 import com.gregtechceu.gtceu.common.blocks.CoilBlock;
-import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.blocks.GTBlocks;
 import com.gregtechceu.gtceu.common.machines.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;

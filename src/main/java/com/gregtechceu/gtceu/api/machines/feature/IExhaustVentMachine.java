@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.machines.feature;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.data.GTDamageTypes;
+import com.gregtechceu.gtceu.data.damagesources.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

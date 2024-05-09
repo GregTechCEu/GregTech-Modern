@@ -4,7 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.items.ComponentItem;
 import com.gregtechceu.gtceu.api.items.datacomponents.FacadeWrapper;
 import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.blocks.GTBlocks;
 import com.gregtechceu.gtceu.api.items.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.items.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.items.component.ISubItemHandler;

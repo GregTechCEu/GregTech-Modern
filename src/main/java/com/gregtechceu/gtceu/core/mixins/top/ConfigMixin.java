@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.items.tool.MaterialToolTier;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
+import com.gregtechceu.gtceu.data.recipes.CustomTags;
 import mcjty.theoneprobe.config.Config;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;

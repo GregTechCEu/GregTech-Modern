@@ -21,7 +21,7 @@ import com.lowdragmc.lowdraglib.Platform;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import com.gregtechceu.gtceu.common.recipes.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipes.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;

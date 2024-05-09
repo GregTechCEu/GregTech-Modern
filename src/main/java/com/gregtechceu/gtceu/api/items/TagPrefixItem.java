@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.materials.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
-import com.gregtechceu.gtceu.data.GTDamageTypes;
+import com.gregtechceu.gtceu.data.damagesources.GTDamageTypes;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;

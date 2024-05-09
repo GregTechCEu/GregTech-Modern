@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.entities;
 
-import com.gregtechceu.gtceu.data.GTBlocks;
-import com.gregtechceu.gtceu.data.GTEntityTypes;
+import com.gregtechceu.gtceu.data.blocks.GTBlocks;
+import com.gregtechceu.gtceu.data.entities.GTEntityTypes;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;

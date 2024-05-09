@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.items.tool.behavior;
 import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.items.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.items.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;

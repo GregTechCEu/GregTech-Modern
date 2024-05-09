@@ -18,8 +18,8 @@ import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.VLVH;
 import static com.gregtechceu.gtceu.api.GTValues.VLVT;
-import static com.gregtechceu.gtceu.data.GTMachines.defaultTankSizeFunction;
-import static com.gregtechceu.gtceu.data.GTMachines.explosion;
+import static com.gregtechceu.gtceu.data.machines.GTMachines.defaultTankSizeFunction;
+import static com.gregtechceu.gtceu.data.machines.GTMachines.explosion;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**

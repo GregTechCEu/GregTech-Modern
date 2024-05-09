@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machines.multiblock.electric.FluidDrillMachine;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipes.builder.GTRecipeBuilder;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import lombok.Getter;
 import net.minecraft.core.SectionPos;

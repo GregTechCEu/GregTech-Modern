@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.items.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.items.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.items.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.GTDataComponents;
-import com.gregtechceu.gtceu.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.recipes.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipes.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipes.content.Content;
 import com.gregtechceu.gtceu.api.recipes.content.ContentModifier;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipes.builder.GTRecipeBuilder;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;

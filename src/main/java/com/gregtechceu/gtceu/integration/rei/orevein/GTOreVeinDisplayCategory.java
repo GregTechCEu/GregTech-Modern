@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.integration.rei.orevein;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.items.GTItems;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;

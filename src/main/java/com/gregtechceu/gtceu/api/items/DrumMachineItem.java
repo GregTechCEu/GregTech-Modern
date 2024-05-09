@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.items;
 
 import com.gregtechceu.gtceu.api.blocks.IMachineBlock;
 import com.gregtechceu.gtceu.data.GTDataComponents;
-import com.gregtechceu.gtceu.data.GTMachines;
+import com.gregtechceu.gtceu.data.machines.GTMachines;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;

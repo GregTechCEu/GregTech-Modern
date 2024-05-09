@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet.FINE;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet.ROUGH;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.materials.GTMaterials.*;
 
 public class OrganicChemistryMaterials {
     /**

@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.machines.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.items.GTItems;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;

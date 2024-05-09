@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.tags.TagPrefix;
-import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.blocks.GTBlocks;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import lombok.Setter;
 import lombok.experimental.Accessors;

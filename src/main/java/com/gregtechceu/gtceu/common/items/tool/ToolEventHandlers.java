@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.items.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.items.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.GTDataComponents;
-import com.gregtechceu.gtceu.data.GTToolBehaviors;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;

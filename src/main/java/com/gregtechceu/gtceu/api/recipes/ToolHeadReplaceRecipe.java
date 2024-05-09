@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.api.items.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.data.GTDataComponents;
-import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.items.GTItems;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;

@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.recipes.ingredient;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.data.GTIngredientTypes;
-import com.gregtechceu.gtceu.data.GTItems;
+import com.gregtechceu.gtceu.data.items.GTItems;
 import com.gregtechceu.gtceu.common.items.IntCircuitBehaviour;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

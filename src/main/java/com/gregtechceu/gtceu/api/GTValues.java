@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api;
 
 
-import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.data.recipes.CraftingComponent;
 import net.minecraft.util.RandomSource;
 
 import java.time.LocalDate;

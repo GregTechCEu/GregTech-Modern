@@ -10,12 +10,11 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
-import com.gregtechceu.gtceu.data.GTElements;
 
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet.*;
-import static com.gregtechceu.gtceu.data.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.materials.GTMaterials.*;
 
 
 public class ElementMaterials {

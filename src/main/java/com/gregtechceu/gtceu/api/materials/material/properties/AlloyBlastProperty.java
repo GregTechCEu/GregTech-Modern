@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.materials.material.properties;
 
 import com.google.common.base.Preconditions;
-import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.AlloyBlastRecipeProducer;
+import com.gregtechceu.gtceu.data.recipes.misc.alloyblast.AlloyBlastRecipeProducer;
 import lombok.Getter;
 import lombok.Setter;
 import net.minecraft.world.level.material.Fluid;

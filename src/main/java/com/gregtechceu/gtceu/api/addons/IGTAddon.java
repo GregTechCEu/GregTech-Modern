@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.addons.events.KJSRecipeKeyEvent;
 import com.gregtechceu.gtceu.api.addons.events.MaterialCasingCollectionEvent;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
-import com.gregtechceu.gtceu.data.GTOres;
+import com.gregtechceu.gtceu.data.blocks.GTOres;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 

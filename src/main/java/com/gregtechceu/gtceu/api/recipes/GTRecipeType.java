@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.guis.SteamTexture;
 import com.gregtechceu.gtceu.api.recipes.lookup.GTRecipeLookup;
 import com.gregtechceu.gtceu.api.recipes.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.sounds.SoundEntry;
-import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.recipes.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;

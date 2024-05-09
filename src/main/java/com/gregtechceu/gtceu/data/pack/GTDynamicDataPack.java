@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addons.AddonFinder;
 import com.gregtechceu.gtceu.api.addons.IGTAddon;
-import com.gregtechceu.gtceu.data.GTRecipes;
+import com.gregtechceu.gtceu.data.recipes.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.JsonOps;

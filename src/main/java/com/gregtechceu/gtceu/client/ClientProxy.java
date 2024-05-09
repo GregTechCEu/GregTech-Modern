@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.guis.compass.GTCompassUIConfig;
 import com.gregtechceu.gtceu.api.guis.compass.GTRecipeViewCreator;
 import com.gregtechceu.gtceu.api.guis.compass.MultiblockAction;
 import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.data.GTEntityTypes;
+import com.gregtechceu.gtceu.data.entities.GTEntityTypes;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;

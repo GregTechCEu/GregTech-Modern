@@ -11,8 +11,8 @@ import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.data.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.CustomAlloyBlastRecipeProducer;
+import com.gregtechceu.gtceu.data.materials.GTMaterials;
+import com.gregtechceu.gtceu.data.recipes.misc.alloyblast.CustomAlloyBlastRecipeProducer;
 
 import org.jetbrains.annotations.NotNull;
 import java.util.List;

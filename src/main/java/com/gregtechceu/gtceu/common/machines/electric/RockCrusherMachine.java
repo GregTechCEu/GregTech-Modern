@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machines.electric;
 
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.SimpleTieredMachine;
-import com.gregtechceu.gtceu.data.GTMachines;
+import com.gregtechceu.gtceu.data.machines.GTMachines;
 
 public class RockCrusherMachine extends SimpleTieredMachine {
     public RockCrusherMachine(IMachineBlockEntity holder, int tier, Object... args) {

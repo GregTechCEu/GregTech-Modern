@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.blocks;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.data.GTBlocks;
+import com.gregtechceu.gtceu.data.blocks.GTBlocks;
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;

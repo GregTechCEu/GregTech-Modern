@@ -19,7 +19,7 @@ import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.RecipeHelper;
 import com.gregtechceu.gtceu.common.blockentities.FluidPipeBlockEntity;
 import com.gregtechceu.gtceu.data.GTDataComponents;
-import com.gregtechceu.gtceu.data.GTSoundEntries;
+import com.gregtechceu.gtceu.data.sounds.GTSoundEntries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import lombok.Getter;

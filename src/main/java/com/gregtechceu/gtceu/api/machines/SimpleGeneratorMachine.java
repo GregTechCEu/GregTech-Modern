@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipes.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipes.ui.GTRecipeTypeUI;
-import com.gregtechceu.gtceu.data.GTRecipeModifiers;
+import com.gregtechceu.gtceu.data.recipes.GTRecipeModifiers;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;

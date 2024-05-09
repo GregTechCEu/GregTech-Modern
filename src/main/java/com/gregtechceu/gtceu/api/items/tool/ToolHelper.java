@@ -24,6 +24,10 @@ import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.*;
 import com.gregtechceu.gtceu.api.items.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.items.GTItems;
+import com.gregtechceu.gtceu.data.machines.GTMachines;
+import com.gregtechceu.gtceu.data.materials.GTMaterials;
+import com.gregtechceu.gtceu.data.recipes.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
 import com.lowdragmc.lowdraglib.Platform;
@@ -100,7 +104,7 @@ public class ToolHelper {
     }
 
     /**
-     * Registers the tool against a crafting symbol, this is used in {@link com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper}
+     * Registers the tool against a crafting symbol, this is used in {@link com.gregtechceu.gtceu.data.recipes.VanillaRecipeHelper}
      */
     public static void registerToolSymbol(Character symbol, GTToolType tool) {
         symbols.put(symbol, tool);
