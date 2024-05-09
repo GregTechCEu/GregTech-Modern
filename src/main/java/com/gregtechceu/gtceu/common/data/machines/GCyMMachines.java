@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.multiblocks.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblocks.Predicates;
 import com.gregtechceu.gtceu.api.multiblocks.TraceabilityPredicate;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipes.OverclockingLogic;
 import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.machines.feature.IMachineFeature;
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machines.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;

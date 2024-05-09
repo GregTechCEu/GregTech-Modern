@@ -14,9 +14,9 @@ import com.gregtechceu.gtceu.api.machines.multiblock.MultiblockControllerMachine
 import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblocks.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipes.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.common.data.GTCompassSections;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;

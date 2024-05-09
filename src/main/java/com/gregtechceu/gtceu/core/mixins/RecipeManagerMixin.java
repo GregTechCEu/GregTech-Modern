@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.core.mixins;
 
 import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;

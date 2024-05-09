@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.machines.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machines.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;

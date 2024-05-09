@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.StressRecipeCapability;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.api.machines.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;

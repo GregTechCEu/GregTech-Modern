@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.steam.SteamMachine;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipes.RecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import mcjty.theoneprobe.api.CompoundText;

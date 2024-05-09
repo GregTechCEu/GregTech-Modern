@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.recipe;
 
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.recipe.ResearchData;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.recipes.ResearchData;
+import com.gregtechceu.gtceu.api.recipes.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;

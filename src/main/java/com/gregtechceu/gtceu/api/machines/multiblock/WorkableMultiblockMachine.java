@@ -14,8 +14,8 @@ import com.gregtechceu.gtceu.api.machines.feature.multiblock.IWorkableMultiContr
 import com.gregtechceu.gtceu.api.machines.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machines.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;

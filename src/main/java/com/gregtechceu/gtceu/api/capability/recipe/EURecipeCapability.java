@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
-import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
+import com.gregtechceu.gtceu.api.recipes.content.ContentModifier;
+import com.gregtechceu.gtceu.api.recipes.content.SerializerLong;
 
 import java.util.Collection;
 import java.util.List;

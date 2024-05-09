@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;

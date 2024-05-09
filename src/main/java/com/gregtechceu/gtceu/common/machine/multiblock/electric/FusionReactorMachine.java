@@ -14,9 +14,9 @@ import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockM
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
-import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.OverclockingLogic;
+import com.gregtechceu.gtceu.api.recipes.RecipeHelper;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;

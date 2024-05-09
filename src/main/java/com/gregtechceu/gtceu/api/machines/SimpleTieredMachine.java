@@ -13,8 +13,8 @@ import com.gregtechceu.gtceu.api.machines.fancyconfigurator.CircuitFancyConfigur
 import com.gregtechceu.gtceu.api.machines.feature.IAutoOutputBoth;
 import com.gregtechceu.gtceu.api.machines.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
+import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
+import com.gregtechceu.gtceu.api.recipes.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;

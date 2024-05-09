@@ -2,12 +2,11 @@ package com.gregtechceu.gtceu.data.recipe.builder;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
+import com.gregtechceu.gtceu.api.recipes.ShapedEnergyTransferRecipe;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

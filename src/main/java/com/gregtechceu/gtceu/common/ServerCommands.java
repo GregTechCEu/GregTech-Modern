@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common;
 
 import com.gregtechceu.gtceu.api.guis.factory.GTUIEditorFactory;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;

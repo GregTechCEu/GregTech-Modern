@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machines.TickableSubscription;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machines.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;

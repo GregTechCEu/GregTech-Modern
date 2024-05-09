@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.guis.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.guis.fancy.TooltipsPanel;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import lombok.val;
 import net.minecraft.ChatFormatting;

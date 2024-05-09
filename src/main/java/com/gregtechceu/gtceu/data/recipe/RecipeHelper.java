@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 

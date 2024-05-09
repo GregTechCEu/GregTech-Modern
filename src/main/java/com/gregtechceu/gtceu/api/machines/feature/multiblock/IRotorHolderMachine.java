@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.machines.feature.multiblock;
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.guis.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.guis.fancy.TooltipsPanel;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.Direction;

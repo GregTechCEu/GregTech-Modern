@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.guis.compass;
 
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.integration.GTRecipeWidget;
 import com.lowdragmc.lowdraglib.gui.compass.component.RecipeComponent;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;

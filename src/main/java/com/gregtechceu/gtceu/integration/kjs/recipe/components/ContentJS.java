@@ -3,14 +3,13 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.recipes.content.Content;
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import dev.latvian.mods.kubejs.recipe.ReplacementMatch;
 import dev.latvian.mods.kubejs.recipe.component.ComponentRole;
 import dev.latvian.mods.kubejs.recipe.component.RecipeComponent;
-import dev.latvian.mods.kubejs.util.UtilsJS;
 import net.minecraft.util.GsonHelper;
 
 public record ContentJS<T>(RecipeComponent<T> baseComponent, RecipeCapability<?> capability, boolean isOutput) implements RecipeComponent<Content> {

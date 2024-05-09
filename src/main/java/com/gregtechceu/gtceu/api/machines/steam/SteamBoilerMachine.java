@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machines.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machines.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machines.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableFluidTank;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipes.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
