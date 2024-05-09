@@ -16,7 +16,7 @@ public abstract class ForgeGuiMixin {
     @Shadow
     public abstract Minecraft getMinecraft();
 
-    @ModifyExpressionValue(method = "renderArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getArmorValue()I"))
+    @ModifyExpressionValue(method = "renderArmor", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/player/LocalPlayer;getArmorValue()I", remap = true))
     private int gtceu$modifyArmorAmount(int level) {
         var armorInv = getMinecraft().player.getInventory().armor;
         for (int i = 0; i < armorInv.size(); ++i) {
