@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.*;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
@@ -29,8 +29,8 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.ore;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.oreNetherrack;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.ore;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.oreNetherrack;
 import static com.gregtechceu.gtceu.api.worldgen.generator.veins.DikeVeinGenerator.DikeBlockDefinition;
 import static com.gregtechceu.gtceu.api.worldgen.generator.veins.VeinedVeinGenerator.VeinBlockDefinition;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;

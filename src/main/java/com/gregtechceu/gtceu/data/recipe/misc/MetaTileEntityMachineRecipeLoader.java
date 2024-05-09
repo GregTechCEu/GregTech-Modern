@@ -11,7 +11,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_FLUID_PIPE;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.LD_ITEM_PIPE;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;

@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.materials.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;

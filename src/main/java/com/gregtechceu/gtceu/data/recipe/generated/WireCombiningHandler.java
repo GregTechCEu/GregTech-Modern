@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -15,7 +15,7 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
 
 public class WireCombiningHandler {

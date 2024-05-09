@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Tier;

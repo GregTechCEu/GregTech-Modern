@@ -5,8 +5,8 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.plateDouble;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.wireGtSingle;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.plateDouble;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.wireGtSingle;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.FUSION_COIL;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.SUPERCONDUCTING_COIL;
 import static com.gregtechceu.gtceu.common.data.GTItems.*;

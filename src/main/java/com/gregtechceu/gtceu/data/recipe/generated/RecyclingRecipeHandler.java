@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.misc.RecyclingRecipes;
 import net.minecraft.data.recipes.RecipeOutput;
 
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 
 public class RecyclingRecipeHandler {
 

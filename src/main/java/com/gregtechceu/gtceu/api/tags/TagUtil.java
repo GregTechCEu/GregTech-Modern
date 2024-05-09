@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.tag;
+package com.gregtechceu.gtceu.api.tags;
 
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.Registry;

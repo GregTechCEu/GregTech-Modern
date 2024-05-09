@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.blocks.MaterialBlock;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.Minecraft;

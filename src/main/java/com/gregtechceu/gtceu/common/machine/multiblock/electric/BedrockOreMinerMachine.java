@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockMachine;

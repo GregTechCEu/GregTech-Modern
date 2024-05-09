@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;

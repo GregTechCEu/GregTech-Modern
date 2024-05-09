@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.machine.trait.miner;
 
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;

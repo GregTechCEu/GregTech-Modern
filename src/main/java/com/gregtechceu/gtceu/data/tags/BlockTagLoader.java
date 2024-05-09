@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.data.tags;
 
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;

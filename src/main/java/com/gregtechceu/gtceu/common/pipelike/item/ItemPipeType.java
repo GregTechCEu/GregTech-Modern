@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.ItemPipeProperties;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import lombok.Getter;

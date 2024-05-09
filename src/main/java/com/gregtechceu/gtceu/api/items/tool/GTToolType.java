@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.items.tool;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.tags.TagUtil;
 import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.api.sounds.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.sounds.SoundEntry;

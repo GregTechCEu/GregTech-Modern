@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.recipes.ToolHeadReplaceRecipe;
@@ -41,7 +41,7 @@ import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 
 public class ToolRecipeHandler {
 

@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.blocks;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;

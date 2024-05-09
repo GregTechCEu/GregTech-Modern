@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.integration.kjs.built;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.tag.TagType;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagType;
 import lombok.experimental.Accessors;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -11,7 +11,7 @@ import net.minecraft.world.item.Item;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.Conditions.hasOreProperty;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.Conditions.hasOreProperty;
 
 @Accessors(fluent = true, chain = true)
 public class KJSTagPrefix extends TagPrefix {

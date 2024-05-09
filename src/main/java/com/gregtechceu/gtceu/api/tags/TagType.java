@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.tag;
+package com.gregtechceu.gtceu.api.tags;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.utils.FormattingUtil;

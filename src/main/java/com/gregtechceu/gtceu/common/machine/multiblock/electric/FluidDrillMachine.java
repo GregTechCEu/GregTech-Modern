@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockMachine;

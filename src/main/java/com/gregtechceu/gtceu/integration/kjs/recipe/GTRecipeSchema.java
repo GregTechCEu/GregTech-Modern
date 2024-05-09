@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.items.component.IDataItem;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.machines.multiblock.CleanroomType;

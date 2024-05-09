@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.materials.material.stack;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 
 import org.jetbrains.annotations.Nullable;
 import java.util.Objects;

@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.materials.material.registry.MaterialRegistry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;

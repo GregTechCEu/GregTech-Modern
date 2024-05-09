@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
 
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 
 public interface IMaterialPipeType<NodeDataType> extends IPipeType<NodeDataType> {
 

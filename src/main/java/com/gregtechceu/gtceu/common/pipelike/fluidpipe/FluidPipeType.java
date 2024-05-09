@@ -5,12 +5,12 @@ import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 
 public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
 

@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.materials.material.properties.*;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.api.tags.TagUtil;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;

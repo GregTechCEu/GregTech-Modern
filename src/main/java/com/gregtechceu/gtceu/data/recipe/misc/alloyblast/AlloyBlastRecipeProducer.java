@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.materials.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GCyMRecipeTypes;
@@ -22,7 +22,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.ingotHot;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.ingotHot;
 
 public class AlloyBlastRecipeProducer {
 

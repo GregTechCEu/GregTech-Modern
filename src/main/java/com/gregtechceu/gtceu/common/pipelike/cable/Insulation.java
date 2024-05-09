@@ -6,14 +6,14 @@ import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 
 public enum Insulation implements IMaterialPipeType<WireProperties> {
     WIRE_SINGLE("single_wire", 0.125f, 1, 2, wireGtSingle, -1, false),

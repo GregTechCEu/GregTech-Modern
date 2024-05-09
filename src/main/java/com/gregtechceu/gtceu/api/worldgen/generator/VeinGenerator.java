@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.worldgen.generator;
 
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;

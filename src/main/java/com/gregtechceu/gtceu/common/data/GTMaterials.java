@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.materials.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import net.minecraft.world.item.Items;
@@ -20,7 +20,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static com.gregtechceu.gtceu.api.materials.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 
 
 /**

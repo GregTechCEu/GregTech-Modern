@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.recipes;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.api.items.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;

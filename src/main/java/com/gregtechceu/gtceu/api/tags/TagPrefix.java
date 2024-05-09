@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.tag;
+package com.gregtechceu.gtceu.api.tags;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Table;
@@ -56,7 +56,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.*;
 import java.util.function.*;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.Conditions.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.Conditions.*;
 
 @SuppressWarnings("unused")
 @Accessors(chain = true, fluent = true)

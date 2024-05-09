@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.tterrag.registrate.providers.RegistrateLangProvider;

@@ -16,7 +16,7 @@ import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.ore;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.ore;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 

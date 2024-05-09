@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.materials.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.items.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.items.component.ElectricStats;

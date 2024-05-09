@@ -14,7 +14,7 @@ import net.minecraft.world.level.material.Fluid;
 import java.util.function.Supplier;
 
 import static com.gregtechceu.gtceu.api.materials.ChemicalHelper.registerUnificationItems;
-import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tags.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 /**

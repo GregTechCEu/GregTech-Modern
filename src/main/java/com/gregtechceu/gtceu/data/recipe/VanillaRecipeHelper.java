@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.*;
 import it.unimi.dsi.fastutil.chars.*;

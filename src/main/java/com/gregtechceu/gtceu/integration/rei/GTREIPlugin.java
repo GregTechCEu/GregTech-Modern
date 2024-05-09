@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.rei;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipes.GTRecipeType;

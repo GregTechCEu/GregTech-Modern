@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.items.ComponentItem;
 import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.api.items.tool.GTToolType;
 import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.tterrag.registrate.util.entry.RegistryEntry;

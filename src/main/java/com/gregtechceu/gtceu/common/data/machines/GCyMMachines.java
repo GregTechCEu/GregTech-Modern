@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.materials.ChemicalHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.machines.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machines.multiblock.CoilWorkableElectricMultiblockMachine;

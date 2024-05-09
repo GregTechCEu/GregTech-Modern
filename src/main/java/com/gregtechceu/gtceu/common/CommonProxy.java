@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.materials.material.event.MaterialRegistryEvent;
 import com.gregtechceu.gtceu.api.materials.material.event.PostMaterialEvent;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.materials.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.WorldGenLayers;
 import com.gregtechceu.gtceu.api.guis.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.guis.factory.GTUIEditorFactory;

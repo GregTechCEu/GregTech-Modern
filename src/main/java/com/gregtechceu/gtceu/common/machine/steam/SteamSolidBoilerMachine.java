@@ -9,7 +9,7 @@ import com.gregtechceu.gtceu.api.guis.GuiTextures;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.steam.SteamBoilerMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;

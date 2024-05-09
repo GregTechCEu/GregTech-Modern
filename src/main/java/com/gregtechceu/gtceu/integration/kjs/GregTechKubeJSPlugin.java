@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.materials.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.materials.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.materials.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.materials.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.*;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;

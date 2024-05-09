@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
 import com.gregtechceu.gtceu.api.materials.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tags.TagPrefix;
 import com.gregtechceu.gtceu.api.machines.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.multiblocks.error.PatternStringError;
