@@ -1952,17 +1952,17 @@ public class GTItems {
         .register();
 
     public static ItemEntry<Item> NANO_SABER;
-    public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("prospector.lv", ComponentItem::new)
+    public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("lv_prospector", ComponentItem::new)
         .lang("Ore Prospector (LV)")
         .properties(p -> p.stacksTo(1))
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
         .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ProspectorScannerBehavior(2, GTValues.V[GTValues.LV] / 16L, ProspectorMode.ORE))).register();
-    public static ItemEntry<ComponentItem> PROSPECTOR_HV = REGISTRATE.item("prospector.hv", ComponentItem::new)
+    public static ItemEntry<ComponentItem> PROSPECTOR_HV = REGISTRATE.item("hv_prospector", ComponentItem::new)
         .lang("Advanced Prospector (HV)")
         .properties(p -> p.stacksTo(1))
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
         .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ProspectorScannerBehavior(3, GTValues.V[GTValues.HV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID, ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null))).register();
-    public static ItemEntry<ComponentItem> PROSPECTOR_LUV = REGISTRATE.item("prospector.luv", ComponentItem::new)
+    public static ItemEntry<ComponentItem> PROSPECTOR_LUV = REGISTRATE.item("luv_prospector", ComponentItem::new)
         .lang("Super Prospector (LuV)")
         .properties(p -> p.stacksTo(1))
         .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))

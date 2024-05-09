@@ -299,7 +299,7 @@ public class CommonProxy {
                 componentItem.attachCapabilities(event);
             } else if (item instanceof IGTTool tool) {
                 tool.attachCapabilities(event);
-            }else if (item instanceof DrumMachineItem drum) {
+            } else if (item instanceof DrumMachineItem drum) {
                 drum.attachCapabilities(event);
             } else if (item instanceof GTBucketItem bucket) {
                 event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ctx) -> new FluidBucketWrapper(stack), bucket);

@@ -31,14 +31,16 @@ public class ElectricItem implements IElectricItem {
         this.tier = tier;
         this.chargeable = chargeable;
         this.canProvideEnergyExternally = canProvideEnergyExternally;
+        // do this here to force the max charge to be set on the stats-
+        setMaxChargeOverride(maxCharge);
     }
 
     public void setCharge(long change) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withCharge(change));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withCharge(change));
     }
 
     public void setMaxChargeOverride(long maxCharge) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withMaxCharge(maxCharge));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withMaxCharge(maxCharge));
     }
 
     @Override
@@ -62,7 +64,7 @@ public class ElectricItem implements IElectricItem {
     }
 
     public void setInfiniteCharge(boolean infiniteCharge) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withInfinite(infiniteCharge));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withInfinite(infiniteCharge));
     }
 
     @Override
@@ -85,7 +87,7 @@ public class ElectricItem implements IElectricItem {
 
     @Override
     public void setDischargeMode(boolean dischargeMode) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(0, 0), content -> content.withDischargeMode(dischargeMode));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withDischargeMode(dischargeMode));
     }
 
     @Override

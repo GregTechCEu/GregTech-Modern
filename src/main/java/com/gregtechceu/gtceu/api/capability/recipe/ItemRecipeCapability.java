@@ -347,6 +347,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                     }
                     return items;
                 }));
+            } else if (sizedIngredient.ingredient().getCustomIngredient() != null) {
+                return Either.right(sizedIngredient.ingredient().getCustomIngredient().getItems().toList());
             } else if (sizedIngredient.ingredient().getValues().length > 0 && sizedIngredient.ingredient().getValues()[0] instanceof Ingredient.TagValue tagValue) {
                 return Either.left(List.of(Pair.of(tagValue.tag(), amount)));
             }
@@ -392,7 +394,9 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 }
                 return items;
             }));
-        } else if (ingredient.getValues().length > 0 && ingredient.getValues()[0] instanceof Ingredient.TagValue tagValue) {
+        } else if (ingredient.getCustomIngredient() != null) {
+             return Either.right(ingredient.getCustomIngredient().getItems().toList());
+         } else if (ingredient.getValues().length > 0 && ingredient.getValues()[0] instanceof Ingredient.TagValue tagValue) {
             return Either.left(List.of(Pair.of(tagValue.tag(), 1)));
         }
         return Either.right(Arrays.stream(ingredient.getItems()).toList());

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
@@ -39,6 +40,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
@@ -70,50 +72,6 @@ import java.util.function.Supplier;
  * @implNote ToolHelper
  */
 public class ToolHelper {
-
-    public static final String TOOL_TAG_KEY = "GT.Tool";
-    public static final String BEHAVIOURS_TAG_KEY = "GT.Behaviours";
-
-    // Base item keys
-
-    // Electric item keys
-    public static final String MAX_CHARGE_KEY = "MaxCharge";
-    public static final String CHARGE_KEY = "Charge";
-
-    // Vanilla keys
-    public static final String UNBREAKABLE_KEY = "Unbreakable";
-    public static final String HIDE_FLAGS = "HideFlags";
-
-    // Misc keys
-    public static final String DISALLOW_CONTAINER_ITEM_KEY = "DisallowContainerItem";
-    public static final String TINT_COLOR_KEY = "TintColor";
-
-    // Keys that resides in tool tag
-    public static final String TOOL_SPEED_KEY = "ToolSpeed";
-    public static final String ATTACK_DAMAGE_KEY = "AttackDamage";
-    public static final String ATTACK_SPEED_KEY = "AttackSpeed";
-    public static final String ENCHANTABILITY_KEY = "Enchantability";
-    public static final String HARVEST_LEVEL_KEY = "HarvestLevel";
-    public static final String LAST_CRAFTING_USE_KEY = "LastCraftingUse";
-
-    // Keys that resides in behaviours tag
-
-    // AoE
-    public static final String MAX_AOE_COLUMN_KEY = "MaxAoEColumn";
-    public static final String MAX_AOE_ROW_KEY = "MaxAoERow";
-    public static final String MAX_AOE_LAYER_KEY = "MaxAoELayer";
-    public static final String AOE_COLUMN_KEY = "AoEColumn";
-    public static final String AOE_ROW_KEY = "AoERow";
-    public static final String AOE_LAYER_KEY = "AoELayer";
-
-    // Others
-    public static final String HARVEST_ICE_KEY = "HarvestIce";
-    public static final String TORCH_PLACING_KEY = "TorchPlacing";
-    public static final String TORCH_PLACING_CACHE_SLOT_KEY = "TorchPlacing$Slot";
-    public static final String TREE_FELLING_KEY = "TreeFelling";
-    public static final String DISABLE_SHIELDS_KEY = "DisableShields";
-    public static final String RELOCATE_MINED_BLOCKS_KEY = "RelocateMinedBlocks";
-
     // Crafting Symbols
     private static final BiMap<Character, GTToolType> symbols = HashBiMap.create();
 
@@ -249,6 +207,23 @@ public class ToolHelper {
             });
         }
         return stack;
+    }
+
+    /**
+     * Attempts to get an electric item variant with override of max charge
+     *
+     * @param maxCharge new max charge of this electric item
+     * @return item stack with given max charge
+     * @throws IllegalStateException if this item is not electric item or uses custom implementation
+     */
+    public static ItemStack getMaxChargeOverrideStack(Item item, long maxCharge) {
+        ItemStack itemStack = item.getDefaultInstance();
+        IElectricItem iElectricItem = GTCapabilityHelper.getElectricItem(itemStack);
+        if (!(iElectricItem instanceof ElectricItem electricItem)) {
+            throw new IllegalStateException("Not an electric item.");
+        }
+        electricItem.setMaxChargeOverride(maxCharge);
+        return itemStack;
     }
 
     /**

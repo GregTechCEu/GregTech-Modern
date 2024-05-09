@@ -21,11 +21,11 @@ dependencies {
     // REI
     compileOnly forge.rei.plugin
     compileOnly forge.rei.api
-    implementation forge.rei.forge
+    compileOnly forge.rei.forge
 
     // EMI
     compileOnly("dev.emi:emi-neoforge:${forge.versions.emi.get()}:api")
-    compileOnly forge.emi
+    implementation forge.emi
 
     // TOP
     compileOnly(forge.theoneprobe) { transitive = false }
