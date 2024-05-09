@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.guis.widget.directional.IDirectionalConfigHandl
 import com.gregtechceu.gtceu.api.items.ComponentItem;
 import com.gregtechceu.gtceu.api.items.component.IItemComponent;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
+import com.gregtechceu.gtceu.common.items.CoverPlaceBehavior;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;

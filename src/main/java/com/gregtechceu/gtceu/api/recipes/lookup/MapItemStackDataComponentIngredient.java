@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipes.lookup;
 
 import com.gregtechceu.gtceu.api.recipes.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.items.IntCircuitBehaviour;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;

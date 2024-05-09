@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.items.IGTTool;
 import com.gregtechceu.gtceu.api.sounds.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.sounds.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
-import com.gregtechceu.gtceu.common.item.tool.behavior.*;
+import com.gregtechceu.gtceu.common.items.tool.behavior.*;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import lombok.Getter;
 import lombok.Setter;

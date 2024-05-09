@@ -11,7 +11,7 @@ import com.gregtechceu.gtceu.api.machines.feature.multiblock.IDistinctPart;
 import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machines.trait.ItemHandlerProxyRecipeTrait;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
+import com.gregtechceu.gtceu.common.items.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;

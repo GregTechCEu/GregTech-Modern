@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.machines.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machines.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableLaserContainer;
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.items.PortableScannerBehavior;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.network.chat.Component;

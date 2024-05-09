@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.api.machines.feature;
 
-import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
+import com.gregtechceu.gtceu.common.items.PortableScannerBehavior;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 

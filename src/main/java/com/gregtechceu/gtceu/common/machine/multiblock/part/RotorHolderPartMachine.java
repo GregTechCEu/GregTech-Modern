@@ -10,7 +10,7 @@ import com.gregtechceu.gtceu.api.machines.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machines.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machines.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
-import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.common.items.TurbineRotorBehaviour;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;

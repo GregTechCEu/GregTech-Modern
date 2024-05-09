@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.client.model.ModelUtil;
 import com.gregtechceu.gtceu.common.covers.FacadeCover;
 import com.gregtechceu.gtceu.api.covers.CoverBehavior;
-import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
+import com.gregtechceu.gtceu.common.items.FacadeItemBehaviour;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
