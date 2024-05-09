@@ -13,7 +13,7 @@ import com.gregtechceu.gtceu.api.recipes.*;
 import com.gregtechceu.gtceu.api.recipes.content.Content;
 import com.gregtechceu.gtceu.api.recipes.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
+import com.gregtechceu.gtceu.api.sounds.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.recipe.RPMCondition;
 import com.gregtechceu.gtceu.common.recipe.RockBreakerCondition;

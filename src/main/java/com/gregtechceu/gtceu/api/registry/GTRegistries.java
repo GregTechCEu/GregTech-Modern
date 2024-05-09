@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.recipes.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipes.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.sounds.SoundEntry;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.Registry;

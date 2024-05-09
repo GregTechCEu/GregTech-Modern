@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.addons.AddonFinder;
 import com.gregtechceu.gtceu.api.addons.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.sounds.SoundEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.fml.ModLoader;
 

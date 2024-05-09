@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.items.tool;
 
 import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.items.IGTTool;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.sounds.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.sound;
+package com.gregtechceu.gtceu.api.sounds;
 
 import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;

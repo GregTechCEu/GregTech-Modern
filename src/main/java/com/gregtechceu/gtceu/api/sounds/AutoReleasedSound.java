@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.sound;
+package com.gregtechceu.gtceu.api.sounds;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.sounds.AbstractTickableSoundInstance;

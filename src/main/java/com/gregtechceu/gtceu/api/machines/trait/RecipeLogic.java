@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.api.machines.TickableSubscription;
 import com.gregtechceu.gtceu.api.machines.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipes.GTRecipe;
-import com.gregtechceu.gtceu.api.sound.AutoReleasedSound;
+import com.gregtechceu.gtceu.api.sounds.AutoReleasedSound;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;

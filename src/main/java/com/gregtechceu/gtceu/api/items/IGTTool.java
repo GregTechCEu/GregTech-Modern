@@ -21,7 +21,7 @@ import com.gregtechceu.gtceu.api.items.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.items.tool.TreeFellingHelper;
 import com.gregtechceu.gtceu.api.items.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.items.tool.behavior.IToolBehavior;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
+import com.gregtechceu.gtceu.api.sounds.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
