@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
-import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
+import com.gregtechceu.gtceu.api.worldgen.BiomeWeightModifier;
+import com.gregtechceu.gtceu.api.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.HolderGetter;

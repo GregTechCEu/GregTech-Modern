@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
 
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
@@ -17,7 +17,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.turbineBlade;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.turbineBlade;
 
 /**
  * @author KilaBash

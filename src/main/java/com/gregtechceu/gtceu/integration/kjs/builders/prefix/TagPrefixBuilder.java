@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.prefix;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
 import lombok.Getter;

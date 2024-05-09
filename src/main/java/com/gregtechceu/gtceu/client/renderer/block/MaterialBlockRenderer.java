@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.block.MaterialBlock;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;

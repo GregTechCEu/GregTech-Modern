@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.IMaterialProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ItemPipeProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.chemical.material.properties.IMaterialProperty;
+import com.gregtechceu.gtceu.api.chemical.material.properties.ItemPipeProperties;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
@@ -16,8 +16,8 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.NO_SMASHING;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags.NO_SMASHING;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 

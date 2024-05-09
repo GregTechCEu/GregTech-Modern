@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.integration.jei.oreprocessing;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
 import mezz.jei.api.gui.drawable.IDrawable;
@@ -17,7 +17,7 @@ import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.NotNull;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.ore;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.ore;
 import static com.gregtechceu.gtceu.common.data.GTMachines.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.Iron;
 

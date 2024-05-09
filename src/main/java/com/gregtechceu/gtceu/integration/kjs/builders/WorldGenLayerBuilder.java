@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.gregtechceu.gtceu.api.data.worldgen.IWorldGenLayer;
-import com.gregtechceu.gtceu.api.data.worldgen.SimpleWorldGenLayer;
+import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
+import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import dev.latvian.mods.kubejs.level.ruletest.AnyMatchRuleTest;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;

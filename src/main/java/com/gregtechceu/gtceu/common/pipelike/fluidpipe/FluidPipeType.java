@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 
 public enum FluidPipeType implements IMaterialPipeType<FluidPipeProperties> {
 

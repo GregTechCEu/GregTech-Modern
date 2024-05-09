@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.fluids;
 
 import com.google.common.base.Preconditions;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags;
+import com.gregtechceu.gtceu.api.chemical.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.chemical.material.properties.FluidProperty;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;

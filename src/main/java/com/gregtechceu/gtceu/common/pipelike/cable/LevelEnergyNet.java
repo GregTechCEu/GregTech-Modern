@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;

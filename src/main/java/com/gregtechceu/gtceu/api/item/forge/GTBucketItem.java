@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import net.minecraft.core.BlockPos;

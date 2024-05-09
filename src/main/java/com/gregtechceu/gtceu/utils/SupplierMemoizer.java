@@ -52,7 +52,7 @@ public class SupplierMemoizer {
 
     /**
      * A variant of the memoized supplier that stores a block explicitly.
-     * Use this to save blocks to {@link com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper#registerUnificationItems(com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry, Supplier[])}
+     * Use this to save blocks to {@link com.gregtechceu.gtceu.api.chemical.ChemicalHelper#registerUnificationItems(com.gregtechceu.gtceu.api.chemical.material.stack.UnificationEntry, Supplier[])}
      */
     public static class MemoizedBlockSupplier<T extends Block> extends MemoizedSupplier<T> {
 

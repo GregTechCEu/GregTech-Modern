@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe;
 
 import com.google.common.base.Preconditions;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;

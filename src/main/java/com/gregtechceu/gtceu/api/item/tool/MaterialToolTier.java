@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Tier;

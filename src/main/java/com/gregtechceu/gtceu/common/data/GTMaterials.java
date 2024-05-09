@@ -2,13 +2,13 @@ package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
+import com.gregtechceu.gtceu.api.chemical.material.MarkerMaterial;
+import com.gregtechceu.gtceu.api.chemical.material.MarkerMaterials;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlag;
+import com.gregtechceu.gtceu.api.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.materials.*;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
 import net.minecraft.world.item.Items;
@@ -21,8 +21,8 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.api.chemical.material.info.MaterialFlags.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 
 
 /**

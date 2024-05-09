@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.chemical.material.Material;
 import com.gregtechceu.gtceu.integration.GTOreByProductWidget;
 import com.lowdragmc.lowdraglib.emi.ModularEmiRecipe;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
