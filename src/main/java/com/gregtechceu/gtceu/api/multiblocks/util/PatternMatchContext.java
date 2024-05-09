@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern.util;
+package com.gregtechceu.gtceu.api.multiblocks.util;
 
 import java.util.HashMap;
 import java.util.Map;

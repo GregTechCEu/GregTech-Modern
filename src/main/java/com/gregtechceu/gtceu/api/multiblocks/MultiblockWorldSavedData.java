@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblocks;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import com.gregtechceu.gtceu.GTCEu;

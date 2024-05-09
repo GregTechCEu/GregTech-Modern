@@ -24,10 +24,10 @@ import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockM
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.Predicates;
-import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.multiblocks.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblocks.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblocks.Predicates;
+import com.gregtechceu.gtceu.api.multiblocks.TraceabilityPredicate;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.electric.HullMachine;
@@ -62,8 +62,8 @@ import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
-import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.states;
+import static com.gregtechceu.gtceu.api.multiblocks.Predicates.abilities;
+import static com.gregtechceu.gtceu.api.multiblocks.Predicates.states;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault

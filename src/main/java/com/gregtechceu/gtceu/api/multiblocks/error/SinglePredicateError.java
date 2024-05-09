@@ -1,6 +1,6 @@
-package com.gregtechceu.gtceu.api.pattern.error;
+package com.gregtechceu.gtceu.api.multiblocks.error;
 
-import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.multiblocks.predicates.SimplePredicate;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 

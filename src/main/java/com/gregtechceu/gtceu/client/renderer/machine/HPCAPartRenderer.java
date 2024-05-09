@@ -5,7 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblocks.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;

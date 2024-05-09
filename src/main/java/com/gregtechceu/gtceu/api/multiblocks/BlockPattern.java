@@ -1,17 +1,17 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblocks;
 
 import com.gregtechceu.gtceu.api.blocks.ActiveBlock;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.pattern.error.PatternError;
-import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
+import com.gregtechceu.gtceu.api.multiblocks.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblocks.error.SinglePredicateError;
 import com.gregtechceu.gtceu.api.blocks.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
-import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
-import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
-import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
+import com.gregtechceu.gtceu.api.multiblocks.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblocks.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.multiblocks.util.PatternMatchContext;
+import com.gregtechceu.gtceu.api.multiblocks.util.RelativeDirection;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;

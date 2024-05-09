@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblocks;
 
 import com.gregtechceu.gtceu.api.blocks.IMachineBlock;
 import com.gregtechceu.gtceu.api.RotationState;

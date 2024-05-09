@@ -1,14 +1,14 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblocks;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.blocks.ActiveBlock;
-import com.gregtechceu.gtceu.api.pattern.error.PatternError;
+import com.gregtechceu.gtceu.api.multiblocks.error.PatternError;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
-import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
-import com.gregtechceu.gtceu.api.pattern.util.PatternMatchContext;
+import com.gregtechceu.gtceu.api.multiblocks.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblocks.predicates.SimplePredicate;
+import com.gregtechceu.gtceu.api.multiblocks.util.PatternMatchContext;
 import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import it.unimi.dsi.fastutil.longs.LongSet;
 import it.unimi.dsi.fastutil.longs.LongSets;

@@ -7,7 +7,7 @@ import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;

@@ -12,7 +12,7 @@ import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machines.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.api.multiblocks.TraceabilityPredicate;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -22,7 +22,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.api.pattern.Predicates.abilities;
+import static com.gregtechceu.gtceu.api.multiblocks.Predicates.abilities;
 
 public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine implements IControllable {
 

@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern.error;
+package com.gregtechceu.gtceu.api.multiblocks.error;
 
 import net.minecraft.network.chat.Component;
 

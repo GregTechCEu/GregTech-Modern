@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockWorldSavedData;
 import com.lowdragmc.lowdraglib.async.AsyncThreadData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.Level;

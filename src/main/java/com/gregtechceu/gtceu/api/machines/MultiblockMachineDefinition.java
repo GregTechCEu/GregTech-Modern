@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.machines;
 
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblocks.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.Setter;

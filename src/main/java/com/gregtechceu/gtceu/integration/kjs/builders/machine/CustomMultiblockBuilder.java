@@ -15,8 +15,8 @@ import com.gregtechceu.gtceu.api.machines.multiblock.MultiblockControllerMachine
 import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machines.multiblock.TieredWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machines.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblocks.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;

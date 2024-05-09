@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.machines.multiblock;
 
 import com.gregtechceu.gtceu.api.machines.MultiblockMachineDefinition;
-import com.gregtechceu.gtceu.api.pattern.MultiblockState;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockState;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiPart;
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockWorldSavedData;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;

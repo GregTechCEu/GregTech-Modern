@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern;
+package com.gregtechceu.gtceu.api.multiblocks;
 
 import com.gregtechceu.gtceu.api.blocks.ActiveBlock;
 import com.gregtechceu.gtceu.api.blocks.ICoilType;
@@ -10,8 +10,8 @@ import com.gregtechceu.gtceu.api.materials.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machines.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
-import com.gregtechceu.gtceu.api.pattern.predicates.*;
+import com.gregtechceu.gtceu.api.multiblocks.error.PatternStringError;
+import com.gregtechceu.gtceu.api.multiblocks.predicates.*;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;

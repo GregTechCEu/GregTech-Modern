@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machines.MachineDefinition;
 import com.gregtechceu.gtceu.api.machines.MetaMachine;
 import com.gregtechceu.gtceu.api.machines.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machines.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.pattern.FactoryBlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblocks.FactoryBlockPattern;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.renderer.machine.HPCAPartRenderer;
@@ -43,7 +43,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.pattern.Predicates.*;
+import static com.gregtechceu.gtceu.api.multiblocks.Predicates.*;
 import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 

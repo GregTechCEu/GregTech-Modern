@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.pattern.predicates;
+package com.gregtechceu.gtceu.api.multiblocks.predicates;
 
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import net.minecraft.core.Holder;
@@ -7,16 +7,15 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.material.Fluid;
 
-public class PredicateFluidTag extends SimplePredicate {
-    public TagKey<Fluid> tag = null;
+public class PredicateBlockTag extends SimplePredicate {
+    public TagKey<Block> tag = null;
 
-    public PredicateFluidTag() {
+    public PredicateBlockTag() {
         super("tags");
     }
 
-    public PredicateFluidTag(TagKey<Fluid> tag) {
+    public PredicateBlockTag(TagKey<Block> tag) {
         this();
         this.tag = tag;
         buildPredicate();
@@ -29,12 +28,12 @@ public class PredicateFluidTag extends SimplePredicate {
             candidates = () -> new BlockInfo[] {BlockInfo.fromBlock(Blocks.BARRIER)};
             return this;
         }
-        predicate = state -> state.getBlockState().getFluidState().is(tag);
-        candidates = () -> BuiltInRegistries.FLUID.getTag(tag)
+        predicate = state -> state.getBlockState().is(tag);
+        candidates = () -> BuiltInRegistries.BLOCK.getTag(tag)
             .stream()
             .flatMap(HolderSet.Named::stream)
             .map(Holder::value)
-            .map(fluid -> BlockInfo.fromBlockState(fluid.defaultFluidState().createLegacyBlock()))
+            .map(BlockInfo::fromBlock)
             .toArray(BlockInfo[]::new);
         return this;
     }

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.guis.compass;
 import com.gregtechceu.gtceu.api.machines.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machines.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machines.feature.multiblock.IMultiController;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
+import com.gregtechceu.gtceu.api.multiblocks.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.Action;
