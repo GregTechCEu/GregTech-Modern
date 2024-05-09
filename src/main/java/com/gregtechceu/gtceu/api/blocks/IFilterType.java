@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.block;
+package com.gregtechceu.gtceu.api.blocks;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import net.minecraft.util.StringRepresentable;

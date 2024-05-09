@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.block;
+package com.gregtechceu.gtceu.api.blocks;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import net.minecraft.core.BlockPos;

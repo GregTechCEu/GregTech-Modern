@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.google.common.collect.Table;
 import com.google.common.collect.Tables;
-import com.gregtechceu.gtceu.api.block.ActiveBlock;
+import com.gregtechceu.gtceu.api.blocks.ActiveBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;

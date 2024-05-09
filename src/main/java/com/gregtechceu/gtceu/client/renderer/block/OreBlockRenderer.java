@@ -3,11 +3,8 @@ package com.gregtechceu.gtceu.client.renderer.block;
 import com.google.common.base.Preconditions;
 import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.block.MaterialBlock;
-import com.gregtechceu.gtceu.api.block.OreBlock;
+import com.gregtechceu.gtceu.api.blocks.MaterialBlock;
 import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.chemical.material.properties.OreProperty;
 import com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
@@ -23,7 +20,6 @@ import net.minecraft.util.GsonHelper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 /**

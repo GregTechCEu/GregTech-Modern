@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addons.AddonFinder;
 import com.gregtechceu.gtceu.api.addons.events.MaterialCasingCollectionEvent;
-import com.gregtechceu.gtceu.api.block.*;
+import com.gregtechceu.gtceu.api.blocks.*;
 import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.chemical.material.Material;
 import com.gregtechceu.gtceu.common.block.explosive.IndustrialTNTBlock;

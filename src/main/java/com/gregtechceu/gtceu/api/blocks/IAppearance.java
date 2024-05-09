@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.block;
+package com.gregtechceu.gtceu.api.blocks;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;

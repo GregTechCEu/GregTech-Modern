@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.electric;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Sets;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.block.IFilterType;
+import com.gregtechceu.gtceu.api.blocks.IFilterType;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICleanroomReceiver;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;

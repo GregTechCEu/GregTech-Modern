@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
-import com.gregtechceu.gtceu.api.block.RendererGlassBlock;
+import com.gregtechceu.gtceu.api.blocks.RendererGlassBlock;
 import net.minecraft.FieldsAreNonnullByDefault;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.resources.ResourceLocation;

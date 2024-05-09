@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.block;
 
-import com.gregtechceu.gtceu.api.block.RendererBlock;
+import com.gregtechceu.gtceu.api.blocks.RendererBlock;
 import com.gregtechceu.gtceu.client.renderer.block.CTMModelRenderer;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.integration.kjs.builders.RendererBlockItemBuilder;

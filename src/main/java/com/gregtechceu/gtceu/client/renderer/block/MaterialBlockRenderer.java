@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
-import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.api.block.MaterialBlock;
+import com.gregtechceu.gtceu.api.blocks.MaterialBlock;
 import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.mojang.blaze3d.platform.NativeImage;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.resources.metadata.animation.AnimationFrame;
-import net.minecraft.client.resources.metadata.animation.AnimationMetadataSection;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.models.BlockModelGenerators;
 import net.minecraft.data.models.model.*;

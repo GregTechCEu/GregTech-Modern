@@ -6,7 +6,7 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.addons.AddonFinder;
 import com.gregtechceu.gtceu.api.addons.IGTAddon;
-import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.blocks.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.compat.GTEnergyWrapper;
 import com.gregtechceu.gtceu.api.chemical.ChemicalHelper;

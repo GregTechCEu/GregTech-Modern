@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.block;
+package com.gregtechceu.gtceu.api.blocks;
 
 import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.AppEngCapabilities;
