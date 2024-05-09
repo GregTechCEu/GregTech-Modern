@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.worldgen;
 
-import com.gregtechceu.gtceu.common.data.GTPlacerTypes;
-import com.mojang.serialization.Codec;
+import com.gregtechceu.gtceu.data.worldgen.GTPlacerTypes;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -10,13 +9,11 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.util.valueproviders.IntProvider;
 import net.minecraft.world.level.LevelSimulatedReader;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.configurations.TreeConfiguration;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.function.BiConsumer;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault

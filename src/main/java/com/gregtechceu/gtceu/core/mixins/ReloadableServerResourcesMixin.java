@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.common.data.GTRecipes;
+import com.gregtechceu.gtceu.data.recipe.GTRecipes;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicDataPack;
 import net.minecraft.advancements.Advancement;

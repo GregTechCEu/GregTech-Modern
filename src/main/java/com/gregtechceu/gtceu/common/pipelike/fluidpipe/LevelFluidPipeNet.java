@@ -1,6 +1,6 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.FluidPipeProperties;
+import com.gregtechceu.gtceu.api.material.material.properties.FluidPipeProperties;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
