@@ -1,4 +1,4 @@
-package com.gregtechceu.gtceu.api.damagesource;
+package com.gregtechceu.gtceu.api.damagesources;
 
 import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.core.Holder;
