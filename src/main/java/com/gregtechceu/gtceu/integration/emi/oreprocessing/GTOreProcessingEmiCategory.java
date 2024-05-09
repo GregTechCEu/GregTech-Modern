@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.integration.emi.oreprocessing;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
@@ -15,7 +15,7 @@ import net.minecraft.world.item.Items;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.gregtechceu.gtceu.api.chemical.material.properties.PropertyKey.ORE;
+import static com.gregtechceu.gtceu.api.material.material.properties.PropertyKey.ORE;
 import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class GTOreProcessingEmiCategory extends EmiRecipeCategory {

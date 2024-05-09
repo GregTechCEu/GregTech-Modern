@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.integration.kjs;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.chemical.Element;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.chemical.material.info.MaterialIconType;
-import com.gregtechceu.gtceu.api.chemical.material.registry.MaterialRegistry;
+import com.gregtechceu.gtceu.api.material.Element;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
+import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;

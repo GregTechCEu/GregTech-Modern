@@ -8,12 +8,12 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
 
-import  com.gregtechceu.gtceu.api.chemical.material.MarkerMaterials.Color;
+import  com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
 import net.minecraft.world.level.material.Fluid;
 
 import java.util.function.Supplier;
 
-import static com.gregtechceu.gtceu.api.chemical.ChemicalHelper.registerUnificationItems;
+import static com.gregtechceu.gtceu.api.material.ChemicalHelper.registerUnificationItems;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 

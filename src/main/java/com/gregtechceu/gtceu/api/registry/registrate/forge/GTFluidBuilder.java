@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
 import com.google.common.base.Preconditions;
-import com.gregtechceu.gtceu.api.chemical.material.Material;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.fluids.forge.GTFluidImpl;
