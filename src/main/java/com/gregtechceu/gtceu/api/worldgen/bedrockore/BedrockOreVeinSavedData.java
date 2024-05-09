@@ -113,6 +113,11 @@ public class BedrockOreVeinSavedData extends SavedData {
             createVein(pos, definition);
             setDirty();
         }
+        if (!veinOres.containsKey(pos)) {
+            OreVeinWorldEntry entry = new OreVeinWorldEntry(null, 0, MAXIMUM_VEIN_OPERATIONS);
+            veinOres.put(pos, entry);
+            return entry;
+        }
         return veinOres.get(pos);
     }
 
