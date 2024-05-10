@@ -25,6 +25,7 @@
     "IngredientAccessor",
     "IntersectionIngredientAccessor",
     "InventoryMixin",
+    "ItemAccessor",
     "ItemValueAccessor",
     "ITrunkPlacerTypeAccessor",
     "LevelMixin",

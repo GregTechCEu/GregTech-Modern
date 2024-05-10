@@ -68,7 +68,7 @@ public interface IJetpack {
         boolean descendKeyDown = KeyBind.VANILLA_SNEAK.isKeyDown(player);
 
         if (!player.isInWater() && !player.isInLava() && canUseEnergy(stack, getEnergyPerUse())) {
-            if (flyKeyDown || hover && !player.onGround()) {
+            if (flyKeyDown || hover && !player.isOnGround()) {
                 drainEnergy(stack, (int) (player.isSprinting() ?
                         Math.round(getEnergyPerUse() * getSprintEnergyModifier()) : getEnergyPerUse()));
 
@@ -103,12 +103,12 @@ public interface IJetpack {
                         player.moveRelative(speedSideways, new Vec3(speedSideways, 0, 0));
                     if (KeyBind.VANILLA_RIGHT.isKeyDown(player))
                         player.moveRelative(-speedSideways, new Vec3(speedSideways, 0, 0));
-                    if (!player.level().isClientSide) {
+                    if (!player.level.isClientSide) {
                         player.fallDistance = 0;
                     }
 
                 }
-                ArmorUtils.spawnParticle(player.level(), player, getParticle(), -0.6D);
+                ArmorUtils.spawnParticle(player.level, player, getParticle(), -0.6D);
             }
         }
     }

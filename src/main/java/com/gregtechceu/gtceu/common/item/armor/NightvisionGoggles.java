@@ -22,7 +22,7 @@ import java.util.List;
 
 public class NightvisionGoggles extends ArmorLogicSuite {
 
-    public NightvisionGoggles(int energyPerUse, long capacity, int voltageTier, ArmorItem.Type slot) {
+    public NightvisionGoggles(int energyPerUse, long capacity, int voltageTier, EquipmentSlot slot) {
         super(energyPerUse, capacity, voltageTier, slot);
     }
 
@@ -37,7 +37,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
         if (!player.getItemBySlot(EquipmentSlot.HEAD).is(itemStack.getItem())) {
             disableNightVision(world, player, false);
         }
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == EquipmentSlot.HEAD) {
             boolean nightvision = nbtData.getBoolean("Nightvision");
             if (toggleTimer == 0 && KeyBind.ARMOR_MODE_SWITCH.isKeyDown(player)) {
                 toggleTimer = 5;
@@ -88,7 +88,7 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        if (type == ArmorItem.Type.HELMET) {
+        if (type == EquipmentSlot.HEAD) {
             CompoundTag nbtData = itemStack.getOrCreateTag();
             boolean nv = nbtData.getBoolean("Nightvision");
             if (nv) {

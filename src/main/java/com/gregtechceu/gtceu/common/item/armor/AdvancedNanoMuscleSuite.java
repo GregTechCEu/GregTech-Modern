@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.nbt.CompoundTag;
@@ -18,7 +18,6 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraftforge.api.distmarker.Dist;
@@ -36,7 +35,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     private List<Pair<NonNullList<ItemStack>, List<Integer>>> inventoryIndexMap;
 
     public AdvancedNanoMuscleSuite(int energyPerUse, long capacity, int tier) {
-        super(ArmorItem.Type.CHESTPLATE, energyPerUse, capacity, tier);
+        super(EquipmentSlot.CHEST, energyPerUse, capacity, tier);
     }
 
     @Override
@@ -191,7 +190,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(ItemStack item, PoseStack PoseStack) {
         addCapacityHUD(item, this.HUD);
         IElectricItem cont = GTCapabilityHelper.getElectricItem(item);
         if (cont == null) return;
@@ -210,7 +209,7 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
                 this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", Component.translatable(status)));
             }
         }
-        this.HUD.draw(guiGraphics);
+        this.HUD.draw(PoseStack);
         this.HUD.reset();
     }
 

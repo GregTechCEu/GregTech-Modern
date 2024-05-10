@@ -262,7 +262,7 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputItems(QUANTUM_CHESTPLATE.asItem())
+                .inputItems(QUANTUM_CHESTPLATE.get().asItem())
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(wireFine, NiobiumTitanium, 64)
                 .inputItems(wireGtQuadruple, Osmium, 6)

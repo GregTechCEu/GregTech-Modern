@@ -39,7 +39,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     @Getter
     protected List<IItemComponent> components;
 
-    public ArmorComponentItem(ArmorMaterial material, ArmorItem.Type type, Properties properties) {
+    public ArmorComponentItem(ArmorMaterial material, EquipmentSlot type, Properties properties) {
         super(material, type, properties);
         components = new ArrayList<>();
     }
@@ -68,13 +68,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public ArmorItem.Type getType() {
+    public @Nullable EquipmentSlot getEquipmentSlot(ItemStack stack) {
         return armorLogic.getArmorType();
-    }
-
-    @Override
-    public EquipmentSlot getEquipmentSlot() {
-        return armorLogic.getArmorType().getSlot();
     }
 
     @Override

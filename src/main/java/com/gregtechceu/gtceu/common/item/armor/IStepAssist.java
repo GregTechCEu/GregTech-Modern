@@ -14,11 +14,11 @@ public interface IStepAssist {
 
     default void updateStepHeight(@NotNull Player player) {
         if (!player.isShiftKeyDown()) {
-            if (player.maxUpStep() < MAGIC_STEP_HEIGHT) {
-                player.setMaxUpStep(MAGIC_STEP_HEIGHT);
+            if (player.maxUpStep < MAGIC_STEP_HEIGHT) {
+                player.maxUpStep = MAGIC_STEP_HEIGHT;
             }
         } else if (player.getStepHeight() == MAGIC_STEP_HEIGHT) {
-            player.setMaxUpStep(0.6F);
+            player.maxUpStep = 0.6F;
         }
     }
 }

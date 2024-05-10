@@ -24,7 +24,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSources;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -134,12 +134,12 @@ public class ForgeCommonEventListener {
                 return;
 
             if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
-                valueItem.getArmorLogic().damageArmor(player, armor, player.damageSources().fall(),
+                valueItem.getArmorLogic().damageArmor(player, armor, DamageSource.FALL,
                     (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
                 event.setCanceled(true);
             } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem && jet.getOrCreateTag().contains("flyMode")) {
-                valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
+                valueItem.getArmorLogic().damageArmor(player, jet, DamageSource.FALL,
                     (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
                 event.setCanceled(true);

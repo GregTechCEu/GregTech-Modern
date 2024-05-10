@@ -34,9 +34,9 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     protected final int energyPerUse;
     protected final int tier;
     protected final long maxCapacity;
-    protected final ArmorItem.Type type;
+    protected final EquipmentSlot type;
 
-    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, ArmorItem.Type type) {
+    protected ArmorLogicSuite(int energyPerUse, long maxCapacity, int tier, EquipmentSlot type) {
         this.energyPerUse = energyPerUse;
         this.maxCapacity = maxCapacity;
         this.tier = tier;
@@ -59,7 +59,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     @Override
     public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot != this.type.getSlot()) return ImmutableMultimap.of();
+        if (slot != this.type) return ImmutableMultimap.of();
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
         UUID uuid = IArmorLogic.ARMOR_MODIFIER_UUID_PER_TYPE.get(type);
         if (item == null) return ImmutableMultimap.of();
@@ -94,7 +94,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
+    public EquipmentSlot getArmorType() {
         return type;
     }
 
@@ -119,7 +119,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     @OnlyIn(Dist.CLIENT)
     @Override
     public boolean shouldDrawHUD() {
-        return this.type == ArmorItem.Type.CHESTPLATE;
+        return this.type == EquipmentSlot.CHEST;
     }
 
     public int getEnergyPerUse() {
@@ -128,12 +128,14 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
 
     protected float getAbsorption() {
         return switch (this.getArmorType()) {
-            case HELMET, BOOTS ->
+            case HEAD, FEET ->
                     0.15F;
-            case CHESTPLATE ->
+            case CHEST ->
                     0.4F;
-            case LEGGINGS ->
+            case LEGS ->
                     0.3F;
+            default ->
+                    0.0F;
         };
     }
 }

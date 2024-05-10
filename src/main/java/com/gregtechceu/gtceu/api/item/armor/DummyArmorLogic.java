@@ -10,8 +10,8 @@ import org.jetbrains.annotations.NotNull;
 
 public class DummyArmorLogic implements IArmorLogic {
     @Override
-    public ArmorItem.Type getArmorType() {
-        return ArmorItem.Type.HELMET;
+    public EquipmentSlot getArmorType() {
+        return EquipmentSlot.HEAD;
     }
 
     @Override

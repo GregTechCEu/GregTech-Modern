@@ -150,7 +150,7 @@ public enum KeyBind {
     }
 
     public boolean isPressed(Player player) {
-        if (player.level().isClientSide) {
+        if (player.level.isClientSide) {
             return isPressed();
         } else {
             MutablePair<Boolean, Boolean> pair = this.mapping.get((ServerPlayer) player);
@@ -159,7 +159,7 @@ public enum KeyBind {
     }
 
     public boolean isKeyDown(Player player) {
-        if (player.level().isClientSide) {
+        if (player.level.isClientSide) {
             return isKeyDown();
         } else {
             MutablePair<Boolean, Boolean> pair = this.mapping.get((ServerPlayer) player);

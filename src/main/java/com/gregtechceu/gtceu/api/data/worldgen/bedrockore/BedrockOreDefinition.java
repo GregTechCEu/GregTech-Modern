@@ -185,7 +185,7 @@ public class BedrockOreDefinition {
         }
 
         public Builder dimensions(String... dimensions) {
-            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registries.DIMENSION, dimensions)));
+            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registry.DIMENSION_REGISTRY, dimensions)));
         }
 
         public BedrockOreDefinition register() {

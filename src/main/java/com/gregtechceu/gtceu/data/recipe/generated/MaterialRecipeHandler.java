@@ -83,7 +83,7 @@ public class MaterialRecipeHandler {
                     .inputItems(GTUtil.copyAmount(4, dustStack))
                     .outputItems(GTUtil.copyAmount(3, gemStack))
                     .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                    .explosivesType(new ItemStack(GTBlocks.POWDERBARREL, 8))
+                    .explosivesType(new ItemStack(GTBlocks.POWDERBARREL.get(), 8))
                     .save(provider);
 
                 IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
@@ -104,7 +104,7 @@ public class MaterialRecipeHandler {
                     .inputItems(GTUtil.copyAmount(4, dustStack))
                     .outputItems(GTUtil.copyAmount(3, gemStack))
                     .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                    .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
+                    .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT.get()))
                     .save(provider);
             }
 

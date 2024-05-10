@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.datafixers.util.Pair;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
@@ -110,7 +110,7 @@ public class ArmorUtils {
     }
 
     public static void playJetpackSound(@Nonnull Player player) {
-        if (player.level().isClientSide()) {
+        if (player.level.isClientSide()) {
             float cons = (float) player.getDeltaMovement().y + player.moveDist;
             cons = Mth.clamp(cons, 0.6F, 1.0F);
 
@@ -225,10 +225,10 @@ public class ArmorUtils {
             this.stringList.add(string);
         }
 
-        public void draw(GuiGraphics poseStack) {
+        public void draw(PoseStack poseStack) {
             for (int i = 0; i < stringAmount; i++) {
                 Pair<Integer, Integer> coords = this.getStringCoord(i);
-                poseStack.drawString(mc.font, stringList.get(i), coords.getFirst(), coords.getSecond(), 0xFFFFFF, false);
+                mc.font.draw(poseStack, stringList.get(i), coords.getFirst(), coords.getSecond(), 0xFFFFFF);
             }
         }
 

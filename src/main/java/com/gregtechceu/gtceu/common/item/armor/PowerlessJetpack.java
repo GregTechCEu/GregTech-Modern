@@ -21,7 +21,7 @@ import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
-import net.minecraft.client.gui.GuiGraphics;
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -104,8 +104,8 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
-        return ArmorItem.Type.CHESTPLATE;
+    public EquipmentSlot getArmorType() {
+        return EquipmentSlot.CHEST;
     }
 
     @Override
@@ -125,7 +125,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @OnlyIn(Dist.CLIENT)
     @Override
-    public void drawHUD(@NotNull ItemStack item, GuiGraphics guiGraphics) {
+    public void drawHUD(@NotNull ItemStack item, PoseStack PoseStack) {
         IFluidTransfer tank = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(item), 0);
         if (tank != null) {
             if (tank.getFluidInTank(0).getAmount() == 0) return;
@@ -143,7 +143,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
                 }
             }
         }
-        this.HUD.draw(guiGraphics);
+        this.HUD.draw(PoseStack);
         this.HUD.reset();
     }
 

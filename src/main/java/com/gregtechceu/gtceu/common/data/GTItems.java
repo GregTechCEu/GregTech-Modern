@@ -62,6 +62,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.LayeredCauldronBlock;
@@ -913,7 +914,7 @@ public class GTItems {
     public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::create)
         .lang("Dynamite")
         .onRegister(attach(new DynamiteBehaviour()))
-        .tab(TOOL.getKey())
+        .tab(() -> TOOL)
         .register();
 
     public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("lv_conveyor_module", ComponentItem::create)
@@ -1683,39 +1684,39 @@ public class GTItems {
 
     public static ItemEntry<Item> CLIPBOARD;
 
-    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE.item("nightvision_goggles", (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES, ArmorItem.Type.HELMET, p)
+    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE.item("nightvision_goggles", (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES, EquipmentSlot.HEAD, p)
             .setArmorLogic(new NightvisionGoggles(2,
                 80_000L * (long) Math.max(1, Math.pow(1, ConfigHolder.INSTANCE.tools.voltageTierNightVision - 1)),
-                ConfigHolder.INSTANCE.tools.voltageTierNightVision, ArmorItem.Type.HELMET)))
+                ConfigHolder.INSTANCE.tools.voltageTierNightVision, EquipmentSlot.HEAD)))
         .lang("Nightvision Goggles")
         .register();
 
-    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE.item("nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.CHESTPLATE,
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE.item("nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.CHEST, p)
+            .setArmorLogic(new NanoMuscleSuite(EquipmentSlot.CHEST,
                 512,
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
                 ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
         .lang("NanoMuscle™ Suite Chestplate")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .register();
-    public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE.item("nanomuscle_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.LEGGINGS,
+    public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE.item("nanomuscle_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.LEGS, p)
+            .setArmorLogic(new NanoMuscleSuite(EquipmentSlot.LEGS,
                 512,
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
                 ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
         .lang("NanoMuscle™ Suite Leggings")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .register();
-    public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE.item("nanomuscle_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
+    public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE.item("nanomuscle_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.FEET, p)
+            .setArmorLogic(new NanoMuscleSuite(EquipmentSlot.FEET,
                 512,
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
                 ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
         .lang("NanoMuscle™ Suite Boots")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .register();
-    public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE.item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
+    public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE.item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.HEAD, p)
+            .setArmorLogic(new NanoMuscleSuite(EquipmentSlot.HEAD,
                 512,
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
                 ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
@@ -1723,32 +1724,32 @@ public class GTItems {
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .register();
 
-    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE.item("quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.CHESTPLATE,
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE.item("quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.CHEST, p)
+            .setArmorLogic(new QuarkTechSuite(EquipmentSlot.CHEST,
                 8192,
                 100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                 ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
         .lang("QuarkTech™ Suite Chestplate")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE.item("quarktech_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.LEGGINGS,
+    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE.item("quarktech_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.LEGS, p)
+            .setArmorLogic(new QuarkTechSuite(EquipmentSlot.LEGS,
                 8192,
                 100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                 ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
         .lang("QuarkTech™ Suite Leggings")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE.item("quarktech_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.BOOTS,
+    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE.item("quarktech_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.FEET, p)
+            .setArmorLogic(new QuarkTechSuite(EquipmentSlot.FEET,
                 8192,
                 100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                 ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
         .lang("QuarkTech™ Suite Leggings")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE.item("quarktech_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.HELMET,
+    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE.item("quarktech_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.HEAD, p)
+            .setArmorLogic(new QuarkTechSuite(EquipmentSlot.HEAD,
                 8192,
                 100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
                 ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
@@ -1756,12 +1757,12 @@ public class GTItems {
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
 
-    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE.item("liquid_fuel_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
+    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE.item("liquid_fuel_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, EquipmentSlot.CHEST, p)
             .setArmorLogic(new PowerlessJetpack()))
         .lang("Liquid Fuel Jetpack")
         .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
         .register();
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE.item("electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE.item("electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, EquipmentSlot.CHEST, p)
             .setArmorLogic(new Jetpack(30,
                 1_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
                 ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
@@ -1771,21 +1772,21 @@ public class GTItems {
         .onRegister(modelPredicate(GTCEu.id("electric_jetpack"), ElectricStats::getStoredPredicate))
         .register();
 
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE.item("advanced_electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, ArmorItem.Type.CHESTPLATE, p)
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE.item("advanced_electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK, EquipmentSlot.CHEST, p)
             .setArmorLogic(new AdvancedJetpack(512,
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
                 ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
         .lang("Advanced Electric Jetpack")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
-    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE.item("avanced_nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE.item("avanced_nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.CHEST, p)
             .setArmorLogic(new AdvancedJetpack(512,
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
                 ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
         .lang("Advanced NanoMuscle™ Suite Chestplate")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE.item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE.item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.CHEST, p)
             .setArmorLogic(new AdvancedQuarkTechSuite(8192,
                 1_000_000_000L *
                     (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech - 6)),

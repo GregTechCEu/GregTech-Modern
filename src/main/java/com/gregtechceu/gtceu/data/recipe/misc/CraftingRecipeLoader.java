@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.FacadeCoverRecipe;
@@ -89,8 +90,8 @@ public class CraftingRecipeLoader {
 
         VanillaRecipeHelper.addShapedRecipe(provider, "blacklight", BLACKLIGHT.asStack(), "SPS", "GRG", "CPK", 'S', new UnificationEntry(screw, TungstenCarbide), 'P', new UnificationEntry(plate, TungstenCarbide), 'G', GTBlocks.CASING_LAMINATED_GLASS.asStack(), 'R', new UnificationEntry(spring, Europium), 'C', CustomTags.IV_CIRCUITS, 'K', new UnificationEntry(cableGtSingle, Platinum));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("filter_casing"), GTBlocks.FILTER_CASING.asStack(), "BBB", "III", "MFR", 'B', new ItemStack(Blocks.IRON_BARS), 'I', ITEM_FILTER.asStack(), 'M', ELECTRIC_MOTOR_MV.asStack(), 'F', new UnificationEntry(frameGt, Steel), 'R', new UnificationEntry(rotor, Steel));
-        VanillaRecipeHelper.addShapedRecipe(provider, true, GTCEu.id("filter_casing_sterile"), GTBlocks.FILTER_CASING_STERILE.asStack(), "BEB", "ISI", "MFR", 'B', new UnificationEntry(pipeLargeFluid, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I', ITEM_FILTER.asStack(), 'S', BLACKLIGHT.asStack(), 'M', ELECTRIC_MOTOR_ZPM.asStack(), 'F', new UnificationEntry(frameGt, Tritanium), 'R', new UnificationEntry(rotor, NaquadahAlloy));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing", GTBlocks.FILTER_CASING.asStack(), "BBB", "III", "MFR", 'B', new ItemStack(Blocks.IRON_BARS), 'I', ITEM_FILTER.asStack(), 'M', ELECTRIC_MOTOR_MV.asStack(), 'F', new UnificationEntry(frameGt, Steel), 'R', new UnificationEntry(rotor, Steel));
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "filter_casing_sterile", GTBlocks.FILTER_CASING_STERILE.asStack(), "BEB", "ISI", "MFR", 'B', new UnificationEntry(pipeLargeFluid, Polybenzimidazole), 'E', EMITTER_ZPM.asStack(), 'I', ITEM_FILTER.asStack(), 'S', BLACKLIGHT.asStack(), 'M', ELECTRIC_MOTOR_ZPM.asStack(), 'F', new UnificationEntry(frameGt, Tritanium), 'R', new UnificationEntry(rotor, NaquadahAlloy));
 
         ///////////////////////////////////////////////////
         //               Shapes and Molds                //
@@ -165,7 +166,7 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE", "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium), 'P', new UnificationEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());
 
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP", "GGG", "PGP",
+        VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL.get()), "PSP", "GGG", "PGP",
             'P', new UnificationEntry(plate, Wood),
             'S', new ItemStack(Items.STRING),
             'G', new UnificationEntry(dust, Gunpowder));

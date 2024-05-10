@@ -56,7 +56,7 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
 
     @Override
     protected void explode() {
-        explode(level(), this, this.getX(), this.getY(0.0625), this.getZ(), getStrength(), dropsAllBlocks());
+        explode(level, this, this.getX(), this.getY(0.0625), this.getZ(), getStrength(), dropsAllBlocks());
     }
 
     protected void explode(
@@ -67,7 +67,7 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
             x, y, z,
             radius,
             false,
-            dropBlocks ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY
+            dropBlocks ? Explosion.BlockInteraction.BREAK : Explosion.BlockInteraction.DESTROY
         );
         if (!ForgeEventFactory.onExplosionStart(level, explosion)) {
             explosion.explode();
