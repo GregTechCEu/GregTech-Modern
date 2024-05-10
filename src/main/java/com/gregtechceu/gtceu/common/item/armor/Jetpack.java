@@ -67,7 +67,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         final boolean finalHover = hover;
         final byte finalToggleTimer = toggleTimer;
-        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer).setHover(finalHover));
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover).setToggleTimer(finalToggleTimer));
     }
 
     @Override

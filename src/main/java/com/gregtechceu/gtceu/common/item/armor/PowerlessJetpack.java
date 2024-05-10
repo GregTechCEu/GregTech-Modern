@@ -99,7 +99,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         final byte finalToggleTimer = toggleTimer;
         final boolean finalHover = hover;
-        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer).setHover(finalHover).setBurnTimer((short) burnTimer));
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover).setBurnTimer((short) burnTimer).setToggleTimer(finalToggleTimer));
     }
 
     @Override

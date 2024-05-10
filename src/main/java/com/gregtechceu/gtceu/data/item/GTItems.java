@@ -2133,9 +2133,9 @@ public class GTItems {
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE.item("avanced_nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new AdvancedJetpack(512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
-                ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
+            .setArmorLogic(new AdvancedNanoMuscleSuite(512,
+                12_800_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit - 3)),
+                ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit)))
         .lang("Advanced NanoMuscle™ Suite Chestplate")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
