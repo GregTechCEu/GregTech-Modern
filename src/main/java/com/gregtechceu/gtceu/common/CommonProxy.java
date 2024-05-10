@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.compat.GTEnergyWrapper;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.event.MaterialEvent;
 import com.gregtechceu.gtceu.api.material.material.event.MaterialRegistryEvent;
@@ -29,6 +30,7 @@ import com.gregtechceu.gtceu.common.block.CableBlock;
 import com.gregtechceu.gtceu.common.block.FluidPipeBlock;
 import com.gregtechceu.gtceu.common.block.ItemPipeBlock;
 import com.gregtechceu.gtceu.common.block.LaserPipeBlock;
+import com.gregtechceu.gtceu.common.item.armor.GTArmorMaterials;
 import com.gregtechceu.gtceu.data.*;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
@@ -114,6 +116,7 @@ public class CommonProxy {
         // used for forge events (ClientProxy + CommonProxy)
         modBus.register(this);
         modBus.addListener(AlloyBlastPropertyAddition::addAlloyBlastProperties);
+        modBus.addListener(GTNetwork::registerPayloads);
         // must be set here because of KubeJS compat
         // trying to read this before the pre-init stage
         GTCEuAPI.materialManager = MaterialRegistryManager.getInstance();
@@ -130,7 +133,6 @@ public class CommonProxy {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTRegistries.COMPASS_NODES.unfreeze();
 
-        GTNetwork.init();
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
@@ -158,6 +160,7 @@ public class CommonProxy {
         GTFoods.init();
         GTToolBehaviors.init();
         GTDataComponents.DATA_COMPONENTS.register(modBus);
+        GTArmorMaterials.ARMOR_MATERIALS.register(modBus);
         GTItems.init();
         AddonFinder.getAddons().forEach(IGTAddon::initializeAddon);
         GTOreVeinWidget.init();
@@ -190,7 +193,6 @@ public class CommonProxy {
 
         WorldGenLayers.registerAll();
         GTFeatures.init();
-        GTFeatures.register();
         CustomBlockRotations.init();
         KeyBind.init();
     }
@@ -287,7 +289,7 @@ public class CommonProxy {
         }
 
         for (Item item : BuiltInRegistries.ITEM) {
-            if (item instanceof ComponentItem componentItem) {
+            if (item instanceof IComponentItem componentItem) {
                 componentItem.attachCapabilities(event);
             } else if (item instanceof IGTTool tool) {
                 tool.attachCapabilities(event);

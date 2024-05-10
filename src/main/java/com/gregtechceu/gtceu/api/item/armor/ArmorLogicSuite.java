@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import com.google.common.collect.ImmutableMultimap;
-import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.component.ElectricStats;
@@ -12,20 +10,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.TooltipFlag;
+import net.minecraft.world.item.*;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -58,15 +54,21 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
-    public Multimap<Attribute, AttributeModifier> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
-        if (slot != this.type.getSlot()) return ImmutableMultimap.of();
+    public List<ItemAttributeModifiers.Entry> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
+        if (slot != this.type.getSlot()) return Collections.emptyList();
         IElectricItem item = GTCapabilityHelper.getElectricItem(stack);
         UUID uuid = IArmorLogic.ARMOR_MODIFIER_UUID_PER_TYPE.get(type);
-        if (item == null) return ImmutableMultimap.of();
+        if (item == null) return Collections.emptyList();
         if (item.getCharge() >= energyPerUse) {
-            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", 20.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
+            return ItemAttributeModifiers.builder().add(
+                Attributes.ARMOR,
+                new AttributeModifier(uuid, "Armor modifier", 20.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.bySlot(slot)).build().modifiers();
         } else {
-            return ImmutableMultimap.of(Attributes.ARMOR, new AttributeModifier(uuid, "Armor modifier", 4.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADDITION));
+            return ItemAttributeModifiers.builder().add(
+                Attributes.ARMOR,
+                new AttributeModifier(uuid, "Armor modifier", 4.0F * this.getAbsorption() * this.getDamageAbsorption(), AttributeModifier.Operation.ADD_VALUE),
+                EquipmentSlotGroup.bySlot(slot)).build().modifiers();
         }
     }
 
@@ -74,12 +76,12 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     public void addToolComponents(ArmorComponentItem mvi) {
         mvi.attachComponents(new ElectricStats(maxCapacity, tier, true, false) {
             @Override
-            public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+            public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
                 return onRightClick(level, player, usedHand);
             }
 
             @Override
-            public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+            public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
                 addInfo(stack, tooltipComponents);
             }
         });
@@ -99,7 +101,7 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
         return null;
     }
 
@@ -129,11 +131,13 @@ public abstract class ArmorLogicSuite implements IArmorLogic, IItemHUDProvider {
     protected float getAbsorption() {
         return switch (this.getArmorType()) {
             case HELMET, BOOTS ->
-                    0.15F;
+                0.15F;
             case CHESTPLATE ->
-                    0.4F;
+                0.4F;
             case LEGGINGS ->
-                    0.3F;
+                0.3F;
+            case BODY ->
+                0.0F;
         };
     }
 }

@@ -4,7 +4,7 @@
 //import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 //import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 //import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-//import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+//import com.lowdragmc.lowdraglib.side.fluid.IFluidHandler;
 //import it.unimi.dsi.fastutil.objects.Object2LongMap;
 //import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 //import lombok.Setter;
@@ -23,7 +23,7 @@
 // * @date 2023/3/11
 // * @implNote FluidTransferHandler
 // */
-//public class FluidTransferHandler implements IFluidTransfer {
+//public class FluidTransferHandler implements IFluidHandler {
 //
 //    private final FluidPipeNet net;
 //    private final FluidPipeBlockEntity pipe;

@@ -30,6 +30,10 @@ public class GTDataComponents {
     // Material-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<IMaterialPartItem.PartStats>> PART_STATS = DATA_COMPONENTS.registerComponentType("part_stats", builder -> builder.persistent(IMaterialPartItem.PartStats.CODEC).networkSynchronized(IMaterialPartItem.PartStats.STREAM_CODEC));
 
+    // Armor-related
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<GTArmor>> ARMOR_DATA = DATA_COMPONENTS.registerComponentType("armor", builder -> builder.persistent(GTArmor.CODEC).networkSynchronized(GTArmor.STREAM_CODEC));
+    public static final DeferredHolder<DataComponentType<?>, DataComponentType<Unit>> FLY_MODE = DATA_COMPONENTS.registerComponentType("fly_mode", builder -> builder.persistent(Codec.unit(Unit.INSTANCE)).networkSynchronized(StreamCodec.unit(Unit.INSTANCE)));
+
     // component item-related
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<ResearchManager.ResearchItem>> RESEARCH_ITEM = DATA_COMPONENTS.registerComponentType("research_item", builder -> builder.persistent(ResearchManager.ResearchItem.CODEC).networkSynchronized(ResearchManager.ResearchItem.STREAM_CODEC));
     public static final DeferredHolder<DataComponentType<?>, DataComponentType<Boolean>> ITEM_MAGNET = DATA_COMPONENTS.registerComponentType("item_magnet", builder -> builder.persistent(Codec.BOOL).networkSynchronized(ByteBufCodecs.BOOL));

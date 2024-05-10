@@ -2,15 +2,14 @@ package com.gregtechceu.gtceu.common.network;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.network.packets.CPacketKeysPressed;
-import com.lowdragmc.lowdraglib.networking.INetworking;
-import com.lowdragmc.lowdraglib.networking.forge.LDLNetworkingImpl;
+import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
+import net.neoforged.neoforge.network.registration.PayloadRegistrar;
 
 public class GTNetwork {
 
-    public static final INetworking NETWORK = LDLNetworkingImpl.createNetworking(GTCEu.id("network"), "0.0.1");
+    public static void registerPayloads(RegisterPayloadHandlersEvent event) {
+        PayloadRegistrar registar = event.registrar(GTCEu.MOD_ID);
 
-    public static void init() {
-        NETWORK.registerC2S(CPacketKeysPressed.class);
+        registar.playToServer(CPacketKeysPressed.TYPE, CPacketKeysPressed.CODEC, CPacketKeysPressed::execute);
     }
-
 }

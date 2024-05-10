@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.utils.input;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.network.packets.CPacketKeysPressed;
 import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.blaze3d.platform.InputConstants;
@@ -9,21 +8,21 @@ import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Player;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.event.InputEvent;
-import net.minecraftforge.client.event.RegisterKeyMappingsEvent;
-import net.minecraftforge.client.settings.IKeyConflictContext;
-import net.minecraftforge.client.settings.KeyConflictContext;
-import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.client.event.InputEvent;
+import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
+import net.neoforged.neoforge.client.settings.IKeyConflictContext;
+import net.neoforged.neoforge.client.settings.KeyConflictContext;
+import net.neoforged.neoforge.common.NeoForge;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.*;
 import java.util.function.Supplier;
 
-@Mod.EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = Mod.EventBusSubscriber.Bus.FORGE)
+@EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public enum KeyBind {
     VANILLA_JUMP(() -> () -> Minecraft.getInstance().options.keyJump),
     VANILLA_SNEAK(() -> () -> Minecraft.getInstance().options.keyShift),
@@ -38,12 +37,13 @@ public enum KeyBind {
 
     public static final KeyBind[] VALUES = values();
 
-    private static double mouseDelta = 0.0;
+    private static double mouseDeltaX = 0.0;
+    private static double mouseDeltaY = 0.0;
 
     public static void init() {
         GTCEu.LOGGER.info("Registering KeyBinds");
         if (Platform.isClient()) {
-            MinecraftForge.EVENT_BUS.register(KeyBind.class);
+            NeoForge.EVENT_BUS.register(KeyBind.class);
         }
     }
 
@@ -61,7 +61,7 @@ public enum KeyBind {
             }
         }
         if (!updating.isEmpty()) {
-            GTNetwork.NETWORK.sendToServer(new CPacketKeysPressed(updating));
+            Minecraft.getInstance().getConnection().send(new CPacketKeysPressed(updating));
         }
     }
 
@@ -77,22 +77,23 @@ public enum KeyBind {
 
     @SubscribeEvent
     public static void onMouseScroll(InputEvent.MouseScrollingEvent event) {
-        mouseDelta = event.getScrollDelta();
+        mouseDeltaX = event.getScrollDeltaX();
+        mouseDeltaY = event.getScrollDeltaY();
     }
 
     @OnlyIn(Dist.CLIENT)
     public static boolean scrollingUp() {
-        return mouseDelta > 0;
+        return mouseDeltaY > 0;
     }
 
     @OnlyIn(Dist.CLIENT)
     public static boolean notScrolling() {
-        return mouseDelta == 0;
+        return mouseDeltaY == 0;
     }
 
     @OnlyIn(Dist.CLIENT)
     public static boolean scrollingDown() {
-        return mouseDelta < 0;
+        return mouseDeltaY < 0;
     }
 
     @OnlyIn(Dist.CLIENT)
