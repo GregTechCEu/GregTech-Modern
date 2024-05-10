@@ -51,8 +51,9 @@ public class AdvancedJetpack extends Jetpack {
 
         if (toggleTimer > 0) toggleTimer--;
 
+        final boolean finalHoverMode = hoverMode;
         final byte finalToggleTimer = toggleTimer;
-        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), component -> component.setToggleTimer(finalToggleTimer));
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), component -> component.setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
     }
 
     @Override

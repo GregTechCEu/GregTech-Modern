@@ -133,10 +133,11 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
 
-        final byte finalToggleTimer = toggleTimer;
-        final boolean finalHoverMode = hoverMode;
         final boolean finalCanShare = canShare;
-        item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer).setHover(finalHoverMode).setCanShare(finalCanShare));
+        final boolean finalHoverMode = hoverMode;
+        final byte finalToggleTimer = toggleTimer;
+        item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setCanShare(finalCanShare).setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
+
         timer++;
         if (timer == Long.MAX_VALUE)
             timer = 0;
