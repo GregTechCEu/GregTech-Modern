@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
+import dev.latvian.mods.kubejs.recipe.RecipeJS;
 import lombok.NoArgsConstructor;
 import net.minecraft.world.item.ItemStack;
 
@@ -57,7 +58,7 @@ public abstract class ResearchRecipeBuilder<T extends ResearchRecipeBuilder<T>> 
         }
 
         boolean foundBehavior = false;
-        if (dataStack.getItem() instanceof ComponentItem metaItem) {
+        if (dataStack.getItem() instanceof IComponentItem metaItem) {
             for (IItemComponent behaviour : metaItem.getComponents()) {
                 if (behaviour instanceof IDataItem) {
                     foundBehavior = true;

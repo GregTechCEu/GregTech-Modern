@@ -23,7 +23,7 @@ public interface IInteractionItem extends IItemComponent {
     default InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
         if (item.isEdible()) {
             ItemStack itemStack = player.getItemInHand(usedHand);
-            if (player.canEat(item.getFoodProperties().canAlwaysEat())) {
+            if (player.canEat(itemStack.getFoodProperties(player).canAlwaysEat())) {
                 player.startUsingItem(usedHand);
                 return InteractionResultHolder.consume(itemStack);
             } else {

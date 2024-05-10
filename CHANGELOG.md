@@ -1,44 +1,31 @@
 # ChangeLog
 
-Version: 1.2.1
+Version: 1.2.2
 
 ### ADDITIONS:
-- Ported decorative blocks from 1.12
-- Added filtering to Output Hatches
-- Added several utility functions to KJS
-- Added more ore generator types (Classic & Cuboid)
-- Added partial NBT support for recipe inputs
-- Added Wood Cutter recipes
+- Ported Powder Barrels, Industrial TNT and Dynamite from 1.12
+- Ported Armor from 1.12
 
 ### CHANGES:
-- Reworked Bedrock Ores
-  - Note that it is now entirely up to pack developers to register Bedrock Ore Veins!
-- Added certain fluid blocks to the minecraft:replaceable tag
 - Updated Russian translation
+- Moved coils, filters, PSS battery maps out of GTBlocks, to make it easier for addons to add to them
 
 ### FIXES:
-- Fixed some Multiblock builders not working in KJS
-- Fixed Turbine Rotors not being damaged
-- Fixed Shutter Covers not being registered
-- Fixed missing Multiblock Tank recipes
-- Fixed GCyM Multiblocks using Perfect Overclocking
-- Fixed crash related to the Network Switch Multiblock
-- Fixed Data Bank chaining
-- Fixed HPCA energy consumption for energy that wasn't input recently
-- Fixed Kinetic Output Boxes never stopping
-- Fixed World Accelerators using too much energy and always accelerating Block Entities
-- Fixed connectivity for Long Distance Pipes
-- Fixed Item Collector (now works after reload, no longer requires KJS, fixed tooltip)
-- Fixed Research items not rendering in JEI when playing on a server
-- Fixed recipes randomly not working after server restarts
-- Fixed recipes for ABS & Large Electrolyzer using the wrong wires
-- Fixed sounds for Arc Furnace & Boilers not being registered properly
-- Fixed Parallel Control Hatch behavior when the recipe voltage matches the machine voltage
-- Fixed Wrench interactions in certain situations
-- Fixed recipe for Treated Wood
-- Fixed KJS Research recipes not registering
-- Fixed machines and pipes causing excessive updates to neighboring blocks
-- Fixed language entry for Iron III Chloride
-- Fixed recycling recipe for Titanium Fluid Cells
-- Fixed recipe for Engine Intake Casing
-- Fixed any custom recipe capabilities being removed when KJS is installed
+- Made natural decor blocks obtainable
+- Fixed compression recipes being generated for ignored materials
+- Fixed fluid locking
+- Fixed items being voided when Multiblock auto-building fails
+- Fixed missing drops for Laser Pipes and Optical Pipes
+- Fixed missing harder chest recipes
+- Fixed setting the dimension for Bedrock Ore Veins and Fluid Veins in KJS
+- Fixed energy transfer display in the Portable Scanner
+- Fixed parallel issues, multi smelter not overclocking
+- Fixed Overclocking display for ULV in recipe viewers
+- Fixed parallel processing for steam machines
+- Fixed machine controllers not working for indirectly powered blocks
+- Fixed raw ores being smeltable into ingots even with the NO_SMELTING flag
+- Fixed language entries for treated/rubber wood signs
+- Fixed sign rendering
+- Fixed wire throughput counting
+- Fixed chainsaw durability usage
+- Fixed recipe conflict between mud and fertilizer recipes
