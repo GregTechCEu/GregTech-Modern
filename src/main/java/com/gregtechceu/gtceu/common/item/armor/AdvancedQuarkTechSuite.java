@@ -131,7 +131,6 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
         data.putBoolean("canShare", canShare);
         data.putBoolean("hover", hoverMode);
         data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
 
         timer++;
         if (timer == Long.MAX_VALUE)

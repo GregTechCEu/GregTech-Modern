@@ -50,7 +50,6 @@ public class AdvancedJetpack extends Jetpack {
 
         data.putBoolean("hover", hoverMode);
         data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
     }
 
     @Override

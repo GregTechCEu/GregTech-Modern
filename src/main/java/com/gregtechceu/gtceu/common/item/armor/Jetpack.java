@@ -62,7 +62,6 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         data.putBoolean("hover", hover);
         data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
     }
 
     @Override

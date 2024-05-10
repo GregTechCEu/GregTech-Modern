@@ -86,6 +86,9 @@ public class GTFeatures {
 
     public static void init(IEventBus modEventBus) {
         FEATURE_REGISTER.register(modEventBus);
+        CONFIGURED_FEATURE_REGISTER.register(modEventBus);
+        PLACED_FEATURE_REGISTER.register(modEventBus);
+        BIOME_MODIFIER_REGISTER.register(modEventBus);
     }
 
     public static void register() {
@@ -112,7 +115,6 @@ public class GTFeatures {
         });
         PLACED_FEATURE_REGISTER.register("red_granite_blob", () -> {
             Registry<ConfiguredFeature<?, ?>> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
-            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
             var holder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("red_granite_blob")));
             return new PlacedFeature(holder, List.of(
                 RarityFilter.onAverageOnceEvery(10),
@@ -123,7 +125,6 @@ public class GTFeatures {
         });
         PLACED_FEATURE_REGISTER.register("marble_blob", () -> {
             Registry<ConfiguredFeature<?, ?>> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
-            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
             var holder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("marble_blob")));
             return new PlacedFeature(holder, List.of(
                 RarityFilter.onAverageOnceEvery(10),

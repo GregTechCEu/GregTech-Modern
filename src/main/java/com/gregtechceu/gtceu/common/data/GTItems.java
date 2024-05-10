@@ -411,20 +411,18 @@ public class GTItems {
     }
 
     public static ItemEntry<ComponentItem> FLUID_CELL = REGISTRATE.item("fluid_cell", ComponentItem::create)
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(ThermalFluidStats.create((int)FluidHelper.getBucket(), 1800, true, false, false, false, false), new ItemFluidContainer(), cellName())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE.item("universal_fluid_cell", ComponentItem::create)
             .lang("Universal Cell")
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
             .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket(), 1800, true, false, false, false, true), new ItemFluidContainer())).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE.item("steel_fluid_cell", ComponentItem::create)
             .lang("Steel Cell")
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -432,7 +430,6 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE.item("aluminium_fluid_cell", ComponentItem::create)
             .lang("Aluminium Cell")
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -440,7 +437,6 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE.item("stainless_steel_fluid_cell", ComponentItem::create)
             .lang("Stainless Steel Cell")
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -448,7 +444,6 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE.item("titanium_fluid_cell", ComponentItem::create)
             .lang("Titanium Cell")
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -456,7 +451,6 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE.item("tungstensteel_fluid_cell", ComponentItem::create)
             .lang("Tungstensteel Cell")
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .properties(p -> p.stacksTo(32))
@@ -464,7 +458,6 @@ public class GTItems {
             .onRegister(attach(cellName(), ThermalFluidStats.create((int)FluidHelper.getBucket() * 512, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8)))).register();
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::create)
-            .model(cellModel())
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNode(GTCompassSections.ITEMS))
@@ -1780,9 +1773,9 @@ public class GTItems {
         .properties(p -> p.rarity(Rarity.RARE))
         .register();
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE.item("avanced_nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, EquipmentSlot.CHEST, p)
-            .setArmorLogic(new AdvancedJetpack(512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
-                ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
+            .setArmorLogic(new AdvancedNanoMuscleSuite(512,
+                12_800_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit - 3)),
+                ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit)))
         .lang("Advanced NanoMuscle™ Suite Chestplate")
         .properties(p -> p.rarity(Rarity.RARE))
         .register();

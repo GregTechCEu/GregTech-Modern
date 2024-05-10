@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.core.mixins.ItemAccessor;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.Platform;
@@ -100,7 +101,6 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         data.putBoolean("hover", hover);
         data.putShort("burnTimer", (short) burnTimer);
         data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
     }
 
     @Override
@@ -311,13 +311,15 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         @Override
         public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
-            ItemStack copy = item.getDefaultInstance();
-            IFluidTransfer fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(copy), 0);
-            if (fluidHandlerItem != null) {
-                fluidHandlerItem.fill(GTMaterials.Diesel.getFluid(tankCapacity), true);
-                items.add(copy);
-            } else {
-                items.add(copy);
+            if (((ItemAccessor)item).invokeAllowedIn(category)) {
+                ItemStack copy = item.getDefaultInstance();
+                IFluidTransfer fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(copy), 0);
+                if (fluidHandlerItem != null) {
+                    fluidHandlerItem.fill(GTMaterials.Diesel.getFluid(tankCapacity), true);
+                    items.add(copy);
+                } else {
+                    items.add(copy);
+                }
             }
         }
     }
