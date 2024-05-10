@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.misc.PacketProspecting;
 import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
 import com.gregtechceu.gtceu.api.gui.texture.ProspectingTexture;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.item.ProspectorScannerBehavior;
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -143,7 +143,7 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             chunkIndex++;
         }
         var held = player.getItemInHand(InteractionHand.MAIN_HAND);
-        if (held.getItem() instanceof ComponentItem componentItem) {
+        if (held.getItem() instanceof IComponentItem componentItem) {
             for (var component : componentItem.getComponents()) {
                 if (component instanceof ProspectorScannerBehavior prospector) {
                     if (!player.isCreative() && !prospector.drainEnergy(held, false)) {

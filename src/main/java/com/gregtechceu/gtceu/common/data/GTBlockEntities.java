@@ -44,6 +44,14 @@ public class GTBlockEntities {
         .validBlocks(GTBlocks.OPTICAL_PIPES)
         .register();
 
+    public static final BlockEntityEntry<GTSignBlockEntity> GT_SIGN = REGISTRATE
+        .blockEntity("sign", GTSignBlockEntity::new)
+        .validBlocks(GTBlocks.RUBBER_SIGN,
+            GTBlocks.RUBBER_WALL_SIGN,
+            GTBlocks.TREATED_WOOD_SIGN,
+            GTBlocks.TREATED_WOOD_WALL_SIGN)
+        .register();
+
     public static void init() {
 
     }

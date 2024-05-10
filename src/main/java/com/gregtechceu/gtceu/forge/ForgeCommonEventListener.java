@@ -6,9 +6,10 @@ import com.gregtechceu.gtceu.api.block.MaterialBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.common.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
@@ -22,6 +23,9 @@ import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Registry;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -31,8 +35,10 @@ import net.minecraftforge.event.AddReloadListenerEvent;
 import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.event.entity.living.LivingFallEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
+import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.MissingMappingsEvent;
@@ -54,7 +60,7 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void registerItemStackCapabilities(AttachCapabilitiesEvent<ItemStack> event) {
-        if (event.getObject().getItem() instanceof ComponentItem componentItem) {
+        if (event.getObject().getItem() instanceof IComponentItem componentItem) {
 
             final ItemStack itemStack = event.getObject();
             event.addCapability(GTCEu.id("capability"), new ICapabilityProvider() {
@@ -115,6 +121,29 @@ public class ForgeCommonEventListener {
     public static void worldUnload(LevelEvent.Unload event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
             TaskHandler.onWorldUnLoad(serverLevel);
+        }
+    }
+
+    @SubscribeEvent(priority = EventPriority.LOW)
+    public static void onEntityLivingFallEvent(LivingFallEvent event) {
+        if (event.getEntity() instanceof ServerPlayer player) {
+            ItemStack armor = player.getItemBySlot(EquipmentSlot.FEET);
+            ItemStack jet = player.getItemBySlot(EquipmentSlot.CHEST);
+
+            if (player.fallDistance < 3.2f)
+                return;
+
+            if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
+                valueItem.getArmorLogic().damageArmor(player, armor, DamageSource.FALL,
+                    (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem && jet.getOrCreateTag().contains("flyMode")) {
+                valueItem.getArmorLogic().damageArmor(player, jet, DamageSource.FALL,
+                    (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                player.fallDistance = 0;
+                event.setCanceled(true);
+            }
         }
     }
 

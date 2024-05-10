@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.data.recipe;
 import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import net.minecraft.tags.TagKey;
@@ -101,7 +100,7 @@ public final class WoodTypeEntry {
                           @Nullable Item fence, @Nullable String fenceRecipeName,
                           @Nullable Item fenceGate, @Nullable String fenceGateRecipeName,
                           @Nullable Item stairs, @Nullable String stairsRecipeName, boolean addStairsCraftingRecipe,
-                          @NotNull Item boat, @Nullable String boatRecipeName,
+                          @Nullable Item boat, @Nullable String boatRecipeName,
                           @Nullable Material material,
                           boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict, boolean addSlabsOreDict,
                           boolean addFencesOreDict, boolean addFenceGatesOreDict, boolean addStairsOreDict,

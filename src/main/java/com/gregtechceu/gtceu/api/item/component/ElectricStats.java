@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.core.mixins.ItemAccessor;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
@@ -164,8 +164,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (item.allowedIn(category)) {
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
+        if (((ItemAccessor)item).invokeAllowedIn(category)) {
             items.add(new ItemStack(item));
             var stack = new ItemStack(item);
             var electricItem = GTCapabilityHelper.getElectricItem(stack);

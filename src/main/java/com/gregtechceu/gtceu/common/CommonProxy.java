@@ -25,6 +25,7 @@ import com.gregtechceu.gtceu.common.data.*;
 import com.gregtechceu.gtceu.common.data.materials.GTFoods;
 import com.gregtechceu.gtceu.common.item.tool.forge.ToolLootModifier;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
+import com.gregtechceu.gtceu.common.network.GTNetwork;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.common.unification.material.MaterialRegistryManager;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -42,6 +43,7 @@ import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
 import com.gregtechceu.gtceu.integration.top.forge.TheOneProbePluginImpl;
+import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.tterrag.registrate.providers.ProviderType;
@@ -90,6 +92,7 @@ public class CommonProxy {
         GTCEu.LOGGER.info("GTCEu common proxy init!");
         GTRegistries.COMPASS_NODES.unfreeze();
 
+        GTNetwork.init();
         UIFactory.register(MachineUIFactory.INSTANCE);
         UIFactory.register(CoverUIFactory.INSTANCE);
         UIFactory.register(GTUIEditorFactory.INSTANCE);
@@ -108,6 +111,7 @@ public class CommonProxy {
         GTCovers.init();
         GTFluids.init();
         GTBlocks.init();
+        GTEntityTypes.init();
         GTBlockEntities.init();
         GTRecipeTypes.init();
         GTMachines.init();
@@ -145,6 +149,7 @@ public class CommonProxy {
         WorldGenLayers.registerAll();
         GTFeatures.init();
         CustomBlockRotations.init();
+        KeyBind.init();
     }
 
     private static void initMaterials() {

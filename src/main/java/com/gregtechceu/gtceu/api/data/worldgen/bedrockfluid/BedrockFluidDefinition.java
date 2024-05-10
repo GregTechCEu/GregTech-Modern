@@ -3,10 +3,12 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid;
 import com.gregtechceu.gtceu.api.data.worldgen.BiomeWeightModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTBedrockFluids;
+import com.gregtechceu.gtceu.utils.RegistryUtil;
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
+import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -25,6 +27,7 @@ import net.minecraft.world.level.material.Fluid;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class BedrockFluidDefinition {
     public static final MapCodec<Pair<Integer, Integer>> YIELD = Codec.mapPair(Codec.INT.fieldOf("min"), Codec.INT.fieldOf("max"));
@@ -124,7 +127,6 @@ public class BedrockFluidDefinition {
         private int depletedYield; // yield after the vein is depleted
         @Setter
         private Supplier<Fluid> fluid; // the fluid which the vein contains
-        @Setter
         private Set<ResourceKey<Level>> dimensions;
         private final List<BiomeWeightModifier> biomes = new LinkedList<>();
 
@@ -162,6 +164,16 @@ public class BedrockFluidDefinition {
         public Builder biomes(int weight, HolderSet<Biome> biomes) {
             this.biomes.add(new BiomeWeightModifier(biomes, weight));
             return this;
+        }
+
+        @HideFromJS
+        public Builder dimensions(Set<ResourceKey<Level>> dimensions) {
+            this.dimensions = dimensions;
+            return this;
+        }
+
+        public Builder dimensions(String... dimensions) {
+            return this.dimensions(new HashSet<>(RegistryUtil.resolveResourceKeys(Registry.DIMENSION_REGISTRY, dimensions)));
         }
 
         public BedrockFluidDefinition register() {

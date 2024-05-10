@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
@@ -37,16 +36,16 @@ public class WireCombiningHandler {
     public static void init(Consumer<FinishedRecipe> provider) {
 
         // Generate Wire Packer/Unpacker recipes
-        wireGtSingle.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processWireCompression(tagPrefix, material, property, provider));
+        wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
 
         // Generate manual recipes for combining Wires/Cables
         for (TagPrefix wirePrefix : WIRE_DOUBLING_ORDER) {
-            wirePrefix.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> generateWireCombiningRecipe(tagPrefix, material, property, provider));
+            wirePrefix.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::generateWireCombiningRecipe);
         }
 
         // Generate Cable -> Wire recipes in the unpacker
         for (TagPrefix cablePrefix : cableToWireMap.keySet()) {
-            cablePrefix.executeHandler(PropertyKey.WIRE, (tagPrefix, material, property) -> processCableStripping(tagPrefix, material, property, provider));
+            cablePrefix.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processCableStripping);
         }
     }
 

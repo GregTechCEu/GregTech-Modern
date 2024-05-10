@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
@@ -17,13 +18,10 @@ import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -42,18 +40,18 @@ public class MaterialRecipeHandler {
             Arrays.asList(gem, gemFlawless, gemExquisite);
 
     public static void init(Consumer<FinishedRecipe> provider) {
-        ingot.executeHandler(PropertyKey.INGOT, (tagPrefix, material, property) -> processIngot(tagPrefix, material, property, provider));
-        nugget.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processNugget(tagPrefix, material, property, provider));
+        ingot.executeHandler(provider, PropertyKey.INGOT, MaterialRecipeHandler::processIngot);
+        nugget.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processNugget);
 
-        block.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processBlock(tagPrefix, material, property, provider));
-        frameGt.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processFrame(tagPrefix, material, property, provider));
+        block.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processBlock);
+        frameGt.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processFrame);
 
-        dust.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processDust(tagPrefix, material, property, provider));
-        dustSmall.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processSmallDust(tagPrefix, material, property, provider));
-        dustTiny.executeHandler(PropertyKey.DUST, (tagPrefix, material, property) -> processTinyDust(tagPrefix, material, property, provider));
+        dust.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processDust);
+        dustSmall.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processSmallDust);
+        dustTiny.executeHandler(provider, PropertyKey.DUST, MaterialRecipeHandler::processTinyDust);
 
         for (TagPrefix orePrefix : GEM_ORDER) {
-            orePrefix.executeHandler(PropertyKey.GEM, (tagPrefix, material, property) -> processGemConversion(tagPrefix, material, property, provider));
+            orePrefix.executeHandler(provider, PropertyKey.GEM, MaterialRecipeHandler::processGemConversion);
         }
     }
 
@@ -81,20 +79,33 @@ public class MaterialRecipeHandler {
             }
 
             if (!mat.hasFlag(EXPLOSIVE) && !mat.hasFlag(FLAMMABLE)) {
-                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
-                        .inputItems(GTUtil.copyAmount(4, dustStack))
-                        .outputItems(GTUtil.copyAmount(3, gemStack))
-                        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                        .explosivesAmount(2)
-                        .save(provider);
+                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_powderbarrel")
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesType(new ItemStack(GTBlocks.POWDERBARREL.get(), 8))
+                    .save(provider);
 
-                // TODO Dynamite
-                //IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
-                //        .inputItems(GTUtil.copyAmount(4, dustStack))
-                //        .outputs(GTUtil.copyAmount(3, gemStack))
-                //        .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
-                //        .explosivesType(GTItems.DYNAMITE.asStack())
-                //        .save(provider);
+                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_tnt")
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesAmount(4)
+                    .save(provider);
+
+                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_dynamite")
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesType(GTItems.DYNAMITE.asStack(2))
+                    .save(provider);
+
+                IMPLOSION_RECIPES.recipeBuilder("implode_" + id + "_itnt")
+                    .inputItems(GTUtil.copyAmount(4, dustStack))
+                    .outputItems(GTUtil.copyAmount(3, gemStack))
+                    .chancedOutput(dust, GTMaterials.DarkAsh, 2500, 0)
+                    .explosivesType(new ItemStack(GTBlocks.INDUSTRIAL_TNT.get()))
+                    .save(provider);
             }
 
             if (oreProperty != null) {
@@ -407,10 +418,14 @@ public class MaterialRecipeHandler {
             ItemStack ingotStack = ChemicalHelper.get(ingot, material);
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-                VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
+                if (!ingot.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
                         GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(ingot, material));
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
+                }
+                if (!orePrefix.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
                         ingotStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
+                }
             }
 
             COMPRESSOR_RECIPES.recipeBuilder("compress_" + material.getName() + "_nugget_to_ingot")
@@ -438,10 +453,14 @@ public class MaterialRecipeHandler {
             ItemStack gemStack = ChemicalHelper.get(gem, material);
 
             if (!ConfigHolder.INSTANCE.recipes.disableManualCompression) {
-                VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
+                if (!gem.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapelessRecipe(provider, String.format("nugget_disassembling_%s", material.getName()),
                         GTUtil.copyAmount(9, nuggetStack), new UnificationEntry(gem, material));
-                VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
+                }
+                if (!orePrefix.isIgnored(material)) {
+                    VanillaRecipeHelper.addShapedRecipe(provider, String.format("nugget_assembling_%s", material.getName()),
                         gemStack, "XXX", "XXX", "XXX", 'X', new UnificationEntry(orePrefix, material));
+                }
             }
         }
     }
@@ -502,7 +521,7 @@ public class MaterialRecipeHandler {
             int size = (int) (materialAmount / M);
             int sizeSqrt = Math.round(Mth.sqrt(size));
             //do not allow handcrafting or uncrafting of blacklisted blocks
-            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size) {
+            if (!material.hasFlag(EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES) && !ConfigHolder.INSTANCE.recipes.disableManualCompression && sizeSqrt*sizeSqrt == size && !block.isIgnored(material)) {
                 String patternString = "B".repeat(Math.max(0, sizeSqrt));
                 String[] pattern = new String[sizeSqrt];
                 Arrays.fill(pattern, patternString);

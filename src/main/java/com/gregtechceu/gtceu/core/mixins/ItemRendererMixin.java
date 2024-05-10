@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.client.util.ToolChargeBarRenderer;
 import com.llamalad7.mixinextras.sugar.Local;
@@ -26,7 +27,7 @@ public class ItemRendererMixin {
     private void gtceu$renderCustomDurabilityBars(Font font, ItemStack stack, int x, int y, String text, CallbackInfo ci, @Local PoseStack poseStack) {
         if (stack.getItem() instanceof IGTTool toolItem) {
             ToolChargeBarRenderer.renderBarsTool(poseStack, toolItem, stack, x, y);
-        } else if (stack.getItem() instanceof ComponentItem componentItem) {
+        } else if (stack.getItem() instanceof IComponentItem componentItem) {
             ToolChargeBarRenderer.renderBarsItem(poseStack, componentItem, stack, x, y);
         }
     }

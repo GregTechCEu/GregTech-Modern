@@ -42,7 +42,7 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider {
+public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
 
     protected int burnTime = -1;
 
@@ -56,6 +56,11 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
 
     public static ComponentItem create(Properties properties) {
         return new ComponentItem(properties);
+    }
+
+    public void attachComponents(IItemComponent component) {
+        this.components.add(component);
+        component.onAttached(this);
     }
 
     public void attachComponents(IItemComponent... components) {
@@ -245,6 +250,7 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         return super.hasCraftingRemainingItem(stack);
     }
 
+    @Override
     public <T> LazyOptional<T> getCapability(@NotNull final ItemStack itemStack, @NotNull final Capability<T> cap) {
         for (IItemComponent component : components) {
             if (component instanceof IComponentCapability componentCapability) {

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -49,7 +49,7 @@ public record CoverPlaceBehavior(CoverDefinition coverDefinition) implements IIn
 
     public static boolean isCoverBehaviorItem(ItemStack itemStack, @Nullable BooleanSupplier hasCoverSupplier, @Nullable Predicate<CoverDefinition> canPlaceCover) {
         Item item = itemStack.getItem();
-        if (item instanceof ComponentItem componentItem) {
+        if (item instanceof IComponentItem componentItem) {
             for (IItemComponent component : componentItem.getComponents()) {
                 if (component instanceof CoverPlaceBehavior placeBehavior) {
                     if (canPlaceCover == null || canPlaceCover.test(placeBehavior.coverDefinition)) {

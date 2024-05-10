@@ -337,7 +337,7 @@ public class MinerLogic extends RecipeLogic implements IRecipeCapabilityHolder {
         }
         outputItemHandler.storage.onContentsChanged(0);
 
-        var matches = machine.getRecipeType().searchRecipe(getRecipeManager(), this);
+        var matches = machine.getRecipeType().searchRecipe(this);
 
         while (matches != null && matches.hasNext()) {
             GTRecipe match = matches.next();

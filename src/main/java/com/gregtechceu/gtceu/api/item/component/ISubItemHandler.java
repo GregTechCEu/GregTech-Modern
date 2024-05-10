@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.core.mixins.ItemAccessor;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -11,8 +12,8 @@ import net.minecraft.world.item.ItemStack;
  * @implNote ISubItemHandler
  */
 public interface ISubItemHandler extends IItemComponent {
-    default void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        if (item.allowedIn(category)) {
+    default void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
+        if (((ItemAccessor)item).invokeAllowedIn(category)) {
             items.add(new ItemStack(item));
         }
     }

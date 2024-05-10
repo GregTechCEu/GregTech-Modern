@@ -223,7 +223,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (voltage > maxVoltageCounter.get(getLevel())) {
             maxVoltageCounter.set(getLevel(), voltage);
         }
-        averageVoltageCounter.increment(getLevel(), voltage);
+        averageVoltageCounter.increment(getLevel(), voltage * amps);
         averageAmperageCounter.increment(getLevel(), amps);
 
         int dif = (int) (averageAmperageCounter.getLast(getLevel()) - getMaxAmperage());

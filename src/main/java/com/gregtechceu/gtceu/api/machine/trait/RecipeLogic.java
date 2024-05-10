@@ -19,7 +19,6 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.Util;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraftforge.api.distmarker.Dist;
@@ -31,7 +30,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.concurrent.CompletableFuture;
 
 public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWorkable, IFancyTooltip {
 
@@ -243,7 +241,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     protected Iterator<GTRecipe> searchRecipe() {
-        return machine.getRecipeType().searchRecipe(getRecipeManager(), this.machine);
+        return machine.getRecipeType().searchRecipe(this.machine);
     }
 
     public void findAndHandleRecipe() {
@@ -284,7 +282,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
 
     public boolean handleFuelRecipe() {
         if (!needFuel() || fuelTime > 0) return true;
-        Iterator<GTRecipe> iterator = machine.getRecipeType().searchFuelRecipe(getRecipeManager(), machine);
+        Iterator<GTRecipe> iterator = machine.getRecipeType().searchFuelRecipe(machine);
 
         while (iterator != null && iterator.hasNext()) {
             GTRecipe recipe = iterator.next();

@@ -52,8 +52,8 @@ public class ToolRecipeHandler {
 
     public static void init(Consumer<FinishedRecipe> provider) {
         initializeGTItems();
-        TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processTool(tagPrefix, material, property, provider));
-        TagPrefix.plate.executeHandler(PropertyKey.TOOL, (tagPrefix, material, property) -> processElectricTool(tagPrefix, material, property, provider));
+        TagPrefix.plate.executeHandler(provider, PropertyKey.TOOL, ToolRecipeHandler::processTool);
+        TagPrefix.plate.executeHandler(provider, PropertyKey.TOOL, ToolRecipeHandler::processElectricTool);
         registerPowerUnitRecipes(provider);
         registerCustomToolRecipes(provider);
     }

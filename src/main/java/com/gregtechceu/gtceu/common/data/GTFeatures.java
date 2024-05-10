@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import net.minecraft.core.Holder;
@@ -17,22 +18,23 @@ import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.BiomeTags;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.levelgen.DensityFunctions;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.minecraft.world.level.levelgen.Noises;
+import net.minecraft.world.level.levelgen.VerticalAnchor;
 import net.minecraft.world.level.levelgen.feature.ConfiguredFeature;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.RandomFeatureConfiguration;
-import net.minecraft.world.level.levelgen.placement.BiomeFilter;
-import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
-import net.minecraft.world.level.levelgen.placement.PlacedFeature;
+import net.minecraft.world.level.levelgen.placement.*;
 import net.minecraft.world.level.levelgen.synth.NormalNoise;
 import net.minecraftforge.common.world.BiomeModifier;
 import net.minecraftforge.common.world.ForgeBiomeModifiers;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
+import net.minecraftforge.registries.RegistryObject;
 
 import java.util.List;
 
@@ -48,6 +50,9 @@ public class GTFeatures {
     public static final DeferredRegister<ConfiguredFeature<?, ?>> CONFIGURED_FEATURE_REGISTER = DeferredRegister.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.MOD_ID);
     public static final DeferredRegister<PlacedFeature> PLACED_FEATURE_REGISTER = DeferredRegister.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.MOD_ID);
     public static final DeferredRegister<BiomeModifier> BIOME_MODIFIER_REGISTER = DeferredRegister.create(ForgeRegistries.Keys.BIOME_MODIFIERS, GTCEu.MOD_ID);
+    public static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(Registry.FEATURE_REGISTRY, GTCEu.MOD_ID);
+
+    public static final RegistryObject<StoneBlobFeature> STONE_BLOB = FEATURE_REGISTER.register("stone_blob", StoneBlobFeature::new);
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
@@ -80,6 +85,7 @@ public class GTFeatures {
     }
 
     public static void init(IEventBus modEventBus) {
+        FEATURE_REGISTER.register(modEventBus);
         CONFIGURED_FEATURE_REGISTER.register(modEventBus);
         PLACED_FEATURE_REGISTER.register(modEventBus);
         BIOME_MODIFIER_REGISTER.register(modEventBus);
@@ -107,6 +113,26 @@ public class GTFeatures {
                 PlacementUtils.filteredByBlockSurvival(GTBlocks.RUBBER_SAPLING.get())
             ));
         });
+        PLACED_FEATURE_REGISTER.register("red_granite_blob", () -> {
+            Registry<ConfiguredFeature<?, ?>> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
+            var holder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("red_granite_blob")));
+            return new PlacedFeature(holder, List.of(
+                RarityFilter.onAverageOnceEvery(10),
+                InSquarePlacement.spread(),
+                BiomeFilter.biome(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
+            ));
+        });
+        PLACED_FEATURE_REGISTER.register("marble_blob", () -> {
+            Registry<ConfiguredFeature<?, ?>> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
+            var holder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("marble_blob")));
+            return new PlacedFeature(holder, List.of(
+                RarityFilter.onAverageOnceEvery(10),
+                InSquarePlacement.spread(),
+                BiomeFilter.biome(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
+            ));
+        });
 
         BIOME_MODIFIER_REGISTER.register(id.getPath(), () -> {
             Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
@@ -117,6 +143,18 @@ public class GTFeatures {
                 biomes,
                 HolderSet.direct(featureHolder),
                 GenerationStep.Decoration.VEGETAL_DECORATION
+            );
+        });
+        BIOME_MODIFIER_REGISTER.register("stone_blob", () -> {
+            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
+            Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+            HolderSet<Biome> biomes = new HolderSet.Named<>(biomeRegistry, BiomeTags.IS_OVERWORLD);
+            Holder<PlacedFeature> redGraniteBlob = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("red_granite_blob")));
+            Holder<PlacedFeature> marbleBlob = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("marble_blob")));
+            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                biomes,
+                HolderSet.direct(redGraniteBlob, marbleBlob),
+                GenerationStep.Decoration.UNDERGROUND_ORES
             );
         });
     }

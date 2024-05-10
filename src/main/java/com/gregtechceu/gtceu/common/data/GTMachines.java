@@ -93,7 +93,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
-import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
@@ -976,7 +975,7 @@ public class GTMachines {
                         .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
                         .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
                         .where('M', MAINTENANCE_HATCH, Direction.NORTH);
-                ALL_COILS.entrySet().stream()
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
@@ -1123,7 +1122,7 @@ public class GTMachines {
                     .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
                     .where('M', MAINTENANCE_HATCH, Direction.NORTH)
                     .where('#', Blocks.AIR.defaultBlockState());
-                ALL_COILS.entrySet().stream()
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
@@ -1144,7 +1143,7 @@ public class GTMachines {
     public static final MultiblockMachineDefinition MULTI_SMELTER = REGISTRATE.multiblock("multi_smelter", CoilWorkableElectricMultiblockMachine::new)
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
-            .recipeModifier(GTRecipeModifiers::multiSmelterOverclock)
+            .recipeModifiers(GTRecipeModifiers::multiSmelterParallel, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "CCC", "XXX")
@@ -1172,7 +1171,7 @@ public class GTMachines {
                     .where('H', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
                     .where('M', MAINTENANCE_HATCH, Direction.NORTH)
                     .where('#', Blocks.AIR.defaultBlockState());
-                ALL_COILS.entrySet().stream()
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
@@ -1221,7 +1220,7 @@ public class GTMachines {
                     .where('M', MAINTENANCE_HATCH, Direction.NORTH)
                     .where('X', MUFFLER_HATCH[GTValues.LV], Direction.SOUTH)
                     .where('#', Blocks.AIR.defaultBlockState());
-                ALL_COILS.entrySet().stream()
+                GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
                         .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
@@ -1601,7 +1600,7 @@ public class GTMachines {
                 } else {
                     builder.where('M',GTBlocks.PLASTCRETE.get());
                 }
-                ALL_FILTERS.values().forEach(block -> shapeInfo.add(builder.where('F', block.get()).build()));
+                GTCEuAPI.CLEANROOM_FILTERS.values().forEach(block -> shapeInfo.add(builder.where('F', block.get()).build()));
                 return shapeInfo;
             })
             .workableCasingRenderer(GTCEu.id("block/casings/cleanroom/plascrete"),
@@ -1739,7 +1738,7 @@ public class GTMachines {
                                         ? GTMachines.MAINTENANCE_HATCH.getBlock().defaultBlockState().setValue(GTMachines.MAINTENANCE_HATCH.get().getRotationState().property, Direction.SOUTH)
                                         : CASING_PALLADIUM_SUBSTATION.get().defaultBlockState());
 
-                GTBlocks.PSS_BATTERIES.entrySet().stream()
+                GTCEuAPI.PSS_BATTERIES.entrySet().stream()
                         // filter out empty batteries in example structures, though they are still
                         // allowed in the predicate (so you can see them on right-click)
                         .filter(entry -> entry.getKey().getCapacity() > 0)
@@ -1991,7 +1990,7 @@ public class GTMachines {
                 .appearanceBlock(casing)
                 .partAppearance((controller, part, side) -> controller.self().getPos().below().getY() == part.self().getPos().getY() ? fireBox.get().defaultBlockState() : casing.get().defaultBlockState())
                 .pattern((definition) -> {
-                    TraceabilityPredicate fireboxPred = states(ALL_FIREBOXES.get(firebox).getDefaultState()).setMinGlobalLimited(3)
+                    TraceabilityPredicate fireboxPred = blocks(ALL_FIREBOXES.get(firebox).get()).setMinGlobalLimited(3)
                         .or(Predicates.abilities(PartAbility.IMPORT_FLUIDS).setMinGlobalLimited(1).setPreviewCount(1))
                         .or(Predicates.abilities(PartAbility.IMPORT_ITEMS).setMaxGlobalLimited(1).setPreviewCount(1))
                         .or(Predicates.abilities(PartAbility.MUFFLER).setExactLimit(1));

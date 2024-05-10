@@ -14,6 +14,8 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.worldgen.features.OreFeatures;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
+import net.minecraft.util.valueproviders.ConstantInt;
+import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.levelgen.VerticalAnchor;
@@ -63,7 +65,7 @@ public class GTOres {
     public static RuleTest[] END_RULES = new RuleTest[]{WorldGeneratorUtils.END_ORE_REPLACEABLES};
 
     public static final GTOreDefinition BAUXITE_VEIN_END = create("bauxite_vein_end", vein -> vein
-            .clusterSize(30).density(0.3f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.3f).weight(40)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(10, 80)
             .biomes(BiomeTags.IS_END)
@@ -82,7 +84,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MAGNETITE_VEIN_END = create("magnetite_vein_end", vein -> vein
-            .clusterSize(35).density(0.15f).weight(30)
+            .clusterSize(UniformInt.of(38, 44)).density(0.15f).weight(30)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(20, 80)
             .biomes(BiomeTags.IS_END)
@@ -101,7 +103,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition NAQUADAH_VEIN = create("naquadah_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(30)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(30)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(10, 90)
             .biomes(BiomeTags.IS_END)
@@ -123,7 +125,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition PITCHBLENDE_VEIN = create("pitchblende_vein_end", vein -> vein
-            .clusterSize(30).density(1.0f).weight(30)
+            .clusterSize(UniformInt.of(32, 40)).density(1.0f).weight(30)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(30, 60)
             .biomes(BiomeTags.IS_END)
@@ -145,7 +147,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition SCHEELITE_VEIN = create("scheelite_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(20)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(20, 60)
             .biomes(BiomeTags.IS_END)
@@ -161,7 +163,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition SHELDONITE_VEIN = create("sheldonite_vein", vein -> vein
-            .clusterSize(25).density(0.2f).weight(10)
+            .clusterSize(UniformInt.of(25, 29)).density(0.2f).weight(10)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(5, 50)
             .biomes(BiomeTags.IS_END)
@@ -185,7 +187,7 @@ public class GTOres {
     public static RuleTest[] NETHER_RULES = new RuleTest[]{OreFeatures.NETHER_ORE_REPLACEABLES};
 
     public static final GTOreDefinition BANDED_IRON_VEIN = create("banded_iron_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(30)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 40)
             .biomes(BiomeTags.IS_NETHER)
@@ -209,7 +211,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition BERYLLIUM_VEIN = create("beryllium_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(30)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -225,7 +227,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition CERTUS_QUARTZ_VEIN = create("certus_quartz", vein -> vein
-            .clusterSize(25).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(40)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(80, 120)
             .biomes(BiomeTags.IS_NETHER)
@@ -243,7 +245,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MANGANESE_VEIN = create("manganese_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -259,7 +261,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MOLYBDENUM_VEIN = create("molybdenum_vein", vein -> vein
-            .clusterSize(25).density(0.25f).weight(5)
+            .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(5)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 50)
             .biomes(BiomeTags.IS_NETHER)
@@ -279,7 +281,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MONAZITE_VEIN = create("monazite_vein", vein -> vein
-            .clusterSize(25).density(0.25f).weight(30)
+            .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 40)
             .biomes(BiomeTags.IS_NETHER)
@@ -298,7 +300,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition NETHER_QUARTZ_VEIN = create("nether_quartz_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(80)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(40, 80)
             .biomes(BiomeTags.IS_NETHER)
@@ -316,7 +318,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition REDSTONE_VEIN = create("redstone_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(60)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(60)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 40)
             .biomes(BiomeTags.IS_NETHER)
@@ -335,7 +337,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition SALTPETER_VEIN = create("saltpeter_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 45)
             .biomes(BiomeTags.IS_NETHER)
@@ -355,7 +357,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition SULFUR_VEIN = create("sulfur_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(100)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(100)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(10, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -374,7 +376,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition TETRAHEDRITE_VEIN = create("tetrahedrite_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(70)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(70)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(80, 120)
             .biomes(BiomeTags.IS_NETHER)
@@ -397,7 +399,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition TOPAZ_VEIN = create("topaz_vein", vein -> vein
-            .clusterSize(25).density(0.25f).weight(70)
+            .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(70)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(80, 120)
             .biomes(BiomeTags.IS_NETHER)
@@ -426,7 +428,7 @@ public class GTOres {
     public static RuleTest[] OVERWORLD_RULES = new RuleTest[]{OreFeatures.STONE_ORE_REPLACEABLES };
 
     public static final GTOreDefinition APATITE_VEIN = create("apatite_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(10, 80)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -445,7 +447,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition CASSITERITE_VEIN = create("cassiterite_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(80)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(10, 80)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -466,7 +468,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition COAL_VEIN = create("coal_vein", vein -> vein
-            .clusterSize(35).density(0.25f).weight(80)
+            .clusterSize(UniformInt.of(38, 44)).density(0.25f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(10, 140)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -482,7 +484,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition COPPER_TIN_VEIN = create("copper_tin_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(50)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(50)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 160)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -505,7 +507,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition GALENA_VEIN = create("galena_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-15, 45)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -523,7 +525,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition GARNET_TIN_VEIN = create("garnet_tin_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(80)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(30, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -542,7 +544,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition GARNET_VEIN = create("garnet_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 50)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -559,7 +561,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition IRON_VEIN = create("iron_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(120)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(120)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -581,7 +583,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition LUBRICANT_VEIN = create("lubricant_vein", vein -> vein
-            .clusterSize(25).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(0, 50)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -599,7 +601,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MAGNETITE_VEIN_OW = create("magnetite_vein_ow", vein -> vein
-            .clusterSize(35).density(0.15f).weight(80)
+            .clusterSize(UniformInt.of(38, 44)).density(0.15f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(10, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -616,7 +618,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MINERAL_SAND_VEIN = create("mineral_sand_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(80)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(15, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -635,7 +637,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition NICKEL_VEIN = create("nickel_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -654,7 +656,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition SALTS_VEIN = create("salts_vein", vein -> vein
-            .clusterSize(30).density(0.2f).weight(50)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(50)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(30, 70)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -674,7 +676,7 @@ public class GTOres {
 
 
     public static final GTOreDefinition OILSANDS_VEIN = create("oilsands_vein", vein -> vein
-            .clusterSize(25).density(0.3f).weight(40)
+            .clusterSize(UniformInt.of(25, 29)).density(0.3f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(30, 80)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -697,7 +699,7 @@ public class GTOres {
     public static RuleTest[] DEEPSLATE_RULES = new RuleTest[]{OreFeatures.DEEPSLATE_ORE_REPLACEABLES };
 
     public static final GTOreDefinition COPPER_VEIN = create("copper_vein", vein -> vein
-            .clusterSize(40).density(1.0f).weight(80)
+            .clusterSize(UniformInt.of(40, 52)).density(1.0f).weight(80)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-40, 10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -719,7 +721,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition DIAMOND_VEIN = create("diamond_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-65, -30)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -739,7 +741,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition LAPIS_VEIN = create("lapis_vein", vein -> vein
-            .clusterSize(40).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(40, 52)).density(0.25f).weight(40)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-60, 10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -758,7 +760,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MANGANESE_VEIN_OW = create("manganese_vein_ow", vein -> vein
-            .clusterSize(50).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(50, 64)).density(0.25f).weight(20)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-30, 0)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -776,7 +778,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition MICA_VEIN = create("mica_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-40, -10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -796,7 +798,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition OLIVINE_VEIN = create("olivine_vein", vein -> vein
-            .clusterSize(30).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-20, 10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -817,7 +819,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition REDSTONE_VEIN_OW = create("redstone_vein_ow", vein -> vein
-            .clusterSize(30).density(0.2f).weight(60)
+            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(60)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-65, -10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -834,7 +836,7 @@ public class GTOres {
     );
 
     public static final GTOreDefinition SAPPHIRE_VEIN = create("sapphire_vein", vein -> vein
-            .clusterSize(25).density(0.25f).weight(60)
+            .clusterSize(UniformInt.of(25, 29)).density(0.25f).weight(60)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-40, 0)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -892,13 +894,14 @@ public class GTOres {
 
     public static void updateLargestVeinSize() {
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
-                .map(GTOreDefinition::clusterSize)
-                .max(Integer::compareTo)
-                .orElse(0);
+            .map(GTOreDefinition::clusterSize)
+            .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of min & max values.
+            .max(Integer::compareTo)
+            .orElse(0);
 
         GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
                 .flatMap(definition -> definition.indicatorGenerators().stream().map(indicatorGenerator ->
-                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.clusterSize() / 2.0))
+                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))
                 ))
                 .max(Integer::compareTo)
                 .orElse(0);
@@ -906,9 +909,9 @@ public class GTOres {
 
     public static GTOreDefinition blankOreDefinition() {
         return new GTOreDefinition(
-                0, 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
-                0, null, null, null, null
+            ConstantInt.of(0), 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
+            HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
+            0, null, null, null, null
         );
     }
 }

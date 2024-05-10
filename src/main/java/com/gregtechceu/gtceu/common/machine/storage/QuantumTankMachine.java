@@ -294,10 +294,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
         if (!stored.isEmpty() && locked) {
             var copied = stored.copy();
             copied.setAmount(cache.getLockedFluid().getCapacity());
-            cache.getLockedFluid().setFluid(copied);
-            cache.setLocked(true);
+            cache.setLocked(true, copied);
         } else if (!locked) {
-            cache.getLockedFluid().setFluid(FluidStack.empty());
             cache.setLocked(false);
         }
     }
@@ -314,7 +312,7 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                 ).setTextColor(-1).setDropShadow(true))
                 .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 68, 41, 18, 18)
+                .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 0, 68, 41, 18, 18, () -> cache.getLockedFluid().getFluid(), (fluid) -> cache.getLockedFluid().setFluid(fluid))
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,
