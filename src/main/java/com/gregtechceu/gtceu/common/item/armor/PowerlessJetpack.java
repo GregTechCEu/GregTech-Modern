@@ -100,7 +100,6 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         data.putBoolean("hover", hover);
         data.putShort("burnTimer", (short) burnTimer);
         data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
     }
 
     @Override
