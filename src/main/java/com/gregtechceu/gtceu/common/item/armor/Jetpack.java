@@ -5,22 +5,24 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
+import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -41,16 +43,18 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        CompoundTag data = stack.getOrCreateTag();
-        byte toggleTimer = 0;
-        boolean hover = false;
-        if (data.contains("toggleTimer")) toggleTimer = data.getByte("toggleTimer");
-        if (data.contains("hover")) hover = data.getBoolean("hover");
+        GTArmor data = stack.get(GTDataComponents.ARMOR_DATA);
+        if (data == null) {
+            return;
+        }
+        byte toggleTimer = data.toggleTimer();
+        boolean hover = data.hover();
 
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
             hover = !hover;
             toggleTimer = 5;
-            data.putBoolean("hover", hover);
+            final boolean finalHover = hover;
+            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
             if (!world.isClientSide) {
                 if (hover) player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.enable"), true);
                 else player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.disable"), true);
@@ -61,9 +65,9 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         if (toggleTimer > 0) toggleTimer--;
 
-        data.putBoolean("hover", hover);
-        data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
+        final boolean finalHover = hover;
+        final byte finalToggleTimer = toggleTimer;
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer).setHover(finalHover));
     }
 
     @Override
@@ -96,7 +100,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
         return GTCEu.id("textures/armor/jetpack.png");
     }
 
@@ -112,14 +116,12 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     @Override
     public void drawHUD(ItemStack item, GuiGraphics guiGraphics) {
         addCapacityHUD(item, this.HUD);
-        CompoundTag data = item.getTag();
+        GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
-            if (data.contains("hover")) {
-                Component status = (data.getBoolean("hover") ? Component.translatable("metaarmor.hud.status.enabled") :
-                    Component.translatable("metaarmor.hud.status.disabled"));
-                Component result = Component.translatable("metaarmor.hud.hover_mode", status);
-                this.HUD.newString(result);
-            }
+            Component status = (data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
+                Component.translatable("metaarmor.hud.status.disabled"));
+            Component result = Component.translatable("metaarmor.hud.hover_mode", status);
+            this.HUD.newString(result);
         }
         this.HUD.draw(guiGraphics);
         this.HUD.reset();
@@ -128,13 +130,11 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     @Override
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         super.addInfo(itemStack, lines);
-        CompoundTag data = itemStack.getTag();
+        GTArmor data = itemStack.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
             Component status = Component.translatable("metaarmor.hud.status.disabled");
-            if (data.contains("hover")) {
-                if (data.getBoolean("hover"))
-                    status = Component.translatable("metaarmor.hud.status.enabled");
-            }
+            if (data.hover())
+                status = Component.translatable("metaarmor.hud.status.enabled");
             lines.add(Component.translatable("metaarmor.hud.hover_mode", status));
         }
     }

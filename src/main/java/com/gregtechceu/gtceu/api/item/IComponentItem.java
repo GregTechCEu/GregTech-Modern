@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
+import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -15,8 +16,12 @@ public interface IComponentItem extends ItemLike {
 
     void attachComponents(IItemComponent... components);
 
-    default void attachCaps(RegisterCapabilitiesEvent event) {
-
+    default void attachCapabilities(RegisterCapabilitiesEvent event) {
+        for (IItemComponent component : getComponents()) {
+            if (component instanceof IComponentCapability componentCapability) {
+                componentCapability.attachCapabilites(event, this.asItem());
+            }
+        }
     }
 
     default void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {

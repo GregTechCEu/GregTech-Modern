@@ -18,7 +18,7 @@ public abstract class LivingEntityMixin {
     @Shadow
     public abstract void setItemSlot(EquipmentSlot slot, ItemStack stack);
 
-    @Inject(method = "getDamageAfterArmorAbsorb", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/CombatRules;getDamageAfterAbsorb(FFF)F"))
+    @Inject(method = "getDamageAfterArmorAbsorb", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/damagesource/CombatRules;getDamageAfterAbsorb(FLnet/minecraft/world/damagesource/DamageSource;FF)F"))
     private void gtceu$adjustArmorAbsorption(DamageSource damageSource, float damageAmount, CallbackInfoReturnable<Float> cir) {
         float armorDamage = Math.max(1.0F, damageAmount / 4.0F);
         int i = 0;

@@ -1,84 +1,39 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
-import com.mojang.serialization.Codec;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import com.gregtechceu.gtceu.GTCEu;
 import net.minecraft.Util;
-import net.minecraft.sounds.SoundEvent;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraftforge.common.util.Lazy;
+import net.neoforged.neoforge.registries.DeferredHolder;
+import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
+import java.util.List;
 
-@AllArgsConstructor
-public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
-    GOGGLES("goggles", 7, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+public class GTArmorMaterials {
+    public static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(BuiltInRegistries.ARMOR_MATERIAL, GTCEu.MOD_ID);
+
+    public static final List<ArmorMaterial.Layer> BLANK_LAYERS = List.of(new ArmorMaterial.Layer(GTCEu.id("armor")));
+
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> GOGGLES = ARMOR_MATERIALS.register("goggles", () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 0);
         map.put(ArmorItem.Type.LEGGINGS, 0);
         map.put(ArmorItem.Type.CHESTPLATE, 0);
         map.put(ArmorItem.Type.HELMET, 0);
-    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
-    JETPACK("jetpack", 15, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 0.0F, 0.0F));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> JETPACK = ARMOR_MATERIALS.register("jetpack", () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 0);
         map.put(ArmorItem.Type.LEGGINGS, 0);
         map.put(ArmorItem.Type.CHESTPLATE, 0);
         map.put(ArmorItem.Type.HELMET, 0);
-    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
-    ARMOR("armor", 40, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 0.0F, 0.0F));
+    public static final DeferredHolder<ArmorMaterial, ArmorMaterial> ARMOR = ARMOR_MATERIALS.register("armor", () -> new ArmorMaterial(Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 0);
         map.put(ArmorItem.Type.LEGGINGS, 0);
         map.put(ArmorItem.Type.CHESTPLATE, 0);
         map.put(ArmorItem.Type.HELMET, 0);
-    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 5.0F, 0.0F, () -> Ingredient.EMPTY),
-    ;
-
-    public static final Codec<GTArmorMaterials> CODEC = StringRepresentable.fromEnum(GTArmorMaterials::values);
-    private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-        map.put(ArmorItem.Type.BOOTS, 13);
-        map.put(ArmorItem.Type.LEGGINGS, 15);
-        map.put(ArmorItem.Type.CHESTPLATE, 16);
-        map.put(ArmorItem.Type.HELMET, 11);
-    });
-
-    private final String name;
-    private final int durabilityMultiplier;
-    private final EnumMap<ArmorItem.Type, Integer> protectionFunctionForType;
-    @Getter
-    private final int enchantmentValue;
-    @Getter
-    private final SoundEvent equipSound;
-    @Getter
-    private final float toughness;
-    @Getter
-    private final float knockbackResistance;
-    private final Lazy<Ingredient> repairIngredient;
-
-    @Override
-    public int getDurabilityForType(ArmorItem.Type type) {
-        return HEALTH_FUNCTION_FOR_TYPE.get(type) * this.durabilityMultiplier;
-    }
-
-    @Override
-    public int getDefenseForType(ArmorItem.Type type) {
-        return this.protectionFunctionForType.get(type);
-    }
-
-    @Override
-    public Ingredient getRepairIngredient() {
-        return this.repairIngredient.get();
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String getSerializedName() {
-        return name;
-    }
+    }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, () -> Ingredient.EMPTY, BLANK_LAYERS, 5.0F, 0.0F));
 }

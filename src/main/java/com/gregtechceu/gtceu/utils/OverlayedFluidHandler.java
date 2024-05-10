@@ -48,19 +48,19 @@ public class OverlayedFluidHandler {
      * @param amountToInsert Amount of the fluid to insert
      * @return Amount of fluid inserted into tanks
      */
-    public long insertFluid(@Nonnull FluidStack fluid, int amountToInsert) {
+    public int insertFluid(@NotNull FluidStack fluid, int amountToInsert) {
         if (amountToInsert <= 0) {
             return 0;
         }
-        long totalInserted = 0;
+        int totalInserted = 0;
         // flag value indicating whether the fluid was stored in 'distinct' slot at least once
         boolean distinctFillPerformed = false;
 
         // search for tanks with same fluid type first
         for (OverlayedTank overlayedTank : this.overlayedTanks) {
             // if the fluid to insert matches the tank, insert the fluid
-            if (overlayedTank.fluid != null && fluid.isFluidEqual(overlayedTank.fluid)) {
-                long inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+            if (overlayedTank.fluid != null && FluidStack.isSameFluidSameComponents(fluid, overlayedTank.fluid)) {
+                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;

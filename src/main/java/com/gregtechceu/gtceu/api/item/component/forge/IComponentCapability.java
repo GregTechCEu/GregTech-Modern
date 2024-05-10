@@ -9,7 +9,7 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
  * @implNote IComponentCapability
  */
 public interface IComponentCapability {
-    void attachCaps(RegisterCapabilitiesEvent event, Item item);
+    void attachCapabilites(RegisterCapabilitiesEvent event, Item item);
 
     <T> @NotNull LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap);
 }

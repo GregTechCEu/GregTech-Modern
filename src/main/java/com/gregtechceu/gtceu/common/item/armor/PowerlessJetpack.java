@@ -9,21 +9,20 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.armor.IArmorLogic;
 import com.gregtechceu.gtceu.api.item.component.*;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.api.misc.FluidRecipeHandler;
 import com.gregtechceu.gtceu.api.misc.IgnoreEnergyRecipeHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GradientUtil;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
 import com.lowdragmc.lowdraglib.Platform;
-import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
-import com.lowdragmc.lowdraglib.side.fluid.forge.FluidHelperImpl;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
@@ -31,13 +30,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.level.Level;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.common.capabilities.Capability;
-import net.minecraftforge.common.capabilities.ForgeCapabilities;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import net.minecraftforge.common.util.LazyOptional;
-import net.minecraftforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
+import net.neoforged.neoforge.fluids.FluidStack;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -63,22 +62,23 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
     @Override
     public void onArmorTick(Level world, Player player, @NotNull ItemStack stack) {
-        IFluidTransfer internalTank = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(stack), 0);
+        IFluidHandler internalTank = FluidTransferHelper.getFluidTransfer(new CustomItemStackHandler(stack), 0);
         if (internalTank == null)
             return;
 
-        CompoundTag data = stack.getOrCreateTag();
-        byte toggleTimer = 0;
-        boolean hover = false;
-
-        if (data.contains("burnTimer")) burnTimer = data.getShort("burnTimer");
-        if (data.contains("toggleTimer")) toggleTimer = data.getByte("toggleTimer");
-        if (data.contains("hover")) hover = data.getBoolean("hover");
+        GTArmor data = stack.get(GTDataComponents.ARMOR_DATA);
+        if (data == null) {
+            return;
+        }
+        burnTimer = data.burnTimer();
+        byte toggleTimer = data.toggleTimer();
+        boolean hover = data.hover();
 
         if (toggleTimer == 0 && KeyBind.ARMOR_HOVER.isKeyDown(player)) {
             hover = !hover;
             toggleTimer = 5;
-            data.putBoolean("hover", hover);
+            final boolean finalHover = hover;
+            stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover));
             if (!world.isClientSide) {
                 if (hover)
                     player.displayClientMessage(Component.translatable("metaarmor.jetpack.hover.enable"), true);
@@ -97,10 +97,9 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (toggleTimer > 0)
             toggleTimer--;
 
-        data.putBoolean("hover", hover);
-        data.putShort("burnTimer", (short) burnTimer);
-        data.putByte("toggleTimer", toggleTimer);
-        player.inventoryMenu.sendAllDataToRemote();
+        final byte finalToggleTimer = toggleTimer;
+        final boolean finalHover = hover;
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer).setHover(finalHover).setBurnTimer((short) burnTimer));
     }
 
     @Override
@@ -119,28 +118,26 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, String type) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
         return GTCEu.id("textures/armor/liquid_fuel_jetpack.png");
     }
 
     @OnlyIn(Dist.CLIENT)
     @Override
     public void drawHUD(@NotNull ItemStack item, GuiGraphics guiGraphics) {
-        IFluidTransfer tank = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(item), 0);
+        IFluidHandler tank = FluidTransferHelper.getFluidTransfer(new CustomItemStackHandler(item), 0);
         if (tank != null) {
             if (tank.getFluidInTank(0).getAmount() == 0) return;
             String formated = String.format("%.1f",
                 (tank.getFluidInTank(0).getAmount() * 100.0F / tank.getTankCapacity(0)));
             this.HUD.newString(Component.translatable("metaarmor.hud.fuel_lvl", formated + "%"));
-            CompoundTag data = item.getTag();
+            GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
 
             if (data != null) {
-                if (data.contains("hover")) {
-                    Component status = (data.getBoolean("hover") ? Component.translatable("metaarmor.hud.status.enabled") :
-                        Component.translatable("metaarmor.hud.status.disabled"));
-                    Component result = Component.translatable("metaarmor.hud.hover_mode", status);
-                    this.HUD.newString(result);
-                }
+                Component status = (data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
+                    Component.translatable("metaarmor.hud.status.disabled"));
+                Component result = Component.translatable("metaarmor.hud.hover_mode", status);
+                this.HUD.newString(result);
             }
         }
         this.HUD.draw(guiGraphics);
@@ -159,11 +156,11 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             return false;
         }
 
-        IFluidTransfer fluidHandlerItem = getIFluidHandlerItem(stack);
+        IFluidHandler fluidHandlerItem = getIFluidHandlerItem(stack);
         if (fluidHandlerItem == null)
             return false;
 
-        com.lowdragmc.lowdraglib.side.fluid.FluidStack fluidStack = fluidHandlerItem.drain(fuel, false);
+        FluidStack fluidStack = fluidHandlerItem.drain(fuel, IFluidHandler.FluidAction.SIMULATE);
         if (fluidStack.isEmpty())
             return false;
 
@@ -175,7 +172,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         if (this.burnTimer == 0) {
             FluidStack fuel = getFuel();
             if (fuel == null) return;
-            getIFluidHandlerItem(stack).drain(fuel, true);
+            getIFluidHandlerItem(stack).drain(fuel, IFluidHandler.FluidAction.EXECUTE);
             burnTimer = currentRecipe.duration;
         }
         this.burnTimer--;
@@ -186,22 +183,22 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         return burnTimer > 0 || currentRecipe != null;
     }
 
-    private static IFluidTransfer getIFluidHandlerItem(@NotNull ItemStack stack) {
-        return FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(stack), 0);
+    private static IFluidHandler getIFluidHandlerItem(@NotNull ItemStack stack) {
+        return FluidTransferHelper.getFluidTransfer(new CustomItemStackHandler(stack), 0);
     }
 
     public void findNewRecipe(@NotNull ItemStack stack) {
-        IFluidTransfer internalTank = getIFluidHandlerItem(stack);
+        IFluidHandler internalTank = getIFluidHandlerItem(stack);
         if (internalTank != null) {
-            com.lowdragmc.lowdraglib.side.fluid.FluidStack fluidStack = internalTank.drain(1, false);
-            if (previousRecipe != null && fluidStack != null &&
+            FluidStack fluidStack = internalTank.drain(1, IFluidHandler.FluidAction.EXECUTE);
+            if (previousRecipe != null && !fluidStack.isEmpty() &&
                 FluidRecipeCapability.CAP.of(previousRecipe.getInputContents(FluidRecipeCapability.CAP).get(0)).test(fluidStack) &&
                     fluidStack.getAmount() > 0) {
                 currentRecipe = previousRecipe;
                 return;
-            } else if (fluidStack != null) {
+            } else if (!fluidStack.isEmpty()) {
                 Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-                FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+                FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Integer.MAX_VALUE);
                 table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
                 IRecipeCapabilityHolder holder = new IRecipeCapabilityHolder() {
                     @Override
@@ -234,7 +231,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
             return FluidRecipeCapability.CAP.of(currentRecipe.getInputContents(FluidRecipeCapability.CAP).get(0)).getStacks()[0];
         }
 
-        return FluidStack.empty();
+        return FluidStack.EMPTY;
     }
 
     /*
@@ -252,7 +249,7 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         private static final Predicate<FluidStack> JETPACK_FUEL_FILTER = fluidStack -> {
             Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> table = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-            FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Long.MAX_VALUE);
+            FluidRecipeHandler handler = new FluidRecipeHandler(IO.IN, 1, Integer.MAX_VALUE);
             handler.getStorages()[0].setFluid(fluidStack);
             table.put(IO.IN, FluidRecipeCapability.CAP, Collections.singletonList(handler));
             table.put(IO.OUT, EURecipeCapability.CAP, Collections.singletonList(new IgnoreEnergyRecipeHandler()));
@@ -276,9 +273,9 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
 
         @Override
         public float getDurabilityForDisplay(@NotNull ItemStack itemStack) {
-            IFluidTransfer fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(itemStack), 0);
+            IFluidHandler fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new CustomItemStackHandler(itemStack), 0);
             if (fluidHandlerItem == null) return 0;
-            FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
+            net.neoforged.neoforge.fluids.FluidStack fluidStack = fluidHandlerItem.getFluidInTank(0);
             return fluidStack.isEmpty() ? 0 : (float) fluidStack.getAmount() / (float) fluidHandlerItem.getTankCapacity(0);
         }
 
@@ -289,32 +286,32 @@ public class PowerlessJetpack implements IArmorLogic, IJetpack, IItemHUDProvider
         }
 
         @Override
-        public @NotNull <T> LazyOptional<T> getCapability(ItemStack itemStack, @NotNull Capability<T> cap) {
-            return ForgeCapabilities.FLUID_HANDLER_ITEM.orEmpty(cap, LazyOptional.of(() -> new FluidHandlerItemStack(itemStack, maxCapacity) {
-                @Override
-                public boolean canFillFluidType(net.minecraftforge.fluids.FluidStack fluid) {
-                    return JETPACK_FUEL_FILTER.test(FluidHelperImpl.toFluidStack(fluid));
-                }
-            }));
+        public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+            GTArmor data = stack.get(GTDataComponents.ARMOR_DATA);
+            Component status = Component.translatable("metaarmor.hud.status.disabled");
+            if (data != null && data.hover()) {
+                status = Component.translatable("metaarmor.hud.status.enabled");
+            }
+            tooltipComponents.add(Component.translatable("metaarmor.hud.hover_mode", status));
+
         }
 
         @Override
-        public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
-            CompoundTag data = stack.getOrCreateTag();
-            Component status = Component.translatable("metaarmor.hud.status.disabled");
-            if (data.contains("hover")) {
-                if (data.getBoolean("hover"))
-                    status = Component.translatable("metaarmor.hud.status.enabled");
-            }
-            tooltipComponents.add(Component.translatable("metaarmor.hud.hover_mode", status));
+        public void attachCapabilites(RegisterCapabilitiesEvent event, Item item) {
+            event.registerItem(Capabilities.FluidHandler.ITEM, (stack, unused) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, maxCapacity) {
+                @Override
+                public boolean canFillFluidType(FluidStack fluid) {
+                    return JETPACK_FUEL_FILTER.test(fluid);
+                }
+            }, item);
         }
 
         @Override
         public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
             ItemStack copy = item.getDefaultInstance();
-            IFluidTransfer fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new ItemStackTransfer(copy), 0);
+            IFluidHandler fluidHandlerItem = FluidTransferHelper.getFluidTransfer(new CustomItemStackHandler(copy), 0);
             if (fluidHandlerItem != null) {
-                fluidHandlerItem.fill(GTMaterials.Diesel.getFluid(tankCapacity), true);
+                fluidHandlerItem.fill(GTMaterials.Diesel.getFluid(tankCapacity), IFluidHandler.FluidAction.EXECUTE);
                 items.add(copy);
             } else {
                 items.add(copy);

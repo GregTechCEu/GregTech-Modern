@@ -20,6 +20,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
+import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
 import com.mojang.datafixers.util.Either;
@@ -29,10 +30,10 @@ import net.minecraft.core.component.PatchedDataComponentMap;
 import net.neoforged.neoforge.fluids.FluidStack;
 import it.unimi.dsi.fastutil.objects.Object2LongLinkedOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.material.Fluid;
+import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -145,15 +146,15 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
         OverlayedFluidHandler overlayedFluidHandler = new OverlayedFluidHandler(new FluidTransferList(
             Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.OUT, FluidRecipeCapability.CAP), Collections::emptyList)
                 .stream()
-                .filter(IFluidHandlerModifiable.class::isInstance)
-                .map(IFluidHandlerModifiable.class::cast)
+                .filter(IFluidHandler.class::isInstance)
+                .map(IFluidHandler.class::cast)
                 .toList()
         ));
 
         while (minMultiplier != maxMultiplier) {
             overlayedFluidHandler.reset();
 
-            long amountLeft = 0;
+            int amountLeft = 0;
 
             for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream().map(FluidRecipeCapability.CAP::of).map(ingredient -> ingredient.getStacks()[0]).toList()) {
                 if (fluidStack.getAmount() <= 0) continue;
@@ -163,7 +164,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 } else {
                     amountLeft = fluidStack.getAmount() * multiplier;
                 }
-                long inserted = overlayedFluidHandler.insertFluid(fluidStack, amountLeft);
+                int inserted = overlayedFluidHandler.insertFluid(fluidStack, amountLeft);
                 if (inserted > 0) {
                     amountLeft -= inserted;
                 }

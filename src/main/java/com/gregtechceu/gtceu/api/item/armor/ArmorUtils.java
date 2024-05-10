@@ -2,16 +2,14 @@ package com.gregtechceu.gtceu.api.item.armor;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.ServerGamePacketListenerImplAccessor;
-import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
+import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.mojang.datafixers.util.Pair;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -22,11 +20,10 @@ import net.minecraft.world.food.FoodProperties;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
 
 import javax.annotation.Nonnull;
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -142,24 +139,24 @@ public class ArmorUtils {
      * @return result of eating food
      */
     public static InteractionResultHolder<ItemStack> canEat(Player player, ItemStack food) {
-        if (!food.isEdible()) {
+        if (!food.has(DataComponents.FOOD)) {
             return InteractionResultHolder.fail(food);
         }
 
-        FoodProperties foodItem = food.getItem().getFoodProperties();
+        FoodProperties foodItem = food.getFoodProperties(player);
         if (foodItem != null && player.getFoodData().needsFood()) {
             if(!player.isCreative()) {
                 food.setCount(food.getCount() - 1);
             }
 
             // Find the saturation of the food
-            float saturation = foodItem.getSaturationModifier();
+            float saturation = foodItem.saturation();
 
             // The amount of empty food haunches of the player
             int hunger = 20 - player.getFoodData().getFoodLevel();
 
             // Increase the saturation of the food if the food replenishes more than the amount of missing haunches
-            saturation += (hunger - foodItem.getNutrition()) < 0 ? foodItem.getNutrition() - hunger : 1.0F;
+            saturation += (hunger - foodItem.nutrition()) < 0 ? foodItem.nutrition() - hunger : 1.0F;
 
             // Use this method to add stats for compat with TFC, who overrides addStats(int amount, float saturation) for their food and does nothing
             player.getFoodData().eat(hunger, saturation);
@@ -168,41 +165,6 @@ public class ArmorUtils {
         } else {
             return InteractionResultHolder.fail(food);
         }
-    }
-
-    /**
-     * Format itemstacks list from [1xitem@1, 1xitem@1, 1xitem@2] to
-     * [2xitem@1, 1xitem@2]
-     *
-     * @return Formated list
-     */
-    public static List<ItemStack> format(List<ItemStack> input) {
-        Object2IntMap<ItemStack> items = new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount());
-        List<ItemStack> output = new ArrayList<>();
-        for (ItemStack itemStack : input) {
-            if (items.containsKey(itemStack)) {
-                int amount = items.get(itemStack);
-                items.replace(itemStack, ++amount);
-            } else {
-                items.put(itemStack, 1);
-            }
-        }
-        for (Object2IntMap.Entry<ItemStack> entry : items.object2IntEntrySet()) {
-            ItemStack stack = entry.getKey().copy();
-            stack.setCount(entry.getIntValue());
-            output.add(stack);
-        }
-        return output;
-    }
-
-
-    @Nonnull
-    public static String format(long value) {
-        return new DecimalFormat("###,###.##").format(value);
-    }
-
-    public static String format(double value) {
-        return new DecimalFormat("###,###.##").format(value);
     }
 
     /**

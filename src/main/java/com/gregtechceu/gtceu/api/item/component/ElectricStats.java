@@ -47,7 +47,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void attachCaps(RegisterCapabilitiesEvent event, Item item) {
+    public void attachCapabilites(RegisterCapabilitiesEvent event, Item item) {
         event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (stack, unused) -> createItem(stack), item);
     }
 

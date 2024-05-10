@@ -309,14 +309,6 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
         return super.hasCraftingRemainingItem(stack);
     }
 
-    public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        for (IItemComponent component : components) {
-            if (component instanceof IComponentCapability componentCapability) {
-                componentCapability.attachCaps(event, this);
-            }
-        }
-    }
-
     @Override
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
         return burnTime;
