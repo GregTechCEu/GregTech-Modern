@@ -8,9 +8,7 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -144,7 +142,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     // **********************internal logic********************* //
     ///////////////////////////////////////////////////////////////
 
-    @AllArgsConstructor @NoArgsConstructor
     private static class RecipeHandlingData {
         public Set<IRecipeHandler<?>> used = new HashSet<>();
 
@@ -158,6 +155,14 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             this.content = result.getA();
             this.contentSlot = result.getB();
             return this;
+        }
+
+        /**
+         * Converts this instance to be used in recipe matching instead of handling.
+         * This effectively links the content and search fields to contain the same data.
+         */
+        public RecipeHandlingData toMatcherData() {
+            return this.replaceContent(new Tuple<>(this.contentSearch, this.contentSlotSearch));
         }
     }
 
@@ -201,30 +206,29 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public ActionResult matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies = holder.getCapabilitiesProxy();
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            Set<IRecipeHandler<?>> used = new HashSet<>();
-            List content = new ArrayList<>();
-            Map<String, List> contentSlot = new HashMap<>();
+            var data = new RecipeHandlingData().toMatcherData();
+
             for (Content cont : entry.getValue()) {
                 if (cont.slotName == null) {
-                    content.add(cont.content);
+                    data.content.add(cont.content);
                 } else {
-                    contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                    data.contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                 }
             }
+
             RecipeCapability<?> capability = entry.getKey();
             if (!capability.doMatchInRecipe()) {
                 continue;
             }
 
             List newContent = new ArrayList();
-            for (Object cont : content) {
+            for (Object cont : data.content) {
                 newContent.add(capability.copyContent(cont));
             }
-            content = newContent;
-            if (content.isEmpty() && contentSlot.isEmpty()) continue;
-            if (content.isEmpty()) content = null;
+            data.content = newContent;
+            if (data.content.isEmpty() && data.contentSlot.isEmpty()) continue;
+            if (data.content.isEmpty()) data.content = null;
 
-            var data = new RecipeHandlingData(used, content, contentSlot, content, contentSlot);
             var result = handlerContentsInternal(io, io, capabilityProxies, capability, data, true);
             if (result.getA() == null && result.getB().isEmpty()) continue;
             result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, data.replaceContent(result), true);
@@ -271,6 +275,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     }
                 }
             }
+
             RecipeCapability<?> capability = entry.getKey();
             if (!capability.doMatchInRecipe()) {
                 continue;
