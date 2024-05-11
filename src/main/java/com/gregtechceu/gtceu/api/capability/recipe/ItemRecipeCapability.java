@@ -441,7 +441,7 @@ public class ItemRecipeCapability extends RecipeCapability<Ingredient> {
                 slot.setXEIChance(content.chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >= recipe.getOutputContents(this).size()) {
+                    if (index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
