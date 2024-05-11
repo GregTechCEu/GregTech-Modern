@@ -453,23 +453,16 @@ public class GTRecipeTypes {
     public final static GTRecipeType BLAST_RECIPES = register("electric_blast_furnace", MULTIBLOCK).setMaxIOSize(3, 3, 1, 1).setEUIO(IO.IN)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
-
-                if (requiredCoil == null || requiredCoil.getMaterial() == null) {
-                    return LocalizationUtils.format("gtceu.recipe.temperature");
-                } else {
-                    return LocalizationUtils.format("gtceu.recipe.temperature", temp);
-                }
+                return LocalizationUtils.format("gtceu.recipe.temperature", temp);
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
-                if (requiredCoil == null || requiredCoil.getMaterial() == null) {
-                return LocalizationUtils.format("gtceu.recipe.coil.tier");
-                } else {
+                if (requiredCoil != null || requiredCoil.getMaterial() != null) {
                 return LocalizationUtils.format("gtceu.recipe.coil.tier", I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
-            }
+                }
+                return "";
         })
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
