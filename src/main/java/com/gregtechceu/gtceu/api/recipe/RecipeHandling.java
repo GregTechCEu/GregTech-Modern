@@ -62,14 +62,29 @@ class RecipeHandling {
             this.contentSearch = content;
     }
 
+    @Nullable
+    public RecipeHandlingResult handle(IO io, Map.Entry<RecipeCapability<?>, List<Content>> entry, ContentsHandler contentsHandler) {
+        this.fillContent(holder, entry);
 
-    public RecipeHandling replaceContent(Tuple<List, Map<String, List>> result) {
+        RecipeCapability<?> capability = this.resolveCapability(entry);
+        if (capability == null)
+            return null;
+
+        var result = this.handleContents(io, capabilityProxies, capability, contentsHandler);
+        if (result == null)
+            return null;
+
+        return new RecipeHandlingResult(capability, result);
+    }
+
+
+    private RecipeHandling replaceContent(Tuple<List, Map<String, List>> result) {
         this.content = result.getA();
         this.contentSlot = result.getB();
         return this;
     }
 
-    public void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
+    private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         for (Content cont : entry.getValue()) {
             if (cont.slotName == null) {
                 this.contentSearch.add(cont.content);
@@ -90,7 +105,7 @@ class RecipeHandling {
         }
     }
 
-    public RecipeCapability<?> resolveCapability(Map.Entry<RecipeCapability<?>, List<Content>> entry) {
+    private RecipeCapability<?> resolveCapability(Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         RecipeCapability<?> capability = entry.getKey();
         if (!capability.doMatchInRecipe()) {
             return null;
@@ -103,26 +118,12 @@ class RecipeHandling {
         return capability;
     }
 
-    public Tuple<List, Map<String, List>> handleContents(IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability, ContentsHandler contentsHandler) {
+    private Tuple<List, Map<String, List>> handleContents(IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability, ContentsHandler contentsHandler) {
         var result = contentsHandler.handlerContentsInternal(io, io, capabilityProxies, capability, this, simulated);
 
         //noinspection ConstantValue
         if (result.getA() == null && result.getB().isEmpty()) return null;
 
         return contentsHandler.handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, this.replaceContent(result), simulated);
-    }
-
-    @Nullable
-    public RecipeHandlingResult handle(IO io, Map.Entry<RecipeCapability<?>, List<Content>> entry, ContentsHandler contentsHandler) {
-        this.fillContent(holder, entry);
-        RecipeCapability<?> capability = this.resolveCapability(entry);
-        if (capability == null)
-            return null;
-
-        var result = this.handleContents(io, capabilityProxies, capability, contentsHandler);
-        if (result == null)
-            return null;
-
-        return new RecipeHandlingResult(capability, result);
     }
 }
