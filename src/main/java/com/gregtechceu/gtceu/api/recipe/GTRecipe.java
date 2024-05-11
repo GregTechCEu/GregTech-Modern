@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.recipe;
 
 import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
@@ -31,7 +30,7 @@ import java.util.function.Supplier;
  * @date 2023/2/20
  * @implNote GTRecipe
  */
-@SuppressWarnings({"ConstantValue", "rawtypes", "unchecked"})
+@SuppressWarnings({"ConstantValue", "rawtypes"})
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
@@ -142,30 +141,6 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     // **********************internal logic********************* //
     ///////////////////////////////////////////////////////////////
 
-    private static class RecipeHandlingData {
-        public Set<IRecipeHandler<?>> used = new HashSet<>();
-
-        public List content = new ArrayList<>();
-        public Map<String, List> contentSlot = new HashMap<>();
-
-        public List contentSearch = new ArrayList<>();
-        public Map<String, List> contentSlotSearch = new HashMap<>();
-
-        public RecipeHandlingData replaceContent(Tuple<List, Map<String, List>> result) {
-            this.content = result.getA();
-            this.contentSlot = result.getB();
-            return this;
-        }
-
-        /**
-         * Converts this instance to be used in recipe matching instead of handling.
-         * This effectively links the content and search fields to contain the same data.
-         */
-        public RecipeHandlingData toMatcherData() {
-            return this.replaceContent(new Tuple<>(this.contentSearch, this.contentSlotSearch));
-        }
-    }
-
 
     public List<Content> getInputContents(RecipeCapability<?> capability) {
         return inputs.getOrDefault(capability, Collections.emptyList());
@@ -204,40 +179,18 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public ActionResult matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
-        Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies = holder.getCapabilitiesProxy();
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var data = new RecipeHandlingData().toMatcherData();
+            var handler = new RecipeHandling(holder, true);
 
-            for (Content cont : entry.getValue()) {
-                if (cont.slotName == null) {
-                    data.content.add(cont.content);
-                } else {
-                    data.contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
-                }
-            }
-
-            RecipeCapability<?> capability = entry.getKey();
-            if (!capability.doMatchInRecipe()) {
+            var handled = handler.handle(io, entry, this::handlerContentsInternal);
+            if (handled == null)
                 continue;
-            }
 
-            List newContent = new ArrayList();
-            for (Object cont : data.content) {
-                newContent.add(capability.copyContent(cont));
-            }
-            data.content = newContent;
-            if (data.content.isEmpty() && data.contentSlot.isEmpty()) continue;
-            if (data.content.isEmpty()) data.content = null;
-
-            var result = handlerContentsInternal(io, io, capabilityProxies, capability, data, true);
-            if (result.getA() == null && result.getB().isEmpty()) continue;
-            result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, data.replaceContent(result), true);
-
-            if (result.getA() != null || !result.getB().isEmpty()) {
+            if (handled.result().getA() != null || !handled.result().getB().isEmpty()) {
                 if (io == IO.IN) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(capability.getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(handled.capability().getName()), 0f);
                 } else if (io == IO.OUT) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(capability.getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(handled.capability().getName()), 0f);
                 } else {
                     return ActionResult.FAIL_NO_REASON;
                 }
@@ -257,39 +210,14 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
-        Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies = holder.getCapabilitiesProxy();
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            RecipeHandlingData data = new RecipeHandlingData();
-
-            for (Content cont : entry.getValue()) {
-                if (cont.slotName == null) {
-                    data.contentSearch.add(cont.content);
-                } else {
-                    data.contentSlotSearch.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
-                }
-                if (cont.chance >= 1 || GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance input
-                    if (cont.slotName == null) {
-                        data.content.add(cont.content);
-                    } else {
-                        data.contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
-                    }
-                }
-            }
-
-            RecipeCapability<?> capability = entry.getKey();
-            if (!capability.doMatchInRecipe()) {
+            RecipeHandling handler = new RecipeHandling(holder,false);
+         
+            var handled = handler.handle(io, entry, this::handlerContentsInternal);
+            if (handled == null)
                 continue;
-            }
 
-            data.content = data.content.stream().map(capability::copyContent).toList();
-            if (data.content.isEmpty() && data.contentSlot.isEmpty()) continue;
-            if (data.content.isEmpty()) data.content = null;
-
-            var result = handlerContentsInternal(io, io, capabilityProxies, capability, data, false);
-            if (result.getA() == null && result.getB().isEmpty()) continue;
-            result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, data.replaceContent(result), false);
-
-            if (result.getA() != null || !result.getB().isEmpty()) {
+            if (handled.result().getA() != null || !handled.result().getB().isEmpty()) {
                 GTCEu.LOGGER.warn("io error while handling a recipe {} outputs. holder: {}", id, holder);
                 return false;
             }
@@ -299,11 +227,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     private Tuple<List, Map<String, List>> handlerContentsInternal(
             IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-            RecipeCapability<?> capability, RecipeHandlingData data,
+            RecipeCapability<?> capability, RecipeHandling data,
             boolean simulate
     ) {
         if (!capabilityProxies.contains(capIO, capability))
-            return new Tuple<>(data.content, data.contentSlot);
+            return new Tuple<>(data.content(), data.contentSlot());
 
         //noinspection DataFlowIssue checked above.
         var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
@@ -312,12 +240,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
-            var result = handler.handleRecipe(io, this, data.contentSearch, null, true);
+            var result = handler.handleRecipe(io, this, data.contentSearch(), null, true);
             if (result == null) {
                 // check distint slot handler
-                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.contentSlotSearch.keySet())) {
+                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.contentSlotSearch().keySet())) {
                     boolean success = true;
-                    for (var entry : data.contentSlotSearch.entrySet()) {
+                    for (var entry : data.contentSlotSearch().entrySet()) {
                         List<?> left = handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), true);
                         if (left != null) {
                             success = false;
@@ -326,46 +254,46 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     }
                     if (success) {
                         if (!simulate) {
-                            for (var entry : data.contentSlot.entrySet()) {
+                            for (var entry : data.contentSlot().entrySet()) {
                                 handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), false);
                             }
                         }
-                        data.contentSlot.clear();
+                        data.contentSlot().clear();
                     }
                 }
-                if (data.contentSlot.isEmpty()) {
+                if (data.contentSlot().isEmpty()) {
                     if (!simulate) {
-                        handler.handleRecipe(io, this, data.content, null, false);
+                        handler.handleRecipe(io, this, data.content(), null, false);
                     }
-                    data.content = null;
+                    data.setContent(null);
                 }
             }
-            if (data.content == null && data.contentSlot.isEmpty()) {
+            if (data.content() == null && data.contentSlot().isEmpty()) {
                 break;
             }
         }
-        if (data.content != null || !data.contentSlot.isEmpty()) {
+        if (data.content() != null || !data.contentSlot().isEmpty()) {
             // handle undistinct later
             for (IRecipeHandler<?> proxy : handlers) {
-                if (data.used.contains(proxy) || proxy.isDistinct()) continue;
-                data.used.add(proxy);
-                if (data.content != null) {
-                    data.content = proxy.handleRecipe(io, this, data.content, null, simulate);
+                if (data.used().contains(proxy) || proxy.isDistinct()) continue;
+                data.used().add(proxy);
+                if (data.content() != null) {
+                    data.setContent(proxy.handleRecipe(io, this, data.content(), null, simulate));
                 }
                 if (proxy.getSlotNames() != null) {
-                    Iterator<String> iterator = data.contentSlot.keySet().iterator();
+                    Iterator<String> iterator = data.contentSlot().keySet().iterator();
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, this, data.contentSlot.get(key), key, simulate);
+                            List<?> left = proxy.handleRecipe(io, this, data.contentSlot().get(key), key, simulate);
                             if (left == null) iterator.remove();
                         }
                     }
                 }
-                if (data.content == null && data.contentSlot.isEmpty()) break;
+                if (data.content() == null && data.contentSlot().isEmpty()) break;
             }
         }
-        return new Tuple<>(data.content, data.contentSlot);
+        return new Tuple<>(data.content(), data.contentSlot());
     }
 
     public boolean hasTick() {
