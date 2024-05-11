@@ -11,7 +11,6 @@ import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.With;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -181,9 +180,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public ActionResult matchRecipe(IRecipeCapabilityHolder holder) {
         if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
-        var result = matchRecipe(IO.IN, holder, inputs, false);
+        var result = matchRecipe(IO.IN, holder, inputs);
         if (!result.isSuccess()) return result;
-        result = matchRecipe(IO.OUT, holder, outputs, false);
+        result = matchRecipe(IO.OUT, holder, outputs);
         if (!result.isSuccess()) return result;
         return ActionResult.SUCCESS;
     }
@@ -191,15 +190,15 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public ActionResult matchTickRecipe(IRecipeCapabilityHolder holder) {
         if (hasTick()) {
             if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
-            var result = matchRecipe(IO.IN, holder, tickInputs, false);
+            var result = matchRecipe(IO.IN, holder, tickInputs);
             if (!result.isSuccess()) return result;
-            result = matchRecipe(IO.OUT, holder, tickOutputs, false);
+            result = matchRecipe(IO.OUT, holder, tickOutputs);
             if (!result.isSuccess()) return result;
         }
         return ActionResult.SUCCESS;
     }
 
-    public ActionResult matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents, boolean calculateExpectingRate) {
+    public ActionResult matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies = holder.getCapabilitiesProxy();
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             Set<IRecipeHandler<?>> used = new HashSet<>();
@@ -231,22 +230,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, data.replaceContent(result), true);
 
             if (result.getA() != null || !result.getB().isEmpty()) {
-                var expectingRate = 0f;
-                // TODO calculateExpectingRate
-//                if (calculateExpectingRate) {
-//                    if (result.getA() != null) {
-//                        expectingRate = Math.max(capability.calculateAmount(result.getA()), expectingRate);
-//                    }
-//                    if (!result.getB().isEmpty()) {
-//                        for (var c : result.getB().values()) {
-//                            expectingRate = Math.max(capability.calculateAmount(c), expectingRate);
-//                        }
-//                    }
-//                }
                 if (io == IO.IN) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(capability.getName()), expectingRate);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(capability.getName()), 0f);
                 } else if (io == IO.OUT) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(capability.getName()), expectingRate);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(capability.getName()), 0f);
                 } else {
                     return ActionResult.FAIL_NO_REASON;
                 }

@@ -116,10 +116,10 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
             var iterator = machine.getRecipeType().getLookup().getRecipeIterator(holder, recipe -> {
                 if (recipe.isFuel) return false;
                 if (!holder.hasProxies()) return false;
-                var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs, false);
+                var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs);
                 if (!result.isSuccess()) return false;
                 if (recipe.hasTick()) {
-                    result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs, false);
+                    result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs);
                     return result.isSuccess();
                 }
                 return true;
@@ -167,7 +167,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
 
         public GTRecipe.ActionResult matchRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-            var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs, false);
+            var result = recipe.matchRecipe(IO.IN, holder, recipe.inputs);
             if (!result.isSuccess()) return result;
             return GTRecipe.ActionResult.SUCCESS;
         }
@@ -175,7 +175,7 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
         public GTRecipe.ActionResult matchTickRecipeNoOutput(GTRecipe recipe, IRecipeCapabilityHolder holder) {
             if (recipe.hasTick()) {
                 if (!holder.hasProxies()) return GTRecipe.ActionResult.FAIL_NO_REASON;
-                var result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs, false);
+                var result = recipe.matchRecipe(IO.IN, holder, recipe.tickInputs);
                 if (!result.isSuccess()) return result;
             }
             return GTRecipe.ActionResult.SUCCESS;
