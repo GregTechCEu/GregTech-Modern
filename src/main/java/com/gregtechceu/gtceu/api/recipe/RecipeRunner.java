@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 
@@ -18,7 +19,7 @@ import java.util.*;
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeRunner {
     static class ContentSlots {
-        public @Nullable List content = new ArrayList<>();
+        public @UnknownNullability List content = new ArrayList<>();
         public @NotNull Map<String, List> slots = new HashMap<>();
     }
     
