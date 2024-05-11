@@ -30,7 +30,7 @@ import java.util.function.Supplier;
  * @date 2023/2/20
  * @implNote GTRecipe
  */
-@SuppressWarnings({"ConstantValue", "rawtypes"})
+@SuppressWarnings({"ConstantValue"})
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
@@ -180,9 +180,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var handler = new RecipeHandling(holder, true);
+            var handler = new RecipeHandling(this, holder, true);
 
-            var handled = handler.handle(io, entry, this::handlerContentsInternal);
+            var handled = handler.handle(io, entry);
             if (handled == null)
                 continue;
 
@@ -211,9 +211,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            RecipeHandling handler = new RecipeHandling(holder,false);
+            RecipeHandling handler = new RecipeHandling(this, holder,false);
          
-            var handled = handler.handle(io, entry, this::handlerContentsInternal);
+            var handled = handler.handle(io, entry);
             if (handled == null)
                 continue;
 
@@ -225,76 +225,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         return true;
     }
 
-    private Tuple<List, Map<String, List>> handlerContentsInternal(
-            IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-            RecipeCapability<?> capability, RecipeHandling data,
-            boolean simulate
-    ) {
-        if (!capabilityProxies.contains(capIO, capability))
-            return new Tuple<>(data.content(), data.contentSlot());
 
-        //noinspection DataFlowIssue checked above.
-        var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
-        handlers.sort(IRecipeHandler.ENTRY_COMPARATOR);
-
-        // handle distinct first
-        for (IRecipeHandler<?> handler : handlers) {
-            if (!handler.isDistinct()) continue;
-            var result = handler.handleRecipe(io, this, data.contentSearch(), null, true);
-            if (result == null) {
-                // check distint slot handler
-                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.contentSlotSearch().keySet())) {
-                    boolean success = true;
-                    for (var entry : data.contentSlotSearch().entrySet()) {
-                        List<?> left = handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), true);
-                        if (left != null) {
-                            success = false;
-                            break;
-                        }
-                    }
-                    if (success) {
-                        if (!simulate) {
-                            for (var entry : data.contentSlot().entrySet()) {
-                                handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), false);
-                            }
-                        }
-                        data.contentSlot().clear();
-                    }
-                }
-                if (data.contentSlot().isEmpty()) {
-                    if (!simulate) {
-                        handler.handleRecipe(io, this, data.content(), null, false);
-                    }
-                    data.setContent(null);
-                }
-            }
-            if (data.content() == null && data.contentSlot().isEmpty()) {
-                break;
-            }
-        }
-        if (data.content() != null || !data.contentSlot().isEmpty()) {
-            // handle undistinct later
-            for (IRecipeHandler<?> proxy : handlers) {
-                if (data.used().contains(proxy) || proxy.isDistinct()) continue;
-                data.used().add(proxy);
-                if (data.content() != null) {
-                    data.setContent(proxy.handleRecipe(io, this, data.content(), null, simulate));
-                }
-                if (proxy.getSlotNames() != null) {
-                    Iterator<String> iterator = data.contentSlot().keySet().iterator();
-                    while (iterator.hasNext()) {
-                        String key = iterator.next();
-                        if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, this, data.contentSlot().get(key), key, simulate);
-                            if (left == null) iterator.remove();
-                        }
-                    }
-                }
-                if (data.content() == null && data.contentSlot().isEmpty()) break;
-            }
-        }
-        return new Tuple<>(data.content(), data.contentSlot());
-    }
 
     public boolean hasTick() {
         return !tickInputs.isEmpty() || !tickOutputs.isEmpty();

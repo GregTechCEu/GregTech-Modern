@@ -17,14 +17,8 @@ import java.util.*;
 @Accessors(fluent = true) @Getter
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeHandling {
-    @FunctionalInterface
-    interface ContentsHandler {
-        Tuple<List, Map<String, List>> handlerContentsInternal(
-            IO capIO, IO io,
-            Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-            RecipeCapability<?> capability, RecipeHandling data, boolean simulate
-        );
-    }
+
+    private final GTRecipe recipe;
 
     record RecipeHandlingResult(RecipeCapability<?> capability, Tuple<List, Map<String, List>> result) {
     }
@@ -45,7 +39,8 @@ class RecipeHandling {
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
 
 
-    public RecipeHandling(IRecipeCapabilityHolder holder, boolean simulated) {
+    public RecipeHandling(GTRecipe recipe, IRecipeCapabilityHolder holder, boolean simulated) {
+        this.recipe = recipe;
         this.holder = holder;
         this.capabilityProxies = holder.getCapabilitiesProxy();
         this.simulated = simulated;
@@ -63,14 +58,14 @@ class RecipeHandling {
     }
 
     @Nullable
-    public RecipeHandlingResult handle(IO io, Map.Entry<RecipeCapability<?>, List<Content>> entry, ContentsHandler contentsHandler) {
+    public RecipeHandlingResult handle(IO io, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         this.fillContent(holder, entry);
 
         RecipeCapability<?> capability = this.resolveCapability(entry);
         if (capability == null)
             return null;
 
-        var result = this.handleContents(io, capabilityProxies, capability, contentsHandler);
+        var result = this.handleContents(io, capabilityProxies, capability);
         if (result == null)
             return null;
 
@@ -118,12 +113,84 @@ class RecipeHandling {
         return capability;
     }
 
-    private Tuple<List, Map<String, List>> handleContents(IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability, ContentsHandler contentsHandler) {
-        var result = contentsHandler.handlerContentsInternal(io, io, capabilityProxies, capability, this, simulated);
+    private Tuple<List, Map<String, List>> handleContents(IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
+        var result = handleContentsInternal(io, io, capabilityProxies, capability, this, simulated);
 
         //noinspection ConstantValue
         if (result.getA() == null && result.getB().isEmpty()) return null;
 
-        return contentsHandler.handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, this.replaceContent(result), simulated);
+        return handleContentsInternal(IO.BOTH, io, capabilityProxies, capability, this.replaceContent(result), simulated);
+    }
+
+
+    private Tuple<List, Map<String, List>> handleContentsInternal(
+        IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
+        RecipeCapability<?> capability, RecipeHandling data,
+        boolean simulate
+    ) {
+        if (!capabilityProxies.contains(capIO, capability))
+            return new Tuple<>(data.content(), data.contentSlot());
+
+        //noinspection DataFlowIssue checked above.
+        var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
+        handlers.sort(IRecipeHandler.ENTRY_COMPARATOR);
+
+        // handle distinct first
+        for (IRecipeHandler<?> handler : handlers) {
+            if (!handler.isDistinct()) continue;
+            var result = handler.handleRecipe(io, recipe, data.contentSearch(), null, true);
+            if (result == null) {
+                // check distint slot handler
+                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.contentSlotSearch().keySet())) {
+                    boolean success = true;
+                    for (var entry : data.contentSlotSearch().entrySet()) {
+                        List<?> left = handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), true);
+                        if (left != null) {
+                            success = false;
+                            break;
+                        }
+                    }
+                    if (success) {
+                        if (!simulate) {
+                            for (var entry : data.contentSlot().entrySet()) {
+                                handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), false);
+                            }
+                        }
+                        data.contentSlot().clear();
+                    }
+                }
+                if (data.contentSlot().isEmpty()) {
+                    if (!simulate) {
+                        handler.handleRecipe(io, recipe, data.content(), null, false);
+                    }
+                    data.setContent(null);
+                }
+            }
+            if (data.content() == null && data.contentSlot().isEmpty()) {
+                break;
+            }
+        }
+        if (data.content() != null || !data.contentSlot().isEmpty()) {
+            // handle undistinct later
+            for (IRecipeHandler<?> proxy : handlers) {
+                if (data.used().contains(proxy) || proxy.isDistinct()) continue;
+                data.used().add(proxy);
+                if (data.content() != null) {
+                    data.setContent(proxy.handleRecipe(io, recipe, data.content(), null, simulate));
+                }
+                if (proxy.getSlotNames() != null) {
+                    Iterator<String> iterator = data.contentSlot().keySet().iterator();
+                    while (iterator.hasNext()) {
+                        String key = iterator.next();
+                        if (proxy.getSlotNames().contains(key)) {
+                            List<?> left = proxy.handleRecipe(io, recipe, data.contentSlot().get(key), key, simulate);
+                            if (left == null) iterator.remove();
+                        }
+                    }
+                }
+                if (data.content() == null && data.contentSlot().isEmpty()) break;
+            }
+        }
+        return new Tuple<>(data.content(), data.contentSlot());
     }
 }
