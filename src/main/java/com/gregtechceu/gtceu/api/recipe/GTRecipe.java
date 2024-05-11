@@ -28,7 +28,6 @@ import java.util.function.Supplier;
  * @date 2023/2/20
  * @implNote GTRecipe
  */
-@SuppressWarnings({"ConstantValue"})
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Container> {
@@ -178,17 +177,15 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var handler = new RecipeRunner(this, io, holder, true);
-
-            var handled = handler.handle(entry);
-            if (handled == null)
+            var result = new RecipeRunner(this, io, holder, true).handle(entry);
+            if (result == null)
                 continue;
 
-            if (handled.result().content != null || !handled.result().slots.isEmpty()) {
+            if (result.result().content != null || !result.result().slots.isEmpty()) {
                 if (io == IO.IN) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(handled.capability().getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(result.capability().getName()), 0f);
                 } else if (io == IO.OUT) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(handled.capability().getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(result.capability().getName()), 0f);
                 } else {
                     return ActionResult.FAIL_NO_REASON;
                 }
@@ -209,9 +206,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            RecipeRunner handler = new RecipeRunner(this, io, holder,false);
-         
-            var handled = handler.handle(entry);
+            var handled = new RecipeRunner(this, io, holder,false).handle(entry);
             if (handled == null)
                 continue;
 

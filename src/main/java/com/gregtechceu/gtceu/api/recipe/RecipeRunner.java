@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import lombok.Getter;
 import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -15,7 +14,9 @@ import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.*;
 
-@Accessors(fluent = true) @Getter
+/**
+ * Used to handle recipes, only valid for a single RecipeCapability's entries
+ */
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeRunner {
     static class ContentSlots {
@@ -28,11 +29,23 @@ class RecipeRunner {
 
 // --------------------------------------------------------------------------------------------------------
 
+    // Guards against multiple invocations of handle() as this can only be used once.
+    private boolean consumed = false;
+
+    private void consume() {
+        if (consumed) throw new IllegalStateException("This RecipeRunner has already been used");
+        consumed = true;
+    }
+
+// --------------------------------------------------------------------------------------------------------
+
     private final GTRecipe recipe;
     private final IO io;
     private final IRecipeCapabilityHolder holder;
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
     private final boolean simulated;
+
+    private RecipeCapability<?> capability;
 
     private final Set<IRecipeHandler<?>> used = new HashSet<>();
     private final ContentSlots content = new ContentSlots();
@@ -51,19 +64,17 @@ class RecipeRunner {
         }
     }
 
-    public void setContent(List content) {
-        this.content.content = content;
-    }
-
     @Nullable
     public RecipeHandlingResult handle(Map.Entry<RecipeCapability<?>, List<Content>> entry) {
+        consume();
+
         this.fillContent(holder, entry);
 
-        RecipeCapability<?> capability = this.resolveCapability(entry);
+        capability = this.resolveCapability(entry);
         if (capability == null)
             return null;
 
-        var result = this.handleContents(capabilityProxies, capability);
+        var result = this.handleContents();
         if (result == null)
             return null;
 
@@ -72,6 +83,7 @@ class RecipeRunner {
 
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         for (Content cont : entry.getValue()) {
+            // For simulated handling, search/content are the same instance, so there's no need to switch between them
             if (cont.slotName == null) {
                 this.search.content.add(cont.content);
             } else {
@@ -97,27 +109,24 @@ class RecipeRunner {
             return null;
         }
 
-        this.setContent(this.content.content.stream().map(capability::copyContent).toList());
+        content.content = this.content.content.stream().map(capability::copyContent).toList();
         if (this.content.content.isEmpty() && this.content.slots.isEmpty()) return null;
-        if (this.content.content.isEmpty()) this.setContent(null);
+        if (this.content.content.isEmpty()) content.content = null;
 
         return capability;
     }
 
     @Nullable
-    private ContentSlots handleContents(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
-        handleContentsInternal(io, capabilityProxies, capability, this);
-        if (content().content == null && content().slots.isEmpty()) return null;
-        handleContentsInternal(IO.BOTH, capabilityProxies, capability, this);
+    private ContentSlots handleContents() {
+        handleContentsInternal(io);
+        if (content.content == null && content.slots.isEmpty()) return null;
+        handleContentsInternal(IO.BOTH);
 
         return content;
     }
 
 
-    private void handleContentsInternal(
-        IO capIO, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-        RecipeCapability<?> capability, RecipeRunner data
-    ) {
+    private void handleContentsInternal(IO capIO) {
         if (!capabilityProxies.contains(capIO, capability))
             return;
 
@@ -128,12 +137,12 @@ class RecipeRunner {
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
-            var result = handler.handleRecipe(io, recipe, data.search().content, null, true);
+            var result = handler.handleRecipe(io, recipe, search.content, null, true);
             if (result == null) {
                 // check distint slot handler
-                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.search().slots.keySet())) {
+                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(search.slots.keySet())) {
                     boolean success = true;
-                    for (var entry : data.search().slots.entrySet()) {
+                    for (var entry : search.slots.entrySet()) {
                         List<?> left = handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), true);
                         if (left != null) {
                             success = false;
@@ -142,43 +151,43 @@ class RecipeRunner {
                     }
                     if (success) {
                         if (!simulated) {
-                            for (var entry : data.content().slots.entrySet()) {
+                            for (var entry : content.slots.entrySet()) {
                                 handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), false);
                             }
                         }
-                        data.content().slots.clear();
+                        content.slots.clear();
                     }
                 }
-                if (data.content().slots.isEmpty()) {
+                if (content.slots.isEmpty()) {
                     if (!simulated) {
-                        handler.handleRecipe(io, recipe, data.content().content, null, false);
+                        handler.handleRecipe(io, recipe, content.content, null, false);
                     }
-                    data.setContent(null);
+                    content.content = null;
                 }
             }
-            if (data.content().content == null && data.content().slots.isEmpty()) {
+            if (content.content == null && content.slots.isEmpty()) {
                 break;
             }
         }
-        if (data.content().content != null || !data.content().slots.isEmpty()) {
+        if (content.content != null || !content.slots.isEmpty()) {
             // handle undistinct later
             for (IRecipeHandler<?> proxy : handlers) {
-                if (data.used().contains(proxy) || proxy.isDistinct()) continue;
-                data.used().add(proxy);
-                if (data.content().content != null) {
-                    data.setContent(proxy.handleRecipe(io, recipe, data.content().content, null, simulated));
+                if (used.contains(proxy) || proxy.isDistinct()) continue;
+                used.add(proxy);
+                if (content.content != null) {
+                    content.content = proxy.handleRecipe(io, recipe, content.content, null, simulated);
                 }
                 if (proxy.getSlotNames() != null) {
-                    Iterator<String> iterator = data.content().slots.keySet().iterator();
+                    Iterator<String> iterator = content.slots.keySet().iterator();
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, recipe, data.content().slots.get(key), key, simulated);
+                            List<?> left = proxy.handleRecipe(io, recipe, content.slots.get(key), key, simulated);
                             if (left == null) iterator.remove();
                         }
                     }
                 }
-                if (data.content().content == null && data.content().slots.isEmpty()) break;
+                if (content.content == null && content.slots.isEmpty()) break;
             }
         }
     }
