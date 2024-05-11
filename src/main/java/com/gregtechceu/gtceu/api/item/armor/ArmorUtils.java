@@ -146,7 +146,7 @@ public class ArmorUtils {
             return InteractionResultHolder.fail(food);
         }
 
-        FoodProperties foodItem = food.getItem().getFoodProperties();
+        FoodProperties foodItem = food.getFoodProperties(player);
         if (foodItem != null && player.getFoodData().needsFood()) {
             if(!player.isCreative()) {
                 food.setCount(food.getCount() - 1);
