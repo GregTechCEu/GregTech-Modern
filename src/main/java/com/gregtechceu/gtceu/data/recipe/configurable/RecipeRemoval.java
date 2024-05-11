@@ -92,8 +92,9 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:clay"));
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
         registry.accept(new ResourceLocation("minecraft:glowstone"));
-        registry.accept(new ResourceLocation("minecraft:netherite_block"));
-        registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
+        // TODO netherite material
+        //registry.accept(new ResourceLocation("minecraft:netherite_block"));
+        //registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
