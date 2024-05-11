@@ -88,6 +88,7 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModLoader;
 import net.neoforged.fml.event.lifecycle.FMLCommonSetupEvent;
@@ -192,20 +193,12 @@ public class CommonProxy {
             AbstractRegistrateAccessor accessor = (AbstractRegistrateAccessor) registry.getRegistrate();
             if (accessor.getDoDatagen().get()) {
                 List<NonNullConsumer<? extends RegistrateProvider>> providers = Multimaps.asMap(accessor.getDatagens()).get(ProviderType.LANG);
-                if (providers.isEmpty()) {
-                    providers.add(
-                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
-                } else {
-                    providers.add(0,
-                            (provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
-                }
+                providers.addFirst((provider) -> MaterialLangGenerator.generate((RegistrateLangProvider) provider, registry));
             }
 
             registry.getRegistrate()
                 .registerEventListeners(ModList.get().getModContainerById(registry.getModid())
-                    .filter(FMLModContainer.class::isInstance)
-                    .map(FMLModContainer.class::cast)
-                    .map(FMLModContainer::getEventBus)
+                    .map(ModContainer::getEventBus)
                     .orElse(modBus));
         });
 

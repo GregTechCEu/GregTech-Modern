@@ -1084,9 +1084,9 @@ public class GTBlocks {
         .initialProperties(() -> Blocks.SPRUCE_SLAB)
         .lang("Rubber Slab")
         .blockstate((ctx, prov) -> prov.slabBlock(ctx.getEntry(), prov.blockTexture(GTBlocks.RUBBER_PLANK.get()), prov.blockTexture(GTBlocks.RUBBER_PLANK.get())))
-        .tag(BlockTags.SLABS)
+        .tag(BlockTags.WOODEN_SLABS)
         .item()
-        .tag(ItemTags.SLABS)
+        .tag(ItemTags.WOODEN_SLABS)
         .onRegister(compassNode(GTCompassSections.GENERATIONS))
         .build()
         .register();
@@ -1240,9 +1240,9 @@ public class GTBlocks {
         .initialProperties(() -> Blocks.SPRUCE_SLAB)
         .lang("Treated Wood Slab")
         .blockstate((ctx, prov) -> prov.slabBlock(ctx.getEntry(), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get()), prov.blockTexture(GTBlocks.TREATED_WOOD_PLANK.get())))
-        .tag(BlockTags.SLABS)
+        .tag(BlockTags.WOODEN_SLABS)
         .item()
-        .tag(ItemTags.SLABS)
+        .tag(ItemTags.WOODEN_SLABS)
         .onRegister(compassNode(GTCompassSections.GENERATIONS))
         .build()
         .register();

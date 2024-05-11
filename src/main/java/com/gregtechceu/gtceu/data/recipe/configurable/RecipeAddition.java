@@ -1027,6 +1027,42 @@ public class RecipeAddition {
     }
 
     private static void removeVanillaBlockRecipes(RecipeOutput provider) {
+        VanillaRecipeHelper.addShapedRecipe(provider, "stone_slab_saw", new ItemStack(Blocks.STONE_SLAB), "sS", 'S', new ItemStack(Blocks.STONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "smooth_stone_slab_saw", new ItemStack(Blocks.SMOOTH_STONE_SLAB), "sS", 'S', new ItemStack(Blocks.SMOOTH_STONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "andesite_slab_saw", new ItemStack(Blocks.ANDESITE_SLAB), "sS", 'S', new ItemStack(Blocks.ANDESITE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "granite_slab_saw", new ItemStack(Blocks.GRANITE_SLAB), "sS", 'S', new ItemStack(Blocks.GRANITE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "diorite_slab_saw", new ItemStack(Blocks.DIORITE_SLAB), "sS", 'S', new ItemStack(Blocks.DIORITE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "polished_andesite_slab_saw", new ItemStack(Blocks.POLISHED_ANDESITE_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_ANDESITE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "polished_granite_slab_saw", new ItemStack(Blocks.POLISHED_GRANITE_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_GRANITE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "polished_diorite_slab_saw", new ItemStack(Blocks.POLISHED_DIORITE_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_DIORITE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "sandstone_slab_saw", new ItemStack(Blocks.SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "smooth_sandstone_slab_saw", new ItemStack(Blocks.SMOOTH_SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.SMOOTH_SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "red_sandstone_slab_saw", new ItemStack(Blocks.RED_SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.RED_SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "smooth_red_sandstone_slab_saw", new ItemStack(Blocks.SMOOTH_RED_SANDSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.SMOOTH_RED_SANDSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cobblestone_slab_saw", new ItemStack(Blocks.COBBLESTONE_SLAB), "sS", 'S', new ItemStack(Blocks.COBBLESTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "blackstone_slab_saw", new ItemStack(Blocks.BLACKSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.BLACKSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "polished_blackstone_slab_saw", new ItemStack(Blocks.POLISHED_BLACKSTONE_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_BLACKSTONE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "polished_blackstone_brick_slab_saw", new ItemStack(Blocks.POLISHED_BLACKSTONE_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.POLISHED_BLACKSTONE_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "brick_slab_saw", new ItemStack(Blocks.BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "mud_brick_slab_saw", new ItemStack(Blocks.MUD_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.MUD_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "stone_brick_slab_saw", new ItemStack(Blocks.STONE_BRICK_SLAB), "sS", 'S', ItemTags.STONE_BRICKS);
+        VanillaRecipeHelper.addShapedRecipe(provider, "nether_brick_slab_saw", new ItemStack(Blocks.NETHER_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.NETHER_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "red_nether_brick_slab_saw", new ItemStack(Blocks.RED_NETHER_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.RED_NETHER_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "quartz_slab_saw", new ItemStack(Blocks.QUARTZ_SLAB), "sS", 'S', new ItemStack(Blocks.QUARTZ_BLOCK));
+        VanillaRecipeHelper.addShapedRecipe(provider, "smooth_quartz_slab_saw", new ItemStack(Blocks.SMOOTH_QUARTZ_SLAB), "sS", 'S', new ItemStack(Blocks.SMOOTH_QUARTZ));
+        VanillaRecipeHelper.addShapedRecipe(provider, "cut_copper_slab_saw", new ItemStack(Blocks.CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "exposed_cut_copper_slab_saw", new ItemStack(Blocks.EXPOSED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.EXPOSED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "oxidized_cut_copper_slab_saw", new ItemStack(Blocks.OXIDIZED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.OXIDIZED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "weathered_cut_copper_slab_saw", new ItemStack(Blocks.WEATHERED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.OXIDIZED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "waxed_cut_copper_slab_saw", new ItemStack(Blocks.WAXED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.WAXED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "waxed_exposed_cut_copper_slab_saw", new ItemStack(Blocks.WAXED_EXPOSED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.WAXED_EXPOSED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "waxed_oxidized_cut_copper_slab_saw", new ItemStack(Blocks.WAXED_OXIDIZED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.WAXED_OXIDIZED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "waxed_weathered_cut_copper_slab_saw", new ItemStack(Blocks.WAXED_WEATHERED_CUT_COPPER_SLAB), "sS", 'S', new ItemStack(Blocks.WAXED_OXIDIZED_CUT_COPPER));
+        VanillaRecipeHelper.addShapedRecipe(provider, "purpur_slab_saw", new ItemStack(Blocks.PURPUR_SLAB), "sS", 'S', new ItemStack(Blocks.PURPUR_BLOCK));
+        VanillaRecipeHelper.addShapedRecipe(provider, "end_stone_brick_slab_saw", new ItemStack(Blocks.END_STONE_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.END_STONE_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "prismarine_slab_saw", new ItemStack(Blocks.PRISMARINE_SLAB), "sS", 'S', new ItemStack(Blocks.PRISMARINE));
+        VanillaRecipeHelper.addShapedRecipe(provider, "prismarine_brick_slab_saw", new ItemStack(Blocks.PRISMARINE_BRICK_SLAB), "sS", 'S', new ItemStack(Blocks.PRISMARINE_BRICKS));
+        VanillaRecipeHelper.addShapedRecipe(provider, "dark_prismarine_slab_saw", new ItemStack(Blocks.DARK_PRISMARINE_SLAB), "sS", 'S', new ItemStack(Blocks.DARK_PRISMARINE));
     }
 
     private static void createShovelRecipe(RecipeOutput provider, String regName, ItemStack output, Material material) {
