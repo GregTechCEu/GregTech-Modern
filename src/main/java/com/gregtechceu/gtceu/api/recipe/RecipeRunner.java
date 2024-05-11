@@ -29,27 +29,17 @@ class RecipeRunner {
 
 // --------------------------------------------------------------------------------------------------------
 
-    // Guards against multiple invocations of handle() as this can only be used once.
-    private boolean consumed = false;
-
-    private void consume() {
-        if (consumed) throw new IllegalStateException("This RecipeRunner has already been used");
-        consumed = true;
-    }
-
-// --------------------------------------------------------------------------------------------------------
-
     private final GTRecipe recipe;
     private final IO io;
     private final IRecipeCapabilityHolder holder;
     private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
     private final boolean simulated;
 
+    // These are only used to store mutable state during each invocation of handle()
     private RecipeCapability<?> capability;
-
-    private final Set<IRecipeHandler<?>> used = new HashSet<>();
-    private final ContentSlots content = new ContentSlots();
-    private ContentSlots search = new ContentSlots();
+    private Set<IRecipeHandler<?>> used;
+    private ContentSlots content;
+    private ContentSlots search;
 
 
     public RecipeRunner(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
@@ -58,19 +48,15 @@ class RecipeRunner {
         this.holder = holder;
         this.capabilityProxies = holder.getCapabilitiesProxy();
         this.simulated = simulated;
-
-        if (simulated) {
-            this.search = this.content;
-        }
     }
 
     @Nullable
     public RecipeHandlingResult handle(Map.Entry<RecipeCapability<?>, List<Content>> entry) {
-        consume();
+        initState();
 
         this.fillContent(holder, entry);
+        this.capability = this.resolveCapability(entry);
 
-        capability = this.resolveCapability(entry);
         if (capability == null)
             return null;
 
@@ -79,6 +65,12 @@ class RecipeRunner {
             return null;
 
         return new RecipeHandlingResult(capability, result);
+    }
+
+    private void initState() {
+        used = new HashSet<>();
+        content = new ContentSlots();
+        search = simulated ? content : new ContentSlots();
     }
 
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {

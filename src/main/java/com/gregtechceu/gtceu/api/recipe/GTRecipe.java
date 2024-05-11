@@ -176,8 +176,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+        RecipeRunner runner = new RecipeRunner(this, io, holder, true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var result = new RecipeRunner(this, io, holder, true).handle(entry);
+            var result = runner.handle(entry);
             if (result == null)
                 continue;
 
@@ -205,8 +206,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+        RecipeRunner runner = new RecipeRunner(this, io, holder, false);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var handled = new RecipeRunner(this, io, holder,false).handle(entry);
+            var handled = runner.handle(entry);
             if (handled == null)
                 continue;
 
