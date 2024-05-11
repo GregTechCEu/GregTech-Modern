@@ -456,11 +456,21 @@ public class GTRecipeTypes {
                 ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
 
                 if (requiredCoil == null || requiredCoil.getMaterial() == null) {
-                    return LocalizationUtils.format("gtceu.recipe.temperature", temp);
+                    return LocalizationUtils.format("gtceu.recipe.temperature");
                 } else {
-                    return LocalizationUtils.format("gtceu.recipe.temperature_and_coil", temp, I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
+                    return LocalizationUtils.format("gtceu.recipe.temperature", temp);
                 }
             })
+            .addDataInfo(data -> {
+                int temp = data.getInt("ebf_temp");
+                ICoilType requiredCoil = ICoilType.getMinRequiredType(temp);
+
+                if (requiredCoil == null || requiredCoil.getMaterial() == null) {
+                return LocalizationUtils.format("gtceu.recipe.coil.tier");
+                } else {
+                return LocalizationUtils.format("gtceu.recipe.coil.tier", I18n.get(requiredCoil.getMaterial().getUnlocalizedName()));
+            }
+        })
             .setUiBuilder((recipe, widgetGroup) -> {
                 int temp = recipe.data.getInt("ebf_temp");
                 List<List<ItemStack>> items = new ArrayList<>();
