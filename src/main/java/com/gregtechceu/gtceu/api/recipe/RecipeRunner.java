@@ -17,7 +17,11 @@ import java.util.*;
 @Accessors(fluent = true) @Getter
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeRunner {
-
+    private static class ContentSlots {
+        public List content = new ArrayList<>();
+        public Map<String, List> slots = new HashMap<>();
+    }
+    
     record RecipeHandlingResult(RecipeCapability<?> capability, Tuple<List, Map<String, List>> result) {
     }
 
@@ -31,11 +35,8 @@ class RecipeRunner {
 
     private final Set<IRecipeHandler<?>> used = new HashSet<>();
 
-    private List content = new ArrayList<>();
-    private Map<String, List> contentSlot = new HashMap<>();
-
-    private List contentSearch = new ArrayList<>();
-    private Map<String, List> contentSlotSearch = new HashMap<>();
+    private ContentSlots cont = new ContentSlots();
+    private ContentSlots search = new ContentSlots();
 
 
     public RecipeRunner(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
@@ -46,15 +47,12 @@ class RecipeRunner {
         this.simulated = simulated;
 
         if (simulated) {
-            this.replaceContent(new Tuple<>(this.contentSearch, this.contentSlotSearch));
+            this.search = this.cont;
         }
     }
 
     public void setContent(List content) {
-        this.content = content;
-
-        if (simulated)
-            this.contentSearch = content;
+        this.cont.content = content;
     }
 
     @Nullable
@@ -72,19 +70,12 @@ class RecipeRunner {
         return new RecipeHandlingResult(capability, result);
     }
 
-
-    private RecipeRunner replaceContent(Tuple<List, Map<String, List>> result) {
-        this.content = result.getA();
-        this.contentSlot = result.getB();
-        return this;
-    }
-
     private void fillContent(IRecipeCapabilityHolder holder, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         for (Content cont : entry.getValue()) {
             if (cont.slotName == null) {
-                this.contentSearch.add(cont.content);
+                this.search.content.add(cont.content);
             } else {
-                this.contentSlotSearch.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                this.search.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
             }
 
             // When simulating the recipe handling (used for recipe matching), chanced contents are ignored.
@@ -92,9 +83,9 @@ class RecipeRunner {
 
             if (cont.chance >= 1 || GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance input
                 if (cont.slotName == null) {
-                    this.content.add(cont.content);
+                    this.cont.content.add(cont.content);
                 } else {
-                    this.contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                    this.cont.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                 }
             }
         }
@@ -106,29 +97,28 @@ class RecipeRunner {
             return null;
         }
 
-        this.setContent(this.content.stream().map(capability::copyContent).toList());
-        if (this.content.isEmpty() && this.contentSlot.isEmpty()) return null;
-        if (this.content.isEmpty()) this.setContent(null);
+        this.setContent(this.cont.content.stream().map(capability::copyContent).toList());
+        if (this.cont.content.isEmpty() && this.cont.slots.isEmpty()) return null;
+        if (this.cont.content.isEmpty()) this.setContent(null);
 
         return capability;
     }
 
     private Tuple<List, Map<String, List>> handleContents(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
-        var result = handleContentsInternal(io, capabilityProxies, capability, this);
+        handleContentsInternal(io, capabilityProxies, capability, this);
+        if (cont().content == null && cont().slots.isEmpty()) return null;
+        handleContentsInternal(IO.BOTH, capabilityProxies, capability, this);
 
-        //noinspection ConstantValue
-        if (result.getA() == null && result.getB().isEmpty()) return null;
-
-        return handleContentsInternal(IO.BOTH, capabilityProxies, capability, this.replaceContent(result));
+        return new Tuple<>(cont().content, cont().slots);
     }
 
 
-    private Tuple<List, Map<String, List>> handleContentsInternal(
+    private void handleContentsInternal(
         IO capIO, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
         RecipeCapability<?> capability, RecipeRunner data
     ) {
         if (!capabilityProxies.contains(capIO, capability))
-            return new Tuple<>(data.content(), data.contentSlot());
+            return;
 
         //noinspection DataFlowIssue checked above.
         var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
@@ -137,12 +127,12 @@ class RecipeRunner {
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
-            var result = handler.handleRecipe(io, recipe, data.contentSearch(), null, true);
+            var result = handler.handleRecipe(io, recipe, data.search().content, null, true);
             if (result == null) {
                 // check distint slot handler
-                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.contentSlotSearch().keySet())) {
+                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.search().slots.keySet())) {
                     boolean success = true;
-                    for (var entry : data.contentSlotSearch().entrySet()) {
+                    for (var entry : data.search().slots.entrySet()) {
                         List<?> left = handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), true);
                         if (left != null) {
                             success = false;
@@ -151,45 +141,44 @@ class RecipeRunner {
                     }
                     if (success) {
                         if (!simulated) {
-                            for (var entry : data.contentSlot().entrySet()) {
+                            for (var entry : data.cont().slots.entrySet()) {
                                 handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), false);
                             }
                         }
-                        data.contentSlot().clear();
+                        data.cont().slots.clear();
                     }
                 }
-                if (data.contentSlot().isEmpty()) {
+                if (data.cont().slots.isEmpty()) {
                     if (!simulated) {
-                        handler.handleRecipe(io, recipe, data.content(), null, false);
+                        handler.handleRecipe(io, recipe, data.cont().content, null, false);
                     }
                     data.setContent(null);
                 }
             }
-            if (data.content() == null && data.contentSlot().isEmpty()) {
+            if (data.cont().content == null && data.cont().slots.isEmpty()) {
                 break;
             }
         }
-        if (data.content() != null || !data.contentSlot().isEmpty()) {
+        if (data.cont().content != null || !data.cont().slots.isEmpty()) {
             // handle undistinct later
             for (IRecipeHandler<?> proxy : handlers) {
                 if (data.used().contains(proxy) || proxy.isDistinct()) continue;
                 data.used().add(proxy);
-                if (data.content() != null) {
-                    data.setContent(proxy.handleRecipe(io, recipe, data.content(), null, simulated));
+                if (data.cont().content != null) {
+                    data.setContent(proxy.handleRecipe(io, recipe, data.cont().content, null, simulated));
                 }
                 if (proxy.getSlotNames() != null) {
-                    Iterator<String> iterator = data.contentSlot().keySet().iterator();
+                    Iterator<String> iterator = data.cont().slots.keySet().iterator();
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, recipe, data.contentSlot().get(key), key, simulated);
+                            List<?> left = proxy.handleRecipe(io, recipe, data.cont().slots.get(key), key, simulated);
                             if (left == null) iterator.remove();
                         }
                     }
                 }
-                if (data.content() == null && data.contentSlot().isEmpty()) break;
+                if (data.cont().content == null && data.cont().slots.isEmpty()) break;
             }
         }
-        return new Tuple<>(data.content(), data.contentSlot());
     }
 }
