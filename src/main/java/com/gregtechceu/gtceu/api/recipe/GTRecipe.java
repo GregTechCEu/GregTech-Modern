@@ -8,7 +8,10 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.With;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -142,6 +145,24 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     // **********************internal logic********************* //
     ///////////////////////////////////////////////////////////////
 
+    @AllArgsConstructor @NoArgsConstructor
+    private static class RecipeHandlingData {
+        public Set<IRecipeHandler<?>> used = new HashSet<>();
+
+        public List content = new ArrayList<>();
+        public Map<String, List> contentSlot = new HashMap<>();
+
+        public List contentSearch = new ArrayList<>();
+        public Map<String, List> contentSlotSearch = new HashMap<>();
+
+        public RecipeHandlingData replaceContent(Tuple<List, Map<String, List>> result) {
+            this.content = result.getA();
+            this.contentSlot = result.getB();
+            return this;
+        }
+    }
+
+
     public List<Content> getInputContents(RecipeCapability<?> capability) {
         return inputs.getOrDefault(capability, Collections.emptyList());
     }
@@ -204,9 +225,10 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             if (content.isEmpty() && contentSlot.isEmpty()) continue;
             if (content.isEmpty()) content = null;
 
-            var result = handlerContentsInternal(io, io, capabilityProxies, capability, used, content, contentSlot, content, contentSlot, true);
+            var data = new RecipeHandlingData(used, content, contentSlot, content, contentSlot);
+            var result = handlerContentsInternal(io, io, capabilityProxies, capability, data, true);
             if (result.getA() == null && result.getB().isEmpty()) continue;
-            result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, used, result.getA(), result.getB(), content, contentSlot, true);
+            result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, data.replaceContent(result), true);
 
             if (result.getA() != null || !result.getB().isEmpty()) {
                 var expectingRate = 0f;
@@ -246,22 +268,19 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies = holder.getCapabilitiesProxy();
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            Set<IRecipeHandler<?>> used = new HashSet<>();
-            List content = new ArrayList<>();
-            Map<String, List> contentSlot = new HashMap<>();
-            List contentSearch = new ArrayList<>();
-            Map<String, List> contentSlotSearch = new HashMap<>();
+            RecipeHandlingData data = new RecipeHandlingData();
+
             for (Content cont : entry.getValue()) {
                 if (cont.slotName == null) {
-                    contentSearch.add(cont.content);
+                    data.contentSearch.add(cont.content);
                 } else {
-                    contentSlotSearch.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                    data.contentSlotSearch.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                 }
                 if (cont.chance >= 1 || GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance input
                     if (cont.slotName == null) {
-                        content.add(cont.content);
+                        data.content.add(cont.content);
                     } else {
-                        contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                        data.contentSlot.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                     }
                 }
             }
@@ -270,13 +289,13 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                 continue;
             }
 
-            content = content.stream().map(capability::copyContent).toList();
-            if (content.isEmpty() && contentSlot.isEmpty()) continue;
-            if (content.isEmpty()) content = null;
+            data.content = data.content.stream().map(capability::copyContent).toList();
+            if (data.content.isEmpty() && data.contentSlot.isEmpty()) continue;
+            if (data.content.isEmpty()) data.content = null;
 
-            var result = handlerContentsInternal(io, io, capabilityProxies, capability, used, content, contentSlot, contentSearch, contentSlotSearch, false);
+            var result = handlerContentsInternal(io, io, capabilityProxies, capability, data, false);
             if (result.getA() == null && result.getB().isEmpty()) continue;
-            result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, used, result.getA(), result.getB(), contentSearch, contentSlotSearch, false);
+            result = handlerContentsInternal(IO.BOTH, io, capabilityProxies, capability, data.replaceContent(result), false);
 
             if (result.getA() != null || !result.getB().isEmpty()) {
                 GTCEu.LOGGER.warn("io error while handling a recipe {} outputs. holder: {}", id, holder);
@@ -288,13 +307,11 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     private Tuple<List, Map<String, List>> handlerContentsInternal(
             IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-            RecipeCapability<?> capability, Set<IRecipeHandler<?>> used,
-            @Nullable List content, Map<String, List> contentSlot,
-            List contentSearch, Map<String, List> contentSlotSearch,
+            RecipeCapability<?> capability, RecipeHandlingData data,
             boolean simulate
     ) {
         if (!capabilityProxies.contains(capIO, capability))
-            return new Tuple<>(content, contentSlot);
+            return new Tuple<>(data.content, data.contentSlot);
 
         //noinspection DataFlowIssue checked above.
         var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
@@ -303,12 +320,12 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
         // handle distinct first
         for (IRecipeHandler<?> handler : handlers) {
             if (!handler.isDistinct()) continue;
-            var result = handler.handleRecipe(io, this, contentSearch, null, true);
+            var result = handler.handleRecipe(io, this, data.contentSearch, null, true);
             if (result == null) {
                 // check distint slot handler
-                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(contentSlotSearch.keySet())) {
+                if (handler.getSlotNames() != null && handler.getSlotNames().containsAll(data.contentSlotSearch.keySet())) {
                     boolean success = true;
-                    for (var entry : contentSlotSearch.entrySet()) {
+                    for (var entry : data.contentSlotSearch.entrySet()) {
                         List<?> left = handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), true);
                         if (left != null) {
                             success = false;
@@ -317,46 +334,46 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
                     }
                     if (success) {
                         if (!simulate) {
-                            for (var entry : contentSlot.entrySet()) {
+                            for (var entry : data.contentSlot.entrySet()) {
                                 handler.handleRecipe(io, this, entry.getValue(), entry.getKey(), false);
                             }
                         }
-                        contentSlot.clear();
+                        data.contentSlot.clear();
                     }
                 }
-                if (contentSlot.isEmpty()) {
+                if (data.contentSlot.isEmpty()) {
                     if (!simulate) {
-                        handler.handleRecipe(io, this, content, null, false);
+                        handler.handleRecipe(io, this, data.content, null, false);
                     }
-                    content = null;
+                    data.content = null;
                 }
             }
-            if (content == null && contentSlot.isEmpty()) {
+            if (data.content == null && data.contentSlot.isEmpty()) {
                 break;
             }
         }
-        if (content != null || !contentSlot.isEmpty()) {
+        if (data.content != null || !data.contentSlot.isEmpty()) {
             // handle undistinct later
             for (IRecipeHandler<?> proxy : handlers) {
-                if (used.contains(proxy) || proxy.isDistinct()) continue;
-                used.add(proxy);
-                if (content != null) {
-                    content = proxy.handleRecipe(io, this, content, null, simulate);
+                if (data.used.contains(proxy) || proxy.isDistinct()) continue;
+                data.used.add(proxy);
+                if (data.content != null) {
+                    data.content = proxy.handleRecipe(io, this, data.content, null, simulate);
                 }
                 if (proxy.getSlotNames() != null) {
-                    Iterator<String> iterator = contentSlot.keySet().iterator();
+                    Iterator<String> iterator = data.contentSlot.keySet().iterator();
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, this, contentSlot.get(key), key, simulate);
+                            List<?> left = proxy.handleRecipe(io, this, data.contentSlot.get(key), key, simulate);
                             if (left == null) iterator.remove();
                         }
                     }
                 }
-                if (content == null && contentSlot.isEmpty()) break;
+                if (data.content == null && data.contentSlot.isEmpty()) break;
             }
         }
-        return new Tuple<>(content, contentSlot);
+        return new Tuple<>(data.content, data.contentSlot);
     }
 
     public boolean hasTick() {
