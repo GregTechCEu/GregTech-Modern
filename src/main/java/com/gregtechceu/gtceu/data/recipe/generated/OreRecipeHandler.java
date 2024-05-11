@@ -431,7 +431,7 @@ public class OreRecipeHandler {
     }
 
     private static boolean doesMaterialUseNormalFurnace(Material material) {
-        return !material.hasProperty(PropertyKey.BLAST);
+        return !material.hasProperty(PropertyKey.BLAST) && !material.hasFlag(MaterialFlags.NO_ORE_SMELTING);
     }
 
 

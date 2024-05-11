@@ -173,6 +173,13 @@ public class MaterialFlags {
             .build();
 
     /**
+     * Add to material if it's impossible to smelt it from an ore.
+     */
+    public static final MaterialFlag NO_ORE_SMELTING = new MaterialFlag.Builder("no_ore_smelting")
+        .requireProps(PropertyKey.DUST)
+        .build();
+
+    /**
      * Add this to your Material if you want to have its Ore Calcite heated in a Blast Furnace for more output. Already listed are:
      * Iron, Pyrite, PigIron, WroughtIron.
      */
