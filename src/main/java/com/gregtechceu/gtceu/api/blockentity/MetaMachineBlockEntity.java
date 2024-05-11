@@ -45,6 +45,8 @@ import net.minecraftforge.common.util.LazyOptional;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -161,7 +163,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof IEnergyContainer energyContainer) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
-            var list = machine.getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyContainer.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_CONTAINER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyContainerList(list)));
             }
@@ -169,7 +171,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof IEnergyInfoProvider energyInfoProvider) {
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap, LazyOptional.of(() -> energyInfoProvider));
             }
-            var list = machine.getTraits().stream().filter(IEnergyInfoProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyInfoProvider.class::cast).toList();
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IEnergyInfoProvider.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_ENERGY_INFO_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new EnergyInfoProviderList(list)));
             }
@@ -219,7 +221,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof IPlatformEnergyStorage platformEnergyStorage) {
                 return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(platformEnergyStorage)));
             }
-            var list = machine.getTraits().stream().filter(IPlatformEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IPlatformEnergyStorage.class::cast).toList();
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IPlatformEnergyStorage.class);
             if (!list.isEmpty()) {
                 // TODO wrap list in the future
                 return ForgeCapabilities.ENERGY.orEmpty(cap, LazyOptional.of(() -> GTEnergyHelperImpl.toEnergyStorage(list.get(0))));
@@ -228,7 +230,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof ILaserContainer energyContainer) {
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> energyContainer));
             }
-            var list = machine.getTraits().stream().filter(ILaserContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, ILaserContainer.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_LASER.orEmpty(cap, LazyOptional.of(() -> list.size() == 1 ? list.get(0) : new LaserContainerList(list)));
             }
@@ -236,7 +238,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof IOpticalComputationProvider computationProvider) {
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> computationProvider));
             }
-            var list = machine.getTraits().stream().filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IOpticalComputationProvider.class::cast).toList();
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IOpticalComputationProvider.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
@@ -244,7 +246,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             if (machine instanceof IDataAccessHatch computationProvider) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> computationProvider));
             }
-            var list = machine.getTraits().stream().filter(IDataAccessHatch.class::isInstance).filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
+            var list = getCapabilitiesFromTraits(machine.getTraits(), side, IDataAccessHatch.class);
             if (!list.isEmpty()) {
                 return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
             }
@@ -254,7 +256,7 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
                 if (machine instanceof IInWorldGridNodeHost nodeHost) {
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> nodeHost));
                 }
-                var list = machine.getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side)).map(IInWorldGridNodeHost.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getTraits(), side, IInWorldGridNodeHost.class);
                 if (!list.isEmpty()) {
                     // TODO wrap list in the future (or not.)
                     return Capabilities.IN_WORLD_GRID_NODE_HOST.orEmpty(cap, LazyOptional.of(() -> list.get(0)));
@@ -262,6 +264,16 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
             }
         }
         return null;
+    }
+
+    public static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, Direction accessSide, Class<T> capability) {
+        List<T> list = new ArrayList<>();
+        for (MachineTrait trait : traits) {
+            if (trait.hasCapability(accessSide) && capability.isInstance(trait)) {
+                list.add(capability.cast(trait));
+            }
+        }
+        return list;
     }
 
     /**
