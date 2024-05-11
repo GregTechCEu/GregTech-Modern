@@ -159,26 +159,26 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
     }
 
     public ActionResult matchRecipe(IRecipeCapabilityHolder holder) {
-        if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
-        var result = matchRecipe(IO.IN, holder, inputs);
-        if (!result.isSuccess()) return result;
-        result = matchRecipe(IO.OUT, holder, outputs);
-        if (!result.isSuccess()) return result;
-        return ActionResult.SUCCESS;
+        return matchRecipe(holder, false);
     }
 
     public ActionResult matchTickRecipe(IRecipeCapabilityHolder holder) {
-        if (hasTick()) {
-            if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
-            var result = matchRecipe(IO.IN, holder, tickInputs);
-            if (!result.isSuccess()) return result;
-            result = matchRecipe(IO.OUT, holder, tickOutputs);
-            if (!result.isSuccess()) return result;
-        }
+        return hasTick() ? matchRecipe(holder, true) : ActionResult.SUCCESS;
+    }
+
+    private ActionResult matchRecipe(IRecipeCapabilityHolder holder, boolean tick) {
+        if (!holder.hasProxies()) return ActionResult.FAIL_NO_REASON;
+
+        var result = matchRecipeContents(IO.IN, holder, tick ? tickInputs : inputs);
+        if (!result.isSuccess()) return result;
+
+        result = matchRecipeContents(IO.OUT, holder, tick ? tickOutputs : outputs);
+        if (!result.isSuccess()) return result;
+
         return ActionResult.SUCCESS;
     }
 
-    public ActionResult matchRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+    public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var handler = new RecipeHandling(holder, true);
 
