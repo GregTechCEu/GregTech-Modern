@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
@@ -13,7 +12,6 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.Tuple;
 import net.minecraft.world.Container;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeSerializer;
@@ -180,9 +178,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            var handler = new RecipeHandling(this, holder, true);
+            var handler = new RecipeHandling(this, io, holder, true);
 
-            var handled = handler.handle(io, entry);
+            var handled = handler.handle(entry);
             if (handled == null)
                 continue;
 
@@ -211,9 +209,9 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
 
     public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
-            RecipeHandling handler = new RecipeHandling(this, holder,false);
+            RecipeHandling handler = new RecipeHandling(this, io, holder,false);
          
-            var handled = handler.handle(io, entry);
+            var handled = handler.handle(entry);
             if (handled == null)
                 continue;
 

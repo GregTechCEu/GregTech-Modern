@@ -18,13 +18,15 @@ import java.util.*;
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeHandling {
 
-    private final GTRecipe recipe;
-
     record RecipeHandlingResult(RecipeCapability<?> capability, Tuple<List, Map<String, List>> result) {
     }
 
 // --------------------------------------------------------------------------------------------------------
 
+    private final GTRecipe recipe;
+    private final IO io;
+    private final IRecipeCapabilityHolder holder;
+    private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
     private final boolean simulated;
 
     private final Set<IRecipeHandler<?>> used = new HashSet<>();
@@ -35,12 +37,10 @@ class RecipeHandling {
     private List contentSearch = new ArrayList<>();
     private Map<String, List> contentSlotSearch = new HashMap<>();
 
-    private final IRecipeCapabilityHolder holder;
-    private final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies;
 
-
-    public RecipeHandling(GTRecipe recipe, IRecipeCapabilityHolder holder, boolean simulated) {
+    public RecipeHandling(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
         this.recipe = recipe;
+        this.io = io;
         this.holder = holder;
         this.capabilityProxies = holder.getCapabilitiesProxy();
         this.simulated = simulated;
@@ -58,14 +58,14 @@ class RecipeHandling {
     }
 
     @Nullable
-    public RecipeHandlingResult handle(IO io, Map.Entry<RecipeCapability<?>, List<Content>> entry) {
+    public RecipeHandlingResult handle(Map.Entry<RecipeCapability<?>, List<Content>> entry) {
         this.fillContent(holder, entry);
 
         RecipeCapability<?> capability = this.resolveCapability(entry);
         if (capability == null)
             return null;
 
-        var result = this.handleContents(io, capabilityProxies, capability);
+        var result = this.handleContents(capabilityProxies, capability);
         if (result == null)
             return null;
 
@@ -113,20 +113,19 @@ class RecipeHandling {
         return capability;
     }
 
-    private Tuple<List, Map<String, List>> handleContents(IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
-        var result = handleContentsInternal(io, io, capabilityProxies, capability, this, simulated);
+    private Tuple<List, Map<String, List>> handleContents(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
+        var result = handleContentsInternal(io, capabilityProxies, capability, this);
 
         //noinspection ConstantValue
         if (result.getA() == null && result.getB().isEmpty()) return null;
 
-        return handleContentsInternal(IO.BOTH, io, capabilityProxies, capability, this.replaceContent(result), simulated);
+        return handleContentsInternal(IO.BOTH, capabilityProxies, capability, this.replaceContent(result));
     }
 
 
     private Tuple<List, Map<String, List>> handleContentsInternal(
-        IO capIO, IO io, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-        RecipeCapability<?> capability, RecipeHandling data,
-        boolean simulate
+        IO capIO, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
+        RecipeCapability<?> capability, RecipeHandling data
     ) {
         if (!capabilityProxies.contains(capIO, capability))
             return new Tuple<>(data.content(), data.contentSlot());
@@ -151,7 +150,7 @@ class RecipeHandling {
                         }
                     }
                     if (success) {
-                        if (!simulate) {
+                        if (!simulated) {
                             for (var entry : data.contentSlot().entrySet()) {
                                 handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), false);
                             }
@@ -160,7 +159,7 @@ class RecipeHandling {
                     }
                 }
                 if (data.contentSlot().isEmpty()) {
-                    if (!simulate) {
+                    if (!simulated) {
                         handler.handleRecipe(io, recipe, data.content(), null, false);
                     }
                     data.setContent(null);
@@ -176,14 +175,14 @@ class RecipeHandling {
                 if (data.used().contains(proxy) || proxy.isDistinct()) continue;
                 data.used().add(proxy);
                 if (data.content() != null) {
-                    data.setContent(proxy.handleRecipe(io, recipe, data.content(), null, simulate));
+                    data.setContent(proxy.handleRecipe(io, recipe, data.content(), null, simulated));
                 }
                 if (proxy.getSlotNames() != null) {
                     Iterator<String> iterator = data.contentSlot().keySet().iterator();
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, recipe, data.contentSlot().get(key), key, simulate);
+                            List<?> left = proxy.handleRecipe(io, recipe, data.contentSlot().get(key), key, simulated);
                             if (left == null) iterator.remove();
                         }
                     }
