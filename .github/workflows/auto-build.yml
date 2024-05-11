@@ -3,7 +3,7 @@ name: auto-build
 on:
   push:
     branches:
-      - '1.20.5'
+      - 'sc/intermediary-1.20.5-port'
 
 jobs:
   build:
