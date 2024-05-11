@@ -16,7 +16,7 @@ import java.util.*;
 
 @Accessors(fluent = true) @Getter
 @SuppressWarnings({"rawtypes", "unchecked"})
-class RecipeHandling {
+class RecipeRunner {
 
     record RecipeHandlingResult(RecipeCapability<?> capability, Tuple<List, Map<String, List>> result) {
     }
@@ -38,7 +38,7 @@ class RecipeHandling {
     private Map<String, List> contentSlotSearch = new HashMap<>();
 
 
-    public RecipeHandling(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
+    public RecipeRunner(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
         this.recipe = recipe;
         this.io = io;
         this.holder = holder;
@@ -73,7 +73,7 @@ class RecipeHandling {
     }
 
 
-    private RecipeHandling replaceContent(Tuple<List, Map<String, List>> result) {
+    private RecipeRunner replaceContent(Tuple<List, Map<String, List>> result) {
         this.content = result.getA();
         this.contentSlot = result.getB();
         return this;
@@ -125,7 +125,7 @@ class RecipeHandling {
 
     private Tuple<List, Map<String, List>> handleContentsInternal(
         IO capIO, Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies,
-        RecipeCapability<?> capability, RecipeHandling data
+        RecipeCapability<?> capability, RecipeRunner data
     ) {
         if (!capabilityProxies.contains(capIO, capability))
             return new Tuple<>(data.content(), data.contentSlot());
