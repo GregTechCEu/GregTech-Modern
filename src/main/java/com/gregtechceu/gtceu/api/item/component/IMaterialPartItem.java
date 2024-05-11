@@ -55,7 +55,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         if (!material.hasProperty(PropertyKey.INGOT))
             throw new IllegalArgumentException("Part material must have an Ingot!");
         var compound = getOrCreatePartStatsTag(itemStack);
-        compound.putString("Material", material.getName());
+        compound.putString("Material", material.getResourceLocation().toString());
     }
 
     default int getPartDamage(ItemStack itemStack) {
