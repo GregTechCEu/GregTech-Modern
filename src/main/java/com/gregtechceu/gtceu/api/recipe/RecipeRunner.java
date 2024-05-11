@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -17,8 +18,8 @@ import java.util.*;
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeRunner {
     static class ContentSlots {
-        public List content = new ArrayList<>();
-        public Map<String, List> slots = new HashMap<>();
+        public @Nullable List content = new ArrayList<>();
+        public @NotNull Map<String, List> slots = new HashMap<>();
     }
     
     record RecipeHandlingResult(RecipeCapability<?> capability, ContentSlots result) {
@@ -33,8 +34,7 @@ class RecipeRunner {
     private final boolean simulated;
 
     private final Set<IRecipeHandler<?>> used = new HashSet<>();
-
-    private ContentSlots cont = new ContentSlots();
+    private final ContentSlots content = new ContentSlots();
     private ContentSlots search = new ContentSlots();
 
 
@@ -46,12 +46,12 @@ class RecipeRunner {
         this.simulated = simulated;
 
         if (simulated) {
-            this.search = this.cont;
+            this.search = this.content;
         }
     }
 
     public void setContent(List content) {
-        this.cont.content = content;
+        this.content.content = content;
     }
 
     @Nullable
@@ -82,9 +82,9 @@ class RecipeRunner {
 
             if (cont.chance >= 1 || GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance input
                 if (cont.slotName == null) {
-                    this.cont.content.add(cont.content);
+                    this.content.content.add(cont.content);
                 } else {
-                    this.cont.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
+                    this.content.slots.computeIfAbsent(cont.slotName, s -> new ArrayList<>()).add(cont.content);
                 }
             }
         }
@@ -96,9 +96,9 @@ class RecipeRunner {
             return null;
         }
 
-        this.setContent(this.cont.content.stream().map(capability::copyContent).toList());
-        if (this.cont.content.isEmpty() && this.cont.slots.isEmpty()) return null;
-        if (this.cont.content.isEmpty()) this.setContent(null);
+        this.setContent(this.content.content.stream().map(capability::copyContent).toList());
+        if (this.content.content.isEmpty() && this.content.slots.isEmpty()) return null;
+        if (this.content.content.isEmpty()) this.setContent(null);
 
         return capability;
     }
@@ -106,10 +106,10 @@ class RecipeRunner {
     @Nullable
     private ContentSlots handleContents(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
         handleContentsInternal(io, capabilityProxies, capability, this);
-        if (cont().content == null && cont().slots.isEmpty()) return null;
+        if (content().content == null && content().slots.isEmpty()) return null;
         handleContentsInternal(IO.BOTH, capabilityProxies, capability, this);
 
-        return cont;
+        return content;
     }
 
 
@@ -141,43 +141,43 @@ class RecipeRunner {
                     }
                     if (success) {
                         if (!simulated) {
-                            for (var entry : data.cont().slots.entrySet()) {
+                            for (var entry : data.content().slots.entrySet()) {
                                 handler.handleRecipe(io, recipe, entry.getValue(), entry.getKey(), false);
                             }
                         }
-                        data.cont().slots.clear();
+                        data.content().slots.clear();
                     }
                 }
-                if (data.cont().slots.isEmpty()) {
+                if (data.content().slots.isEmpty()) {
                     if (!simulated) {
-                        handler.handleRecipe(io, recipe, data.cont().content, null, false);
+                        handler.handleRecipe(io, recipe, data.content().content, null, false);
                     }
                     data.setContent(null);
                 }
             }
-            if (data.cont().content == null && data.cont().slots.isEmpty()) {
+            if (data.content().content == null && data.content().slots.isEmpty()) {
                 break;
             }
         }
-        if (data.cont().content != null || !data.cont().slots.isEmpty()) {
+        if (data.content().content != null || !data.content().slots.isEmpty()) {
             // handle undistinct later
             for (IRecipeHandler<?> proxy : handlers) {
                 if (data.used().contains(proxy) || proxy.isDistinct()) continue;
                 data.used().add(proxy);
-                if (data.cont().content != null) {
-                    data.setContent(proxy.handleRecipe(io, recipe, data.cont().content, null, simulated));
+                if (data.content().content != null) {
+                    data.setContent(proxy.handleRecipe(io, recipe, data.content().content, null, simulated));
                 }
                 if (proxy.getSlotNames() != null) {
-                    Iterator<String> iterator = data.cont().slots.keySet().iterator();
+                    Iterator<String> iterator = data.content().slots.keySet().iterator();
                     while (iterator.hasNext()) {
                         String key = iterator.next();
                         if (proxy.getSlotNames().contains(key)) {
-                            List<?> left = proxy.handleRecipe(io, recipe, data.cont().slots.get(key), key, simulated);
+                            List<?> left = proxy.handleRecipe(io, recipe, data.content().slots.get(key), key, simulated);
                             if (left == null) iterator.remove();
                         }
                     }
                 }
-                if (data.cont().content == null && data.cont().slots.isEmpty()) break;
+                if (data.content().content == null && data.content().slots.isEmpty()) break;
             }
         }
     }
