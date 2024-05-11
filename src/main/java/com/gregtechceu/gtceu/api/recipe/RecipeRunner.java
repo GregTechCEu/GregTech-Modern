@@ -9,7 +9,6 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import lombok.Getter;
 import lombok.experimental.Accessors;
-import net.minecraft.util.Tuple;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -17,12 +16,12 @@ import java.util.*;
 @Accessors(fluent = true) @Getter
 @SuppressWarnings({"rawtypes", "unchecked"})
 class RecipeRunner {
-    private static class ContentSlots {
+    static class ContentSlots {
         public List content = new ArrayList<>();
         public Map<String, List> slots = new HashMap<>();
     }
     
-    record RecipeHandlingResult(RecipeCapability<?> capability, Tuple<List, Map<String, List>> result) {
+    record RecipeHandlingResult(RecipeCapability<?> capability, ContentSlots result) {
     }
 
 // --------------------------------------------------------------------------------------------------------
@@ -104,12 +103,13 @@ class RecipeRunner {
         return capability;
     }
 
-    private Tuple<List, Map<String, List>> handleContents(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
+    @Nullable
+    private ContentSlots handleContents(Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilityProxies, RecipeCapability<?> capability) {
         handleContentsInternal(io, capabilityProxies, capability, this);
         if (cont().content == null && cont().slots.isEmpty()) return null;
         handleContentsInternal(IO.BOTH, capabilityProxies, capability, this);
 
-        return new Tuple<>(cont().content, cont().slots);
+        return cont;
     }
 
 

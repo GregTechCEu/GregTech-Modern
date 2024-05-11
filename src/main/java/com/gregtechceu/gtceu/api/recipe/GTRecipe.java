@@ -184,7 +184,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             if (handled == null)
                 continue;
 
-            if (handled.result().getA() != null || !handled.result().getB().isEmpty()) {
+            if (handled.result().content != null || !handled.result().slots.isEmpty()) {
                 if (io == IO.IN) {
                     return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(handled.capability().getName()), 0f);
                 } else if (io == IO.OUT) {
@@ -215,7 +215,7 @@ public class GTRecipe implements net.minecraft.world.item.crafting.Recipe<Contai
             if (handled == null)
                 continue;
 
-            if (handled.result().getA() != null || !handled.result().getB().isEmpty()) {
+            if (handled.result().content != null || !handled.result().slots.isEmpty()) {
                 GTCEu.LOGGER.warn("io error while handling a recipe {} outputs. holder: {}", id, holder);
                 return false;
             }
