@@ -92,6 +92,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:clay"));
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
         registry.accept(new ResourceLocation("minecraft:glowstone"));
+        registry.accept(new ResourceLocation("minecraft:netherite_block"));
+        registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
@@ -295,14 +297,42 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:sea_lantern"));
 
         // Slab replacement
-        registry.accept(new ResourceLocation("minecraft:stone_slab"));;
-        registry.accept(new ResourceLocation("minecraft:sandstone_slab"));;
-        registry.accept(new ResourceLocation("minecraft:cobblestone_slab"));;
-        registry.accept(new ResourceLocation("minecraft:brick_slab"));;
-        registry.accept(new ResourceLocation("minecraft:stone_brick_slab"));;
-        registry.accept(new ResourceLocation("minecraft:nether_brick_slab"));;
-        registry.accept(new ResourceLocation("minecraft:quartz_slab"));;
-        registry.accept(new ResourceLocation("minecraft:red_sandstone_slab"));;
-        registry.accept(new ResourceLocation("minecraft:purpur_slab"));;
+        registry.accept(new ResourceLocation("minecraft:stone_slab"));
+        registry.accept(new ResourceLocation("minecraft:smooth_stone_slab"));
+        registry.accept(new ResourceLocation("minecraft:andesite_slab"));
+        registry.accept(new ResourceLocation("minecraft:granite_slab"));
+        registry.accept(new ResourceLocation("minecraft:diorite_slab"));
+        registry.accept(new ResourceLocation("minecraft:polished_andesite_slab"));
+        registry.accept(new ResourceLocation("minecraft:polished_granite_slab"));
+        registry.accept(new ResourceLocation("minecraft:polished_diorite_slab"));
+        registry.accept(new ResourceLocation("minecraft:sandstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:smooth_sandstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:red_sandstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:smooth_red_sandstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:cobblestone_slab"));
+        registry.accept(new ResourceLocation("minecraft:blackstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:polished_blackstone_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:stone_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:mud_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:nether_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:red_nether_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:quartz_slab"));
+        registry.accept(new ResourceLocation("minecraft:smooth_quartz_slab"));
+        registry.accept(new ResourceLocation("minecraft:cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:exposed_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:oxidized_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:weathered_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:waxed_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:waxed_exposed_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:waxed_oxidized_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:waxed_weathered_cut_copper_slab"));
+        registry.accept(new ResourceLocation("minecraft:red_sandstone_slab"));
+        registry.accept(new ResourceLocation("minecraft:purpur_slab"));
+        registry.accept(new ResourceLocation("minecraft:end_stone_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:prismarine_slab"));
+        registry.accept(new ResourceLocation("minecraft:prismarine_brick_slab"));
+        registry.accept(new ResourceLocation("minecraft:dark_prismarine_slab"));
     }
 }
