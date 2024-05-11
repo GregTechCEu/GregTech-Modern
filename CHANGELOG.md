@@ -3,12 +3,9 @@
 Version: 1.2.2.a
 
 ### ADDITIONS:
-- Ported Powder Barrels, Industrial TNT and Dynamite from 1.12
-- Ported Armor from 1.12
+- added NO_ORE_SMELTING material flag for stopping ore/raw ore -> dust/ingot/gem smelting
 
 ### CHANGES:
-- Updated Russian translation
-- Moved coils, filters, PSS battery maps out of GTBlocks, to make it easier for addons to add to them
 
 ### FIXES:
-- Fixed raw diamonds not being smeltable into diamonds
+- Fixed raw diamonds not being smeltable into diamonds, raw coal not being smeltable into coal
