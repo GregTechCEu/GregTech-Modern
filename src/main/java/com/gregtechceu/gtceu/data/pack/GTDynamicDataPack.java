@@ -44,7 +44,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class GTDynamicDataPack implements PackResources {
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final Map<ResourceLocation, JsonElement> DATA = new HashMap<>();
+    protected static final Map<ResourceLocation, byte[]> DATA = new HashMap<>();
 
     private final PackLocationInfo info;
 
@@ -67,33 +67,36 @@ public class GTDynamicDataPack implements PackResources {
 
     public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement, HolderLookup.Provider provider) {
         JsonElement recipeJson = Recipe.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), recipe).getOrThrow();
+        byte[] recipeBytes = recipeJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(recipeId, "recipes", parent, recipeJson);
+            writeJson(recipeId, "recipes", parent, recipeBytes);
         }
         if (DATA.containsKey(recipeId)) {
             GTCEu.LOGGER.error("duplicated recipe: {}", recipeId);
         }
-        DATA.put(getRecipeLocation(recipeId), recipeJson);
+        DATA.put(getRecipeLocation(recipeId), recipeBytes);
         if (advancement != null) {
             JsonElement advancementJson = Advancement.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), advancement.value()).getOrThrow();
+            byte[] advancementBytes = advancementJson.toString().getBytes(StandardCharsets.UTF_8);
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-                writeJson(advancement.id(), "advancements", parent, advancementJson);
+                writeJson(advancement.id(), "advancements", parent, advancementBytes);
             }
-            DATA.put(getAdvancementLocation(Objects.requireNonNull(advancement.id())), advancementJson);
+            DATA.put(getAdvancementLocation(Objects.requireNonNull(advancement.id())), advancementBytes);
         }
     }
 
     public static void addLootTable(ResourceLocation lootTableId, LootTable table, HolderLookup.Provider provider) {
         JsonElement lootTableJson = LootTable.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
+        byte[] lootTableBytes = lootTableJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
-            writeJson(lootTableId, "loot_tables", parent, lootTableJson);
+            writeJson(lootTableId, "loot_tables", parent, lootTableBytes);
         }
         if (DATA.containsKey(lootTableId)) {
             GTCEu.LOGGER.error("duplicated loot table: {}", lootTableId);
         }
-        DATA.put(getLootTableLocation(lootTableId), lootTableJson);
+        DATA.put(getLootTableLocation(lootTableId), lootTableBytes);
     }
 
     /**
@@ -105,7 +108,7 @@ public class GTDynamicDataPack implements PackResources {
      * @param json   the json to write.
      */
     @ApiStatus.Internal
-    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, JsonElement json) {
+    public static void writeJson(ResourceLocation id, @Nullable String subdir, Path parent, byte[] json) {
         try {
             Path file;
             if (subdir != null) {
@@ -115,8 +118,8 @@ public class GTDynamicDataPack implements PackResources {
                                                                                 // if a full path is given.
             }
             Files.createDirectories(file.getParent());
-            try (OutputStream output = Files.newOutputStream(file)) {
-                output.write(json.toString().getBytes());
+            try(OutputStream output = Files.newOutputStream(file)) {
+                output.write(json);
             }
         } catch (IOException e) {
             e.printStackTrace();
