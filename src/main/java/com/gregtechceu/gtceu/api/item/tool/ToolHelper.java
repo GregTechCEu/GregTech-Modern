@@ -26,9 +26,7 @@ import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
-import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.misc.ItemStackTransfer;
-import com.simibubi.create.content.decoration.palettes.GlassPaneBlock;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
@@ -69,7 +67,6 @@ import net.minecraftforge.event.ForgeEventFactory;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -406,7 +403,7 @@ public class ToolHelper {
                 caps.put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
-                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(Platform.getMinecraftServer().getRecipeManager(), be.metaMachine);
+                Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
                 GTRecipe hammerRecipe = hammerRecipes == null || !hammerRecipes.hasNext() ? null : hammerRecipes.next();
                 if (hammerRecipe != null && hammerRecipe.handleRecipeIO(IO.IN, be.metaMachine)) {
                     drops.clear();
@@ -435,7 +432,6 @@ public class ToolHelper {
         }
     }
 
-    @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     public static boolean breakBlockRoutine(ServerPlayer player, ItemStack tool, BlockPos pos, boolean playSound) {
         // This is *not* a vanilla/forge convention, Forge never added "shears" to ItemShear's tool classes.
         if (isTool(tool, GTToolType.SHEARS) && shearBlockRoutine(player, tool, pos) == 0) {

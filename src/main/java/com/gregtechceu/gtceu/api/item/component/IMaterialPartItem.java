@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.client.color.item.ItemColor;
@@ -55,7 +55,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         if (!material.hasProperty(PropertyKey.INGOT))
             throw new IllegalArgumentException("Part material must have an Ingot!");
         var compound = getOrCreatePartStatsTag(itemStack);
-        compound.putString("Material", material.getName());
+        compound.putString("Material", material.getResourceLocation().toString());
     }
 
     default int getPartDamage(ItemStack itemStack) {
@@ -89,7 +89,7 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     @OnlyIn(Dist.CLIENT)
     static ItemColor getItemStackColor() {
         return (itemStack, i) -> {
-            if (itemStack.getItem() instanceof ComponentItem componentItem) {
+            if (itemStack.getItem() instanceof IComponentItem componentItem) {
                 for (IItemComponent component : componentItem.getComponents()) {
                     if (component instanceof IMaterialPartItem materialPartItem) {
                         return materialPartItem.getPartMaterial(itemStack).getMaterialARGB();

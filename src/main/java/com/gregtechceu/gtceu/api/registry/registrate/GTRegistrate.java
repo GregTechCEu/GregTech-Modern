@@ -139,6 +139,10 @@ public class GTRegistrate extends Registrate {
         return new SoundEntryBuilder(GTCEu.id(name));
     }
 
+    public SoundEntryBuilder sound(ResourceLocation name) {
+        return new SoundEntryBuilder(name);
+    }
+
     @Override
     public <T extends Item> @NotNull ItemBuilder<T, Registrate> item(String name, NonNullFunction<Item.Properties, T> factory) {
         return super.item(name, factory).lang(FormattingUtil.toEnglishName(name.replaceAll("\\.", "_")));
