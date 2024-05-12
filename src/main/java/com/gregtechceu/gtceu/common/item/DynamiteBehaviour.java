@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
 import net.minecraft.Util;
 import net.minecraft.core.Position;
-import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
+import net.minecraft.core.dispenser.ProjectileDispenseBehavior;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
@@ -18,16 +19,20 @@ public class DynamiteBehaviour implements IInteractionItem {
 
     @Override
     public void onAttached(Item item) {
-        DispenserBlock.registerBehavior(item, new AbstractProjectileDispenseBehavior() {
-            @Override
-            protected Projectile getProjectile(Level level, Position position, ItemStack stack) {
-                return Util.make(new DynamiteEntity(position.x(), position.y(), position.z(), level), entity -> entity.setItem(stack));
-            }
-        });
+
+        //DispenserBlock.registerProjectileBehavior(GTItems.DYNAMITE);
+//        DispenserBlock.registerBehavior(item, new ProjectileDispenseBehavior() {
+//
+//            @Override
+//            protected Projectile getProjectile(Level level, Position position, ItemStack stack) {
+//
+//                return Util.make(new DynamiteEntity(position.x(), position.y(), position.z(), level), entity -> entity.setItem(stack));
+//            }
+//        });
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Item item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
         ItemStack itemstack = player.getItemInHand(usedHand);
 
         if (!player.isCreative()) {
