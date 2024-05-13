@@ -40,7 +40,7 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     protected List<IItemComponent> components;
 
     public ArmorComponentItem(ArmorMaterial material, ArmorItem.Type type, Properties properties) {
-        super(material, type, properties);
+        super(material, type, properties.durability(0));
         components = new ArrayList<>();
     }
 
@@ -81,6 +81,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     public void onArmorTick(ItemStack stack, Level level, Player player) {
         super.onArmorTick(stack, level, player);
         this.armorLogic.onArmorTick(level, player, stack);
+    }
+
+    @Override
+    public int getMaxDamage(ItemStack stack) {
+        return super.getMaxDamage(stack);
     }
 
     @Override
