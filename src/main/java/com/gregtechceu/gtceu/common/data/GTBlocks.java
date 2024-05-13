@@ -698,12 +698,12 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
         return createCasingBlock(
-            name, (properties, iRenderer) -> new RendererBlock(properties,
+            name, properties -> new RendererBlock(properties,
                 Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                     Map.of("bottom", GTCEu.id(texture + "/bottom"),
                         "top", GTCEu.id(texture + "/top"),
                         "side", GTCEu.id(texture + "/side"))) : null),
-            GTCEu.id(texture), () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
+            () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
         );
     }
 
@@ -712,9 +712,13 @@ public class GTBlocks {
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
-        return REGISTRATE.block(name, p -> (Block) blockSupplier.apply(p,
+        return createCasingBlock(name, p -> blockSupplier.apply(p,
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", texture)) : null))
+                        Map.of("all", texture)) : null), properties, type);
+    }
+
+    public static BlockEntry<Block> createCasingBlock(String name, NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
+        return REGISTRATE.block(name, blockSupplier)
                 .initialProperties(properties)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(type)
