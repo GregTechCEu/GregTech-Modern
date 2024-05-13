@@ -130,7 +130,7 @@ public class WorkableOverlayModel {
             assert cache != null;
             if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
                 var quads = new ArrayList<BakedQuad>();
-                for (Direction renderSide : Direction.values()) {
+                for (Direction renderSide : GTUtil.DIRECTIONS) {
                     var rotation = ModelFactory.getRotation(frontFacing);
                     ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
                     if (predicate != null) {
