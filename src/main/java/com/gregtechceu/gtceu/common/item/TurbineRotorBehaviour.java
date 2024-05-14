@@ -46,7 +46,7 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
 
     public int getRotorEfficiency(ItemStack stack) {
         var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : ((int) ((60 + property.getSpeed() * 8)) / 5 * 5);
+        return property == null ? -1 : ((int) ((property.getEfficiency())));
     }
 
     public int getRotorDurabilityPercent(ItemStack itemStack) {
