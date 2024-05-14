@@ -87,7 +87,7 @@ public class HigherDegreeMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FINE_WIRE,
                         GENERATE_FOIL, GENERATE_GEAR)
                 .components(TungstenSteel, 5, Chromium, 1, Molybdenum, 2, Vanadium, 1)
-                .rotorStats(10.0f, 5.5f, 4000)
+                .rotorStats(205, 140, 5.5f, 4000)
                 .cableProperties(GTValues.V[6], 4, 2)
                 .blastTemp(4200, GasTier.MID, GTValues.VA[GTValues.EV], 1300)
                 .buildAndRegister();
@@ -115,7 +115,7 @@ public class HigherDegreeMaterials {
                 .components(HSSG, 6, Cobalt, 1, Manganese, 1, Silicon, 1)
                 .toolStats(ToolProperty.Builder.of(5.0F, 10.0F, 3072, 4)
                         .attackSpeed(0.3F).enchantability(33).build())
-                .rotorStats(10.0f, 8.0f, 5120)
+                .rotorStats(280, 140, 8.0f, 5120)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.EV], 1400)
                 .buildAndRegister();
 
@@ -125,7 +125,7 @@ public class HigherDegreeMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_ROTOR,
                         GENERATE_ROUND, GENERATE_FOIL, GENERATE_GEAR)
                 .components(HSSG, 6, Iridium, 2, Osmium, 1)
-                .rotorStats(15.0f, 7.0f, 3000)
+                .rotorStats(250, 180, 7.0f, 3000)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.EV], 1500)
                 .buildAndRegister();
 
