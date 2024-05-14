@@ -13,9 +13,12 @@ import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class GTRecipes {
+    private static final List<ResourceLocation> RECIPE_FILTERS = new ArrayList<>();
 
     /*
      * Called on resource reload in-game.
@@ -26,7 +29,13 @@ public class GTRecipes {
      * This should also be used for recipes that need
      * to respond to a config option in ConfigHolder.
      */
-    public static void recipeAddition(Consumer<FinishedRecipe> consumer) {
+    public static void recipeAddition(Consumer<FinishedRecipe> originalConsumer) {
+        Consumer<FinishedRecipe> consumer = recipe -> {
+            if (!RECIPE_FILTERS.contains(recipe.getId())) {
+                originalConsumer.accept(recipe);
+            }
+        };
+
         ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
         ResearchManager.registerScannerLogic();
 
@@ -86,6 +95,7 @@ public class GTRecipes {
     public static void recipeRemoval(Consumer<ResourceLocation> consumer) {
         RecipeRemoval.init(consumer);
 
-        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(consumer));
+        RECIPE_FILTERS.clear();
+        AddonFinder.getAddons().forEach(addon -> addon.removeRecipes(consumer.andThen(RECIPE_FILTERS::add)));
     }
 }
