@@ -51,9 +51,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @UpdateListener(methodName = "onStatusSynced")
     private Status status = Status.IDLE;
 
-    @Persisted
-    @DescSynced
-    @UpdateListener(methodName = "onActiveSynced")
+    @Persisted @DescSynced @UpdateListener(methodName = "onActiveSynced")
     private boolean isActive;
 
     @Nullable

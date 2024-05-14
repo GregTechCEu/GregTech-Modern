@@ -16,7 +16,6 @@ import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
@@ -107,7 +106,7 @@ public class WorkableOverlayModel {
             if (active) {
                 if (workingEnabled) {
                     return activeSprite == null ? null : ModelFactory.getBlockSprite(activeSprite);
-                } else {
+                } else  {
                     return pausedSprite == null ? null : ModelFactory.getBlockSprite(pausedSprite);
                 }
             }
@@ -183,10 +182,8 @@ public class WorkableOverlayModel {
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         IItemRendererProvider.disabled.set(true);
-        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer,
-                combinedLight, combinedOverlay,
-                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, Direction.NORTH,
-                        false, false));
+        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
+            (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, false, false));
         IItemRendererProvider.disabled.set(false);
     }
 
@@ -194,9 +191,11 @@ public class WorkableOverlayModel {
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         ResourceManager resManager = Minecraft.getInstance().getResourceManager();
 
+
         sprites.clear();
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
+
 
             var normalSprite = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath);
             var normalSprite1 = getTextureLocation(normalSprite);
@@ -204,45 +203,39 @@ public class WorkableOverlayModel {
             register.accept(normalSprite);
 
             // normal
-
-            // normal
             final String active = String.format("%s_active", overlayPath);
             ResourceLocation activeSprite = new ResourceLocation(location.getNamespace(), location.getPath() + active);
             var activeSprite1 = getTextureLocation(activeSprite);
-            if (resManager.getResource(activeSprite1).isPresent()) register.accept(activeSprite);
-            else activeSprite = normalSprite;
+            if (resManager.getResource(activeSprite1).isPresent()) register.accept(activeSprite); else activeSprite = normalSprite;
+
 
             final String paused = String.format("%s_paused", overlayPath);
             ResourceLocation pausedSprite = new ResourceLocation(location.getNamespace(), location.getPath() + paused);
             var pausedSprite1 = getTextureLocation(pausedSprite);
-            if (resManager.getResource(pausedSprite1).isPresent()) register.accept(pausedSprite);
-            else pausedSprite = normalSprite;
+            if (resManager.getResource(pausedSprite1).isPresent()) register.accept(pausedSprite); else pausedSprite = normalSprite;
+
 
             // emissive
-            ResourceLocation normalSpriteEmissive = new ResourceLocation(location.getNamespace(),
-                    location.getPath() + overlayPath + "_emissive");
+            ResourceLocation normalSpriteEmissive = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath + "_emissive");
             var normalSpriteEmissive1 = getTextureLocation(normalSpriteEmissive);
-            if (resManager.getResource(normalSpriteEmissive1).isPresent()) register.accept(normalSpriteEmissive);
-            else normalSpriteEmissive = null;
+            if (resManager.getResource(normalSpriteEmissive1).isPresent()) register.accept(normalSpriteEmissive); else normalSpriteEmissive = null;
 
-            ResourceLocation activeSpriteEmissive = new ResourceLocation(location.getNamespace(),
-                    location.getPath() + active + "_emissive");
+            ResourceLocation activeSpriteEmissive = new ResourceLocation(location.getNamespace(), location.getPath() + active + "_emissive");
             var activeSpriteEmissive1 = getTextureLocation(activeSpriteEmissive);
-            if (resManager.getResource(activeSpriteEmissive1).isPresent()) register.accept(activeSpriteEmissive);
-            else activeSpriteEmissive = null;
+            if (resManager.getResource(activeSpriteEmissive1).isPresent()) register.accept(activeSpriteEmissive); else activeSpriteEmissive = null;
 
-            ResourceLocation pausedSpriteEmissive = new ResourceLocation(location.getNamespace(),
-                    location.getPath() + paused + "_emissive");
+            ResourceLocation pausedSpriteEmissive = new ResourceLocation(location.getNamespace(), location.getPath() + paused + "_emissive");
             var pausedSpriteEmissive1 = getTextureLocation(pausedSpriteEmissive);
-            if (resManager.getResource(pausedSpriteEmissive1).isPresent()) register.accept(pausedSpriteEmissive);
-            else pausedSpriteEmissive = null;
+            if (resManager.getResource(pausedSpriteEmissive1).isPresent()) register.accept(pausedSpriteEmissive); else pausedSpriteEmissive = null;
+
 
             sprites.put(overlayFace, new ActivePredicate(normalSprite, activeSprite, pausedSprite,
-                    normalSpriteEmissive, activeSpriteEmissive, pausedSpriteEmissive));
+                normalSpriteEmissive, activeSpriteEmissive, pausedSpriteEmissive));
         }
     }
 
     private ResourceLocation getTextureLocation(ResourceLocation location) {
         return new ResourceLocation(location.getNamespace(), "textures/%s.png".formatted(location.getPath()));
     }
+
 }
