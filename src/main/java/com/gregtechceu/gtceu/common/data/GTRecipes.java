@@ -9,16 +9,16 @@ import com.gregtechceu.gtceu.data.recipe.generated.*;
 import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import com.gregtechceu.gtceu.utils.ResearchManager;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.ComposterBlock;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
 
 public class GTRecipes {
-    private static final List<ResourceLocation> RECIPE_FILTERS = new ArrayList<>();
+    private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     /*
      * Called on resource reload in-game.
