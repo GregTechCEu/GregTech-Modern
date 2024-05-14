@@ -36,6 +36,12 @@ public class SecondDegreeMaterials {
                 .components(Obsidian, 2, Water, 1)
                 .buildAndRegister();
 
+        ActivatedCarbon = new Material.Builder(GTCEu.id("activated_carbon"))
+            .dust(1)
+            .color(0x212125).secondaryColor(0x15151a)
+            .components(Carbon, 1)
+            .buildAndRegister();
+
         Borax = new Material.Builder(GTCEu.id("borax"))
                 .dust(1)
                 .color(0xFAFAFA).secondaryColor(0xd7e7e7).iconSet(FINE)

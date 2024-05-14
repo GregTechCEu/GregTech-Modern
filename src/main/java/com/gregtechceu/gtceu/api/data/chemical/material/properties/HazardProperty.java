@@ -2,8 +2,8 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
+import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -13,8 +13,8 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * @author h3tR
@@ -91,13 +91,13 @@ public class HazardProperty implements IMaterialProperty<HazardProperty>{
         }
 
         public boolean isProtected(LivingEntity livingEntity){
-            int correctArmorItems = 0;
+            List<ArmorItem.Type> correctArmorItems = new ArrayList<>();
             for (ArmorItem.Type equipmentType: equipmentTypes){
-                ItemStack item = livingEntity.getItemBySlot(equipmentType.getSlot());
-                if(item.getTags().anyMatch(i -> i.location().equals(new ResourceLocation("forge","personal_protective_equipment"))))
-                    correctArmorItems++;
+                ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
+                if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE())
+                    correctArmorItems.add(armorItem.getType());
             }
-            return correctArmorItems==this.equipmentTypes.size();
+            return new HashSet<>(correctArmorItems).containsAll(equipmentTypes);
         }
     }
 

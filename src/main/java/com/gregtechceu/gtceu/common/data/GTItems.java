@@ -1572,6 +1572,12 @@ public class GTItems {
         .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
         .register();
 
+    public static ItemEntry<ComponentItem> MASK_FILTER= REGISTRATE.item("mask_filter", ComponentItem::create)
+        .lang("Gas Mask Filter")
+        .properties(p -> p.stacksTo(1))
+        .register();
+
+
     public static ItemEntry<Item> NANO_SABER;
     public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("prospector.lv", ComponentItem::create)
             .lang("Ore Prospector (LV)")
@@ -1693,6 +1699,27 @@ public class GTItems {
                 6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
                 ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
         .lang("NanoMuscle™ Suite Helmet")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+
+    public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE.item("hazmat_chestpiece", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE)))
+        .lang("Hazardous Materials Suit Chestpiece")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+    public static ItemEntry<ArmorComponentItem> HAZMAT_LEGGINGS = REGISTRATE.item("hazmat_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.LEGGINGS)))
+        .lang("Hazardous Materials Suit Leggings")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+    public static ItemEntry<ArmorComponentItem> HAZMAT_BOOTS = REGISTRATE.item("hazmat_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.BOOTS)))
+        .lang("Hazardous Materials Suit Boots")
+        .properties(p -> p.rarity(Rarity.UNCOMMON))
+        .register();
+    public static ItemEntry<ArmorComponentItem> HAZMAT_HELMET = REGISTRATE.item("hazmat_headpiece", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET)))
+        .lang("Hazardous Materials Suit Headpiece")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .register();
 

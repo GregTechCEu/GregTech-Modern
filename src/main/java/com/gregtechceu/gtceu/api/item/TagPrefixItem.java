@@ -14,6 +14,7 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -104,17 +105,12 @@ public class TagPrefixItem extends Item {
             if (livingEntity.tickCount % 20 == 0) {
 
 
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) {
+                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) { //ignore hazards for hot ingots
                     GTUtil.applyHazardEffects(material,livingEntity,()->material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
                     return;
                 }
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
-//                ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
-                // TODO armor
-//                if (!armor.isEmpty() && armor.getItem() instanceof ArmorMetaItem<?>) {
-//                    heatDamage *= ((ArmorMetaItem<?>) armor.getItem()).getItem(armor).getArmorLogic().getHeatResistance();
-//                }
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
                 if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem) {
                     heatDamage *= armorItem.getArmorLogic().getHeatResistance();

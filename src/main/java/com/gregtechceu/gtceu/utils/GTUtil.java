@@ -21,7 +21,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
@@ -29,7 +28,6 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraftforge.common.ForgeHooks;
@@ -37,7 +35,6 @@ import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -438,7 +435,6 @@ public class GTUtil {
         HazardProperty poisonProperty = material.getProperty(HAZARD);
 
         if(poisonProperty.getHazardType().getProtectionType().isProtected(livingEntity)) return; //entity has proper safety equipment
-
         if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
             livingEntity.hurt(GTDamageTypes.CHEMICAL.source(livingEntity.level()), poisonProperty.getDamage().damage());
 
