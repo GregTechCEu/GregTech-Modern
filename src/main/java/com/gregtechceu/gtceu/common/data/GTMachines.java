@@ -1627,8 +1627,8 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
             GTRecipeTypes.GAS_TURBINE_FUELS,
-            CASING_STAINLESS_CLEAN, CASING_STAINLESS_STEEL_GEARBOX,
-            GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
+            CASING_STAINLESS_TURBINE, CASING_STAINLESS_STEEL_GEARBOX,
+            GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"),
             GTCEu.id("block/multiblock/generator/large_gas_turbine"));
 
     public static final MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine("plasma_large_turbine", IV,
