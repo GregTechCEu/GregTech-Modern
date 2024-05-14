@@ -38,16 +38,23 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
         });
     }
 
-    @Override
-    public int getPartMaxDurability(ItemStack itemStack) {
-        var property = getPartMaterial(itemStack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : 800 * (int) Math.pow(property.getDurability(), 0.65);
+    public int getRotorPower(ItemStack stack) {
+        var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
+        return property == null ? -1 : (int) property.getPower();
     }
 
     public int getRotorEfficiency(ItemStack stack) {
         var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
         return property == null ? -1 : ((int) property.getEfficiency());
     }
+
+    @Override
+    public int getPartMaxDurability(ItemStack itemStack) {
+        var property = getPartMaterial(itemStack).getProperty(PropertyKey.ROTOR);
+        return property == null ? -1 : 800 * (int) Math.pow(property.getDurability(), 0.65);
+    }
+
+    //TODO : getDamage() and Hurt Player
 
     public int getRotorDurabilityPercent(ItemStack itemStack) {
         return 100 - 100 * getPartDamage(itemStack) / getPartMaxDurability(itemStack);
@@ -63,10 +70,7 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
         }
     }
 
-    public int getRotorPower(ItemStack stack) {
-        var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : (int) (40 + property.getDamage() * 30);
-    }
+
 
     @Override
     public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {

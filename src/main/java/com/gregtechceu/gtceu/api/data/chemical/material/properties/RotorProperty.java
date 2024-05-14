@@ -1,22 +1,24 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
-import org.openjdk.nashorn.internal.objects.annotations.Getter;
 
 public class RotorProperty implements IMaterialProperty<RotorProperty> {
 
     /**
-     * Speed of rotors made from this Material.
+     * Power of rotors made from this Material.
      * <p>
      * Default:
      */
-    private float speed;
+    @Getter
+    private float power;
 
     /**
      * Attack damage of rotors made from this Material
      * <p>
      * Default:
      */
+    @Getter
     private float damage;
 
     /**
@@ -24,49 +26,36 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
      * <p>
      * Default:
      */
+    @Getter
     private int durability;
     /**
      * Efficiency of rotors made from this Material
      * <p>
      * Default:
      */
+    @Getter
     private float efficiency;
 
-    public RotorProperty(float speed, float efficiency, float damage, int durability) {
-        this.speed = speed;
+    public RotorProperty(float power, float efficiency, float damage, int durability) {
+        this.power = power;
         this.efficiency = efficiency;
         this.damage = damage;
         this.durability = durability;
     }
-    @Getter
-    public float getSpeed() {
-        return speed;
+
+    public void setPower(float power) {
+        if (power <= 0) throw new IllegalArgumentException("Rotor Power must be greater than zero!");
+        this.power = power;
     }
 
-    public void setSpeed(float speed) {
-        if (speed <= 0) throw new IllegalArgumentException("Rotor Speed must be greater than zero!");
-        this.speed = speed;
-    }
-    @Getter
-    public float getEfficiency() {
-        return efficiency;
-    }
     public void setEfficiency(float efficiency) {
         if (efficiency <= 0) throw new IllegalArgumentException("Rotor Efficiency must be greater than zero!");
         this.efficiency = efficiency;
-    }
-    @Getter
-    public float getDamage() {
-        return damage;
     }
 
     public void setDamage(float damage) {
         if (damage <= 0) throw new IllegalArgumentException("Rotor Attack Damage must be greater than zero!");
         this.damage = damage;
-    }
-    @Getter
-    public int getDurability() {
-        return durability;
     }
 
     public void setDurability(int durability) {
