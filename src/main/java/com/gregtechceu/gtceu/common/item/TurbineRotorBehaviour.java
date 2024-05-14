@@ -40,12 +40,12 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
 
     public int getRotorPower(ItemStack stack) {
         var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : (int) property.getPower();
+        return property == null ? -1 : property.getPower();
     }
 
     public int getRotorEfficiency(ItemStack stack) {
         var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : ((int) property.getEfficiency());
+        return property == null ? -1 : property.getEfficiency();
     }
 
     @Override

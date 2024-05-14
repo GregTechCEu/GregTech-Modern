@@ -11,7 +11,7 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
      * Default:
      */
     @Getter
-    private float power;
+    private int power;
 
     /**
      * Attack damage of rotors made from this Material
@@ -34,26 +34,26 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
      * Default:
      */
     @Getter
-    private float efficiency;
+    private int efficiency;
 
-    public RotorProperty(float power, float efficiency, float damage, int durability) {
+    public RotorProperty(int power, int efficiency, float damage, int durability) {
         this.power = power;
         this.efficiency = efficiency;
         this.damage = damage;
         this.durability = durability;
     }
 
-    public void setPower(float power) {
+    public void setPower(int power) {
         if (power <= 0) throw new IllegalArgumentException("Rotor Power must be greater than zero!");
         this.power = power;
     }
 
-    public void setEfficiency(float efficiency) {
+    public void setEfficiency(int efficiency) {
         if (efficiency <= 0) throw new IllegalArgumentException("Rotor Efficiency must be greater than zero!");
         this.efficiency = efficiency;
     }
 
-    public void setDamage(float damage) {
+    public void setDamage(int damage) {
         if (damage <= 0) throw new IllegalArgumentException("Rotor Attack Damage must be greater than zero!");
         this.damage = damage;
     }

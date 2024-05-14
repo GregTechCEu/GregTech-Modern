@@ -1007,7 +1007,7 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder rotorStats(float power, float efficiency, float damage, int durability) {
+        public Builder rotorStats(int power, int efficiency, float damage, int durability) {
             properties.setProperty(PropertyKey.ROTOR, new RotorProperty(power, efficiency, damage, durability));
             return this;
         }
