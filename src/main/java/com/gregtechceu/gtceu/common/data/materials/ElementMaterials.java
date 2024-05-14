@@ -37,7 +37,7 @@ public class ElementMaterials {
                 .element(GTElements.Al)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.5F, 768, 2)
                         .enchantability(14).build())
-                .rotorStats(10.0f, 2.0f, 128)
+                .rotorStats(100, 140, 2.0f, 128)
                 .cableProperties(GTValues.V[4], 1, 1)
                 .fluidPipeProperties(1166, 100, true)
                 .blastTemp(1700, GasTier.LOW)
@@ -175,7 +175,7 @@ public class ElementMaterials {
                 .color(0xf3e0ea).secondaryColor(0x441f2e).iconSet(SHINY)
                 .appendFlags(EXT_METAL, GENERATE_ROTOR)
                 .element(GTElements.Cr)
-                .rotorStats(12.0f, 3.0f, 512)
+                .rotorStats(130, 155, 3.0f, 512)
                 .fluidPipeProperties(2180, 35, true, true, false, false)
                 .blastTemp(1700, GasTier.LOW)
                 .hazard(HazardProperty.HazardType.INHALATION_POISON,false)
@@ -372,7 +372,7 @@ public class ElementMaterials {
                 .color(0xfdfce9).secondaryColor(0x3d011b).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_FINE_WIRE, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.Ir)
-                .rotorStats(7.0f, 3.0f, 2560)
+                .rotorStats(130, 115, 3.0f, 2560)
                 .fluidPipeProperties(3398, 250, true, false, true, false)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.IV], 1100)
                 .buildAndRegister();
@@ -387,7 +387,7 @@ public class ElementMaterials {
                 .element(GTElements.Fe)
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 256, 2)
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
-                .rotorStats(7.0f, 2.5f, 256)
+                .rotorStats(115, 115, 2.5f, 256)
                 .cableProperties(GTValues.V[2], 2, 3)
                 .buildAndRegister();
 
@@ -462,7 +462,7 @@ public class ElementMaterials {
                 .color(0xEEEEEE).secondaryColor(0xCDE1B9)
                 .appendFlags(STD_METAL, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .element(GTElements.Mn)
-                .rotorStats(7.0f, 2.0f, 512)
+                .rotorStats(100, 115, 2.0f, 512)
                 .buildAndRegister();
 
         Meitnerium = new Material.Builder(GTCEu.id("meitnerium"))
@@ -484,7 +484,7 @@ public class ElementMaterials {
                 .color(0xc1c1ce).secondaryColor(0x404068).iconSet(SHINY)
                 .element(GTElements.Mo)
                 .flags(GENERATE_FOIL, GENERATE_BOLT_SCREW)
-                .rotorStats(7.0f, 2.0f, 512)
+                .rotorStats(100, 115, 2.0f, 512)
                 .buildAndRegister();
 
         Moscovium = new Material.Builder(GTCEu.id("moscovium"))
@@ -497,7 +497,7 @@ public class ElementMaterials {
                 .color(0x9a8b94).secondaryColor(0x2c2c2c).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nd)
-                .rotorStats(7.0f, 2.0f, 512)
+                .rotorStats(100, 115,2.0f, 512)
                 .blastTemp(1297, GasTier.MID)
                 .buildAndRegister();
 
@@ -560,7 +560,7 @@ public class ElementMaterials {
                 .color(0xf9f9f9).secondaryColor(0x307fc2).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_FOIL)
                 .element(GTElements.Os)
-                .rotorStats(16.0f, 4.0f, 1280)
+                .rotorStats(160, 185, 4.0f, 1280)
                 .cableProperties(GTValues.V[6], 4, 2)
                 .itemPipeProperties(256, 8.0f)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1000)
@@ -834,7 +834,7 @@ public class ElementMaterials {
                 .element(GTElements.Ti)
                 .toolStats(ToolProperty.Builder.of(8.0F, 6.0F, 1536, 3)
                         .enchantability(14).build())
-                .rotorStats(7.0f, 3.0f, 1600)
+                .rotorStats(130, 115, 3.0f, 1600)
                 .fluidPipeProperties(2426, 150, true)
                 .blastTemp(1941, GasTier.MID, GTValues.VA[GTValues.HV], 1500)
                 .buildAndRegister();
@@ -853,7 +853,7 @@ public class ElementMaterials {
                 .color(0x3b3a32).secondaryColor(0x2a2800).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FRAME)
                 .element(GTElements.W)
-                .rotorStats(7.0f, 3.0f, 2560)
+                .rotorStats(130, 115, 3.0f, 2560)
                 .cableProperties(GTValues.V[5], 2, 2)
                 .fluidPipeProperties(4618, 50, true, true, false, true)
                 .blastTemp(3600, GasTier.MID, GTValues.VA[GTValues.EV], 1800)
@@ -922,7 +922,7 @@ public class ElementMaterials {
                 .color(0x323232, false).secondaryColor(0x1e251b).iconSet(METALLIC)
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_SPRING, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq)
-                .rotorStats(6.0f, 4.0f, 1280)
+                .rotorStats(160, 105, 4.0f, 1280)
                 .cableProperties(GTValues.V[7], 2, 2)
                 .fluidPipeProperties(3776, 200, true, false, true, true)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
@@ -954,7 +954,7 @@ public class ElementMaterials {
                 .element(GTElements.Nt)
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
-                .rotorStats(24.0f, 12.0f, 655360)
+                .rotorStats(400, 250, 12.0f, 655360)
                 .fluidPipeProperties(100_000, 5000, true, true, true, true)
                 .buildAndRegister();
 
@@ -965,7 +965,7 @@ public class ElementMaterials {
                 .appendFlags(EXT2_METAL, GENERATE_FRAME, GENERATE_RING, GENERATE_SMALL_GEAR, GENERATE_ROUND, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .element(GTElements.Tr)
                 .cableProperties(GTValues.V[8], 1, 8)
-                .rotorStats(20.0f, 6.0f, 10240)
+                .rotorStats(220,220, 6.0f, 10240)
                 .buildAndRegister();
 
         Duranium = new Material.Builder(GTCEu.id("duranium"))
