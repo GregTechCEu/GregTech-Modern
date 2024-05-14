@@ -45,6 +45,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Getter @Persisted @DescSynced @UpdateListener(methodName = "onStatusSynced")
     private Status status = Status.IDLE;
 
+    @Persisted @DescSynced @UpdateListener(methodName = "onActiveSynced")
+    private boolean isActive;
+
     @Nullable
     @Persisted @DescSynced
     private Component waitingReason = null;
@@ -87,6 +90,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         updateSound();
     }
 
+    @OnlyIn(Dist.CLIENT)
+    protected void onActiveSynced(boolean newActive, boolean oldActive) {
+        getMachine().scheduleRenderUpdate();
+    }
+
     @Override
     public void scheduleRenderUpdate() {
         getMachine().scheduleRenderUpdate();
@@ -101,6 +109,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         lastOriginRecipe = null;
         progress = 0;
         duration = 0;
+        isActive = false;
         fuelTime = 0;
         lastFailedMatches = null;
         status = Status.IDLE;
@@ -322,6 +331,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setStatus(Status.WORKING);
                 progress = 0;
                 duration = recipe.duration;
+                isActive = true;
             }
         }
     }
@@ -393,7 +403,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     }
 
     public boolean isActive() {
-        return isWorking() || isWaiting() || (isSuspend() && lastRecipe != null && duration > 0);
+        return isWorking() || isWaiting() || (isSuspend() && isActive);
     }
 
     @Deprecated
@@ -428,6 +438,7 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 setStatus(Status.IDLE);
                 progress = 0;
                 duration = 0;
+                isActive = false;
             }
         }
     }
