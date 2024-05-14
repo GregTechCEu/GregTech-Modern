@@ -691,7 +691,7 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 384, 2)
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(-0.2F).enchantability(5).build())
-                .rotorStats(6.0f, 105,3.5f, 384)
+                .rotorStats(6.0f, 105.0f, 3.5f, 384)
                 .buildAndRegister();
         Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
         Iron.getProperty(PropertyKey.INGOT).setArcSmeltingInto(WroughtIron);

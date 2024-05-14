@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import org.jetbrains.annotations.NotNull;
+import org.openjdk.nashorn.internal.objects.annotations.Getter;
 
 public class RotorProperty implements IMaterialProperty<RotorProperty> {
 
@@ -37,7 +38,7 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
         this.damage = damage;
         this.durability = durability;
     }
-
+    @Getter
     public float getSpeed() {
         return speed;
     }
@@ -46,6 +47,7 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
         if (speed <= 0) throw new IllegalArgumentException("Rotor Speed must be greater than zero!");
         this.speed = speed;
     }
+    @Getter
     public float getEfficiency() {
         return efficiency;
     }
@@ -53,6 +55,7 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
         if (efficiency <= 0) throw new IllegalArgumentException("Rotor Efficiency must be greater than zero!");
         this.efficiency = efficiency;
     }
+    @Getter
     public float getDamage() {
         return damage;
     }
@@ -61,7 +64,7 @@ public class RotorProperty implements IMaterialProperty<RotorProperty> {
         if (damage <= 0) throw new IllegalArgumentException("Rotor Attack Damage must be greater than zero!");
         this.damage = damage;
     }
-
+    @Getter
     public int getDurability() {
         return durability;
     }

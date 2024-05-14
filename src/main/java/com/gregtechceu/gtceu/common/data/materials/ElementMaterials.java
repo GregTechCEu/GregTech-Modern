@@ -35,7 +35,7 @@ public class ElementMaterials {
                 .element(GTElements.Al)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.5F, 768, 2)
                         .enchantability(14).build())
-                .rotorStats(10.0f, 140,2.0f, 128)
+                .rotorStats(10.0f, 140, 2.0f, 128)
                 .cableProperties(GTValues.V[4], 1, 1)
                 .fluidPipeProperties(1166, 100, true)
                 .blastTemp(1700, GasTier.LOW)
@@ -928,7 +928,7 @@ public class ElementMaterials {
                 .element(GTElements.Nt)
                 .toolStats(ToolProperty.Builder.of(180.0F, 100.0F, 65535, 6)
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
-                .rotorStats(24.0f, 250.0f,12.0f, 655360)
+                .rotorStats(24.0f, 250.0f, 12.0f, 655360)
                 .fluidPipeProperties(100_000, 5000, true, true, true, true)
                 .buildAndRegister();
 
