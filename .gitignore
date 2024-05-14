@@ -22,3 +22,4 @@ src/generated/resources/.cache/
 *.patch
 *.DS_Store
 
+qodana.yaml
