@@ -74,12 +74,13 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
+        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
         ResourceLocation l = getModelLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, obj);
+            writeJson(l, null, parent, modelBytes);
         }
-        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
+        DATA.put(l, modelBytes);
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -87,12 +88,13 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addItemModel(ResourceLocation loc, JsonElement obj) {
+        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
         ResourceLocation l = getItemModelLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, obj);
+            writeJson(l, null, parent, modelBytes);
         }
-        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
+        DATA.put(l, modelBytes);
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -100,12 +102,13 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
+        byte[] stateBytes = stateJson.toString().getBytes(StandardCharsets.UTF_8);
         ResourceLocation l = getBlockStateLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, stateJson);
+            writeJson(l, null, parent, stateBytes);
         }
-        DATA.put(l, stateJson.toString().getBytes(StandardCharsets.UTF_8));
+        DATA.put(l, stateBytes);
     }
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
