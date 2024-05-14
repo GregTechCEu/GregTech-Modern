@@ -755,13 +755,13 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
         return createCasingBlock(
-                name, properties -> new RendererBlock(properties,
-                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
-                                Map.of("bottom", GTCEu.id(texture + "/bottom"),
-                                        "top", GTCEu.id(texture + "/top"),
-                                        "side", GTCEu.id(texture + "/side"))) :
-                                null),
-                () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped);
+            name, properties -> new RendererBlock(properties,
+                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
+                    Map.of("bottom", GTCEu.id(texture + "/bottom"),
+                        "top", GTCEu.id(texture + "/top"),
+                        "side", GTCEu.id(texture + "/side"))) : null),
+            () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
+        );
     }
 
     private static BlockEntry<Block> createGlassCasingBlock(String name, ResourceLocation texture,
@@ -770,18 +770,22 @@ public class GTBlocks {
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
-        return REGISTRATE.block(name, p -> (Block) blockSupplier.apply(p,
-                Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                    Map.of("all", texture)) : null))
-            .initialProperties(properties)
-            .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
-            .addLayer(type)
-            .blockstate(NonNullBiConsumer.noop())
-            .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
-            .item(RendererBlockItem::new)
-            .model(NonNullBiConsumer.noop())
-            .build()
-            .register();
+        return createCasingBlock(name, p -> blockSupplier.apply(p,
+                        Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
+                        Map.of("all", texture)) : null), properties, type);
+    }
+
+    public static BlockEntry<Block> createCasingBlock(String name, NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
+        return REGISTRATE.block(name, blockSupplier)
+                .initialProperties(properties)
+                .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
+                .addLayer(type)
+                .blockstate(NonNullBiConsumer.noop())
+                .tag(CustomTags.MINEABLE_WITH_WRENCH, BlockTags.MINEABLE_WITH_PICKAXE)
+                .item(RendererBlockItem::new)
+                .model(NonNullBiConsumer.noop())
+                .build()
+                .register();
     }
 
     private static BlockEntry<Block> createMachineCasingBlock(int tier) {
