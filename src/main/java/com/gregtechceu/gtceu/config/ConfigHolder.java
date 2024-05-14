@@ -397,12 +397,6 @@ public class ConfigHolder {
         public boolean hazardsEnabled = true;
     }
 
-    public static class GameplayConfigs{
-        @Configurable
-        @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
-        public boolean hazardsEnabled = true;
-    }
-
     public static class ClientConfigs {
         @Configurable
         @Configurable.Comment({"Whether or not to enable Emissive Textures for GregTech Machines.", "Default: true"})
