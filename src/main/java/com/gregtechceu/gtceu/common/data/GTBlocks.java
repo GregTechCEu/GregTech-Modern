@@ -269,7 +269,7 @@ public class GTBlocks {
     private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
         var entry = registrate.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+                .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
                 .transform(unificationBlock(insulation.tagPrefix, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
