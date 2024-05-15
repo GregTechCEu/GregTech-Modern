@@ -12,10 +12,10 @@ spotless {
         endWithNewline()
     }
     java {
-        target 'src/main/java/**/*.java', 'src/test/java/**/*.java'
+        target 'src/main/java/**/*.java', 'src/test/java/**/*.java' // exclude api as they are not our files
 
-        def orderFile = file("$rootDir/spotless/spotless.importorder")
-        def formatFile = file("$rootDir/spotless/spotless.eclipseformat.xml")
+        def orderFile = project.file('spotless/spotless.importorder')
+        def formatFile = project.file('spotless/spotless.eclipseformat.xml')
 
         toggleOffOn()
         importOrderFile(orderFile)

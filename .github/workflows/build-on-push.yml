@@ -15,19 +15,10 @@ jobs:
         with:
           submodules: true
 
-      - name: Check Path Filter
-        uses: dorny/paths-filter@v3
-        id: filter
-        with:
-          java-version: '21'
-          distribution: 'adopt'
-
       - name: Setup Build
-        if: steps.filter.outputs.code == 'true'
         uses: ./.github/actions/build_setup
 
       - name: Build
-        if: steps.filter.outputs.code == 'true'
         uses: gradle/gradle-build-action@v2
         with:
           arguments: assemble

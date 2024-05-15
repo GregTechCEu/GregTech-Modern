@@ -18,16 +18,8 @@ jobs:
         with:
           submodules: true
 
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'adopt'
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
 
       - name: Build
         uses: gradle/gradle-build-action@v2

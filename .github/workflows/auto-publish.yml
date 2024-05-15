@@ -18,7 +18,7 @@ on:
         type: boolean
         default: true
       publishCurseForgeAndModrinth:
-        description: 'whether to publish to curseforge and modrinth'
+        description: 'whether publish to curseforge and modrinth'
         required: true
         type: boolean
         default: true
