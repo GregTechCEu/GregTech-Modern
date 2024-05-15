@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.GTMath;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
@@ -18,29 +19,39 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements IUICover {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedEnergyDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            AdvancedEnergyDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
 
-    @Persisted @Getter @Setter
+    @Persisted
+    @Getter
+    @Setter
     public long minValue, maxValue;
-    @Persisted @Getter @Setter
+    @Persisted
+    @Getter
+    @Setter
     private int outputAmount;
-    @Persisted @Getter
+    @Persisted
+    @Getter
     private boolean usePercent;
 
     private LongInputWidget minValueInput;
@@ -75,12 +86,14 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         if (usePercent) {
             if (capacity > 0) {
                 float ratio = (float) stored / capacity;
-                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(ratio * 100, this.maxValue, this.minValue, isInverted(), this.outputAmount);
+                this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(ratio * 100, this.maxValue,
+                        this.minValue, isInverted(), this.outputAmount);
             } else {
                 this.outputAmount = isInverted() ? 0 : 15;
             }
         } else {
-            this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(stored, this.maxValue, this.minValue, isInverted(), this.outputAmount);
+            this.outputAmount = RedstoneUtil.computeLatchedRedstoneBetweenValues(stored, this.maxValue, this.minValue,
+                    isInverted(), this.outputAmount);
         }
         setRedstoneSignalOutput(outputAmount);
     }
@@ -92,9 +105,8 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         initializeMinMaxInputs(wasPercent);
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -114,33 +126,30 @@ public class AdvancedEnergyDetectorCover extends EnergyDetectorCover implements 
         group.addWidget(minValueInput);
         group.addWidget(maxValueInput);
 
-
         // Invert Redstone Output Toggle:
         group.addWidget(new ToggleButtonWidget(
                 9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted
-        ) {
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+
             @Override
             public void updateScreen() {
                 super.updateScreen();
                 setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_energy_detector.invert." + (isPressed ? "enabled" : "disabled")
-                )));
+                        "cover.advanced_energy_detector.invert." + (isPressed ? "enabled" : "disabled"))));
             }
         });
 
         // Mode (EU / Percent) Toggle:
         group.addWidget(new ToggleButtonWidget(
                 176 - 29, 20, 20, 20,
-                GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent
-        ) {
+                GuiTextures.ENERGY_DETECTOR_COVER_MODE_BUTTON, this::isUsePercent, this::setUsePercent) {
+
             @Override
             public void updateScreen() {
                 super.updateScreen();
 
                 setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_energy_detector.use_percent." + (isPressed ? "enabled" : "disabled")
-                )));
+                        "cover.advanced_energy_detector.use_percent." + (isPressed ? "enabled" : "disabled"))));
             }
         });
 

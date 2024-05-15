@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -24,10 +25,13 @@ import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -42,7 +46,8 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    protected GTSwordItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
+                          Properties properties) {
         super(tier, properties);
         this.toolType = toolType;
         this.material = material;
@@ -54,7 +59,8 @@ public class GTSwordItem extends SwordItem implements IGTTool {
         definition$init();
     }
 
-    public static GTSwordItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
+    public static GTSwordItem create(GTToolType toolType, MaterialToolTier tier, Material material,
+                                     IGTToolDefinition toolStats, Item.Properties properties) {
         return new GTSwordItem(toolType, tier, material, toolStats, properties);
     }
 
@@ -129,7 +135,8 @@ public class GTSwordItem extends SwordItem implements IGTTool {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         definition$appendHoverText(stack, context, tooltipComponents, isAdvanced);
     }
 

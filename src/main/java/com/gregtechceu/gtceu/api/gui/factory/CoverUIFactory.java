@@ -4,11 +4,12 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.IUICover;
+
 import com.lowdragmc.lowdraglib.gui.factory.UIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Direction;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -21,6 +22,7 @@ import net.neoforged.api.distmarker.OnlyIn;
  * @implNote CoverUIFactory
  */
 public class CoverUIFactory extends UIFactory<CoverBehavior> {
+
     public static final CoverUIFactory INSTANCE = new CoverUIFactory();
 
     public CoverUIFactory() {

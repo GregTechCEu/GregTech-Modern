@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 
@@ -31,42 +32,44 @@ public class RecipeRemoval {
     }
 
     private static void generalRemovals(Consumer<ResourceLocation> registry) {
-        if (ConfigHolder.INSTANCE.recipes.removeVanillaTNTRecipe) registry.accept(new ResourceLocation("minecraft:tnt"));
+        if (ConfigHolder.INSTANCE.recipes.removeVanillaTNTRecipe)
+            registry.accept(new ResourceLocation("minecraft:tnt"));
 
         // todo
         /*
-        // always remove these, GT ore processing changes their output
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.COAL_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.IRON_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.GOLD_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.DIAMOND_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.EMERALD_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.LAPIS_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.REDSTONE_ORE));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.QUARTZ_ORE));
-
-        // Remove a bunch of processing recipes for tools and armor, since we have significantly better options
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HELMET, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_CHESTPLATE, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_LEGGINGS, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_BOOTS, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HORSE_ARMOR, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_PICKAXE, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_SHOVEL, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_AXE, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_SWORD, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HOE, 1, W));
-
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HELMET, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_CHESTPLATE, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_LEGGINGS, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_BOOTS, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HORSE_ARMOR, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_PICKAXE, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_SHOVEL, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_AXE, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_SWORD, 1, W));
-        ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HOE, 1, W));*/
+         * // always remove these, GT ore processing changes their output
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.COAL_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.IRON_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.GOLD_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.DIAMOND_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.EMERALD_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.LAPIS_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.REDSTONE_ORE));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Blocks.QUARTZ_ORE));
+         * 
+         * // Remove a bunch of processing recipes for tools and armor, since we have significantly better options
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HELMET, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_CHESTPLATE, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_LEGGINGS, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_BOOTS, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HORSE_ARMOR, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_PICKAXE, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_SHOVEL, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_AXE, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_SWORD, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.IRON_HOE, 1, W));
+         * 
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HELMET, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_CHESTPLATE, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_LEGGINGS, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_BOOTS, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HORSE_ARMOR, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_PICKAXE, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_SHOVEL, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_AXE, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_SWORD, 1, W));
+         * ModHandler.removeFurnaceSmelting(new ItemStack(Items.GOLDEN_HOE, 1, W));
+         */
     }
 
     private static void disableManualCompression(Consumer<ResourceLocation> registry) {
@@ -93,8 +96,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
         registry.accept(new ResourceLocation("minecraft:glowstone"));
         // TODO netherite material
-        //registry.accept(new ResourceLocation("minecraft:netherite_block"));
-        //registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
+        // registry.accept(new ResourceLocation("minecraft:netherite_block"));
+        // registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {
@@ -165,7 +168,7 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:clock"));
         registry.accept(new ResourceLocation("minecraft:shears"));
         registry.accept(new ResourceLocation("minecraft:shield"));
-        for (String type : new String[]{"iron", "golden", "diamond"}) {
+        for (String type : new String[] { "iron", "golden", "diamond" }) {
             registry.accept(new ResourceLocation("minecraft:" + type + "_shovel"));
             registry.accept(new ResourceLocation("minecraft:" + type + "_pickaxe"));
             registry.accept(new ResourceLocation("minecraft:" + type + "_axe"));
@@ -231,8 +234,10 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:glass_bottle"));
         registry.accept(new ResourceLocation("minecraft:glass_pane"));
         for (DyeColor color : DyeColor.values()) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane", color.name().toLowerCase(Locale.ROOT))));
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass_pane_from_glass_pane",
+                    color.name().toLowerCase(Locale.ROOT))));
+            registry.accept(new ResourceLocation(
+                    String.format("minecraft:%s_stained_glass_pane", color.name().toLowerCase(Locale.ROOT))));
         }
     }
 
@@ -250,7 +255,8 @@ public class RecipeRemoval {
 
     private static void hardDyeRecipes(Consumer<ResourceLocation> registry) {
         for (MarkerMaterial colorMaterial : MarkerMaterials.Color.VALUES) {
-            registry.accept(new ResourceLocation(String.format("minecraft:%s_concrete_powder", colorMaterial.getName())));
+            registry.accept(
+                    new ResourceLocation(String.format("minecraft:%s_concrete_powder", colorMaterial.getName())));
             registry.accept(new ResourceLocation(String.format("minecraft:%s_terracotta", colorMaterial.getName())));
             registry.accept(new ResourceLocation(String.format("minecraft:%s_stained_glass", colorMaterial.getName())));
             if (colorMaterial != MarkerMaterials.Color.White) {

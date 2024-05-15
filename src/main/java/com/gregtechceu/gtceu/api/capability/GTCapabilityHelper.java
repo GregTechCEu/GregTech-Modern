@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.capability;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -19,6 +20,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote EnergyContainerHelper
  */
 public class GTCapabilityHelper {
+
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
         return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
@@ -69,7 +71,8 @@ public class GTCapabilityHelper {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side);
+                return blockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(),
+                        blockEntity.getBlockState(), blockEntity, side);
             }
         }
         return null;
@@ -91,7 +94,8 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos, @Nullable Direction side) {
+    public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos,
+                                                                            @Nullable Direction side) {
         return getBlockEntityCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, level, pos, side);
     }
 
@@ -101,7 +105,8 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    private static <T> T getBlockEntityCapability(BlockCapability<T, Direction> capability, Level level, BlockPos pos, @Nullable Direction side) {
+    private static <T> T getBlockEntityCapability(BlockCapability<T, Direction> capability, Level level, BlockPos pos,
+                                                  @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {

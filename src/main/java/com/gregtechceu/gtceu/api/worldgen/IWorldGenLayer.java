@@ -1,11 +1,11 @@
 package com.gregtechceu.gtceu.api.worldgen;
 
-import com.mojang.serialization.Codec;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+
+import com.mojang.serialization.Codec;
 
 import java.util.Set;
 
@@ -15,20 +15,24 @@ import java.util.Set;
  * @implNote IWorldGenLayer
  */
 public interface IWorldGenLayer extends StringRepresentable {
-    Codec<IWorldGenLayer> CODEC = Codec.stringResolver(StringRepresentable::getSerializedName, WorldGeneratorUtils.WORLD_GEN_LAYERS::get);
+
+    Codec<IWorldGenLayer> CODEC = Codec.stringResolver(StringRepresentable::getSerializedName,
+            WorldGeneratorUtils.WORLD_GEN_LAYERS::get);
 
     boolean isApplicableForLevel(ResourceLocation level);
-    Set<ResourceLocation> getLevels();
-    RuleTest getTarget();
 
+    Set<ResourceLocation> getLevels();
+
+    RuleTest getTarget();
 
     @FunctionalInterface
     interface RuleTestSupplier {
+
         RuleTest get();
     }
 
-
     IWorldGenLayer NOWHERE = new IWorldGenLayer() {
+
         @Override
         public boolean isApplicableForLevel(ResourceLocation level) {
             return false;

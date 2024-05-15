@@ -10,11 +10,12 @@ import com.gregtechceu.gtceu.core.IFireImmuneEntity;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.Holder;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionResult;
@@ -34,6 +35,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;
@@ -70,9 +72,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
         if (!player.getItemBySlot(EquipmentSlot.HEAD).is(GTItems.QUANTUM_HELMET.get())) {
             disableNightVision(world, player, false);
         } else if (!player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE.get()) &&
-            !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
-                            if (!world.isClientSide) ((IFireImmuneEntity)player).gtceu$setFireImmune(false);
-                        }
+                !player.getItemBySlot(EquipmentSlot.CHEST).is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) {
+                    if (!world.isClientSide) ((IFireImmuneEntity) player).gtceu$setFireImmune(false);
+                }
 
         boolean ret = false;
         if (type == ArmorItem.Type.HELMET) {
@@ -138,7 +140,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
                 if (!world.isClientSide) {
                     final boolean finalNightvision = nightvision;
-                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setNightVision(finalNightvision));
+                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                            data1 -> data1.setNightVision(finalNightvision));
                 }
             }
 
@@ -151,10 +154,11 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             if (!world.isClientSide && toggleTimer > 0) {
                 --toggleTimer;
                 final byte finalToggleTimer = toggleTimer;
-                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer));
+                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                        data1 -> data1.setToggleTimer(finalToggleTimer));
             }
         } else if (type == ArmorItem.Type.CHESTPLATE && !player.fireImmune()) {
-            ((IFireImmuneEntity)player).gtceu$setFireImmune(true);
+            ((IFireImmuneEntity) player).gtceu$setFireImmune(true);
             if (player.isOnFire())
                 player.extinguishFire();
         } else if (type == ArmorItem.Type.LEGGINGS) {
@@ -168,7 +172,8 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                     ret = true;
                 }
                 final byte finalConsumerTicks = consumerTicks;
-                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setConsumerTicks(finalConsumerTicks));
+                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                        data1 -> data1.setConsumerTicks(finalConsumerTicks));
                 float speed = 0.25F;
                 if (player.isInWater()) {
                     speed = 0.1F;
@@ -179,22 +184,23 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
                 }
                 player.moveRelative(speed, new Vec3(0, 0, 1));
             } else if (item.canUse(energyPerUse / 100) && player.isInWater() &&
-                (KeyBind.VANILLA_SNEAK.isKeyDown(player) || KeyBind.VANILLA_JUMP.isKeyDown(player))) {
-                byte consumerTicks = data.consumerTicks();
-                ++consumerTicks;
-                if (consumerTicks >= 10) {
-                    consumerTicks = 0;
-                    item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
-                    ret = true;
-                }
-                final byte finalConsumerTicks = consumerTicks;
-                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setConsumerTicks(finalConsumerTicks));
-                double acceleration = 0.085D;
-                if (KeyBind.VANILLA_SNEAK.isKeyDown(player))
-                    player.push(0.0, -acceleration, 0.0);
-                if (KeyBind.VANILLA_JUMP.isKeyDown(player))
-                    player.push(0.0, acceleration, 0.0);
-            }
+                    (KeyBind.VANILLA_SNEAK.isKeyDown(player) || KeyBind.VANILLA_JUMP.isKeyDown(player))) {
+                        byte consumerTicks = data.consumerTicks();
+                        ++consumerTicks;
+                        if (consumerTicks >= 10) {
+                            consumerTicks = 0;
+                            item.discharge(energyPerUse / 100, item.getTier(), true, false, false);
+                            ret = true;
+                        }
+                        final byte finalConsumerTicks = consumerTicks;
+                        itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                                data1 -> data1.setConsumerTicks(finalConsumerTicks));
+                        double acceleration = 0.085D;
+                        if (KeyBind.VANILLA_SNEAK.isKeyDown(player))
+                            player.push(0.0, -acceleration, 0.0);
+                        if (KeyBind.VANILLA_JUMP.isKeyDown(player))
+                            player.push(0.0, acceleration, 0.0);
+                    }
         } else if (type == ArmorItem.Type.BOOTS) {
             if (!world.isClientSide) {
                 if (!player.onGround() && KeyBind.VANILLA_JUMP.isKeyDown(player)) {
@@ -237,40 +243,41 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     /*
+     * @Override
+     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+     * double damage, EntityEquipmentSlot equipmentSlot) {
+     * int damageLimit = Integer.MAX_VALUE;
+     * IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+     * if (item == null) {
+     * return new ArmorProperties(0, 0, damageLimit);
+     * }
+     * if (energyPerUse > 0) {
+     * damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 100.0D));
+     * }
+     * 
+     * if (source == DamageSource.FALL) {
+     * if (SLOT == EntityEquipmentSlot.FEET) {
+     * return new ArmorProperties(10, 1.0D, damageLimit);
+     * }
+     * 
+     * if (SLOT == EntityEquipmentSlot.LEGS) {
+     * return new ArmorProperties(9, 0.8D, damageLimit);
+     * }
+     * }
+     * return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
+     * }
+     * 
+     * @Override
+     * public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
+     * double damage, EntityEquipmentSlot equipmentSlot) {
+     * return source != DamageSource.FALL && source != DamageSource.DROWN && source != DamageSource.STARVE &&
+     * source != DamageSource.OUT_OF_WORLD;
+     * }
+     */
+
     @Override
-    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-                                         double damage, EntityEquipmentSlot equipmentSlot) {
-        int damageLimit = Integer.MAX_VALUE;
-        IElectricItem item = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
-        if (item == null) {
-            return new ArmorProperties(0, 0, damageLimit);
-        }
-        if (energyPerUse > 0) {
-            damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 100.0D));
-        }
-
-        if (source == DamageSource.FALL) {
-            if (SLOT == EntityEquipmentSlot.FEET) {
-                return new ArmorProperties(10, 1.0D, damageLimit);
-            }
-
-            if (SLOT == EntityEquipmentSlot.LEGS) {
-                return new ArmorProperties(9, 0.8D, damageLimit);
-            }
-        }
-        return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
-    }
-
-    @Override
-    public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
-                                           double damage, EntityEquipmentSlot equipmentSlot) {
-        return source != DamageSource.FALL && source != DamageSource.DROWN && source != DamageSource.STARVE &&
-                source != DamageSource.OUT_OF_WORLD;
-    }
-    */
-
-    @Override
-    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, EquipmentSlot equipmentSlot) {
+    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                            EquipmentSlot equipmentSlot) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
         if (item == null) {
             return;
@@ -279,14 +286,15 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
-        ItemStack currentChest = Minecraft.getInstance().player.getInventory()
-            .armor.get(EquipmentSlot.CHEST.getIndex());
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                            ArmorMaterial.Layer layer) {
+        ItemStack currentChest = Minecraft.getInstance().player.getInventory().armor
+                .get(EquipmentSlot.CHEST.getIndex());
         String armorTexture = "quark_tech_suite";
         if (currentChest.is(GTItems.QUANTUM_CHESTPLATE_ADVANCED.get())) armorTexture = "advanced_quark_tech_suite";
         return slot != EquipmentSlot.LEGS ?
-            GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
-            GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
+                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
+                GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
     }
 
     @Override

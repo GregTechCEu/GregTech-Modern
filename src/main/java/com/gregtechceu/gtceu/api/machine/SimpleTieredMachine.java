@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -16,11 +15,11 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -30,12 +29,10 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -50,45 +47,71 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+
+import com.google.common.collect.Tables;
+import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiFunction;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
  * @date 2023/2/19
  * @implNote SimpleMachine
- * All simple single machines are implemented here.
+ *           All simple single machines are implemented here.
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoOutputBoth, IFancyUIMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class, WorkableTieredMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted @DescSynced @RequireRerender
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SimpleTieredMachine.class,
+            WorkableTieredMachine.MANAGED_FIELD_HOLDER);
+
+    @Persisted
+    @DescSynced
+    @RequireRerender
     protected Direction outputFacingItems;
-    @Persisted @DescSynced @RequireRerender
+    @Persisted
+    @DescSynced
+    @RequireRerender
     protected Direction outputFacingFluids;
-    @Getter @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     protected boolean autoOutputItems;
-    @Getter @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     protected boolean autoOutputFluids;
-    @Getter @Setter @Persisted
+    @Getter
+    @Setter
+    @Persisted
     protected boolean allowInputFromOutputSideItems;
-    @Getter @Setter @Persisted
+    @Getter
+    @Setter
+    @Persisted
     protected boolean allowInputFromOutputSideFluids;
-    @Getter @Persisted(subPersisted = true)
+    @Getter
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
-    @Getter @Persisted
+    @Getter
+    @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+                               Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
@@ -97,7 +120,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -111,11 +134,12 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     protected NotifiableItemStackHandler createCircuitItemHandler(Object... args) {
-        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE).setFilter(IntCircuitBehaviour::isIntegratedCircuit);
+        return new NotifiableItemStackHandler(this, 1, IO.IN, IO.NONE)
+                .setFilter(IntCircuitBehaviour::isIntegratedCircuit);
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public void onLoad() {
@@ -152,7 +176,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
-    //*******     Auto Output    *******//
+    // ******* Auto Output *******//
     //////////////////////////////////////
 
     @Override
@@ -222,11 +246,12 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     protected void updateAutoOutputSubscription() {
         var outputFacingItems = getOutputFacingItems();
         var outputFacingFluids = getOutputFacingFluids();
-        if ((isAutoOutputItems() && !exportItems.isEmpty()) && outputFacingItems != null
-                && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems), outputFacingItems.getOpposite()) != null
-                ||
-                (isAutoOutputFluids() && !exportFluids.isEmpty()) && outputFacingFluids != null
-                        && FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(outputFacingFluids), outputFacingFluids.getOpposite()) != null) {
+        if ((isAutoOutputItems() && !exportItems.isEmpty()) && outputFacingItems != null &&
+                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacingItems),
+                        outputFacingItems.getOpposite()) != null ||
+                (isAutoOutputFluids() && !exportFluids.isEmpty()) && outputFacingFluids != null &&
+                        FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(outputFacingFluids),
+                                outputFacingFluids.getOpposite()) != null) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::autoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -270,7 +295,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
-    //**********     MISC    ***********//
+    // ********** MISC ***********//
     //////////////////////////////////////
     @Override
     public void onDrops(List<ItemStack> drops, Player entity) {
@@ -282,10 +307,11 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
-    //*******     Interaction    *******//
+    // ******* Interaction *******//
     //////////////////////////////////////
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
 
@@ -316,24 +342,33 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     @Override
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                   BlockHitResult hitResult) {
         if (!isRemote()) {
             if (gridSide == getOutputFacingItems()) {
                 if (isAllowInputFromOutputSideItems()) {
                     setAllowInputFromOutputSideItems(false);
-                    playerIn.sendSystemMessage(Component.translatable("gtceu.machine.basic.input_from_output_side.disallow").append(Component.translatable("gtceu.creative.chest.item")));
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
+                                    .append(Component.translatable("gtceu.creative.chest.item")));
                 } else {
                     setAllowInputFromOutputSideItems(true);
-                    playerIn.sendSystemMessage(Component.translatable("gtceu.machine.basic.input_from_output_side.allow").append(Component.translatable("gtceu.creative.chest.item")));
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
+                                    .append(Component.translatable("gtceu.creative.chest.item")));
                 }
             }
             if (gridSide == getOutputFacingFluids()) {
                 if (isAllowInputFromOutputSideFluids()) {
                     setAllowInputFromOutputSideFluids(false);
-                    playerIn.sendSystemMessage(Component.translatable("gtceu.machine.basic.input_from_output_side.disallow").append(Component.translatable("gtceu.creative.tank.fluid")));
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
+                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
                 } else {
                     setAllowInputFromOutputSideFluids(true);
-                    playerIn.sendSystemMessage(Component.translatable("gtceu.machine.basic.input_from_output_side.allow").append(Component.translatable("gtceu.creative.tank.fluid")));
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
+                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
                 }
             }
             return InteractionResult.SUCCESS;
@@ -342,7 +377,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -352,43 +387,46 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
-        WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-        SlotWidget batterySlot = createBatterySlot().createDefault();
-        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width, Math.max(template.getSize().height, 78));
-        template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
-        batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
-        group.addWidget(batterySlot);
-        group.addWidget(template);
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
+                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+                SlotWidget batterySlot = createBatterySlot().createDefault();
+                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width,
+                        Math.max(template.getSize().height, 78));
+                template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
+                batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
+                group.addWidget(batterySlot);
+                group.addWidget(template);
 
-        // TODO fix this.
-//        if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-//            SlotWidget circuitSlot = createCircuitConfigurator().createDefault();
-//            circuitSlot.setSelfPosition(new Position(120, 62));
-//            group.addWidget(circuitSlot);
-//        }
+                // TODO fix this.
+                // if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
+                // SlotWidget circuitSlot = createCircuitConfigurator().createDefault();
+                // circuitSlot.setSelfPosition(new Position(120, 62));
+                // group.addWidget(circuitSlot);
+                // }
 
-        return group;
-    }, (template, machine) -> {
-        if (machine instanceof SimpleTieredMachine tieredMachine) {
-            var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
-            storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
-            storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
-            storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
-            storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
-            storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
-            storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
+                return group;
+            }, (template, machine) -> {
+                if (machine instanceof SimpleTieredMachine tieredMachine) {
+                    var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
+                            LinkedHashMap<RecipeCapability<?>, Object>::new);
+                    storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
+                    storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
+                    storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
+                    storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
+                    storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
+                    storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
 
-            tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
-                        storages,
-                        new CompoundTag(),
-                        Collections.emptyList(),
-                        false, false));
-            createBatterySlot().setupUI(template, tieredMachine);
-//            createCircuitConfigurator().setupUI(template, tieredMachine);
-        }
-    }));
+                    tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                            new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+                                    storages,
+                                    new CompoundTag(),
+                                    Collections.emptyList(),
+                                    false, false));
+                    createBatterySlot().setupUI(template, tieredMachine);
+                    // createCircuitConfigurator().setupUI(template, tieredMachine);
+                }
+            }));
 
     /**
      * Create an energy bar widget.
@@ -402,7 +440,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(Component[]::new));
+            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(Component[]::new));
         });
     }
 
@@ -418,7 +457,8 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
             slotWidget.setCircuitInventory(machine.circuitInventory);
             slotWidget.setCanPutItems(false);
             slotWidget.setCanTakeItems(false);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
+            slotWidget.setHoverTooltips(
+                    LangHandler.getMultiLang("gtceu.gui.configurator_slot.tooltip").toArray(Component[]::new));
         });
     }
 
@@ -428,7 +468,7 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
-    //*******     Rendering     ********//
+    // ******* Rendering ********//
     //////////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {

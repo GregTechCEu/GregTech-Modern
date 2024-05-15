@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorLogicSuite;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -18,6 +19,7 @@ import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -46,19 +48,22 @@ public class NightvisionGoggles extends ArmorLogicSuite {
                 if (!nightvision && item.getCharge() >= energyPerUse) {
                     nightvision = true;
                     if (!world.isClientSide)
-                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.enabled"), true);
+                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.enabled"),
+                                true);
                 } else if (nightvision) {
                     nightvision = false;
                     disableNightVision(world, player, true);
                 } else {
                     if (!world.isClientSide) {
-                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.error"), true);
+                        player.displayClientMessage(Component.translatable("metaarmor.message.nightvision.error"),
+                                true);
                     }
                 }
 
                 if (!world.isClientSide) {
                     final boolean finalNightvision = nightvision;
-                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setNightVision(finalNightvision));
+                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                            data1 -> data1.setNightVision(finalNightvision));
                 }
             }
 
@@ -71,7 +76,8 @@ public class NightvisionGoggles extends ArmorLogicSuite {
             if (toggleTimer > 0) --toggleTimer;
 
             final byte finalToggleTimer = toggleTimer;
-            itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer));
+            itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                    data1 -> data1.setToggleTimer(finalToggleTimer));
         }
     }
 
@@ -84,7 +90,8 @@ public class NightvisionGoggles extends ArmorLogicSuite {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                            ArmorMaterial.Layer layer) {
         return GTCEu.id("textures/armor/nightvision_goggles.png");
     }
 

@@ -2,8 +2,9 @@ package com.gregtechceu.gtceu.utils.input;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.network.packets.CPacketKeysPressed;
+
 import com.lowdragmc.lowdraglib.Platform;
-import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.KeyMapping;
 import net.minecraft.client.Minecraft;
 import net.minecraft.server.level.ServerPlayer;
@@ -17,6 +18,8 @@ import net.neoforged.neoforge.client.event.RegisterKeyMappingsEvent;
 import net.neoforged.neoforge.client.settings.IKeyConflictContext;
 import net.neoforged.neoforge.client.settings.KeyConflictContext;
 import net.neoforged.neoforge.common.NeoForge;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import org.apache.commons.lang3.tuple.MutablePair;
 
 import java.util.*;
@@ -24,6 +27,7 @@ import java.util.function.Supplier;
 
 @EventBusSubscriber(modid = GTCEu.MOD_ID, value = Dist.CLIENT, bus = EventBusSubscriber.Bus.GAME)
 public enum KeyBind {
+
     VANILLA_JUMP(() -> () -> Minecraft.getInstance().options.keyJump),
     VANILLA_SNEAK(() -> () -> Minecraft.getInstance().options.keyShift),
     VANILLA_FORWARD(() -> () -> Minecraft.getInstance().options.keyUp),

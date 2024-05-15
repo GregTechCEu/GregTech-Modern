@@ -5,9 +5,11 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.core.Direction;
 
 public class MaintenanceDetectorCover extends DetectorCover {
+
     public MaintenanceDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
     }
@@ -18,7 +20,8 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return false;
         }
 
-        return GTCapabilityHelper.getMaintenanceMachine(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) != null;
+        return GTCapabilityHelper.getMaintenanceMachine(coverHolder.getLevel(), coverHolder.getPos(), attachedSide) !=
+                null;
     }
 
     @Override
@@ -27,7 +30,8 @@ public class MaintenanceDetectorCover extends DetectorCover {
             return;
         }
 
-        IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
+        IMaintenanceMachine maintenance = GTCapabilityHelper.getMaintenanceMachine(coverHolder.getLevel(),
+                coverHolder.getPos(), attachedSide);
 
         int signal = getRedstoneSignalOutput();
         boolean shouldSignal = isInverted() != maintenance.hasMaintenanceProblems();

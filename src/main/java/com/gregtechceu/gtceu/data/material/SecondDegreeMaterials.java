@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.data.material;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
@@ -18,7 +19,6 @@ import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 public class SecondDegreeMaterials {
 
     public static void register() {
-
         Glass = new Material.Builder(GTCEu.id("glass"))
                 .gem(0)
                 .liquid(new FluidBuilder()
@@ -72,7 +72,8 @@ public class SecondDegreeMaterials {
         Lapis = new Material.Builder(GTCEu.id("lapis"))
                 .gem(1).ore(6, 4)
                 .color(0x85a9ff).secondaryColor(0x2a7fff).iconSet(LAPIS)
-                .flags(NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, NO_WORKING, DECOMPOSITION_BY_ELECTROLYZING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
+                .flags(NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, NO_WORKING, DECOMPOSITION_BY_ELECTROLYZING,
+                        EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         GENERATE_PLATE, GENERATE_ROD)
                 .components(Lazurite, 12, Sodalite, 2, Pyrite, 1, Calcite, 1)
                 .buildAndRegister();
@@ -83,7 +84,7 @@ public class SecondDegreeMaterials {
                         .temperature(4000)
                         .customStill())
                 .color(0xfff94d, false).secondaryColor(0xff330c).iconSet(FINE)
-                .flags(NO_SMELTING, MORTAR_GRINDABLE, DECOMPOSITION_BY_CENTRIFUGING) //todo burning flag
+                .flags(NO_SMELTING, MORTAR_GRINDABLE, DECOMPOSITION_BY_CENTRIFUGING) // todo burning flag
                 .components(DarkAsh, 1, Sulfur, 1)
                 .buildAndRegister();
 
@@ -119,7 +120,8 @@ public class SecondDegreeMaterials {
         TungstenSteel = new Material.Builder(GTCEu.id("tungsten_steel"))
                 .ingot(4).fluid()
                 .color(0xadb8df).secondaryColor(0x03192f).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_DENSE, GENERATE_FRAME, GENERATE_SPRING, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_DENSE, GENERATE_FRAME,
+                        GENERATE_SPRING, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .components(Steel, 1, Tungsten, 1)
                 .toolStats(ToolProperty.Builder.of(9.0F, 7.0F, 2048, 4)
                         .enchantability(14).build())
@@ -317,7 +319,8 @@ public class SecondDegreeMaterials {
         NaquadahAlloy = new Material.Builder(GTCEu.id("naquadah_alloy"))
                 .ingot(5).fluid()
                 .color(0x323232).secondaryColor(0x301131).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_RING, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_DENSE, GENERATE_FOIL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_RING, GENERATE_ROTOR, GENERATE_SMALL_GEAR,
+                        GENERATE_FRAME, GENERATE_DENSE, GENERATE_FOIL, GENERATE_GEAR)
                 .components(Naquadah, 2, Osmiridium, 1, Trinium, 1)
                 .toolStats(ToolProperty.Builder.of(40.0F, 12.0F, 3072, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
@@ -371,7 +374,8 @@ public class SecondDegreeMaterials {
                 .flags(NO_SMASHING, MORTAR_GRINDABLE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(SiliconDioxide, 1)
                 .toolStats(ToolProperty.Builder.of(1.5F, 1.0F, 64, 2)
-                        .types(GTToolType.MORTAR, GTToolType.KNIFE, GTToolType.AXE, GTToolType.PICKAXE, GTToolType.HOE, GTToolType.SWORD, GTToolType.SHOVEL)
+                        .types(GTToolType.MORTAR, GTToolType.KNIFE, GTToolType.AXE, GTToolType.PICKAXE, GTToolType.HOE,
+                                GTToolType.SWORD, GTToolType.SHOVEL)
                         .enchantability(5).ignoreCraftingTools()
                         .enchantment(Enchantments.FIRE_ASPECT, 2).build())
                 .buildAndRegister();
@@ -401,7 +405,8 @@ public class SecondDegreeMaterials {
                 .liquid(new FluidBuilder().temperature(58))
                 .color(0x4C3434)
                 .flags(DISABLE_DECOMPOSITION)
-                .components(CarbonMonoxide, 144, CoalGas, 20, HydrogenSulfide, 15, SulfurDioxide, 15, Helium3, 5, Neon, 1, Ash, 1)
+                .components(CarbonMonoxide, 144, CoalGas, 20, HydrogenSulfide, 15, SulfurDioxide, 15, Helium3, 5, Neon,
+                        1, Ash, 1)
                 .buildAndRegister();
 
         EnderAir = new Material.Builder(GTCEu.id("ender_air"))
@@ -415,7 +420,8 @@ public class SecondDegreeMaterials {
                 .liquid(new FluidBuilder().temperature(36))
                 .color(0x283454)
                 .flags(DISABLE_DECOMPOSITION)
-                .components(NitrogenDioxide, 122, Deuterium, 50, Helium, 15, Tritium, 10, Krypton, 1, Xenon, 1, Radon, 1, EnderPearl, 1)
+                .components(NitrogenDioxide, 122, Deuterium, 50, Helium, 15, Tritium, 10, Krypton, 1, Xenon, 1, Radon,
+                        1, EnderPearl, 1)
                 .buildAndRegister();
 
         AquaRegia = new Material.Builder(GTCEu.id("aqua_regia"))

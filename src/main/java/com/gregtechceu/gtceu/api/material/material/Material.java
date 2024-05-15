@@ -1,30 +1,23 @@
 package com.gregtechceu.gtceu.api.material.material;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluid.FluidState;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -33,9 +26,18 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 public class Material implements Comparable<Material> {
@@ -114,7 +116,8 @@ public class Material implements Comparable<Material> {
         return this;
     }
 
-    private Material(@NotNull MaterialInfo materialInfo, @NotNull MaterialProperties properties, @NotNull MaterialFlags flags) {
+    private Material(@NotNull MaterialInfo materialInfo, @NotNull MaterialProperties properties,
+                     @NotNull MaterialFlags flags) {
         this.materialInfo = materialInfo;
         this.properties = properties;
         this.flags = flags;
@@ -143,7 +146,8 @@ public class Material implements Comparable<Material> {
     }
 
     public void addFlags(MaterialFlag... flags) {
-        if (!GTCEuAPI.materialManager.canModifyMaterials()) throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
+        if (!GTCEuAPI.materialManager.canModifyMaterials())
+            throw new IllegalStateException("Cannot add flag to material when registry is frozen!");
         this.flags.addFlags(flags).verify(this);
     }
 
@@ -178,7 +182,7 @@ public class Material implements Comparable<Material> {
                 Material material = materialStack.material();
                 onlyMetalMaterials &= material.hasProperty(PropertyKey.INGOT);
             }
-            //allow centrifuging of alloy materials only
+            // allow centrifuging of alloy materials only
             if (onlyMetalMaterials) {
                 flags.addFlags(MaterialFlags.DECOMPOSITION_BY_CENTRIFUGING);
             } else {
@@ -191,6 +195,7 @@ public class Material implements Comparable<Material> {
      * Retrieves a fluid from the material.
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
+     * 
      * @return the fluid
      * @see #getFluid(FluidStorageKey)
      */
@@ -236,7 +241,7 @@ public class Material implements Comparable<Material> {
 
     /**
      *
-     * @param key the key for the fluid
+     * @param key    the key for the fluid
      * @param amount the amount the FluidStack should have
      * @return a FluidStack with the fluid and amount
      */
@@ -259,6 +264,7 @@ public class Material implements Comparable<Material> {
      * <br/>
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
+     * 
      * @return the fluid builder
      */
     public FluidBuilder getFluidBuilder() {
@@ -281,6 +287,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * NOTE: only available before the fluids are registered.
+     * 
      * @param key the key for the fluid
      * @return the fluid corresponding with the key
      */
@@ -317,14 +324,16 @@ public class Material implements Comparable<Material> {
 
     public int getBlockHarvestLevel() {
         if (!hasProperty(PropertyKey.DUST))
-            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation + " does not have a harvest level! Is probably a Fluid");
+            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation +
+                    " does not have a harvest level! Is probably a Fluid");
         int harvestLevel = getProperty(PropertyKey.DUST).getHarvestLevel();
         return harvestLevel > 0 ? harvestLevel - 1 : harvestLevel;
     }
 
     public int getToolHarvestLevel() {
         if (!hasProperty(PropertyKey.TOOL))
-            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation + " does not have a tool harvest level! Is probably not a Tool Material");
+            throw new IllegalArgumentException("Material " + materialInfo.resourceLocation +
+                    " does not have a tool harvest level! Is probably not a Tool Material");
         return getProperty(PropertyKey.TOOL).getHarvestLevel();
     }
 
@@ -357,6 +366,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer in ARGB.
+     * 
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -370,6 +380,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer.
+     * 
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -426,7 +437,6 @@ public class Material implements Comparable<Material> {
         }
         return totalNeutrons / totalAmount;
     }
-
 
     public long getMass() {
         if (materialInfo.element != null)
@@ -550,7 +560,7 @@ public class Material implements Comparable<Material> {
          * no longer uses a class hierarchy, instead using a {@link MaterialProperties} system.
          *
          * @param resourceLocation The Name of this Material. Will be formatted as
-         *             "material.<name>" for the Translation Key.
+         *                         "material.<name>" for the Translation Key.
          * @since GTCEu 2.0.0
          */
         public Builder(ResourceLocation resourceLocation) {
@@ -628,6 +638,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a plasma for this material.
+         * 
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder plasma() {
@@ -649,6 +660,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a gas for this material.
+         * 
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder gas() {
@@ -766,7 +778,8 @@ public class Material implements Comparable<Material> {
          *
          * @param harvestLevel The Harvest Level of this block for Mining. 2 will make it require a iron tool.<br>
          *                     If this Material also has a {@link ToolProperty}, this value will
-         *                     also be used to determine the tool's Mining level (-1). So 2 will make the tool harvest diamonds.<br>
+         *                     also be used to determine the tool's Mining level (-1). So 2 will make the tool harvest
+         *                     diamonds.<br>
          *                     If this Material already had a Harvest Level defined, it will be overridden.
          * @throws IllegalArgumentException If an {@link IngotProperty} has already been added to this Material.
          */
@@ -780,7 +793,8 @@ public class Material implements Comparable<Material> {
          *
          * @param harvestLevel The Harvest Level of this block for Mining. 2 will make it require a iron tool.<br>
          *                     If this Material also has a {@link ToolProperty}, this value will
-         *                     also be used to determine the tool's Mining level (-1). So 2 will make the tool harvest diamonds.<br>
+         *                     also be used to determine the tool's Mining level (-1). So 2 will make the tool harvest
+         *                     diamonds.<br>
          *                     If this Material already had a Harvest Level defined, it will be overridden.
          * @param burnTime     The Burn Time (in ticks) of this Material as a Furnace Fuel.<br>
          *                     If this Material already had a Burn Time defined, it will be overridden.
@@ -919,7 +933,7 @@ public class Material implements Comparable<Material> {
          * Defaults to 0xFFFFFF unless {@link Builder#colorAverage()} was called, where
          * it will be a weighted average of the components of the Material.
          *
-         * @param color         The RGB-formatted Color.
+         * @param color The RGB-formatted Color.
          */
         public Builder secondaryColor(int color) {
             this.materialInfo.colors.set(1, color);
@@ -935,9 +949,9 @@ public class Material implements Comparable<Material> {
          * Set the {@link MaterialIconSet} of this Material.<br>
          * Defaults vary depending on if the Material has a:<br>
          * <ul>
-         * <li> {@link GemProperty}, it will default to {@link MaterialIconSet#GEM_VERTICAL}
-         * <li> {@link IngotProperty} or {@link DustProperty}, it will default to {@link MaterialIconSet#DULL}
-         * <li> {@link FluidProperty}, it will default to {@link MaterialIconSet#FLUID}
+         * <li>{@link GemProperty}, it will default to {@link MaterialIconSet#GEM_VERTICAL}
+         * <li>{@link IngotProperty} or {@link DustProperty}, it will default to {@link MaterialIconSet#DULL}
+         * <li>{@link FluidProperty}, it will default to {@link MaterialIconSet#FLUID}
          * </ul>
          * Default will be determined by first-found Property in this order, unless specified.
          *
@@ -951,18 +965,17 @@ public class Material implements Comparable<Material> {
         public Builder components(Object... components) {
             Preconditions.checkArgument(
                     components.length % 2 == 0,
-                    "Material Components list malformed!"
-            );
+                    "Material Components list malformed!");
 
             for (int i = 0; i < components.length; i += 2) {
                 if (components[i] == null) {
-                    throw new IllegalArgumentException("Material in Components List is null for Material "
-                            + this.materialInfo.resourceLocation);
+                    throw new IllegalArgumentException(
+                            "Material in Components List is null for Material " + this.materialInfo.resourceLocation);
                 }
                 composition.add(new MaterialStack(
-                        components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) : (Material) components[i],
-                        ((Number) components[i + 1]).longValue()
-                ));
+                        components[i] instanceof CharSequence chars ? GTMaterials.get(chars.toString()) :
+                                (Material) components[i],
+                        ((Number) components[i + 1]).longValue()));
             }
             return this;
         }
@@ -997,8 +1010,10 @@ public class Material implements Comparable<Material> {
          * Dependent Flags (for example, {@link MaterialFlags#GENERATE_LONG_ROD} requiring
          * {@link MaterialFlags#GENERATE_ROD}) will be automatically applied.
          *
-         * @param f1 A {@link Collection} of {@link MaterialFlag}. Provided this way for easy Flag presets to be applied.
-         * @param f2 An Array of {@link MaterialFlag}. If no {@link Collection} is required, use {@link Builder#flags(MaterialFlag...)}.
+         * @param f1 A {@link Collection} of {@link MaterialFlag}. Provided this way for easy Flag presets to be
+         *           applied.
+         * @param f2 An Array of {@link MaterialFlag}. If no {@link Collection} is required, use
+         *           {@link Builder#flags(MaterialFlag...)}.
          */
         // rename for kjs conflicts
         public Builder appendFlags(Collection<MaterialFlag> f1, MaterialFlag... f2) {
@@ -1131,9 +1146,11 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon, int criticalTemperature) {
+        public Builder cableProperties(long voltage, int amperage, int loss, boolean isSuperCon,
+                                       int criticalTemperature) {
             properties.ensureSet(PropertyKey.DUST);
-            properties.setProperty(PropertyKey.WIRE, new WireProperties((int) voltage, amperage, loss, isSuperCon, criticalTemperature));
+            properties.setProperty(PropertyKey.WIRE,
+                    new WireProperties((int) voltage, amperage, loss, isSuperCon, criticalTemperature));
             return this;
         }
 
@@ -1141,8 +1158,10 @@ public class Material implements Comparable<Material> {
             return fluidPipeProperties(maxTemp, throughput, gasProof, false, false, false);
         }
 
-        public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
-            properties.setProperty(PropertyKey.FLUID_PIPE, new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
+        public Builder fluidPipeProperties(int maxTemp, int throughput, boolean gasProof, boolean acidProof,
+                                           boolean cryoProof, boolean plasmaProof) {
+            properties.setProperty(PropertyKey.FLUID_PIPE,
+                    new FluidPipeProperties(maxTemp, throughput, gasProof, acidProof, cryoProof, plasmaProof));
             return this;
         }
 
@@ -1160,7 +1179,10 @@ public class Material implements Comparable<Material> {
         }
 
         public Material buildAndRegister() {
-            materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ? ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack).toArray(MaterialStack[]::new)) : ImmutableList.copyOf(composition);
+            materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
+                    ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
+                            .toArray(MaterialStack[]::new)) :
+                    ImmutableList.copyOf(composition);
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();
@@ -1178,6 +1200,7 @@ public class Material implements Comparable<Material> {
      */
     @Accessors(chain = true)
     private static class MaterialInfo {
+
         /**
          * The modid and unlocalized name of this Material.
          * <p>
@@ -1191,7 +1214,8 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
-        @Getter @Setter
+        @Getter
+        @Setter
         private IntList colors = new IntArrayList(List.of(-1, -1));
 
         /**
@@ -1199,7 +1223,8 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: 0xFFFFFF if no Components, otherwise it will be the average of Components.
          */
-        @Getter @Setter
+        @Getter
+        @Setter
         private boolean hasFluidColor = true;
 
         /**
@@ -1208,7 +1233,8 @@ public class Material implements Comparable<Material> {
          * Default: - GEM_VERTICAL if it has GemProperty.
          * - DULL if has DustProperty or IngotProperty.
          */
-        @Getter @Setter
+        @Getter
+        @Setter
         private MaterialIconSet iconSet;
 
         /**
@@ -1216,7 +1242,8 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: none.
          */
-        @Getter @Setter
+        @Getter
+        @Setter
         private ImmutableList<MaterialStack> componentList;
 
         /**
@@ -1224,13 +1251,15 @@ public class Material implements Comparable<Material> {
          * <p>
          * Default: none.
          */
-        @Getter @Setter
+        @Getter
+        @Setter
         private Element element;
 
         private MaterialInfo(ResourceLocation resourceLocation) {
             String name = resourceLocation.getPath();
             if (!FormattingUtil.toLowerCaseUnderscore(FormattingUtil.lowerUnderscoreToUpperCamel(name)).equals(name))
-                throw new IllegalStateException("Cannot add materials with names like 'materialnumber'! Use 'material_number' instead.");
+                throw new IllegalStateException(
+                        "Cannot add materials with names like 'materialnumber'! Use 'material_number' instead.");
             this.resourceLocation = resourceLocation;
         }
 
@@ -1239,11 +1268,13 @@ public class Material implements Comparable<Material> {
             if (iconSet == null) {
                 if (p.hasProperty(PropertyKey.GEM)) {
                     iconSet = MaterialIconSet.GEM_VERTICAL;
-                } else if (p.hasProperty(PropertyKey.DUST) || p.hasProperty(PropertyKey.INGOT) || p.hasProperty(PropertyKey.POLYMER)) {
-                    iconSet = MaterialIconSet.DULL;
-                } else if (p.hasProperty(PropertyKey.FLUID)) {
-                    iconSet = MaterialIconSet.FLUID;
-                } else iconSet = MaterialIconSet.DULL;
+                } else if (p.hasProperty(PropertyKey.DUST) || p.hasProperty(PropertyKey.INGOT) ||
+                        p.hasProperty(PropertyKey.POLYMER)) {
+                            iconSet = MaterialIconSet.DULL;
+                        } else
+                    if (p.hasProperty(PropertyKey.FLUID)) {
+                        iconSet = MaterialIconSet.FLUID;
+                    } else iconSet = MaterialIconSet.DULL;
             }
 
             // Verify MaterialRGB

@@ -5,8 +5,10 @@ import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,8 +23,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -30,7 +32,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
-
 
 public interface ICoverable extends ITickSubscription, IAppearance {
 
@@ -59,12 +60,15 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     boolean shouldRenderBackSide();
 
     IItemHandlerModifiable getItemTransferCap(@Nullable Direction side, boolean useCoverCapability);
+
     IFluidHandlerModifiable getFluidTransferCap(@Nullable Direction side, boolean useCoverCapability);
 
     /**
      * Its an internal method, you should never call it yourself.
      * <br>
-     * Use {@link ICoverable#removeCover(boolean, Direction, Player)} and {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
+     * Use {@link ICoverable#removeCover(boolean, Direction, Player)} and
+     * {@link ICoverable#placeCoverOnSide(Direction, ItemStack, CoverDefinition, ServerPlayer)} instead
+     * 
      * @param coverBehavior
      * @param side
      */
@@ -73,7 +77,8 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     @Nullable
     CoverBehavior getCoverAtSide(Direction side);
 
-    default boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition, ServerPlayer player) {
+    default boolean placeCoverOnSide(Direction side, ItemStack itemStack, CoverDefinition coverDefinition,
+                                     ServerPlayer player) {
         CoverBehavior coverBehavior = coverDefinition.createCoverBehavior(this, side);
         if (!canPlaceCoverOnSide(coverDefinition, side) || !coverBehavior.canAttach()) {
             return false;
@@ -88,7 +93,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         markDirty();
         scheduleNeighborShapeUpdate();
         // TODO achievement
-//        AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
+        // AdvancementTriggers.FIRST_COVER_PLACE.trigger((PlayerMP) player);
         return true;
     }
 
@@ -130,7 +135,8 @@ public interface ICoverable extends ITickSubscription, IAppearance {
     }
 
     default List<CoverBehavior> getCovers() {
-        return Arrays.stream(GTUtil.DIRECTIONS).map(this::getCoverAtSide).filter(Objects::nonNull).collect(Collectors.toList());
+        return Arrays.stream(GTUtil.DIRECTIONS).map(this::getCoverAtSide).filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     default void onLoad() {
@@ -145,7 +151,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         }
     }
 
-    default void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving){
+    default void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
         for (CoverBehavior cover : getCovers()) {
             cover.onNeighborChanged(block, fromPos, isMoving);
         }
@@ -184,7 +190,7 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         if (side == null) {
             return false;
         }
-        
+
         if (plateThickness > 0.0) {
             var coverPlateBox = getCoverPlateBox(side, plateThickness);
             var aabbs = coverPlateBox.toAabbs();
@@ -207,8 +213,8 @@ public interface ICoverable extends ITickSubscription, IAppearance {
         return traceCoverSide(rayTrace);
     }
 
-
     class PrimaryBoxData {
+
         public final boolean usePlacementGrid;
 
         public PrimaryBoxData(boolean usePlacementGrid) {
@@ -254,7 +260,8 @@ public interface ICoverable extends ITickSubscription, IAppearance {
 
     @Nullable
     @Override
-    default BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+    default BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                          BlockState sourceState, BlockPos sourcePos) {
         if (hasCover(side)) {
             return getCoverAtSide(side).getAppearance(sourceState, sourcePos);
         }

@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -26,6 +25,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.ToolActions;
+
+import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -35,7 +37,8 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
 
     public static final LogStripBehavior INSTANCE = create();
     public static final MapCodec<LogStripBehavior> CODEC = MapCodec.unit(INSTANCE);
-    public static final StreamCodec<RegistryFriendlyByteBuf, LogStripBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, LogStripBehavior> STREAM_CODEC = StreamCodec
+            .unit(INSTANCE);
 
     protected LogStripBehavior() {/**/}
 
@@ -79,7 +82,10 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
 
         boolean stripped = false;
         for (BlockPos blockPos : blocks) {
-            stripped |= level.setBlock(blockPos, getStripped(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))), Block.UPDATE_ALL);
+            stripped |= level.setBlock(blockPos,
+                    getStripped(level.getBlockState(blockPos),
+                            new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))),
+                    Block.UPDATE_ALL);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
             }
@@ -99,10 +105,12 @@ public class LogStripBehavior implements IToolBehavior<LogStripBehavior> {
 
     public static Set<BlockPos> getStrippableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
                                                     Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult, LogStripBehavior.INSTANCE::isBlockStrippable);
+        return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
+                LogStripBehavior.INSTANCE::isBlockStrippable);
     }
 
-    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
+    protected boolean isBlockStrippable(ItemStack stack, Level level, Player player, BlockPos pos,
+                                        UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_STRIP, false);
         return newState != null && newState != state;

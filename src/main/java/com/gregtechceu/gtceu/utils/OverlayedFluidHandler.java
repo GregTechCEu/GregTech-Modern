@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -21,7 +24,8 @@ public class OverlayedFluidHandler {
 
     public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
         this.overlayedTanks = new ArrayList<>();
-        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
+        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank)
+                .toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
             CustomFluidTank storage = new CustomFluidTank(tank.getTankCapacity(i));
             storage.setFluid(entries[i]);

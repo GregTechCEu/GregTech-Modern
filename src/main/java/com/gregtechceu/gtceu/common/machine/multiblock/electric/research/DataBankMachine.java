@@ -5,10 +5,6 @@ import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
-import com.gregtechceu.gtceu.api.gui.fancy.IFancyUIProvider;
-import com.gregtechceu.gtceu.api.gui.fancy.TooltipsPanel;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
@@ -21,27 +17,29 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-public class DataBankMachine extends WorkableElectricMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, IControllable {
+public class DataBankMachine extends WorkableElectricMultiblockMachine
+                             implements IFancyUIMachine, IDisplayUIMachine, IControllable {
 
     public static final int EUT_PER_HATCH = GTValues.VA[GTValues.EV];
     public static final int EUT_PER_HATCH_CHAINED = GTValues.VA[GTValues.LuV];
@@ -70,11 +68,12 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
             if (part instanceof IMaintenanceMachine maintenanceMachine) {
                 this.maintenance = maintenanceMachine;
             }
-            if(io == IO.NONE || io == IO.OUT) continue;
+            if (io == IO.NONE || io == IO.OUT) continue;
             for (var handler : part.getRecipeHandlers()) {
                 // If IO not compatible
                 if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                if (handler.getCapability() == EURecipeCapability.CAP &&
+                        handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
                 }
             }
@@ -91,7 +90,7 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
             serverLevel.getServer().tell(new TickTask(0, this::updateTickSubscription));
         }
     }
-    
+
     protected int calculateEnergyUsage() {
         int receivers = 0;
         int transmitters = 0;
@@ -165,11 +164,13 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
                 if (consumed == energyToConsume) {
                     getRecipeLogic().setStatus(RecipeLogic.Status.WORKING);
                 } else {
-                    getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(EURecipeCapability.CAP.getName()));
+                    getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ").append(EURecipeCapability.CAP.getName()));
                 }
             }
         } else {
-            getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(EURecipeCapability.CAP.getName()));
+            getRecipeLogic().setWaiting(Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ")
+                    .append(EURecipeCapability.CAP.getName()));
         }
         updateTickSubscription();
     }
@@ -177,23 +178,23 @@ public class DataBankMachine extends WorkableElectricMultiblockMachine implement
     @Override
     public void addDisplayText(List<Component> textList) {
         MultiblockDisplayText.builder(textList, isFormed())
-            .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
-            .setWorkingStatusKeys(
-                "gtceu.multiblock.idling",
-                "gtceu.multiblock.idling",
-                "gtceu.multiblock.data_bank.providing")
-            .addEnergyUsageExactLine(getEnergyUsage())
-            .addWorkingStatusLine();
+                .setWorkingStatus(true, isActive() && isWorkingEnabled()) // transform into two-state system for display
+                .setWorkingStatusKeys(
+                        "gtceu.multiblock.idling",
+                        "gtceu.multiblock.idling",
+                        "gtceu.multiblock.data_bank.providing")
+                .addEnergyUsageExactLine(getEnergyUsage())
+                .addWorkingStatusLine();
     }
 
     /*
-    @Override
-    protected void addWarningText(List<Component> textList) {
-        MultiblockDisplayText.builder(textList, isFormed(), false)
-            .addLowPowerLine(hasNotEnoughEnergy)
-            .addMaintenanceProblemLines(maintenance.getMaintenanceProblems());
-    }
-    */
+     * @Override
+     * protected void addWarningText(List<Component> textList) {
+     * MultiblockDisplayText.builder(textList, isFormed(), false)
+     * .addLowPowerLine(hasNotEnoughEnergy)
+     * .addMaintenanceProblemLines(maintenance.getMaintenanceProblems());
+     * }
+     */
 
     @Override
     public int getProgress() {

@@ -9,7 +9,14 @@ import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCa
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTOreVeinInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.recipe.GTRecipeTypeCategory;
+
 import com.lowdragmc.lowdraglib.LDLib;
+
+import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.RecipeType;
+
 import mezz.jei.api.IModPlugin;
 import mezz.jei.api.JeiPlugin;
 import mezz.jei.api.constants.RecipeTypes;
@@ -18,12 +25,8 @@ import mezz.jei.api.registration.IModIngredientRegistration;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.world.item.crafting.RecipeType;
-
 import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -35,6 +38,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @JeiPlugin
 public class GTJEIPlugin implements IModPlugin {
+
     @Override
     public ResourceLocation getPluginUid() {
         return GTCEu.id("jei_plugin");
@@ -92,4 +96,3 @@ public class GTJEIPlugin implements IModPlugin {
         GTCEu.LOGGER.info("JEI register ingredients");
     }
 }
-

@@ -3,7 +3,7 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
-import net.minecraft.network.FriendlyByteBuf;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -17,19 +17,23 @@ import java.util.function.Consumer;
  * @implNote DisplayButtonWidget
  */
 public class PredicatedButtonWidget extends ButtonWidget {
+
     private final BooleanSupplier predicate;
 
-    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture, Consumer<ClickData> onPressed, BooleanSupplier predicate, boolean defaultVisibility) {
+    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture,
+                                  Consumer<ClickData> onPressed, BooleanSupplier predicate, boolean defaultVisibility) {
         super(xPosition, yPosition, width, height, buttonTexture, onPressed);
         this.predicate = predicate;
         setVisible(defaultVisibility);
     }
 
-    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture, Consumer<ClickData> onPressed, BooleanSupplier predicate) {
+    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, IGuiTexture buttonTexture,
+                                  Consumer<ClickData> onPressed, BooleanSupplier predicate) {
         this(xPosition, yPosition, width, height, buttonTexture, onPressed, predicate, false);
     }
 
-    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, Consumer<ClickData> onPressed, BooleanSupplier predicate) {
+    public PredicatedButtonWidget(int xPosition, int yPosition, int width, int height, Consumer<ClickData> onPressed,
+                                  BooleanSupplier predicate) {
         super(xPosition, yPosition, width, height, onPressed);
         this.predicate = predicate;
     }
@@ -68,5 +72,4 @@ public class PredicatedButtonWidget extends ButtonWidget {
             super.readUpdateInfo(id, buffer);
         }
     }
-
 }

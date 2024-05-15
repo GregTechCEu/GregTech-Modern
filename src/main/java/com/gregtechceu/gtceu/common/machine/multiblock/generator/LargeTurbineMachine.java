@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -14,19 +13,21 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -36,6 +37,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class LargeTurbineMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
+
     public static final int MIN_DURABILITY_TO_WARN = 10;
 
     private final int BASE_EU_OUTPUT;
@@ -80,7 +82,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     //////////////////////////////////////
-    //******     Recipe Logic    *******//
+    // ****** Recipe Logic *******//
     //////////////////////////////////////
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
@@ -93,7 +95,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         if (rotorHolder == null || EUt <= 0)
             return null;
 
-        var turbineMaxVoltage = (int)turbineMachine.getOverclockVoltage();
+        var turbineMaxVoltage = (int) turbineMachine.getOverclockVoltage();
         if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
             turbineMachine.excessVoltage -= turbineMaxVoltage;
             return null;
@@ -101,10 +103,10 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
-        //get the amount of parallel required to match the desired output voltage
+        // get the amount of parallel required to match the desired output voltage
         var maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
 
-        //this is necessary to prevent over-consumption of fuel
+        // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
         recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();
@@ -126,7 +128,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
     }
 
     //////////////////////////////////////
-    //*******        GUI        ********//
+    // ******* GUI ********//
     //////////////////////////////////////
 
     @Override
@@ -136,26 +138,29 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
             var rotorHolder = getRotorHolder();
 
             if (rotorHolder != null && rotorHolder.getRotorEfficiency() > 0) {
-                textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed", FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()), FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
-                textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency", rotorHolder.getTotalEfficiency()));
+                textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_speed",
+                        FormattingUtil.formatNumbers(rotorHolder.getRotorSpeed()),
+                        FormattingUtil.formatNumbers(rotorHolder.getMaxRotorHolderSpeed())));
+                textList.add(Component.translatable("gtceu.multiblock.turbine.efficiency",
+                        rotorHolder.getTotalEfficiency()));
 
                 long maxProduction = getOverclockVoltage();
                 long currentProduction = isActive() ? boostProduction((int) maxProduction) : 0;
                 String voltageName = GTValues.VNF[GTUtil.getTierByVoltage(currentProduction)];
 
                 if (isActive()) {
-                    textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick", FormattingUtil.formatNumbers(currentProduction), voltageName));
+                    textList.add(3, Component.translatable("gtceu.multiblock.turbine.energy_per_tick",
+                            FormattingUtil.formatNumbers(currentProduction), voltageName));
                 }
 
                 int rotorDurability = rotorHolder.getRotorDurabilityPercent();
                 if (rotorDurability > MIN_DURABILITY_TO_WARN) {
                     textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability));
                 } else {
-                    textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability).setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                    textList.add(Component.translatable("gtceu.multiblock.turbine.rotor_durability", rotorDurability)
+                            .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
                 }
             }
         }
     }
-
-
 }

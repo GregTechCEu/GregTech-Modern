@@ -4,14 +4,16 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Set;
@@ -22,31 +24,30 @@ import java.util.Set;
  * @implNote WorldGenLayers
  */
 public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
+
     STONE(
             "stone", new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
-            Set.of(Level.OVERWORLD.location())
-    ),
+            Set.of(Level.OVERWORLD.location())),
     DEEPSLATE(
             "deepslate", new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
-            Set.of(Level.OVERWORLD.location())
-    ),
+            Set.of(Level.OVERWORLD.location())),
     NETHERRACK(
             "netherrack", new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
-            Set.of(Level.NETHER.location())
-    ),
+            Set.of(Level.NETHER.location())),
     ENDSTONE(
             "endstone", WorldGeneratorUtils.END_ORE_REPLACEABLES,
-            Set.of(Level.END.location())
-    );
+            Set.of(Level.END.location()));
 
     private final String name;
 
     @SuppressWarnings("NonFinalFieldInEnum")
-    @Getter @Setter
+    @Getter
+    @Setter
     private Set<ResourceLocation> levels;
 
     @SuppressWarnings("NonFinalFieldInEnum")
-    @Getter @Setter
+    @Getter
+    @Setter
     private RuleTest target;
 
     WorldGenLayers(String name, RuleTest target, Set<ResourceLocation> levels) {
@@ -62,8 +63,6 @@ public enum WorldGenLayers implements IWorldGenLayer, StringRepresentable {
             GTRegistryInfo.registerFor(GTRegistryInfo.WORLD_GEN_LAYER.registryKey);
         }
     }
-
-
 
     public static IWorldGenLayer getByName(String name) {
         return WorldGeneratorUtils.WORLD_GEN_LAYERS.get(name);

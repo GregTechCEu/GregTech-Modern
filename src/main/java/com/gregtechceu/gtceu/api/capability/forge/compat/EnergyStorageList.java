@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.capability.forge.compat;
 
-import lombok.RequiredArgsConstructor;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
 @RequiredArgsConstructor
 public class EnergyStorageList implements IEnergyStorage {
+
     public final IEnergyStorage[] storages;
 
     public EnergyStorageList(List<IEnergyStorage> storages) {

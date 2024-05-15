@@ -4,11 +4,12 @@ import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.pipenet.PipeNetWalker;
 import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import org.jetbrains.annotations.NotNull;
 
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LaserNetWalker extends PipeNetWalker<LaserPipeBlockEntity, LaserPipeProperties, LaserPipeNet> {
@@ -44,7 +45,10 @@ public class LaserNetWalker extends PipeNetWalker<LaserPipeBlockEntity, LaserPip
 
     @NotNull
     @Override
-    protected PipeNetWalker<LaserPipeBlockEntity, LaserPipeProperties, LaserPipeNet> createSubWalker(LaserPipeNet net, Direction direction, BlockPos nextPos, int walkedBlocks) {
+    protected PipeNetWalker<LaserPipeBlockEntity, LaserPipeProperties, LaserPipeNet> createSubWalker(LaserPipeNet net,
+                                                                                                     Direction direction,
+                                                                                                     BlockPos nextPos,
+                                                                                                     int walkedBlocks) {
         LaserNetWalker walker = new LaserNetWalker(net, nextPos, walkedBlocks);
         walker.facingToHandler = facingToHandler;
         walker.sourcePipe = sourcePipe;
@@ -58,9 +62,7 @@ public class LaserNetWalker extends PipeNetWalker<LaserPipeBlockEntity, LaserPip
     }
 
     @Override
-    protected void checkPipe(LaserPipeBlockEntity pipeTile, BlockPos pos) {
-
-    }
+    protected void checkPipe(LaserPipeBlockEntity pipeTile, BlockPos pos) {}
 
     @Override
     protected Direction[] getSurroundingPipeSides() {
@@ -72,15 +74,18 @@ public class LaserNetWalker extends PipeNetWalker<LaserPipeBlockEntity, LaserPip
     }
 
     @Override
-    protected void checkNeighbour(LaserPipeBlockEntity pipeNode, BlockPos pipePos, Direction faceToNeighbour, @org.jetbrains.annotations.Nullable BlockEntity neighbourTile) {
+    protected void checkNeighbour(LaserPipeBlockEntity pipeNode, BlockPos pipePos, Direction faceToNeighbour,
+                                  @org.jetbrains.annotations.Nullable BlockEntity neighbourTile) {
         if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
 
         if (((LaserNetWalker) root).routePath == null) {
-            ILaserContainer handler = neighbourTile.getLevel().getCapability(GTCapability.CAPABILITY_LASER, neighbourTile.getBlockPos(), faceToNeighbour.getOpposite());
+            ILaserContainer handler = neighbourTile.getLevel().getCapability(GTCapability.CAPABILITY_LASER,
+                    neighbourTile.getBlockPos(), faceToNeighbour.getOpposite());
             if (handler != null) {
-                ((LaserNetWalker) root).routePath = new LaserRoutePath(pipePos.immutable(), faceToNeighbour, getWalkedBlocks());
+                ((LaserNetWalker) root).routePath = new LaserRoutePath(pipePos.immutable(), faceToNeighbour,
+                        getWalkedBlocks());
                 stop();
             }
         }

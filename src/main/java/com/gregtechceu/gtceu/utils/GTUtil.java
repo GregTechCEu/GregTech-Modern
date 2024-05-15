@@ -1,15 +1,16 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.mojang.blaze3d.platform.InputConstants;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,10 +28,12 @@ import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import com.mojang.blaze3d.platform.InputConstants;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.lwjgl.glfw.GLFW;
 
-import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collections;
@@ -128,7 +131,6 @@ public class GTUtil {
         return null;
     }
 
-
     public static float getExplosionPower(long voltage) {
         return getTierByVoltage(voltage) + 1;
     }
@@ -137,7 +139,7 @@ public class GTUtil {
      * @param array Array sorted with natural order
      * @param value Value to search for
      * @return Index of the nearest value lesser or equal than {@code value},
-     * or {@code -1} if there's no entry matching the condition
+     *         or {@code -1} if there's no entry matching the condition
      */
     public static int nearestLesserOrEqual(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
@@ -157,7 +159,7 @@ public class GTUtil {
      * @param array Array sorted with natural order
      * @param value Value to search for
      * @return Index of the nearest value lesser than {@code value},
-     * or {@code -1} if there's no entry matching the condition
+     *         or {@code -1} if there's no entry matching the condition
      */
     public static int nearestLesser(@NotNull long[] array, long value) {
         int low = 0, high = array.length - 1;
@@ -175,8 +177,8 @@ public class GTUtil {
 
     /**
      * @return Lowest tier of the voltage that can handle {@code voltage}; that is,
-     * a voltage with value greater than equal than {@code voltage}. If there's no
-     * tier that can handle it, {@code MAX} is returned.
+     *         a voltage with value greater than equal than {@code voltage}. If there's no
+     *         tier that can handle it, {@code MAX} is returned.
      */
     public static byte getTierByVoltage(long voltage) {
         // Yes, yes we do need UHV+.
@@ -187,7 +189,7 @@ public class GTUtil {
      * Ex: This method turns both 1024 and 512 into HV.
      *
      * @return the highest voltage tier with value below or equal to {@code voltage}, or
-     * {@code ULV} if there's no tier below
+     *         {@code ULV} if there's no tier below
      */
     public static byte getFloorTierByVoltage(long voltage) {
         return (byte) Math.max(GTValues.ULV, nearestLesserOrEqual(GTValues.V, voltage));
@@ -271,7 +273,8 @@ public class GTUtil {
     public static boolean isShiftDown() {
         if (LDLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
+            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT) ||
+                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_SHIFT);
         }
         return false;
     }
@@ -279,7 +282,8 @@ public class GTUtil {
     public static boolean isCtrlDown() {
         if (LDLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
+            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_CONTROL) ||
+                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_CONTROL);
         }
         return false;
     }
@@ -287,17 +291,20 @@ public class GTUtil {
     public static boolean isAltDown() {
         if (LDLib.isClient()) {
             var id = Minecraft.getInstance().getWindow().getWindow();
-            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) || InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
+            return InputConstants.isKeyDown(id, GLFW.GLFW_KEY_LEFT_ALT) ||
+                    InputConstants.isKeyDown(id, GLFW.GLFW_KEY_RIGHT_ALT);
         }
         return false;
     }
 
     public static boolean isFluidStackAmountDivisible(FluidStack fluidStack, int divisor) {
-        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() && fluidStack.getAmount() / divisor != 0;
+        return fluidStack.getAmount() % divisor == 0 && fluidStack.getAmount() % divisor != fluidStack.getAmount() &&
+                fluidStack.getAmount() / divisor != 0;
     }
 
     public static boolean isItemStackCountDivisible(ItemStack itemStack, int divisor) {
-        return itemStack.getCount() % divisor == 0 && itemStack.getCount() % divisor != itemStack.getCount() && itemStack.getCount() / divisor != 0;
+        return itemStack.getCount() % divisor == 0 && itemStack.getCount() % divisor != itemStack.getCount() &&
+                itemStack.getCount() / divisor != 0;
     }
 
     public static int getItemBurnTime(Item item) {
@@ -309,20 +316,16 @@ public class GTUtil {
             return -1;
         }
 
-        if (biome.is(BiomeTags.IS_DEEP_OCEAN)
-            || biome.is(BiomeTags.IS_OCEAN)
-            || biome.is(BiomeTags.IS_BEACH)
-            || biome.is(BiomeTags.IS_RIVER)) {
+        if (biome.is(BiomeTags.IS_DEEP_OCEAN) || biome.is(BiomeTags.IS_OCEAN) || biome.is(BiomeTags.IS_BEACH) ||
+                biome.is(BiomeTags.IS_RIVER)) {
             return FluidHelper.getBucket();
-        } else if (biome.is(Tags.Biomes.IS_SWAMP)
-            || biome.is(Tags.Biomes.IS_WET)) {
+        } else if (biome.is(Tags.Biomes.IS_SWAMP) || biome.is(Tags.Biomes.IS_WET)) {
             return FluidHelper.getBucket() * 4 / 5;
         } else if (biome.is(BiomeTags.IS_JUNGLE)) {
             return FluidHelper.getBucket() * 35 / 100;
         } else if (biome.is(Tags.Biomes.IS_SNOWY)) {
             return FluidHelper.getBucket() * 3 / 10;
-        } else if (biome.is(Tags.Biomes.IS_PLAINS)
-            || biome.is(BiomeTags.IS_FOREST)) {
+        } else if (biome.is(Tags.Biomes.IS_PLAINS) || biome.is(BiomeTags.IS_FOREST)) {
             return FluidHelper.getBucket() / 4;
         } else if (biome.is(Tags.Biomes.IS_COLD)) {
             return FluidHelper.getBucket() * 175 / 1000;
@@ -342,9 +345,8 @@ public class GTUtil {
         for (DyeColor dyeColor : DyeColor.values()) {
             float[] c2 = GradientUtil.getRGB(dyeColor.getTextColor());
 
-            double distance = (c[0] - c2[0]) * (c[0] - c2[0])
-                    + (c[1] - c2[1]) * (c[1] - c2[1])
-                    + (c[2] - c2[2]) * (c[2] - c2[2]);
+            double distance = (c[0] - c2[0]) * (c[0] - c2[0]) + (c[1] - c2[1]) * (c[1] - c2[1]) +
+                    (c[2] - c2[2]) * (c[2] - c2[2]);
 
             distances.put(distance, dyeColor);
         }
@@ -409,5 +411,4 @@ public class GTUtil {
         }
         return world.isDay();
     }
-
 }

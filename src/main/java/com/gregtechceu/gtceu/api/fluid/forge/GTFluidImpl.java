@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.fluid.forge;
 
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.LiquidBlock;
@@ -9,17 +10,22 @@ import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.extensions.IFluidExtension;
 import net.neoforged.neoforge.fluids.FluidType;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class GTFluidImpl extends GTFluid implements IFluidExtension {
+
     private final Supplier<FluidType> fluidType;
 
-    public GTFluidImpl(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid, Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block, Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
+    public GTFluidImpl(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
+                       Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
+                       Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
         super(state, stillFluid, flowingFluid, block, bucket, burnTime);
         this.fluidType = fluidType;
     }
@@ -31,7 +37,9 @@ public abstract class GTFluidImpl extends GTFluid implements IFluidExtension {
 
     public static class Source extends GTFluidImpl {
 
-        public Source(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid, Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block, Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
+        public Source(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
+                      Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
+                      Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
             super(state, stillFluid, flowingFluid, block, bucket, burnTime, fluidType);
         }
 
@@ -48,9 +56,11 @@ public abstract class GTFluidImpl extends GTFluid implements IFluidExtension {
 
     public static class Flowing extends GTFluidImpl {
 
-        public Flowing(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid, Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block, Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
+        public Flowing(@NotNull FluidState state, Supplier<? extends Fluid> stillFluid,
+                       Supplier<? extends Fluid> flowingFluid, Supplier<? extends LiquidBlock> block,
+                       Supplier<? extends Item> bucket, int burnTime, Supplier<FluidType> fluidType) {
             super(state, stillFluid, flowingFluid, block, bucket, burnTime, fluidType);
-            //registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
+            // registerDefaultState(getStateDefinition().any().setValue(LEVEL, 7));
         }
 
         protected void createFluidStateDefinition(StateDefinition.@NotNull Builder<Fluid, net.minecraft.world.level.material.FluidState> builder) {

@@ -4,23 +4,24 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.RotationState;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CoilWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.multiblock.FactoryBlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.multiblock.Predicates;
 import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.ParallelHatchPartMachine;
+
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Blocks;
@@ -35,10 +36,10 @@ import static com.gregtechceu.gtceu.api.multiblock.Predicates.*;
 import static com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection.*;
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.data.block.GCyMBlocks.*;
-import static com.gregtechceu.gtceu.data.recipe.GCyMRecipeTypes.ALLOY_BLAST_RECIPES;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
 import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.NaquadahAlloy;
+import static com.gregtechceu.gtceu.data.recipe.GCyMRecipeTypes.ALLOY_BLAST_RECIPES;
 import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 /**
@@ -46,6 +47,7 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
  * @implNote Gregicality Multiblocks
  */
 public class GCyMMachines {
+
     public static void init() {}
 
     public static final MachineDefinition[] PARALLEL_HATCH = registerTieredMachines("parallel_hatch",
@@ -61,25 +63,28 @@ public class GCyMMachines {
                     .rotationState(RotationState.ALL)
                     .abilities(PartAbility.PARALLEL_HATCH)
                     .workableTieredHullRenderer(GTCEu.id("block/machines/parallel_hatch_mk" + (tier - 4)))
-                    .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk"+tier+".tooltip"))
+                    .tooltips(Component.translatable("gtceu.machine.parallel_hatch_mk" + tier + ".tooltip"))
                     .compassNode("parallel_hatch")
                     .register(),
             IV, LuV, ZPM, UV);
 
-    public final static MultiblockMachineDefinition LARGE_MACERATION_TOWER = REGISTRATE.multiblock("large_maceration_tower", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_MACERATION_TOWER = REGISTRATE
+            .multiblock("large_maceration_tower", WorkableElectricMultiblockMachine::new)
             .langValue("Large Maceration Tower")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.macerator")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.macerator")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(MACERATOR_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_SECURE_MACERATION)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX", "XXXXX","XXXXX", "XXXXX")
-                    .aisle("XXXXX", "XGGGX","XGGGX", "XAAAX")
-                    .aisle("XXXXX", "XGGGX","XGGGX", "XAAAX")
-                    .aisle("XXXXX", "XGGGX","XGGGX", "XAAAX")
-                    .aisle("XXXXX", "XXXXX","XXSXX", "XXXXX")
+                    .aisle("XXXXX", "XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
+                    .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
+                    .aisle("XXXXX", "XGGGX", "XGGGX", "XAAAX")
+                    .aisle("XXXXX", "XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SECURE_MACERATION.get()).setMinGlobalLimited(55)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -93,13 +98,16 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE.multiblock("large_chemical_bath", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_CHEMICAL_BATH = REGISTRATE
+            .multiblock("large_chemical_bath", WorkableElectricMultiblockMachine::new)
             .langValue("Large Chemical Bath")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.ore_washer"), Component.translatable("gtceu.chemical_bath")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                    Component.translatable("gtceu.ore_washer"), Component.translatable("gtceu.chemical_bath")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(CHEMICAL_BATH_RECIPES, ORE_WASHER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXXXX")
@@ -122,20 +130,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE.multiblock("large_centrifuge", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_CENTRIFUGE = REGISTRATE
+            .multiblock("large_centrifuge", WorkableElectricMultiblockMachine::new)
             .langValue("Large Centrifugal Unit")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.centrifuge"), Component.translatable("gtceu.thermal_centrifuge")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                    Component.translatable("gtceu.centrifuge"), Component.translatable("gtceu.thermal_centrifuge")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(CENTRIFUGE_RECIPES, THERMAL_CENTRIFUGE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("#XXX#","XXXXX","#XXX#")
-                    .aisle("XXXXX","XAPAX","XXXXX")
-                    .aisle("XXXXX","XPAPX","XXXXX")
-                    .aisle("XXXXX","XAPAX","XXXXX")
-                    .aisle("#XXX#","XXSXX","#XXX#")
+                    .aisle("#XXX#", "XXXXX", "#XXX#")
+                    .aisle("XXXXX", "XAPAX", "XXXXX")
+                    .aisle("XXXXX", "XPAPX", "XXXXX")
+                    .aisle("XXXXX", "XAPAX", "XXXXX")
+                    .aisle("#XXX#", "XXSXX", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(40)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -150,20 +161,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE.multiblock("large_mixer", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_MIXER = REGISTRATE
+            .multiblock("large_mixer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Mixing Vessel")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.mixer")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.mixer")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(MIXER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_REACTION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("#XXX#","#XXX#","#XXX#","#XXX#","#XXX#","##F##")
-                    .aisle("XXXXX","XAPAX","XAAAX","XAPAX","XAAAX","##F##")
-                    .aisle("XXXXX","XPPPX","XAPAX","XPPPX","XAGAX","FFGFF")
-                    .aisle("XXXXX","XAPAX","XAAAX","XAPAX","XAAAX","##F##")
-                    .aisle("#XXX#","#XSX#","#XXX#","#XXX#","#XXX#","##F##")
+                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
+                    .aisle("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
+                    .aisle("XXXXX", "XPPPX", "XAPAX", "XPPPX", "XAGAX", "FFGFF")
+                    .aisle("XXXXX", "XAPAX", "XAAAX", "XAPAX", "XAAAX", "##F##")
+                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#", "#XXX#", "##F##")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_REACTION_SAFE.get()).setMinGlobalLimited(50)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -180,19 +194,22 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE.multiblock("large_electrolyzer", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_ELECTROLYZER = REGISTRATE
+            .multiblock("large_electrolyzer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Electrolysis Chamber")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.electrolyzer")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.electrolyzer")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(ELECTROLYZER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX","XXXXX","XXXXX")
-                    .aisle("XXXXX","XCCCX","XCCCX")
-                    .aisle("XXXXX","XCCCX","XCCCX")
-                    .aisle("XXXXX","XXSXX","XXXXX")
+                    .aisle("XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XXXXX", "XCCCX", "XCCCX")
+                    .aisle("XXXXX", "XCCCX", "XCCCX")
+                    .aisle("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(30)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -205,19 +222,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ELECTROMAGNET = REGISTRATE.multiblock("large_electromagnet", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_ELECTROMAGNET = REGISTRATE
+            .multiblock("large_electromagnet", WorkableElectricMultiblockMachine::new)
             .langValue("Large Electromagnet")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.electromagnetic_separator"), Component.translatable("gtceu.polarizer")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                    Component.translatable("gtceu.electromagnetic_separator"),
+                    Component.translatable("gtceu.polarizer")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(ELECTROMAGNETIC_SEPARATOR_RECIPES, POLARIZER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_NONCONDUCTING)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX","XXXXX","XXXXX")
-                    .aisle("XCXCX","XCXCX","XCXCX")
-                    .aisle("XCXCX","XCXCX","XCXCX")
-                    .aisle("XXXXX","XXSXX","XXXXX")
+                    .aisle("XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XCXCX", "XCXCX", "XCXCX")
+                    .aisle("XCXCX", "XCXCX", "XCXCX")
+                    .aisle("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_NONCONDUCTING.get()).setMinGlobalLimited(35)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -230,21 +251,24 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_PACKER = REGISTRATE.multiblock("large_packer", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_PACKER = REGISTRATE
+            .multiblock("large_packer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Packaging Machine")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.packer")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.packer")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(GTRecipeTypes.PACKER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_TUNGSTENSTEEL_ROBUST)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXX","XXX","XXX")
-                    .aisle("XXX","XAX","XXX")
-                    .aisle("XXX","XAX","XXX")
-                    .aisle("XXX","XAX","XXX")
-                    .aisle("XXX","XAX","XXX")
-                    .aisle("XXX","XSX","XXX")
+                    .aisle("XXX", "XXX", "XXX")
+                    .aisle("XXX", "XAX", "XXX")
+                    .aisle("XXX", "XAX", "XXX")
+                    .aisle("XXX", "XAX", "XXX")
+                    .aisle("XXX", "XAX", "XXX")
+                    .aisle("XXX", "XSX", "XXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_TUNGSTENSTEEL_ROBUST.get()).setMinGlobalLimited(30)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -257,21 +281,25 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ASSEMBLER = REGISTRATE.multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_ASSEMBLER = REGISTRATE
+            .multiblock("large_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Assembling Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.assembler")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.assembler")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXXXXXX","XXXXXXXXX","XXXXXXXXX")
-                    .aisle("XXXXXXXXX","XAAAXAAAX","XGGGXXXXX")
-                    .aisle("XXXXXXXXX","XGGGXXSXX","XGGGX###X")
+                    .aisle("XXXXXXXXX", "XXXXXXXXX", "XXXXXXXXX")
+                    .aisle("XXXXXXXXX", "XAAAXAAAX", "XGGGXXXXX")
+                    .aisle("XXXXXXXXX", "XGGGXXSXX", "XGGGX###X")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(40)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
+                                    true))
                             .or(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('G', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
@@ -284,23 +312,27 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_CIRCUIT_ASSEMBLER = REGISTRATE.multiblock("large_circuit_assembler", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_CIRCUIT_ASSEMBLER = REGISTRATE
+            .multiblock("large_circuit_assembler", WorkableElectricMultiblockMachine::new)
             .langValue("Large Circuit Assembling Facility")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.circuit_assembler")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.circuit_assembler")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(CIRCUIT_ASSEMBLER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LARGE_SCALE_ASSEMBLING)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXXXX","XXXXXXX","XXXXXXX")
-                    .aisle("XXXXXXX","XPPPPPX","XGGGGGX")
-                    .aisle("XXXXXXX","XAAAAPX","XGGGGGX")
-                    .aisle("XXXXXXX","XTTTTXX","XXXXXXX")
-                    .aisle("#####XX","#####SX","#####XX")
+                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
+                    .aisle("XXXXXXX", "XPPPPPX", "XGGGGGX")
+                    .aisle("XXXXXXX", "XAAAAPX", "XGGGGGX")
+                    .aisle("XXXXXXX", "XTTTTXX", "XXXXXXX")
+                    .aisle("#####XX", "#####SX", "#####XX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_LARGE_SCALE_ASSEMBLING.get()).setMinGlobalLimited(55)
-                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true, true))
+                            .or(Predicates.autoAbilities(definition.getRecipeTypes(), false, false, true, true, true,
+                                    true))
                             .or(Predicates.abilities(INPUT_ENERGY).setExactLimit(1))
                             .or(Predicates.autoAbilities(true, false, true)))
                     .where('T', Predicates.blocks(CASING_TEMPERED_GLASS.get()))
@@ -315,20 +347,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ARC_SMELTER = REGISTRATE.multiblock("large_arc_smelter", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_ARC_SMELTER = REGISTRATE
+            .multiblock("large_arc_smelter", WorkableElectricMultiblockMachine::new)
             .langValue("Large Arc Smelter")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.arc_furnace")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.arc_furnace")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(ARC_FURNACE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_HIGH_TEMPERATURE_SMELTING)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("#XXX#","#XXX#","#XXX#","#XXX#")
-                    .aisle("XXXXX","XCACX","XCACX","XXXXX")
-                    .aisle("XXXXX","XAAAX","XAAAX","XXMXX")
-                    .aisle("XXXXX","XACAX","XACAX","XXXXX")
-                    .aisle("#XXX#","#XSX#","#XXX#","#XXX#")
+                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
+                    .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
+                    .aisle("XXXXX", "XAAAX", "XAAAX", "XXMXX")
+                    .aisle("XXXXX", "XACAX", "XACAX", "XXXXX")
+                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(45)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -344,20 +379,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE.multiblock("large_engraving_laser", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_ENGRAVING_LASER = REGISTRATE
+            .multiblock("large_engraving_laser", WorkableElectricMultiblockMachine::new)
             .langValue("Large Engraving Laser")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.laser_engraver")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.laser_engraver")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(LASER_ENGRAVER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_LASER_SAFE_ENGRAVING)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX","XXGXX","XXGXX","XXXXX")
-                    .aisle("XXXXX","XAAAX","XAAAX","XKKKX")
-                    .aisle("XXXXX","GAAAG","GACAG","XKXKX")
-                    .aisle("XXXXX","XAAAX","XAAAX","XKKKX")
-                    .aisle("XXSXX","XXGXX","XXGXX","XXXXX")
+                    .aisle("XXXXX", "XXGXX", "XXGXX", "XXXXX")
+                    .aisle("XXXXX", "XAAAX", "XAAAX", "XKKKX")
+                    .aisle("XXXXX", "GAAAG", "GACAG", "XKXKX")
+                    .aisle("XXXXX", "XAAAX", "XAAAX", "XKKKX")
+                    .aisle("XXSXX", "XXGXX", "XXGXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('C', blocks(CASING_TUNGSTENSTEEL_PIPE.get()))
                     .where('X', blocks(CASING_LASER_SAFE_ENGRAVING.get()).setMinGlobalLimited(50)
@@ -373,20 +411,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_SIFTING_FUNNEL = REGISTRATE.multiblock("large_sifting_funnel", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_SIFTING_FUNNEL = REGISTRATE
+            .multiblock("large_sifting_funnel", WorkableElectricMultiblockMachine::new)
             .langValue("Large Sifting Funnel")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.sifter")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.sifter")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(SIFTER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_VIBRATION_SAFE)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("#X#X#","#X#X#","#XXX#","XXXXX","#XXX#")
-                    .aisle("XXXXX","XAXAX","XKKKX","XKKKX","X###X")
-                    .aisle("#XXX#","#XAX#","XKKKX","XKKKX","X###X")
-                    .aisle("XXXXX","XAXAX","XKKKX","XKKKX","X###X")
-                    .aisle("#X#X#","#X#X#","#XSX#","XXXXX","#XXX#")
+                    .aisle("#X#X#", "#X#X#", "#XXX#", "XXXXX", "#XXX#")
+                    .aisle("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
+                    .aisle("#XXX#", "#XAX#", "XKKKX", "XKKKX", "X###X")
+                    .aisle("XXXXX", "XAXAX", "XKKKX", "XKKKX", "X###X")
+                    .aisle("#X#X#", "#X#X#", "#XSX#", "XXXXX", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_VIBRATION_SAFE.get()).setMinGlobalLimited(50)
                             .or(Predicates.autoAbilities(definition.getRecipeTypes()))
@@ -401,9 +442,11 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE.multiblock("alloy_blast_smelter", CoilWorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition BLAST_ALLOY_SMELTER = REGISTRATE
+            .multiblock("alloy_blast_smelter", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Alloy Blast Smelter")
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.alloy_blast_smelter")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.alloy_blast_smelter")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(ALLOY_BLAST_RECIPES)
             .recipeModifier(GTRecipeModifiers::ebfOverclock)
@@ -427,24 +470,25 @@ public class GCyMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                    .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
-                    .aisle("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                    .aisle("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
-                    .aisle("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
-                    .aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
-                    .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
-                    .where('S', definition, Direction.NORTH)
-                    .where('G', HEAT_VENT.getDefaultState())
-                    .where('A', Blocks.AIR.defaultBlockState())
-                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                    .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.WEST)
-                    .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
-                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
-                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                    .where('M', MAINTENANCE_HATCH, Direction.NORTH);
+                        .aisle("#XSX#", "#CCC#", "#GGG#", "#CCC#", "#XMX#")
+                        .aisle("IXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                        .aisle("XXXXD", "CAAAC", "GAAAG", "CAAAC", "XXHXX")
+                        .aisle("FXXXX", "CAAAC", "GAAAG", "CAAAC", "XXXXX")
+                        .aisle("#EXE#", "#CCC#", "#GGG#", "#CCC#", "#XXX#")
+                        .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
+                        .where('S', definition, Direction.NORTH)
+                        .where('G', HEAT_VENT.getDefaultState())
+                        .where('A', Blocks.AIR.defaultBlockState())
+                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                        .where('I', ITEM_IMPORT_BUS[GTValues.LV], Direction.WEST)
+                        .where('F', FLUID_IMPORT_HATCH[GTValues.LV], Direction.WEST)
+                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.EAST)
+                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
+                        .where('M', MAINTENANCE_HATCH, Direction.NORTH);
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
+                        .forEach(
+                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
@@ -453,13 +497,16 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_AUTOCLAVE = REGISTRATE.multiblock("large_autoclave", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_AUTOCLAVE = REGISTRATE
+            .multiblock("large_autoclave", WorkableElectricMultiblockMachine::new)
             .langValue("Large Crystallization Chamber")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.autoclave")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.autoclave")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(AUTOCLAVE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "XXX", "XXX")
@@ -480,13 +527,17 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_MATERIAL_PRESS = REGISTRATE.multiblock("large_material_press", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_MATERIAL_PRESS = REGISTRATE
+            .multiblock("large_material_press", WorkableElectricMultiblockMachine::new)
             .langValue("Large Material Press")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_4.tooltip", Component.translatable("gtceu.bender"), Component.translatable("gtceu.compressor"), Component.translatable("gtceu.forge_hammer"), Component.translatable("gtceu.forming_press")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_4.tooltip",
+                    Component.translatable("gtceu.bender"), Component.translatable("gtceu.compressor"),
+                    Component.translatable("gtceu.forge_hammer"), Component.translatable("gtceu.forming_press")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(BENDER_RECIPES, COMPRESSOR_RECIPES, FORGE_HAMMER_RECIPES, FORMING_PRESS_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX")
@@ -506,13 +557,17 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_BREWER = REGISTRATE.multiblock("large_brewer", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_BREWER = REGISTRATE
+            .multiblock("large_brewer", WorkableElectricMultiblockMachine::new)
             .langValue("Large Brewing Vat")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_3.tooltip", Component.translatable("gtceu.brewery"), Component.translatable("gtceu.fermenter"), Component.translatable("gtceu.fluid_heater")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_3.tooltip",
+                    Component.translatable("gtceu.brewery"), Component.translatable("gtceu.fermenter"),
+                    Component.translatable("gtceu.fluid_heater")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(BREWING_RECIPES, FERMENTING_RECIPES, FLUID_HEATER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_CORROSION_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#", "#####")
@@ -536,19 +591,22 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_CUTTER = REGISTRATE.multiblock("large_cutter", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_CUTTER = REGISTRATE
+            .multiblock("large_cutter", WorkableElectricMultiblockMachine::new)
             .langValue("Large Cutting Saw")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.cutter"), Component.translatable("gtceu.lathe")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                    Component.translatable("gtceu.cutter"), Component.translatable("gtceu.lathe")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(CUTTER_RECIPES, LATHE_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_SHOCK_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXXXX","XXXXXXX","XXXXXXX","##XXXXX")
-                    .aisle("XXXXXXX","XAXCCCX","XXXAAAX","##XXXXX")
-                    .aisle("XXXXXXX","XAXCCCX","XXXAAAX","##XXXXX")
-                    .aisle("XXXXXXX","XSXGGGX","XXXGGGX","##XXXXX")
+                    .aisle("XXXXXXX", "XXXXXXX", "XXXXXXX", "##XXXXX")
+                    .aisle("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
+                    .aisle("XXXXXXX", "XAXCCCX", "XXXAAAX", "##XXXXX")
+                    .aisle("XXXXXXX", "XSXGGGX", "XXXGGGX", "##XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_SHOCK_PROOF.get()).setMinGlobalLimited(65)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -564,13 +622,16 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_DISTILLERY = REGISTRATE.multiblock("large_distillery", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_DISTILLERY = REGISTRATE
+            .multiblock("large_distillery", WorkableElectricMultiblockMachine::new)
             .langValue("Large Fractionating Distillery")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.distillation_tower"), Component.translatable("gtceu.distillery")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                    Component.translatable("gtceu.distillation_tower"), Component.translatable("gtceu.distillery")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(DISTILLATION_RECIPES, DISTILLERY_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> {
                 TraceabilityPredicate casingPredicate = blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(40);
@@ -602,18 +663,21 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_EXTRACTOR = REGISTRATE.multiblock("large_extractor", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_EXTRACTOR = REGISTRATE
+            .multiblock("large_extractor", WorkableElectricMultiblockMachine::new)
             .langValue("Large Extraction Machine")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.extractor"), Component.translatable("gtceu.canner")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
+                    Component.translatable("gtceu.extractor"), Component.translatable("gtceu.canner")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeTypes(EXTRACTOR_RECIPES, CANNER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXX","XXXXX","XXXXX")
-                    .aisle("XXXXX","XCACX","XXXXX")
-                    .aisle("XXXXX","XXSXX","XXXXX")
+                    .aisle("XXXXX", "XXXXX", "XXXXX")
+                    .aisle("XXXXX", "XCACX", "XXXXX")
+                    .aisle("XXXXX", "XXSXX", "XXXXX")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(25)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -627,13 +691,16 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_EXTRUDER = REGISTRATE.multiblock("large_extruder", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_EXTRUDER = REGISTRATE
+            .multiblock("large_extruder", WorkableElectricMultiblockMachine::new)
             .langValue("Large Extrusion Machine")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.extruder")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.extruder")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(EXTRUDER_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("##XXX", "##XXX", "##XXX")
@@ -656,20 +723,23 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_SOLIDIFIER = REGISTRATE.multiblock("large_solidifier", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_SOLIDIFIER = REGISTRATE
+            .multiblock("large_solidifier", WorkableElectricMultiblockMachine::new)
             .langValue("Large Solidification Array")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.fluid_solidifier")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.fluid_solidifier")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(FLUID_SOLIDFICATION_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_WATERTIGHT)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("#XXX#","#XXX#","#XXX#","#XXX#")
-                    .aisle("XXXXX","XCACX","XCACX","XXXXX")
-                    .aisle("XXXXX","XAAAX","XAAAX","XXXXX")
-                    .aisle("XXXXX","XCACX","XCACX","XXXXX")
-                    .aisle("#XXX#","#XSX#","#XXX#","#XXX#")
+                    .aisle("#XXX#", "#XXX#", "#XXX#", "#XXX#")
+                    .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
+                    .aisle("XXXXX", "XAAAX", "XAAAX", "XXXXX")
+                    .aisle("XXXXX", "XCACX", "XCACX", "XXXXX")
+                    .aisle("#XXX#", "#XSX#", "#XXX#", "#XXX#")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_WATERTIGHT.get()).setMinGlobalLimited(45)
                             .or(autoAbilities(definition.getRecipeTypes()))
@@ -684,13 +754,16 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition LARGE_WIREMILL = REGISTRATE.multiblock("large_wiremill", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition LARGE_WIREMILL = REGISTRATE
+            .multiblock("large_wiremill", WorkableElectricMultiblockMachine::new)
             .langValue("Large Wire Factory")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.wiremill")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.wiremill")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(WIREMILL_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_STRESS_PROOF)
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXXXX", "XXXXX", "XXX##")
@@ -709,10 +782,12 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition MEGA_BLAST_FURNACE = REGISTRATE.multiblock("mega_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition MEGA_BLAST_FURNACE = REGISTRATE
+            .multiblock("mega_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Rotary Hearth Furnace")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.electric_blast_furnace")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.electric_blast_furnace")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(BLAST_RECIPES)
             .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers::ebfOverclock)
@@ -720,19 +795,58 @@ public class GCyMMachines {
             .pattern(definition -> {
                 TraceabilityPredicate casing = blocks(CASING_HIGH_TEMPERATURE_SMELTING.get()).setMinGlobalLimited(360);
                 return FactoryBlockPattern.start()
-                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPMPPPT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
-                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFHHHFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
-                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
+                        .aisle("##XXXXXXXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "####FFFFF####", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##",
+                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
+                                "##FFFHHHFFF##", "#############", "#############", "#############", "#############",
+                                "#############", "###TTTTTTT###")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#",
+                                "######P######", "######P######", "######P######", "######P######", "######P######",
+                                "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######",
+                                "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#",
+                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
+                                "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
+                                "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#",
+                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
+                                "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
+                                "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FHPHAAAHPHF#",
+                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
+                                "#FHPHAAAHPHF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
+                                "###PTAAATP###", "##TPPPMPPPT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FHHHAAAHHHF#",
+                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
+                                "#FHHHAAAHHHF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
+                                "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFHHHHHHHFF#",
+                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
+                                "#FFHHHHHHHFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
+                                "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFHHHPHHHFF#",
+                                "######P######", "######P######", "######P######", "######P######", "######P######",
+                                "##FHHHPHHHF##", "######P######", "######P######", "######P######", "######P######",
+                                "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFHHHFFF##",
+                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
+                                "##FFFHHHFFF##", "#############", "#############", "#############", "#############",
+                                "#############", "###TTTTTTT###")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "####FFFFF####", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .aisle("##XXXXXXXXX##", "##XXXXSXXXX##", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
                         .where('S', controller(blocks(definition.get())))
                         .where('X', casing.or(autoAbilities(definition.getRecipeTypes()))
                                 .or(Predicates.autoAbilities(true, false, true)))
@@ -752,38 +866,78 @@ public class GCyMMachines {
             .shapeInfos(definition -> {
                 List<MultiblockShapeInfo> shapeInfo = new ArrayList<>();
                 var builder = MultiblockShapeInfo.builder()
-                    .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
-                    .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-                    .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
-                    .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
-                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
-                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
-                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###", "##TPPPHPPPT##")
-                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####", "##TTTTPTTTT##")
-                    .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####", "##TTTTPTTTT##")
-                    .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#", "######P######", "######P######", "######P######", "######P######", "######P######", "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######", "######P######", "##TTTTPTTTT##")
-                    .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##FFFXXXFFF##", "#############", "#############", "#############", "#############", "#############", "###TTTTTTT###")
-                    .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###", "#############", "#############", "#############", "#############", "#############", "####FFFFF####", "#############", "#############", "#############", "#############", "#############", "#############")
-                    .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############", "#############")
-                    .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
-                    .where('S', definition, Direction.NORTH)
-                    .where('A', Blocks.AIR.defaultBlockState())
-                    .where('T', CASING_TUNGSTENSTEEL_ROBUST.getDefaultState())
-                    .where('B', FIREBOX_TUNGSTENSTEEL.getDefaultState())
-                    .where('P', CASING_TUNGSTENSTEEL_PIPE.getDefaultState())
-                    .where('I', CASING_EXTREME_ENGINE_INTAKE.getDefaultState())
-                    .where('F', ChemicalHelper.getBlock(TagPrefix.frameGt, NaquadahAlloy))
-                    .where('V', HEAT_VENT.getDefaultState())
-                    .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
-                    .where('L', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
-                    .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
-                    .where('Q', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
-                    .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
-                    .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
-                    .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
+                        .aisle("##XODXXXQLX##", "##XXXXSXXXX##", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "####FFFFF####", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
+                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
+                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
+                                "#############", "###TTTTTTT###")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
+                                "######P######", "######P######", "######P######", "######P######", "######P######",
+                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
+                                "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
+                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
+                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
+                                "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
+                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
+                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
+                                "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "###PPAAAPP###", "###PTAAATP###", "#FXPXAAAXPXF#",
+                                "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###", "###PTAAATP###",
+                                "#FXPXAAAXPXF#", "###PTAAATP###", "###PCAAACP###", "###PCAAACP###", "###PCAAACP###",
+                                "###PTAAATP###", "##TPPPHPPPT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BAAAB####", "####IAAAI####", "#FXXXAAAXXXF#",
+                                "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####", "####IAAAI####",
+                                "#FXXXAAAXXXF#", "####IAAAI####", "####CAAAC####", "####CAAAC####", "####CAAAC####",
+                                "####IAAAI####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXVXXXXXXXVXX", "####BBPBB####", "####TITIT####", "#FFXXXXXXXFF#",
+                                "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####", "####BITIB####",
+                                "#FFXXXXXXXFF#", "####BITIB####", "####CCCCC####", "####CCCCC####", "####CCCCC####",
+                                "####BITIB####", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXXXXXXXXXX", "#F####P####F#", "#F####P####F#", "#FFXXXPXXXFF#",
+                                "######P######", "######P######", "######P######", "######P######", "######P######",
+                                "##FXXXPXXXF##", "######P######", "######P######", "######P######", "######P######",
+                                "######P######", "##TTTTPTTTT##")
+                        .aisle("XXXXXXXXXXXXX", "XXXXVVVVVXXXX", "##F#######F##", "##F#######F##", "##FFFXXXFFF##",
+                                "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##", "##F#######F##",
+                                "##FFFXXXFFF##", "#############", "#############", "#############", "#############",
+                                "#############", "###TTTTTTT###")
+                        .aisle("#XXXXXXXXXXX#", "#XXXXXXXXXXX#", "###F#####F###", "###F#####F###", "###FFFFFFF###",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "####FFFFF####", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .aisle("##XXXEMEXXX##", "##XXXXXXXXX##", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############", "#############", "#############", "#############",
+                                "#############", "#############")
+                        .where('X', CASING_HIGH_TEMPERATURE_SMELTING.getDefaultState())
+                        .where('S', definition, Direction.NORTH)
+                        .where('A', Blocks.AIR.defaultBlockState())
+                        .where('T', CASING_TUNGSTENSTEEL_ROBUST.getDefaultState())
+                        .where('B', FIREBOX_TUNGSTENSTEEL.getDefaultState())
+                        .where('P', CASING_TUNGSTENSTEEL_PIPE.getDefaultState())
+                        .where('I', CASING_EXTREME_ENGINE_INTAKE.getDefaultState())
+                        .where('F', ChemicalHelper.getBlock(TagPrefix.frameGt, NaquadahAlloy))
+                        .where('V', HEAT_VENT.getDefaultState())
+                        .where('E', ENERGY_INPUT_HATCH[GTValues.LV], Direction.SOUTH)
+                        .where('L', ITEM_IMPORT_BUS[GTValues.LV], Direction.NORTH)
+                        .where('O', ITEM_EXPORT_BUS[GTValues.LV], Direction.NORTH)
+                        .where('Q', FLUID_IMPORT_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('D', FLUID_EXPORT_HATCH[GTValues.LV], Direction.NORTH)
+                        .where('H', MUFFLER_HATCH[GTValues.LV], Direction.UP)
+                        .where('M', MAINTENANCE_HATCH, Direction.SOUTH);
                 GTCEuAPI.HEATING_COILS.entrySet().stream()
                         .sorted(Comparator.comparingInt(entry -> entry.getKey().getTier()))
-                        .forEach(coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
+                        .forEach(
+                                coil -> shapeInfo.add(builder.shallowCopy().where('C', coil.getValue().get()).build()));
                 return shapeInfo;
             })
             .workableCasingRenderer(GTCEu.id("block/casings/gcym/high_temperature_smelting_casing"),
@@ -792,21 +946,30 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition MEGA_VACUUM_FREEZER = REGISTRATE.multiblock("mega_vacuum_freezer", WorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition MEGA_VACUUM_FREEZER = REGISTRATE
+            .multiblock("mega_vacuum_freezer", WorkableElectricMultiblockMachine::new)
             .langValue("Bulk Blast Chiller")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
-            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip", Component.translatable("gtceu.vacuum_freezer")))
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",
+                    Component.translatable("gtceu.vacuum_freezer")))
             .rotationState(RotationState.NON_Y_AXIS)
             .recipeType(VACUUM_RECIPES)
-            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
+            .recipeModifiers(GTRecipeModifiers.PARALLEL_HATCH,
+                    GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_ALUMINIUM_FROSTPROOF)
             .pattern(definition -> FactoryBlockPattern.start()
-                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPXAVPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####", "XXXXXXX####")
-                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####", "XXXXXXX####")
-                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####", "###########")
+                    .aisle("XXXXXXX#KKK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KVK", "XXXXXXX#KKK", "XXXXXXX####",
+                            "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPPPPPPPPPV", "XPAPAPX#VPV", "XPPPPPPPPPV", "XPAPAPX#KVK", "XPPPPPX####",
+                            "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPAPAPXAVPV", "XAAAAAX#VPV", "XPAAAPX#VPV", "XAAAAAX#KVK", "XPAPAPX####",
+                            "XXXXXXX####")
+                    .aisle("XXXXXXX#KVK", "XPAPAPPPPPV", "XAAAAAX#VPV", "XPAAAPPPPPV", "XAAAAAX#KVK", "XPAPAPX####",
+                            "XXXXXXX####")
+                    .aisle("XXXXXXX#KKK", "XPPPPPX#KVK", "XPA#APX#KVK", "XPAAAPX#KVK", "XPAAAPX#KKK", "XPPPPPX####",
+                            "XXXXXXX####")
+                    .aisle("#XXXXX#####", "#XXSXX#####", "#XGGGX#####", "#XGGGX#####", "#XGGGX#####", "#XXXXX#####",
+                            "###########")
                     .where('S', controller(blocks(definition.get())))
                     .where('X', blocks(CASING_ALUMINIUM_FROSTPROOF.get()).setMinGlobalLimited(140)
                             .or(autoAbilities(definition.getRecipeTypes()))

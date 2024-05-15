@@ -8,9 +8,12 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
-import lombok.Getter;
+
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -18,6 +21,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
+
     @Getter
     public final IO handlerIO;
     @Persisted
@@ -33,7 +37,8 @@ public class FluidRecipeHandler implements IRecipeHandler<FluidIngredient> {
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
+    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
         return NotifiableFluidTank.handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
     }
 

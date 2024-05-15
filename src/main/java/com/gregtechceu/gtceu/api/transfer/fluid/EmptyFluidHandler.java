@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+
 import net.neoforged.neoforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 
 public class EmptyFluidHandler implements IFluidHandlerModifiable {
+
     public static final EmptyFluidHandler INSTANCE = new EmptyFluidHandler();
 
     private EmptyFluidHandler() {
@@ -12,9 +15,7 @@ public class EmptyFluidHandler implements IFluidHandlerModifiable {
     }
 
     @Override
-    public void setFluidInTank(int i, FluidStack fluidStack) {
-
-    }
+    public void setFluidInTank(int i, FluidStack fluidStack) {}
 
     @Override
     public int getTanks() {

@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.client.renderer.block;
 
 import com.gregtechceu.gtceu.client.model.SpriteOverrider;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
-import lombok.Getter;
+
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.BakedModel;
@@ -14,8 +15,10 @@ import net.minecraft.resources.ResourceLocation;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
@@ -42,7 +45,8 @@ public class TextureOverrideRenderer extends CTMModelRenderer {
         }
     }
 
-    public TextureOverrideRenderer(ResourceLocation model, @NotNull Supplier<Map<String, ResourceLocation>> overrideSupplier) {
+    public TextureOverrideRenderer(ResourceLocation model,
+                                   @NotNull Supplier<Map<String, ResourceLocation>> overrideSupplier) {
         super(model);
         this.override = Collections.emptyMap();
         this.overrideSupplier = overrideSupplier;

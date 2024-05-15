@@ -9,10 +9,12 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SwitchWidget;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -25,6 +27,7 @@ import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +38,7 @@ import java.util.Objects;
  * @implNote ProspectorScannerBehavior
  */
 public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionItem, IAddInformation {
+
     private final int radius;
     private final long cost;
     private final ProspectorMode<?>[] modes;
@@ -64,7 +68,8 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isShiftKeyDown() && modes.length > 1) {
             if (!level.isClientSide) {
@@ -91,16 +96,21 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
                 .widget(new SwitchWidget(-20, 4, 18, 18, (cd, pressed) -> map.setDarkMode(pressed))
                         .setSupplier(map::isDarkMode)
                         .setTexture(
-                                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0, 0.5, 1, 0.5).scale(0.8f)),
-                                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy().getSubTexture(0, 0, 1, 0.5).scale(0.8f))));
+                                new GuiTextureGroup(GuiTextures.BUTTON,
+                                        GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true).copy()
+                                                .getSubTexture(0, 0.5, 1, 0.5).scale(0.8f)),
+                                new GuiTextureGroup(GuiTextures.BUTTON, GuiTextures.PROGRESS_BAR_SOLAR_STEAM.get(true)
+                                        .copy().getSubTexture(0, 0, 1, 0.5).scale(0.8f))));
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.radius", radius));
         tooltipComponents.add(Component.translatable("metaitem.prospector.tooltip.modes"));
         for (ProspectorMode<?> mode : modes) {
-            tooltipComponents.add(Component.literal(" -").append(Component.translatable(mode.unlocalizedName)).withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            tooltipComponents.add(Component.literal(" -").append(Component.translatable(mode.unlocalizedName))
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
         }
     }
 }

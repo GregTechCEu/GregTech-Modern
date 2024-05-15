@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
@@ -23,6 +25,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -67,7 +70,8 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
 
         final boolean finalHover = hover;
         final byte finalToggleTimer = toggleTimer;
-        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setHover(finalHover).setToggleTimer(finalToggleTimer));
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                data1 -> data1.setHover(finalHover).setToggleTimer(finalToggleTimer));
     }
 
     @Override
@@ -100,17 +104,18 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                            ArmorMaterial.Layer layer) {
         return GTCEu.id("textures/armor/jetpack.png");
     }
 
     /*
-    @Override
-    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-                                         double damage, ArmorItem.Type equipmentSlot) {
-        return new ArmorProperties(0, 0, 0);
-    }
-    */
+     * @Override
+     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+     * double damage, ArmorItem.Type equipmentSlot) {
+     * return new ArmorProperties(0, 0, 0);
+     * }
+     */
 
     @OnlyIn(Dist.CLIENT)
     @Override
@@ -119,7 +124,7 @@ public class Jetpack extends ArmorLogicSuite implements IJetpack {
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
             Component status = (data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
-                Component.translatable("metaarmor.hud.status.disabled"));
+                    Component.translatable("metaarmor.hud.status.disabled"));
             Component result = Component.translatable("metaarmor.hud.hover_mode", status);
             this.HUD.newString(result);
         }

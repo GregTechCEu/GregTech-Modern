@@ -1,10 +1,8 @@
 package com.gregtechceu.gtceu.api.item.armor;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.*;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.*;
-import lombok.Getter;
+
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.core.Holder;
 import net.minecraft.core.NonNullList;
@@ -18,14 +16,16 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+
+import com.google.common.base.Preconditions;
+import com.google.common.collect.*;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,6 +35,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class ArmorComponentItem extends ArmorItem implements IComponentItem {
+
     @Getter
     private IArmorLogic armorLogic = new DummyArmorLogic();
     @Getter
@@ -114,27 +115,32 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
         return armorLogic.getArmorDisplay(player, armor, slot);
     }
 
-    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage, EquipmentSlot slot) {
+    public void damageArmor(LivingEntity entity, @NotNull ItemStack stack, DamageSource source, int damage,
+                            EquipmentSlot slot) {
         armorLogic.damageArmor(entity, stack, source, damage, slot);
     }
 
     @Override
     public void initializeClient(Consumer<IClientItemExtensions> consumer) {
         consumer.accept(new IClientItemExtensions() {
+
             @Override
-            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack, EquipmentSlot equipmentSlot, HumanoidModel<?> original) {
+            public @NotNull HumanoidModel<?> getHumanoidArmorModel(LivingEntity livingEntity, ItemStack itemStack,
+                                                                   EquipmentSlot equipmentSlot,
+                                                                   HumanoidModel<?> original) {
                 return armorLogic.getArmorModel(livingEntity, itemStack, equipmentSlot, original);
             }
         });
     }
 
     @Override
-    public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer, boolean innerModel) {
+    public @Nullable ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                                      ArmorMaterial.Layer layer, boolean innerModel) {
         return armorLogic.getArmorTexture(stack, entity, slot, layer);
     }
 
     ///////////////////////////////////////////
-    /////   ALL component item things   ///////
+    ///// ALL component item things ///////
     ///////////////////////////////////////////
 
     public void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
@@ -150,7 +156,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         for (IItemComponent component : components) {
             if (component instanceof IAddInformation addInformation) {
                 addInformation.appendHoverText(stack, context, tooltipComponents, isAdvanced);
@@ -238,7 +245,8 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
-    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+    public InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
+                                                  InteractionHand usedHand) {
         for (IItemComponent component : components) {
             if (component instanceof IInteractionItem interactionItem) {
                 var result = interactionItem.interactLivingEntity(stack, player, interactionTarget, usedHand);

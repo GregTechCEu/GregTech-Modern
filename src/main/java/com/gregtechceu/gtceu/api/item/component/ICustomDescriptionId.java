@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
  * @date 2023/2/23
  * @implNote ICustomDescriptionId
  */
-public interface ICustomDescriptionId extends IItemComponent{
-    String getItemStackDisplayName(ItemStack itemStack);
+public interface ICustomDescriptionId extends IItemComponent {
 
+    String getItemStackDisplayName(ItemStack itemStack);
 }

@@ -2,22 +2,24 @@ package com.gregtechceu.gtceu.api.block;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
-import lombok.Getter;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Supplier;
 
 public class SimpleCoilType implements ICoilType, StringRepresentable {
+
     @Getter
     private final String name;
-    //electric blast furnace properties
+    // electric blast furnace properties
     @Getter
     private final int coilTemperature;
-    //multi smelter properties
+    // multi smelter properties
     @Getter
     private final int level;
     @Getter
@@ -29,7 +31,8 @@ public class SimpleCoilType implements ICoilType, StringRepresentable {
     @Getter
     private final ResourceLocation texture;
 
-    public SimpleCoilType(String name, int coilTemperature, int level, int energyDiscount, int tier, @NotNull Supplier<@Nullable Material> material, ResourceLocation texture) {
+    public SimpleCoilType(String name, int coilTemperature, int level, int energyDiscount, int tier,
+                          @NotNull Supplier<@Nullable Material> material, ResourceLocation texture) {
         this.name = name;
         this.coilTemperature = coilTemperature;
         this.level = level;

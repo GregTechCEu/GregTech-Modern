@@ -10,7 +10,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class NuclearRecipes {
 
     public static void init(RecipeOutput provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("uranium_hexafluoride").duration(200).EUt(VA[LV])
                 .inputItems(dust, Uraninite, 3)
                 .inputFluids(HydrofluoricAcid.getFluid(4000))
@@ -36,6 +35,5 @@ public class NuclearRecipes {
                 .outputItems(dust, Uranium238)
                 .outputFluids(Fluorine.getFluid(6000))
                 .save(provider);
-
     }
 }

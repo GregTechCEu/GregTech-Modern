@@ -5,17 +5,20 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.block.ICoilType;
 import com.gregtechceu.gtceu.api.block.IFilterType;
-import com.gregtechceu.gtceu.api.material.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+import com.gregtechceu.gtceu.api.material.material.IMaterialRegistryManager;
 import com.gregtechceu.gtceu.api.registry.GTRegistry;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
+
 import net.minecraft.world.level.block.Block;
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
+
+import lombok.Getter;
 import org.jetbrains.annotations.ApiStatus;
 
 import java.util.HashMap;
@@ -44,7 +47,8 @@ public class GTCEuAPI {
     @ApiStatus.Internal
     public static void initializeHighTier() {
         if (highTierInitialized) throw new IllegalStateException("High-Tier is already initialized.");
-        highTier = ConfigHolder.INSTANCE.machines.highTierContent || AddonFinder.getAddons().stream().anyMatch(IGTAddon::requiresHighTier) || Platform.isDevEnv();
+        highTier = ConfigHolder.INSTANCE.machines.highTierContent ||
+                AddonFinder.getAddons().stream().anyMatch(IGTAddon::requiresHighTier) || Platform.isDevEnv();
         highTierInitialized = true;
 
         if (isHighTier()) GTCEu.LOGGER.info("High-Tier is Enabled.");

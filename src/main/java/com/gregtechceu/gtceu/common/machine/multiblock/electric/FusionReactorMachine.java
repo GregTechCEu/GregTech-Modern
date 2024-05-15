@@ -18,21 +18,25 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.common.block.FusionCasingBlock;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.Block;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
@@ -41,7 +45,8 @@ import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
 @MethodsReturnNonnullByDefault
 public class FusionReactorMachine extends WorkableElectricMultiblockMachine implements ITieredMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class, WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FusionReactorMachine.class,
+            WorkableMultiblockMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     private final int tier;
@@ -51,10 +56,10 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     protected long heat = 0;
     @Persisted
     protected final NotifiableEnergyContainer energyContainer;
-    //TODO implement it when we do fancy effect again.
-//    @Getter
-//    @DescSynced
-//    private Integer color = -1;
+    // TODO implement it when we do fancy effect again.
+    // @Getter
+    // @DescSynced
+    // private Integer color = -1;
     @Nullable
     protected TickableSubscription preHeatSubs;
 
@@ -65,7 +70,7 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -96,11 +101,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         Map<Long, IO> ioMap = getMultiblockState().getMatchContext().getOrCreate("ioMap", Long2ObjectMaps::emptyMap);
         for (IMultiPart part : getParts()) {
             IO io = ioMap.getOrDefault(part.self().getPos().asLong(), IO.BOTH);
-            if(io == IO.NONE || io == IO.OUT) continue;
+            if (io == IO.NONE || io == IO.OUT) continue;
             for (var handler : part.getRecipeHandlers()) {
                 // If IO not compatible
                 if (io != IO.BOTH && handler.getHandlerIO() != IO.BOTH && io != handler.getHandlerIO()) continue;
-                if (handler.getCapability() == EURecipeCapability.CAP && handler instanceof IEnergyContainer container) {
+                if (handler.getCapability() == EURecipeCapability.CAP &&
+                        handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
                     traitSubscriptions.add(handler.addChangedListener(this::updatePreHeatSubscription));
                 }
@@ -122,11 +128,12 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     //////////////////////////////////////
-    //*****      Recipe Logic     ******//
+    // ***** Recipe Logic ******//
     //////////////////////////////////////
     protected void updatePreHeatSubscription() {
         // do preheat logic for heat cool down and charge internal energy container
-        if (heat > 0 || (inputEnergyContainers != null && inputEnergyContainers.getEnergyStored() > 0 && energyContainer.getEnergyStored() < energyContainer.getEnergyCapacity())) {
+        if (heat > 0 || (inputEnergyContainers != null && inputEnergyContainers.getEnergyStored() > 0 &&
+                energyContainer.getEnergyStored() < energyContainer.getEnergyCapacity())) {
             preHeatSubs = subscribeServerTick(preHeatSubs, this::updateHeat);
         } else if (preHeatSubs != null) {
             preHeatSubs.unsubscribe();
@@ -147,7 +154,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
 
             // if the stored heat is >= required energy, recipe is okay to run
             if (heatDiff <= 0) {
-                return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe, fusionReactorMachine.getMaxVoltage());
+                return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe,
+                        fusionReactorMachine.getMaxVoltage());
             }
             // if the remaining energy needed is more than stored, do not run
             if (fusionReactorMachine.energyContainer.getEnergyStored() < heatDiff)
@@ -158,7 +166,8 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             // increase the stored heat
             fusionReactorMachine.heat += heatDiff;
             fusionReactorMachine.updatePreHeatSubscription();
-            return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe, fusionReactorMachine.getMaxVoltage());
+            return RecipeHelper.applyOverclock(new OverclockingLogic(2, 2), recipe,
+                    fusionReactorMachine.getMaxVoltage());
         }
         return null;
     }
@@ -191,10 +200,13 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     public void updateHeat() {
-        // Drain heat when the reactor is not active, is paused via soft mallet, or does not have enough energy and has fully wiped recipe progress
-        // Don't drain heat when there is not enough energy and there is still some recipe progress, as that makes it doubly hard to complete the recipe
+        // Drain heat when the reactor is not active, is paused via soft mallet, or does not have enough energy and has
+        // fully wiped recipe progress
+        // Don't drain heat when there is not enough energy and there is still some recipe progress, as that makes it
+        // doubly hard to complete the recipe
         // (Will have to recover heat and recipe progress)
-        if ((getRecipeLogic().isIdle() || !isWorkingEnabled() || (getRecipeLogic().isWaiting() && getRecipeLogic().getProgress() == 0)) && heat > 0) {
+        if ((getRecipeLogic().isIdle() || !isWorkingEnabled() ||
+                (getRecipeLogic().isWaiting() && getRecipeLogic().getProgress() == 0)) && heat > 0) {
             heat = heat <= 10000 ? 0 : (heat - 10000);
         }
         // charge the internal energy storage
@@ -205,30 +217,31 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
         updatePreHeatSubscription();
     }
 
-//    @Override
-//    public void onWorking() {
-//        super.onWorking();
-//        if (color == -1) {
-//            var lastRecipe = recipeLogic.getLastRecipe();
-//            if (lastRecipe != null && !lastRecipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
-//                int newColor = 0xFF000000 | FluidHelper.getColor(FluidRecipeCapability.CAP.of(lastRecipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()));
-//                if (!Objects.equals(color, newColor)) {
-//                    color = newColor;
-//                }
-//            }
-//        }
-//    }
+    // @Override
+    // public void onWorking() {
+    // super.onWorking();
+    // if (color == -1) {
+    // var lastRecipe = recipeLogic.getLastRecipe();
+    // if (lastRecipe != null && !lastRecipe.getOutputContents(FluidRecipeCapability.CAP).isEmpty()) {
+    // int newColor = 0xFF000000 |
+    // FluidHelper.getColor(FluidRecipeCapability.CAP.of(lastRecipe.getOutputContents(FluidRecipeCapability.CAP).get(0).getContent()));
+    // if (!Objects.equals(color, newColor)) {
+    // color = newColor;
+    // }
+    // }
+    // }
+    // }
 
-//    @Override
-//    public void onWaiting() {
-//        super.onWaiting();
-//        color = -1;
-//    }
+    // @Override
+    // public void onWaiting() {
+    // super.onWaiting();
+    // color = -1;
+    // }
 
     @Override
     public void afterWorking() {
         super.afterWorking();
-//        color = -1;
+        // color = -1;
     }
 
     @Override
@@ -237,20 +250,21 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
     }
 
     //////////////////////////////////////
-    //********       GUI       *********//
+    // ******** GUI *********//
     //////////////////////////////////////
 
     @Override
     public void addDisplayText(List<Component> textList) {
         super.addDisplayText(textList);
         if (isFormed()) {
-            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy", this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
+            textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.energy",
+                    this.energyContainer.getEnergyStored(), this.energyContainer.getEnergyCapacity()));
             textList.add(Component.translatable("gtceu.multiblock.fusion_reactor.heat", heat));
         }
     }
 
     //////////////////////////////////////
-    //********      MISC       *********//
+    // ******** MISC *********//
     //////////////////////////////////////
     public static long calculateEnergyStorageFactor(int tier, int energyInputAmount) {
         return energyInputAmount * (long) Math.pow(2, tier - LuV) * 10000000L;
@@ -279,5 +293,4 @@ public class FusionReactorMachine extends WorkableElectricMultiblockMachine impl
             default -> FusionCasingBlock.CasingType.FUSION_CASING;
         };
     }
-
 }

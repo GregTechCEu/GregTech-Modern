@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.api.worldgen;
 
-import com.mojang.serialization.JsonOps;
-import lombok.Getter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
+import com.mojang.serialization.JsonOps;
+import lombok.Getter;
+
 import java.util.Set;
-import java.util.function.Supplier;
 
 public class SimpleWorldGenLayer implements IWorldGenLayer {
+
     private final String name;
     private final IWorldGenLayer.RuleTestSupplier target;
     @Getter
@@ -28,7 +29,8 @@ public class SimpleWorldGenLayer implements IWorldGenLayer {
 
     @Override
     public String toString() {
-        return getSerializedName() + "[" + RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null) + "]";
+        return getSerializedName() + "[" +
+                RuleTest.CODEC.encodeStart(JsonOps.INSTANCE, target.get()).result().orElse(null) + "]";
     }
 
     @Override

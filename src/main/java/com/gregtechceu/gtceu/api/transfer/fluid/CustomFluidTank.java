@@ -2,21 +2,24 @@ package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
-import org.jetbrains.annotations.UnknownNullability;
+
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.function.Predicate;
 
-public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiable, INBTSerializable<CompoundTag>, IContentChangeAware {
+public class CustomFluidTank extends FluidTank
+                             implements IFluidHandlerModifiable, INBTSerializable<CompoundTag>, IContentChangeAware {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Runnable onContentsChanged = () -> {};
 
     public CustomFluidTank(int capacity) {
@@ -61,6 +64,7 @@ public class CustomFluidTank extends FluidTank implements IFluidHandlerModifiabl
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.fluid = FluidStack.OPTIONAL_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt).getOrThrow();
+        this.fluid = FluidStack.OPTIONAL_CODEC.parse(provider.createSerializationContext(NbtOps.INSTANCE), nbt)
+                .getOrThrow();
     }
 }

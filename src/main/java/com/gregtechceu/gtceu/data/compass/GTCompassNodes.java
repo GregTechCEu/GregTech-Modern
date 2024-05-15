@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.data.compass;
 
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
+
 import net.minecraft.world.item.Items;
 
 /**
@@ -13,6 +15,7 @@ import net.minecraft.world.item.Items;
  * @implNote GTCompassNodes
  */
 public class GTCompassNodes {
+
     public final static CompassNode COVER = CompassNode.getOrCreate(GTCompassSections.COVERS, "cover")
             .icon(() -> new ItemStackTexture(GTItems.ITEM_FILTER.asStack()))
             .position(50, 100)
@@ -31,7 +34,5 @@ public class GTCompassNodes {
             .size(40)
             .lang("Steam Age");
 
-    public static void init() {
-
-    }
+    public static void init() {}
 }

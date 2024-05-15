@@ -7,12 +7,7 @@ import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -27,6 +22,13 @@ import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
+
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.ArrayList;
@@ -37,17 +39,23 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public class StandardVeinGenerator extends VeinGenerator {
-    public static final MapCodec<StandardVeinGenerator> CODEC_SEPARATE = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(ext -> ext.block.get()),
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
-            BuiltInRegistries.BLOCK.byNameCodec().fieldOf("nether_block").forGetter(ext -> ext.netherBlock.get())
-    ).apply(instance, StandardVeinGenerator::new));
 
-    public static final MapCodec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("targets").forGetter(ext -> ext.blocks)
-    ).apply(instance, StandardVeinGenerator::new));
+    public static final MapCodec<StandardVeinGenerator> CODEC_SEPARATE = RecordCodecBuilder
+            .mapCodec(instance -> instance.group(
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("block").forGetter(ext -> ext.block.get()),
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("deep_block").forGetter(ext -> ext.deepBlock.get()),
+                    BuiltInRegistries.BLOCK.byNameCodec().fieldOf("nether_block")
+                            .forGetter(ext -> ext.netherBlock.get()))
+                    .apply(instance, StandardVeinGenerator::new));
 
-    public static final MapCodec<StandardVeinGenerator> CODEC = Codec.mapEither(CODEC_SEPARATE, CODEC_LIST).xmap(either -> either.map(Function.identity(), Function.identity()), Either::left);
+    public static final MapCodec<StandardVeinGenerator> CODEC_LIST = RecordCodecBuilder.mapCodec(instance -> instance
+            .group(
+                    Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec())
+                            .fieldOf("targets").forGetter(ext -> ext.blocks))
+            .apply(instance, StandardVeinGenerator::new));
+
+    public static final MapCodec<StandardVeinGenerator> CODEC = Codec.mapEither(CODEC_SEPARATE, CODEC_LIST)
+            .xmap(either -> either.map(Function.identity(), Function.identity()), Either::left);
 
     public NonNullSupplier<? extends Block> block;
     public NonNullSupplier<? extends Block> deepBlock;
@@ -91,14 +99,12 @@ public class StandardVeinGenerator extends VeinGenerator {
             return this.blocks.map(blockStates -> blockStates.stream()
                     .map(state -> Either.<BlockState, Material>left(state.state))
                     .map(entry -> Map.entry(entry, 1))
-                    .collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1))
-            );
+                    .collect(Collectors.toList()), material -> List.of(Map.entry(Either.right(material), 1)));
         } else {
             return List.of(
                     Map.entry(Either.left(block.get().defaultBlockState()), 1),
                     Map.entry(Either.left(deepBlock.get().defaultBlockState()), 1),
-                    Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1)
-            );
+                    Map.entry(Either.left(netherBlock.get().defaultBlockState()), 1));
         }
     }
 
@@ -107,15 +113,18 @@ public class StandardVeinGenerator extends VeinGenerator {
         // if (this.blocks.left().isPresent() && !this.blocks.left().get().isEmpty()) return this;
         List<OreConfiguration.TargetBlockState> targetStates = new ArrayList<>();
         if (this.block != null) {
-            targetStates.add(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), this.block.get().defaultBlockState()));
+            targetStates.add(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES),
+                    this.block.get().defaultBlockState()));
         }
 
         if (this.deepBlock != null) {
-            targetStates.add(OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES), this.deepBlock.get().defaultBlockState()));
+            targetStates.add(OreConfiguration.target(new TagMatchTest(BlockTags.DEEPSLATE_ORE_REPLACEABLES),
+                    this.deepBlock.get().defaultBlockState()));
         }
 
         if (this.netherBlock != null) {
-            targetStates.add(OreConfiguration.target(new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES), this.netherBlock.get().defaultBlockState()));
+            targetStates.add(OreConfiguration.target(new TagMatchTest(BlockTags.NETHER_CARVER_REPLACEABLES),
+                    this.netherBlock.get().defaultBlockState()));
         }
 
         this.blocks = Either.left(targetStates);
@@ -133,7 +142,8 @@ public class StandardVeinGenerator extends VeinGenerator {
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                                  BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
         int size = entry.clusterSize().sample(random);
@@ -154,7 +164,8 @@ public class StandardVeinGenerator extends VeinGenerator {
 
         for (int heightmapX = x; heightmapX <= x + width; ++heightmapX) {
             for (int heightmapZ = z; heightmapZ <= z + width; ++heightmapZ) {
-                this.doPlaceNormal(generatedBlocks, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY, maxY, x, y, z, width, height);
+                this.doPlaceNormal(generatedBlocks, random, entry, origin, this.blocks, minX, maxX, minZ, maxZ, minY,
+                        maxY, x, y, z, width, height);
 
                 // Stop after first successful placement attempt
                 if (!generatedBlocks.isEmpty())
@@ -165,10 +176,11 @@ public class StandardVeinGenerator extends VeinGenerator {
         return generatedBlocks;
     }
 
-    protected void doPlaceNormal(Map<BlockPos, OreBlockPlacer> generatedBlocks, RandomSource random, GTOreDefinition entry, BlockPos origin,
-                                    Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                    double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY,
-                                    int pX, int pY, int pZ, int pWidth, int pHeight) {
+    protected void doPlaceNormal(Map<BlockPos, OreBlockPlacer> generatedBlocks, RandomSource random,
+                                 GTOreDefinition entry, BlockPos origin,
+                                 Either<List<OreConfiguration.TargetBlockState>, Material> targets,
+                                 double pMinX, double pMaxX, double pMinZ, double pMaxZ, double pMinY, double pMaxY,
+                                 int pX, int pY, int pZ, int pWidth, int pHeight) {
         MutableInt placedAmount = new MutableInt(1);
         BitSet placedBlocks = new BitSet(pWidth * pHeight * pWidth);
         BlockPos.MutableBlockPos posCursor = new BlockPos.MutableBlockPos();
@@ -183,7 +195,8 @@ public class StandardVeinGenerator extends VeinGenerator {
             double z = Mth.lerp(centerOffsetFraction, pMinZ, pMaxZ);
 
             double randomOffsetModifier = random.nextDouble() * (double) size / 16.0D;
-            double randomShapeOffset = ((double) (Mth.sin((float) Math.PI * centerOffsetFraction) + 1.0F) * randomOffsetModifier + 1.0D) / 2.0D;
+            double randomShapeOffset = ((double) (Mth.sin((float) Math.PI * centerOffsetFraction) + 1.0F) *
+                    randomOffsetModifier + 1.0D) / 2.0D;
 
             int shapeIdxOffset = centerOffset * 4;
             shape[shapeIdxOffset] = x;
@@ -223,14 +236,15 @@ public class StandardVeinGenerator extends VeinGenerator {
 
             generateShape(
                     generatedBlocks, random, entry, origin, targets, pX, pY, pZ, pWidth, pHeight,
-                    shape, shapeIdxOffset, placedBlocks, posCursor, density, placedAmount
-            );
+                    shape, shapeIdxOffset, placedBlocks, posCursor, density, placedAmount);
         }
     }
 
-    private static void generateShape(Map<BlockPos, OreBlockPlacer> generatedBlocks, RandomSource random, GTOreDefinition entry, BlockPos origin,
+    private static void generateShape(Map<BlockPos, OreBlockPlacer> generatedBlocks, RandomSource random,
+                                      GTOreDefinition entry, BlockPos origin,
                                       Either<List<OreConfiguration.TargetBlockState>, Material> targets,
-                                      int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape, int shapeIdxOffset,
+                                      int pX, int pY, int pZ, int pWidth, int pHeight, double[] shape,
+                                      int shapeIdxOffset,
                                       BitSet placedBlocks, BlockPos.MutableBlockPos posCursor,
                                       float density, MutableInt placedAmount) {
         double randomShapeOffset = shape[shapeIdxOffset + 3];
@@ -274,9 +288,8 @@ public class StandardVeinGenerator extends VeinGenerator {
                     BlockPos pos = posCursor.immutable();
 
                     final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
-                    generatedBlocks.put(pos, (access, section) ->
-                            placeBlock(access, randomSeed, entry, targets, pos, density, placedAmount)
-                    );
+                    generatedBlocks.put(pos, (access, section) -> placeBlock(access, randomSeed, entry, targets, pos,
+                            density, placedAmount));
                 }
             }
         }

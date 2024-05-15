@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
+
 import lombok.Getter;
 import lombok.Setter;
-
 import org.jetbrains.annotations.Nullable;
 
 public class IngotProperty implements IMaterialProperty<IngotProperty> {
@@ -11,13 +11,15 @@ public class IngotProperty implements IMaterialProperty<IngotProperty> {
     /**
      * Specifies a material into which this material parts turn when heated
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private Material smeltingInto;
 
     /**
      * Specifies a material into which this material parts turn when heated in arc furnace
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private Material arcSmeltingInto;
 
     /**
@@ -25,14 +27,16 @@ public class IngotProperty implements IMaterialProperty<IngotProperty> {
      * <p>
      * Default: this Material.
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private Material macerateInto;
 
     /**
      * Material which obtained when this material is polarized
      */
     @Nullable
-    @Getter @Setter
+    @Getter
+    @Setter
     private Material magneticMaterial;
 
     @Override

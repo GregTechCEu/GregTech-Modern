@@ -40,12 +40,12 @@ public class MaterialFlagAddition {
         oreProp = Molybdenum.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Molybdenum);
 
-        //oreProp = Magnesium.getProperty(PropertyKey.ORE);
-        //oreProp.setOreByProducts(Olivine);
+        // oreProp = Magnesium.getProperty(PropertyKey.ORE);
+        // oreProp.setOreByProducts(Olivine);
 
-        //oreProp = Manganese.getProperty(PropertyKey.ORE);
-        //oreProp.setOreByProducts(Chrome, Iron);
-        //oreProp.setSeparatedInto(Iron);
+        // oreProp = Manganese.getProperty(PropertyKey.ORE);
+        // oreProp.setOreByProducts(Chrome, Iron);
+        // oreProp.setSeparatedInto(Iron);
 
         oreProp = Neodymium.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(RareEarth);
@@ -62,8 +62,8 @@ public class MaterialFlagAddition {
         oreProp = Plutonium239.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Uraninite, Lead, Uraninite);
 
-        //oreProp = Silicon.getProperty(PropertyKey.ORE);
-        //oreProp.setOreByProducts(SiliconDioxide);
+        // oreProp = Silicon.getProperty(PropertyKey.ORE);
+        // oreProp.setOreByProducts(SiliconDioxide);
 
         oreProp = Silver.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Lead, Sulfur, Sulfur, Gold);
@@ -80,11 +80,11 @@ public class MaterialFlagAddition {
         oreProp.setSeparatedInto(Iron);
         oreProp.setWashedIn(SodiumPersulfate);
 
-        //oreProp = Titanium.getProperty(PropertyKey.ORE);
-        //oreProp.setOreByProducts(Almandine);
+        // oreProp = Titanium.getProperty(PropertyKey.ORE);
+        // oreProp.setOreByProducts(Almandine);
 
-        //oreProp = Tungsten.getProperty(PropertyKey.ORE);
-        //oreProp.setOreByProducts(Manganese, Molybdenum);
+        // oreProp = Tungsten.getProperty(PropertyKey.ORE);
+        // oreProp.setOreByProducts(Manganese, Molybdenum);
 
         oreProp = Naquadah.getProperty(PropertyKey.ORE);
         oreProp.setOreByProducts(Sulfur, Barite, NaquadahEnriched);

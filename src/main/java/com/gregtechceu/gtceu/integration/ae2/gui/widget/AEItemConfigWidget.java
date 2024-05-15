@@ -20,12 +20,11 @@ public class AEItemConfigWidget extends AEConfigWidget {
         int line;
         this.displayList = new IConfigurableSlot[this.config.length];
         this.cached = new IConfigurableSlot[this.config.length];
-        for (int index = 0; index < this.config.length; index ++) {
+        for (int index = 0; index < this.config.length; index++) {
             this.displayList[index] = new MEInputBusPartMachine.ExportOnlyAEItem();
             this.cached[index] = new MEInputBusPartMachine.ExportOnlyAEItem();
             line = index / 8;
             this.addWidget(new AEItemConfigSlot((index - line * 8) * 18, line * (18 * 2 + 2), this, index));
         }
     }
-
 }

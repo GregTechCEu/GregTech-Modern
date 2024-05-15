@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.worldgen.generator.veins;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
@@ -8,14 +7,7 @@ import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.ExtraCodecs;
@@ -29,6 +21,16 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
+import com.google.common.base.Preconditions;
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,13 +42,14 @@ import java.util.stream.Stream;
 
 @Accessors(fluent = true, chain = true)
 public class ClassicVeinGenerator extends VeinGenerator {
+
     public static final MapCodec<ClassicVeinGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
-        Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
-        Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
-        Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic),
-        ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", 3).forGetter(val -> val.yRadius)
-    ).apply(instance, ClassicVeinGenerator::new));
+            Layer.CODEC.fieldOf("primary").forGetter(val -> val.primary),
+            Layer.CODEC.fieldOf("secondary").forGetter(val -> val.secondary),
+            Layer.CODEC.fieldOf("between").forGetter(val -> val.between),
+            Layer.CODEC.fieldOf("sporadic").forGetter(val -> val.sporadic),
+            ExtraCodecs.POSITIVE_INT.optionalFieldOf("y_radius", 3).forGetter(val -> val.yRadius))
+            .apply(instance, ClassicVeinGenerator::new));
 
     private Layer primary;
     private Layer secondary;
@@ -79,26 +82,27 @@ public class ClassicVeinGenerator extends VeinGenerator {
         List<Map.Entry<Either<BlockState, Material>, Integer>> result = new ArrayList<>();
         int totalWeight = primary.layers + secondary.layers + between.layers;
         primary.target
-            .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, primary.layers / totalWeight)));
+                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
+                        material -> Stream.of(Either.<BlockState, Material>right(material)))
+                .forEach(entry -> result.add(Map.entry(entry, primary.layers / totalWeight)));
         secondary.target
-            .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, secondary.layers / totalWeight)));
+                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
+                        material -> Stream.of(Either.<BlockState, Material>right(material)))
+                .forEach(entry -> result.add(Map.entry(entry, secondary.layers / totalWeight)));
         between.target
-            .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, between.layers / totalWeight)));
+                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
+                        material -> Stream.of(Either.<BlockState, Material>right(material)))
+                .forEach(entry -> result.add(Map.entry(entry, between.layers / totalWeight)));
         sporadic.target
-            .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
-                material -> Stream.of(Either.<BlockState, Material>right(material)))
-            .forEach(entry -> result.add(Map.entry(entry, 1)));
+                .map(blockStates -> blockStates.stream().map(state -> Either.<BlockState, Material>left(state.state)),
+                        material -> Stream.of(Either.<BlockState, Material>right(material)))
+                .forEach(entry -> result.add(Map.entry(entry, 1)));
         return result;
     }
 
     @Override
-    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
+    public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry,
+                                                  BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
 
         int radius = entry.clusterSize().sample(random);
@@ -130,9 +134,8 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
                     final var randomSeed = random.nextLong(); // Fully deterministic regardless of chunk order
                     BlockPos currentPos = new BlockPos(xOffset + xPos, yOffset + yPos, zOffset + zPos);
-                    generatedBlocks.put(currentPos, (access, section) ->
-                        placeBlock(access, section, randomSeed, entry, currentPos, minPos)
-                    );
+                    generatedBlocks.put(currentPos,
+                            (access, section) -> placeBlock(access, section, randomSeed, entry, currentPos, minPos));
                 }
             }
         }
@@ -140,8 +143,8 @@ public class ClassicVeinGenerator extends VeinGenerator {
     }
 
     private void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed,
-                                   GTOreDefinition entry,
-                                   BlockPos blockPos, BlockPos lowestPos) {
+                            GTOreDefinition entry,
+                            BlockPos blockPos, BlockPos lowestPos) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
         int x = SectionPos.sectionRelative(blockPos.getX());
         int y = SectionPos.sectionRelative(blockPos.getY());
@@ -185,7 +188,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
         // Ensure "between" is not more than the total primary and secondary layers
         Preconditions.checkArgument(primary.layers + secondary.layers >= between.layers,
-            "Error: cannot be more \"between\" layers than primary and secondary layers combined!");
+                "Error: cannot be more \"between\" layers than primary and secondary layers combined!");
 
         this.sporadicDivisor = primary.layers + secondary.layers - 1;
         this.startPrimary = secondary.layers;
@@ -195,7 +198,8 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
     @Override
     public VeinGenerator copy() {
-        return new ClassicVeinGenerator(this.primary.copy(), this.secondary.copy(), this.between.copy(), this.sporadic.copy(), this.yRadius);
+        return new ClassicVeinGenerator(this.primary.copy(), this.secondary.copy(), this.between.copy(),
+                this.sporadic.copy(), this.yRadius);
     }
 
     @Override
@@ -233,15 +237,19 @@ public class ClassicVeinGenerator extends VeinGenerator {
 
     @AllArgsConstructor
     public static class Layer {
+
         public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()).fieldOf("targets").forGetter(layer -> layer.target),
-            ExtraCodecs.intRange(-1, Integer.MAX_VALUE).optionalFieldOf("layers", -1).forGetter(layer -> layer.layers)
-        ).apply(instance, Layer::new));
+                Codec.either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec())
+                        .fieldOf("targets").forGetter(layer -> layer.target),
+                ExtraCodecs.intRange(-1, Integer.MAX_VALUE).optionalFieldOf("layers", -1)
+                        .forGetter(layer -> layer.layers))
+                .apply(instance, Layer::new));
 
         public final Either<List<OreConfiguration.TargetBlockState>, Material> target;
         public int layers;
 
-        public void place(BlockState blockState, BulkSectionAccess access, LevelChunkSection section, long randomSeed, GTOreDefinition entry, BlockPos pos) {
+        public void place(BlockState blockState, BulkSectionAccess access, LevelChunkSection section, long randomSeed,
+                          GTOreDefinition entry, BlockPos pos) {
             RandomSource random = new XoroshiroRandomSource(randomSeed);
             int x = SectionPos.sectionRelative(pos.getX());
             int y = SectionPos.sectionRelative(pos.getY());
@@ -274,6 +282,7 @@ public class ClassicVeinGenerator extends VeinGenerator {
         }
 
         public static class Builder {
+
             private Either<List<OreConfiguration.TargetBlockState>, Material> target;
             private int size = 1;
             private final RuleTest[] rules;
@@ -291,7 +300,8 @@ public class ClassicVeinGenerator extends VeinGenerator {
             }
 
             public Layer.Builder state(BlockState state) {
-                this.target = Either.left(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList());
+                this.target = Either
+                        .left(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList());
                 return this;
             }
 

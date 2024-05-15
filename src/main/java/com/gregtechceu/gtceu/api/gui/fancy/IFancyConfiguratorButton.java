@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.api.gui.fancy;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.apache.commons.lang3.NotImplementedException;
 
 import java.util.Collections;
@@ -38,6 +39,7 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
 
     @Accessors(chain = true)
     class Toggle implements IFancyConfiguratorButton {
+
         IGuiTexture base;
         IGuiTexture pressed;
         BiConsumer<ClickData, Boolean> onClick;
@@ -46,7 +48,8 @@ public interface IFancyConfiguratorButton extends IFancyConfigurator {
         @Setter
         Function<Boolean, List<Component>> tooltipsSupplier = isPressed -> Collections.emptyList();
 
-        public Toggle(IGuiTexture base, IGuiTexture pressed, BooleanSupplier booleanSupplier, BiConsumer<ClickData, Boolean> onClick) {
+        public Toggle(IGuiTexture base, IGuiTexture pressed, BooleanSupplier booleanSupplier,
+                      BiConsumer<ClickData, Boolean> onClick) {
             this.base = base;
             this.pressed = pressed;
             this.booleanSupplier = booleanSupplier;

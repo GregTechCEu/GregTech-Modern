@@ -8,8 +8,8 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
  * @implNote IMachine
  */
 public interface IMachineFeature {
+
     default MetaMachine self() {
         return (MetaMachine) this;
     }
-
 }

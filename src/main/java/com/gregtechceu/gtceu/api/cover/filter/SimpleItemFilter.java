@@ -4,22 +4,26 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.widget.PhantomSlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.Getter;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -29,11 +33,12 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class SimpleItemFilter implements ItemFilter {
+
     public static final Codec<SimpleItemFilter> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
-        Codec.BOOL.fieldOf("ignore_components").forGetter(val -> val.ignoreNbt),
-        ItemStack.OPTIONAL_CODEC.listOf().fieldOf("matches").forGetter(val -> Arrays.stream(val.matches).toList())
-    ).apply(instance, SimpleItemFilter::new));
+            Codec.BOOL.fieldOf("is_blacklist").forGetter(val -> val.isBlackList),
+            Codec.BOOL.fieldOf("ignore_components").forGetter(val -> val.ignoreNbt),
+            ItemStack.OPTIONAL_CODEC.listOf().fieldOf("matches").forGetter(val -> Arrays.stream(val.matches).toList()))
+            .apply(instance, SimpleItemFilter::new));
     @Getter
     protected boolean isBlackList;
     @Getter
@@ -47,7 +52,6 @@ public class SimpleItemFilter implements ItemFilter {
     @Getter
     protected int maxStackSize;
 
-
     protected SimpleItemFilter() {
         Arrays.fill(matches, ItemStack.EMPTY);
         maxStackSize = 1;
@@ -60,7 +64,7 @@ public class SimpleItemFilter implements ItemFilter {
     }
 
     public static SimpleItemFilter loadFilter(ItemStack itemStack) {
-        //handler.itemWriter = itemWriter; TODO fix
+        // handler.itemWriter = itemWriter; TODO fix
         return itemStack.get(GTDataComponents.SIMPLE_ITEM_FILTER);
     }
 
@@ -84,7 +88,6 @@ public class SimpleItemFilter implements ItemFilter {
         return tag;
     }
 
-
     public void setBlackList(boolean blackList) {
         isBlackList = blackList;
         onUpdated.accept(this);
@@ -104,6 +107,7 @@ public class SimpleItemFilter implements ItemFilter {
                 var handler = new CustomItemStackHandler(matches[index]);
 
                 var slot = new PhantomSlotWidget(handler, 0, i * 18, j * 18) {
+
                     @Override
                     public void updateScreen() {
                         super.updateScreen();

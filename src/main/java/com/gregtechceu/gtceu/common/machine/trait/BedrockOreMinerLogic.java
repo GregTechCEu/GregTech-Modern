@@ -2,24 +2,26 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreVeinSavedData;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.OreVeinWorldEntry;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.BedrockOreMinerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.Getter;
+
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.ItemStack;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -29,9 +31,11 @@ import java.util.Map;
  * @implNote FluidDrillLogic
  */
 public class BedrockOreMinerLogic extends RecipeLogic {
+
     public static final int MAX_PROGRESS = 20;
 
-    @Getter @Nullable
+    @Getter
+    @Nullable
     private List<Map.Entry<Integer, Material>> veinMaterials;
 
     public BedrockOreMinerLogic(BedrockOreMinerMachine machine) {
@@ -40,7 +44,7 @@ public class BedrockOreMinerLogic extends RecipeLogic {
 
     @Override
     public BedrockOreMinerMachine getMachine() {
-        return (BedrockOreMinerMachine)super.getMachine();
+        return (BedrockOreMinerMachine) super.getMachine();
     }
 
     @Override
@@ -71,12 +75,30 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     @Nullable
     private GTRecipe getOreMinerRecipe() {
         if (getMachine().getLevel() instanceof ServerLevel serverLevel && veinMaterials != null) {
-            Material material = veinMaterials.get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
-            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix), material, getOreToProduce());
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup 1: crushed; if raw ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2: gem; if crushed ore doesn't exist
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3: normal ore; if gem doesn't exist.
-            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4: fallback to dust
+            Material material = veinMaterials
+                    .get(GTUtil.getRandomItem(serverLevel.random, veinMaterials, veinMaterials.size())).getValue();
+            ItemStack stack = ChemicalHelper.get(TagPrefix.get(ConfigHolder.INSTANCE.machines.bedrockOreDropTagPrefix),
+                    material, getOreToProduce());
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.crushed, material, getOreToProduce()); // backup
+                                                                                                             // 1:
+                                                                                                             // crushed;
+                                                                                                             // if raw
+                                                                                                             // ore
+                                                                                                             // doesn't
+                                                                                                             // exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.gem, material, getOreToProduce()); // backup 2:
+                                                                                                         // gem; if
+                                                                                                         // crushed ore
+                                                                                                         // doesn't
+                                                                                                         // exist
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.ore, material, getOreToProduce()); // backup 3:
+                                                                                                         // normal ore;
+                                                                                                         // if gem
+                                                                                                         // doesn't
+                                                                                                         // exist.
+            if (stack.isEmpty()) stack = ChemicalHelper.get(TagPrefix.dust, material, getOreToProduce()); // backup 4:
+                                                                                                          // fallback to
+                                                                                                          // dust
             if (stack.isEmpty()) {
                 return null;
             }
@@ -99,7 +121,8 @@ public class BedrockOreMinerLogic extends RecipeLogic {
             int regularYield = entry.getOreYield();
             int remainingOperations = entry.getOperationsRemaining();
 
-            int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
+            int produced = Math.max(depletedYield,
+                    regularYield * remainingOperations / BedrockOreVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
             produced *= BedrockOreMinerMachine.getRigMultiplier(getMachine().getTier());
 
             // Overclocks produce 50% more ore
@@ -163,5 +186,4 @@ public class BedrockOreMinerLogic extends RecipeLogic {
     private int getChunkZ() {
         return SectionPos.blockToSectionCoord(getMachine().getPos().getZ());
     }
-
 }

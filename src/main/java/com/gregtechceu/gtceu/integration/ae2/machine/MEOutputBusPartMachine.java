@@ -1,11 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.GridHelper;
-import appeng.api.networking.security.IActionSource;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.helpers.externalstorage.GenericStackInv;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -14,20 +8,27 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemGridWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.SerializableGenericStackInv;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
+
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandler;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.GridHelper;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.helpers.externalstorage.GenericStackInv;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 /**
@@ -36,7 +37,9 @@ import java.util.List;
  * @Date 2023/4/19-20:37
  */
 public class MEOutputBusPartMachine extends MEBusPartMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            MEOutputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private SerializableGenericStackInv internalBuffer;
@@ -63,7 +66,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
                 for (int slot = 0; slot < this.internalBuffer.size(); ++slot) {
                     GenericStack item = this.internalBuffer.getStack(slot);
                     if (item == null) continue;
-                    long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE, this.actionSource);
+                    long inserted = aeNetwork.insert(item.what(), item.amount(), Actionable.MODULATE,
+                            this.actionSource);
                     if (inserted > 0) {
                         item = new GenericStack(item.what(), (item.amount() - inserted));
                     }
@@ -101,8 +105,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     protected void updateInventorySubscription() {
-        if (isWorkingEnabled() && !internalBuffer.isEmpty() && getLevel() != null
-                && GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
+        if (isWorkingEnabled() && !internalBuffer.isEmpty() && getLevel() != null &&
+                GridHelper.getNodeHost(getLevel(), getPos().relative(getFrontFacing())) != null) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -116,7 +120,9 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
     }
 
     private static class InaccessibleInfiniteSlot extends NotifiableItemStackHandler implements IItemHandler {
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class);
+
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+                InaccessibleInfiniteSlot.class);
 
         private final GenericStackInv internalBuffer;
 
@@ -133,8 +139,10 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
         }
 
         @Override
-        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
+        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, this.handlerIO, new CustomItemStackHandler(16) {
+
                 @NotNull
                 @Override
                 public ItemStack insertItem(int slot, @NotNull ItemStack stack, boolean simulate) {
@@ -151,7 +159,8 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
             }
             if (!simulate) {
                 GenericStack stack1 = GenericStack.fromItemStack(stack);
-                this.internalBuffer.insert(stack1.what(), stack1.amount(), Actionable.MODULATE, this.machine instanceof MEBusPartMachine host ? host.actionSource : IActionSource.empty());
+                this.internalBuffer.insert(stack1.what(), stack1.amount(), Actionable.MODULATE,
+                        this.machine instanceof MEBusPartMachine host ? host.actionSource : IActionSource.empty());
                 this.machine.onChanged();
             }
             return ItemStack.EMPTY;
@@ -189,5 +198,4 @@ public class MEOutputBusPartMachine extends MEBusPartMachine {
             return MANAGED_FIELD_HOLDER;
         }
     }
-
 }

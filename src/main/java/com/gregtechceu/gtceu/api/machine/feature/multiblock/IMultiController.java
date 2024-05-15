@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockState;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +19,7 @@ import net.minecraft.world.phys.BlockHitResult;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.concurrent.locks.Lock;
 
@@ -37,7 +39,9 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      * Check MultiBlock Pattern. Just checking pattern without any other logic.
      * You can override it but it's unsafe for calling. because it will also be called in an async thread.
      * <br>
-     * you should always use {@link IMultiController#checkPatternWithLock()} and {@link IMultiController#checkPatternWithTryLock()} instead.
+     * you should always use {@link IMultiController#checkPatternWithLock()} and
+     * {@link IMultiController#checkPatternWithTryLock()} instead.
+     * 
      * @return whether it can be formed.
      */
     default boolean checkPattern() {
@@ -58,6 +62,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
 
     /**
      * Check pattern with a try lock
+     * 
      * @return false - checking failed or cant get the lock.
      */
     default boolean checkPatternWithTryLock() {
@@ -87,7 +92,6 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      */
     boolean isFormed();
 
-
     /**
      * Get MultiblockState. It records all structure-related information.
      */
@@ -97,6 +101,7 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
     /**
      * Called in an async thread. It's unsafe, Don't modify anything of world but checking information.
      * It will be called per 5 tick.
+     * 
      * @param periodID period Tick
      */
     void asyncCheckPattern(long periodID);
@@ -166,10 +171,13 @@ public interface IMultiController extends IMachineFeature, IInteractedMachine {
      * Show the preview of structure.
      */
     @Override
-    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                    BlockHitResult hit) {
         if (!self().isFormed() && player.isShiftKeyDown() && player.getItemInHand(hand).isEmpty()) {
             if (world.isClientSide()) {
-                MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(), self().getDefinition().getMatchingShapes().get(0), ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
+                MultiblockInWorldPreviewRenderer.showPreview(pos, self().getFrontFacing(),
+                        self().getDefinition().getMatchingShapes().get(0),
+                        ConfigHolder.INSTANCE.client.inWorldPreviewDuration * 20);
             }
             return InteractionResult.SUCCESS;
         }

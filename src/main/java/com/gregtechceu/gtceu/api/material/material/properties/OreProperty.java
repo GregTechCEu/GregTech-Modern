@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
+
+import net.minecraft.util.Mth;
+
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,7 +29,8 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: 1 (no multiplier).
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private int oreMultiplier;
 
     /**
@@ -35,7 +38,8 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: 1 (no multiplier).
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private int byProductMultiplier;
 
     /**
@@ -43,7 +47,8 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * <p>
      * Default: false.
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean emissive;
 
     /**
@@ -52,7 +57,8 @@ public class OreProperty implements IMaterialProperty<OreProperty> {
      * Material will have a Dust Property.
      * Default: none.
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     @Nullable
     private Material directSmeltResult;
 

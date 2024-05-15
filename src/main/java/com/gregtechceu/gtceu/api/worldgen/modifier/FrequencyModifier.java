@@ -2,11 +2,9 @@ package com.gregtechceu.gtceu.api.worldgen.modifier;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.util.ExtraCodecs;
 import net.minecraft.util.Mth;
@@ -15,8 +13,11 @@ import net.minecraft.world.level.levelgen.placement.PlacementContext;
 import net.minecraft.world.level.levelgen.placement.PlacementModifier;
 import net.minecraft.world.level.levelgen.placement.PlacementModifierType;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import com.mojang.serialization.MapCodec;
+
 import java.util.stream.Stream;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -26,9 +27,12 @@ import java.util.stream.Stream;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class FrequencyModifier extends PlacementModifier {
-    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = GTRegistries.register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
 
-    public static final MapCodec<FrequencyModifier> CODEC = ExtraCodecs.POSITIVE_FLOAT.fieldOf("chance").xmap(FrequencyModifier::new, (modifier) -> modifier.frequency);
+    public static final PlacementModifierType<FrequencyModifier> FREQUENCY_MODIFIER = GTRegistries
+            .register(BuiltInRegistries.PLACEMENT_MODIFIER_TYPE, GTCEu.id("frequency"), () -> FrequencyModifier.CODEC);
+
+    public static final MapCodec<FrequencyModifier> CODEC = ExtraCodecs.POSITIVE_FLOAT.fieldOf("chance")
+            .xmap(FrequencyModifier::new, (modifier) -> modifier.frequency);
 
     private final float frequency;
 
@@ -54,5 +58,4 @@ public class FrequencyModifier extends PlacementModifier {
     public PlacementModifierType<?> type() {
         return FREQUENCY_MODIFIER;
     }
-
 }

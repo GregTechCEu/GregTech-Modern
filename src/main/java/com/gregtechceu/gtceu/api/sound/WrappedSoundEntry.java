@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.sound;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,7 +35,8 @@ public class WrappedSoundEntry extends SoundEntry {
         for (int i = 0; i < wrappedEvents.size(); i++) {
             ConfiguredSoundEvent wrapped = wrappedEvents.get(i);
             ResourceLocation location = getIdOf(i);
-            compiledEvents.add(new WrappedSoundEntry.CompiledSoundEvent(SoundEvent.createVariableRangeEvent(location), wrapped.volume(), wrapped.pitch()));
+            compiledEvents.add(new WrappedSoundEntry.CompiledSoundEvent(SoundEvent.createVariableRangeEvent(location),
+                    wrapped.volume(), wrapped.pitch()));
         }
     }
 
@@ -92,7 +94,5 @@ public class WrappedSoundEntry extends SoundEntry {
         }
     }
 
-    private record CompiledSoundEvent(SoundEvent event, float volume, float pitch) {
-    }
-
+    private record CompiledSoundEvent(SoundEvent event, float volume, float pitch) {}
 }

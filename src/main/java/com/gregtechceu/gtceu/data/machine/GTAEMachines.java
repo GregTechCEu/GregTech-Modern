@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.integration.ae2.machine.MEInputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputBusPartMachine;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEOutputHatchPartMachine;
+
 import net.minecraft.network.chat.Component;
 
 import static com.gregtechceu.gtceu.api.GTValues.EV;
@@ -15,7 +16,8 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 @SuppressWarnings("unused")
 public class GTAEMachines {
 
-    public final static MachineDefinition ITEM_IMPORT_BUS = REGISTRATE.machine("me_input_bus", MEInputBusPartMachine::new)
+    public final static MachineDefinition ITEM_IMPORT_BUS = REGISTRATE
+            .machine("me_input_bus", MEInputBusPartMachine::new)
             .langValue("ME Stocking Input Bus")
             .tier(EV)
             .rotationState(RotationState.ALL)
@@ -25,7 +27,8 @@ public class GTAEMachines {
             .compassNode("item_bus")
             .register();
 
-    public final static MachineDefinition ITEM_EXPORT_BUS = REGISTRATE.machine("me_output_bus", MEOutputBusPartMachine::new)
+    public final static MachineDefinition ITEM_EXPORT_BUS = REGISTRATE
+            .machine("me_output_bus", MEOutputBusPartMachine::new)
             .langValue("ME Output Bus")
             .tier(EV)
             .rotationState(RotationState.ALL)
@@ -38,7 +41,8 @@ public class GTAEMachines {
             .compassNode("item_bus")
             .register();
 
-    public final static MachineDefinition FLUID_IMPORT_HATCH = REGISTRATE.machine("me_input_hatch", MEInputHatchPartMachine::new)
+    public final static MachineDefinition FLUID_IMPORT_HATCH = REGISTRATE
+            .machine("me_input_hatch", MEInputHatchPartMachine::new)
             .langValue("ME Stocking Input Hatch")
             .tier(EV)
             .rotationState(RotationState.ALL)
@@ -48,17 +52,16 @@ public class GTAEMachines {
             .compassNode("fluid_hatch")
             .register();
 
-    public final static MachineDefinition FLUID_EXPORT_HATCH = REGISTRATE.machine("me_output_hatch", MEOutputHatchPartMachine::new)
+    public final static MachineDefinition FLUID_EXPORT_HATCH = REGISTRATE
+            .machine("me_output_hatch", MEOutputHatchPartMachine::new)
             .langValue("ME Output Hatch")
             .tier(EV)
             .rotationState(RotationState.ALL)
-                    .abilities(PartAbility.EXPORT_FLUIDS)
-                    .overlayTieredHullRenderer("me_fluid_hatch.export")
-                    .tooltips(Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"))
+            .abilities(PartAbility.EXPORT_FLUIDS)
+            .overlayTieredHullRenderer("me_fluid_hatch.export")
+            .tooltips(Component.translatable("gtceu.machine.fluid_hatch.export.tooltip"))
             .compassNode("fluid_hatch")
             .register();
 
-    public static void init() {
-
-    }
+    public static void init() {}
 }

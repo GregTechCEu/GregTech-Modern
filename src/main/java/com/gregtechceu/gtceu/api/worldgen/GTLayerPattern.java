@@ -2,9 +2,7 @@ package com.gregtechceu.gtceu.api.worldgen;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.material.material.Material;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,7 +10,11 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration.TargetBlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 
+import com.mojang.datafixers.util.Either;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -20,133 +22,138 @@ import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 public class GTLayerPattern {
-	public static final Codec<GTLayerPattern> CODEC = Codec.list(Layer.CODEC)
-			.xmap(GTLayerPattern::new, pattern -> pattern.layers);
 
-	public final List<Layer> layers;
+    public static final Codec<GTLayerPattern> CODEC = Codec.list(Layer.CODEC)
+            .xmap(GTLayerPattern::new, pattern -> pattern.layers);
 
-	public GTLayerPattern(List<Layer> layers) {
-		this.layers = layers;
-	}
+    public final List<Layer> layers;
 
-	public Layer rollNext(@Nullable Layer previous, RandomSource random) {
-		int totalWeight = 0;
-		for (Layer layer : layers)
-			if (layer != previous)
-				totalWeight += layer.weight;
-		int rolled = random.nextInt(totalWeight);
+    public GTLayerPattern(List<Layer> layers) {
+        this.layers = layers;
+    }
 
-		for (Layer layer : layers) {
-			if (layer == previous)
-				continue;
-			rolled -= layer.weight;
-			if (rolled < 0)
-				return layer;
-		}
-		return null;
-	}
+    public Layer rollNext(@Nullable Layer previous, RandomSource random) {
+        int totalWeight = 0;
+        for (Layer layer : layers)
+            if (layer != previous)
+                totalWeight += layer.weight;
+        int rolled = random.nextInt(totalWeight);
 
-	public static Builder builder(RuleTest... rules) {
-		return new Builder(rules);
-	}
+        for (Layer layer : layers) {
+            if (layer == previous)
+                continue;
+            rolled -= layer.weight;
+            if (rolled < 0)
+                return layer;
+        }
+        return null;
+    }
 
-	public static class Builder {
-		private final List<Layer> layers = new ArrayList<>();
-		private final RuleTest[] rules;
+    public static Builder builder(RuleTest... rules) {
+        return new Builder(rules);
+    }
 
-		protected Builder(RuleTest... rules) {
-			this.rules = rules;
-		}
+    public static class Builder {
 
-		public Builder layer(Consumer<Layer.Builder> builder) {
-			Layer.Builder layerBuilder = new Layer.Builder(rules);
-			builder.accept(layerBuilder);
-			layers.add(layerBuilder.build());
-			return this;
-		}
+        private final List<Layer> layers = new ArrayList<>();
+        private final RuleTest[] rules;
 
-		public GTLayerPattern build() {
-			return new GTLayerPattern(layers);
-		}
-	}
+        protected Builder(RuleTest... rules) {
+            this.rules = rules;
+        }
 
-	public static class Layer {
-		public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-				Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()))
-						.fieldOf("targets")
-						.forGetter(layer -> layer.targets),
-				Codec.intRange(0, Integer.MAX_VALUE)
-						.fieldOf("min_size")
-						.forGetter(layer -> layer.minSize),
-				Codec.intRange(0, Integer.MAX_VALUE)
-						.fieldOf("max_size")
-						.forGetter(layer -> layer.maxSize),
-				Codec.intRange(0, Integer.MAX_VALUE)
-						.fieldOf("weight")
-						.forGetter(layer -> layer.weight)
-		).apply(instance, Layer::new));
+        public Builder layer(Consumer<Layer.Builder> builder) {
+            Layer.Builder layerBuilder = new Layer.Builder(rules);
+            builder.accept(layerBuilder);
+            layers.add(layerBuilder.build());
+            return this;
+        }
 
-		public final List<Either<List<TargetBlockState>, Material>> targets;
-		public final int minSize;
-		public final int maxSize;
-		public final int weight;
+        public GTLayerPattern build() {
+            return new GTLayerPattern(layers);
+        }
+    }
 
-		public Layer(List<Either<List<TargetBlockState>, Material>> targets, int minSize, int maxSize, int weight) {
-			this.targets = targets;
-			this.minSize = minSize;
-			this.maxSize = maxSize;
-			this.weight = weight;
-		}
+    public static class Layer {
 
-		public Either<List<TargetBlockState>, Material> rollBlock(RandomSource random) {
-			if (targets.size() == 1)
-				return targets.get(0);
-			return targets.get(random.nextInt(targets.size()));
-		}
+        public static final Codec<Layer> CODEC = RecordCodecBuilder.create(instance -> instance.group(
+                Codec.list(Codec.either(TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec()))
+                        .fieldOf("targets")
+                        .forGetter(layer -> layer.targets),
+                Codec.intRange(0, Integer.MAX_VALUE)
+                        .fieldOf("min_size")
+                        .forGetter(layer -> layer.minSize),
+                Codec.intRange(0, Integer.MAX_VALUE)
+                        .fieldOf("max_size")
+                        .forGetter(layer -> layer.maxSize),
+                Codec.intRange(0, Integer.MAX_VALUE)
+                        .fieldOf("weight")
+                        .forGetter(layer -> layer.weight))
+                .apply(instance, Layer::new));
 
-		public static class Builder {
-			private final List<Either<List<TargetBlockState>, Material>> targets = new ArrayList<>();
-			private int minSize = 1;
-			private int maxSize = 1;
-			private int weight = 1;
-			private final RuleTest[] rules;
+        public final List<Either<List<TargetBlockState>, Material>> targets;
+        public final int minSize;
+        public final int maxSize;
+        public final int weight;
 
-			protected Builder(RuleTest... rules) {
-				this.rules = rules;
-			}
+        public Layer(List<Either<List<TargetBlockState>, Material>> targets, int minSize, int maxSize, int weight) {
+            this.targets = targets;
+            this.minSize = minSize;
+            this.maxSize = maxSize;
+            this.weight = weight;
+        }
 
-			public GTLayerPattern.Layer.Builder block(Supplier<? extends Block> block) {
-				return state(block.get().defaultBlockState());
-			}
+        public Either<List<TargetBlockState>, Material> rollBlock(RandomSource random) {
+            if (targets.size() == 1)
+                return targets.get(0);
+            return targets.get(random.nextInt(targets.size()));
+        }
 
-			public GTLayerPattern.Layer.Builder state(Supplier<? extends BlockState> state) {
-				return state(state.get());
-			}
+        public static class Builder {
 
-			public GTLayerPattern.Layer.Builder state(BlockState state) {
-				this.targets.add(Either.left(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList()));
-				return this;
-			}
+            private final List<Either<List<TargetBlockState>, Material>> targets = new ArrayList<>();
+            private int minSize = 1;
+            private int maxSize = 1;
+            private int weight = 1;
+            private final RuleTest[] rules;
 
-			public GTLayerPattern.Layer.Builder mat(Material material) {
-				this.targets.add(Either.right(material));
-				return this;
-			}
+            protected Builder(RuleTest... rules) {
+                this.rules = rules;
+            }
 
-			public GTLayerPattern.Layer.Builder weight(int weight) {
-				this.weight = weight;
-				return this;
-			}
+            public GTLayerPattern.Layer.Builder block(Supplier<? extends Block> block) {
+                return state(block.get().defaultBlockState());
+            }
 
-			public GTLayerPattern.Layer.Builder size(int min, int max) {
-				this.minSize = min;
-				this.maxSize = max;
-				return this;
-			}
+            public GTLayerPattern.Layer.Builder state(Supplier<? extends BlockState> state) {
+                return state(state.get());
+            }
 
-			public Layer build() {
-				return new Layer(targets, minSize, maxSize, weight);
-			}
-		}
-	}
+            public GTLayerPattern.Layer.Builder state(BlockState state) {
+                this.targets.add(Either
+                        .left(Arrays.stream(this.rules).map(rule -> OreConfiguration.target(rule, state)).toList()));
+                return this;
+            }
+
+            public GTLayerPattern.Layer.Builder mat(Material material) {
+                this.targets.add(Either.right(material));
+                return this;
+            }
+
+            public GTLayerPattern.Layer.Builder weight(int weight) {
+                this.weight = weight;
+                return this;
+            }
+
+            public GTLayerPattern.Layer.Builder size(int min, int max) {
+                this.minSize = min;
+                this.maxSize = max;
+                return this;
+            }
+
+            public Layer build() {
+                return new Layer(targets, minSize, maxSize, weight);
+            }
+        }
+    }
 }

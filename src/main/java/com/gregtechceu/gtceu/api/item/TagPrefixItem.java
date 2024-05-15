@@ -8,7 +8,9 @@ import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
@@ -23,8 +25,10 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -34,6 +38,7 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TagPrefixItem extends Item {
+
     public final TagPrefix tagPrefix;
     public final Material material;
 
@@ -51,9 +56,7 @@ public class TagPrefixItem extends Item {
         return getItemBurnTime();
     }
 
-    public void onRegister() {
-
-    }
+    public void onRegister() {}
 
     @OnlyIn(Dist.CLIENT)
     public static int tintColor(ItemStack itemStack, int index) {
@@ -64,7 +67,8 @@ public class TagPrefixItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(stack, context, tooltipComponents, isAdvanced);
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
@@ -115,7 +119,8 @@ public class TagPrefixItem extends Item {
 
     public int getItemBurnTime() {
         DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
-        if (property != null) return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
+        if (property != null)
+            return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
         return -1;
     }
 

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.material.material.event;
 
 import com.gregtechceu.gtceu.api.material.material.IMaterialRegistryManager;
+
 import net.neoforged.bus.api.Event;
 import net.neoforged.fml.event.IModBusEvent;
 

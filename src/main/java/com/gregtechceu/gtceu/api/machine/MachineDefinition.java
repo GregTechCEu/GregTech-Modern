@@ -8,12 +8,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -25,8 +23,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.EnumMap;
 import java.util.List;
 import java.util.Map;
@@ -36,9 +39,10 @@ import java.util.function.*;
  * @author KilaBash
  * @date 2023/2/18
  * @implNote MachineDefinition
- * Representing basic information of a machine.
+ *           Representing basic information of a machine.
  */
 public class MachineDefinition implements Supplier<IMachineBlock> {
+
     @Getter
     private final ResourceLocation id;
     @Setter
@@ -49,41 +53,57 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     private Supplier<BlockEntityType<? extends BlockEntity>> blockEntityTypeSupplier;
     @Setter
     private Function<IMachineBlockEntity, MetaMachine> machineSupplier;
-    @Getter @Setter @Nullable
+    @Getter
+    @Setter
+    @Nullable
     private GTRecipeType[] recipeTypes;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int tier;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int defaultPaintingColor;
-    @Getter @Setter
+    @Getter
+    @Setter
     private RecipeModifier recipeModifier;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private IRenderer renderer;
     @Setter
     private VoxelShape shape;
     private final Map<Direction, VoxelShape> cache = new EnumMap<>(Direction.class);
-    @Getter @Setter
+    @Getter
+    @Setter
     private BiConsumer<ItemStack, List<Component>> tooltipBuilder;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Supplier<BlockState> appearance;
-    @Nullable @Getter @Setter
+    @Nullable
+    @Getter
+    @Setter
     private EditableMachineUI editableUI;
-    @Getter @Setter
+    @Getter
+    @Setter
     private Object2IntMap<RecipeCapability<?>> recipeOutputLimits = new Object2IntOpenHashMap<>();
 
     protected MachineDefinition(ResourceLocation id) {
@@ -91,7 +111,7 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     }
 
     public static MachineDefinition createDefinition(ResourceLocation id) {
-       return new MachineDefinition(id);
+        return new MachineDefinition(id);
     }
 
     public Block getBlock() {

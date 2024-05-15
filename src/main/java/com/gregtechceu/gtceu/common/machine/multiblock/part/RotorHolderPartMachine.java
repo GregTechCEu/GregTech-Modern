@@ -9,24 +9,28 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -36,16 +40,24 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class RotorHolderPartMachine extends TieredPartMachine implements IMachineModifyDrops, IRotorHolderMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;
-    @Getter @Setter
-    @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     public int rotorSpeed;
-    @Setter @Persisted @DescSynced @RequireRerender
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     public int rotorColor; // 0 - no rotor
     @Nullable
     protected TickableSubscription rotorSpeedSubs;
@@ -59,7 +71,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -97,7 +109,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     }
 
     //////////////////////////////////////
-    //******     Rotor Holder     ******//
+    // ****** Rotor Holder ******//
     //////////////////////////////////////
 
     private void onRotorInventoryChanged() {
@@ -180,7 +192,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     }
 
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
@@ -192,5 +204,4 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
         group.addWidget(container);
         return group;
     }
-
 }

@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -23,6 +23,7 @@ import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -35,9 +36,7 @@ import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.DummyWorld;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -64,27 +63,33 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Predicate;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 /**
  * @author KilaBash
  * @date 2023/2/17
  * @implNote MetaMachine, an abstract layer of gregtech machine.
- * Because I have to implement BlockEntities for both fabric and forge platform.
- * All fundamental features will be implemented here.
- * To add additional features, you can see {@link IMachineFeature}
+ *           Because I have to implement BlockEntities for both fabric and forge platform.
+ *           All fundamental features will be implemented here.
+ *           To add additional features, you can see {@link IMachineFeature}
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight, IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscription, IAppearance, IToolGridHighLight,
+                         IFancyTooltip, IPaintable, IRedstoneSignalMachine {
+
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MetaMachine.class);
     @Getter
     private final FieldManagedStorage syncStorage = new FieldManagedStorage(this);
@@ -94,8 +99,11 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     @DescSynced
     @Persisted(key = "cover")
     protected final MachineCoverContainer coverContainer;
-    @Getter @Setter
-    @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     private int paintingColor = -1;
     @Getter
     protected final List<MachineTrait> traits;
@@ -115,7 +123,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
 
     @Override
@@ -193,23 +201,21 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     /**
      * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
-     * @param tag the CompoundTag to load data from
+     * 
+     * @param tag     the CompoundTag to load data from
      * @param forDrop if the save is done for dropping the machine as an item.
      */
-    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {
+    public void saveCustomPersistedData(CompoundTag tag, boolean forDrop) {}
 
-    }
-
-    public void loadCustomPersistedData(CompoundTag tag) {
-
-    }
+    public void loadCustomPersistedData(CompoundTag tag) {}
 
     //////////////////////////////////////
-    //*****     Tickable Manager    ****//
+    // ***** Tickable Manager ****//
     //////////////////////////////////////
 
     /**
-     * For initialization. To get level and property fields after auto sync, you can subscribe it in {@link #onLoad()} event.
+     * For initialization. To get level and property fields after auto sync, you can subscribe it in {@link #onLoad()}
+     * event.
      */
     @Nullable
     public TickableSubscription subscribeServerTick(Runnable runnable) {
@@ -223,7 +229,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
                     holder.getSelf().setBlockState(blockState);
                     serverLevel.getServer().tell(new TickTask(0, () -> {
                         if (!isInValid()) {
-                            serverLevel.setBlockAndUpdate(getPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, true));
+                            serverLevel.setBlockAndUpdate(getPos(),
+                                    getBlockState().setValue(BlockProperties.SERVER_TICK, true));
                         }
                     }));
                 }
@@ -282,21 +289,24 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     //////////////////////////////////////
-    //*******     Interaction    *******//
+    // ******* Interaction *******//
     //////////////////////////////////////
     /**
      * Called when a player clicks this meta tile entity with a tool
      *
-     * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and animations will be played
+     * @return SUCCESS / CONSUME (will damage tool) / FAIL if something happened, so tools will get damaged and
+     *         animations will be played
      */
     @Override
-    public final Pair<GTToolType, InteractionResult> onToolClick(Set<@NotNull GTToolType> toolType, ItemStack itemStack, UseOnContext context) {
+    public final Pair<GTToolType, InteractionResult> onToolClick(Set<@NotNull GTToolType> toolType, ItemStack itemStack,
+                                                                 UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
         if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
 
         var hand = context.getHand();
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), false);
+        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
+                context.getClickedPos(), false);
         Direction gridSide = ICoverable.determineGridSideHit(hitResult);
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
@@ -326,7 +336,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return Pair.of(null, InteractionResult.PASS);
     }
 
-    protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onHardHammerClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                  BlockHitResult hitResult) {
         if (this instanceof IMufflableMachine mufflableMachine) {
             if (!isRemote()) {
                 mufflableMachine.setMuffled(!mufflableMachine.isMuffled());
@@ -337,11 +348,13 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onCrowbarClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onCrowbarClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                               BlockHitResult hitResult) {
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
         if (playerIn.isShiftKeyDown()) {
             if (gridSide == getFrontFacing() || !isFacingValid(gridSide)) {
                 return InteractionResult.FAIL;
@@ -354,7 +367,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                  BlockHitResult hitResult) {
         var controllable = GTCapabilityHelper.getControllable(getLevel(), getPos(), gridSide);
         if (controllable != null) {
             if (!isRemote()) {
@@ -367,13 +381,13 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return InteractionResult.PASS;
     }
 
-    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                   BlockHitResult hitResult) {
         return InteractionResult.PASS;
     }
 
-
     //////////////////////////////////////
-    //**********     MISC    ***********//
+    // ********** MISC ***********//
     //////////////////////////////////////
 
     @Nullable
@@ -435,11 +449,9 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         return null;
     }
 
-
     public MachineDefinition getDefinition() {
         return holder.getDefinition();
     }
-
 
     /**
      * Called to obtain list of AxisAlignedBB used for collision testing, highlight rendering
@@ -481,13 +493,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     public void setFrontFacing(Direction facing) {
         var blockState = getBlockState();
         if (blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock && isFacingValid(facing)) {
-            getLevel().setBlockAndUpdate(getPos(), blockState.setValue(metaMachineBlock.rotationState.property, facing));
+            getLevel().setBlockAndUpdate(getPos(),
+                    blockState.setValue(metaMachineBlock.rotationState.property, facing));
         }
     }
 
-    public void onRotated(Direction oldFacing, Direction newFacing) {
-
-    }
+    public void onRotated(Direction oldFacing, Direction newFacing) {}
 
     public int tintColor(int index) {
         // index < -100 => emission if shimmer is installed.
@@ -501,12 +512,12 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         coverContainer.onNeighborChanged(block, fromPos, isMoving);
     }
 
-    public void animateTick(RandomSource random) {
-    }
+    public void animateTick(RandomSource random) {}
 
     @Override
     @NotNull
-    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side, BlockState sourceState, BlockPos sourcePos) {
+    public BlockState getBlockAppearance(BlockState state, BlockAndTintGetter level, BlockPos pos, Direction side,
+                                         BlockState sourceState, BlockPos sourcePos) {
         var appearance = getCoverContainer().getBlockAppearance(state, level, pos, side, sourceState, sourcePos);
         if (appearance != null) return appearance;
         if (this instanceof IMultiPart part && part.isFormed()) {
@@ -539,7 +550,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     //////////////////////////////////////
-    //******     Capability     ********//
+    // ****** Capability ********//
     //////////////////////////////////////
 
     protected Predicate<ItemStack> getItemCapFilter(@Nullable Direction side) {
@@ -573,7 +584,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side && !autoOutput.isAllowInputFromOutputSideItems()) {
+        if (side != null && this instanceof IAutoOutputItem autoOutput && autoOutput.getOutputFacingItems() == side &&
+                !autoOutput.isAllowInputFromOutputSideItems()) {
             io = IO.OUT;
         }
 
@@ -595,7 +607,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
         if (list.isEmpty()) return null;
 
         var io = IO.BOTH;
-        if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side && !autoOutput.isAllowInputFromOutputSideFluids()) {
+        if (side != null && this instanceof IAutoOutputFluid autoOutput && autoOutput.getOutputFacingFluids() == side &&
+                !autoOutput.isAllowInputFromOutputSideFluids()) {
             io = IO.OUT;
         }
 
@@ -607,7 +620,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
     }
 
     //////////////////////////////////////
-    //********       GUI       *********//
+    // ******** GUI *********//
     //////////////////////////////////////
     @Override
     public IGuiTexture getFancyTooltipIcon() {
@@ -628,7 +641,8 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     public void onAddFancyInformationTooltip(List<Component> tooltips) {
         getDefinition().getTooltipBuilder().accept(getDefinition().asStack(), tooltips);
-        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(), getDefinition().getId().getPath());
+        String mainKey = String.format("%s.machine.%s.tooltip", getDefinition().getId().getNamespace(),
+                getDefinition().getId().getPath());
         if (LocalizationUtils.exist(mainKey)) {
             tooltips.add(0, Component.translatable(mainKey));
         }

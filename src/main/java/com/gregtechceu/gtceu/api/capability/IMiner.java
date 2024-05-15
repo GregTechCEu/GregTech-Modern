@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.common.machine.trait.miner.MinerLogic;
 
 public interface IMiner extends IRecipeLogicMachine, IMachineLife {
+
     @Override
     MinerLogic getRecipeLogic();
 

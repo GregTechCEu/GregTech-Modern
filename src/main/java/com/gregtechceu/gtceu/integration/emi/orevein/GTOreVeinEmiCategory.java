@@ -1,17 +1,19 @@
 package com.gregtechceu.gtceu.integration.emi.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.data.item.GTItems;
-import dev.emi.emi.api.EmiRegistry;
-import dev.emi.emi.api.recipe.EmiRecipeCategory;
-import dev.emi.emi.api.stack.EmiStack;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Items;
 
+import dev.emi.emi.api.EmiRegistry;
+import dev.emi.emi.api.recipe.EmiRecipeCategory;
+import dev.emi.emi.api.stack.EmiStack;
 
 public class GTOreVeinEmiCategory extends EmiRecipeCategory {
+
     public static final GTOreVeinEmiCategory CATEGORY = new GTOreVeinEmiCategory();
 
     public GTOreVeinEmiCategory() {
@@ -19,7 +21,7 @@ public class GTOreVeinEmiCategory extends EmiRecipeCategory {
     }
 
     public static void registerDisplays(EmiRegistry registry) {
-        for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS){
+        for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS) {
             registry.addRecipe(new GTEmiOreVein(oreDefinition));
         }
     }

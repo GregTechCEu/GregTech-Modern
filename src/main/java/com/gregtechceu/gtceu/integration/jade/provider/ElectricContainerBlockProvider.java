@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.jade.provider;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -11,6 +12,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
@@ -36,7 +38,8 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
     }
 
     @Override
-    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         long maxStorage = capData.getLong("MaxEnergy");
         if (maxStorage == 0) return; // do not add empty max storage progress bar
 
@@ -48,10 +51,10 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
                         getProgress(stored, maxStorage),
                         Component.translatable("gtceu.jade.energy_stored", stored, maxStorage),
                         helper.progressStyle().color(0xFFEEE600, 0xFFEEE600).textColor(-1),
-                        Util.make(BoxStyle.GradientBorder.DEFAULT_VIEW_GROUP, style -> style.borderColor = new int[] {0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555}),
-                        true
-                )
-        );
+                        Util.make(BoxStyle.GradientBorder.DEFAULT_VIEW_GROUP,
+                                style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555,
+                                        0xFF555555 }),
+                        true));
     }
 
     @Override

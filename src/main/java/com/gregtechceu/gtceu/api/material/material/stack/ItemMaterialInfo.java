@@ -50,5 +50,4 @@ public class ItemMaterialInfo {
     public String toString() {
         return materials.isEmpty() ? "" : materials.getFirst().material().toCamelCaseString();
     }
-
 }

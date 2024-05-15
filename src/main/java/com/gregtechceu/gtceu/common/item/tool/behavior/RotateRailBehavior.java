@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import com.mojang.serialization.MapCodec;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.StreamCodec;
@@ -17,6 +17,8 @@ import net.minecraft.world.level.block.BaseRailBlock;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -25,7 +27,8 @@ public class RotateRailBehavior implements IToolBehavior<RotateRailBehavior> {
 
     public static final RotateRailBehavior INSTANCE = new RotateRailBehavior();
     public static final MapCodec<RotateRailBehavior> CODEC = MapCodec.unit(INSTANCE);
-    public static final StreamCodec<RegistryFriendlyByteBuf, RotateRailBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, RotateRailBehavior> STREAM_CODEC = StreamCodec
+            .unit(INSTANCE);
 
     protected RotateRailBehavior() {/**/}
 
@@ -34,7 +37,8 @@ public class RotateRailBehavior implements IToolBehavior<RotateRailBehavior> {
     public InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
         BlockState state = context.getLevel().getBlockState(context.getClickedPos());
         if (state.getBlock() instanceof BaseRailBlock) {
-            if (context.getLevel().setBlock(context.getClickedPos(), state.rotate(Rotation.CLOCKWISE_90), Block.UPDATE_ALL)) {
+            if (context.getLevel().setBlock(context.getClickedPos(), state.rotate(Rotation.CLOCKWISE_90),
+                    Block.UPDATE_ALL)) {
                 ToolHelper.onActionDone(context.getPlayer(), context.getLevel(), context.getHand());
                 return InteractionResult.SUCCESS;
             }

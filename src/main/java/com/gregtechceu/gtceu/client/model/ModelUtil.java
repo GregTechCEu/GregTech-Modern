@@ -20,7 +20,9 @@ import java.util.List;
  */
 @OnlyIn(Dist.CLIENT)
 public class ModelUtil {
-    public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
+
+    public static List<BakedQuad> getBakedModelQuads(BakedModel model, BlockAndTintGetter level, BlockPos pos,
+                                                     BlockState state, Direction side, RandomSource rand) {
         return model.getQuads(state, side, rand, model.getModelData(level, pos, state, ModelData.EMPTY), null);
     }
 }

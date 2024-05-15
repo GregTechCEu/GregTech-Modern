@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -24,6 +25,7 @@ import java.util.function.Function;
  * @implNote BlockStateModelRenderer
  */
 public class BlockStateModelRenderer implements IRenderer {
+
     private final Map<BlockState, IRenderer> models;
 
     public BlockStateModelRenderer(Block block, Function<BlockState, IRenderer> predicate) {
@@ -41,11 +43,11 @@ public class BlockStateModelRenderer implements IRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
+    public List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side,
+                                       RandomSource rand) {
         if (models.containsKey(state)) {
             return models.get(state).renderModel(level, pos, state, side, rand);
         }
         return Collections.emptyList();
     }
-
 }

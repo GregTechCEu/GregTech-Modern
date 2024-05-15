@@ -8,10 +8,11 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.common.pipelike.laser.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TaskHandler;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -19,11 +20,15 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import lombok.Getter;
+
 import java.lang.ref.WeakReference;
 import java.util.EnumMap;
 
 public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPipeProperties> {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LaserPipeBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(LaserPipeBlockEntity.class,
+            PipeBlockEntity.MANAGED_FIELD_HOLDER);
 
     @Getter
     protected final EnumMap<Direction, LaserNetHandler> handlers = new EnumMap<>(Direction.class);
@@ -36,7 +41,8 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
     private int ticksActive = 0;
     private int activeDuration = 0;
     @Getter
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     private boolean active = false;
 
     protected LaserPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -141,7 +147,7 @@ public class LaserPipeBlockEntity extends PipeBlockEntity<LaserPipeType, LaserPi
             // check the same for the targeted pipe
             BlockEntity tile = getLevel().getBlockEntity(getBlockPos().relative(side));
             if (tile instanceof IPipeNode<?, ?> pipeTile &&
-                pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
+                    pipeTile.getPipeType().getClass() == this.getPipeType().getClass()) {
                 connections = pipeTile.getConnections();
                 connections &= ~(1 << side.ordinal());
                 connections &= ~(1 << side.getOpposite().ordinal());

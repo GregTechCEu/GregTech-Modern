@@ -1,20 +1,19 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.TrackedDummyWorld;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import lombok.Getter;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.*;
@@ -33,6 +32,10 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
@@ -43,7 +46,6 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import static net.minecraft.world.level.block.RenderShape.INVISIBLE;
 
-
 @OnlyIn(Dist.CLIENT)
 public class MultiblockInWorldPreviewRenderer {
 
@@ -53,7 +55,7 @@ public class MultiblockInWorldPreviewRenderer {
         COMPILED
     }
 
-    @Getter(lazy=true)
+    @Getter(lazy = true)
     private final static VertexBuffer[] BUFFERS = initBuffers();
     @Nullable
     private static TrackedDummyWorld LEVEL = null;
@@ -62,7 +64,6 @@ public class MultiblockInWorldPreviewRenderer {
     @Nullable
     private static Set<BlockPos> BLOCK_ENTITIES;
     private final static AtomicInteger LEFT_TICK = new AtomicInteger(-1);
-
 
     /**
      * It will be cached by lombok#@Getter(lazy=true)
@@ -99,10 +100,11 @@ public class MultiblockInWorldPreviewRenderer {
 
     /**
      * Show the multiblock preview in the world by the given pos, side, and shape info.
-     * @param pos the pos of the controller
-     * @param front the front of the controller
+     * 
+     * @param pos       the pos of the controller
+     * @param front     the front of the controller
      * @param shapeInfo the shape info of the multiblock
-     * @param duration the duration of the preview. in ticks.
+     * @param duration  the duration of the preview. in ticks.
      */
     public static void showPreview(BlockPos pos, Direction front, MultiblockShapeInfo shapeInfo, int duration) {
         Map<BlockPos, BlockInfo> blockMap = new HashMap<>();
@@ -121,7 +123,8 @@ public class MultiblockInWorldPreviewRenderer {
                 for (int z = 0; z < column.length; z++) {
                     var blockState = column[z].getBlockState();
                     // if its controller record its position offset.
-                    if (blockState.getBlock() instanceof IMachineBlock machineBlock && machineBlock.getDefinition() instanceof MultiblockMachineDefinition) {
+                    if (blockState.getBlock() instanceof IMachineBlock machineBlock &&
+                            machineBlock.getDefinition() instanceof MultiblockMachineDefinition) {
                         controllerPatternPos = new BlockPos(x, y, z);
                     }
                 }
@@ -181,8 +184,9 @@ public class MultiblockInWorldPreviewRenderer {
 
                     BlockPos realPos = pos.offset(offset);
 
-                    if (column[z].getBlockEntity(realPos, Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder
-                        && holder.getMetaMachine() instanceof IMultiController controller) {
+                    if (column[z].getBlockEntity(realPos,
+                            Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder &&
+                            holder.getMetaMachine() instanceof IMultiController controller) {
                         holder.getSelf().setLevel(LEVEL);
                         controllerBase = controller;
                     } else {
@@ -220,7 +224,7 @@ public class MultiblockInWorldPreviewRenderer {
                 if (vertexbuffer.isInvalid() || vertexbuffer.getFormat() == null) continue;
                 var layer = RenderType.chunkBufferLayers().get(i);
 
-               //  render TESR before translucent
+                // render TESR before translucent
                 if (layer == RenderType.translucent() && BLOCK_ENTITIES != null) { // render tesr before translucent
                     var buffers = Minecraft.getInstance().renderBuffers().bufferSource();
                     for (BlockPos pos : BLOCK_ENTITIES) {
@@ -228,10 +232,12 @@ public class MultiblockInWorldPreviewRenderer {
                         if (tile != null) {
                             poseStack.pushPose();
                             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                            BlockEntityRenderer<BlockEntity> tileentityrenderer = Minecraft.getInstance().getBlockEntityRenderDispatcher().getRenderer(tile);
+                            BlockEntityRenderer<BlockEntity> tileentityrenderer = Minecraft.getInstance()
+                                    .getBlockEntityRenderDispatcher().getRenderer(tile);
                             if (tileentityrenderer != null) {
                                 if (tile.hasLevel() && tile.getType().isValid(tile.getBlockState())) {
-                                    tileentityrenderer.render(tile, partialTicks, poseStack, buffers, 0xF000F0, OverlayTexture.NO_OVERLAY);
+                                    tileentityrenderer.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
+                                            OverlayTexture.NO_OVERLAY);
                                 }
                             }
                             poseStack.popPose();
@@ -245,7 +251,7 @@ public class MultiblockInWorldPreviewRenderer {
                 poseStack.pushPose();
                 ShaderInstance shaderInstance = RenderSystem.getShader();
 
-                for(int j = 0; j < 12; ++j) {
+                for (int j = 0; j < 12; ++j) {
                     int k = RenderSystem.getShaderTexture(j);
                     shaderInstance.setSampler("Sampler" + j, k);
                 }
@@ -316,7 +322,6 @@ public class MultiblockInWorldPreviewRenderer {
         }
     }
 
-
     private static void prepareBuffers(TrackedDummyWorld level, Collection<BlockPos> renderedBlocks, int duration) {
         if (THREAD != null) {
             THREAD.interrupt();
@@ -334,7 +339,8 @@ public class MultiblockInWorldPreviewRenderer {
                 var layer = RenderType.chunkBufferLayers().get(i);
                 var buffer = new BufferBuilder(layer.bufferSize());
                 buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.BLOCK);
-                renderBlocks(level, poseStack, dispatcher, layer, new WorldSceneRenderer.VertexConsumerWrapper(buffer), renderedBlocks);
+                renderBlocks(level, poseStack, dispatcher, layer, new WorldSceneRenderer.VertexConsumerWrapper(buffer),
+                        renderedBlocks);
                 var builder = buffer.end();
                 var vertexBuffer = getBUFFERS()[i];
                 Runnable toUpload = () -> {
@@ -374,7 +380,9 @@ public class MultiblockInWorldPreviewRenderer {
         THREAD.start();
     }
 
-    private static void renderBlocks(TrackedDummyWorld level, PoseStack poseStack, BlockRenderDispatcher dispatcher, RenderType layer, WorldSceneRenderer.VertexConsumerWrapper wrapperBuffer, Collection<BlockPos> renderedBlocks) {
+    private static void renderBlocks(TrackedDummyWorld level, PoseStack poseStack, BlockRenderDispatcher dispatcher,
+                                     RenderType layer, WorldSceneRenderer.VertexConsumerWrapper wrapperBuffer,
+                                     Collection<BlockPos> renderedBlocks) {
         for (BlockPos pos : renderedBlocks) {
 
             BlockState state = level.getBlockState(pos);
@@ -384,7 +392,7 @@ public class MultiblockInWorldPreviewRenderer {
 
             if (block == Blocks.AIR) continue;
 
-            //render blocks
+            // render blocks
             if (state.getRenderShape() != INVISIBLE && ItemBlockRenderTypes.getRenderLayers(state).contains(layer)) {
                 poseStack.pushPose();
                 poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
@@ -394,14 +402,16 @@ public class MultiblockInWorldPreviewRenderer {
                 poseStack.translate(-0.5, -0.5, -0.5);
 
                 level.setRenderFilter(p -> p.equals(pos));
-                WorldSceneRenderer.renderBlocksForge(dispatcher, state, pos, level, poseStack, wrapperBuffer, GTValues.RNG, layer);
+                WorldSceneRenderer.renderBlocksForge(dispatcher, state, pos, level, poseStack, wrapperBuffer,
+                        GTValues.RNG, layer);
                 level.setRenderFilter(p -> true);
                 poseStack.popPose();
             }
 
             // render fluids
             if (!fluidState.isEmpty() && ItemBlockRenderTypes.getRenderLayer(fluidState) == layer) {
-                wrapperBuffer.addOffset((pos.getX() - (pos.getX() & 15)), (pos.getY() - (pos.getY() & 15)), (pos.getZ() - (pos.getZ() & 15)));
+                wrapperBuffer.addOffset((pos.getX() - (pos.getX() & 15)), (pos.getY() - (pos.getY() & 15)),
+                        (pos.getZ() - (pos.getZ() & 15)));
                 dispatcher.renderLiquid(pos, level, wrapperBuffer, state, fluidState);
             }
 

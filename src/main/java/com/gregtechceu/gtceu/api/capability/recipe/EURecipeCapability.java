@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -61,10 +60,12 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         long needed = RecipeHelper.getInputEUt(recipe);
-        long available = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
-            .stream()
-            .map(handler -> Double.valueOf(handler.getTotalContentAmount()).longValue())
-            .reduce(0L, Long::sum);
+        long available = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .map(handler -> Double.valueOf(handler.getTotalContentAmount()).longValue())
+                .reduce(0L, Long::sum);
         return (int) Math.min(parallelAmount, available / needed);
     }
 }

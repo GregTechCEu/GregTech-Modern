@@ -16,19 +16,19 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
@@ -55,12 +55,16 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
 import java.util.Set;
 import java.util.function.BiFunction;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author h3tr
@@ -69,8 +73,11 @@ import java.util.function.BiFunction;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class FisherMachine extends TieredEnergyMachine implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IWorkable {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+public class FisherMachine extends TieredEnergyMachine
+                           implements IAutoOutputItem, IFancyUIMachine, IMachineModifyDrops, IWorkable {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FisherMachine.class,
+            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -120,7 +127,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     private boolean active = false;
     public static final int WATER_CHECK_SIZE = 5;
     private static final ItemStack fishingRod = new ItemStack(Items.FISHING_ROD);
-    private boolean hasWater=false;
+    private boolean hasWater = false;
+
     public FisherMachine(IMachineBlockEntity holder, int tier, Object... ignoredArgs) {
         super(holder, tier);
         this.inventorySize = (tier + 1) * (tier + 1);
@@ -133,7 +141,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
 
     protected CustomItemStackHandler createChargerItemHandler() {
@@ -173,7 +181,6 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         baitSubs = baitHandler.addChangedListener(this::updateFishingUpdateSubscription);
         chargerInventory.setOnContentsChanged(this::updateBatterySubscription);
         this.updateFishingUpdateSubscription();
-
     }
 
     @Override
@@ -206,11 +213,10 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     //////////////////////////////////////
-    //*********     Logic     **********//
+    // ********* Logic **********//
     //////////////////////////////////////
 
     public void updateFishingUpdateSubscription() {
-
         if (drainEnergy(true) && this.baitHandler.getStackInSlot(0).is(Items.STRING) && isWorkingEnabled) {
             fishingSubs = subscribeServerTick(fishingSubs, this::fishingUpdate);
             active = true;
@@ -223,11 +229,11 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         progress = 0;
     }
 
-    private void updateHasWater(){
+    private void updateHasWater() {
         for (int x = 0; x < WATER_CHECK_SIZE; x++)
             for (int z = 0; z < WATER_CHECK_SIZE; z++) {
                 BlockPos waterCheckPos = getPos().below().offset(x - WATER_CHECK_SIZE / 2, 0, z - WATER_CHECK_SIZE / 2);
-                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)){
+                if (!getLevel().getBlockState(waterCheckPos).getFluidState().is(Fluids.WATER)) {
                     hasWater = false;
                     return;
                 }
@@ -236,18 +242,19 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     public void fishingUpdate() {
-        if(this.getOffsetTimer() % maxProgress == 0L)
+        if (this.getOffsetTimer() % maxProgress == 0L)
             updateHasWater();
-        
-        if(!hasWater) return;
+
+        if (!hasWater) return;
 
         drainEnergy(false);
         if (progress >= maxProgress) {
 
-
-            LootTable lootTable = getLevel().registryAccess().registry(Registries.LOOT_TABLE).get().get(BuiltInLootTables.FISHING);
+            LootTable lootTable = getLevel().registryAccess().registry(Registries.LOOT_TABLE).get()
+                    .get(BuiltInLootTables.FISHING);
 
             FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
+
                 public boolean isOpenWaterFishing() {
                     return true;
                 }
@@ -256,9 +263,9 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
             LootParams lootContext = new LootParams.Builder((ServerLevel) getLevel())
                     .withOptionalParameter(LootContextParams.THIS_ENTITY, simulatedHook)
                     .withParameter(LootContextParams.TOOL, fishingRod)
-                    .withParameter(LootContextParams.ORIGIN, new Vec3(getPos().getX(), getPos().getY(), getPos().getZ()))
+                    .withParameter(LootContextParams.ORIGIN,
+                            new Vec3(getPos().getX(), getPos().getY(), getPos().getZ()))
                     .create(LootContextParamSets.FISHING);
-
 
             NonNullList<ItemStack> generatedLoot = NonNullList.create();
             generatedLoot.addAll(lootTable.getRandomItems(lootContext));
@@ -270,7 +277,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
             if (useBait)
                 this.baitHandler.extractItem(0, 1, false);
             updateFishingUpdateSubscription();
-            progress=-1;
+            progress = -1;
         }
         progress++;
     }
@@ -294,9 +301,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
         return false;
     }
 
-
     //////////////////////////////////////
-    //*******     Auto Output    *******//
+    // ******* Auto Output *******//
     //////////////////////////////////////
     @Override
     public void setAutoOutputItems(boolean allow) {
@@ -321,8 +327,9 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
 
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingItems();
-        if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null
-                && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null)
+        if ((isAutoOutputItems() && !cache.isEmpty()) && outputFacing != null &&
+                ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(outputFacing),
+                        outputFacing.getOpposite()) != null)
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -358,37 +365,40 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
 
-    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
-        var template = createTemplate(inventorySize).createDefault();
-        var energyBar = createEnergyBar().createDefault();
-        var batterySlot = createBatterySlot().createDefault();
-        var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
-        batterySlot.setSelfPosition(new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
-        energyGroup.addWidget(energyBar);
-        energyGroup.addWidget(batterySlot);
-        var group = new WidgetGroup(0, 0,
-                Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
-                Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
-        var size = group.getSize();
-        energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
+    public static BiFunction<ResourceLocation, Integer, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, inventorySize) -> new EditableMachineUI("misc", path, () -> {
+                var template = createTemplate(inventorySize).createDefault();
+                var energyBar = createEnergyBar().createDefault();
+                var batterySlot = createBatterySlot().createDefault();
+                var energyGroup = new WidgetGroup(0, 0, energyBar.getSize().width, energyBar.getSize().height + 20);
+                batterySlot.setSelfPosition(
+                        new Position((energyBar.getSize().width - 18) / 2, energyBar.getSize().height + 1));
+                energyGroup.addWidget(energyBar);
+                energyGroup.addWidget(batterySlot);
+                var group = new WidgetGroup(0, 0,
+                        Math.max(energyGroup.getSize().width + template.getSize().width + 4 + 8, 172),
+                        Math.max(template.getSize().height + 8, energyGroup.getSize().height + 8));
+                var size = group.getSize();
+                energyGroup.setSelfPosition(new Position(3, (size.height - energyGroup.getSize().height) / 2));
 
-        template.setSelfPosition(new Position(
-                (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyGroup.getSize().width + 2,
-                (size.height - template.getSize().height) / 2));
+                template.setSelfPosition(new Position(
+                        (size.width - energyGroup.getSize().width - 4 - template.getSize().width) / 2 + 2 +
+                                energyGroup.getSize().width + 2,
+                        (size.height - template.getSize().height) / 2));
 
-        group.addWidget(energyGroup);
-        group.addWidget(template);
-        return group;
-    }, (template, machine) -> {
-        if (machine instanceof FisherMachine fisherMachine) {
-            createTemplate(inventorySize).setupUI(template, fisherMachine);
-            createEnergyBar().setupUI(template, fisherMachine);
-            createBatterySlot().setupUI(template, fisherMachine);
-        }
-    }));
+                group.addWidget(energyGroup);
+                group.addWidget(template);
+                return group;
+            }, (template, machine) -> {
+                if (machine instanceof FisherMachine fisherMachine) {
+                    createTemplate(inventorySize).setupUI(template, fisherMachine);
+                    createEnergyBar().setupUI(template, fisherMachine);
+                    createBatterySlot().setupUI(template, fisherMachine);
+                }
+            }));
 
     protected static EditableUI<SlotWidget, FisherMachine> createBatterySlot() {
         return new EditableUI<>("battery_slot", SlotWidget.class, () -> {
@@ -399,7 +409,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
             slotWidget.setHandlerSlot(machine.chargerInventory, 0);
             slotWidget.setCanPutItems(true);
             slotWidget.setCanTakeItems(true);
-            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip", GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
+            slotWidget.setHoverTooltips(LangHandler.getMultiLang("gtceu.gui.charger_slot.tooltip",
+                    GTValues.VNF[machine.getTier()], GTValues.VNF[machine.getTier()]).toArray(new MutableComponent[0]));
         });
     }
 
@@ -422,7 +433,8 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
 
             SlotWidget baitSlotWidget = new SlotWidget();
             baitSlotWidget.initTemplate();
-            baitSlotWidget.setSelfPosition(new Position(4, (main.getSize().height - baitSlotWidget.getSize().height) / 2));
+            baitSlotWidget
+                    .setSelfPosition(new Position(4, (main.getSize().height - baitSlotWidget.getSize().height) / 2));
             baitSlotWidget.setBackground(GuiTextures.SLOT, GuiTextures.STRING_SLOT_OVERLAY);
             baitSlotWidget.setId("bait_slot");
             main.addWidget(baitSlotWidget);
@@ -446,7 +458,7 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     //////////////////////////////////////
-    //*******     Rendering     ********//
+    // ******* Rendering ********//
     //////////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {
@@ -467,10 +479,11 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
     }
 
     //////////////////////////////////////
-    //*******    Interactions   ********//
+    // ******* Interactions ********//
     //////////////////////////////////////
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
             var tool = playerIn.getItemInHand(hand);
             if (tool.getDamageValue() >= tool.getMaxDamage()) return InteractionResult.PASS;
@@ -492,5 +505,4 @@ public class FisherMachine extends TieredEnergyMachine implements IAutoOutputIte
 
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
     }
-
 }

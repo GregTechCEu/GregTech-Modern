@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.IWorkable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -17,12 +16,13 @@ import com.gregtechceu.gtceu.api.machine.feature.IMufflableMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -45,9 +45,12 @@ import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
-import javax.annotation.Nonnull;
+import lombok.Getter;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 public class PortableScannerBehavior implements IInteractionItem, IAddInformation {
 
@@ -55,6 +58,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
     @Getter
     public enum DisplayMode {
+
         SHOW_ALL("behavior.portable_scanner.mode.show_all_info"),
         SHOW_BLOCK_INFO("behavior.portable_scanner.mode.show_block_info"),
         SHOW_MACHINE_INFO("behavior.portable_scanner.mode.show_machine_info"),
@@ -108,13 +112,15 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player.isCrouching()) {
             if (!level.isClientSide) {
                 setNextMode(heldItem);
                 var mode = getMode(heldItem);
-                player.sendSystemMessage(Component.translatable("behavior.portable_scanner.mode.caption", Component.translatable(mode.getLangKey())));
+                player.sendSystemMessage(Component.translatable("behavior.portable_scanner.mode.caption",
+                        Component.translatable(mode.getLangKey())));
             }
             return InteractionResultHolder.success(heldItem);
         }
@@ -128,7 +134,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     protected void setNextMode(ItemStack stack) {
-        stack.update(GTDataComponents.SCANNER_MODE, (byte) 0, mode -> (byte) ((mode + 1) % DisplayMode.values().length));
+        stack.update(GTDataComponents.SCANNER_MODE, (byte) 0,
+                mode -> (byte) ((mode + 1) % DisplayMode.values().length));
     }
 
     @Nonnull
@@ -136,12 +143,11 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
         if (stack == ItemStack.EMPTY) {
             return DisplayMode.SHOW_ALL;
         }
-        return DisplayMode.values()[stack.getOrDefault(GTDataComponents.SCANNER_MODE, (byte) 0) % DisplayMode.values().length];
-
+        return DisplayMode.values()[stack.getOrDefault(GTDataComponents.SCANNER_MODE, (byte) 0) %
+                DisplayMode.values().length];
     }
 
     public int addScannerInfo(Player player, Level level, BlockPos pos, DisplayMode mode, List<Component> list) {
-
         BlockEntity tileEntity = level.getBlockEntity(pos);
         int energyCost = 0;
 
@@ -153,30 +159,30 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
             // Coordinates of the block
             list.add(Component.translatable("behavior.portable_scanner.position",
-                Component.translatable(FormattingUtil.formatNumbers(pos.getX()))
-                    .withStyle(ChatFormatting.AQUA),
-                Component.translatable(FormattingUtil.formatNumbers(pos.getY()))
-                    .withStyle(ChatFormatting.AQUA),
-                Component.translatable(FormattingUtil.formatNumbers(pos.getZ()))
-                    .withStyle(ChatFormatting.AQUA),
-                Component.translatable(level.dimension().location().toString())
-                    .withStyle(ChatFormatting.AQUA)));
+                    Component.translatable(FormattingUtil.formatNumbers(pos.getX()))
+                            .withStyle(ChatFormatting.AQUA),
+                    Component.translatable(FormattingUtil.formatNumbers(pos.getY()))
+                            .withStyle(ChatFormatting.AQUA),
+                    Component.translatable(FormattingUtil.formatNumbers(pos.getZ()))
+                            .withStyle(ChatFormatting.AQUA),
+                    Component.translatable(level.dimension().location().toString())
+                            .withStyle(ChatFormatting.AQUA)));
 
             // Hardness and blast resistance
             list.add(Component.translatable("behavior.portable_scanner.block_hardness",
-                Component.translatable(
-                        FormattingUtil.formatNumbers(block.defaultDestroyTime()))
-                    .withStyle(ChatFormatting.YELLOW),
-                Component.translatable(FormattingUtil.formatNumbers(block.getExplosionResistance()))
-                    .withStyle(ChatFormatting.YELLOW)));
+                    Component.translatable(
+                            FormattingUtil.formatNumbers(block.defaultDestroyTime()))
+                            .withStyle(ChatFormatting.YELLOW),
+                    Component.translatable(FormattingUtil.formatNumbers(block.getExplosionResistance()))
+                            .withStyle(ChatFormatting.YELLOW)));
 
             // Possible block states
             if (debugLevel > 2) {
                 state.getProperties().forEach((property) -> {
                     list.add(Component.translatable("behavior.portable_scanner.state",
-                        Component.translatable(property.getName()),
-                        Component.translatable(state.getValue(property).toString())
-                            .withStyle(ChatFormatting.AQUA)));
+                            Component.translatable(property.getName()),
+                            Component.translatable(state.getValue(property).toString())
+                                    .withStyle(ChatFormatting.AQUA)));
                 });
             }
         }
@@ -190,7 +196,8 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_MACHINE_INFO) {
 
                 // Fluid tanks
-                IFluidHandler fluidHandler = tileEntity.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, tileEntity.getBlockPos(), null);
+                IFluidHandler fluidHandler = tileEntity.getLevel().getCapability(Capabilities.FluidHandler.BLOCK,
+                        tileEntity.getBlockPos(), null);
                 if (fluidHandler != null) {
                     list.add(Component.translatable("behavior.portable_scanner.divider"));
                     boolean allTanksEmpty = true;
@@ -205,12 +212,12 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                         energyCost += 500;
                         allTanksEmpty = false;
                         list.add(Component.translatable("behavior.portable_scanner.tank", i,
-                            Component.translatable(FormattingUtil.formatNumbers(fluidStack.getAmount()))
-                                .withStyle(ChatFormatting.GREEN),
-                            Component.translatable(FormattingUtil.formatNumbers(fluidHandler.getTankCapacity(i)))
-                                .withStyle(ChatFormatting.YELLOW),
-                            ((MutableComponent)fluidStack.getHoverName())
-                                .withStyle(ChatFormatting.GOLD)));
+                                Component.translatable(FormattingUtil.formatNumbers(fluidStack.getAmount()))
+                                        .withStyle(ChatFormatting.GREEN),
+                                Component.translatable(FormattingUtil.formatNumbers(fluidHandler.getTankCapacity(i)))
+                                        .withStyle(ChatFormatting.YELLOW),
+                                ((MutableComponent) fluidStack.getHoverName())
+                                        .withStyle(ChatFormatting.GOLD)));
                     }
 
                     if (allTanksEmpty) {
@@ -224,7 +231,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     if (mufflableMachine.isMuffled()) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("behavior.portable_scanner.muffled")
-                            .withStyle(ChatFormatting.GREEN));
+                                .withStyle(ChatFormatting.GREEN));
                     }
                 }
             }
@@ -233,36 +240,37 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
             if (mode == DisplayMode.SHOW_ALL || mode == DisplayMode.SHOW_ELECTRICAL_INFO) {
 
                 // Energy container
-                IEnergyContainer energyContainer = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, tileEntity.getBlockPos(), null);
+                IEnergyContainer energyContainer = tileEntity.getLevel()
+                        .getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, tileEntity.getBlockPos(), null);
                 if (energyContainer != null) {
                     if (energyContainer.getInputVoltage() > 0) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("behavior.portable_scanner.energy_container_in",
-                            Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputVoltage()))
-                                .withStyle(ChatFormatting.RED),
-                            Component.translatable(
-                                    GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
-                                .withStyle(ChatFormatting.RED),
-                            Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputAmperage()))
-                                .withStyle(ChatFormatting.RED)));
+                                Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputVoltage()))
+                                        .withStyle(ChatFormatting.RED),
+                                Component.translatable(
+                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getInputVoltage())])
+                                        .withStyle(ChatFormatting.RED),
+                                Component.translatable(FormattingUtil.formatNumbers(energyContainer.getInputAmperage()))
+                                        .withStyle(ChatFormatting.RED)));
                     }
                     if (energyContainer.getOutputVoltage() > 0) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("behavior.portable_scanner.energy_container_out",
-                            Component.translatable(FormattingUtil.formatNumbers(energyContainer.getOutputVoltage()))
-                                .withStyle(ChatFormatting.RED),
-                            Component.translatable(
-                                    GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
-                                .withStyle(ChatFormatting.RED),
-                            Component.translatable(
-                                    FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))
-                                .withStyle(ChatFormatting.RED)));
+                                Component.translatable(FormattingUtil.formatNumbers(energyContainer.getOutputVoltage()))
+                                        .withStyle(ChatFormatting.RED),
+                                Component.translatable(
+                                        GTValues.VN[GTUtil.getTierByVoltage(energyContainer.getOutputVoltage())])
+                                        .withStyle(ChatFormatting.RED),
+                                Component.translatable(
+                                        FormattingUtil.formatNumbers(energyContainer.getOutputAmperage()))
+                                        .withStyle(ChatFormatting.RED)));
                     }
                     list.add(Component.translatable("behavior.portable_scanner.energy_container_storage",
-                        Component.translatable(FormattingUtil.formatNumbers(energyContainer.getEnergyStored()))
-                            .withStyle(ChatFormatting.GREEN),
-                        Component.translatable(FormattingUtil.formatNumbers(energyContainer.getEnergyCapacity()))
-                            .withStyle(ChatFormatting.YELLOW)));
+                            Component.translatable(FormattingUtil.formatNumbers(energyContainer.getEnergyStored()))
+                                    .withStyle(ChatFormatting.GREEN),
+                            Component.translatable(FormattingUtil.formatNumbers(energyContainer.getEnergyCapacity()))
+                                    .withStyle(ChatFormatting.YELLOW)));
                 }
             }
 
@@ -275,20 +283,21 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                     if (!workableMachine.isWorkingEnabled()) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("behavior.portable_scanner.machine_disabled")
-                            .withStyle(ChatFormatting.RED));
+                                .withStyle(ChatFormatting.RED));
                     }
                     if (workableMachine.getMaxProgress() > 0) {
                         list.add(Component.translatable("behavior.portable_scanner.divider"));
                         list.add(Component.translatable("behavior.portable_scanner.machine_progress",
-                            Component.translatable(FormattingUtil.formatNumbers(workableMachine.getProgress()))
-                                .withStyle(ChatFormatting.GREEN),
-                            Component.translatable(FormattingUtil.formatNumbers(workableMachine.getMaxProgress()))
-                                .withStyle(ChatFormatting.YELLOW)));
+                                Component.translatable(FormattingUtil.formatNumbers(workableMachine.getProgress()))
+                                        .withStyle(ChatFormatting.GREEN),
+                                Component.translatable(FormattingUtil.formatNumbers(workableMachine.getMaxProgress()))
+                                        .withStyle(ChatFormatting.YELLOW)));
                     }
                 }
 
                 // Recipe logic for EU production/consumption
-                RecipeLogic recipeLogic = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC, tileEntity.getBlockPos(), null);
+                RecipeLogic recipeLogic = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_RECIPE_LOGIC,
+                        tileEntity.getBlockPos(), null);
                 if (recipeLogic != null) {
                     GTRecipe recipe = recipeLogic.getLastRecipe();
                     if (recipeLogic.getStatus().equals(RecipeLogic.Status.WAITING)) {
@@ -304,13 +313,15 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                             EUt = RecipeHelper.getOutputEUt(recipe);
                         }
 
-                        list.add(Component.translatable(isInput ? "behavior.portable_scanner.workable_consumption" : "behavior.portable_scanner.workable_production",
-                            Component.translatable(FormattingUtil.formatNumbers(EUt))
-                                .withStyle(ChatFormatting.RED),
-                            // TODO: Change number once there is multi amp behavior
-                            Component.translatable(
-                                    FormattingUtil.formatNumbers(1))
-                                .withStyle(ChatFormatting.RED)));
+                        list.add(Component.translatable(
+                                isInput ? "behavior.portable_scanner.workable_consumption" :
+                                        "behavior.portable_scanner.workable_production",
+                                Component.translatable(FormattingUtil.formatNumbers(EUt))
+                                        .withStyle(ChatFormatting.RED),
+                                // TODO: Change number once there is multi amp behavior
+                                Component.translatable(
+                                        FormattingUtil.formatNumbers(1))
+                                        .withStyle(ChatFormatting.RED)));
                     }
                 }
             }
@@ -327,7 +338,7 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
                 list.addAll(provider.getDataInfo(mode));
             }
 
-        } else if (tileEntity instanceof PipeBlockEntity<?,?> pipe) {
+        } else if (tileEntity instanceof PipeBlockEntity<?, ?> pipe) {
 
             // Pipes need special name handling
             list.add(pipe.getPipeBlock().getName().withStyle(ChatFormatting.BLUE));
@@ -360,22 +371,22 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
 
                 if (fluid != null) {
                     FluidStack stack = new FluidStack(fluid,
-                        veinData.getOperationsRemaining(pos.getX() / 16, pos.getZ() / 16));
+                            veinData.getOperationsRemaining(pos.getX() / 16, pos.getZ() / 16));
                     double fluidPercent = stack.getAmount() * 100.0 / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS;
 
                     if (player.isCreative()) {
                         list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.amount",
-                            ((MutableComponent)stack.getHoverName())
-                                .withStyle(ChatFormatting.GOLD),
-                            Component.translatable(String.valueOf(
-                                    veinData.getFluidYield(pos.getX() / 16, pos.getZ() / 16)))
-                                .withStyle(ChatFormatting.GOLD),
-                            Component.translatable(String.valueOf(fluidPercent))
-                                .withStyle(ChatFormatting.YELLOW)));
+                                ((MutableComponent) stack.getHoverName())
+                                        .withStyle(ChatFormatting.GOLD),
+                                Component.translatable(String.valueOf(
+                                        veinData.getFluidYield(pos.getX() / 16, pos.getZ() / 16)))
+                                        .withStyle(ChatFormatting.GOLD),
+                                Component.translatable(String.valueOf(fluidPercent))
+                                        .withStyle(ChatFormatting.YELLOW)));
                     } else {
                         list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.amount_unknown",
-                            Component.translatable(String.valueOf(fluidPercent))
-                                .withStyle(ChatFormatting.YELLOW)));
+                                Component.translatable(String.valueOf(fluidPercent))
+                                        .withStyle(ChatFormatting.YELLOW)));
                     }
                 } else {
                     list.add(Component.translatable("behavior.portable_scanner.bedrock_fluid.nothing"));
@@ -404,8 +415,10 @@ public class PortableScannerBehavior implements IInteractionItem, IAddInformatio
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         tooltipComponents.add(Component.translatable("metaitem.behavior.mode_switch.tooltip"));
-        tooltipComponents.add(Component.translatable("behavior.portable_scanner.mode.caption", Component.translatable(getMode(stack).getLangKey()).withStyle(ChatFormatting.AQUA)));
+        tooltipComponents.add(Component.translatable("behavior.portable_scanner.mode.caption",
+                Component.translatable(getMode(stack).getLangKey()).withStyle(ChatFormatting.AQUA)));
     }
 }

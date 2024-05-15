@@ -15,6 +15,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -34,8 +35,7 @@ public interface IArmorLogic {
         map.put(ArmorItem.Type.HELMET, UUID.fromString("2AD3F246-FEE1-4E67-B886-69FD380BB150"));
     });
 
-    default void addToolComponents(ArmorComponentItem item) {
-    }
+    default void addToolComponents(ArmorComponentItem item) {}
 
     ArmorItem.Type getArmorType();
 
@@ -50,9 +50,8 @@ public interface IArmorLogic {
         return false;
     }
 
-    default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, EquipmentSlot equipmentSlot) {
-
-    }
+    default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                             EquipmentSlot equipmentSlot) {}
 
     default List<ItemAttributeModifiers.Entry> getAttributeModifiers(EquipmentSlot slot, ItemStack stack) {
         return Collections.emptyList();
@@ -62,12 +61,10 @@ public interface IArmorLogic {
         return getArmorType().getSlot() == equipmentSlot;
     }
 
-    default void onArmorTick(Level world, Player player, ItemStack itemStack) {
-    }
+    default void onArmorTick(Level world, Player player, ItemStack itemStack) {}
 
     @OnlyIn(Dist.CLIENT)
-    default void renderHelmetOverlay(ItemStack itemStack, Player player, float partialTicks) {
-    }
+    default void renderHelmetOverlay(ItemStack itemStack, Player player, float partialTicks) {}
 
     default int getArmorLayersAmount(ItemStack itemStack) {
         return 1;
@@ -81,7 +78,8 @@ public interface IArmorLogic {
     ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer);
 
     @NotNull
-    default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot, HumanoidModel<?> defaultModel) {
+    default HumanoidModel<?> getArmorModel(LivingEntity entityLiving, ItemStack itemStack, EquipmentSlot armorSlot,
+                                           HumanoidModel<?> defaultModel) {
         return defaultModel;
     }
 

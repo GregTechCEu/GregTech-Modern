@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.data.recipe.misc.alloyblast.AlloyBlastRecipeProducer;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.world.level.material.Fluid;
 
+import com.google.common.base.Preconditions;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
+
 import java.util.function.Supplier;
 
 public class AlloyBlastProperty implements IMaterialProperty<AlloyBlastProperty> {

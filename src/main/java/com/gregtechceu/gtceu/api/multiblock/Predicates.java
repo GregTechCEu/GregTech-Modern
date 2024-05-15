@@ -7,27 +7,30 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.multiblock.error.PatternStringError;
 import com.gregtechceu.gtceu.api.multiblock.predicates.*;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.block.BatteryBlock;
 import com.gregtechceu.gtceu.common.block.CoilBlock;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.PowerSubstationMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import com.tterrag.registrate.util.entry.RegistryEntry;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
+
+import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -58,7 +61,8 @@ public class Predicates {
     }
 
     public static TraceabilityPredicate blocks(IMachineBlock... blocks) {
-        return new TraceabilityPredicate(new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
+        return new TraceabilityPredicate(
+                new PredicateBlocks(Arrays.stream(blocks).map(IMachineBlock::self).toArray(Block[]::new)));
     }
 
     public static TraceabilityPredicate blockTag(TagKey<Block> tag) {
@@ -76,6 +80,7 @@ public class Predicates {
     public static TraceabilityPredicate custom(Predicate<MultiblockState> predicate, Supplier<BlockInfo[]> candidates) {
         return new TraceabilityPredicate(predicate, candidates);
     }
+
     public static TraceabilityPredicate any() {
         return new TraceabilityPredicate(SimplePredicate.ANY);
     }
@@ -85,7 +90,8 @@ public class Predicates {
     }
 
     public static TraceabilityPredicate abilities(PartAbility... abilities) {
-        return blocks(Arrays.stream(abilities).map(PartAbility::getAllBlocks).flatMap(Collection::stream).toArray(Block[]::new));
+        return blocks(Arrays.stream(abilities).map(PartAbility::getAllBlocks).flatMap(Collection::stream)
+                .toArray(Block[]::new));
     }
 
     public static TraceabilityPredicate ability(PartAbility ability, int... tiers) {
@@ -108,7 +114,8 @@ public class Predicates {
         if (checkEnergyIn) {
             for (var type : recipeType) {
                 if (type.getMaxInputs(EURecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1));
+                    predicate = predicate.or(abilities(PartAbility.INPUT_ENERGY).setMinGlobalLimited(1)
+                            .setMaxGlobalLimited(2).setPreviewCount(1));
                     break;
                 }
             }
@@ -116,7 +123,8 @@ public class Predicates {
         if (checkEnergyOut) {
             for (var type : recipeType) {
                 if (type.getMaxOutputs(EURecipeCapability.CAP) > 0) {
-                    predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMinGlobalLimited(1).setMaxGlobalLimited(2).setPreviewCount(1));
+                    predicate = predicate.or(abilities(PartAbility.OUTPUT_ENERGY).setMinGlobalLimited(1)
+                            .setMaxGlobalLimited(2).setPreviewCount(1));
                     break;
                 }
             }
@@ -156,10 +164,13 @@ public class Predicates {
         return predicate;
     }
 
-    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler, boolean checkParallel) {
+    public static TraceabilityPredicate autoAbilities(boolean checkMaintenance, boolean checkMuffler,
+                                                      boolean checkParallel) {
         TraceabilityPredicate predicate = new TraceabilityPredicate();
         if (checkMaintenance) {
-            predicate = predicate.or(abilities(PartAbility.MAINTENANCE).setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0).setMaxGlobalLimited(1));
+            predicate = predicate.or(abilities(PartAbility.MAINTENANCE)
+                    .setMinGlobalLimited(ConfigHolder.INSTANCE.machines.enableMaintenance ? 1 : 0)
+                    .setMaxGlobalLimited(1));
         }
         if (checkMuffler) {
             predicate = predicate.or(abilities(PartAbility.MUFFLER).setMinGlobalLimited(1).setMaxGlobalLimited(1));
@@ -237,21 +248,22 @@ public class Predicates {
                 .map(entry -> new BlockInfo(entry.getValue().get().defaultBlockState(), null))
                 .toArray(BlockInfo[]::new))
                 .addTooltips(Component.translatable("gtceu.multiblock.pattern.error.batteries"));
-
     }
 
     /**
      * Use this predicate for Frames in your Multiblock. Allows for Framed Pipes as well as normal Frame blocks.
      */
     public static TraceabilityPredicate frames(Material... frameMaterials) {
-        return blocks(Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m)).filter(Objects::nonNull).filter(RegistryEntry::isBound).map(RegistryEntry::get).toArray(Block[]::new))
+        return blocks(Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
+                .filter(Objects::nonNull).filter(RegistryEntry::isBound).map(RegistryEntry::get).toArray(Block[]::new))
                 .or(new TraceabilityPredicate(blockWorldState -> {
                     BlockEntity tileEntity = blockWorldState.getTileEntity();
-                    if (!(tileEntity instanceof IPipeNode<?,?> pipeNode)) {
+                    if (!(tileEntity instanceof IPipeNode<?, ?> pipeNode)) {
                         return false;
                     }
                     return ArrayUtils.contains(frameMaterials, pipeNode.getFrameMaterial());
-                }, () -> Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m)).filter(Objects::nonNull).filter(RegistryEntry::isBound).map(RegistryEntry::get).map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
+                }, () -> Arrays.stream(frameMaterials).map(m -> GTBlocks.MATERIAL_BLOCKS.get(TagPrefix.frameGt, m))
+                        .filter(Objects::nonNull).filter(RegistryEntry::isBound).map(RegistryEntry::get)
+                        .map(BlockInfo::fromBlock).toArray(BlockInfo[]::new)));
     }
-
 }

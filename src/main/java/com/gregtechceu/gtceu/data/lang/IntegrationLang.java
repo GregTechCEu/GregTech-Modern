@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.data.lang;
 
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
 import com.gregtechceu.gtceu.data.block.GTOres;
+import com.gregtechceu.gtceu.data.fluid.GTBedrockFluids;
+
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class IntegrationLang {

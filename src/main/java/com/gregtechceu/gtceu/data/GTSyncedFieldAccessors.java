@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.syncdata.GTRecipeAccessor;
 import com.gregtechceu.gtceu.syncdata.GTRecipeTypeAccessor;
+
 import com.lowdragmc.lowdraglib.syncdata.IAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 
@@ -13,6 +14,7 @@ import static com.lowdragmc.lowdraglib.syncdata.TypedPayloadRegistries.*;
  * @implNote GTSyncedFieldAccessors
  */
 public class GTSyncedFieldAccessors {
+
     public static final IAccessor GT_RECIPE_ACCESSOR = new GTRecipeAccessor();
     public static final IAccessor GT_RECIPE_TYPE_ACCESSOR = new GTRecipeTypeAccessor();
 

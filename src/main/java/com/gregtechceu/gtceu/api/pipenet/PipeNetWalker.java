@@ -2,27 +2,35 @@ package com.gregtechceu.gtceu.api.pipenet;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.*;
 
 /**
  * This is a helper class to get information about a pipe net
- * <p>The walker is written that it will always find the shortest path to any destination
- * <p>On the way it can collect information about the pipes and it's neighbours
- * <p>After creating a walker simply call {@link #traversePipeNet()} to start walking, then you can just collect the data
- * <p><b>Do not walk a walker more than once</b>
+ * <p>
+ * The walker is written that it will always find the shortest path to any destination
+ * <p>
+ * On the way it can collect information about the pipes and it's neighbours
+ * <p>
+ * After creating a walker simply call {@link #traversePipeNet()} to start walking, then you can just collect the data
+ * <p>
+ * <b>Do not walk a walker more than once</b>
  */
 @SuppressWarnings("unused")
 public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net extends PipeNet<NodeDataType>> {
+
     protected PipeNetWalker<T, NodeDataType, Net> root;
     protected final Net pipeNet;
     private Set<T> walked;
@@ -57,7 +65,8 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
      * @return new sub walker
      */
     @NotNull
-    protected abstract PipeNetWalker<T, NodeDataType,  Net> createSubWalker(Net pipeNet, Direction facingToNextPos, BlockPos nextPos, int walkedBlocks);
+    protected abstract PipeNetWalker<T, NodeDataType, Net> createSubWalker(Net pipeNet, Direction facingToNextPos,
+                                                                           BlockPos nextPos, int walkedBlocks);
 
     /**
      * Checks the neighbour of the current pos
@@ -67,9 +76,8 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
      * @param pipeNode        pipeNode
      * @param neighbourTile   the neighboring BlockEntity. Might not be a pipe.
      */
-    protected void checkNeighbour(T pipeNode, BlockPos pipePos, Direction faceToNeighbour, @Nullable BlockEntity neighbourTile) {
-
-    }
+    protected void checkNeighbour(T pipeNode, BlockPos pipePos, Direction faceToNeighbour,
+                                  @Nullable BlockEntity neighbourTile) {}
 
     /**
      * If the pipe is valid to perform a walk on
@@ -108,8 +116,7 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
      *
      * @param subWalker the finished sub walker
      */
-    protected void onRemoveSubWalker(PipeNetWalker<T, NodeDataType,  Net> subWalker) {
-    }
+    protected void onRemoveSubWalker(PipeNetWalker<T, NodeDataType, Net> subWalker) {}
 
     public void traversePipeNet() {
         traversePipeNet(32768);
@@ -157,8 +164,8 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
             for (int i = 0; i < nextPipeFacings.size(); i++) {
                 Direction side = nextPipeFacings.get(i);
                 PipeNetWalker<T, NodeDataType, Net> walker = Objects.requireNonNull(
-                    createSubWalker(pipeNet, side, currentPos.relative(side), walkedBlocks + 1),
-                    "Walker can't be null");
+                        createSubWalker(pipeNet, side, currentPos.relative(side), walkedBlocks + 1),
+                        "Walker can't be null");
                 walker.root = root;
                 walker.currentPipe = nextPipes.get(i);
                 walker.from = side.getOpposite();
@@ -182,7 +189,7 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
         nextPipes.clear();
         if (currentPipe == null) {
             BlockEntity thisPipe = getLevel().getBlockEntity(currentPos);
-            if (!(thisPipe instanceof IPipeNode<?,?>)) {
+            if (!(thisPipe instanceof IPipeNode<?, ?>)) {
                 GTCEu.LOGGER.error("PipeWalker expected a pipe, but found {} at {}", thisPipe, currentPos);
                 return false;
             }
@@ -205,7 +212,7 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
             if (tile != null && getBasePipeClass().isAssignableFrom(tile.getClass())) {
                 T otherPipe = (T) tile;
                 if (!otherPipe.isConnected(accessSide.getOpposite()) ||
-                    otherPipe.isBlocked(accessSide.getOpposite()) || isWalked(otherPipe))
+                        otherPipe.isBlocked(accessSide.getOpposite()) || isWalked(otherPipe))
                     continue;
                 if (isValidPipe(pipeTile, otherPipe, currentPos, accessSide)) {
                     nextPipeFacings.add(accessSide);
@@ -240,5 +247,4 @@ public abstract class PipeNetWalker<T extends IPipeNode<?, ?>, NodeDataType, Net
     public BlockPos getCurrentPos() {
         return currentPos.immutable();
     }
-
 }

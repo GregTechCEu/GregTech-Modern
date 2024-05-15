@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.material;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.FluidProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
@@ -9,14 +10,13 @@ import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
 import com.gregtechceu.gtceu.data.tag.TagsHandler;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+
 import com.lowdragmc.lowdraglib.Platform;
-import com.tterrag.registrate.util.entry.BlockEntry;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
@@ -31,8 +31,11 @@ import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
+import com.tterrag.registrate.util.entry.BlockEntry;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
@@ -50,7 +53,8 @@ public class ChemicalHelper {
     /** Used for custom material data for items that do not fall into the normal "prefix, material" pair */
     public static final Map<ItemLike, ItemMaterialInfo> ITEM_MATERIAL_INFO = new ConcurrentHashMap<>();
     /** Mapping of an item to a "prefix, material" pair */
-    public static final Set<Map.Entry<Supplier<? extends ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = ConcurrentHashMap.newKeySet();
+    public static final Set<Map.Entry<Supplier<? extends ItemLike>, UnificationEntry>> ITEM_UNIFICATION_ENTRY = ConcurrentHashMap
+            .newKeySet();
     public static final Map<ItemLike, UnificationEntry> ITEM_UNIFICATION_ENTRY_COLLECTED = new ConcurrentHashMap<>();
     /** Mapping of a tag to a "prefix, material" pair */
     public static final Map<TagKey<Item>, UnificationEntry> TAG_UNIFICATION_ENTRY = new Object2ObjectLinkedOpenHashMap<>();
@@ -71,7 +75,8 @@ public class ChemicalHelper {
     }
 
     @SafeVarargs
-    public static void registerUnificationItems(UnificationEntry unificationEntry, Supplier<? extends ItemLike>... items) {
+    public static void registerUnificationItems(UnificationEntry unificationEntry,
+                                                Supplier<? extends ItemLike>... items) {
         UNIFICATION_ENTRY_ITEM.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
                 .addAll(Arrays.asList(items));
         for (Supplier<? extends ItemLike> item : items) {
@@ -85,14 +90,15 @@ public class ChemicalHelper {
             } else if (item instanceof DeferredHolder<?, ?> registryObject) {
                 if (registryObject.getKey().isFor(Registries.BLOCK)) {
                     UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                        .add((DeferredHolder<Block, ? extends Block>) registryObject);
+                            .add((DeferredHolder<Block, ? extends Block>) registryObject);
                 }
             } else if (item instanceof SupplierMemoizer.MemoizedBlockSupplier<? extends Block> supplier) {
                 UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> new ArrayList<>())
-                    .add(supplier);
+                        .add(supplier);
             }
         }
-        if (TagPrefix.ORES.containsKey(unificationEntry.tagPrefix) && !ORES_INVERSE.containsValue(unificationEntry.tagPrefix)) {
+        if (TagPrefix.ORES.containsKey(unificationEntry.tagPrefix) &&
+                !ORES_INVERSE.containsValue(unificationEntry.tagPrefix)) {
             ORES_INVERSE.put(TagPrefix.ORES.get(unificationEntry.tagPrefix).stoneType(), unificationEntry.tagPrefix);
         }
         for (TagKey<Item> tag : unificationEntry.tagPrefix.getAllItemTags(unificationEntry.material)) {
@@ -101,12 +107,14 @@ public class ChemicalHelper {
     }
 
     @SafeVarargs
-    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, Supplier<? extends ItemLike>... items) {
+    public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material,
+                                                Supplier<? extends ItemLike>... items) {
         registerUnificationItems(new UnificationEntry(tagPrefix, material), items);
     }
 
     public static void registerUnificationItems(TagPrefix tagPrefix, @Nullable Material material, ItemLike... items) {
-        registerUnificationItems(new UnificationEntry(tagPrefix, material), Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
+        registerUnificationItems(new UnificationEntry(tagPrefix, material),
+                Arrays.stream(items).map(item -> (Supplier<ItemLike>) () -> item).toArray(Supplier[]::new));
         for (ItemLike item : items) {
             ITEM_UNIFICATION_ENTRY_COLLECTED.put(item, new UnificationEntry(tagPrefix, material));
         }
@@ -151,8 +159,12 @@ public class ChemicalHelper {
                     for (FluidStorageKey key : FluidStorageKey.allKeys()) {
                         Fluid stored = property.getStorage().get(key);
                         TagKey<Fluid> tag = TagUtil.createFluidTag(BuiltInRegistries.FLUID.getKey(stored).getPath());
-                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("water")) && !stored.isSame(Fluids.WATER)) continue;
-                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("lava")) && !stored.isSame(Fluids.LAVA)) continue;
+                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("water")) &&
+                                !stored.isSame(Fluids.WATER))
+                            continue;
+                        if (!Platform.isForge() && tag.location().equals(new ResourceLocation("lava")) &&
+                                !stored.isSame(Fluids.LAVA))
+                            continue;
                         if (f == stored || f.is(tag)) {
                             return material;
                         }
@@ -214,9 +226,9 @@ public class ChemicalHelper {
     }
 
     public static ItemStack getGem(MaterialStack materialStack) {
-        if (materialStack.material().hasProperty(PropertyKey.GEM)
-                && !TagPrefix.gem.isIgnored(materialStack.material())
-                && materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {
+        if (materialStack.material().hasProperty(PropertyKey.GEM) &&
+                !TagPrefix.gem.isIgnored(materialStack.material()) &&
+                materialStack.amount() == TagPrefix.gem.getMaterialAmount(materialStack.material())) {
             return get(TagPrefix.gem, materialStack.material(), (int) (materialStack.amount() / M));
         }
         return getDust(materialStack);
@@ -228,7 +240,7 @@ public class ChemicalHelper {
         var itemKey = itemLike.asItem();
         var unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.get(itemKey);
 
-        if(unifyingEntry == null) {
+        if (unifyingEntry == null) {
             // Resolve all the lazy suppliers once, rather than on each request. This avoids O(n) lookup performance
             // for unification entries.
             ITEM_UNIFICATION_ENTRY.removeIf(entry -> {
@@ -236,7 +248,8 @@ public class ChemicalHelper {
                 return true;
             });
 
-            unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> UnificationEntry.EmptyMapMarkerEntry);
+            unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemKey,
+                    item -> UnificationEntry.EmptyMapMarkerEntry);
         }
 
         return unifyingEntry;
@@ -246,7 +259,8 @@ public class ChemicalHelper {
         return TAG_UNIFICATION_ENTRY.computeIfAbsent(tag, tagKey -> {
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-                    if (Arrays.stream(prefix.getItemTags(material)).anyMatch(tagKey1 -> tagKey1.location().equals(tagKey.location()))) {
+                    if (Arrays.stream(prefix.getItemTags(material))
+                            .anyMatch(tagKey1 -> tagKey1.location().equals(tagKey.location()))) {
                         return new UnificationEntry(prefix, material);
                     }
                 }
@@ -261,7 +275,8 @@ public class ChemicalHelper {
         var value = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
             Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item.asItem());
             return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
-                    .filter(entry -> !(entry == UnificationEntry.EmptyMapMarkerEntry)).findFirst().orElse(UnificationEntry.EmptyMapMarkerEntry);
+                    .filter(entry -> !(entry == UnificationEntry.EmptyMapMarkerEntry)).findFirst()
+                    .orElse(UnificationEntry.EmptyMapMarkerEntry);
         });
         return value != UnificationEntry.EmptyMapMarkerEntry ? value : null;
     }
@@ -301,7 +316,8 @@ public class ChemicalHelper {
     public static List<Block> getBlocks(UnificationEntry unificationEntry) {
         return UNIFICATION_ENTRY_BLOCK.computeIfAbsent(unificationEntry, entry -> {
             var blocks = new ArrayList<Supplier<? extends Block>>();
-            for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material)).map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
+            for (TagKey<Block> tag : Arrays.stream(getTags(unificationEntry.tagPrefix, unificationEntry.material))
+                    .map(itemTagKey -> TagKey.create(Registries.BLOCK, itemTagKey.location())).toList()) {
                 for (Holder<Block> itemHolder : BuiltInRegistries.BLOCK.getTagOrEmpty(tag)) {
                     blocks.add(itemHolder::value);
                 }
@@ -349,7 +365,8 @@ public class ChemicalHelper {
     }
 
     public static Optional<TagPrefix> getOrePrefix(BlockState state) {
-        return ORES_INVERSE.entrySet().stream().filter(entry -> entry.getKey().get().equals(state)).map(Map.Entry::getValue).findFirst();
+        return ORES_INVERSE.entrySet().stream().filter(entry -> entry.getKey().get().equals(state))
+                .map(Map.Entry::getValue).findFirst();
     }
 
     public static void reinitializeUnification() {

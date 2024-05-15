@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -19,12 +19,15 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -34,6 +37,7 @@ import java.util.function.Supplier;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTRecipe implements Recipe<Container> {
+
     public final GTRecipeType recipeType;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
     public final Map<RecipeCapability<?>, List<Content>> outputs;
@@ -71,7 +75,8 @@ public class GTRecipe implements Recipe<Container> {
         this.isFuel = isFuel;
     }
 
-    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents, @Nullable ContentModifier modifier) {
+    public Map<RecipeCapability<?>, List<Content>> copyContents(Map<RecipeCapability<?>, List<Content>> contents,
+                                                                @Nullable ContentModifier modifier) {
         Map<RecipeCapability<?>, List<Content>> copyContents = new HashMap<>();
         for (var entry : contents.entrySet()) {
             var contentList = entry.getValue();
@@ -88,7 +93,9 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
+        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null),
+                copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -96,7 +103,9 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
+        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier),
+                copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, isFuel);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
@@ -137,7 +146,6 @@ public class GTRecipe implements Recipe<Container> {
     // **********************internal logic********************* //
     ///////////////////////////////////////////////////////////////
 
-
     public List<Content> getInputContents(RecipeCapability<?> capability) {
         return inputs.getOrDefault(capability, Collections.emptyList());
     }
@@ -174,7 +182,8 @@ public class GTRecipe implements Recipe<Container> {
         return ActionResult.SUCCESS;
     }
 
-    public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+    public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder,
+                                            Map<RecipeCapability<?>, List<Content>> contents) {
         RecipeRunner runner = new RecipeRunner(this, io, holder, true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var result = runner.handle(entry);
@@ -183,9 +192,11 @@ public class GTRecipe implements Recipe<Container> {
 
             if (result.result().content != null || !result.result().slots.isEmpty()) {
                 if (io == IO.IN) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(result.capability().getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ").append(result.capability().getName()), 0f);
                 } else if (io == IO.OUT) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(result.capability().getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out")
+                            .append(": ").append(result.capability().getName()), 0f);
                 } else {
                     return ActionResult.FAIL_NO_REASON;
                 }
@@ -204,7 +215,8 @@ public class GTRecipe implements Recipe<Container> {
         return handleRecipe(io, holder, io == IO.IN ? inputs : outputs);
     }
 
-    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder,
+                                Map<RecipeCapability<?>, List<Content>> contents) {
         RecipeRunner runner = new RecipeRunner(this, io, holder, false);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var handled = runner.handle(entry);
@@ -218,8 +230,6 @@ public class GTRecipe implements Recipe<Container> {
         }
         return true;
     }
-
-
 
     public boolean hasTick() {
         return !tickInputs.isEmpty() || !tickOutputs.isEmpty();
@@ -270,7 +280,8 @@ public class GTRecipe implements Recipe<Container> {
             if (condition.isOr()) {
                 or.computeIfAbsent(condition.getType(), type -> new ArrayList<>()).add(condition);
             } else if (condition.test(this, recipeLogic) == condition.isReverse()) {
-                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails").append(": ").append(condition.getTooltips()));
+                return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.condition_fails").append(": ")
+                        .append(condition.getTooltips()));
             }
         }
         for (List<RecipeCondition> conditions : or.values()) {
@@ -314,7 +325,8 @@ public class GTRecipe implements Recipe<Container> {
      * @param trimLimits The limit(s) on the number of outputs, -1 for disabled.
      * @return All recipe outputs, limited by some factor(s)
      */
-    public Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current, Map<RecipeCapability<?>, Integer> trimLimits) {
+    public Map<RecipeCapability<?>, List<Content>> doTrim(Map<RecipeCapability<?>, List<Content>> current,
+                                                          Map<RecipeCapability<?>, Integer> trimLimits) {
         Map<RecipeCapability<?>, List<Content>> outputs = new HashMap<>();
 
         Set<RecipeCapability<?>> trimmed = new HashSet<>();
@@ -345,7 +357,8 @@ public class GTRecipe implements Recipe<Container> {
             }
             // If the regular outputs and chanced outputs are required to satisfy the outputLimit
             else if (!nonChanced.isEmpty() && (nonChanced.size() + chanced.size()) >= outputLimit) {
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
+                        .addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
 
                 // Calculate the number of chanced outputs after adding all the regular outputs
                 int numChanced = outputLimit - nonChanced.size();
@@ -358,12 +371,14 @@ public class GTRecipe implements Recipe<Container> {
             }
             // The number of outputs + chanced outputs is lower than the trim number, so just add everything
             else {
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
+                        .addAll(nonChanced.stream().map(cont -> cont.copy(key, null)).toList());
                 // Chanced outputs are taken care of in the original copy
             }
 
             if (!chanced.isEmpty())
-                outputs.computeIfAbsent(key, $ -> new ArrayList<>()).addAll(chanced.stream().map(cont -> cont.copy(key, null)).toList());
+                outputs.computeIfAbsent(key, $ -> new ArrayList<>())
+                        .addAll(chanced.stream().map(cont -> cont.copy(key, null)).toList());
 
             trimmed.add(key);
         }
@@ -377,17 +392,18 @@ public class GTRecipe implements Recipe<Container> {
 
     /**
      *
-     * @param isSuccess is action success
-     * @param reason if fail, fail reason
+     * @param isSuccess     is action success
+     * @param reason        if fail, fail reason
      * @param expectingRate if recipe matching fail, the expecting rate of one cap.
-     *                    <br>
-     *                    For example, recipe require 300eu and 10 apples, and left 100eu and 5 apples after recipe searching.
-     *                    <br>
-     *                    EU Missing Rate : 300 / (300 - 100) = 1.5
-     *                    <br>
-     *                    Item Missing Rate : 10 / (10 - 5) = 2
-     *                    <br>
-     *                    return max expecting rate --- 2
+     *                      <br>
+     *                      For example, recipe require 300eu and 10 apples, and left 100eu and 5 apples after recipe
+     *                      searching.
+     *                      <br>
+     *                      EU Missing Rate : 300 / (300 - 100) = 1.5
+     *                      <br>
+     *                      Item Missing Rate : 10 / (10 - 5) = 2
+     *                      <br>
+     *                      return max expecting rate --- 2
      */
     public static record ActionResult(boolean isSuccess, @Nullable Supplier<Component> reason, float expectingRate) {
 
@@ -404,7 +420,8 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public boolean checkRecipeValid() {
-        return checkItemValid(inputs, "input") && checkItemValid(outputs, "output") && checkItemValid(tickInputs, "tickInput") && checkItemValid(tickOutputs, "tickOutput");
+        return checkItemValid(inputs, "input") && checkItemValid(outputs, "output") &&
+                checkItemValid(tickInputs, "tickInput") && checkItemValid(tickOutputs, "tickOutput");
     }
 
     private boolean checkItemValid(Map<RecipeCapability<?>, List<Content>> contents, String name) {
@@ -464,16 +481,16 @@ public class GTRecipe implements Recipe<Container> {
     @Override
     public String toString() {
         return "GTRecipe{" +
-            "recipeType=" + recipeType +
-            ", inputs=" + inputs +
-            ", outputs=" + outputs +
-            ", tickInputs=" + tickInputs +
-            ", tickOutputs=" + tickOutputs +
-            ", conditions=" + conditions +
-            ", data=" + data +
-            ", duration=" + duration +
-            ", isFuel=" + isFuel +
-            '}';
+                "recipeType=" + recipeType +
+                ", inputs=" + inputs +
+                ", outputs=" + outputs +
+                ", tickInputs=" + tickInputs +
+                ", tickOutputs=" + tickOutputs +
+                ", conditions=" + conditions +
+                ", data=" + data +
+                ", duration=" + duration +
+                ", isFuel=" + isFuel +
+                '}';
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buf) {

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -34,14 +35,20 @@ public class TooltipsHandler {
             tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
                     energyItem.getCharge(),
                     energyItem.getMaxCharge(),
-                    Component.literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge())).withStyle(ChatFormatting.GREEN)));
+                    Component
+                            .literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge()))
+                            .withStyle(ChatFormatting.GREEN)));
         }
 
         // Formula
-        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem()); // TODO optimize getOrComputeUnificationEntry so we can use that
+        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem()); // TODO optimize
+                                                                                    // getOrComputeUnificationEntry so
+                                                                                    // we can use that
         if (unificationEntry != null && unificationEntry.material != null) {
-            if (unificationEntry.material.getChemicalFormula() != null && !unificationEntry.material.getChemicalFormula().isEmpty())
-                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+            if (unificationEntry.material.getChemicalFormula() != null &&
+                    !unificationEntry.material.getChemicalFormula().isEmpty())
+                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
+                        .withStyle(ChatFormatting.YELLOW));
         }
 
         // Block/Item custom tooltips

@@ -1,14 +1,18 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import lombok.RequiredArgsConstructor;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
+
+import lombok.RequiredArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @RequiredArgsConstructor
 public class OverlayingFluidStorage implements IFluidHandlerModifiable, IFluidTank {
+
     private final IFluidHandlerModifiable transfer;
     private final int tank;
 

@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -14,6 +15,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.BlockAccessor;
 import snownee.jade.api.ITooltip;
@@ -57,11 +59,12 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
         var machine = capability.machine;
         // TODO if(machine instanceof SteamMachine), display steam usage in L/t
-        //  (could probably also be done clientside actually, since we have access to the BlockEntity there)
+        // (could probably also be done clientside actually, since we have access to the BlockEntity there)
     }
 
     @Override
-    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block, BlockEntity blockEntity, IPluginConfig config) {
+    protected void addTooltip(CompoundTag capData, ITooltip tooltip, Player player, BlockAccessor block,
+                              BlockEntity blockEntity, IPluginConfig config) {
         if (capData.getBoolean("Working")) {
             var recipeInfo = capData.getCompound("Recipe");
             if (!recipeInfo.isEmpty()) {
@@ -70,12 +73,14 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
 
                 long absEUt = Math.abs(EUt);
 
-                // Default behavior, if this TE is not a steam machine (or somehow not instanceof IGregTechTileEntity...)
+                // Default behavior, if this TE is not a steam machine (or somehow not instanceof
+                // IGregTechTileEntity...)
                 var tier = GTUtil.getTierByVoltage(absEUt);
                 Component text = Component.literal(Long.toString(absEUt)).withStyle(ChatFormatting.RED)
                         .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
                                 .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
-                                        .append(Component.literal(GTValues.VNF[tier]).withStyle(style -> style.withColor(GTValues.VC[tier])))
+                                        .append(Component.literal(GTValues.VNF[tier])
+                                                .withStyle(style -> style.withColor(GTValues.VC[tier])))
                                         .append(Component.literal(")").withStyle(ChatFormatting.GREEN))));
 
                 if (EUt > 0) {

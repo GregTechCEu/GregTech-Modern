@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
+import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -18,6 +20,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class TagPrefixItemImpl extends TagPrefixItem {
+
     protected TagPrefixItemImpl(Properties properties, TagPrefix tagPrefix, Material material) {
         super(properties, tagPrefix, material);
     }
@@ -30,5 +33,4 @@ public class TagPrefixItemImpl extends TagPrefixItem {
     public int getBurnTime(ItemStack itemStack, @Nullable RecipeType<?> recipeType) {
         return getItemBurnTime();
     }
-
 }

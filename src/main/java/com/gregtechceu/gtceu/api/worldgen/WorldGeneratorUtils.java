@@ -1,15 +1,10 @@
 package com.gregtechceu.gtceu.api.worldgen;
 
-import com.google.common.collect.HashBiMap;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerator;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceKey;
@@ -24,6 +19,12 @@ import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
+import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.MapCodec;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.function.Consumer;
@@ -32,25 +33,32 @@ import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class WorldGeneratorUtils {
+
     public static final RuleTest END_ORE_REPLACEABLES = new TagMatchTest(CustomTags.ENDSTONE_ORE_REPLACEABLES);
 
     private static final Map<ServerLevel, WorldOreVeinCache> oreVeinCache = new WeakHashMap<>();
 
     public static final SortedMap<String, IWorldGenLayer> WORLD_GEN_LAYERS = new Object2ObjectLinkedOpenHashMap<>();
 
-    public static final HashBiMap<ResourceLocation, MapCodec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap.create();
-    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap.create();
+    public static final HashBiMap<ResourceLocation, MapCodec<? extends VeinGenerator>> VEIN_GENERATORS = HashBiMap
+            .create();
+    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends VeinGenerator>> VEIN_GENERATOR_FUNCTIONS = HashBiMap
+            .create();
 
-    public static final HashBiMap<ResourceLocation, MapCodec<? extends IndicatorGenerator>> INDICATOR_GENERATORS = HashBiMap.create();
-    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends IndicatorGenerator>> INDICATOR_GENERATOR_FUNCTIONS = HashBiMap.create();
+    public static final HashBiMap<ResourceLocation, MapCodec<? extends IndicatorGenerator>> INDICATOR_GENERATORS = HashBiMap
+            .create();
+    public static final HashBiMap<ResourceLocation, Function<GTOreDefinition, ? extends IndicatorGenerator>> INDICATOR_GENERATOR_FUNCTIONS = HashBiMap
+            .create();
 
     private static class WorldOreVeinCache {
+
         private final List<GTOreDefinition> worldVeins;
         private final List<Entry<Integer, GTOreDefinition>> veins = new LinkedList<>();
 
         public WorldOreVeinCache(ServerLevel level) {
             this.worldVeins = GTRegistries.ORE_VEINS.values().stream()
-                    .filter(entry -> entry.dimensionFilter().stream().anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
+                    .filter(entry -> entry.dimensionFilter().stream()
+                            .anyMatch(dim -> WorldGeneratorUtils.isSameDimension(dim, level.dimension())))
                     .collect(Collectors.toList());
         }
 
@@ -59,7 +67,10 @@ public class WorldGeneratorUtils {
                 return veins;
             List<Entry<Integer, GTOreDefinition>> result = worldVeins.stream()
                     .filter(entry -> entry.biomes() == null || entry.biomes().get().contains(biome))
-                    .map(vein -> new AbstractMap.SimpleEntry<>(vein.weight() + (vein.biomeWeightModifier() == null ? 0 : vein.biomeWeightModifier().apply(biome)), vein))
+                    .map(vein -> new AbstractMap.SimpleEntry<>(
+                            vein.weight() +
+                                    (vein.biomeWeightModifier() == null ? 0 : vein.biomeWeightModifier().apply(biome)),
+                            vein))
                     .filter(entry -> entry.getKey() > 0)
                     .collect(Collectors.toList());
             veins.addAll(result);
@@ -67,7 +78,8 @@ public class WorldGeneratorUtils {
         }
     }
 
-    public static List<Entry<Integer, GTOreDefinition>> getCachedBiomeVeins(ServerLevel level, Holder<Biome> biome, RandomSource random) {
+    public static List<Entry<Integer, GTOreDefinition>> getCachedBiomeVeins(ServerLevel level, Holder<Biome> biome,
+                                                                            RandomSource random) {
         if (oreVeinCache.containsKey(level))
             return oreVeinCache.get(level).getEntry(biome);
         WorldOreVeinCache worldOreVeinCache = new WorldOreVeinCache(level);
@@ -90,8 +102,7 @@ public class WorldGeneratorUtils {
         return input.entrySet().stream().collect(Collectors.groupingBy(
                 entry -> new ChunkPos(entry.getKey()),
                 Object2ObjectOpenHashMap::new,
-                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)
-        ));
+                Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, (a, b) -> a, Object2ObjectOpenHashMap::new)));
     }
 
     public static <T> Map<ChunkPos, List<BlockPos>> groupByChunks(Collection<BlockPos> positions) {

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
 public class UnificationEntry {
@@ -46,6 +47,7 @@ public class UnificationEntry {
     }
 
     public static final UnificationEntry EmptyMapMarkerEntry = new UnificationEntry(null) {
+
         @Override
         public boolean equals(Object o) {
             return this == o;
@@ -61,5 +63,4 @@ public class UnificationEntry {
             return "EMPTY UNIFICATION ENTRY";
         }
     };
-
 }

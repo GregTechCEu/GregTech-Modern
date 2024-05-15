@@ -1,14 +1,14 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
-import appeng.api.stacks.GenericStack;
-import com.gregtechceu.gtceu.GTCEu;
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 
+import appeng.api.stacks.GenericStack;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -16,16 +16,21 @@ import org.jetbrains.annotations.Nullable;
  * @Description A export only slot to hold {@link appeng.api.stacks.GenericStack}
  * @date 2023/4/22-13:42
  */
-public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSerializable<CompoundTag>, IContentChangeAware {
+public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSerializable<CompoundTag>,
+                                       IContentChangeAware {
+
     protected final static String CONFIG_TAG = "config";
     protected final static String STOCK_TAG = "stock";
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Runnable onContentsChanged = () -> {};
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected GenericStack config;
-    @Getter @Setter
+    @Getter
+    @Setter
     protected GenericStack stock;
 
     public ExportOnlyAESlot(GenericStack config, GenericStack stock) {
@@ -97,7 +102,6 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
         if (tag.contains(STOCK_TAG)) {
             this.stock = GenericStack.readTag(tag.getCompound(STOCK_TAG));
         }
-
     }
 
     public static GenericStack copy(GenericStack stack) {
@@ -107,5 +111,4 @@ public abstract class ExportOnlyAESlot implements IConfigurableSlot, INBTSeriali
     public static GenericStack copy(GenericStack stack, long amount) {
         return new GenericStack(stack.what(), amount);
     }
-
 }

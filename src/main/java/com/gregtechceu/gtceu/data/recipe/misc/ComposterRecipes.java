@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.data.block.GTBlocks;
+
 import net.minecraft.world.level.ItemLike;
 
 import java.util.function.BiConsumer;

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.gui.animation.Animation;
 import com.lowdragmc.lowdraglib.gui.animation.Transform;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -14,19 +15,19 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
 import com.lowdragmc.lowdraglib.utils.interpolate.Eases;
-import com.mojang.blaze3d.systems.RenderSystem;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import org.jetbrains.annotations.NotNull;
 
+import com.mojang.blaze3d.systems.RenderSystem;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -40,7 +41,8 @@ public class ConfiguratorPanel extends WidgetGroup {
 
     @Getter
     protected List<Tab> tabs = new ArrayList<>();
-    @Getter @Nullable
+    @Getter
+    @Nullable
     protected Tab expanded;
     @Setter
     protected int border = 4;
@@ -67,9 +69,9 @@ public class ConfiguratorPanel extends WidgetGroup {
             tab.setBackground(texture);
             tabs.add(tab);
             addWidgetAnima(tab, new Transform()
-                .scale(0)
-                .duration(getAnimationTime())
-                .ease(Eases.EaseQuadOut));
+                    .scale(0)
+                    .duration(getAnimationTime())
+                    .ease(Eases.EaseQuadOut));
         }
         setSize(new Size(getSize().width, Math.max(0, tabs.size() * (getTabSize() + 2) - 2)));
     }
@@ -158,7 +160,8 @@ public class ConfiguratorPanel extends WidgetGroup {
     @Override
     @OnlyIn(Dist.CLIENT)
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
-        if (expanded != null && expanded.isVisible() && expanded.isActive() && expanded.mouseClicked(mouseX, mouseY, button)) {
+        if (expanded != null && expanded.isVisible() && expanded.isActive() &&
+                expanded.mouseClicked(mouseX, mouseY, button)) {
             return true;
         }
         return super.mouseClicked(mouseX, mouseY, button);
@@ -169,6 +172,7 @@ public class ConfiguratorPanel extends WidgetGroup {
     }
 
     public class Tab extends WidgetGroup {
+
         protected final IFancyConfigurator configurator;
         protected final ButtonWidget button;
         @Nullable
@@ -185,28 +189,32 @@ public class ConfiguratorPanel extends WidgetGroup {
             if (configurator instanceof IFancyConfiguratorButton) {
                 this.view = null;
                 this.addWidget(button);
-            } else{
+            } else {
                 var widget = configurator.createConfigurator();
                 widget.setSelfPosition(new Position(border, getTabSize()));
 
                 this.view = new WidgetGroup(0, 0, 0, 0) {
+
                     @Override
                     protected void onChildSizeUpdate(Widget child) {
                         super.onChildSizeUpdate(child);
                         if (widget == child) {
-                            this.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + getTabSize() + border));
+                            this.setSize(new Size(widget.getSize().width + border * 2,
+                                    widget.getSize().height + getTabSize() + border));
                         }
                     }
                 };
 
                 this.view.setVisible(false);
                 this.view.setActive(false);
-                this.view.setSize(new Size(widget.getSize().width + border * 2, widget.getSize().height + button.getSize().height + border));
+                this.view.setSize(new Size(widget.getSize().width + border * 2,
+                        widget.getSize().height + button.getSize().height + border));
                 this.view.addWidget(widget);
-                this.view.addWidget(new ImageWidget(border + 5, border, widget.getSize().width - getTabSize() - 5, getTabSize() - border,
-                    new TextTexture(configurator.getTitle().getString())
-                        .setType(TextTexture.TextType.LEFT_HIDE)
-                        .setWidth(widget.getSize().width - getTabSize())));
+                this.view.addWidget(new ImageWidget(border + 5, border, widget.getSize().width - getTabSize() - 5,
+                        getTabSize() - border,
+                        new TextTexture(configurator.getTitle().getString())
+                                .setType(TextTexture.TextType.LEFT_HIDE)
+                                .setWidth(widget.getSize().width - getTabSize())));
                 this.addWidget(button);
                 this.addWidget(view);
             }
@@ -248,14 +256,15 @@ public class ConfiguratorPanel extends WidgetGroup {
                 if (expanded == this) {
                     var size = view.getSize();
                     animation(new Animation()
-                        .duration(getAnimationTime())
-                        .position(new Position(dragOffsetX + (- size.width + (tabs.size() > 1 ?  - 2 : getTabSize())), dragOffsetY))
-                        .size(size)
-                        .ease(Eases.EaseQuadOut)
-                        .onFinish(() -> {
-                            view.setVisible(true);
-                            view.setActive(true);
-                        }));
+                            .duration(getAnimationTime())
+                            .position(new Position(dragOffsetX + (-size.width + (tabs.size() > 1 ? -2 : getTabSize())),
+                                    dragOffsetY))
+                            .size(size)
+                            .ease(Eases.EaseQuadOut)
+                            .onFinish(() -> {
+                                view.setVisible(true);
+                                view.setActive(true);
+                            }));
                 }
             }
         }
@@ -284,24 +293,26 @@ public class ConfiguratorPanel extends WidgetGroup {
             this.dragOffsetX = 0;
             this.dragOffsetY = 0;
             if (isRemote()) {
-                if (getParentPosition().x - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()) < 0) {
-                    this.dragOffsetX -= (view.getParentPosition().x - size.width + (tabs.size() > 1 ?  - 2 : getTabSize()));
+                if (getParentPosition().x - size.width + (tabs.size() > 1 ? -2 : getTabSize()) < 0) {
+                    this.dragOffsetX -= (view.getParentPosition().x - size.width +
+                            (tabs.size() > 1 ? -2 : getTabSize()));
                 }
                 if (getParentPosition().y + size.height > gui.getScreenHeight()) {
                     this.dragOffsetY -= view.getParentPosition().y + size.height - gui.getScreenHeight();
                 }
             }
-            Position position = new Position(dragOffsetX - size.width + (tabs.size() > 1 ? -2 : getTabSize()), dragOffsetY);
+            Position position = new Position(dragOffsetX - size.width + (tabs.size() > 1 ? -2 : getTabSize()),
+                    dragOffsetY);
 
             animation(new Animation()
-                .duration(getAnimationTime())
-                .position(position)
-                .size(size)
-                .ease(Eases.EaseQuadOut)
-                .onFinish(() -> {
-                    view.setVisible(true);
-                    view.setActive(true);
-                }));
+                    .duration(getAnimationTime())
+                    .position(position)
+                    .size(size)
+                    .ease(Eases.EaseQuadOut)
+                    .onFinish(() -> {
+                        view.setVisible(true);
+                        view.setActive(true);
+                    }));
         }
 
         protected void collapseTo(int x, int y) {
@@ -310,10 +321,10 @@ public class ConfiguratorPanel extends WidgetGroup {
                 view.setActive(false);
             }
             animation(new Animation()
-                .duration(getAnimationTime())
-                .position(new Position(x, y))
-                .size(new Size(getTabSize(), getTabSize()))
-                .ease(Eases.EaseQuadOut));
+                    .duration(getAnimationTime())
+                    .position(new Position(x, y))
+                    .size(new Size(getTabSize(), getTabSize()))
+                    .ease(Eases.EaseQuadOut));
         }
 
         @Override
@@ -323,7 +334,9 @@ public class ConfiguratorPanel extends WidgetGroup {
             var position = getPosition();
             var size = getSize();
             if (inAnimate()) {
-                graphics.enableScissor(position.x + border - 1, position.y + border - 1, position.x + border - 1 + size.width - (border - 1) * 2, position.y + border - 1 + size.height - (border - 1) * 2);
+                graphics.enableScissor(position.x + border - 1, position.y + border - 1,
+                        position.x + border - 1 + size.width - (border - 1) * 2,
+                        position.y + border - 1 + size.height - (border - 1) * 2);
                 drawWidgetsBackground(graphics, mouseX, mouseY, partialTicks);
                 graphics.disableScissor();
             } else {
@@ -336,7 +349,8 @@ public class ConfiguratorPanel extends WidgetGroup {
         @OnlyIn(Dist.CLIENT)
         public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
             super.drawInForeground(graphics, mouseX, mouseY, partialTicks);
-            if (isMouseOver(getPosition().x + getSize().width - 20, getPosition().y + 4, 16, 16, mouseX, mouseY) && gui != null && gui.getModularUIGui() != null) {
+            if (isMouseOver(getPosition().x + getSize().width - 20, getPosition().y + 4, 16, 16, mouseX, mouseY) &&
+                    gui != null && gui.getModularUIGui() != null) {
                 gui.getModularUIGui().setHoverTooltip(configurator.getTooltips(), ItemStack.EMPTY, null, null);
             }
         }
@@ -347,7 +361,8 @@ public class ConfiguratorPanel extends WidgetGroup {
             this.lastDeltaX = 0;
             this.lastDeltaY = 0;
             this.isDragging = false;
-            if (expanded == this && isMouseOver(getPosition().x, getPosition().y, getSize().width - getTabSize(), getTabSize(), mouseX, mouseY)) {
+            if (expanded == this && isMouseOver(getPosition().x, getPosition().y, getSize().width - getTabSize(),
+                    getTabSize(), mouseX, mouseY)) {
                 isDragging = true;
                 return true;
             }
@@ -394,6 +409,7 @@ public class ConfiguratorPanel extends WidgetGroup {
     }
 
     public class FloatingTab extends Tab {
+
         protected Runnable closeCallback = () -> {};
 
         public FloatingTab(IFancyConfigurator configurator) {

@@ -49,7 +49,5 @@ public class ToolLang {
         provider.add("death.attack.gtceu.screwdriver_lv", "%s had their screws removed by %s");
     }
 
-    private static void initToolInfo(RegistrateLangProvider provider) {
-
-    }
+    private static void initToolInfo(RegistrateLangProvider provider) {}
 }

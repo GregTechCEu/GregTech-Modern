@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.machine.electric.TransformerMachine;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -14,6 +16,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -24,7 +27,8 @@ import java.util.function.Consumer;
  * @date 2023/3/10
  * @implNote TransformerRenderer
  */
-public class TransformerRenderer extends TieredHullMachineRenderer{
+public class TransformerRenderer extends TieredHullMachineRenderer {
+
     public final static ResourceLocation ENERGY_IN = GTCEu.id("block/overlay/machine/overlay_energy_in");
     public final static ResourceLocation ENERGY_OUT = GTCEu.id("block/overlay/machine/overlay_energy_out");
     public final static ResourceLocation ENERGY_IN_HI = GTCEu.id("block/overlay/machine/overlay_energy_in_hi");
@@ -43,7 +47,9 @@ public class TransformerRenderer extends TieredHullMachineRenderer{
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing, ModelState modelState) {
+    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                              Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
+                              ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         var otherFaceTexture = ENERGY_OUT;
         var frontFaceTexture = ENERGY_IN_MULTI;
@@ -52,7 +58,7 @@ public class TransformerRenderer extends TieredHullMachineRenderer{
             isTransformUp = transformer.isTransformUp();
         }
 
-        switch(baseAmp) {
+        switch (baseAmp) {
             case 1 -> { // 1A <-> 4A
                 otherFaceTexture = isTransformUp ? ENERGY_IN : otherFaceTexture;
                 frontFaceTexture = isTransformUp ? ENERGY_OUT_MULTI : frontFaceTexture;
@@ -91,5 +97,4 @@ public class TransformerRenderer extends TieredHullMachineRenderer{
             register.accept(ENERGY_OUT_ULTRA);
         }
     }
-
 }

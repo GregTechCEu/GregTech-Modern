@@ -4,11 +4,12 @@ import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
+
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
-import com.mojang.serialization.MapCodec;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -30,6 +31,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -38,7 +41,8 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
 
     public static final BlockRotatingBehavior INSTANCE = new BlockRotatingBehavior();
     public static final MapCodec<BlockRotatingBehavior> CODEC = MapCodec.unit(INSTANCE);
-    public static final StreamCodec<RegistryFriendlyByteBuf, BlockRotatingBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, BlockRotatingBehavior> STREAM_CODEC = StreamCodec
+            .unit(INSTANCE);
 
     protected BlockRotatingBehavior() {/**/}
 
@@ -69,10 +73,11 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
                     ToolHelper.onActionDone(player, level, context.getHand());
                     return InteractionResult.SUCCESS;
                 }
-            } else if (state.rotate(player.getDirection().getClockWise() == context.getClickedFace() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
-                ToolHelper.onActionDone(player, level, context.getHand());
-                return InteractionResult.SUCCESS;
-            }
+            } else if (state.rotate(player.getDirection().getClockWise() == context.getClickedFace() ?
+                    Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
+                        ToolHelper.onActionDone(player, level, context.getHand());
+                        return InteractionResult.SUCCESS;
+                    }
         }
         return InteractionResult.PASS;
     }
@@ -95,7 +100,8 @@ public class BlockRotatingBehavior implements IToolBehavior<BlockRotatingBehavio
         VoxelShape baseShape = state.getShape(level, pos);
         BlockHitResult baseTraceResult = baseShape.clip(startVec, endVec, pos);
         if (baseTraceResult != null) {
-            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player)).clip(startVec, endVec, pos);
+            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player))
+                    .clip(startVec, endVec, pos);
             if (raytraceTraceShape != null) {
                 return raytraceTraceShape;
             }

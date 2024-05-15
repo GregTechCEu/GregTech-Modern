@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.core.mixins.jei;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
-import mezz.jei.neoforge.platform.FluidHelper;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import mezz.jei.neoforge.platform.FluidHelper;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -16,7 +18,8 @@ import java.util.List;
 public class FluidHelperMixin {
 
     @Inject(method = "getTooltip*", at = @At("TAIL"), remap = false)
-    private void gtceu$injectFluidTooltips(FluidStack ingredient, TooltipFlag tooltipFlag, CallbackInfoReturnable<List<Component>> cir) {
+    private void gtceu$injectFluidTooltips(FluidStack ingredient, TooltipFlag tooltipFlag,
+                                           CallbackInfoReturnable<List<Component>> cir) {
         var tooltip = cir.getReturnValue();
         TooltipsHandler.appendFluidTooltips(ingredient.getFluid(), tooltip, tooltipFlag);
     }

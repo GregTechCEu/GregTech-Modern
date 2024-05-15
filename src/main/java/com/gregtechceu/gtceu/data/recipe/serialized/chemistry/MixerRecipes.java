@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -13,7 +14,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.MIXER_RECIPES;
 public class MixerRecipes {
 
     public static void init(RecipeOutput provider) {
-
         MIXER_RECIPES.recipeBuilder("nitration_mixture")
                 .inputFluids(NitricAcid.getFluid(1000))
                 .inputFluids(SulfuricAcid.getFluid(1000))
@@ -491,12 +491,12 @@ public class MixerRecipes {
                 .save(provider);
 
         MIXER_RECIPES.recipeBuilder("rtm_alloy").duration(300).EUt(VA[EV])
-            .inputItems(dust, Ruthenium,4)
-            .inputItems(dust, Tungsten,2)
-            .inputItems(dust, Molybdenum)
-            .circuitMeta(1)
-            .outputItems(dust, RTMAlloy, 7)
-            .save(provider);
+                .inputItems(dust, Ruthenium, 4)
+                .inputItems(dust, Tungsten, 2)
+                .inputItems(dust, Molybdenum)
+                .circuitMeta(1)
+                .outputItems(dust, RTMAlloy, 7)
+                .save(provider);
 
         // Superconductor Alloys
         MIXER_RECIPES.recipeBuilder("manganese_phosphide").duration(400).EUt(24)

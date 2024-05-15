@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
@@ -29,6 +29,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.neoforge.event.EventHooks;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Iterator;
@@ -53,7 +55,8 @@ public class ToolEventHandlers {
                         electricItem.setMaxChargeOverride(def.getMaxCharge(original));
                     }
 
-                    electricStack.charge(Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(), true, false);
+                    electricStack.charge(Math.min(remainingCharge, def.getMaxCharge(original)), def.getElectricTier(),
+                            true, false);
                 }
             }
             if (!brokenStack.isEmpty()) {
@@ -93,13 +96,17 @@ public class ToolEventHandlers {
      * Handles mined blocks teleporting straight into inventory
      * Handles drop conversion when a hammer tool (or tool with hard hammer enchantment) is used
      */
-    public static ObjectArrayList<ItemStack> onHarvestDrops(@Nullable Player player, ItemStack tool, Level world, BlockPos pos, BlockState state, boolean isSilkTouch, int fortuneLevel, ObjectArrayList<ItemStack> drops, float dropChance) {
+    public static ObjectArrayList<ItemStack> onHarvestDrops(@Nullable Player player, ItemStack tool, Level world,
+                                                            BlockPos pos, BlockState state, boolean isSilkTouch,
+                                                            int fortuneLevel, ObjectArrayList<ItemStack> drops,
+                                                            float dropChance) {
         if (player != null && world instanceof ServerLevel serverLevel) {
-            if (tool.isEmpty()|| !(tool.getItem() instanceof IGTTool)) {
+            if (tool.isEmpty() || !(tool.getItem() instanceof IGTTool)) {
                 return drops;
             }
             if (!isSilkTouch) {
-                ToolHelper.applyHammerDropConversion(serverLevel, pos, tool, state, drops, fortuneLevel, dropChance, player.getRandom());
+                ToolHelper.applyHammerDropConversion(serverLevel, pos, tool, state, drops, fortuneLevel, dropChance,
+                        player.getRandom());
             }
             if (!ToolHelper.hasBehaviorsComponent(tool)) return drops;
 
@@ -154,5 +161,4 @@ public class ToolEventHandlers {
         }
         return true;
     }
-
 }

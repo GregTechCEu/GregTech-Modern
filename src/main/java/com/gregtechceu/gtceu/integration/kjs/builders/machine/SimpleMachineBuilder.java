@@ -2,16 +2,17 @@ package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
-import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.*;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
+import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.registry.GTRegistration;
+
 import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
 import java.util.Locale;
@@ -30,10 +31,12 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  * @implNote MachineBuilder
  */
 public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
+
     public transient Int2IntFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
 
     public SimpleMachineBuilder(String name, Function<IMachineBlockEntity, MetaMachine> machineConstructor) {
-        super(GTRegistration.REGISTRATE, name, MachineDefinition::createDefinition, machineConstructor, MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+        super(GTRegistration.REGISTRATE, name, MachineDefinition::createDefinition, machineConstructor,
+                MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
         this.tankScalingFunction = GTMachines.defaultTankSizeFunction;
     }
 
@@ -54,7 +57,9 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
                                                          Integer... tiers) {
         SimpleMachineBuilder[] builders = new SimpleMachineBuilder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            SimpleMachineBuilder register = new SimpleMachineBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
+            SimpleMachineBuilder register = new SimpleMachineBuilder(
+                    GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    holder -> new SimpleTieredMachine(holder, tier, defaultTankSizeFunction)).tier(tier);
             builderConsumer.accept(register, tier);
             builders[tier] = register;
         }
@@ -64,17 +69,21 @@ public class SimpleMachineBuilder extends MachineBuilder<MachineDefinition> {
     public static void simple(SimpleMachineBuilder builder, int tier) {
         builder.tier(tier)
                 .langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(builder.name), VLVT[tier]))
-                //.editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(builder.id.getPath()), recipeType))
+                // .editableUI(SimpleTieredMachine.EDITABLE_UI_CREATOR.apply(GTCEu.id(builder.id.getPath()),
+                // recipeType))
                 .rotationState(RotationState.NON_Y_AXIS)
-                //.recipeType(recipeType)
+                // .recipeType(recipeType)
                 .recipeModifier(GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
                 .workableTieredHullRenderer(GTCEu.id("block/machines/" + builder.name))
                 .tooltips(explosion());
-        //.tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction.apply(tier), true))
+        // .tooltips(workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType,
+        // tankScalingFunction.apply(tier), true))
     }
 
     public static MachineBuilder<MachineDefinition> create(String name, Object... args) {
-        SimpleMachineBuilder[] builders = simpleMachines(name, SimpleMachineBuilder::simple, MachineFunctionPresets.mapTierArray(args));
-        return MachineFunctionPresets.builder(name, builders, SimpleMachineBuilder.class, MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
+        SimpleMachineBuilder[] builders = simpleMachines(name, SimpleMachineBuilder::simple,
+                MachineFunctionPresets.mapTierArray(args));
+        return MachineFunctionPresets.builder(name, builders, SimpleMachineBuilder.class,
+                MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
     }
 }

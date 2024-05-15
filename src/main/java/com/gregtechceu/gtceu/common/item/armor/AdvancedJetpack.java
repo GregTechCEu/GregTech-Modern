@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -16,6 +17,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.NotNull;
 
 public class AdvancedJetpack extends Jetpack {
@@ -53,7 +55,8 @@ public class AdvancedJetpack extends Jetpack {
 
         final boolean finalHoverMode = hoverMode;
         final byte finalToggleTimer = toggleTimer;
-        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), component -> component.setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
+        stack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                component -> component.setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
     }
 
     @Override
@@ -102,7 +105,8 @@ public class AdvancedJetpack extends Jetpack {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                            ArmorMaterial.Layer layer) {
         return GTCEu.id("textures/armor/advanced_jetpack.png");
     }
 }
