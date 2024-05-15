@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -15,7 +16,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class GrowthMediumRecipes {
 
     public static void init(RecipeOutput provider) {
-
         // Bio Chaff
         MACERATOR_RECIPES.recipeBuilder("bio_chaff").EUt(4).duration(200)
                 .inputItems(PLANT_BALL, 2)

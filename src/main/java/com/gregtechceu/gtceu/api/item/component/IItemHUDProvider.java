@@ -26,9 +26,7 @@ public interface IItemHUDProvider extends IItemComponent {
      * @param stack the ItemStack to retrieve information from
      */
     @OnlyIn(Dist.CLIENT)
-    default void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {
-
-    }
+    default void drawHUD(ItemStack stack, GuiGraphics guiGraphics) {}
 
     /**
      * Checks and draws the hud for a provider

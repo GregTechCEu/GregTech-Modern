@@ -17,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -44,10 +45,16 @@ public class ConveyorCoverRenderer implements ICoverRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, ModelState modelState) {
-        if (side == coverBehavior.attachedSide && coverBehavior instanceof ConveyorCover conveyor && modelFacing != null) {
+    public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+                            @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing,
+                            ModelState modelState) {
+        if (side == coverBehavior.attachedSide && coverBehavior instanceof ConveyorCover conveyor &&
+                modelFacing != null) {
             quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CONVEYOR_OVERLAY), modelState));
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(conveyor.getIo() == IO.OUT ? CONVEYOR_OVERLAY_OUT : CONVEYOR_OVERLAY_IN),  modelState, -101, 15));
+            quads.add(FaceQuad.bakeFace(modelFacing,
+                    ModelFactory
+                            .getBlockSprite(conveyor.getIo() == IO.OUT ? CONVEYOR_OVERLAY_OUT : CONVEYOR_OVERLAY_IN),
+                    modelState, -101, 15));
         }
     }
 

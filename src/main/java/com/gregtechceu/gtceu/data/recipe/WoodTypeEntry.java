@@ -1,13 +1,15 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.google.common.base.Preconditions;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.Tags;
+
+import com.google.common.base.Preconditions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,7 +104,8 @@ public final class WoodTypeEntry {
                           @Nullable Item stairs, @Nullable String stairsRecipeName, boolean addStairsCraftingRecipe,
                           @Nullable Item boat, @Nullable String boatRecipeName,
                           @Nullable Material material,
-                          boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict, boolean addSlabsOreDict,
+                          boolean addLogOreDict, boolean addPlanksOreDict, boolean addDoorsOreDict,
+                          boolean addSlabsOreDict,
                           boolean addFencesOreDict, boolean addFenceGatesOreDict, boolean addStairsOreDict,
                           boolean addPlanksUnificationInfo, boolean addDoorsUnificationInfo,
                           boolean addSlabsUnificationInfo, boolean addFencesUnificationInfo,
@@ -157,7 +160,7 @@ public final class WoodTypeEntry {
         if (this.material == GTMaterials.Wood) {
             return Tags.Items.RODS_WOODEN;
         } else {
-            //noinspection DataFlowIssue is valid.
+            // noinspection DataFlowIssue is valid.
             return ChemicalHelper.getTag(TagPrefix.rod, this.material);
         }
     }
@@ -492,19 +495,19 @@ public final class WoodTypeEntry {
         public WoodTypeEntry build() {
             Preconditions.checkArgument(planks != null, "Planks cannot be empty.");
             return new WoodTypeEntry(modid, woodName, log, strippedLog, wood, strippedWood,
-                removeCharcoalRecipe, addCharcoalRecipe,
-                planks, planksRecipeName,
-                door, doorRecipeName,
-                trapdoor, trapdoorRecipeName,
-                slab, slabRecipeName, addSlabsCraftingRecipe,
-                fence, fenceRecipeName, fenceGate, fenceGateRecipeName,
-                stairs, stairsRecipeName, addStairsCraftingRecipe,
-                boat, boatRecipeName,
-                material,
-                addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
-                addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addPlanksUnificationInfo,
-                addDoorsUnificationInfo, addSlabsUnificationInfo, addFencesUnificationInfo,
-                addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo);
+                    removeCharcoalRecipe, addCharcoalRecipe,
+                    planks, planksRecipeName,
+                    door, doorRecipeName,
+                    trapdoor, trapdoorRecipeName,
+                    slab, slabRecipeName, addSlabsCraftingRecipe,
+                    fence, fenceRecipeName, fenceGate, fenceGateRecipeName,
+                    stairs, stairsRecipeName, addStairsCraftingRecipe,
+                    boat, boatRecipeName,
+                    material,
+                    addLogOreDict, addPlanksOreDict, addDoorsOreDict, addSlabsOreDict,
+                    addFencesOreDict, addFenceGatesOreDict, addStairsOreDict, addPlanksUnificationInfo,
+                    addDoorsUnificationInfo, addSlabsUnificationInfo, addFencesUnificationInfo,
+                    addFenceGatesUnificationInfo, addStairsUnificationInfo, addBoatsUnificationInfo);
         }
     }
 }

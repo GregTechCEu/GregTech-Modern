@@ -1,6 +1,9 @@
 package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.api.material.material.Material;
+
+import net.minecraft.util.Mth;
+
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;

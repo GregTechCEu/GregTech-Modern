@@ -7,19 +7,11 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.CommonProxy;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
-import com.jozufozu.flywheel.api.MaterialManager;
-import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
-import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-import com.simibubi.create.content.kinetics.KineticNetwork;
-import com.simibubi.create.content.kinetics.base.IRotate;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
-import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
-import com.simibubi.create.foundation.utility.Lang;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,6 +23,17 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+
+import com.jozufozu.flywheel.api.MaterialManager;
+import com.jozufozu.flywheel.backend.instancing.InstancedRenderRegistry;
+import com.jozufozu.flywheel.backend.instancing.blockentity.BlockEntityInstance;
+import com.simibubi.create.content.kinetics.KineticNetwork;
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.KineticEffectHandler;
+import com.simibubi.create.foundation.utility.Lang;
+import com.tterrag.registrate.util.nullness.NonNullSupplier;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.Set;
@@ -59,14 +62,17 @@ public class KineticMachineBlockEntity extends KineticBlockEntity implements IMa
         return new KineticMachineBlockEntity(typeIn, pos, state);
     }
 
-    @SuppressWarnings({"unchecked", "rawtypes"})
-    public static void onBlockEntityRegister(BlockEntityType blockEntityType, NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory, boolean renderNormally) {
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    public static void onBlockEntityRegister(BlockEntityType blockEntityType,
+                                             NonNullSupplier<BiFunction<MaterialManager, KineticMachineBlockEntity, BlockEntityInstance<? super KineticMachineBlockEntity>>> instanceFactory,
+                                             boolean renderNormally) {
         MetaMachineBlockEntity.onBlockEntityRegister(blockEntityType);
         if (instanceFactory != null && LDLib.isClient()) {
-            CommonProxy.modBus.addListener(FMLClientSetupEvent.class, $ -> InstancedRenderRegistry.configure(blockEntityType)
-                .factory(instanceFactory.get())
-                .skipRender((be) -> !renderNormally)
-                .apply());
+            CommonProxy.modBus.addListener(FMLClientSetupEvent.class,
+                    $ -> InstancedRenderRegistry.configure(blockEntityType)
+                            .factory(instanceFactory.get())
+                            .skipRender((be) -> !renderNormally)
+                            .apply());
         }
     }
 

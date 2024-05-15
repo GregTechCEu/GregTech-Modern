@@ -1,10 +1,13 @@
 package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;

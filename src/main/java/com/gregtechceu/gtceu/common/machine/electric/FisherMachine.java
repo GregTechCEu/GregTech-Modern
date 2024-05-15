@@ -16,9 +16,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -251,8 +250,8 @@ public class FisherMachine extends TieredEnergyMachine
         drainEnergy(false);
         if (progress >= maxProgress) {
 
-
-            LootTable lootTable = getLevel().registryAccess().registry(Registries.LOOT_TABLE).get().get(BuiltInLootTables.FISHING);
+            LootTable lootTable = getLevel().registryAccess().registry(Registries.LOOT_TABLE).get()
+                    .get(BuiltInLootTables.FISHING);
 
             FishingHook simulatedHook = new FishingHook(EntityType.FISHING_BOBBER, getLevel()) {
 

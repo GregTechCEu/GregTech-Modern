@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.client.model;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -19,6 +18,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -134,7 +136,8 @@ public class PipeModel {
                 if (sideOverlaySprite != null) {
                     for (Direction face : Direction.values()) {
                         if (face != side && face != side.getOpposite()) {
-                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(2).bake());
+                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side)).cubeUV()
+                                    .tintIndex(2).bake());
                         }
                     }
                 }
@@ -159,7 +162,8 @@ public class PipeModel {
                 for (Direction facing : Direction.values()) {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
-                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
+                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV()
+                                    .tintIndex(0).bake());
                             if (secondarySideSprite != null) {
                                 quads.add(FaceQuad.builder(face, secondarySideSprite).cube(sideCubes.get(facing))
                                         .cubeUV().tintIndex(0).bake());
@@ -195,9 +199,7 @@ public class PipeModel {
                 combinedLight, combinedOverlay,
                 (ItemBakedModel) (state, direction, random) -> itemModelCache.computeIfAbsent(
                         Optional.ofNullable(direction),
-                        direction1 -> bakeQuads(direction1.orElse(null), ITEM_CONNECTIONS)
-                )
-        );
+                        direction1 -> bakeQuads(direction1.orElse(null), ITEM_CONNECTIONS)));
         IItemRendererProvider.disabled.set(false);
     }
 
@@ -212,6 +214,4 @@ public class PipeModel {
         endSprite = null;
         endOverlaySprite = null;
     }
-
-
 }

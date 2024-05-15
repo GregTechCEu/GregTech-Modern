@@ -22,14 +22,13 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 
+import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -60,8 +59,10 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     private boolean isWorkingEnabled;
     @Getter
     private final int inventorySize;
-    @Getter @Persisted(subPersisted = true)
+    @Getter
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler batteryInventory;
+
     public BatteryBufferMachine(IMachineBlockEntity holder, int tier, int inventorySize, Object... args) {
         super(holder, tier, inventorySize);
         this.isWorkingEnabled = true;
@@ -84,7 +85,8 @@ public class BatteryBufferMachine extends TieredEnergyMachine
     }
 
     protected CustomItemStackHandler createBatteryInventory(Object... ignoredArgs) {
-        var itemTransfer = new CustomItemStackHandler(this.inventorySize){
+        var itemTransfer = new CustomItemStackHandler(this.inventorySize) {
+
             @Override
             public int getSlotLimit(int slot) {
                 return 1;
@@ -280,7 +282,9 @@ public class BatteryBufferMachine extends TieredEnergyMachine
                 boolean changed = false;
                 for (var pair : batteries) {
                     IElectricItem battery = pair.getFirst();
-                    var charged = battery.charge(Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true, false);
+                    var charged = battery.charge(
+                            Math.min(distributed, GTValues.V[battery.getTier()] * AMPS_PER_BATTERY), getTier(), true,
+                            false);
                     if (charged > 0) {
                         changed = true;
                     }

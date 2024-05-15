@@ -1,26 +1,23 @@
 package com.gregtechceu.gtceu.api.material.material;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlag;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.material.material.properties.*;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
-import com.gregtechceu.gtceu.api.fluid.FluidState;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.api.item.tool.MaterialToolTier;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.integration.kjs.helpers.MaterialStackWrapper;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
-import dev.latvian.mods.rhino.util.RemapPrefixForJS;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
@@ -31,8 +28,16 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.jetbrains.annotations.NotNull;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
+import dev.latvian.mods.rhino.util.RemapPrefixForJS;
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -194,7 +199,7 @@ public class Material implements Comparable<Material> {
      * Retrieves a fluid from the material.
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
-     *
+     * 
      * @return the fluid
      * @see #getFluid(FluidStorageKey)
      */
@@ -263,7 +268,7 @@ public class Material implements Comparable<Material> {
      * <br/>
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
-     *
+     * 
      * @return the fluid builder
      */
     public FluidBuilder getFluidBuilder() {
@@ -286,7 +291,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * NOTE: only available before the fluids are registered.
-     *
+     * 
      * @param key the key for the fluid
      * @return the fluid corresponding with the key
      */
@@ -365,7 +370,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer in ARGB.
-     *
+     * 
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -379,7 +384,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer.
-     *
+     * 
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -637,7 +642,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a plasma for this material.
-         *
+         * 
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder plasma() {
@@ -659,7 +664,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a gas for this material.
-         *
+         * 
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder gas() {
@@ -1303,20 +1308,6 @@ public class Material implements Comparable<Material> {
                     ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
                             .toArray(MaterialStack[]::new)) :
                     ImmutableList.copyOf(composition);
-            if (!properties.hasProperty(HAZARD)) {
-                for (MaterialStack materialStack : materialInfo.componentList) {
-                    Material material = materialStack.material();
-                    if (material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives()) {
-                        properties.setProperty(HAZARD, material.getProperty(HAZARD));
-                        break;
-                    }
-                }
-            }
-            if (properties.hasProperty(HAZARD) &&
-                    properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardType.NONE) {
-                properties.removeProperty(HAZARD);
-            }
-
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();
@@ -1391,6 +1382,10 @@ public class Material implements Comparable<Material> {
         private Element element;
 
         private MaterialInfo(ResourceLocation resourceLocation) {
+            String name = resourceLocation.getPath();
+            if (!FormattingUtil.toLowerCaseUnderscore(FormattingUtil.lowerUnderscoreToUpperCamel(name)).equals(name))
+                throw new IllegalStateException(
+                        "Cannot add materials with names like 'materialnumber'! Use 'material_number' instead.");
             this.resourceLocation = resourceLocation;
         }
 

@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
@@ -16,11 +15,10 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.ui.GTRecipeTypeUI;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
@@ -34,10 +32,7 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.Util;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -49,15 +44,15 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.phys.BlockHitResult;
 
 import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.BiFunction;
 
@@ -102,16 +97,19 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     @Setter
     @Persisted
     protected boolean allowInputFromOutputSideFluids;
-    @Getter @Persisted(subPersisted = true)
+    @Getter
+    @Persisted(subPersisted = true)
     protected final CustomItemStackHandler chargerInventory;
-    @Getter @Persisted
+    @Getter
+    @Persisted
     protected final NotifiableItemStackHandler circuitInventory;
     @Nullable
     protected TickableSubscription autoOutputSubs, batterySubs;
     @Nullable
     protected ISubscription exportItemSubs, exportFluidSubs, energySubs;
 
-    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
+    public SimpleTieredMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction,
+                               Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.outputFacingItems = hasFrontFacing() ? getFrontFacing().getOpposite() : Direction.UP;
         this.outputFacingFluids = outputFacingItems;
@@ -307,6 +305,76 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     //////////////////////////////////////
+    // ******* Interaction *******//
+    //////////////////////////////////////
+    @Override
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
+        if (!playerIn.isShiftKeyDown() && !isRemote()) {
+            if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
+
+            // important not to use getters here, which have different logic
+            Direction itemFacing = this.outputFacingItems;
+            Direction fluidFacing = this.outputFacingFluids;
+
+            if (gridSide != itemFacing) {
+                // if it is a new side, move it
+                setOutputFacingItems(gridSide);
+            } else {
+                // remove the output facing when wrenching the current one to disable it
+                setOutputFacingItems(null);
+            }
+
+            if (gridSide != fluidFacing) {
+                // if it is a new side, move it
+                setOutputFacingFluids(gridSide);
+            } else {
+                // remove the output facing when wrenching the current one to disable it
+                setOutputFacingFluids(null);
+            }
+
+            return InteractionResult.CONSUME;
+        }
+
+        return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                                   BlockHitResult hitResult) {
+        if (!isRemote()) {
+            if (gridSide == getOutputFacingItems()) {
+                if (isAllowInputFromOutputSideItems()) {
+                    setAllowInputFromOutputSideItems(false);
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
+                                    .append(Component.translatable("gtceu.creative.chest.item")));
+                } else {
+                    setAllowInputFromOutputSideItems(true);
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
+                                    .append(Component.translatable("gtceu.creative.chest.item")));
+                }
+            }
+            if (gridSide == getOutputFacingFluids()) {
+                if (isAllowInputFromOutputSideFluids()) {
+                    setAllowInputFromOutputSideFluids(false);
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.disallow")
+                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
+                } else {
+                    setAllowInputFromOutputSideFluids(true);
+                    playerIn.sendSystemMessage(
+                            Component.translatable("gtceu.machine.basic.input_from_output_side.allow")
+                                    .append(Component.translatable("gtceu.creative.tank.fluid")));
+                }
+            }
+            return InteractionResult.SUCCESS;
+        }
+        return super.onScrewdriverClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    //////////////////////////////////////
     // *********** GUI ***********//
     //////////////////////////////////////
 
@@ -317,14 +385,16 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
     }
 
     @SuppressWarnings("UnstableApiUsage")
-    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util.memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
-        WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
-        SlotWidget batterySlot = createBatterySlot().createDefault();
-        WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width, Math.max(template.getSize().height, 78));
-        template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
-        batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
-        group.addWidget(batterySlot);
-        group.addWidget(template);
+    public static BiFunction<ResourceLocation, GTRecipeType, EditableMachineUI> EDITABLE_UI_CREATOR = Util
+            .memoize((path, recipeType) -> new EditableMachineUI("simple", path, () -> {
+                WidgetGroup template = recipeType.getRecipeUI().createEditableUITemplate(false, false).createDefault();
+                SlotWidget batterySlot = createBatterySlot().createDefault();
+                WidgetGroup group = new WidgetGroup(0, 0, template.getSize().width,
+                        Math.max(template.getSize().height, 78));
+                template.setSelfPosition(new Position(0, (group.getSize().height - template.getSize().height) / 2));
+                batterySlot.setSelfPosition(new Position(group.getSize().width / 2 - 9, group.getSize().height - 18));
+                group.addWidget(batterySlot);
+                group.addWidget(template);
 
                 // TODO fix this.
                 // if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
@@ -333,27 +403,28 @@ public class SimpleTieredMachine extends WorkableTieredMachine implements IAutoO
                 // group.addWidget(circuitSlot);
                 // }
 
-        return group;
-    }, (template, machine) -> {
-        if (machine instanceof SimpleTieredMachine tieredMachine) {
-            var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
-            storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
-            storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
-            storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
-            storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
-            storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
-            storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
+                return group;
+            }, (template, machine) -> {
+                if (machine instanceof SimpleTieredMachine tieredMachine) {
+                    var storages = Tables.newCustomTable(new EnumMap<>(IO.class),
+                            LinkedHashMap<RecipeCapability<?>, Object>::new);
+                    storages.put(IO.IN, ItemRecipeCapability.CAP, tieredMachine.importItems.storage);
+                    storages.put(IO.OUT, ItemRecipeCapability.CAP, tieredMachine.exportItems.storage);
+                    storages.put(IO.IN, FluidRecipeCapability.CAP, tieredMachine.importFluids);
+                    storages.put(IO.OUT, FluidRecipeCapability.CAP, tieredMachine.exportFluids);
+                    storages.put(IO.IN, CWURecipeCapability.CAP, tieredMachine.importComputation);
+                    storages.put(IO.OUT, CWURecipeCapability.CAP, tieredMachine.exportComputation);
 
-            tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
-                    new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
-                        storages,
-                        new CompoundTag(),
-                        Collections.emptyList(),
-                        false, false));
-            createBatterySlot().setupUI(template, tieredMachine);
-//            createCircuitConfigurator().setupUI(template, tieredMachine);
-        }
-    }));
+                    tieredMachine.getRecipeType().getRecipeUI().createEditableUITemplate(false, false).setupUI(template,
+                            new GTRecipeTypeUI.RecipeHolder(tieredMachine.recipeLogic::getProgressPercent,
+                                    storages,
+                                    new CompoundTag(),
+                                    Collections.emptyList(),
+                                    false, false));
+                    createBatterySlot().setupUI(template, tieredMachine);
+                    // createCircuitConfigurator().setupUI(template, tieredMachine);
+                }
+            }));
 
     /**
      * Create an energy bar widget.

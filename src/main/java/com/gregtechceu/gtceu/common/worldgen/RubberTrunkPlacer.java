@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.common.worldgen;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.data.worldgen.GTPlacerTypes;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.RandomSource;
@@ -15,7 +13,7 @@ import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
 import com.google.common.collect.ImmutableList;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import java.util.List;
@@ -26,7 +24,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class RubberTrunkPlacer extends TrunkPlacer {
-    public static final MapCodec<RubberTrunkPlacer> CODEC = RecordCodecBuilder.mapCodec(instance -> trunkPlacerParts(instance).apply(instance, RubberTrunkPlacer::new));
+
+    public static final MapCodec<RubberTrunkPlacer> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> trunkPlacerParts(instance).apply(instance, RubberTrunkPlacer::new));
 
     public RubberTrunkPlacer(int pBaseHeight, int pHeightRandA, int pHeightRandB) {
         super(pBaseHeight, pHeightRandA, pHeightRandB);

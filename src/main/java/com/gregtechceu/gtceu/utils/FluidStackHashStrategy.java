@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import it.unimi.dsi.fastutil.Hash;
 import net.neoforged.neoforge.fluids.FluidStack;
 
 import it.unimi.dsi.fastutil.Hash;
@@ -96,8 +95,7 @@ public interface FluidStackHashStrategy extends Hash.Strategy<FluidStack> {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             fluid ? o.getFluid() : null,
                             amount ? o.getAmount() : null,
-                            tag ? o.getComponents() : null
-                    );
+                            tag ? o.getComponents() : null);
                 }
 
                 @Override

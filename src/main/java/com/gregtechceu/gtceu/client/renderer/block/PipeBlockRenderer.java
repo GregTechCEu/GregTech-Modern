@@ -7,8 +7,7 @@ import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Getter;
+
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
@@ -25,6 +24,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.common.util.TriState;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -77,11 +79,13 @@ public class PipeBlockRenderer implements IRenderer, ICoverableRenderer {
                                        RandomSource rand) {
         if (level == null) {
             return pipeModel.bakeQuads(side, PipeModel.ITEM_CONNECTIONS);
-        } else if (level.getBlockEntity(pos) instanceof IPipeNode<?,?> pipeNode) {
+        } else if (level.getBlockEntity(pos) instanceof IPipeNode<?, ?> pipeNode) {
             var quads = new LinkedList<>(pipeModel.bakeQuads(side, pipeNode.getVisualConnections()));
             var modelState = ModelFactory.getRotation(pipeNode.getCoverContainer().getFrontFacing());
-            var modelFacing = side == null ? null : ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
-            ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing, modelState);
+            var modelFacing = side == null ? null :
+                    ModelFactory.modelFacing(side, pipeNode.getCoverContainer().getFrontFacing());
+            ICoverableRenderer.super.renderCovers(quads, side, rand, pipeNode.getCoverContainer(), modelFacing,
+                    modelState);
             return quads;
         }
         return Collections.emptyList();

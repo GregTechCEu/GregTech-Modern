@@ -2,28 +2,42 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.lowdragmc.lowdraglib.Platform;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
+
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
+
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.Ingredient;
+import net.minecraft.world.item.crafting.RecipeHolder;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.mojang.serialization.JsonOps;
 import dev.latvian.mods.kubejs.fluid.FluidStackJS;
 import dev.latvian.mods.kubejs.fluid.InputFluid;
@@ -38,15 +52,6 @@ import dev.latvian.mods.rhino.util.HideFromJS;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeHolder;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -205,7 +210,12 @@ public interface GTRecipeSchema {
                 }
             }
             // TODO remove `.ingredient()`
-            return input(ItemRecipeCapability.CAP, Arrays.stream(inputs).map(stack -> InputItem.of(new SizedIngredient(!stack.getComponents().isEmpty() ? DataComponentIngredient.of(true, stack) : Ingredient.of(stack), stack.getCount()).ingredient(), stack.getCount())).toArray());
+            return input(ItemRecipeCapability.CAP,
+                    Arrays.stream(inputs)
+                            .map(stack -> InputItem.of(new SizedIngredient(!stack.getComponents().isEmpty() ?
+                                    DataComponentIngredient.of(true, stack) : Ingredient.of(stack), stack.getCount())
+                                    .ingredient(), stack.getCount()))
+                            .toArray());
         }
 
         public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
@@ -546,12 +556,15 @@ public interface GTRecipeSchema {
             }
 
             if (!generatingRecipes) {
-                GTCEu.LOGGER.error("Cannot generate recipes when using researchWithoutRecipe()", new IllegalArgumentException());
+                GTCEu.LOGGER.error("Cannot generate recipes when using researchWithoutRecipe()",
+                        new IllegalArgumentException());
                 return false;
             }
 
             if (getValue(CONDITIONS) == null) setValue(CONDITIONS, new RecipeCondition[0]);
-            ResearchCondition condition = Arrays.stream(this.getValue(CONDITIONS)).filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast).orElse(null);
+            ResearchCondition condition = Arrays.stream(this.getValue(CONDITIONS))
+                    .filter(ResearchCondition.class::isInstance).findAny().map(ResearchCondition.class::cast)
+                    .orElse(null);
             if (condition != null) {
                 condition.data.add(researchEntry);
             } else {
@@ -576,7 +589,7 @@ public interface GTRecipeSchema {
          * Does not generate a research recipe.
          *
          * @param researchId the researchId for the recipe
-         * @param dataStack the stack to hold the data. Must have the {@link IDataItem} behavior.
+         * @param dataStack  the stack to hold the data. Must have the {@link IDataItem} behavior.
          * @return this
          */
         public GTRecipeJS researchWithoutRecipe(@NotNull String researchId, @NotNull ItemStack dataStack) {
@@ -589,7 +602,8 @@ public interface GTRecipeSchema {
          * Generates a research recipe for the Scanner.
          */
         public GTRecipeJS scannerResearch(UnaryOperator<ResearchRecipeBuilder.ScannerRecipeBuilder> research) {
-            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder()).build();
+            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.ScannerRecipeBuilder())
+                    .build();
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
@@ -610,7 +624,8 @@ public interface GTRecipeSchema {
          * Generates a research recipe for the Research Station.
          */
         public GTRecipeJS stationResearch(UnaryOperator<ResearchRecipeBuilder.StationRecipeBuilder> research) {
-            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder()).build();
+            GTRecipeBuilder.ResearchRecipeEntry entry = research.apply(new ResearchRecipeBuilder.StationRecipeBuilder())
+                    .build();
             if (applyResearchProperty(new ResearchData.ResearchEntry(entry.researchId(), entry.dataStack()))) {
                 this.researchRecipeEntries.add(entry);
             }
@@ -633,7 +648,9 @@ public interface GTRecipeSchema {
             if (from instanceof SizedIngredient ingr) {
                 return InputItem.of(ingr.ingredient(), ingr.count());
             } else if (from instanceof JsonObject jsonObject) {
-                var ingredient = SizedIngredient.NESTED_CODEC.parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow();
+                var ingredient = SizedIngredient.NESTED_CODEC
+                        .parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject)
+                        .getOrThrow();
                 if (ingredient instanceof SizedIngredient sized) {
                     return InputItem.of(sized.ingredient(), sized.count());
                 } else {
@@ -644,14 +661,17 @@ public interface GTRecipeSchema {
         }
 
         public JsonElement writeInputItem(InputItem value) {
-            return SizedIngredient.NESTED_CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), new SizedIngredient(value.ingredient, value.count)).getOrThrow();
+            return SizedIngredient.NESTED_CODEC
+                    .encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE),
+                            new SizedIngredient(value.ingredient, value.count))
+                    .getOrThrow();
         }
 
         @Override
         public OutputItem readOutputItem(Object from) {
-            if(from instanceof SizedIngredient ingredient) {
+            if (from instanceof SizedIngredient ingredient) {
                 return OutputItem.of(ingredient.ingredient().getItems()[0], Double.NaN);
-            } else if(from instanceof JsonObject jsonObject) {
+            } else if (from instanceof JsonObject jsonObject) {
                 float chance = 1.0f;
                 if (jsonObject.has("chance")) {
                     chance = jsonObject.get("chance").getAsFloat();
@@ -659,7 +679,9 @@ public interface GTRecipeSchema {
                 if (jsonObject.has("content")) {
                     jsonObject = jsonObject.getAsJsonObject("content");
                 }
-                var ingredient = SizedIngredient.NESTED_CODEC.parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject).getOrThrow();
+                var ingredient = SizedIngredient.NESTED_CODEC
+                        .parse(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), jsonObject)
+                        .getOrThrow();
                 return OutputItem.of(ingredient.getItems()[0], chance);
             }
             return OutputItem.of(from);
@@ -667,12 +689,18 @@ public interface GTRecipeSchema {
 
         @Override
         public JsonElement writeOutputItem(OutputItem value) {
-            return SizedIngredient.NESTED_CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE), new SizedIngredient(!value.item.getComponents().isEmpty() ? DataComponentIngredient.of(true, value.item) : Ingredient.of(value.item), value.item.getCount())).getOrThrow();
+            return SizedIngredient.NESTED_CODEC
+                    .encodeStart(Platform.getFrozenRegistry().createSerializationContext(JsonOps.INSTANCE),
+                            new SizedIngredient(
+                                    !value.item.getComponents().isEmpty() ?
+                                            DataComponentIngredient.of(true, value.item) : Ingredient.of(value.item),
+                                    value.item.getCount()))
+                    .getOrThrow();
         }
 
         @Override
         public JsonElement writeInputFluid(InputFluid value) {
-            var fluid = ((FluidStackJS)value).getFluidStack();
+            var fluid = ((FluidStackJS) value).getFluidStack();
             FluidIngredient ingredient = FluidIngredient.of((int) fluid.getAmount(), fluid.getFluid());
             return FluidIngredient.CODEC.encodeStart(JsonOps.INSTANCE, ingredient).getOrThrow();
         }

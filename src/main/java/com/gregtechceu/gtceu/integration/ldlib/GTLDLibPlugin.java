@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.integration.ldlib;
 
 import com.gregtechceu.gtceu.data.GTSyncedFieldAccessors;
+
 import com.lowdragmc.lowdraglib.plugin.ILDLibPlugin;
 import com.lowdragmc.lowdraglib.plugin.LDLibPlugin;
 

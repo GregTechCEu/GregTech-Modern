@@ -20,7 +20,8 @@ public interface IItemUIFactory extends IInteractionItem {
     ModularUI createUI(HeldItemUIFactory.HeldItemHolder holder, Player entityPlayer);
 
     @Override
-    default InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    default InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                   InteractionHand usedHand) {
         ItemStack heldItem = player.getItemInHand(usedHand);
         if (player instanceof ServerPlayer serverPlayer) {
             HeldItemUIFactory.INSTANCE.openUI(serverPlayer, usedHand);

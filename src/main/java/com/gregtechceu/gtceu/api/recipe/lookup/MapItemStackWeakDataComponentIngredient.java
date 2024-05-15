@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
 public class MapItemStackWeakDataComponentIngredient extends MapItemStackIngredient {
+
     Ingredient nbtIngredient;
 
     public MapItemStackWeakDataComponentIngredient(ItemStack stack, Ingredient nbtIngredient) {
@@ -59,7 +61,8 @@ public class MapItemStackWeakDataComponentIngredient extends MapItemStackIngredi
 
     @Override
     public String toString() {
-        return "MapItemStackWeakDataComponentIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) + "}";
+        return "MapItemStackWeakDataComponentIngredient{" + "item=" + BuiltInRegistries.ITEM.getKey(stack.getItem()) +
+                "}";
     }
 
     @Override

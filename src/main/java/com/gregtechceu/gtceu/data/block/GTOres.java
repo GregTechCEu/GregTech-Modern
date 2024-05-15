@@ -2,15 +2,14 @@ package com.gregtechceu.gtceu.data.block;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.worldgen.*;
 import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.IndicatorGenerators;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerators;
 import com.gregtechceu.gtceu.api.worldgen.generator.indicators.SurfaceIndicatorGenerator;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 
-import net.minecraft.core.HolderSet;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BiomeTags;
@@ -26,7 +25,9 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.TagMatchTest;
 
 import lombok.Getter;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -778,24 +779,24 @@ public class GTOres {
 
     public static void updateLargestVeinSize() {
         GTOres.largestVeinSize = GTRegistries.ORE_VEINS.values().stream()
-            .map(GTOreDefinition::clusterSize)
-            .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of min & max values.
-            .max(Integer::compareTo)
-            .orElse(0);
+                .map(GTOreDefinition::clusterSize)
+                .map(intProvider -> (intProvider.getMinValue() + intProvider.getMaxValue()) / 2) // map to average of
+                                                                                                 // min & max values.
+                .max(Integer::compareTo)
+                .orElse(0);
 
         GTOres.largestIndicatorOffset = GTRegistries.ORE_VEINS.values().stream()
-                .flatMap(definition -> definition.indicatorGenerators().stream().map(indicatorGenerator ->
-                        indicatorGenerator.getSearchRadiusModifier((int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))
-                ))
+                .flatMap(definition -> definition.indicatorGenerators().stream()
+                        .map(indicatorGenerator -> indicatorGenerator.getSearchRadiusModifier(
+                                (int) Math.ceil(definition.clusterSize().getMinValue() / 2.0))))
                 .max(Integer::compareTo)
                 .orElse(0);
     }
 
     public static GTOreDefinition blankOreDefinition() {
         return new GTOreDefinition(
-            ConstantInt.of(0), 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
-            HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
-            0, null, null, null, null
-        );
+                ConstantInt.of(0), 0, 0, IWorldGenLayer.NOWHERE, Set.of(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(0), VerticalAnchor.absolute(0)),
+                0, null, null, null, null);
     }
 }

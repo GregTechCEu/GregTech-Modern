@@ -138,7 +138,7 @@ public class GTValues {
             DARK_GREEN + "UIV",
             YELLOW + "UXV",
             BLUE.toString() + BOLD + "OpV",
-            RED.toString() + BOLD + "MAX"};
+            RED.toString() + BOLD + "MAX" };
 
     public static final String[] VLVH = new String[] {
             "Primitive", // not doing the gray color for these first two because it looks weird

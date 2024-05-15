@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.google.gson.JsonElement;
-import net.minecraft.Util;
 import net.minecraft.core.HolderLookup;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
+
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 
 public class SerializerIngredient implements IContentSerializer<SizedIngredient> {
 
@@ -29,16 +29,18 @@ public class SerializerIngredient implements IContentSerializer<SizedIngredient>
 
     @Override
     public SizedIngredient fromJson(JsonElement json, HolderLookup.Provider provider) {
-        return SizedIngredient.NESTED_CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json).getOrThrow();
+        return SizedIngredient.NESTED_CODEC.parse(provider.createSerializationContext(JsonOps.INSTANCE), json)
+                .getOrThrow();
     }
 
     @Override
     public JsonElement toJson(SizedIngredient content, HolderLookup.Provider provider) {
-        return SizedIngredient.NESTED_CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), content).getOrThrow();
+        return SizedIngredient.NESTED_CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), content)
+                .getOrThrow();
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public SizedIngredient of(Object o) {
         if (o instanceof SizedIngredient SizedIngredient) {
             return SizedIngredient;

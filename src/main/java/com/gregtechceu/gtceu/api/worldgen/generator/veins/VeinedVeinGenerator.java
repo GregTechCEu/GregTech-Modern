@@ -3,21 +3,14 @@ package com.gregtechceu.gtceu.api.worldgen.generator.veins;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.data.worldgen.GTFeatures;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.AllArgsConstructor;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -41,6 +34,7 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.AlwaysTrueTes
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
@@ -109,18 +103,14 @@ public class VeinedVeinGenerator extends VeinGenerator {
 
     @Override
     public List<Map.Entry<Either<BlockState, Material>, Integer>> getAllEntries() {
-        var s1 = this.oreBlocks.stream().flatMap(definition ->
-                definition.block.map(
-                        state -> state.stream().map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
-                        material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))
-                )
-        );
-        var s2 = this.rareBlocks.stream().flatMap(definition ->
-                definition.block.map(
-                        state -> state.stream().map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
-                        material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))
-                )
-        );
+        var s1 = this.oreBlocks.stream().flatMap(definition -> definition.block.map(
+                state -> state.stream()
+                        .map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
+                material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))));
+        var s2 = this.rareBlocks.stream().flatMap(definition -> definition.block.map(
+                state -> state.stream()
+                        .map(target -> Map.entry(Either.<BlockState, Material>left(target.state), definition.weight)),
+                material -> Stream.of(Map.entry(Either.<BlockState, Material>right(material), definition.weight))));
 
         return Stream.concat(s1, s2).collect(Collectors.toList());
     }
@@ -133,8 +123,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
         Registry<? extends DensityFunction> densityFunctions = GTRegistries.builtinRegistry()
                 .registry(Registries.DENSITY_FUNCTION).get();
 
-        List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream().map(b -> Map.entry(b.weight, b)).toList();
-        List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks.stream().map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
+        List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries = oreBlocks.stream()
+                .map(b -> Map.entry(b.weight, b)).toList();
+        List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries = rareBlocks.stream()
+                .map(b -> Map.entry(b.weight, b)).toList(); // never accessed if rareBlocks is null
 
         RandomState randomState = level.getLevel().getChunkSource().randomState();
         Blender blender;
@@ -221,7 +213,10 @@ public class VeinedVeinGenerator extends VeinGenerator {
         return generatedBlocks;
     }
 
-    private void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed, GTOreDefinition entry, double chance, List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries, BlockPos.MutableBlockPos pos, List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries) {
+    private void placeBlock(BulkSectionAccess access, LevelChunkSection section, long randomSeed, GTOreDefinition entry,
+                            double chance, List<? extends Map.Entry<Integer, VeinBlockDefinition>> rareEntries,
+                            BlockPos.MutableBlockPos pos,
+                            List<? extends Map.Entry<Integer, VeinBlockDefinition>> commonEntries) {
         RandomSource random = new XoroshiroRandomSource(randomSeed);
         int sectionX = SectionPos.sectionRelative(pos.getX());
         int sectionY = SectionPos.sectionRelative(pos.getY());

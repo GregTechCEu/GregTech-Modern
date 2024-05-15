@@ -18,8 +18,7 @@ import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
 import com.lowdragmc.lowdraglib.gui.widget.TabButton;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -100,9 +99,11 @@ public class RecipeTypeUIProject extends UIProject {
     public void onLoad(Editor editor) {
         editor.getResourcePanel().loadResource(getResources(), false);
         editor.getTabPages().addTab(new TabButton(50, 16, 60, 14).setTexture(
-                new GuiTextureGroup(ColorPattern.T_GREEN.rectTexture().setBottomRadius(10).transform(0, 0.4f), new TextTexture("Main")),
-                new GuiTextureGroup(ColorPattern.T_RED.rectTexture().setBottomRadius(10).transform(0, 0.4f), new TextTexture("Main"))
-        ), new UIMainPanel(editor, root, recipeType == null ? null : recipeType.getTranslationKey()));
+                new GuiTextureGroup(ColorPattern.T_GREEN.rectTexture().setBottomRadius(10).transform(0, 0.4f),
+                        new TextTexture("Main")),
+                new GuiTextureGroup(ColorPattern.T_RED.rectTexture().setBottomRadius(10).transform(0, 0.4f),
+                        new TextTexture("Main"))),
+                new UIMainPanel(editor, root, recipeType == null ? null : recipeType.getTranslationKey()));
         for (WidgetToolBox.Default tab : WidgetToolBox.Default.TABS) {
             editor.getToolPanel().addNewToolBox("ldlib.gui.editor.group." + tab.groupName, tab.icon,
                     tab.createToolBox());
@@ -141,7 +142,9 @@ public class RecipeTypeUIProject extends UIProject {
                         root.clearAllWidgets();
                         if (recipeType.getRecipeUI().hasCustomUI()) {
                             var nbt = recipeType.getRecipeUI().getCustomUI();
-                            IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false, Platform.getFrozenRegistry());
+                            IConfigurableWidget.deserializeNBT(root, nbt.getCompound("root"),
+                                    Resources.fromNBT(nbt.getCompound("resources")), false,
+                                    Platform.getFrozenRegistry());
                         } else {
                             var widget = recipeType.getRecipeUI().createEditableUITemplate(false, false)
                                     .createDefault();

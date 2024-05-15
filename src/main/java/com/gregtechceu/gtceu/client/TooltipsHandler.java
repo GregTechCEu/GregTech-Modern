@@ -35,11 +35,15 @@ public class TooltipsHandler {
             tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
                     energyItem.getCharge(),
                     energyItem.getMaxCharge(),
-                    Component.literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge())).withStyle(ChatFormatting.GREEN)));
+                    Component
+                            .literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge()))
+                            .withStyle(ChatFormatting.GREEN)));
         }
 
         // Formula
-        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
+        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem()); // TODO optimize
+                                                                                    // getOrComputeUnificationEntry so
+                                                                                    // we can use that
         if (unificationEntry != null && unificationEntry.material != null) {
             if (unificationEntry.material.getChemicalFormula() != null &&
                     !unificationEntry.material.getChemicalFormula().isEmpty())

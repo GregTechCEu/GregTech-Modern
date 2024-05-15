@@ -59,7 +59,8 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
                     currentProgress,
                     Component.translatable("gtceu.jade.progress_computation", currentProgress, maxProgress),
                     tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
-                    Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX, style -> style.borderColor = new int[] {0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555}),
+                    Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX,
+                            style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555 }),
                     true));
             return;
         }
@@ -78,10 +79,10 @@ public class WorkableBlockProvider extends CapabilityBlockProvider<IWorkable> {
                             getProgress(currentProgress, maxProgress),
                             text,
                             tooltip.getElementHelper().progressStyle().color(color).textColor(-1),
-                            Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX, style -> style.borderColor = new int[] {0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555}),
-                            true
-                    )
-            );
+                            Util.make(BoxStyle.GradientBorder.DEFAULT_NESTED_BOX,
+                                    style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555,
+                                            0xFF555555 }),
+                            true));
         }
     }
 }

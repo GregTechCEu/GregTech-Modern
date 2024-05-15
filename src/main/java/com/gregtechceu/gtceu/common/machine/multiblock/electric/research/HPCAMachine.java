@@ -18,8 +18,8 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
@@ -50,6 +50,11 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -69,7 +74,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
     private IMaintenanceMachine maintenance;
     private IEnergyContainer energyContainer;
     private IFluidHandler coolantHandler;
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     private final HPCAGridHandler hpcaHandler;
 
     private boolean hasNotEnoughEnergy;
@@ -111,9 +117,10 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 if (handler.getCapability() == EURecipeCapability.CAP &&
                         handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
-                } else if (handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidHandler fluidHandler) {
-                    coolantContainers.add(fluidHandler);
-                }
+                } else if (handler.getCapability() == FluidRecipeCapability.CAP &&
+                        handler instanceof IFluidHandler fluidHandler) {
+                            coolantContainers.add(fluidHandler);
+                        }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
@@ -244,7 +251,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
         if (getLevel().isClientSide) {
             if (isFormed) {
                 hpcaHandler.tryGatherClientComponents(this.getLevel(), this.getPos(), this.getFrontFacing(),
-                        this.getUpwardsFacing(), this.isFlipped);
+                        Direction.NORTH, false);
             } else {
                 hpcaHandler.clearClientComponents();
             }
@@ -311,20 +318,20 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * tl.add(TextComponentUtil.translationWithColor(
      * TextFormatting.YELLOW,
      * "gtceu.multiblock.hpca.warning_temperature"));
-     *
+     * 
      * // Active cooler overdrive warning
      * tl.add(TextComponentUtil.translationWithColor(
      * TextFormatting.GRAY,
      * "gtceu.multiblock.hpca.warning_temperature_active_cool"));
      * }
-     *
+     * 
      * // Structure warnings
      * hpcaHandler.addWarnings(tl);
      * }
      * })
      * .addMaintenanceProblemLines(getMaintenanceProblems());
      * }
-     *
+     * 
      * @Override
      * protected void addErrorText(List<Component> textList) {
      * super.addErrorText(textList);
@@ -335,7 +342,7 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
      * hpcaHandler.addErrors(textList);
      * }
      * }
-     *
+     * 
      * @Override
      * public void addBarHoverText(List<Component> hoverList, int index) {
      * if (index == 0) {
@@ -467,7 +474,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
             }
             if (forceCoolWithActive || maxActiveCooling <= temperatureChange) {
                 // try to fully utilize active coolers
-                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank, getCoolantStack(maxCoolantDrain), IFluidHandler.FluidAction.EXECUTE);
+                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
+                        getCoolantStack(maxCoolantDrain), IFluidHandler.FluidAction.EXECUTE);
                 if (!coolantStack.isEmpty()) {
                     long coolantDrained = coolantStack.getAmount();
                     if (coolantDrained == maxCoolantDrain) {
@@ -483,7 +491,8 @@ public class HPCAMachine extends WorkableElectricMultiblockMachine
                 // try to partially utilize active coolers to stabilize to zero
                 double temperatureToDecrease = Math.min(temperatureChange, maxActiveCooling);
                 int coolantToDrain = Math.max(1, (int) (maxCoolantDrain * (temperatureToDecrease / maxActiveCooling)));
-                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank, getCoolantStack(coolantToDrain), IFluidHandler.FluidAction.EXECUTE);
+                FluidStack coolantStack = GTTransferUtils.drainFluidAccountNotifiableList(coolantTank,
+                        getCoolantStack(coolantToDrain), IFluidHandler.FluidAction.EXECUTE);
                 if (!coolantStack.isEmpty()) {
                     long coolantDrained = coolantStack.getAmount();
                     if (coolantDrained == coolantToDrain) {

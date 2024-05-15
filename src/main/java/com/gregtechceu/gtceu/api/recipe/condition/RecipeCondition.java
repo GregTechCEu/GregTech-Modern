@@ -4,17 +4,18 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.mojang.datafixers.Products;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.network.FriendlyByteBuf;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 import com.google.gson.JsonObject;
+import com.mojang.datafixers.Products;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -24,7 +25,9 @@ import org.jetbrains.annotations.Nullable;
  * @implNote RecipeCondition, global conditions
  */
 public abstract class RecipeCondition {
-    public static final Codec<RecipeCondition> CODEC = GTRegistries.RECIPE_CONDITIONS.codec().dispatch(RecipeCondition::getType, RecipeConditionType::getCodec);
+
+    public static final Codec<RecipeCondition> CODEC = GTRegistries.RECIPE_CONDITIONS.codec()
+            .dispatch(RecipeCondition::getType, RecipeConditionType::getCodec);
 
     @Nullable
     public static RecipeCondition create(Class<? extends RecipeCondition> clazz) {
@@ -37,7 +40,8 @@ public abstract class RecipeCondition {
         }
     }
 
-    public static <RC extends RecipeCondition> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
+    public static <
+            RC extends RecipeCondition> Products.P1<RecordCodecBuilder.Mu<RC>, Boolean> isReverse(RecordCodecBuilder.Instance<RC> instance) {
         return instance.group(Codec.BOOL.fieldOf("reverse").forGetter(val -> val.isReverse));
     }
 

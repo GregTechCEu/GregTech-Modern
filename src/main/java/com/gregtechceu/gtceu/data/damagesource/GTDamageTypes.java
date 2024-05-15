@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.damagesource;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.damagesource.DamageTypeData;
+
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.tags.DamageTypeTags;
 import net.minecraft.world.damagesource.DamageType;

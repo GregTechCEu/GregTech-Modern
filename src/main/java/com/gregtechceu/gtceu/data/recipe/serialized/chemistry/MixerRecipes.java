@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -13,7 +14,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.MIXER_RECIPES;
 public class MixerRecipes {
 
     public static void init(RecipeOutput provider) {
-
         MIXER_RECIPES.recipeBuilder("nitration_mixture")
                 .inputFluids(NitricAcid.getFluid(1000))
                 .inputFluids(SulfuricAcid.getFluid(1000))

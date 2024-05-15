@@ -15,6 +15,7 @@ import java.util.Set;
  * @implNote IRecipeHandler
  */
 public interface IRecipeHandler<K> extends IFilteredHandler<K> {
+
     /**
      * Comparator for entries that can be used in insertion logic
      */

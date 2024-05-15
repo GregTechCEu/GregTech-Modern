@@ -11,7 +11,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class PlatGroupMetalsRecipes {
 
     public static void init(RecipeOutput provider) {
-
         // Primary Chain
 
         // Platinum Group Sludge Production

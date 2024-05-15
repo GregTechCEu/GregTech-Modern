@@ -7,11 +7,7 @@ import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import com.tterrag.registrate.util.nullness.NonNullSupplier;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -25,7 +21,7 @@ import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguration;
 
 import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
@@ -39,10 +35,12 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class LayeredVeinGenerator extends VeinGenerator {
+
     public static final MapCodec<LayeredVeinGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-                    GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns").forGetter(ft -> ft.layerPatterns != null ? ft.layerPatterns : ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList()))
-            ).apply(instance, LayeredVeinGenerator::new)
-    );
+            GTLayerPattern.CODEC.listOf().fieldOf("layer_patterns")
+                    .forGetter(ft -> ft.layerPatterns != null ? ft.layerPatterns :
+                            ft.bakingLayerPatterns.stream().map(Supplier::get).collect(Collectors.toList())))
+            .apply(instance, LayeredVeinGenerator::new));
 
     private final List<NonNullSupplier<GTLayerPattern>> bakingLayerPatterns = new ArrayList<>();
 

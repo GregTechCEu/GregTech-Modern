@@ -40,7 +40,6 @@ import net.minecraft.world.level.block.Block;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -86,6 +85,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected NotifiableItemStackHandler createMachineStorage(Object... args) {
         var storage = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.NONE, slots -> new CustomItemStackHandler(1) {
+
             @Override
             public int getSlotLimit(int slot) {
                 return getMachineLimit(getDefinition().getTier());
@@ -213,8 +213,8 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
             // apply parallel first
             var parallel = Objects.requireNonNull(GTRecipeModifiers.accurateParallel(
-                machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())), false
-            ));
+                    machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())),
+                    false));
             int parallelCount = parallel.getSecond();
             recipe = parallel.getFirst();
 

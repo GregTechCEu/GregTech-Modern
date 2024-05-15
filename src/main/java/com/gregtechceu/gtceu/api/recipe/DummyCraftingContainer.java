@@ -5,6 +5,7 @@ import net.minecraft.world.entity.player.StackedContents;
 import net.minecraft.world.inventory.TransientCraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.NotNull;
 
 public class DummyCraftingContainer extends TransientCraftingContainer {
@@ -78,5 +79,4 @@ public class DummyCraftingContainer extends TransientCraftingContainer {
 
         return inv;
     }
-
 }

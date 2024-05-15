@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.tag;
 
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import com.tterrag.registrate.providers.ProviderType;
 
 /**

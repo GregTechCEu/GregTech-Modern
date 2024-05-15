@@ -143,10 +143,6 @@ public class ConfigHolder {
         public boolean hideFilledCellsInJEI = true;
 
         @Configurable
-        @Configurable.Comment({ "Whether to hide the ore processing diagrams in JEI", "Default: false" })
-        public boolean hideOreProcessingDiagrams = false;
-
-        @Configurable
         @Configurable.Comment({
                 "Whether Gregtech should remove smelting recipes from the vanilla furnace for ingots requiring the Electric Blast Furnace.",
                 "Default: true" })
@@ -155,11 +151,13 @@ public class ConfigHolder {
         public static class EnergyCompatConfig {
 
             @Configurable
-            @Configurable.Comment({"Enable Native GTEU to Platform native Energy (RF and alike) on GT Cables and Wires.", "This does not enable nor disable Converters.", "Default: true"})
+            @Configurable.Comment({
+                    "Enable Native GTEU to Platform native Energy (RF and alike) on GT Cables and Wires.",
+                    "This does not enable nor disable Converters.", "Default: true" })
             public boolean nativeEUToFE = true;
 
             @Configurable
-            @Configurable.Comment({"Enable GTEU to Platform native (and vice versa) Converters.", "Default: false"})
+            @Configurable.Comment({ "Enable GTEU to Platform native (and vice versa) Converters.", "Default: false" })
             public boolean enableFEConverters = false;
 
             @Configurable
@@ -241,7 +239,7 @@ public class ConfigHolder {
             @Configurable.Comment({ "Prevents vanilla's large ore veins from being generated", "Default: true" })
             public boolean removeVanillaLargeOreVeins = true;
             @Configurable
-            @Configurable.Comment({"Distance between bedrock ore veins in chunks, if enabled.", "Default: 16"})
+            @Configurable.Comment({ "Distance between bedrock ore veins in chunks, if enabled.", "Default: 16" })
             public int bedrockOreDistance = 16;
             @Configurable
             @Configurable.Comment({ "Make bedrock ore/fluid veins infinite?", "Default: false" })
@@ -265,10 +263,7 @@ public class ConfigHolder {
     }
 
     public static class MachineConfigs {
-        @Configurable
-        @Configurable.Comment({"Whether insufficient energy supply should reset Machine recipe progress to zero.",
-                "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed", "Default: false"})
-        public boolean recipeProgressLowEnergy = false;
+
         @Configurable
         @Configurable.Comment({ "Whether insufficient energy supply should reset Machine recipe progress to zero.",
                 "If true, progress will reset.", "If false, progress will decrease to zero with 2x speed",
@@ -289,18 +284,10 @@ public class ConfigHolder {
         public int energyUsageMultiplier = 100;
 
         @Configurable
-        @Configurable.Comment({ "Energy use multiplier for prospectors.", "Default: 100" })
-        public int prospectorEnergyUseMultiplier = 100;
-        @Configurable
         @Configurable.Comment({ "Whether machines or boilers damage the terrain when they explode.",
                 "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.",
                 "Default: true" })
-        public boolean doesExplosionDamagesTerrain = true;
-        @Configurable
-        @Configurable.Comment({
-                "Enables Safe Active Transformers, removing their ability to explode if unformed while transmitting/receiving power.",
-                "Default: false" })
-        public boolean harmlessActiveTransformers = false;
+        public boolean doesExplosionDamagesTerrain = false;
         @Configurable
         @Configurable.Comment({ "Divisor for Recipe Duration per Overclock.", "Default: 2.0" })
         @Configurable.DecimalRange(min = 2.0, max = 3.0)
@@ -425,8 +412,9 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
 
         public static class ArmorHud {
+
             @Configurable.Comment({ "Sets HUD location", "1 - left-upper corner", "2 - right-upper corner",
-                "3 - left-bottom corner", "4 - right-bottom corner" })
+                    "3 - left-bottom corner", "4 - right-bottom corner" })
             public byte hudLocation = 1;
             @Configurable.Comment("Horizontal offset of HUD [0 ~ 100)")
             public byte hudOffsetX = 0;
@@ -435,13 +423,15 @@ public class ConfigHolder {
         }
 
         public static class NanoSaber {
+
             @Configurable.DecimalRange(min = 0, max = 100)
             @Configurable.Comment({ "The additional damage added when the NanoSaber is powered.", "Default: 20.0" })
             public double nanoSaberDamageBoost = 20;
             @Configurable.DecimalRange(min = 0, max = 100)
             @Configurable.Comment({ "The base damage of the NanoSaber.", "Default: 5.0" })
             public double nanoSaberBaseDamage = 5;
-            @Configurable.Comment({ "Should Zombies spawn with charged, active NanoSabers on hard difficulty?", "Default: true" })
+            @Configurable.Comment({ "Should Zombies spawn with charged, active NanoSabers on hard difficulty?",
+                    "Default: true" })
             public boolean zombieSpawnWithSabers = true;
             @Configurable.Range(min = 1, max = 512)
             @Configurable.Comment({ "The EU/t consumption of the NanoSaber.", "Default: 64" })
@@ -470,14 +460,15 @@ public class ConfigHolder {
         public String defaultPaintingColor = "#FFFFFF";
         @Configurable
         @Configurable.Comment({ "The default color to overlay onto Machine (and other) UIs.",
-                "16777215 (#FFFFFF) is no coloring (like GTCE) (default).",
-                "13819135 (#D2DCFF in decimal) is the classic blue from GT5." })
+                "16777215 (#FFFFFF) is no coloring (like GTCE).",
+                "13819135 (#D2DCFF in decimal) is the classic blue from GT5 (default)." })
         @Configurable.StringPattern(value = "#[0-9a-fA-F]{1,6}")
         @Configurable.Gui.ColorValue
         public String defaultUIColor = "#FFFFFF";
         @Configurable
         @Configurable.Comment({ "Use VBO cache for multiblock preview.",
-                "Disable if you have issues with rendering multiblocks.", "Default: true" })
+                "Disable it if you have issues with rendering multiblocks.", "Default: true" })
+        @Configurable.Gui.ColorValue
         public boolean useVBO = true;
         @Configurable
         @Configurable.Comment({ "Duration of the multiblock in-world preview (s)", "Default: 10" })
@@ -491,16 +482,18 @@ public class ConfigHolder {
         public ArmorHud armorHud = new ArmorHud();
 
         public static class ArmorHud {
+
             @Configurable
-            @Configurable.Comment({"Sets HUD location", "1 - left-upper corner", "2 - right-upper corner", "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1"})
+            @Configurable.Comment({ "Sets HUD location", "1 - left-upper corner", "2 - right-upper corner",
+                    "3 - left-bottom corner", "4 - right-bottom corner", "Default: 1" })
             @Configurable.Range(min = 1, max = 4)
             public int hudLocation = 1;
             @Configurable
-            @Configurable.Comment({"Horizontal offset of HUD.", "Default: 0"})
+            @Configurable.Comment({ "Horizontal offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetX = 0;
             @Configurable
-            @Configurable.Comment({"Vertical offset of HUD.", "Default: 0"})
+            @Configurable.Comment({ "Vertical offset of HUD.", "Default: 0" })
             @Configurable.Range(min = 0, max = 100)
             public int hudOffsetY = 0;
         }
@@ -509,7 +502,7 @@ public class ConfigHolder {
     public static class DeveloperConfigs {
 
         @Configurable
-        @Configurable.Comment({ "Debug general events? (will print recipe conficts etc. to server's debug.log)",
+        @Configurable.Comment({ "Debug general events? (will print placed veins to server's debug.log)",
                 "Default: false" })
         public boolean debug = false;
         @Configurable

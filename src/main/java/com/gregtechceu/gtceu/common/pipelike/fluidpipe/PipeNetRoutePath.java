@@ -2,20 +2,19 @@ package com.gregtechceu.gtceu.common.pipelike.fluidpipe;
 
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import lombok.Getter;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import oshi.util.tuples.Pair;
 
-import javax.annotation.Nullable;
-
 public class PipeNetRoutePath implements IRoutePath<IFluidHandler> {
+
     @Getter
     private final BlockPos pipePos;
     @Getter

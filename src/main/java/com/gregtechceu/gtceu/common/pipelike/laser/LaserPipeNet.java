@@ -60,6 +60,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
 
     @AllArgsConstructor
     public static class LaserData {
+
         /**
          * The current position of the pipe
          */

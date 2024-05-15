@@ -99,8 +99,8 @@ public class DataAccessHatchMachine extends TieredPartMachine
             for (int x = 0; x < rowSize; x++) {
                 int index = y * rowSize + x;
                 group.addWidget(new SlotWidget(importItems, index,
-                    rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
-                    .setBackgroundTexture(GuiTextures.SLOT));
+                        rowSize * 9 + x * 18 - xOffset, y * 18, true, true)
+                        .setBackgroundTexture(GuiTextures.SLOT));
             }
         }
         return group;

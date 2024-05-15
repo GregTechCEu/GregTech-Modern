@@ -10,9 +10,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -27,7 +27,8 @@ public class OpticalPipeBlockItem extends PipeBlockItem implements IItemRenderer
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+                                TooltipFlag isAdvanced) {
         super.appendHoverText(stack, context, tooltip, isAdvanced);
         tooltip.add(Component.translatable("block.gtceu.normal_optical_pipe.tooltip"));
 

@@ -18,12 +18,15 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.UpdateListener;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import lombok.Getter;
+import lombok.Setter;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.VisibleForTesting;
 
 import java.util.ArrayList;
@@ -51,7 +54,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @UpdateListener(methodName = "onStatusSynced")
     private Status status = Status.IDLE;
 
-    @Persisted @DescSynced @UpdateListener(methodName = "onActiveSynced")
+    @Persisted
+    @DescSynced
+    @UpdateListener(methodName = "onActiveSynced")
     private boolean isActive;
 
     @Nullable
@@ -74,7 +79,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
     @Persisted
     protected GTRecipe lastOriginRecipe;
     @Persisted
-    @Getter @Setter
+    @Getter
+    @Setter
     protected int progress;
     @Getter
     @Persisted
@@ -208,8 +214,8 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         var modified = machine.fullModifyRecipe(match);
         if (modified != null) {
             if (modified.checkConditions(this).isSuccess() &&
-                modified.matchRecipe(machine).isSuccess() &&
-                modified.matchTickRecipe(machine).isSuccess()) {
+                    modified.matchRecipe(machine).isSuccess() &&
+                    modified.matchTickRecipe(machine).isSuccess()) {
                 setupRecipe(modified);
             }
             if (lastRecipe != null && getStatus() == Status.WORKING) {
@@ -273,9 +279,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
         lastFailedMatches = null;
         // try to execute last recipe if possible
         if (!recipeDirty && lastRecipe != null &&
-            lastRecipe.matchRecipe(this.machine).isSuccess() &&
-            lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-            lastRecipe.checkConditions(this).isSuccess()) {
+                lastRecipe.matchRecipe(this.machine).isSuccess() &&
+                lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
+                lastRecipe.checkConditions(this).isSuccess()) {
             GTRecipe recipe = lastRecipe;
             lastRecipe = null;
             lastOriginRecipe = null;
@@ -446,9 +452,9 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
             }
             // try it again
             if (!recipeDirty &&
-                lastRecipe.matchRecipe(this.machine).isSuccess() &&
-                lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
-                lastRecipe.checkConditions(this).isSuccess()) {
+                    lastRecipe.matchRecipe(this.machine).isSuccess() &&
+                    lastRecipe.matchTickRecipe(this.machine).isSuccess() &&
+                    lastRecipe.checkConditions(this).isSuccess()) {
                 setupRecipe(lastRecipe);
             } else {
                 setStatus(Status.IDLE);
@@ -506,12 +512,11 @@ public class RecipeLogic extends MachineTrait implements IEnhancedManaged, IWork
                 workingSound = null;
             }
             if (sound != null) {
-                workingSound = sound.playAutoReleasedSound(() ->
-                    machine.shouldWorkingPlaySound()
-                        && isWorking()
-                        && !getMachine().isInValid()
-                        && getMachine().getLevel().isLoaded(getMachine().getPos())
-                        && MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(), getMachine().getPos(), true, 0, 1, 1);
+                workingSound = sound.playAutoReleasedSound(
+                        () -> machine.shouldWorkingPlaySound() && isWorking() && !getMachine().isInValid() &&
+                                getMachine().getLevel().isLoaded(getMachine().getPos()) &&
+                                MetaMachine.getMachine(getMachine().getLevel(), getMachine().getPos()) == getMachine(),
+                        getMachine().getPos(), true, 0, 1, 1);
             }
         } else if (workingSound instanceof AutoReleasedSound soundEntry) {
             soundEntry.release();

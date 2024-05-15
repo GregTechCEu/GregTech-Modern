@@ -5,6 +5,8 @@ import com.gregtechceu.gtceu.api.block.ActiveBlock;
 
 import net.minecraft.world.level.block.Block;
 
+import com.tterrag.registrate.util.entry.BlockEntry;
+
 import static com.gregtechceu.gtceu.data.block.GTBlocks.createActiveCasing;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.createCasingBlock;
 

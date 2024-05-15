@@ -2,26 +2,28 @@ package com.gregtechceu.gtceu.common.recipe;
 
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 public class ResearchCondition extends RecipeCondition {
-    public static final MapCodec<ResearchCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(
-            ResearchData.CODEC.fieldOf("research").forGetter(val -> val.data)
-        ).apply(instance, ResearchCondition::new));
+
+    public static final MapCodec<ResearchCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .and(
+                            ResearchData.CODEC.fieldOf("research").forGetter(val -> val.data))
+                    .apply(instance, ResearchCondition::new));
     public static final ResearchCondition INSTANCE = new ResearchCondition();
     public ResearchData data;
 

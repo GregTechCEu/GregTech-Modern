@@ -54,7 +54,8 @@ public class ResearchStationMachine extends WorkableElectricMultiblockMachine im
     public void onStructureFormed() {
         super.onStructureFormed();
         for (IMultiPart part : getParts()) {
-            IOpticalComputationProvider provider = part.self().holder.self().getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, part.self().getPos(), null);
+            IOpticalComputationProvider provider = part.self().holder.self().getLevel()
+                    .getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, part.self().getPos(), null);
             if (provider != null) {
                 this.computationProvider = provider;
             }

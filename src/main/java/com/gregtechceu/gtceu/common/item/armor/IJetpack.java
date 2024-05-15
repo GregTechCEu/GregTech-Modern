@@ -2,17 +2,20 @@ package com.gregtechceu.gtceu.common.item.armor;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.Vec3;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
  * Logic from
- * <a href="https://github.com/Tomson124/SimplyJetpacks2/blob/1.12/src/main/java/tonius/simplyjetpacks/item/ItemJetpack.java">SimplyJetpacks2</a>
+ * <a href=
+ * "https://github.com/Tomson124/SimplyJetpacks2/blob/1.12/src/main/java/tonius/simplyjetpacks/item/ItemJetpack.java">SimplyJetpacks2</a>
  */
 public interface IJetpack {
 
@@ -76,18 +79,23 @@ public interface IJetpack {
                     Vec3 delta = player.getDeltaMovement();
                     if (flyKeyDown) {
                         if (!hover) {
-                            player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, currentSpeedVertical), delta.z);
+                            player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, currentSpeedVertical),
+                                    delta.z);
                         } else {
                             if (descendKeyDown) {
-                                player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, getVerticalHoverSlowSpeed()), delta.z);
+                                player.setDeltaMovement(delta.x,
+                                        Math.min(delta.y + currentAccel, getVerticalHoverSlowSpeed()), delta.z);
                             } else {
-                                player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, getVerticalHoverSpeed()), delta.z);
+                                player.setDeltaMovement(delta.x,
+                                        Math.min(delta.y + currentAccel, getVerticalHoverSpeed()), delta.z);
                             }
                         }
                     } else if (descendKeyDown) {
-                        player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, -getVerticalHoverSpeed()), delta.z);
+                        player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, -getVerticalHoverSpeed()),
+                                delta.z);
                     } else {
-                        player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, -getVerticalHoverSlowSpeed()), delta.z);
+                        player.setDeltaMovement(delta.x, Math.min(delta.y + currentAccel, -getVerticalHoverSlowSpeed()),
+                                delta.z);
                     }
                     float speedSideways = (float) (player.isShiftKeyDown() ? getSidewaysSpeed() * 0.5f :
                             getSidewaysSpeed());

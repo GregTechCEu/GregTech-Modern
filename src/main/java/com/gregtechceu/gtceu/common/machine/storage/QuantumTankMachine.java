@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
@@ -45,7 +45,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
-import net.neoforged.neoforge.fluids.capability.templates.FluidTank;
+
+import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -77,17 +80,25 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
     @Getter
     private final int maxStoredFluids;
     @Getter
-    @Persisted @DropSaved
+    @Persisted
+    @DropSaved
     protected final NotifiableFluidTank cache;
     @Nullable
     protected TickableSubscription autoOutputSubs;
     @Nullable
     protected ISubscription exportFluidSubs;
-    @Persisted @DescSynced @Getter @DropSaved
+    @Persisted
+    @DescSynced
+    @Getter
+    @DropSaved
     protected FluidStack stored = FluidStack.EMPTY;
-    @Persisted @Getter @Setter
+    @Persisted
+    @Getter
+    @Setter
     private boolean isVoiding;
-    @Persisted(subPersisted = true) @DescSynced @Getter
+    @Persisted(subPersisted = true)
+    @DescSynced
+    @Getter
     protected final CustomFluidTank lockedFluid;
 
     public QuantumTankMachine(IMachineBlockEntity holder, int tier, int maxStoredFluids, Object... args) {
@@ -334,7 +345,8 @@ public class QuantumTankMachine extends TieredMachine implements IAutoOutputFlui
                         .setTextColor(-1).setDropShadow(true))
                 .addWidget(new TankWidget(cache.getStorages()[0], 68, 23, true, true)
                         .setBackground(GuiTextures.FLUID_SLOT))
-                .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 0, 68, 41, 18, 18, () -> cache.getLockedFluid().getFluid(), (fluid) -> cache.getLockedFluid().setFluid(fluid))
+                .addWidget(new PhantomFluidWidget(cache.getLockedFluid(), 0, 68, 41, 18, 18,
+                        () -> cache.getLockedFluid().getFluid(), (fluid) -> cache.getLockedFluid().setFluid(fluid))
                         .setShowAmount(false)
                         .setBackground(ColorPattern.T_GRAY.rectTexture()))
                 .addWidget(new ToggleButtonWidget(4, 41, 18, 18,

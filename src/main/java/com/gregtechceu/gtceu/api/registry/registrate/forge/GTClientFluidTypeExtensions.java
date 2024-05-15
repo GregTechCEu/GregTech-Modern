@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
+
+import lombok.Getter;
+import lombok.Setter;
 
 public class GTClientFluidTypeExtensions implements IClientFluidTypeExtensions {
 
@@ -13,9 +14,10 @@ public class GTClientFluidTypeExtensions implements IClientFluidTypeExtensions {
         this.tintColor = tintColor;
     }
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private ResourceLocation flowingTexture, stillTexture;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int tintColor;
-
 }

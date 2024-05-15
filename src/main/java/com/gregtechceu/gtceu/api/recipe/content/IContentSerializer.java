@@ -1,16 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
 import com.lowdragmc.lowdraglib.LDLib;
+import com.lowdragmc.lowdraglib.Platform;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.core.HolderLookup;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.Platform;
 import com.mojang.serialization.*;
-import net.minecraft.core.HolderLookup;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public interface IContentSerializer<T> {
 
@@ -24,9 +22,11 @@ public interface IContentSerializer<T> {
 
     default Codec<T> codec() {
         return Codec.PASSTHROUGH.flatXmap(
-            dynamic -> DataResult.success(fromJson(dynamic.convert(JsonOps.INSTANCE).getValue(), Platform.getFrozenRegistry()), Lifecycle.stable()),
-            json -> DataResult.success(new Dynamic<>(JsonOps.INSTANCE, toJson(json, Platform.getFrozenRegistry())), Lifecycle.stable())
-        );
+                dynamic -> DataResult.success(
+                        fromJson(dynamic.convert(JsonOps.INSTANCE).getValue(), Platform.getFrozenRegistry()),
+                        Lifecycle.stable()),
+                json -> DataResult.success(new Dynamic<>(JsonOps.INSTANCE, toJson(json, Platform.getFrozenRegistry())),
+                        Lifecycle.stable()));
     }
 
     T fromJson(JsonElement json, HolderLookup.Provider provider);

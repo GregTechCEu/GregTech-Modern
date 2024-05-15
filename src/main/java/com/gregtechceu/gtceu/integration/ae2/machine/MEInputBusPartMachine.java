@@ -8,25 +8,28 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.lowdragmc.lowdraglib.utils.Size;
-import net.minecraft.core.HolderLookup;
+
 import net.minecraft.core.NonNullList;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.UnknownNullability;
 
 import java.util.Arrays;
 import java.util.List;
@@ -131,18 +134,22 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         }
 
         @Override
-        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO, new CustomItemStackHandler(NonNullList.of(ItemStack.EMPTY, Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
-                @NotNull
-                @Override
-                public ItemStack extractItem(int slot, int amount, boolean simulate) {
-                    ItemStack extracted = super.extractItem(slot, amount, simulate);
-                    if (!extracted.isEmpty()) {
-                        inventory[slot].extractItem(0, amount, simulate);
-                    }
-                    return extracted;
-                }
-            });
+        public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
+                    new CustomItemStackHandler(NonNullList.of(ItemStack.EMPTY,
+                            Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
+
+                        @NotNull
+                        @Override
+                        public ItemStack extractItem(int slot, int amount, boolean simulate) {
+                            ItemStack extracted = super.extractItem(slot, amount, simulate);
+                            if (!extracted.isEmpty()) {
+                                inventory[slot].extractItem(0, amount, simulate);
+                            }
+                            return extracted;
+                        }
+                    });
         }
 
         @Override

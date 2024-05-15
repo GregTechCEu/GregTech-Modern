@@ -52,8 +52,8 @@ public class RecyclingRecipes {
         }
     }
 
-    public static void registerRecyclingRecipes(RecipeOutput provider, ItemStack input, List<MaterialStack> components, boolean ignoreArcSmelting, @Nullable TagPrefix prefix) {
-
+    public static void registerRecyclingRecipes(RecipeOutput provider, ItemStack input, List<MaterialStack> components,
+                                                boolean ignoreArcSmelting, @Nullable TagPrefix prefix) {
         // Gather the valid Materials for use in recycling recipes.
         // - Filter out Materials that cannot create a Dust
         // - Filter out Materials that do not equate to at least 1 Nugget worth of Material.
@@ -101,7 +101,8 @@ public class RecyclingRecipes {
         registerArcRecycling(provider, input, components, prefix);
     }
 
-    private static void registerMaceratorRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials, int multiplier) {
+    private static void registerMaceratorRecycling(RecipeOutput provider, ItemStack input,
+                                                   List<MaterialStack> materials, int multiplier) {
         // Finalize the output list.
         List<ItemStack> outputs = finalizeOutputs(
                 materials,
@@ -131,8 +132,9 @@ public class RecyclingRecipes {
         builder.save(provider);
     }
 
-    private static void registerExtractorRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials, int multiplier, @Nullable TagPrefix prefix) {
-
+    private static void registerExtractorRecycling(RecipeOutput provider, ItemStack input,
+                                                   List<MaterialStack> materials, int multiplier,
+                                                   @Nullable TagPrefix prefix) {
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
         if (entry != null) {
@@ -218,7 +220,8 @@ public class RecyclingRecipes {
         extractorBuilder.save(provider);
     }
 
-    private static void registerArcRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials, @Nullable TagPrefix prefix) {
+    private static void registerArcRecycling(RecipeOutput provider, ItemStack input, List<MaterialStack> materials,
+                                             @Nullable TagPrefix prefix) {
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
         if (entry != null) {

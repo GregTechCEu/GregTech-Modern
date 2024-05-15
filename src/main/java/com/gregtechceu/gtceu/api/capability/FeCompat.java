@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
 public class FeCompat {
@@ -9,7 +10,8 @@ public class FeCompat {
      * Conversion ratio used by energy converters
      */
     public static int ratio(boolean nativeToEu) {
-        return nativeToEu ? ConfigHolder.INSTANCE.compat.energy.feToEuRatio : ConfigHolder.INSTANCE.compat.energy.euToFeRatio;
+        return nativeToEu ? ConfigHolder.INSTANCE.compat.energy.feToEuRatio :
+                ConfigHolder.INSTANCE.compat.energy.euToFeRatio;
     }
 
     /**
@@ -55,7 +57,7 @@ public class FeCompat {
      * 
      * @return amount of EU inserted
      */
-    public static long insertEu(IEnergyStorage storage, long amountEU){
+    public static long insertEu(IEnergyStorage storage, long amountEU) {
         int euToNativeRatio = ratio(false);
         long nativeSent = storage.receiveEnergy(toFe(amountEU, euToNativeRatio), true);
         return toEu(storage.receiveEnergy((int) (nativeSent - (nativeSent % euToNativeRatio)), false), euToNativeRatio);
@@ -66,7 +68,7 @@ public class FeCompat {
      * 
      * @return amount of EU extracted
      */
-    public static long extractEu(IEnergyStorage storage, long amountEU){
+    public static long extractEu(IEnergyStorage storage, long amountEU) {
         int euToNativeRatio = ratio(false);
         long extract = storage.extractEnergy(toFe(amountEU, euToNativeRatio), true);
         return toEu(storage.extractEnergy((int) (extract - (extract % euToNativeRatio)), false), euToNativeRatio);

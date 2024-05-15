@@ -10,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.item.ItemStack;
@@ -26,6 +27,7 @@ import java.util.List;
  * @implNote CircuitFancyConfigurator
  */
 public class CircuitFancyConfigurator implements IFancyConfigurator {
+
     final ItemStackHandler circuitSlot;
 
     public CircuitFancyConfigurator(ItemStackHandler circuitSlot) {

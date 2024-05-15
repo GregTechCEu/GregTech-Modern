@@ -331,7 +331,9 @@ public class LongDistanceNetwork {
 
         public static WorldData get(LevelAccessor level) {
             if (level instanceof ServerLevel serverLevel) {
-                return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> WorldData.create(serverLevel), (tag, provider) -> WorldData.load(tag, serverLevel)), "gtceu_long_dist_pipe");
+                return serverLevel.getDataStorage()
+                        .computeIfAbsent(new SavedData.Factory<>(() -> WorldData.create(serverLevel),
+                                (tag, provider) -> WorldData.load(tag, serverLevel)), "gtceu_long_dist_pipe");
             }
             return null;
         }

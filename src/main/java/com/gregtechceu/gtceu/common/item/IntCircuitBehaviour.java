@@ -2,9 +2,11 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -12,6 +14,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
@@ -72,7 +75,8 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         int configuration = getCircuitConfiguration(stack);
         tooltipComponents.add(Component.translatable("metaitem.int_circuit.configuration", configuration));
     }
@@ -84,22 +88,31 @@ public class IntCircuitBehaviour implements IItemUIFactory, IAddInformation {
         label.setTextColor(0x404040);
         var modular = new ModularUI(184, 132, holder, entityPlayer)
                 .widget(label);
-        SlotWidget slotwidget = new SlotWidget(new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))), 0, 82, 20, false, false);
+        SlotWidget slotwidget = new SlotWidget(
+                new CustomItemStackHandler(stack(getCircuitConfiguration(holder.getHeld()))), 0, 82, 20, false, false);
         slotwidget.setBackground(GuiTextures.SLOT);
         modular.widget(slotwidget);
         int idx = 0;
         for (int x = 0; x <= 2; x++) {
             for (int y = 0; y <= 8; y++) {
                 int finalIdx = idx;
-                modular.widget(new ButtonWidget(10 + (18 * y), 48 + (18 * x), 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
-                        data -> { setCircuitConfiguration(holder, finalIdx); slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0); }));
+                modular.widget(new ButtonWidget(10 + (18 * y), 48 + (18 * x), 18, 18,
+                        new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
+                        data -> {
+                            setCircuitConfiguration(holder, finalIdx);
+                            slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
+                        }));
                 idx++;
             }
         }
         for (int x = 0; x <= 5; x++) {
             int finalIdx = x + 27;
-            modular.widget(new ButtonWidget(10 + (18 * x), 102, 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
-                    data -> { setCircuitConfiguration(holder, finalIdx); slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0); }));
+            modular.widget(new ButtonWidget(10 + (18 * x), 102, 18, 18,
+                    new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(stack(finalIdx)).scale(16f / 18)),
+                    data -> {
+                        setCircuitConfiguration(holder, finalIdx);
+                        slotwidget.setHandlerSlot(new CustomItemStackHandler(stack(finalIdx)), 0);
+                    }));
         }
         modular.mainGroup.setBackground(GuiTextures.BACKGROUND);
         return modular;

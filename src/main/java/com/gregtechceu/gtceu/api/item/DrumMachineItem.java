@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
@@ -23,6 +24,9 @@ public class DrumMachineItem extends MetaMachineItem {
     }
 
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, GTMachines.DRUM_CAPACITY.getInt(getDefinition())), this);
+        event.registerItem(Capabilities.FluidHandler.ITEM,
+                (stack, ignored) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack,
+                        GTMachines.DRUM_CAPACITY.getInt(getDefinition())),
+                this);
     }
 }

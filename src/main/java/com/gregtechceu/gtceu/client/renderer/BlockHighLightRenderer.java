@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
@@ -28,6 +29,11 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
@@ -52,7 +58,8 @@ public class BlockHighLightRenderer {
             ItemStack held = player.getMainHandItem();
             BlockPos blockPos = target.getBlockPos();
 
-            Set<GTToolType> toolType = held.getItem() instanceof IGTTool toolItem ? toolItem.getToolClasses(held) : null;
+            Set<GTToolType> toolType = held.getItem() instanceof IGTTool toolItem ? toolItem.getToolClasses(held) :
+                    null;
             BlockEntity blockEntity = level.getBlockEntity(blockPos);
 
             // draw tool grid highlight

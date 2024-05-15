@@ -8,7 +8,8 @@ import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.repository.Pack;
 import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.repository.RepositorySource;
-import org.jetbrains.annotations.NotNull;
+
+import lombok.RequiredArgsConstructor;
 
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -25,20 +26,20 @@ public class GTPackSource implements RepositorySource {
     @Override
     public void loadPacks(Consumer<Pack> onLoad) {
         onLoad.accept(Pack.readMetaAndCreate(
-            new PackLocationInfo(name, Component.literal(name), PackSource.BUILT_IN, Optional.empty()),
-            new Pack.ResourcesSupplier() {
-                @Override
-                public PackResources openPrimary(PackLocationInfo info) {
-                    return resources.apply(info);
-                }
+                new PackLocationInfo(name, Component.literal(name), PackSource.BUILT_IN, Optional.empty()),
+                new Pack.ResourcesSupplier() {
 
-                @Override
-                public PackResources openFull(PackLocationInfo info, Pack.Metadata p_325959_) {
-                    return openPrimary(info);
-                }
-            },
-            type,
-            new PackSelectionConfig(true, position, false))
-        );
+                    @Override
+                    public PackResources openPrimary(PackLocationInfo info) {
+                        return resources.apply(info);
+                    }
+
+                    @Override
+                    public PackResources openFull(PackLocationInfo info, Pack.Metadata p_325959_) {
+                        return openPrimary(info);
+                    }
+                },
+                type,
+                new PackSelectionConfig(true, position, false)));
     }
 }

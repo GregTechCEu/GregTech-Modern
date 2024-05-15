@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.utils.SupplierMemoizer;
+
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Blocks;
@@ -58,7 +59,7 @@ public class GTMaterials {
         SecondDegreeMaterials.register();
         HigherDegreeMaterials.register();
 
-        //Gregicality Multiblocks
+        // Gregicality Multiblocks
         GCyMMaterials.register();
 
         /*
@@ -66,7 +67,7 @@ public class GTMaterials {
          */
         MaterialFlagAddition.register();
 
-        CHEMICAL_DYES = new Material[]{
+        CHEMICAL_DYES = new Material[] {
                 DyeWhite, DyeOrange,
                 DyeMagenta, DyeLightBlue,
                 DyeYellow, DyeLime,

@@ -7,18 +7,18 @@ import com.gregtechceu.gtceu.api.capability.IMiner;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.FluidRecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
-import com.gregtechceu.gtceu.data.block.GTBlocks;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.machine.trait.miner.LargeMinerLogic;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -39,6 +39,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -50,6 +53,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.data.material.GTMaterials.DrillingFluid;
 
@@ -137,9 +142,10 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
                 if (handlerIO == IO.IN && handler.getCapability() == EURecipeCapability.CAP &&
                         handler instanceof IEnergyContainer container) {
                     energyContainers.add(container);
-                } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP && handler instanceof IFluidHandler fluidTransfer) {
-                    fluidTanks.add(fluidTransfer);
-                }
+                } else if (handlerIO == IO.IN && handler.getCapability() == FluidRecipeCapability.CAP &&
+                        handler instanceof IFluidHandler fluidTransfer) {
+                            fluidTanks.add(fluidTransfer);
+                        }
             }
         }
         this.energyContainer = new EnergyContainerList(energyContainers);
@@ -176,11 +182,14 @@ public class LargeMinerMachine extends WorkableElectricMultiblockMachine
 
         // drain fluid
         if (inputFluidInventory != null && inputFluidInventory.transfers.length > 0) {
-            FluidStack drillingFluid = DrillingFluid.getFluid(this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
+            FluidStack drillingFluid = DrillingFluid
+                    .getFluid(this.drillingFluidConsumePerTick * getRecipeLogic().getOverclockAmount());
             FluidStack fluidStack = inputFluidInventory.getFluidInTank(0);
-            if (!fluidStack.isEmpty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) && fluidStack.getAmount() >= drillingFluid.getAmount()) {
+            if (!fluidStack.isEmpty() && fluidStack.isFluidEqual(DrillingFluid.getFluid(1)) &&
+                    fluidStack.getAmount() >= drillingFluid.getAmount()) {
                 if (!simulate) {
-                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid, IFluidHandler.FluidAction.EXECUTE);
+                    GTTransferUtils.drainFluidAccountNotifiableList(inputFluidInventory, drillingFluid,
+                            IFluidHandler.FluidAction.EXECUTE);
                 }
             } else {
                 return false;

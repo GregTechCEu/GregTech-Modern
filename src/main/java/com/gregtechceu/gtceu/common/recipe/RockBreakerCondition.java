@@ -6,14 +6,14 @@ import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -24,10 +24,13 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class RockBreakerCondition extends RecipeCondition {
-    public static final MapCodec<RockBreakerCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .apply(instance, RockBreakerCondition::new));
+
+    public static final MapCodec<RockBreakerCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .apply(instance, RockBreakerCondition::new));
 
     public final static RockBreakerCondition INSTANCE = new RockBreakerCondition();
+
     public RockBreakerCondition(boolean isReverse) {
         super(isReverse);
     }

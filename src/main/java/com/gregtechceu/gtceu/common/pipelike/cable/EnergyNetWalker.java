@@ -68,7 +68,9 @@ public class EnergyNetWalker extends PipeNetWalker<CableBlockEntity, WirePropert
             throw new IllegalStateException(
                     "The current pipe is not the last added pipe. Something went seriously wrong!");
         if (neighbourTile != null) {
-            IEnergyContainer container = neighbourTile.getLevel().getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, neighbourTile.getBlockPos(), faceToNeighbour.getOpposite());
+            IEnergyContainer container = neighbourTile.getLevel().getCapability(
+                    GTCapability.CAPABILITY_ENERGY_CONTAINER, neighbourTile.getBlockPos(),
+                    faceToNeighbour.getOpposite());
             if (container != null) {
                 routes.add(new EnergyRoutePath(pipePos.immutable(), faceToNeighbour, pipes, getWalkedBlocks(), loss));
             }

@@ -3,20 +3,39 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.data.item.GTItems.*;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.item.GTItems.*;
 import static com.gregtechceu.gtceu.data.machine.GTMachines.*;
+import static com.gregtechceu.gtceu.data.machine.GTResearchMachines.*;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
-import static com.gregtechceu.gtceu.data.machine.GTResearchMachines.*;
 
 public class ComputerRecipes {
 
     public static void init(RecipeOutput provider) {
+        ASSEMBLER_RECIPES.recipeBuilder("data_access_hatch")
+                .inputItems(ITEM_IMPORT_BUS[EV])
+                .inputItems(TOOL_DATA_STICK, 4)
+                .inputItems(CustomTags.EV_CIRCUITS, 4)
+                .outputItems(DATA_ACCESS_HATCH)
+                .inputFluids(Polytetrafluoroethylene.getFluid(L * 2))
+                .cleanroom(CleanroomType.CLEANROOM)
+                .duration(200).EUt(VA[EV]).save(provider);
+
+        ASSEMBLY_LINE_RECIPES.recipeBuilder("advanced_data_access_hatch")
+                .inputItems(ITEM_IMPORT_BUS[LuV])
+                .inputItems(TOOL_DATA_ORB, 4)
+                .inputItems(CustomTags.ZPM_CIRCUITS, 4)
+                .outputItems(ADVANCED_DATA_ACCESS_HATCH)
+                .inputFluids(SolderingAlloy.getFluid(L * 4))
+                .inputFluids(Polybenzimidazole.getFluid(L * 4))
+                .stationResearch(b -> b.researchStack(DATA_BANK.asStack()).CWUt(4))
+                .duration(400).EUt(6000).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("high_power_casing")
                 .inputItems(frameGt, Iridium)

@@ -3,11 +3,13 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
 import com.gregtechceu.gtceu.api.misc.forge.SimpleThermalFluidHandlerItemStack;
 import com.gregtechceu.gtceu.api.misc.forge.ThermalFluidHandlerItemStack;
+
+import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.minecraft.network.chat.Component;
-import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -50,17 +52,21 @@ public class ThermalFluidStats implements IItemComponent, IComponentCapability, 
     public void attachCapabilites(RegisterCapabilitiesEvent event, Item item) {
         event.registerItem(Capabilities.FluidHandler.ITEM, (stack, unused) -> {
             if (allowPartialFill) {
-                return new ThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof);
+                return new ThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof,
+                        cryoProof, plasmaProof);
             }
-            return new SimpleThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof, cryoProof, plasmaProof);
+            return new SimpleThermalFluidHandlerItemStack(stack, capacity, maxFluidTemperature, gasProof, acidProof,
+                    cryoProof, plasmaProof);
         }, item);
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         FluidStack tank = FluidTransferHelper.getFluidContained(stack);
         if (!tank.isEmpty()) {
-            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(), tank.getAmount()));
+            tooltipComponents.add(Component.translatable("gtceu.universal.tooltip.fluid_stored", tank.getHoverName(),
+                    tank.getAmount()));
         }
     }
 }

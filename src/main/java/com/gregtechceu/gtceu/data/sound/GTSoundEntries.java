@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.neoforged.fml.ModLoader;
 
@@ -74,7 +75,8 @@ public class GTSoundEntries {
     private static void registerSounds() {
         for (SoundEntry entry : GTRegistries.SOUNDS) {
 
-            entry.register(soundEvent -> GTRegistries.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(), soundEvent));
+            entry.register(soundEvent -> GTRegistries.register(BuiltInRegistries.SOUND_EVENT, soundEvent.getLocation(),
+                    soundEvent));
         }
     }
 }

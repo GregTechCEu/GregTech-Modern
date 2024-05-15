@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.google.common.collect.Multimap;
-import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 
@@ -13,6 +11,7 @@ import net.minecraft.world.item.crafting.RecipeHolder;
 import net.minecraft.world.item.crafting.RecipeManager;
 import net.minecraft.world.item.crafting.RecipeType;
 
+import com.google.common.collect.Multimap;
 import com.google.gson.JsonElement;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -28,7 +27,8 @@ import java.util.stream.Stream;
 @Mixin(RecipeManager.class)
 public abstract class RecipeManagerMixin {
 
-    @Shadow private Multimap<RecipeType<?>, RecipeHolder<?>> byType;
+    @Shadow
+    private Multimap<RecipeType<?>, RecipeHolder<?>> byType;
 
     @Inject(method = "apply(Ljava/util/Map;Lnet/minecraft/server/packs/resources/ResourceManager;Lnet/minecraft/util/profiling/ProfilerFiller;)V",
             at = @At(value = "TAIL"))
@@ -51,12 +51,13 @@ public abstract class RecipeManagerMixin {
                 }
 
                 if (this.byType.containsKey(gtRecipeType)) {
-                    //noinspection unchecked
+                    // noinspection unchecked
                     Stream.concat(
                             this.byType.get(gtRecipeType).stream(),
-                            proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream())
-                        ).filter(holder -> holder != null && holder.value() instanceof GTRecipe)
-                        .forEach(gtRecipeHolder -> gtRecipeType.getLookup().addRecipe((RecipeHolder<GTRecipe>) gtRecipeHolder));
+                            proxyRecipes.entrySet().stream().flatMap(entry -> entry.getValue().stream()))
+                            .filter(holder -> holder != null && holder.value() instanceof GTRecipe)
+                            .forEach(gtRecipeHolder -> gtRecipeType.getLookup()
+                                    .addRecipe((RecipeHolder<GTRecipe>) gtRecipeHolder));
                 } else if (!proxyRecipes.isEmpty()) {
                     proxyRecipes.values().stream()
                             .flatMap(List::stream)

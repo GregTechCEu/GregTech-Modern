@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -123,8 +124,8 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void addInformation(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-    }
+    default void addInformation(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltip,
+                                @NotNull TooltipFlag flag) {}
 
     /**
      * Add the necessary NBT information to the tool
@@ -132,8 +133,7 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param stack the tool
      * @param tag   the nbt tag to add to
      */
-    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviorsComponent tag) {
-    }
+    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviorsComponent tag) {}
 
     public ToolBehaviorType<T> getType();
 }

@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -29,6 +26,10 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -36,16 +37,16 @@ import java.util.List;
 // TODO this currently voids the used tool as well as a torch. how fix?
 @AllArgsConstructor
 public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
+
     public static final TorchPlaceBehavior INSTANCE = new TorchPlaceBehavior();
     public static final MapCodec<TorchPlaceBehavior> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        Codec.BOOL.optionalFieldOf("cache_slot_key", false).forGetter(val -> val.cacheSlotKey),
-        Codec.INT.optionalFieldOf("cached_torch_slot", 0).forGetter(val -> val.cachedTorchSlot)
-    ).apply(instance, TorchPlaceBehavior::new));
+            Codec.BOOL.optionalFieldOf("cache_slot_key", false).forGetter(val -> val.cacheSlotKey),
+            Codec.INT.optionalFieldOf("cached_torch_slot", 0).forGetter(val -> val.cachedTorchSlot))
+            .apply(instance, TorchPlaceBehavior::new));
     public static final StreamCodec<RegistryFriendlyByteBuf, TorchPlaceBehavior> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.BOOL, val -> val.cacheSlotKey,
-        ByteBufCodecs.VAR_INT, val -> val.cachedTorchSlot,
-        TorchPlaceBehavior::new
-    );
+            ByteBufCodecs.BOOL, val -> val.cacheSlotKey,
+            ByteBufCodecs.VAR_INT, val -> val.cachedTorchSlot,
+            TorchPlaceBehavior::new);
 
     private final boolean cacheSlotKey;
     private final int cachedTorchSlot;
@@ -74,7 +75,8 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             slotStack = player.getInventory().offhand.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
-                slotStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(List.of()), val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
+                slotStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(List.of()),
+                        val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, -(finalI + 1))));
                 return InteractionResult.SUCCESS;
             }
         }
@@ -82,7 +84,8 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
             slotStack = player.getInventory().items.get(i);
             if (checkAndPlaceTorch(context, slotStack)) {
                 final int finalI = i;
-                slotStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(List.of()), val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, finalI)));
+                slotStack.update(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(List.of()),
+                        val -> val.withBehavior(new TorchPlaceBehavior(this.cacheSlotKey, finalI)));
                 return InteractionResult.SUCCESS;
             }
         }
@@ -106,7 +109,8 @@ public class TorchPlaceBehavior implements IToolBehavior<TorchPlaceBehavior> {
                         if (slotItemBlock.place(blockPlaceContext).consumesAction()) {
                             BlockState slotState = context.getLevel().getBlockState(pos);
                             SoundType soundtype = slotState.getSoundType(context.getLevel(), pos, context.getPlayer());
-                            context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(), SoundSource.BLOCKS,
+                            context.getLevel().playSound(context.getPlayer(), pos, soundtype.getPlaceSound(),
+                                    SoundSource.BLOCKS,
                                     (soundtype.getVolume() + 1.0F) / 2.0F, soundtype.getPitch() * 0.8F);
                             if (!context.getPlayer().isCreative()) slotStack.shrink(1);
                             return true;

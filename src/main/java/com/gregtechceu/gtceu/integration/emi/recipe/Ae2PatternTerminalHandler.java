@@ -78,11 +78,11 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
         return ingredient.getEmiStacks().stream().map(stack -> fromEmiStack(stack, ingredient.getAmount())).toList();
     }
 
-    private static GenericStack fromEmiStack(EmiStack stack, long amount) {
+    private static GenericStack fromEmiStack(EmiStack stack) {
         if (stack.getKey() instanceof Item item) {
-            return new GenericStack(AEItemKey.of(item.getDefaultInstance()), amount);
+            return new GenericStack(AEItemKey.of(item.getDefaultInstance()), stack.getItemStack().getCount());
         } else if (stack.getKey() instanceof Fluid fluid) {
-            return new GenericStack(AEFluidKey.of(fluid), amount);
+            return new GenericStack(AEFluidKey.of(fluid), stack.getAmount());
         }
         return new GenericStack(AEItemKey.of(ItemStack.EMPTY), 0);
     }

@@ -7,12 +7,7 @@ import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.worldgen.ores.OreVeinUtil;
-import com.mojang.datafixers.util.Either;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -27,6 +22,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.OreConfiguratio
 
 import com.mojang.datafixers.util.Either;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import lombok.AllArgsConstructor;
@@ -45,13 +41,12 @@ public class CuboidVeinGenerator extends VeinGenerator {
             .either(OreConfiguration.TargetBlockState.CODEC.listOf(), GTCEuAPI.materialManager.codec());
 
     public static final MapCodec<CuboidVeinGenerator> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-        LAYER_CODEC.fieldOf("top").forGetter(val -> val.top),
-        LAYER_CODEC.fieldOf("middle").forGetter(val -> val.middle),
-        LAYER_CODEC.fieldOf("bottom").forGetter(val -> val.bottom),
-        LAYER_CODEC.fieldOf("spread").forGetter(val -> val.spread),
-        Codec.INT.fieldOf("min_y").forGetter(val -> val.minY),
-        Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)
-    ).apply(instance, CuboidVeinGenerator::new));
+            LAYER_CODEC.fieldOf("top").forGetter(val -> val.top),
+            LAYER_CODEC.fieldOf("middle").forGetter(val -> val.middle),
+            LAYER_CODEC.fieldOf("bottom").forGetter(val -> val.bottom),
+            LAYER_CODEC.fieldOf("spread").forGetter(val -> val.spread),
+            Codec.INT.fieldOf("min_y").forGetter(val -> val.minY),
+            Codec.INT.fieldOf("max_y").forGetter(val -> val.maxY)).apply(instance, CuboidVeinGenerator::new));
 
     private Either<List<OreConfiguration.TargetBlockState>, Material> top;
     private Either<List<OreConfiguration.TargetBlockState>, Material> middle;
@@ -285,10 +280,10 @@ public class CuboidVeinGenerator extends VeinGenerator {
     @Override
     public VeinGenerator copy() {
         return new CuboidVeinGenerator(this.top.mapBoth(ArrayList::new, Function.identity()),
-            this.middle.mapBoth(ArrayList::new, Function.identity()),
-            this.bottom.mapBoth(ArrayList::new, Function.identity()),
-            this.spread.mapBoth(ArrayList::new, Function.identity()),
-            minY, maxY);
+                this.middle.mapBoth(ArrayList::new, Function.identity()),
+                this.bottom.mapBoth(ArrayList::new, Function.identity()),
+                this.spread.mapBoth(ArrayList::new, Function.identity()),
+                minY, maxY);
     }
 
     @Override

@@ -14,8 +14,6 @@ import java.util.function.Supplier;
 
 public class BiomeWeightModifier implements Function<Holder<Biome>, Integer> {
 
-    public static final BiomeWeightModifier EMPTY = new BiomeWeightModifier(HolderSet::direct, 0);
-
     public static final Codec<BiomeWeightModifier> CODEC = RecordCodecBuilder.create(instance -> instance.group(
             RegistryCodecs.homogeneousList(Registries.BIOME).fieldOf("biomes").forGetter(mod -> mod.biomes.get()),
             Codec.INT.fieldOf("added_weight").forGetter(mod -> mod.addedWeight))

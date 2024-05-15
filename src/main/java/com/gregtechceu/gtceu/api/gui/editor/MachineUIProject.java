@@ -19,7 +19,7 @@ import com.lowdragmc.lowdraglib.gui.util.TreeBuilder;
 import com.lowdragmc.lowdraglib.gui.widget.TabButton;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
-import lombok.Getter;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtIo;
@@ -118,7 +118,8 @@ public class MachineUIProject extends UIProject {
                 menu.remove("ldlib.gui.editor.menu.save");
                 menu.leaf(Icons.SAVE, "ldlib.gui.editor.menu.save", () -> {
                     var editableUI = machineDefinition.getEditableUI();
-                    var path = new File(LDLib.getLDLibDir(), "assets/%s/ui/machine".formatted(editableUI.getUiPath().getNamespace()));
+                    var path = new File(LDLib.getLDLibDir(),
+                            "assets/%s/ui/machine".formatted(editableUI.getUiPath().getNamespace()));
                     path.mkdirs();
                     saveProject(Path.of(editableUI.getUiPath().getPath(), ".", this.getRegisterUI().name()));
                     editableUI.reloadCustomUI();

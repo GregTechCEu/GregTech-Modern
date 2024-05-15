@@ -52,9 +52,11 @@ public class InfiniteWaterCover extends CoverBehavior {
 
     public void update() {
         if (coverHolder.getOffsetTimer() % 20 == 0) {
-            var fluidHandler = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(), attachedSide);
-            if(fluidHandler != null)
-                fluidHandler.fill(new FluidStack(Fluids.WATER, 16 * FluidHelper.getBucket()), IFluidHandler.FluidAction.EXECUTE);
+            var fluidHandler = FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos(),
+                    attachedSide);
+            if (fluidHandler != null)
+                fluidHandler.fill(new FluidStack(Fluids.WATER, 16 * FluidHelper.getBucket()),
+                        IFluidHandler.FluidAction.EXECUTE);
         }
     }
 }

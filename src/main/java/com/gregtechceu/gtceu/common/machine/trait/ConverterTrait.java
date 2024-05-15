@@ -1,27 +1,30 @@
 package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.FeCompat;
+import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.common.machine.electric.ConverterMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.capabilities.BlockCapability;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.energy.IEnergyStorage;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class ConverterTrait extends MachineTrait {
+
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ConverterTrait.class);
 
     @Getter
@@ -34,7 +37,8 @@ public class ConverterTrait extends MachineTrait {
      * <p>
      * If FALSE, the front facing of the machine will OUTPUT FE, other sides INPUT EU.
      */
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean feToEu;
 
     @Getter
@@ -120,7 +124,9 @@ public class ConverterTrait extends MachineTrait {
     }
 
     protected <T> T getCapabilityAtFront(BlockCapability<T, Direction> capability) {
-        return getMachine().getLevel().getCapability(capability, getMachine().getPos().relative(getMachine().getFrontFacing()), getMachine().getFrontFacing().getOpposite());
+        return getMachine().getLevel().getCapability(capability,
+                getMachine().getPos().relative(getMachine().getFrontFacing()),
+                getMachine().getFrontFacing().getOpposite());
     }
 
     @Override

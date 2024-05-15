@@ -8,7 +8,7 @@ import com.gregtechceu.gtceu.api.item.armor.ArmorUtils;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
-import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.particles.ParticleOptions;
@@ -25,6 +25,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -133,7 +135,8 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         final boolean finalCanShare = canShare;
         final boolean finalHoverMode = hoverMode;
         final byte finalToggleTimer = toggleTimer;
-        item.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setCanShare(finalCanShare).setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
+        item.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                data1 -> data1.setCanShare(finalCanShare).setHover(finalHoverMode).setToggleTimer(finalToggleTimer));
 
         timer++;
         if (timer == Long.MAX_VALUE)
@@ -144,11 +147,12 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     public void addInfo(ItemStack itemStack, List<Component> lines) {
         GTArmor data = itemStack.getOrDefault(GTDataComponents.ARMOR_DATA, new GTArmor());
         Component state = data.canShare() ? Component.translatable("metaarmor.hud.status.enabled") :
-            Component.translatable("metaarmor.hud.status.disabled");
+                Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.energy_share.tooltip", state));
         lines.add(Component.translatable("metaarmor.energy_share.tooltip.guide"));
 
-        Component status = data.hover() ? Component.translatable("metaarmor.hud.status.enabled") : Component.translatable("metaarmor.hud.status.disabled");
+        Component status = data.hover() ? Component.translatable("metaarmor.hud.status.enabled") :
+                Component.translatable("metaarmor.hud.status.disabled");
         lines.add(Component.translatable("metaarmor.hud.hover_mode", status));
         super.addInfo(itemStack, lines);
     }
@@ -195,11 +199,11 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
         GTArmor data = item.get(GTDataComponents.ARMOR_DATA);
         if (data != null) {
             String status = data.canShare() ? "metaarmor.hud.status.enabled" :
-                "metaarmor.hud.status.disabled";
+                    "metaarmor.hud.status.disabled";
             this.HUD.newString(Component.translatable("mataarmor.hud.supply_mode", Component.translatable(status)));
 
             status = data.hover() ? "metaarmor.hud.status.enabled" :
-                "metaarmor.hud.status.disabled";
+                    "metaarmor.hud.status.disabled";
             this.HUD.newString(Component.translatable("metaarmor.hud.hover_mode", Component.translatable(status)));
         }
         this.HUD.draw(guiGraphics);
@@ -207,7 +211,8 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                            ArmorMaterial.Layer layer) {
         return GTCEu.id("textures/armor/advanced_nano_muscle_suite_1.png");
     }
 

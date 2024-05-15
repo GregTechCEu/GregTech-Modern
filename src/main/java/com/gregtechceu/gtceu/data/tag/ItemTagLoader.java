@@ -16,6 +16,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.Items;
 import net.neoforged.neoforge.common.Tags;
 
+import com.tterrag.registrate.providers.RegistrateTagsProvider;
+
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.lens;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
 
@@ -43,9 +45,9 @@ public class ItemTagLoader {
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
 
         // add treated wood stick to vanilla sticks tag
-        //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
+        // noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod
         provider.addTag(Tags.Items.RODS_WOODEN)
-            .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
+                .add(TagEntry.element(GTItems.MATERIAL_ITEMS.get(TagPrefix.rod, TreatedWood).getId()));
         // TODO add to planks mc tag?
         // for (Material material : new Material[]{GTMaterials.Wood, GTMaterials.TreatedWood}) {
         // for (ItemLike woodPlateStack : ChemicalHelper.getItems(new UnificationEntry(TagPrefix.plate, material))) {

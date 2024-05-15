@@ -19,8 +19,5 @@ public class GTFoods {
             .effect(() -> new MobEffectInstance(MobEffects.HEAL, 200, 1), 0.1f)
             .alwaysEdible().nutrition(4).saturationModifier(0.3F).build();
 
-    public static final FoodProperties ANTIDOTE = new FoodProperties.Builder()
-            .alwaysEat().fast().build();
-
     public static void init() {}
 }

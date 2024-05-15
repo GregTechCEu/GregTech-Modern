@@ -7,18 +7,19 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
-import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.SizedIngredient;
 
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.Getter;
 import lombok.Setter;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
 import java.util.List;
 
-public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<SizedIngredient> implements ICapabilityTrait {
+public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<SizedIngredient>
+                                         implements ICapabilityTrait {
+
     @Getter
     public final IO handlerIO;
     @Getter
@@ -31,7 +32,9 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     @Getter
     private final Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers;
 
-    public ItemHandlerProxyRecipeTrait(MetaMachine machine, Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers, IO handlerIO, IO capabilityIO) {
+    public ItemHandlerProxyRecipeTrait(MetaMachine machine,
+                                       Collection<NotifiableRecipeHandlerTrait<SizedIngredient>> handlers, IO handlerIO,
+                                       IO capabilityIO) {
         super(machine);
         this.timeStamp = Long.MIN_VALUE;
         this.handlerIO = handlerIO;
@@ -40,7 +43,8 @@ public class ItemHandlerProxyRecipeTrait extends NotifiableRecipeHandlerTrait<Si
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
         if (!enabled) return left;
         for (IRecipeHandler<SizedIngredient> handler : handlers) {
             handler.handleRecipeInner(io, recipe, left, slotName, simulate);

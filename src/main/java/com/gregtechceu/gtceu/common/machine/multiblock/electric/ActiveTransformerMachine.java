@@ -14,7 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.multiblock.TraceabilityPredicate;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
+
 import net.minecraft.world.level.block.Block;
 
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
@@ -27,8 +27,7 @@ import java.util.Map;
 
 import static com.gregtechceu.gtceu.api.multiblock.Predicates.abilities;
 
-public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine
-                                      implements IControllable, IExplosionMachine {
+public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine implements IControllable {
 
     private IEnergyContainer powerOutput;
     private IEnergyContainer powerInput;

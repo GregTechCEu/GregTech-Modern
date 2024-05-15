@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import com.google.common.math.IntMath;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -13,12 +12,10 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
@@ -28,15 +25,13 @@ import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -45,10 +40,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import com.google.common.math.IntMath;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -70,9 +68,14 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     public final int tier;
     public final int maxMilliBucketsPerTick;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected int currentMilliBucketsPerTick;
-    @Persisted @DescSynced @Getter @RequireRerender
+    @Persisted
+    @DescSynced
+    @Getter
+    @RequireRerender
     protected IO io = IO.OUT;
     @Persisted
     @DescSynced
@@ -124,7 +127,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected @Nullable IFluidHandler getAdjacentFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide),
+                attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
@@ -184,7 +188,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     // ***** Transfer Logic *****//
     //////////////////////////////////////
 
-
     public void setTransferRate(int milliBucketsPerTick) {
         this.currentMilliBucketsPerTick = Math.min(Math.max(milliBucketsPerTick, 0), maxMilliBucketsPerTick);
     }
@@ -232,7 +235,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     private long doTransferFluids(int platformTransferLimit) {
         var adjacentFluidTransfer = getAdjacentFluidTransfer();
-        var adjacentModifiable = adjacentFluidTransfer instanceof IFluidHandlerModifiable modifiable ? modifiable : new ModifiableFluidHandlerWrapper(adjacentFluidTransfer);
+        var adjacentModifiable = adjacentFluidTransfer instanceof IFluidHandlerModifiable modifiable ? modifiable :
+                new ModifiableFluidHandlerWrapper(adjacentFluidTransfer);
         var ownFluidTransfer = getOwnFluidTransfer();
 
         if (adjacentFluidTransfer != null && ownFluidTransfer != null) {
@@ -245,12 +249,15 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         return 0;
     }
 
-    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
+    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+                                           int platformTransferLimit) {
         return transferAny(source, destination, platformTransferLimit);
     }
 
-    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
-        return (int) FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
+    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+                              int platformTransferLimit) {
+        return (int) FluidTransferHelper.transferFluids(source, destination, platformTransferLimit,
+                filterHandler.getFilter());
     }
 
     protected enum TransferDirection {
@@ -258,8 +265,10 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         EXTRACT
     }
 
-    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer,
+                                                               TransferDirection direction) {
+        final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(
+                FluidStackHashStrategy.comparingAllButAmount());
 
         for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
             if (!canTransfer(fluidTransfer, direction, tank))

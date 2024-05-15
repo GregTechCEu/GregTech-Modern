@@ -35,7 +35,8 @@ public class FluidEmiStackMixin {
         List<ClientTooltipComponent> list = cir.getReturnValue();
         tooltips.stream()
                 .filter(component -> component.getContents() != PlainTextContents.EMPTY)
-                .map(component -> Map.entry(tooltips.indexOf(component), ClientTooltipComponent.create(component.getVisualOrderText())))
+                .map(component -> Map.entry(tooltips.indexOf(component),
+                        ClientTooltipComponent.create(component.getVisualOrderText())))
                 .forEach(component -> list.add(component.getKey(), component.getValue()));
     }
 }

@@ -1,21 +1,22 @@
 package com.gregtechceu.gtceu.data.recipe.misc.alloyblast;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialFlags;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.data.recipe.GCyMRecipeTypes;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.CraftingComponent;
+import com.gregtechceu.gtceu.data.recipe.GCyMRecipeTypes;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
@@ -120,8 +121,9 @@ public class AlloyBlastRecipeProducer {
      * @param componentAmount the amount of different components in the material
      * @param builder         the builder to continue
      */
-    protected void buildRecipes(@Nonnull BlastProperty property, @Nonnull Fluid molten, int outputAmount, int componentAmount,
-                                @Nonnull GTRecipeBuilder builder, RecipeOutput provider) {
+    protected void buildRecipes(@NotNull BlastProperty property, @NotNull Fluid molten, int outputAmount,
+                                int componentAmount,
+                                @NotNull GTRecipeBuilder builder, RecipeOutput provider) {
         // add the fluid output with the correct amount
         builder.outputFluids(new FluidStack(molten, GTValues.L * outputAmount));
 
@@ -169,8 +171,8 @@ public class AlloyBlastRecipeProducer {
      * @param temperature the temperature of the material
      */
     @SuppressWarnings("MethodMayBeStatic")
-    protected void addFreezerRecipes(@Nonnull Material material, @Nonnull Fluid molten, int temperature, RecipeOutput provider) {
-
+    protected void addFreezerRecipes(@NotNull Material material, @NotNull Fluid molten, int temperature,
+                                     RecipeOutput provider) {
         // build the freezer recipe
         GTRecipeBuilder freezerBuilder = GTRecipeTypes.VACUUM_RECIPES.recipeBuilder(material.getName())
                 .inputFluids(new FluidStack(molten, GTValues.L))

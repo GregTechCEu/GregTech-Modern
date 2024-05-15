@@ -13,9 +13,9 @@ import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
-import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
@@ -280,13 +280,15 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+                                               BlockHitResult hit) {
         ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         BlockEntity entity = level.getBlockEntity(pos);
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (entity instanceof IToolable toolable && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
-            var result = toolable.onToolClick(types, itemStack, new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+            var result = toolable.onToolClick(types, itemStack,
+                    new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 
@@ -323,8 +325,11 @@ public abstract class PipeBlock<PipeType extends Enum<PipeType> & IPipeType<Node
                 }
 
                 if (types.stream().anyMatch(type -> type.itemTags.stream().anyMatch(held::is)) ||
-                    CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
-                    (held.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof PipeBlock<?,?,?> pipeBlock && pipeBlock.pipeType.type().equals(pipeType.type()))) {
+                        CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
+                                coverDef -> ICoverable.canPlaceCover(coverDef, coverable)) ||
+                        (held.getItem() instanceof BlockItem blockItem &&
+                                blockItem.getBlock() instanceof PipeBlock<?, ?, ?> pipeBlock &&
+                                pipeBlock.pipeType.type().equals(pipeType.type()))) {
                     return Shapes.block();
                 }
             }

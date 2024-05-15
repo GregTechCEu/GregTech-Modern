@@ -40,6 +40,12 @@ import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenCustomHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -114,7 +120,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     protected @Nullable IItemHandler getAdjacentItemTransfer() {
-        return coverHolder.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+        return coverHolder.getLevel().getCapability(Capabilities.ItemHandler.BLOCK,
+                coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
@@ -218,7 +225,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return moveInventoryItems(sourceInventory, targetInventory, maxTransferAmount);
     }
 
-    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory, int maxTransferAmount) {
+    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                     int maxTransferAmount) {
         ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
 
@@ -250,10 +258,11 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return maxTransferAmount - itemsLeftToTransfer;
     }
 
-    protected static boolean moveInventoryItemsExact(IItemHandler sourceInventory, IItemHandler targetInventory, TypeItemInfo itemInfo) {
-        //first, compute how much can we extract in reality from the machine,
-        //because totalCount is based on what getStackInSlot returns, which may differ from what
-        //extractItem() will return
+    protected static boolean moveInventoryItemsExact(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                                     TypeItemInfo itemInfo) {
+        // first, compute how much can we extract in reality from the machine,
+        // because totalCount is based on what getStackInSlot returns, which may differ from what
+        // extractItem() will return
         ItemStack resultStack = itemInfo.itemStack.copy();
         int totalExtractedCount = 0;
         int itemsLeftToExtract = itemInfo.totalCount;
@@ -304,7 +313,8 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
         return true;
     }
 
-    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory, Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
+    protected int moveInventoryItems(IItemHandler sourceInventory, IItemHandler targetInventory,
+                                     Map<ItemStack, GroupItemInfo> itemInfos, int maxTransferAmount) {
         ItemFilter filter = filterHandler.getFilter();
         int itemsLeftToTransfer = maxTransferAmount;
 
@@ -481,6 +491,7 @@ public class ConveyorCover extends CoverBehavior implements IUICover, IControlla
     }
 
     private class CoverableItemTransferWrapper extends ItemTransferDelegate {
+
         public CoverableItemTransferWrapper(IItemHandlerModifiable delegate) {
             super(delegate);
         }

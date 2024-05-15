@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.multiblock.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
 
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
@@ -97,20 +98,18 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                             hpca.isFlipped());
                 }
                 facing = ModelFactory.modelFacing(frontFacing, facing);
-                quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, facing,
-                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
+                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState,
+                        -1, 0, true, true));
                 if (emissiveTexture != null) {
-                    quads.add(StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, facing,
-                            ModelFactory.getBlockSprite(emissiveTexture),
+                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture),
                             modelState, -101, 15, true, false));
                 }
             }
         } else {
             ResourceLocation texture = this.texture;
             if (texture != null) {
-                quads.add(StaticFaceBakery.bakeFace(
-                        StaticFaceBakery.SLIGHTLY_OVER_BLOCK, Direction.NORTH,
-                        ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
+                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture),
+                        modelState, -1, 0, true, true));
             }
         }
     }

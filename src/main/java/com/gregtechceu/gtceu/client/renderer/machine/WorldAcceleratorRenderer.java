@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -44,7 +45,7 @@ public class WorldAcceleratorRenderer extends TieredHullMachineRenderer {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof WorldAcceleratorMachine worldAcceleratorMachine) {
             WorkableOverlayModel model = getModeModel(worldAcceleratorMachine.isRandomTickMode());
-            quads.addAll(model.bakeQuads(side, frontFacing, Direction.NORTH, worldAcceleratorMachine.isActive(),
+            quads.addAll(model.bakeQuads(side, frontFacing, worldAcceleratorMachine.isActive(),
                     worldAcceleratorMachine.isWorkingEnabled()));
         } else {
             quads.addAll(getModeModel(true).bakeQuads(side, frontFacing, Direction.NORTH, false, false));

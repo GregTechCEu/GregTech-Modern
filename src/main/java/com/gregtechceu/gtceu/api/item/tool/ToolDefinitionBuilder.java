@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -17,13 +18,6 @@ import it.unimi.dsi.fastutil.objects.Object2IntMaps;
 import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.Tool;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.state.BlockState;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -156,7 +150,8 @@ public class ToolDefinitionBuilder {
     public IGTToolDefinition build() {
         return new IGTToolDefinition() {
 
-            private final List<IToolBehavior<?>> behaviors = ImmutableList.copyOf(ToolDefinitionBuilder.this.behaviours);
+            private final List<IToolBehavior<?>> behaviors = ImmutableList
+                    .copyOf(ToolDefinitionBuilder.this.behaviours);
             private final Tool tool = ToolDefinitionBuilder.this.tool;
             private final int damagePerCraftingAction = ToolDefinitionBuilder.this.damagePerCraftingAction;
             private final boolean suitableForBlockBreaking = ToolDefinitionBuilder.this.suitableForBlockBreaking;

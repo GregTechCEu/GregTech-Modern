@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
+import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.fluid.GTFluid;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
@@ -26,6 +28,7 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -92,36 +95,45 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
-    public boolean emptyContents(@org.jetbrains.annotations.Nullable Player pPlayer, Level pLevel, BlockPos pPos, @org.jetbrains.annotations.Nullable BlockHitResult pResult, @org.jetbrains.annotations.Nullable ItemStack container) {
-        if (!(this.content instanceof FlowingFluid))  return false;
+    public boolean emptyContents(@org.jetbrains.annotations.Nullable Player pPlayer, Level pLevel, BlockPos pPos,
+                                 @org.jetbrains.annotations.Nullable BlockHitResult pResult,
+                                 @org.jetbrains.annotations.Nullable ItemStack container) {
+        if (!(this.content instanceof FlowingFluid)) return false;
 
         BlockState blockstate = pLevel.getBlockState(pPos);
         Block block = blockstate.getBlock();
         boolean flag = blockstate.canBeReplaced(this.content);
-        boolean flag1 = blockstate.isAir() || flag || block instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(pPlayer, pLevel, pPos, blockstate, this.content);
+        boolean flag1 = blockstate.isAir() || flag || block instanceof LiquidBlockContainer liquidBlockContainer &&
+                liquidBlockContainer.canPlaceLiquid(pPlayer, pLevel, pPos, blockstate, this.content);
         Optional<FluidStack> containedFluidStack = Optional.ofNullable(container).flatMap(FluidUtil::getFluidContained);
         if (!flag1) {
-            return pResult != null && this.emptyContents(pPlayer, pLevel, pResult.getBlockPos().relative(pResult.getDirection()), null, container);
-        } else if (containedFluidStack.isPresent() && this.content.getFluidType().isVaporizedOnPlacement(pLevel, pPos, containedFluidStack.get())) {
-            this.content.getFluidType().onVaporize(pPlayer, pLevel, pPos, containedFluidStack.get());
-            return true;
-        } else if (pLevel.dimensionType().ultraWarm() && this.content.is(FluidTags.WATER)) {
-            int i = pPos.getX();
-            int j = pPos.getY();
-            int k = pPos.getZ();
-            pLevel.playSound(pPlayer, pPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F, 2.6F + (pLevel.random.nextFloat() - pLevel.random.nextFloat()) * 0.8F);
+            return pResult != null && this.emptyContents(pPlayer, pLevel,
+                    pResult.getBlockPos().relative(pResult.getDirection()), null, container);
+        } else if (containedFluidStack.isPresent() &&
+                this.content.getFluidType().isVaporizedOnPlacement(pLevel, pPos, containedFluidStack.get())) {
+                    this.content.getFluidType().onVaporize(pPlayer, pLevel, pPos, containedFluidStack.get());
+                    return true;
+                } else
+            if (pLevel.dimensionType().ultraWarm() && this.content.is(FluidTags.WATER)) {
+                int i = pPos.getX();
+                int j = pPos.getY();
+                int k = pPos.getZ();
+                pLevel.playSound(pPlayer, pPos, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.5F,
+                        2.6F + (pLevel.random.nextFloat() - pLevel.random.nextFloat()) * 0.8F);
 
                 for (int l = 0; l < 8; ++l) {
                     pLevel.addParticle(ParticleTypes.LARGE_SMOKE, (double) i + Math.random(),
                             (double) j + Math.random(), (double) k + Math.random(), 0.0D, 0.0D, 0.0D);
                 }
 
-            return true;
-        } else if (block instanceof LiquidBlockContainer liquidBlockContainer && liquidBlockContainer.canPlaceLiquid(pPlayer, pLevel, pPos, blockstate, content)) {
-            liquidBlockContainer.placeLiquid(pLevel, pPos, blockstate, ((FlowingFluid) this.content).getSource(false));
-            this.playEmptySound(pPlayer, pLevel, pPos);
-            return true;
-        }
+                return true;
+            } else if (block instanceof LiquidBlockContainer liquidBlockContainer &&
+                    liquidBlockContainer.canPlaceLiquid(pPlayer, pLevel, pPos, blockstate, content)) {
+                        liquidBlockContainer.placeLiquid(pLevel, pPos, blockstate,
+                                ((FlowingFluid) this.content).getSource(false));
+                        this.playEmptySound(pPlayer, pLevel, pPos);
+                        return true;
+                    }
         return false;
     }
 }

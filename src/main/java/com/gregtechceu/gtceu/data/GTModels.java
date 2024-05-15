@@ -2,17 +2,14 @@ package com.gregtechceu.gtceu.data;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
-import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.fluid.GTFluid;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorage;
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKey;
+import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.core.MixinHelpers;
 import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.RegistrateBlockstateProvider;
-import com.tterrag.registrate.providers.RegistrateItemModelProvider;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
@@ -46,8 +43,10 @@ public class GTModels {
         prov.simpleBlock(ctx.getEntry(), prov.models().getExistingFile(modelLocation));
     }
 
-    public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx, RegistrateBlockstateProvider prov) {
-        prov.simpleBlock(ctx.getEntry(), prov.models().cross(BuiltInRegistries.BLOCK.getKey(ctx.getEntry()).getPath(), prov.blockTexture(ctx.getEntry())));
+    public static void createCrossBlockState(DataGenContext<Block, ? extends Block> ctx,
+                                             RegistrateBlockstateProvider prov) {
+        prov.simpleBlock(ctx.getEntry(), prov.models().cross(BuiltInRegistries.BLOCK.getKey(ctx.getEntry()).getPath(),
+                prov.blockTexture(ctx.getEntry())));
     }
 
     public static void cellModel(DataGenContext<Item, ? extends Item> ctx, RegistrateItemModelProvider prov) {
@@ -131,28 +130,6 @@ public class GTModels {
                     .modelFile(cubeMirroredAll)
                     .rotationY(180)
                     .build();
-            prov.simpleBlock(block, models);
-        };
-    }
-
-    public static NonNullBiConsumer<DataGenContext<Block, Block>, RegistrateBlockstateProvider> randomRotatedModel(ResourceLocation texturePath) {
-        return (ctx, prov) -> {
-            Block block = ctx.getEntry();
-            ModelFile cubeAll = prov.models().cubeAll(ctx.getName(), texturePath);
-            ModelFile cubeMirroredAll = prov.models().singleTexture(ctx.getName() + "_mirrored", prov.mcLoc(ModelProvider.BLOCK_FOLDER + "/cube_mirrored_all"), "all", texturePath);
-            ConfiguredModel[] models = ConfiguredModel.builder()
-                .modelFile(cubeAll)
-                .rotationY(0)
-                .nextModel()
-                .modelFile(cubeAll)
-                .rotationY(180)
-                .nextModel()
-                .modelFile(cubeMirroredAll)
-                .rotationY(0)
-                .nextModel()
-                .modelFile(cubeMirroredAll)
-                .rotationY(180)
-                .build();
             prov.simpleBlock(block, models);
         };
     }

@@ -9,7 +9,10 @@ import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
+
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
@@ -31,7 +34,6 @@ public class WireCombiningHandler {
             cableGtHex, wireGtHex);
 
     public static void init(RecipeOutput provider) {
-
         // Generate Wire Packer/Unpacker recipes
         wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
 
@@ -46,7 +48,8 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
+    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property,
+                                                    RecipeOutput provider) {
         int wireIndex = ArrayUtils.indexOf(WIRE_DOUBLING_ORDER, wirePrefix);
 
         if (wireIndex < WIRE_DOUBLING_ORDER.length - 1) {
@@ -75,7 +78,8 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property, RecipeOutput provider) {
+    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property,
+                                               RecipeOutput provider) {
         for (int startTier = 0; startTier < 4; startTier++) {
             for (int i = 1; i < 5 - startTier; i++) {
                 PACKER_RECIPES.recipeBuilder("pack_" + material.getName() + "_wires_" + i + "_" + startTier)
@@ -95,7 +99,8 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property, RecipeOutput provider) {
+    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property,
+                                              RecipeOutput provider) {
         PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.name)
                 .inputItems(prefix, material)
                 .outputItems(cableToWireMap.get(prefix), material)

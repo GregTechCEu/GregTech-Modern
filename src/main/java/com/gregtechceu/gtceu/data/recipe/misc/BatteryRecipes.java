@@ -1,11 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
+import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -23,7 +24,6 @@ public class BatteryRecipes {
     }
 
     private static void standardBatteries(RecipeOutput provider) {
-
         // Tantalum Battery (since it doesn't fit elsewhere)
         ASSEMBLER_RECIPES.recipeBuilder("tantalum_capacitor")
                 .inputItems(dust, Tantalum)
@@ -251,7 +251,6 @@ public class BatteryRecipes {
     }
 
     private static void gemBatteries(RecipeOutput provider) {
-
         // Energy Crystal
         MIXER_RECIPES.recipeBuilder("energium_dust")
                 .inputItems(dust, Redstone, 5)
@@ -435,7 +434,6 @@ public class BatteryRecipes {
     }
 
     private static void batteryBlocks(RecipeOutput provider) {
-
         // Empty Tier I
         ASSEMBLER_RECIPES.recipeBuilder("empty_tier_1_battery")
                 .inputItems(frameGt, Ultimet)

@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.api.fluid.store.FluidStorageKeys;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Items;
@@ -14,7 +15,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class ChemistryRecipes {
 
     public static void init(RecipeOutput provider) {
-
         AcidRecipes.init(provider);
         BrewingRecipes.init(provider);
         ChemicalBathRecipes.init(provider);
@@ -31,8 +31,6 @@ public class ChemistryRecipes {
         PolymerRecipes.init(provider);
         ReactorRecipes.init(provider);
         SeparationRecipes.init(provider);
-        BrineRecipes.init(provider);
-        AntidoteRecipes.init(provider);
 
         // A Few Random Recipes
         FLUID_HEATER_RECIPES.recipeBuilder("ethenone")

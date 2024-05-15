@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.multiblock.generator;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.EURecipeCapability;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -14,7 +13,6 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.machine.multiblock.part.EnergyHatchPartMachine;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
@@ -97,7 +95,7 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
         if (rotorHolder == null || EUt <= 0)
             return null;
 
-        var turbineMaxVoltage = (int)turbineMachine.getOverclockVoltage();
+        var turbineMaxVoltage = (int) turbineMachine.getOverclockVoltage();
         if (turbineMachine.excessVoltage >= turbineMaxVoltage) {
             turbineMachine.excessVoltage -= turbineMaxVoltage;
             return null;
@@ -105,10 +103,10 @@ public class LargeTurbineMachine extends WorkableElectricMultiblockMachine imple
 
         double holderEfficiency = rotorHolder.getTotalEfficiency() / 100.0;
 
-        //get the amount of parallel required to match the desired output voltage
+        // get the amount of parallel required to match the desired output voltage
         var maxParallel = (int) ((turbineMaxVoltage - turbineMachine.excessVoltage) / (EUt * holderEfficiency));
 
-        //this is necessary to prevent over-consumption of fuel
+        // this is necessary to prevent over-consumption of fuel
         turbineMachine.excessVoltage += (int) (maxParallel * EUt * holderEfficiency - turbineMaxVoltage);
         var parallelResult = GTRecipeModifiers.fastParallel(turbineMachine, recipe, Math.max(1, maxParallel), false);
         recipe = parallelResult.getFirst() == recipe ? recipe.copy() : parallelResult.getFirst();

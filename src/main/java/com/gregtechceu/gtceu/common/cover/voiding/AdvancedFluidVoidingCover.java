@@ -6,7 +6,6 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
@@ -21,6 +20,8 @@ import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -36,9 +37,13 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
     @Getter
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected int globalTransferSizeMillibuckets = 1;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
 
     private NumberInputWidget<Integer> stackSizeInput;
@@ -124,8 +129,8 @@ public class AdvancedFluidVoidingCover extends FluidVoidingCover {
                 new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
 
         this.stackSizeInput = new IntInputWidget(35, 20, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize
-        ).setMin(1).setMax(Integer.MAX_VALUE);
+                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(1)
+                .setMax(Integer.MAX_VALUE);
         configureStackSizeInput();
         group.addWidget(this.stackSizeInput);
 

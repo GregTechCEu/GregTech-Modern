@@ -12,9 +12,9 @@ import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
@@ -47,10 +47,11 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -197,10 +198,13 @@ public abstract class SteamBoilerMachine extends SteamWorkableMachine
         if (getOffsetTimer() % 10 == 0) {
             if (currentTemperature >= 100) {
                 int fillAmount = (int) (getBaseSteamOutput() * (currentTemperature / (getMaxTemperature() * 1.0)) / 2);
-                boolean hasDrainedWater = !waterTank.drainInternal(FluidHelper.getBucket() / 1000, IFluidHandler.FluidAction.EXECUTE).isEmpty();
+                boolean hasDrainedWater = !waterTank
+                        .drainInternal(FluidHelper.getBucket() / 1000, IFluidHandler.FluidAction.EXECUTE).isEmpty();
                 var filledSteam = 0L;
                 if (hasDrainedWater) {
-                    filledSteam = steamTank.fillInternal(GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000), IFluidHandler.FluidAction.EXECUTE);
+                    filledSteam = steamTank.fillInternal(
+                            GTMaterials.Steam.getFluid(fillAmount * FluidHelper.getBucket() / 1000),
+                            IFluidHandler.FluidAction.EXECUTE);
                 }
                 if (this.hasNoWater && hasDrainedWater) {
                     doExplosion(2.0f);

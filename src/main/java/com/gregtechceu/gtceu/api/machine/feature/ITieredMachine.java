@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
-import com.gregtechceu.gtceu.api.GTValues;
-
 /**
  * @author KilaBash
  * @date 2023/2/18
@@ -16,9 +14,5 @@ public interface ITieredMachine extends IMachineFeature {
      */
     default int getTier() {
         return self().getDefinition().getTier();
-    }
-
-    default long getMaxVoltage() {
-        return GTValues.V[getTier()];
     }
 }

@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -45,12 +46,15 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRecipe();
 
-        ((IItemHandler)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidHandler)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
+        ((IItemHandler) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
+                new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidHandler) rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP))
+                .fill(GTMaterials.Acetone.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled.getSecond() == 2,"Expected Parallel amount to be 2, is %s.".formatted(paralleled.getSecond()));
+        helper.assertTrue(paralleled.getSecond() == 2,
+                "Expected Parallel amount to be 2, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
@@ -79,12 +83,15 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRecipe();
 
-        ((IItemHandler)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidHandler)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Acetone.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
+        ((IItemHandler) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
+                new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidHandler) rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP))
+                .fill(GTMaterials.Acetone.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
+        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0,
+                "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }
@@ -113,12 +120,15 @@ public class ParallelLogicTest {
                 .EUt(30).duration(100)
                 .buildRecipe();
 
-        ((IItemHandler)rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0, new ItemStack(Blocks.COBBLESTONE, 16), false);
-        ((IFluidHandler)rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP)).fill(GTMaterials.Naphtha.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
+        ((IItemHandler) rlm.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP)).insertItem(0,
+                new ItemStack(Blocks.COBBLESTONE, 16), false);
+        ((IFluidHandler) rlm.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP))
+                .fill(GTMaterials.Naphtha.getFluid(8000), IFluidHandler.FluidAction.EXECUTE);
 
         var paralleled = GTRecipeModifiers.accurateParallel(machine, recipe, parallelLimit, false);
 
-        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0, "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
+        helper.assertTrue(paralleled == null || paralleled.getSecond() == 0,
+                "Parallel is too high, should be 0, is %s.".formatted(paralleled.getSecond()));
 
         helper.succeed();
     }

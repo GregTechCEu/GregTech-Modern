@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -17,7 +18,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 public class SeparationRecipes {
 
     public static void init(RecipeOutput provider) {
-
         // Centrifuge
         CENTRIFUGE_RECIPES.recipeBuilder("refinery_gas_separation")
                 .inputFluids(RefineryGas.getFluid(8000))

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.misc.WoodMachineRecipes;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.DyeColor;
 
@@ -95,8 +96,8 @@ public class RecipeRemoval {
         registry.accept(new ResourceLocation("minecraft:nether_brick"));
         registry.accept(new ResourceLocation("minecraft:glowstone"));
         // TODO netherite material
-        //registry.accept(new ResourceLocation("minecraft:netherite_block"));
-        //registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
+        // registry.accept(new ResourceLocation("minecraft:netherite_block"));
+        // registry.accept(new ResourceLocation("minecraft:netherite_ingot_from_netherite_block"));
     }
 
     private static void harderBrickRecipes(Consumer<ResourceLocation> registry) {

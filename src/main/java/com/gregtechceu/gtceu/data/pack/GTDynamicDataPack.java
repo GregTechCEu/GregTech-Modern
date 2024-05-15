@@ -3,13 +3,11 @@ package com.gregtechceu.gtceu.data.pack;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
-import com.gregtechceu.gtceu.data.recipe.GTRecipes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.recipe.GTRecipes;
 
 import com.lowdragmc.lowdraglib.Platform;
-import com.mojang.serialization.JsonOps;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import net.minecraft.SharedConstants;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementHolder;
@@ -25,6 +23,14 @@ import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
 import net.minecraft.server.packs.resources.IoSupplier;
 import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.storage.loot.LootTable;
+
+import com.google.common.collect.Sets;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.mojang.serialization.JsonOps;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -65,8 +71,10 @@ public class GTDynamicDataPack implements PackResources {
         DATA.clear();
     }
 
-    public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement, HolderLookup.Provider provider) {
-        JsonElement recipeJson = Recipe.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), recipe).getOrThrow();
+    public static void addRecipe(ResourceLocation recipeId, Recipe<?> recipe, @Nullable AdvancementHolder advancement,
+                                 HolderLookup.Provider provider) {
+        JsonElement recipeJson = Recipe.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), recipe)
+                .getOrThrow();
         byte[] recipeBytes = recipeJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
@@ -77,7 +85,9 @@ public class GTDynamicDataPack implements PackResources {
         }
         DATA.put(getRecipeLocation(recipeId), recipeBytes);
         if (advancement != null) {
-            JsonElement advancementJson = Advancement.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), advancement.value()).getOrThrow();
+            JsonElement advancementJson = Advancement.CODEC
+                    .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), advancement.value())
+                    .getOrThrow();
             byte[] advancementBytes = advancementJson.toString().getBytes(StandardCharsets.UTF_8);
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(advancement.id(), "advancements", parent, advancementBytes);
@@ -87,7 +97,8 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static void addLootTable(ResourceLocation lootTableId, LootTable table, HolderLookup.Provider provider) {
-        JsonElement lootTableJson = LootTable.CODEC.encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
+        JsonElement lootTableJson = LootTable.CODEC
+                .encodeStart(provider.createSerializationContext(JsonOps.INSTANCE), Holder.direct(table)).getOrThrow();
         byte[] lootTableBytes = lootTableJson.toString().getBytes(StandardCharsets.UTF_8);
         Path parent = Platform.getGamePath().resolve("gtceu/dumped/data");
         if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
@@ -118,7 +129,7 @@ public class GTDynamicDataPack implements PackResources {
                                                                                 // if a full path is given.
             }
             Files.createDirectories(file.getParent());
-            try(OutputStream output = Files.newOutputStream(file)) {
+            try (OutputStream output = Files.newOutputStream(file)) {
                 output.write(json);
             }
         } catch (IOException e) {
@@ -207,7 +218,8 @@ public class GTDynamicDataPack implements PackResources {
     }
 
     public static ResourceLocation getLootTableLocation(ResourceLocation lootTableId) {
-        return new ResourceLocation(lootTableId.getNamespace(), String.join("", "loot_tables/", lootTableId.getPath(), ".json"));
+        return new ResourceLocation(lootTableId.getNamespace(),
+                String.join("", "loot_tables/", lootTableId.getPath(), ".json"));
     }
 
     public static ResourceLocation getAdvancementLocation(ResourceLocation advancementId) {

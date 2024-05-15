@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.api.fluid.store;
 
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.fluid.FluidState;
 
 import java.util.function.UnaryOperator;
 

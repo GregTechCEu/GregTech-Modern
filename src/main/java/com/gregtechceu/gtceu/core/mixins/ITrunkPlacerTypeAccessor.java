@@ -1,10 +1,9 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacer;
 import net.minecraft.world.level.levelgen.feature.trunkplacers.TrunkPlacerType;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Invoker;

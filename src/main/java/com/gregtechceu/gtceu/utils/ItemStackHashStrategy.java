@@ -55,6 +55,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      * Builder pattern class for generating customized ItemStackHashStrategy
      */
     class ItemStackHashStrategyBuilder {
+
         private boolean item, count, components;
 
         /**
@@ -101,8 +102,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             item ? o.getItem() : null,
                             count ? o.getCount() : null,
-                            components ? o.getComponents() : null
-                    );
+                            components ? o.getComponents() : null);
                 }
 
                 @Override

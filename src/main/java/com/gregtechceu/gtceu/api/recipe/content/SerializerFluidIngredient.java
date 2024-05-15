@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.mojang.serialization.JsonOps;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import com.google.gson.JsonElement;
+import com.mojang.serialization.JsonOps;
 
 public class SerializerFluidIngredient implements IContentSerializer<FluidIngredient> {
 

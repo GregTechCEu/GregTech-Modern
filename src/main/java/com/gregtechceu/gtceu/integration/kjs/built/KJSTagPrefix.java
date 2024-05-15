@@ -4,7 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.info.MaterialIconType;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.tag.TagType;
-import lombok.experimental.Accessors;
+
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 

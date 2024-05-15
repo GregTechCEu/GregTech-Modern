@@ -13,5 +13,7 @@ import java.util.List;
  * @implNote IAddInformation
  */
 public interface IAddInformation extends IItemComponent {
-    void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced);
+
+    void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                         TooltipFlag isAdvanced);
 }

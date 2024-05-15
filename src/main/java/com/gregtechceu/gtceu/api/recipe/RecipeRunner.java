@@ -1,13 +1,13 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import lombok.experimental.Accessors;
+
+import com.google.common.collect.Table;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.annotations.UnknownNullability;
@@ -17,17 +17,18 @@ import java.util.*;
 /**
  * Used to handle recipes, only valid for a single RecipeCapability's entries
  */
-@SuppressWarnings({"rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 class RecipeRunner {
+
     static class ContentSlots {
+
         public @UnknownNullability List content = new ArrayList<>();
         public @NotNull Map<String, List> slots = new HashMap<>();
     }
-    
-    record RecipeHandlingResult(RecipeCapability<?> capability, ContentSlots result) {
-    }
 
-// --------------------------------------------------------------------------------------------------------
+    record RecipeHandlingResult(RecipeCapability<?> capability, ContentSlots result) {}
+
+    // --------------------------------------------------------------------------------------------------------
 
     private final GTRecipe recipe;
     private final IO io;
@@ -40,7 +41,6 @@ class RecipeRunner {
     private Set<IRecipeHandler<?>> used;
     private ContentSlots content;
     private ContentSlots search;
-
 
     public RecipeRunner(GTRecipe recipe, IO io, IRecipeCapabilityHolder holder, boolean simulated) {
         this.recipe = recipe;
@@ -85,7 +85,9 @@ class RecipeRunner {
             // When simulating the recipe handling (used for recipe matching), chanced contents are ignored.
             if (simulated) continue;
 
-            if (cont.chance >= 1 || GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance input
+            if (cont.chance >= 1 ||
+                    GTValues.RNG.nextFloat() < (cont.chance + holder.getChanceTier() * cont.tierChanceBoost)) { // chance
+                                                                                                                // input
                 if (cont.slotName == null) {
                     this.content.content.add(cont.content);
                 } else {
@@ -117,12 +119,11 @@ class RecipeRunner {
         return content;
     }
 
-
     private void handleContentsInternal(IO capIO) {
         if (!capabilityProxies.contains(capIO, capability))
             return;
 
-        //noinspection DataFlowIssue checked above.
+        // noinspection DataFlowIssue checked above.
         var handlers = new ArrayList<>(capabilityProxies.get(capIO, capability));
         handlers.sort(IRecipeHandler.ENTRY_COMPARATOR);
 

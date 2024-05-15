@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 

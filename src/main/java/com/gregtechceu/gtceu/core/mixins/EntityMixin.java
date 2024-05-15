@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.core.IFireImmuneEntity;
+
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;

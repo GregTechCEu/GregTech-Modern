@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.api.registry;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import lombok.Getter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -13,7 +11,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.ModLoadingContext;
-import org.jetbrains.annotations.NotNull;
 
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
@@ -86,7 +83,8 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private boolean checkActiveModContainerIsRegisteringMod() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && container.getModId().equals(this.registryName.getNamespace()) || container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
+        return container != null && container.getModId().equals(this.registryName.getNamespace()) ||
+                container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
     }
 
     public <T extends V> T register(K key, T value) {
@@ -175,6 +173,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     }
 
     public abstract Codec<V> codec();
+
     public abstract StreamCodec<RegistryFriendlyByteBuf, V> streamCodec();
 
     // ************************ Built-in Registry ************************//
@@ -229,6 +228,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, V> streamCodec() {
             return new StreamCodec<>() {
+
                 public V decode(RegistryFriendlyByteBuf buf) {
                     java.lang.String id = buf.readUtf();
                     return GTRegistry.String.this.get(id);
@@ -291,6 +291,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
         @Override
         public StreamCodec<RegistryFriendlyByteBuf, V> streamCodec() {
             return new StreamCodec<>() {
+
                 public V decode(RegistryFriendlyByteBuf buf) {
                     ResourceLocation id = ResourceLocation.STREAM_CODEC.decode(buf);
                     return GTRegistry.RL.this.get(id);

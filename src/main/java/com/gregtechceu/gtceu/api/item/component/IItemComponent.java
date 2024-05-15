@@ -3,7 +3,6 @@ package com.gregtechceu.gtceu.api.item.component;
 import com.gregtechceu.gtceu.api.item.ComponentItem;
 
 import net.minecraft.world.item.Item;
-import com.gregtechceu.gtceu.api.item.IComponentItem;
 
 /**
  * @author KilaBash

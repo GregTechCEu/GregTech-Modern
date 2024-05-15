@@ -13,6 +13,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -38,5 +39,6 @@ public interface ICoverRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, ModelState modelState);
+    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+                     @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, ModelState modelState);
 }

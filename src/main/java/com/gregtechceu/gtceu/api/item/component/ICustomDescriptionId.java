@@ -12,13 +12,5 @@ import org.jetbrains.annotations.Nullable;
  */
 public interface ICustomDescriptionId extends IItemComponent {
 
-    @Nullable
-    default String getItemDescriptionId(ItemStack itemStack) {
-        return null;
-    }
-
-    @Nullable
-    default Component getItemName(ItemStack stack) {
-        return null;
-    }
+    String getItemStackDisplayName(ItemStack itemStack);
 }

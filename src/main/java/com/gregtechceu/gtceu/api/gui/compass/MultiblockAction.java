@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.Action;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.AnimationFrame;
@@ -12,6 +13,7 @@ import com.lowdragmc.lowdraglib.gui.compass.component.animation.BlockAnima;
 import com.lowdragmc.lowdraglib.gui.compass.component.animation.CompassScene;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.XmlUtils;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
@@ -75,8 +77,9 @@ public class MultiblockAction extends Action {
                         for (int z = 0; z < column.length; z++) {
                             BlockState blockState = column[z].getBlockState();
                             BlockPos pos = animation.pos().offset(x, y, z);
-                            if (column[z].getBlockEntity(pos, Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder
-                                    && holder.getMetaMachine() instanceof IMultiController) {
+                            if (column[z].getBlockEntity(pos,
+                                    Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder &&
+                                    holder.getMetaMachine() instanceof IMultiController) {
                                 offset = pos;
                             }
                             blockMap.put(pos, BlockInfo.fromBlockState(blockState));

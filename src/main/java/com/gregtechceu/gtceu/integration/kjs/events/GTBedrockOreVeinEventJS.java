@@ -1,18 +1,17 @@
 package com.gregtechceu.gtceu.integration.kjs.events;
 
-import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidDefinition;
-import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import dev.latvian.mods.kubejs.event.EventJS;
+import com.gregtechceu.gtceu.api.worldgen.bedrockore.BedrockOreDefinition;
+
 import net.minecraft.resources.ResourceLocation;
+
+import dev.latvian.mods.kubejs.event.EventJS;
 
 import java.util.function.Consumer;
 
 public class GTBedrockOreVeinEventJS extends EventJS {
 
-    public GTBedrockOreVeinEventJS() {
-
-    }
+    public GTBedrockOreVeinEventJS() {}
 
     public void add(ResourceLocation id, Consumer<BedrockOreDefinition.Builder> consumer) {
         BedrockOreDefinition.Builder builder = BedrockOreDefinition.builder(id);

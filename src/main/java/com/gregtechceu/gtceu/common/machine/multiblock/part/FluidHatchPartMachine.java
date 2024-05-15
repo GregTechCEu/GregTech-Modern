@@ -23,6 +23,7 @@ import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -53,7 +54,8 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
 
     // The `Object... args` parameter is necessary in case a superclass needs to pass any args along to createTank().
     // We can't use fields here because those won't be available while createTank() is called.
-    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots, Object... args) {
+    public FluidHatchPartMachine(IMachineBlockEntity holder, int tier, IO io, int initialCapacity, int slots,
+                                 Object... args) {
         super(holder, tier, io);
         this.slots = slots;
         this.tank = createTank(initialCapacity, slots, args);
@@ -160,36 +162,34 @@ public class FluidHatchPartMachine extends TieredIOPartMachine {
         if (this.io == IO.OUT) {
             // if this is an output hatch, assign tankWidget to the phantom widget displaying the locked fluid...
             group.addWidget(tankWidget = new PhantomFluidWidget(this.tank.getLockedFluid(), 0, 67, 40, 18, 18,
-                () -> this.tank.getLockedFluid().getFluid(), f -> {
-                if (!this.tank.getFluidInTank(0).isEmpty()) {
-                    return;
-                }
-                if (f == null || f.isEmpty()) {
-                    this.tank.setLocked(false);
-                } else {
-                    FluidStack newFluid = f.copy();
-                    newFluid.setAmount(1);
-                    this.tank.setLocked(true, newFluid);
-                }
-            }).setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
+                    () -> this.tank.getLockedFluid().getFluid(), f -> {
+                        if (!this.tank.getFluidInTank(0).isEmpty()) {
+                            return;
+                        }
+                        if (f == null || f.isEmpty()) {
+                            this.tank.setLocked(false);
+                        } else {
+                            FluidStack newFluid = f.copy();
+                            newFluid.setAmount(1);
+                            this.tank.setLocked(true, newFluid);
+                        }
+                    }).setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
 
             group.addWidget(new ToggleButtonWidget(7, 41, 18, 18,
                     GuiTextures.BUTTON_LOCK, this.tank::isLocked, this.tank::setLocked)
                     .setTooltipText("gtceu.gui.fluid_lock.tooltip")
                     .setShouldUseBaseBackground())
-                // ...and add the actual tank widget separately.
-                .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
-                    .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
+                    // ...and add the actual tank widget separately.
+                    .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
+                            .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
         } else {
             group.addWidget(tankWidget = new TankWidget(tank.getStorages()[0], 67, 22, 18, 18, true, io.support(IO.IN))
                     .setShowAmount(true).setDrawHoverTips(true).setBackground(GuiTextures.FLUID_SLOT));
         }
 
         group.addWidget(new LabelWidget(8, 8, "gtceu.gui.fluid_amount"))
-            .addWidget(new LabelWidget(8, 18, () -> getFluidAmountText(tankWidget)))
-            .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()))
-            .addWidget(tankWidget)
-            .addWidget(new TankWidget(tank.getStorages()[0], 67, 22, true, io.support(IO.IN)).setBackground(GuiTextures.FLUID_SLOT));
+                .addWidget(new LabelWidget(8, 18, () -> getFluidAmountText(tankWidget)))
+                .addWidget(new LabelWidget(8, 28, () -> getFluidNameText(tankWidget).getString()));
 
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;

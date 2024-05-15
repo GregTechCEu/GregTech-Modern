@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
@@ -15,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -49,7 +49,8 @@ public class SimpleCoverRenderer implements ICoverRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, Direction modelFacing, ModelState modelState) {
+    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
+                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, ModelState modelState) {
         if (side == coverBehavior.attachedSide && modelFacing != null) {
             quads.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(texture), modelState));
             if (emissiveTexture != null) {

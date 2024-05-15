@@ -2,11 +2,14 @@ package com.gregtechceu.gtceu.data.lang;
 
 import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.neoforged.neoforge.common.data.LanguageProvider;
+
+import com.tterrag.registrate.providers.RegistrateLangProvider;
 import org.jetbrains.annotations.NotNull;
 
 import java.lang.reflect.Field;
@@ -47,8 +50,7 @@ public class LangHandler {
         provider.add("recipe.capability.item.name", "Item");
         provider.add("recipe.capability.su.name", "Create Stress");
         multiLang(provider, "gtceu.oc.tooltip", "Min: %s", "Left click to increase the OC",
-                "Right click to decrease the OC", "Middle click to reset the OC",
-                "Hold Shift to change by Perfect OC");
+                "Right click to decrease the OC", "Middle click to reset the OC", "Hold Shift to change by Perfect OC");
 
         provider.add("recipe.condition.rpm.tooltip", "RPM: %d");
         provider.add("recipe.condition.thunder.tooltip", "Thunder Level: %d");
@@ -87,10 +89,6 @@ public class LangHandler {
         provider.add("metaitem.dust.tooltip.purify", "Right click a Cauldron to get clean Dust");
         provider.add("metaitem.crushed.tooltip.purify", "Right click a Cauldron to get Purified Ore");
         provider.add("metaitem.int_circuit.configuration", "Configuration: %d");
-        provider.add("metaitem.machine_configuration.mode", "§aConfiguration Mode:§r %s");
-        provider.add("gtceu.mode.fluid", "§9Fluid§r");
-        provider.add("gtceu.mode.item", "§6Item§r");
-        provider.add("gtceu.mode.both", "§dBoth (Fluid And Item)§r");
 
         provider.add("gtceu.tool.class.sword", "Sword");
         provider.add("gtceu.tool.class.pickaxe", "Pickaxe");
@@ -206,8 +204,7 @@ public class LangHandler {
         provider.add("item.gtceu.tool.tooltip.mining_speed", "%s §dMining Speed");
         provider.add("item.gtceu.tool.tooltip.harvest_level", "§eHarvest Level %s");
         provider.add("item.gtceu.tool.tooltip.harvest_level_extra", "§eHarvest Level %s §f(%s§f)");
-        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond",
-                "§dNetherite",
+        multiLang(provider, "item.gtceu.tool.harvest_level", "§8Wood", "§7Stone", "§aIron", "§bDiamond", "§dNetherite",
                 "§9Duranium", "§cNeutronium");
         provider.add("item.gtceu.tool.tooltip.repair_info", "§8Hold SHIFT to show Repair Info");
         provider.add("item.gtceu.tool.tooltip.repair_material", "§8Repair with: §f§a%s");
@@ -416,13 +413,13 @@ public class LangHandler {
                 "Mode: Discrete EU\n\n" + advancedEnergyDetectorModeDescription);
 
         provider.add("cover.advanced_fluid_detector.label", "Advanced Fluid Detector");
-        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum mB of fluid, and starts emitting when greater than the min mB of fluid up to the set maximum";
+        var advancedFluidDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum L of fluid, and starts emitting when greater than the min L of fluid up to the set maximum";
         multilineLang(provider, "cover.advanced_fluid_detector.invert.enabled",
                 "Output: Inverted\n\n" + advancedFluidDetectorInvertDescription);
         multilineLang(provider, "cover.advanced_fluid_detector.invert.disabled",
                 "Output: Normal\n\n" + advancedFluidDetectorInvertDescription);
-        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (mB)");
-        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (mB)");
+        provider.add("cover.advanced_fluid_detector.max", "Max Fluid (L)");
+        provider.add("cover.advanced_fluid_detector.min", "Min Fluid (L)");
 
         provider.add("cover.advanced_item_detector.label", "Advanced Item Detector");
         var advancedItemDetectorInvertDescription = "Toggle to invert the redstone logic\nBy default, redstone stops emitting when less than the minimum amount of items, and starts emitting when greater than the min amount of items up to the set maximum";
@@ -435,8 +432,7 @@ public class LangHandler {
 
         replace(provider, "item.gtceu.bucket", "%s Bucket");
         replace(provider, GTMaterials.FullersEarth.getUnlocalizedName(), "Fuller's Earth");
-        replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on
-                                                                                     // 1.19...
+        replace(provider, GTMaterials.Cooperite.getUnlocalizedName(), "Sheldonite"); // greg's humor is now on 1.19...
         replace(provider, GTMaterials.HSSG.getUnlocalizedName(), "HSS-G");
         replace(provider, GTMaterials.HSSE.getUnlocalizedName(), "HSS-E");
         replace(provider, GTMaterials.HSSS.getUnlocalizedName(), "HSS-S");
@@ -475,25 +471,21 @@ public class LangHandler {
                 "Lightly Hydro-Cracked Heavy Fuel");
         replace(provider, GTMaterials.LightlyHydroCrackedLightFuel.getUnlocalizedName(),
                 "Lightly Hydro-Cracked Light Fuel");
-        replace(provider, GTMaterials.LightlyHydroCrackedNaphtha.getUnlocalizedName(),
-                "Lightly Hydro-Cracked Naphtha");
+        replace(provider, GTMaterials.LightlyHydroCrackedNaphtha.getUnlocalizedName(), "Lightly Hydro-Cracked Naphtha");
         replace(provider, GTMaterials.LightlySteamCrackedGas.getUnlocalizedName(), "Lightly Steam-Cracked Gas");
         replace(provider, GTMaterials.LightlySteamCrackedHeavyFuel.getUnlocalizedName(),
                 "Lightly Steam-Cracked Heavy Fuel");
         replace(provider, GTMaterials.LightlySteamCrackedLightFuel.getUnlocalizedName(),
                 "Lightly Steam-Cracked Light Fuel");
-        replace(provider, GTMaterials.LightlySteamCrackedNaphtha.getUnlocalizedName(),
-                "Lightly Steam-Cracked Naphtha");
-        replace(provider, GTMaterials.SeverelyHydroCrackedGas.getUnlocalizedName(),
-                "Severely Hydro-Cracked Gas");
+        replace(provider, GTMaterials.LightlySteamCrackedNaphtha.getUnlocalizedName(), "Lightly Steam-Cracked Naphtha");
+        replace(provider, GTMaterials.SeverelyHydroCrackedGas.getUnlocalizedName(), "Severely Hydro-Cracked Gas");
         replace(provider, GTMaterials.SeverelyHydroCrackedHeavyFuel.getUnlocalizedName(),
                 "Severely Hydro-Cracked Heavy Fuel");
         replace(provider, GTMaterials.SeverelyHydroCrackedLightFuel.getUnlocalizedName(),
                 "Severely Hydro-Cracked Light Fuel");
         replace(provider, GTMaterials.SeverelyHydroCrackedNaphtha.getUnlocalizedName(),
                 "Severely Hydro-Cracked Naphtha");
-        replace(provider, GTMaterials.SeverelySteamCrackedGas.getUnlocalizedName(),
-                "Severely Steam-Cracked Gas");
+        replace(provider, GTMaterials.SeverelySteamCrackedGas.getUnlocalizedName(), "Severely Steam-Cracked Gas");
         replace(provider, GTMaterials.SeverelySteamCrackedHeavyFuel.getUnlocalizedName(),
                 "Severely Steam-Cracked Heavy Fuel");
         replace(provider, GTMaterials.SeverelySteamCrackedLightFuel.getUnlocalizedName(),
@@ -793,8 +785,7 @@ public class LangHandler {
         provider.add("gtceu.machine.perfect_oc", "Does not lose energy efficiency when overclocked.");
         provider.add("gtceu.machine.parallel_limit", "Can run up to §b%d§r§7 Recipes at once.");
 
-        provider.add("gtceu.machine.multiblock.tank.tooltip",
-                "Fill and drain through the controller or tank valves.");
+        provider.add("gtceu.machine.multiblock.tank.tooltip", "Fill and drain through the controller or tank valves.");
         provider.add("gtceu.machine.tank_valve.tooltip",
                 "Use to fill and drain multiblock tanks. Auto outputs when facing down.");
 
@@ -832,11 +823,11 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.item_stored", "§dItem Stored: §f%s, %d items");
         provider.add("gtceu.universal.tooltip.item_transfer_rate", "§bTransfer Rate: §f%d items/s");
         provider.add("gtceu.universal.tooltip.item_transfer_rate_stacks", "§bTransfer Rate: §f%d stacks/s");
-        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d mB");
+        provider.add("gtceu.universal.tooltip.fluid_storage_capacity", "§9Fluid Capacity: §f%d L");
         provider.add("gtceu.universal.tooltip.fluid_storage_capacity_mult",
-                "§9Fluid Capacity: §f%d §7Tanks, §f%d mB §7each");
-        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d mB");
-        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d mB/t");
+                "§9Fluid Capacity: §f%d §7Tanks, §f%d L §7each");
+        provider.add("gtceu.universal.tooltip.fluid_stored", "§dFluid Stored: §f%s, %d L");
+        provider.add("gtceu.universal.tooltip.fluid_transfer_rate", "§bTransfer Rate: §f%d L/t");
         provider.add("gtceu.universal.tooltip.parallel", "§dMax Parallel: §f%d");
         provider.add("gtceu.universal.tooltip.working_area", "§bWorking Area: §f%dx%d");
         provider.add("gtceu.universal.tooltip.chunk_mode", "Chunk Mode: ");
@@ -851,8 +842,8 @@ public class LangHandler {
         provider.add("gtceu.universal.tooltip.uses_per_second", "Uses §f%d EU/s §7while working");
         provider.add("gtceu.universal.tooltip.uses_per_op", "Uses §f%d EU/operation");
         provider.add("gtceu.universal.tooltip.base_production_eut", "§eBase Production: §f%d EU/t");
-        provider.add("gtceu.universal.tooltip.base_production_fluid", "§eBase Production: §f%d mB/t");
-        provider.add("gtceu.universal.tooltip.produces_fluid", "§eProduces: §f%d mB/t");
+        provider.add("gtceu.universal.tooltip.base_production_fluid", "§eBase Production: §f%d L/t");
+        provider.add("gtceu.universal.tooltip.produces_fluid", "§eProduces: §f%d L/t");
         provider.add("gtceu.universal.tooltip.terrain_resist",
                 "This Machine will not explode when exposed to the Elements");
         provider.add("gtceu.universal.tooltip.requires_redstone", "§4Requires Redstone power");
@@ -877,7 +868,6 @@ public class LangHandler {
         provider.add("gtceu.recipe.research", "Requires Research");
         provider.add("gtceu.recipe.scan_for_research", "Scan for Assembly Line");
         provider.add("gtceu.recipe.computation_per_tick", "Min. Computation: %s CWU/t");
-        provider.add("gtceu.recipe.total_computation", "Computation: %s CWU");
         provider.add("gtceu.fluid.click_to_fill",
                 "§7Click with a Fluid Container to §bfill §7the tank (Shift-click for a full stack).");
         provider.add("gtceu.fluid.click_combined",
@@ -971,8 +961,7 @@ public class LangHandler {
         provider.add("gtceu.jei.ore.biome_weighting_no_spawn", "§d%s Weight: §cCannot Spawn");
         provider.add("gtceu.jei.ore.ore_weight", "Weight in vein: %d%%");
         multiLang(provider, "gtceu.jei.ore.primary", "Top Ore", "Spawns in the top %d layers of the vein");
-        multiLang(provider, "gtceu.jei.ore.secondary", "Bottom Ore",
-                "Spawns in the bottom %d layers of the vein");
+        multiLang(provider, "gtceu.jei.ore.secondary", "Bottom Ore", "Spawns in the bottom %d layers of the vein");
         multiLang(provider, "gtceu.jei.ore.between", "Between Ore",
                 "Spawns in the middle %d layers of the vein, with other ores");
         multiLang(provider, "gtceu.jei.ore.sporadic", "Sporadic Ore", "Spawns anywhere in the vein");
@@ -986,10 +975,8 @@ public class LangHandler {
         provider.add("gtceu.jei.fluid.dimension", "Dimensions:");
         provider.add("gtceu.jei.fluid.weight_hover",
                 "The Weight of the vein. Hover over the fluid to see any possible biome modifications");
-        provider.add("gtceu.jei.fluid.min_hover",
-                "The minimum yield that any fluid vein of this fluid can have");
-        provider.add("gtceu.jei.fluid.max_hover",
-                "The maximum yield that any fluid vein of this fluid can have");
+        provider.add("gtceu.jei.fluid.min_hover", "The minimum yield that any fluid vein of this fluid can have");
+        provider.add("gtceu.jei.fluid.max_hover", "The maximum yield that any fluid vein of this fluid can have");
         provider.add("gtceu.jei.fluid.dep_chance_hover",
                 "The percentage chance for the vein to be depleted upon harvest");
         provider.add("gtceu.jei.fluid.dep_amount_hover", "The amount the vein will be depleted by");
@@ -1122,17 +1109,12 @@ public class LangHandler {
                 "Monitoring Normal Electricity Storage");
         provider.add("gtceu.cover.energy_detector.message_electricity_storage_inverted",
                 "Monitoring Inverted Electricity Storage");
-        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_normal",
-                "Monitoring Normal Fluid Storage");
-        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_inverted",
-                "Monitoring Inverted Fluid Storage");
+        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_normal", "Monitoring Normal Fluid Storage");
+        provider.add("gtceu.cover.fluid_detector.message_fluid_storage_inverted", "Monitoring Inverted Fluid Storage");
         provider.add("gtceu.cover.item_detector.message_item_storage_normal", "Monitoring Normal Item Storage");
-        provider.add("gtceu.cover.item_detector.message_item_storage_inverted",
-                "Monitoring Inverted Item Storage");
-        provider.add("gtceu.cover.activity_detector.message_activity_normal",
-                "Monitoring Normal Activity Status");
-        provider.add("gtceu.cover.activity_detector.message_activity_inverted",
-                "Monitoring Inverted Activity Status");
+        provider.add("gtceu.cover.item_detector.message_item_storage_inverted", "Monitoring Inverted Item Storage");
+        provider.add("gtceu.cover.activity_detector.message_activity_normal", "Monitoring Normal Activity Status");
+        provider.add("gtceu.cover.activity_detector.message_activity_inverted", "Monitoring Inverted Activity Status");
         provider.add("gtceu.cover.activity_detector_advanced.message_activity_normal",
                 "Monitoring Normal Progress Status");
         provider.add("gtceu.cover.activity_detector_advanced.message_activity_inverted",
@@ -1172,14 +1154,10 @@ public class LangHandler {
         provider.add("gtceu.gui.circuit.title", "Circuit Settings");
         multiLang(provider, "gtceu.gui.output_setting.tooltips", "left-click to tune the item auto output",
                 "right-click to tune the fluid auto output.");
-        provider.add("gtceu.gui.item_auto_output.allow_input.enabled",
-                "allow items input from the output side");
-        provider.add("gtceu.gui.item_auto_output.allow_input.disabled",
-                "disable items input from the output side");
-        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled",
-                "allow fluids input from the output side");
-        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled",
-                "disable fluids input from the output side");
+        provider.add("gtceu.gui.item_auto_output.allow_input.enabled", "allow items input from the output side");
+        provider.add("gtceu.gui.item_auto_output.allow_input.disabled", "disable items input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.enabled", "allow fluids input from the output side");
+        provider.add("gtceu.gui.fluid_auto_output.allow_input.disabled", "disable fluids input from the output side");
         provider.add("gtceu.gui.auto_output.name", "auto");
         provider.add("gtceu.gui.overclock.title", "Overclock Tier");
         provider.add("gtceu.gui.overclock.range", "Available Tiers [%s, %s]");
@@ -1211,22 +1189,22 @@ public class LangHandler {
         provider.add("gtceu.gui.config_slot.remove", "§7Right click to §4clear§7 config slot.§r");
 
         // Decor Stuff
-        replace(provider,"block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");
-        replace(provider,"block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
-        replace(provider,"block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
-        replace(provider,"block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
+        replace(provider, "block.gtceu.yellow_stripes_block.a", "Yellow Stripes Block");
+        replace(provider, "block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
+        replace(provider, "block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
+        replace(provider, "block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
     }
 
     /**
      * Returns the sub-key consisting of the given key plus the given index.<br>
      * E.g.,<br>
-     *
+     * 
      * <pre>
      * <code>getSubKey("terminal.fluid_prospector.tier", 0)</code>
      * </pre>
-     *
+     * 
      * returns the <code>String</code>:
-     *
+     * 
      * <pre>
      * <code>
      * "terminal.fluid_prospector.tier.0"</code>
@@ -1244,23 +1222,22 @@ public class LangHandler {
      * Registers multiple values under the same key with a given provider.<br>
      * <br>
      * For example, a cumbersome way to add translations would be the following:<br>
-     *
+     * 
      * <pre>
      * <code>provider.add("terminal.fluid_prospector.tier.0", "radius size 1");
      * provider.add("terminal.fluid_prospector.tier.1", "radius size 2");
      * provider.add("terminal.fluid_prospector.tier.2", "radius size 3");</code>
      * </pre>
-     *
+     * 
      * Instead, <code>multiLang</code> can be used for the same result:
-     *
+     * 
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
-     *
-     * In situations requiring a large number of generated translations, the
-     * following could be used instead, which
+     * 
+     * In situations requiring a large number of generated translations, the following could be used instead, which
      * generates translations for 100 tiers:
-     *
+     * 
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", IntStream.of(100)
      *                 .map(i -> i + 1)
@@ -1270,10 +1247,8 @@ public class LangHandler {
      * </pre>
      *
      * @param provider The provider to add to.
-     * @param key      Base key of the key-value-pairs. The real key for each
-     *                 translation will be appended by ".0" for
-     *                 the first, ".1" for the second, etc. This ensures that the
-     *                 keys are unique.
+     * @param key      Base key of the key-value-pairs. The real key for each translation will be appended by ".0" for
+     *                 the first, ".1" for the second, etc. This ensures that the keys are unique.
      * @param values   All translation values.
      */
     protected static void multiLang(RegistrateLangProvider provider, String key, String... values) {
@@ -1285,21 +1260,21 @@ public class LangHandler {
     /**
      * Gets all translation components from a multi lang's sub-keys.<br>
      * E.g., given a multi lang:
-     *
+     * 
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
-     *
+     * 
      * The following code can be used to print out the translations:
-     *
+     * 
      * <pre>
      * <code>for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
      *     System.out.println(component.getString());
      * }</code>
      * </pre>
-     *
+     * 
      * Result:
-     *
+     * 
      * <pre>
      * <code>radius size 1
      * radius size 2
@@ -1321,25 +1296,24 @@ public class LangHandler {
     }
 
     /**
-     * Gets all translation components from a multi lang's sub-keys. Supports
-     * additional arguments for the translation
+     * Gets all translation components from a multi lang's sub-keys. Supports additional arguments for the translation
      * components.<br>
      * E.g., given a multi lang:
-     *
+     * 
      * <pre>
      * <code>multiLang(provider, "terminal.fluid_prospector.tier", "radius size 1", "radius size 2", "radius size 3");</code>
      * </pre>
-     *
+     * 
      * The following code can be used to print out the translations:
-     *
+     * 
      * <pre>
      * <code>for (var component : getMultiLang("terminal.fluid_prospector.tier")) {
      *     System.out.println(component.getString());
      * }</code>
      * </pre>
-     *
+     * 
      * Result:
-     *
+     * 
      * <pre>
      * <code>radius size 1
      * radius size 2
@@ -1403,29 +1377,25 @@ public class LangHandler {
     }
 
     /**
-     * Adds one key-value-pair to the given lang provider per line in the given
-     * multiline (a multiline is a String
+     * Adds one key-value-pair to the given lang provider per line in the given multiline (a multiline is a String
      * containing newline characters).<br>
      * Example:
-     *
+     * 
      * <pre>
      * <code>multilineLang(provider, "gtceu.gui.overclock.enabled", "Overclocking Enabled.\nClick to Disable");</code>
      * </pre>
-     *
+     * 
      * This results in the following translations:<br>
-     *
+     * 
      * <pre>
      * <code>"gtceu.gui.overclock.enabled.0": "Overclocking Enabled.",
      * "gtceu.gui.overclock.enabled.1": "Click to Disable",</code>
      * </pre>
      *
      * @param provider  The provider to add to.
-     * @param key       Base key of the key-value-pair. The real key for each line
-     *                  will be appended by ".0" for the
-     *                  first line, ".1" for the second, etc. This ensures that the
-     *                  keys are unique.
-     * @param multiline The multiline string. It is a multiline because it contains
-     *                  at least one newline character '\n'.
+     * @param key       Base key of the key-value-pair. The real key for each line will be appended by ".0" for the
+     *                  first line, ".1" for the second, etc. This ensures that the keys are unique.
+     * @param multiline The multiline string. It is a multiline because it contains at least one newline character '\n'.
      */
     protected static void multilineLang(RegistrateLangProvider provider, String key, String multiline) {
         var lines = multiline.split("\n");

@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.machine.storage;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -12,6 +10,8 @@ import com.gregtechceu.gtceu.api.machine.feature.IAutoOutputFluid;
 import com.gregtechceu.gtceu.api.machine.feature.IDropSaveMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidActionResult;
@@ -41,6 +41,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
@@ -67,7 +70,10 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
     protected TickableSubscription autoOutputSubs;
     @Nullable
     protected ISubscription exportFluidSubs;
-    @Persisted(key = "Fluid") @DescSynced @Getter @DropSaved // rename "Fluid" for Item capability
+    @Persisted(key = "Fluid")
+    @DescSynced
+    @Getter
+    @DropSaved // rename "Fluid" for Item capability
     protected FluidStack stored = FluidStack.EMPTY;
     @Getter
     protected final Material material;
@@ -202,9 +208,10 @@ public class DrumMachine extends MetaMachine implements IAutoOutputFluid, IDropS
             var handler = FluidTransferHelper.getFluidTransfer(player, InteractionHand.MAIN_HAND);
             var fluidTank = cache.getStorages()[0];
             if (handler != null && !isRemote()) {
-                if (cache.storages[0].getFluidAmount() > 0) {
-                    net.neoforged.neoforge.fluids.FluidStack initialFluid = fluidTank.getFluid();
-                    FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, false);
+                if (cache.getStorages()[0].getFluidAmount() > 0) {
+                    FluidStack initialFluid = fluidTank.getFluid();
+                    FluidActionResult result = FluidTransferHelper.tryFillContainer(currentStack, fluidTank,
+                            Integer.MAX_VALUE, null, false);
                     if (result.isSuccess()) {
                         ItemStack remainingStack = FluidTransferHelper
                                 .tryFillContainer(currentStack, fluidTank, Integer.MAX_VALUE, null, true).getResult();

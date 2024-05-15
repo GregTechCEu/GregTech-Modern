@@ -13,7 +13,7 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import lombok.Getter;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -22,9 +22,10 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -106,7 +107,8 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             for (int z = 0; z < mode.cellSize; z++) {
                 for (var item : data[x][z]) {
                     newItems.add(item);
-                    addNewItem(mode.getUniqueID(item), mode.getDescription(item), mode.getItemIcon(item), mode.getItemColor(item));
+                    addNewItem(mode.getUniqueID(item), mode.getDescription(item), mode.getItemIcon(item),
+                            mode.getItemColor(item));
                 }
             }
         }
@@ -119,7 +121,9 @@ public class ProspectingMapWidget extends WidgetGroup implements SearchComponent
             var selectableWidgetGroup = new SelectableWidgetGroup(0, index * 15, itemList.getSize().width - 4, 15);
             var size = selectableWidgetGroup.getSize();
             selectableWidgetGroup.addWidget(new ImageWidget(0, 0, 15, 15, icon));
-            selectableWidgetGroup.addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName.getString()).setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
+            selectableWidgetGroup
+                    .addWidget(new ImageWidget(15, 0, size.width - 15, 15, new TextTexture(renderingName.getString())
+                            .setWidth(size.width - 15).setType(TextTexture.TextType.LEFT_HIDE)));
             selectableWidgetGroup.setOnSelected(s -> {
                 if (isRemote()) {
                     texture.setSelected(uniqueID);

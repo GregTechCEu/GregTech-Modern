@@ -1,5 +1,9 @@
 package com.gregtechceu.gtceu.api.item.datacomponents;
 
+import net.minecraft.network.codec.ByteBufCodecs;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.util.ExtraCodecs;
+
 import com.google.common.base.Preconditions;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -7,29 +11,25 @@ import io.netty.buffer.ByteBuf;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import net.minecraft.network.codec.ByteBufCodecs;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.util.ExtraCodecs;
-
 @RequiredArgsConstructor
 public class AoESymmetrical {
+
     public static final Codec<AoESymmetrical> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_column").forGetter(AoESymmetrical::getMaxColumn),
-        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_row").forGetter(AoESymmetrical::getMaxRow),
-        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_layer").forGetter(AoESymmetrical::getMaxLayer),
-        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("column").forGetter(AoESymmetrical::getColumn),
-        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("row").forGetter(AoESymmetrical::getRow),
-        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("layer").forGetter(AoESymmetrical::getLayer)
-    ).apply(instance, AoESymmetrical::new));
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_column").forGetter(AoESymmetrical::getMaxColumn),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_row").forGetter(AoESymmetrical::getMaxRow),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max_layer").forGetter(AoESymmetrical::getMaxLayer),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("column").forGetter(AoESymmetrical::getColumn),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("row").forGetter(AoESymmetrical::getRow),
+            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("layer").forGetter(AoESymmetrical::getLayer))
+            .apply(instance, AoESymmetrical::new));
     public static final StreamCodec<ByteBuf, AoESymmetrical> STREAM_CODEC = StreamCodec.composite(
-        ByteBufCodecs.VAR_INT, AoESymmetrical::getMaxColumn,
-        ByteBufCodecs.VAR_INT, AoESymmetrical::getMaxRow,
-        ByteBufCodecs.VAR_INT, AoESymmetrical::getMaxLayer,
-        ByteBufCodecs.VAR_INT, AoESymmetrical::getColumn,
-        ByteBufCodecs.VAR_INT, AoESymmetrical::getRow,
-        ByteBufCodecs.VAR_INT, AoESymmetrical::getLayer,
-        AoESymmetrical::new
-    );
+            ByteBufCodecs.VAR_INT, AoESymmetrical::getMaxColumn,
+            ByteBufCodecs.VAR_INT, AoESymmetrical::getMaxRow,
+            ByteBufCodecs.VAR_INT, AoESymmetrical::getMaxLayer,
+            ByteBufCodecs.VAR_INT, AoESymmetrical::getColumn,
+            ByteBufCodecs.VAR_INT, AoESymmetrical::getRow,
+            ByteBufCodecs.VAR_INT, AoESymmetrical::getLayer,
+            AoESymmetrical::new);
 
     @Getter
     public final int maxColumn, maxRow, maxLayer;
@@ -59,7 +59,8 @@ public class AoESymmetrical {
         Preconditions.checkArgument(column >= 0, "Height cannot be negative.");
         Preconditions.checkArgument(row >= 0, "Width cannot be negative.");
         Preconditions.checkArgument(layer >= 0, "Depth cannot be negative.");
-        return column == 0 && row == 0 && layer == 0 ? NONE : new AoESymmetrical(column, row, layer, column, row, layer);
+        return column == 0 && row == 0 && layer == 0 ? NONE :
+                new AoESymmetrical(column, row, layer, column, row, layer);
     }
 
     public static AoESymmetrical increaseColumn(AoESymmetrical aoe) {
@@ -117,7 +118,8 @@ public class AoESymmetrical {
         if (!(o instanceof AoESymmetrical that))
             return false;
 
-        return maxColumn == that.maxColumn && maxRow == that.maxRow && maxLayer == that.maxLayer && column == that.column && row == that.row && layer == that.layer;
+        return maxColumn == that.maxColumn && maxRow == that.maxRow && maxLayer == that.maxLayer &&
+                column == that.column && row == that.row && layer == that.layer;
     }
 
     @Override

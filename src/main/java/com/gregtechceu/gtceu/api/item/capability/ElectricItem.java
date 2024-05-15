@@ -4,14 +4,17 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
-import lombok.AllArgsConstructor;
+
 import net.minecraft.core.component.DataComponentType;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.AllArgsConstructor;
 
 import java.util.function.Supplier;
 
 @AllArgsConstructor
 public class ElectricItem implements IElectricItem {
+
     protected final Supplier<DataComponentType<SimpleEnergyContent>> componentType;
     protected ItemStack container;
 
@@ -21,8 +24,8 @@ public class ElectricItem implements IElectricItem {
     protected final boolean chargeable;
     protected final boolean canProvideEnergyExternally;
 
-
-    public ElectricItem(ItemStack container, long maxCharge, int tier, boolean chargeable, boolean canProvideEnergyExternally) {
+    public ElectricItem(ItemStack container, long maxCharge, int tier, boolean chargeable,
+                        boolean canProvideEnergyExternally) {
         componentType = GTDataComponents.ENERGY_CONTENT;
         this.container = container;
         this.maxCharge = maxCharge;
@@ -34,11 +37,13 @@ public class ElectricItem implements IElectricItem {
     }
 
     public void setCharge(long change) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withCharge(change));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+                content -> content.withCharge(change));
     }
 
     public void setMaxChargeOverride(long maxCharge) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withMaxCharge(maxCharge));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+                content -> content.withMaxCharge(maxCharge));
     }
 
     @Override
@@ -62,7 +67,8 @@ public class ElectricItem implements IElectricItem {
     }
 
     public void setInfiniteCharge(boolean infiniteCharge) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withInfinite(infiniteCharge));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+                content -> content.withInfinite(infiniteCharge));
     }
 
     @Override
@@ -85,7 +91,8 @@ public class ElectricItem implements IElectricItem {
 
     @Override
     public void setDischargeMode(boolean dischargeMode) {
-        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0), content -> content.withDischargeMode(dischargeMode));
+        container.update(GTDataComponents.ENERGY_CONTENT, new SimpleEnergyContent(maxCharge, 0),
+                content -> content.withDischargeMode(dischargeMode));
     }
 
     @Override
@@ -108,7 +115,8 @@ public class ElectricItem implements IElectricItem {
     }
 
     @Override
-    public long discharge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean externally, boolean simulate) {
+    public long discharge(long amount, int chargerTier, boolean ignoreTransferLimit, boolean externally,
+                          boolean simulate) {
         if (container.getCount() != 1) {
             return 0L;
         }

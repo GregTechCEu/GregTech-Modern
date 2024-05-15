@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -42,7 +43,7 @@ public class SplitShaftTieredHullMachineRenderer extends TieredHullMachineRender
                 var renderer = block.definition.getRenderer();
                 if (renderer instanceof WorkableCasingMachineRenderer workableCasingMachineRenderer) {
                     var baseTexture = workableCasingMachineRenderer.baseCasing;
-                    var bakeModel =  ModelFactory.getUnBakedModel(modelLocation).bake(
+                    var bakeModel = ModelFactory.getUnBakedModel(modelLocation).bake(
                             ModelFactory.getModelBaker(),
                             new SpriteOverrider(Map.of("bottom", baseTexture, "top", baseTexture, "side", baseTexture)),
                             ModelFactory.getRotation(frontFacing),

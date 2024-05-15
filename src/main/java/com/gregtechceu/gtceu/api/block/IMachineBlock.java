@@ -1,12 +1,10 @@
 package com.gregtechceu.gtceu.api.block;
 
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.capabilities.AppEngCapabilities;
 import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.capability.*;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
 import com.gregtechceu.gtceu.api.capability.forge.compat.EnergyStorageList;
-import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -19,6 +17,7 @@ import com.gregtechceu.gtceu.api.misc.LaserContainerList;
 import com.gregtechceu.gtceu.api.pipenet.longdistance.ILDEndpoint;
 import com.gregtechceu.gtceu.common.pipelike.fluidpipe.longdistance.LDFluidEndpointMachine;
 import com.gregtechceu.gtceu.common.pipelike.item.longdistance.LDItemEndpointMachine;
+
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 
 import net.minecraft.core.BlockPos;
@@ -36,6 +35,9 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
+
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.capabilities.AppEngCapabilities;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -44,8 +46,6 @@ import org.jetbrains.annotations.Nullable;
  * @implNote IMachineBlock
  */
 public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
-
-    DirectionProperty UPWARDS_FACING_PROPERTY = DirectionProperty.create("upwards_facing", Direction.Plane.HORIZONTAL);
 
     default Block self() {
         return (Block) this;
@@ -94,7 +94,7 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
         }
         return null;
     }
-    
+
     default void attachCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlock(GTCapability.CAPABILITY_COVERABLE, (level, pos, state, blockEntity, side) -> {
             if (blockEntity instanceof IMachineBlockEntity machine) {
@@ -149,7 +149,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IEnergyContainer energyContainer) {
                     return energyContainer;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
+                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance)
+                        .filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
                 if (!list.isEmpty()) {
                     return new EnergyContainerList(list);
                 }
@@ -161,7 +162,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
                     return energyInfoProvider;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyInfoProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyInfoProvider.class::cast).toList();
+                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyInfoProvider.class::isInstance)
+                        .filter(t -> t.hasCapability(side)).map(IEnergyInfoProvider.class::cast).toList();
                 if (!list.isEmpty()) {
                     return new EnergyInfoProviderList(list);
                 }
@@ -212,7 +214,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                     if (endpoint == null)
                         return null;
                     Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                    IItemHandler transfer = machine.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                    IItemHandler transfer = machine.getLevel().getCapability(Capabilities.ItemHandler.BLOCK,
+                            endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
                     if (transfer != null) {
                         new LDItemEndpointMachine.ItemHandlerWrapper(transfer);
                     }
@@ -231,7 +234,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                     if (endpoint == null)
                         return null;
                     Direction outputFacing = fluidEndpointMachine.getOutputFacing();
-                    IFluidHandler transfer = machine.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
+                    IFluidHandler transfer = machine.getLevel().getCapability(Capabilities.FluidHandler.BLOCK,
+                            endpoint.getPos().relative(outputFacing), outputFacing.getOpposite());
                     if (transfer != null) {
                         return new LDFluidEndpointMachine.FluidHandlerWrapper(transfer);
                     }
@@ -245,7 +249,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IEnergyStorage energyStorage) {
                     return energyStorage;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyStorage.class::isInstance).filter(t -> t.hasCapability(side)).map(IEnergyStorage.class::cast).toList();
+                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyStorage.class::isInstance)
+                        .filter(t -> t.hasCapability(side)).map(IEnergyStorage.class::cast).toList();
                 if (!list.isEmpty()) {
                     return new EnergyStorageList(list);
                 }
@@ -257,7 +262,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof ILaserContainer energyContainer) {
                     return energyContainer;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(ILaserContainer.class::isInstance).filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
+                var list = machine.getMetaMachine().getTraits().stream().filter(ILaserContainer.class::isInstance)
+                        .filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
                 if (!list.isEmpty()) {
                     return new LaserContainerList(list);
                 }
@@ -269,7 +275,9 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IOpticalComputationProvider computationProvider) {
                     return computationProvider;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side)).map(IOpticalComputationProvider.class::cast).toList();
+                var list = machine.getMetaMachine().getTraits().stream()
+                        .filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side))
+                        .map(IOpticalComputationProvider.class::cast).toList();
                 if (!list.isEmpty()) {
                     return list.get(0);
                 }
@@ -281,7 +289,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IDataAccessHatch dataAccess) {
                     return dataAccess;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IDataAccessHatch.class::isInstance).filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
+                var list = machine.getMetaMachine().getTraits().stream().filter(IDataAccessHatch.class::isInstance)
+                        .filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
                 if (!list.isEmpty()) {
                     return list.get(0);
                 }
@@ -294,7 +303,9 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                     if (machine.getMetaMachine() instanceof IInWorldGridNodeHost nodeHost) {
                         return nodeHost;
                     }
-                    var list = machine.getMetaMachine().getTraits().stream().filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side)).map(IInWorldGridNodeHost.class::cast).toList();
+                    var list = machine.getMetaMachine().getTraits().stream()
+                            .filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side))
+                            .map(IInWorldGridNodeHost.class::cast).toList();
                     if (!list.isEmpty()) {
                         // TODO wrap list in the future (or not.)
                         return list.get(0);
@@ -304,5 +315,4 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
             }, this.self());
         }
     }
-
 }

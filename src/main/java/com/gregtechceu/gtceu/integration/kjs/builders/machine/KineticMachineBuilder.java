@@ -10,19 +10,18 @@ import com.gregtechceu.gtceu.client.instance.SplitShaftInstance;
 import com.gregtechceu.gtceu.client.renderer.machine.KineticWorkableTieredHullMachineRenderer;
 import com.gregtechceu.gtceu.common.block.KineticMachineBlock;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
-import com.gregtechceu.gtceu.data.machine.GTMachines;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.SimpleKineticElectricWorkableMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import it.unimi.dsi.fastutil.ints.Int2IntFunction;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
+
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
 import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import it.unimi.dsi.fastutil.ints.Int2LongFunction;
+import it.unimi.dsi.fastutil.ints.Int2IntFunction;
 
 import java.util.Locale;
 import java.util.function.BiConsumer;
@@ -39,6 +38,7 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
  * @implNote MachineBuilder
  */
 public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefinition> {
+
     public transient Int2IntFunction tankScalingFunction; // reflected in MachineFunctionPresets. DO NOT CHANGE!
     private final Object[] passedArguments;
 
@@ -59,7 +59,8 @@ public class KineticMachineBuilder extends MachineBuilder<KineticMachineDefiniti
     @SuppressWarnings("unused") // Accessed via reflection
     public KineticMachineBuilder tankScalingFunction(Function<Object, Double> tankScalingFunction) {
         this.tankScalingFunction = tier -> tankScalingFunction.apply(tier).intValue();
-        this.metaMachine((holder) -> new SimpleKineticElectricWorkableMachine(holder, tier(), this.tankScalingFunction, passedArguments));
+        this.metaMachine((holder) -> new SimpleKineticElectricWorkableMachine(holder, tier(), this.tankScalingFunction,
+                passedArguments));
         return this;
     }
 

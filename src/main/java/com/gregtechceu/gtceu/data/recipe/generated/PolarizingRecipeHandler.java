@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.IngotProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 
@@ -25,7 +26,8 @@ public class PolarizingRecipeHandler {
         }
     }
 
-    public static void processPolarizing(TagPrefix polarizingPrefix, Material material, IngotProperty property, RecipeOutput provider) {
+    public static void processPolarizing(TagPrefix polarizingPrefix, Material material, IngotProperty property,
+                                         RecipeOutput provider) {
         Material magneticMaterial = property.getMagneticMaterial();
 
         if (magneticMaterial != null && polarizingPrefix.doGenerateItem(magneticMaterial)) {

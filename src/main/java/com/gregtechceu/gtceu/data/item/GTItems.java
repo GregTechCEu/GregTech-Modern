@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.data.item;
 
-import com.google.common.collect.ArrayTable;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
@@ -10,7 +7,15 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagFluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.TagItemFilter;
+import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
+import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IGTTool;
+import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.api.item.component.*;
+import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
@@ -20,29 +25,20 @@ import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.material.material.stack.ItemMaterialInfo;
 import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.tag.TagUtil;
-import com.gregtechceu.gtceu.api.gui.misc.ProspectorMode;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.TagPrefixItem;
-import com.gregtechceu.gtceu.api.item.component.*;
-import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
-import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.GTRegistrate;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.tag.TagUtil;
+import com.gregtechceu.gtceu.common.item.*;
 import com.gregtechceu.gtceu.common.item.armor.*;
-import com.gregtechceu.gtceu.data.material.GTMaterials;
-import com.gregtechceu.gtceu.data.GTModels;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.compass.GTCompassNodes;
 import com.gregtechceu.gtceu.data.compass.GTCompassSections;
 import com.gregtechceu.gtceu.data.cover.GTCovers;
-import com.gregtechceu.gtceu.data.material.GTFoods;
-import com.gregtechceu.gtceu.common.item.*;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+import com.gregtechceu.gtceu.data.material.GTFoods;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
@@ -53,36 +49,8 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.renderer.item.ItemProperties;
-import net.minecraft.client.renderer.item.ItemPropertyFunction;
-import net.minecraft.core.cauldron.CauldronInteraction;
-import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.stats.Stats;
-import net.minecraft.world.InteractionResult;
-import net.minecraft.world.item.*;
-import net.minecraft.world.level.ItemLike;
-import net.minecraft.world.level.block.LayeredCauldronBlock;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.api.distmarker.OnlyIn;
-import net.minecraftforge.client.model.generators.ModelFile;
-import net.minecraftforge.common.TierSortingRegistry;
-
-import com.google.common.collect.ArrayTable;
-import com.google.common.collect.ImmutableTable;
-import com.google.common.collect.Table;
-import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.providers.DataGenContext;
-import com.tterrag.registrate.providers.ProviderType;
-import com.tterrag.registrate.providers.RegistrateLangProvider;
-import com.tterrag.registrate.util.entry.ItemEntry;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullFunction;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.core.cauldron.CauldronInteraction;
@@ -98,6 +66,19 @@ import net.minecraft.world.level.block.LayeredCauldronBlock;
 import net.minecraft.world.level.material.Fluids;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.google.common.collect.ArrayTable;
+import com.google.common.collect.ImmutableTable;
+import com.google.common.collect.Table;
+import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.providers.DataGenContext;
+import com.tterrag.registrate.providers.ProviderType;
+import com.tterrag.registrate.providers.RegistrateLangProvider;
+import com.tterrag.registrate.util.entry.ItemEntry;
+import com.tterrag.registrate.util.entry.ItemProviderEntry;
+import com.tterrag.registrate.util.nullness.NonNullBiConsumer;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullFunction;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
@@ -106,10 +87,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.data.GTCreativeModeTabs.*;
 import static com.gregtechceu.gtceu.data.GTModels.createTextureModel;
 import static com.gregtechceu.gtceu.data.GTModels.overrideModel;
-import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 
 /**
@@ -152,7 +133,7 @@ public class GTItems {
                                     .transform(unificationItem(tagPrefix, material))
                                     .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                     .model(NonNullBiConsumer.noop())
-                                    .color(() -> TagPrefixItem::tintColor)
+                                    .color(() -> () -> TagPrefixItem::tintColor)
                                     .onRegister(GTItems::cauldronInteraction)
                                     .onRegister(item -> {
                                         switch (tagPrefix.name) {
@@ -164,7 +145,6 @@ public class GTItems {
                                                             FormattingUtil.toLowerCaseUnderscore(tagPrefix.name))
                                                     .iconIfNull(() -> new ItemStackTexture(item))
                                                     .addTag(tagPrefix.getItemParentTags());
-
                                         }
                                     })
                                     .register());
@@ -179,9 +159,10 @@ public class GTItems {
     //////////////////////////////////////
     // ***** Material Tools ******//
     //////////////////////////////////////
-    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool, ? extends IGTTool>> TOOL_ITEMS =
-        ArrayTable.create(GTCEuAPI.materialManager.getRegisteredMaterials().stream().filter(mat -> mat.hasProperty(PropertyKey.TOOL)).toList(),
-            GTToolType.getTypes().values().stream().toList());
+    public final static Table<Material, GTToolType, ItemProviderEntry<IGTTool, ? extends IGTTool>> TOOL_ITEMS = ArrayTable
+            .create(GTCEuAPI.materialManager.getRegisteredMaterials().stream()
+                    .filter(mat -> mat.hasProperty(PropertyKey.TOOL)).toList(),
+                    GTToolType.getTypes().values().stream().toList());
 
     public static void generateTools() {
         REGISTRATE.creativeModeTab(() -> TOOL);
@@ -199,22 +180,36 @@ public class GTItems {
                             List<Tool.Rule> rules = new ArrayList<>(tool.rules());
                             rules.add(Tool.Rule.deniesDrops(tier.getIncorrectBlocksForDrops()));
 
-                            //noinspection unchecked
-                            TOOL_ITEMS.put(material, toolType, (ItemProviderEntry<IGTTool, ? extends IGTTool>) (ItemProviderEntry<?, ?>) registrate.item(toolType.idFormat.formatted(tier.material.getName()), p -> toolType.constructor.create(toolType, tier, material, toolType.toolDefinition, p).asItem())
-                                .properties(p -> p.craftRemainder(Items.AIR)
-                                    .component(DataComponents.TOOL, new Tool(rules, tool.defaultMiningSpeed(), tool.damagePerBlock()))
-                                    .component(GTDataComponents.TOOL_BEHAVIOURS, new ToolBehaviorsComponent(toolType.toolDefinition.getBehaviors())))
-                                .properties(p -> {
-                                    if (toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY) != AoESymmetrical.none()) {
-                                        p.component(GTDataComponents.AOE, toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY));
-                                    }
-                                    return p;
-                                })
-                                .setData(ProviderType.LANG, NonNullBiConsumer.noop())
-                                .model(NonNullBiConsumer.noop())
-                                .color(() -> IGTTool::tintColor)
-                                .onRegister(item -> CompassNode.getOrCreate(GTCompassSections.TOOLS, FormattingUtil.toLowerCaseUnderscore(toolType.name)).iconIfNull(() -> new ItemStackTexture(item)).addTag(toolType.itemTags.getFirst()))
-                                .register());
+                            // noinspection unchecked
+                            TOOL_ITEMS.put(material, toolType,
+                                    (ItemProviderEntry<IGTTool, ? extends IGTTool>) (ItemProviderEntry<?, ?>) registrate
+                                            .item(toolType.idFormat.formatted(tier.material.getName()),
+                                                    p -> toolType.constructor.create(toolType, tier, material,
+                                                            toolType.toolDefinition, p).asItem())
+                                            .properties(p -> p.craftRemainder(Items.AIR)
+                                                    .component(DataComponents.TOOL,
+                                                            new Tool(rules, tool.defaultMiningSpeed(),
+                                                                    tool.damagePerBlock()))
+                                                    .component(GTDataComponents.TOOL_BEHAVIOURS,
+                                                            new ToolBehaviorsComponent(
+                                                                    toolType.toolDefinition.getBehaviors())))
+                                            .properties(p -> {
+                                                if (toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY) !=
+                                                        AoESymmetrical.none()) {
+                                                    p.component(GTDataComponents.AOE,
+                                                            toolType.toolDefinition.getAoEDefinition(ItemStack.EMPTY));
+                                                }
+                                                return p;
+                                            })
+                                            .setData(ProviderType.LANG, NonNullBiConsumer.noop())
+                                            .model(NonNullBiConsumer.noop())
+                                            .color(() -> IGTTool::tintColor)
+                                            .onRegister(item -> CompassNode
+                                                    .getOrCreate(GTCompassSections.TOOLS,
+                                                            FormattingUtil.toLowerCaseUnderscore(toolType.name))
+                                                    .iconIfNull(() -> new ItemStackTexture(item))
+                                                    .addTag(toolType.itemTags.getFirst()))
+                                            .register());
                         }
                     }
                 }
@@ -228,58 +223,81 @@ public class GTItems {
     static {
         REGISTRATE.creativeModeTab(() -> ITEM);
     }
-    public static ItemEntry<Item> CREDIT_COPPER = REGISTRATE.item("copper_credit", Item::new).lang("Copper Credit").onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_CUPRONICKEL = REGISTRATE.item("cupronickel_credit", Item::new).lang("Cupronickel Credit").defaultModel().onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_SILVER = REGISTRATE.item("silver_credit", Item::new).lang("Silver Credit").properties(p -> p.rarity(Rarity.UNCOMMON)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_GOLD = REGISTRATE.item("gold_credit", Item::new).lang("Gold Credit").properties(p -> p.rarity(Rarity.UNCOMMON)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_PLATINUM = REGISTRATE.item("platinum_credit", Item::new).lang("Platinum Credit").properties(p -> p.rarity(Rarity.RARE)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_OSMIUM = REGISTRATE.item("osmium_credit", Item::new).lang("Osmium Credit").properties(p -> p.rarity(Rarity.RARE)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_NAQUADAH = REGISTRATE.item("naquadah_credit", Item::new).lang("Naquadah Credit").properties(p -> p.rarity(Rarity.EPIC)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> CREDIT_NEUTRONIUM = REGISTRATE.item("neutronium_credit", Item::new).lang("Neutronium Credit").properties(p -> p.rarity(Rarity.EPIC)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
-    public static ItemEntry<Item> COIN_GOLD_ANCIENT = REGISTRATE.item("ancient_gold_coin", Item::new).lang("Ancient Gold Coin").properties(p -> p.rarity(Rarity.RARE))
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4)))).register();
-    public static ItemEntry<Item> COIN_DOGE = REGISTRATE.item("doge_coin", Item::new).lang("Doge Coin").properties(p -> p.rarity(Rarity.EPIC))
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4)))).register();
+    public static ItemEntry<Item> CREDIT_COPPER = REGISTRATE.item("copper_credit", Item::new).lang("Copper Credit")
+            .onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
+    public static ItemEntry<Item> CREDIT_CUPRONICKEL = REGISTRATE.item("cupronickel_credit", Item::new)
+            .lang("Cupronickel Credit").defaultModel().onRegister(compassNodeExist(GTCompassSections.MISC, "credit"))
+            .register();
+    public static ItemEntry<Item> CREDIT_SILVER = REGISTRATE.item("silver_credit", Item::new).lang("Silver Credit")
+            .properties(p -> p.rarity(Rarity.UNCOMMON)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit"))
+            .register();
+    public static ItemEntry<Item> CREDIT_GOLD = REGISTRATE.item("gold_credit", Item::new).lang("Gold Credit")
+            .properties(p -> p.rarity(Rarity.UNCOMMON)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit"))
+            .register();
+    public static ItemEntry<Item> CREDIT_PLATINUM = REGISTRATE.item("platinum_credit", Item::new)
+            .lang("Platinum Credit").properties(p -> p.rarity(Rarity.RARE))
+            .onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
+    public static ItemEntry<Item> CREDIT_OSMIUM = REGISTRATE.item("osmium_credit", Item::new).lang("Osmium Credit")
+            .properties(p -> p.rarity(Rarity.RARE)).onRegister(compassNodeExist(GTCompassSections.MISC, "credit"))
+            .register();
+    public static ItemEntry<Item> CREDIT_NAQUADAH = REGISTRATE.item("naquadah_credit", Item::new)
+            .lang("Naquadah Credit").properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
+    public static ItemEntry<Item> CREDIT_NEUTRONIUM = REGISTRATE.item("neutronium_credit", Item::new)
+            .lang("Neutronium Credit").properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(compassNodeExist(GTCompassSections.MISC, "credit")).register();
+    public static ItemEntry<Item> COIN_GOLD_ANCIENT = REGISTRATE.item("ancient_gold_coin", Item::new)
+            .lang("Ancient Gold Coin").properties(p -> p.rarity(Rarity.RARE))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
+            .register();
+    public static ItemEntry<Item> COIN_DOGE = REGISTRATE.item("doge_coin", Item::new).lang("Doge Coin")
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Brass, GTValues.M / 4))))
+            .register();
     public static ItemEntry<Item> COIN_CHOCOLATE = REGISTRATE.item("chocolate_coin", Item::new)
-        .lang("Chocolate Coin")
-        .properties(p -> p.rarity(Rarity.EPIC).food(GTFoods.CHOCOLATE))
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4)))).register();
+            .lang("Chocolate Coin")
+            .properties(p -> p.rarity(Rarity.EPIC).food(GTFoods.CHOCOLATE))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Gold, GTValues.M / 4))))
+            .register();
     public static ItemEntry<Item> COMPRESSED_CLAY = REGISTRATE.item("compressed_clay", Item::new)
-        .lang("Compressed Clay")
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
+            .lang("Compressed Clay")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
     public static ItemEntry<Item> COMPRESSED_COKE_CLAY = REGISTRATE.item("compressed_coke_clay", Item::new)
-        .lang("Compressed Coke Clay")
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
+            .lang("Compressed Coke Clay")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
     public static ItemEntry<Item> COMPRESSED_FIRECLAY = REGISTRATE.item("compressed_fireclay", Item::new)
-        .lang("Compressed Fireclay")
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M)))).register();
+            .lang("Compressed Fireclay")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
+            .register();
     public static ItemEntry<Item> FIRECLAY_BRICK = REGISTRATE.item("firebrick", Item::new)
-        .lang("Firebrick")
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M)))).register();
+            .lang("Firebrick")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Fireclay, GTValues.M))))
+            .register();
     public static ItemEntry<Item> COKE_OVEN_BRICK = REGISTRATE.item("coke_oven_brick", Item::new)
-        .lang("Coke Oven Brick")
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
+            .lang("Coke Oven Brick")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Clay, GTValues.M)))).register();
     public static ItemEntry<Item> WOODEN_FORM_EMPTY = REGISTRATE.item("empty_wooden_form", Item::new)
-        .lang("Empty Wooden Form")
-        .onRegister(compassNode(GTCompassSections.MISC)).register();
+            .lang("Empty Wooden Form")
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
     public static ItemEntry<ComponentItem> WOODEN_FORM_BRICK = REGISTRATE.item("brick_wooden_form", ComponentItem::new)
-        .lang("Brick Wooden Form")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(attach((IRecipeRemainder) ItemStack::copy)).register();
+            .lang("Brick Wooden Form")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(attach((IRecipeRemainder) ItemStack::copy)).register();
 
     public static ItemEntry<Item> SHAPE_EMPTY = REGISTRATE.item("empty_mold", Item::new)
-        .lang("Empty Mold")
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+            .lang("Empty Mold")
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+            .register();
 
     @SuppressWarnings("unchecked")
     public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[13];
@@ -300,31 +318,57 @@ public class GTItems {
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
-            .lang("Casting Mold (Plate)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Plate)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[1] = SHAPE_MOLD_GEAR = REGISTRATE.item("gear_casting_mold", Item::new)
-            .lang("Casting Mold (Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[2] = SHAPE_MOLD_CREDIT = REGISTRATE.item("credit_casting_mold", Item::new)
-            .lang("Casting Mold (Coinage)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Coinage)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[3] = SHAPE_MOLD_BOTTLE = REGISTRATE.item("bottle_casting_mold", Item::new)
-            .lang("Casting Mold (Bottle)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Bottle)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[4] = SHAPE_MOLD_INGOT = REGISTRATE.item("ingot_casting_mold", Item::new)
-            .lang("Casting Mold (Ingot)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Ingot)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[5] = SHAPE_MOLD_BALL = REGISTRATE.item("ball_casting_mold", Item::new)
-            .lang("Casting Mold (Ball)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Ball)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[6] = SHAPE_MOLD_BLOCK = REGISTRATE.item("block_casting_mold", Item::new)
-            .lang("Casting Mold (Block)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Block)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[7] = SHAPE_MOLD_NUGGET = REGISTRATE.item("nugget_casting_mold", Item::new)
-            .lang("Casting Mold (Nugget)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Nugget)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[8] = SHAPE_MOLD_CYLINDER = REGISTRATE.item("cylinder_casting_mold", Item::new)
-            .lang("Casting Mold (Cylinder)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Cylinder)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[9] = SHAPE_MOLD_ANVIL = REGISTRATE.item("anvil_casting_mold", Item::new)
-            .lang("Casting Mold (Anvil)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Anvil)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[10] = SHAPE_MOLD_NAME = REGISTRATE.item("name_casting_mold", Item::new)
-            .lang("Casting Mold (Name)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Name)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[11] = SHAPE_MOLD_GEAR_SMALL = REGISTRATE.item("small_gear_casting_mold", Item::new)
-            .lang("Casting Mold (Small Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Small Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_MOLDS[12] = SHAPE_MOLD_ROTOR = REGISTRATE.item("rotor_casting_mold", Item::new)
-            .lang("Casting Mold (Rotor)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Casting Mold (Rotor)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
     }
 
     @SuppressWarnings("unchecked")
@@ -351,51 +395,96 @@ public class GTItems {
 
     static {
         SHAPE_EXTRUDERS[0] = SHAPE_EXTRUDER_PLATE = REGISTRATE.item("plate_extruder_mold", Item::new)
-            .lang("Extruder Mold (Plate)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Plate)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[1] = SHAPE_EXTRUDER_ROD = REGISTRATE.item("rod_extruder_mold", Item::new)
-            .lang("Extruder Mold (Rod)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Rod)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[2] = SHAPE_EXTRUDER_BOLT = REGISTRATE.item("bolt_extruder_mold", Item::new)
-            .lang("Extruder Mold (Bolt)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Bolt)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[3] = SHAPE_EXTRUDER_RING = REGISTRATE.item("ring_extruder_mold", Item::new)
-            .lang("Extruder Mold (Ring)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Ring)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[4] = SHAPE_EXTRUDER_CELL = REGISTRATE.item("cell_extruder_mold", Item::new)
-            .lang("Extruder Mold (Cell)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Cell)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[5] = SHAPE_EXTRUDER_INGOT = REGISTRATE.item("ingot_extruder_mold", Item::new)
-            .lang("Extruder Mold (Ingot)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Ingot)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[6] = SHAPE_EXTRUDER_WIRE = REGISTRATE.item("wire_extruder_mold", Item::new)
-            .lang("Extruder Mold (Wire)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Wire)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[7] = SHAPE_EXTRUDER_PIPE_TINY = REGISTRATE.item("tiny_pipe_extruder_mold", Item::new)
-            .lang("Extruder Mold (Tiny Pipe)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Tiny Pipe)")
+                .onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[8] = SHAPE_EXTRUDER_PIPE_SMALL = REGISTRATE.item("small_pipe_extruder_mold", Item::new)
-            .lang("Extruder Mold (Small Pipe)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Small Pipe)")
+                .onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[9] = SHAPE_EXTRUDER_PIPE_NORMAL = REGISTRATE.item("normal_pipe_extruder_mold", Item::new)
-            .lang("Extruder Mold (Normal Pipe)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Normal Pipe)")
+                .onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[10] = SHAPE_EXTRUDER_PIPE_LARGE = REGISTRATE.item("large_pipe_extruder_mold", Item::new)
-            .lang("Extruder Mold (Large Pipe)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Large Pipe)")
+                .onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[11] = SHAPE_EXTRUDER_PIPE_HUGE = REGISTRATE.item("huge_pipe_extruder_mold", Item::new)
-            .lang("Extruder Mold (Huge Pipe)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Huge Pipe)")
+                .onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[12] = SHAPE_EXTRUDER_BLOCK = REGISTRATE.item("block_extruder_mold", Item::new)
-            .lang("Extruder Mold (Block)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Block)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         // Extruder Shapes index 13-20 (inclusive), id 44-51 (inclusive) are unused
         SHAPE_EXTRUDERS[21] = SHAPE_EXTRUDER_GEAR = REGISTRATE.item("gear_extruder_mold", Item::new)
-            .lang("Extruder Mold (Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[22] = SHAPE_EXTRUDER_BOTTLE = REGISTRATE.item("bottle_extruder_mold", Item::new)
-            .lang("Extruder Mold (Bottle)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Bottle)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[23] = SHAPE_EXTRUDER_FOIL = REGISTRATE.item("foil_extruder_mold", Item::new)
-            .lang("Extruder Mold (Foil)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Foil)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[24] = SHAPE_EXTRUDER_GEAR_SMALL = REGISTRATE.item("small_gear_extruder_mold", Item::new)
-            .lang("Extruder Mold (Small Gear)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Small Gear)")
+                .onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[25] = SHAPE_EXTRUDER_ROD_LONG = REGISTRATE.item("long_rod_extruder_mold", Item::new)
-            .lang("Extruder Mold (Long Rod)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Long Rod)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
         SHAPE_EXTRUDERS[26] = SHAPE_EXTRUDER_ROTOR = REGISTRATE.item("rotor_extruder_mold", Item::new)
-            .lang("Extruder Mold (Rotor)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
+                .lang("Extruder Mold (Rotor)").onRegister(compassNodeExist(GTCompassSections.MISC, "extruder_shape"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
     }
-    public static ItemEntry<Item> SPRAY_EMPTY = REGISTRATE.item("empty_spray_can", Item::new).onRegister(compassNode(GTCompassSections.ITEMS)).lang("Spray Can (Empty)").register();
+    public static ItemEntry<Item> SPRAY_EMPTY = REGISTRATE.item("empty_spray_can", Item::new)
+            .onRegister(compassNode(GTCompassSections.ITEMS)).lang("Spray Can (Empty)").register();
     public static ItemEntry<ComponentItem> SPRAY_SOLVENT = REGISTRATE.item("solvent_spray_can", ComponentItem::new)
-        .lang("Spray Can (Solvent)")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNode(GTCompassSections.ITEMS))
-        .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, -1))).register();
+            .lang("Spray Can (Solvent)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.ITEMS))
+            .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 1024, -1))).register();
 
     public static ItemEntry<ComponentItem> PORTABLE_SCANNER = REGISTRATE.item("portable_scanner", ComponentItem::new)
             .lang("Portable Scanner")
@@ -404,12 +493,14 @@ public class GTItems {
             .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.MV), new PortableScannerBehavior(0)))
             .register();
 
-    public static ItemEntry<ComponentItem> PORTABLE_DEBUG_SCANNER = REGISTRATE.item("portable_debug_scanner", ComponentItem::new)
-        .lang("Portable Scanner")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNode(GTCompassSections.TOOLS))
-        .onRegister(attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
-        .register();
+    public static ItemEntry<ComponentItem> PORTABLE_DEBUG_SCANNER = REGISTRATE
+            .item("portable_debug_scanner", ComponentItem::new)
+            .lang("Portable Scanner")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.TOOLS))
+            .onRegister(
+                    attach(ElectricStats.createElectricItem(1_000_000L, GTValues.MV), new PortableScannerBehavior(1)))
+            .register();
 
     @OnlyIn(Dist.CLIENT)
     public static ItemColor cellColor() {
@@ -448,55 +539,97 @@ public class GTItems {
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .color(() -> GTItems::cellColor)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, false), new ItemFluidContainer(), cellName())).register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE.item("universal_fluid_cell", ComponentItem::new)
+            .onRegister(
+                    attach(ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, false),
+                            new ItemFluidContainer(), cellName()))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE
+            .item("universal_fluid_cell", ComponentItem::new)
             .lang("Universal Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, true), new ItemFluidContainer())).register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE.item("steel_fluid_cell", ComponentItem::new)
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket(), 1800, true, false, false, false, true),
+                    new ItemFluidContainer()))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE
+            .item("steel_fluid_cell", ComponentItem::new)
             .lang("Steel Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 8, GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4)))).register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE.item("aluminium_fluid_cell", ComponentItem::new)
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket() * 8,
+                            GTMaterials.Steel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false,
+                            false, false, true),
+                    new ItemFluidContainer()))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE
+            .item("aluminium_fluid_cell", ComponentItem::new)
             .lang("Aluminium Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 32, GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4)))).register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE.item("stainless_steel_fluid_cell", ComponentItem::new)
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket() * 32,
+                            GTMaterials.Aluminium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
+                            false, false, false, true),
+                    new ItemFluidContainer()))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 4))))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE
+            .item("stainless_steel_fluid_cell", ComponentItem::new)
             .lang("Stainless Steel Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 64, GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6)))).register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE.item("titanium_fluid_cell", ComponentItem::new)
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket() * 64,
+                            GTMaterials.StainlessSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
+                            true, false, false, false, true),
+                    new ItemFluidContainer()))
+            .onRegister(
+                    materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.StainlessSteel, GTValues.M * 6))))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE
+            .item("titanium_fluid_cell", ComponentItem::new)
             .lang("Titanium Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 128, GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6)))).register();
-    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE.item("tungstensteel_fluid_cell", ComponentItem::new)
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket() * 128,
+                            GTMaterials.Titanium.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true,
+                            false, false, false, true),
+                    new ItemFluidContainer()))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Titanium, GTValues.M * 6))))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE
+            .item("tungstensteel_fluid_cell", ComponentItem::new)
             .lang("Tungstensteel Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .properties(p -> p.stacksTo(32))
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket() * 512, GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(), true, false, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8)))).register();
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket() * 512,
+                            GTMaterials.TungstenSteel.getProperty(PropertyKey.FLUID_PIPE).getMaxFluidTemperature(),
+                            true, false, false, false, true),
+                    new ItemFluidContainer()))
+            .onRegister(
+                    materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8))))
+            .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::new)
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNode(GTCompassSections.ITEMS))
-            .onRegister(attach(cellName(), ThermalFluidStats.create(FluidHelper.getBucket(), 1200, false, true, false, false, true), new ItemFluidContainer()))
-            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4)))).register();
+            .onRegister(attach(cellName(),
+                    ThermalFluidStats.create(FluidHelper.getBucket(), 1200, false, true, false, false, true),
+                    new ItemFluidContainer()))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Glass, GTValues.M / 4))))
+            .register();
 
     // TODO Lighter
     public static ItemEntry<Item> TOOL_MATCHES;
@@ -555,173 +688,187 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Americium, GTValues.M * 18))))
             .register();
 
-    public static ItemEntry<ComponentItem> BATTERY_ULV_TANTALUM = REGISTRATE.item("tantalum_capacitor", ComponentItem::new)
-        .lang("Tantalum Capacitor")
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "tantalum_capacitor"))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(1000, GTValues.ULV)))
-        .tag(CustomTags.ULV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_ULV_TANTALUM = REGISTRATE
+            .item("tantalum_capacitor", ComponentItem::new)
+            .lang("Tantalum Capacitor")
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "tantalum_capacitor"))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(1000, GTValues.ULV)))
+            .tag(CustomTags.ULV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> BATTERY_LV_SODIUM = REGISTRATE.item("lv_sodium_battery", ComponentItem::new)
-        .lang("Small Sodium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_sodium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(80000, GTValues.LV)))
-        .tag(CustomTags.LV_BATTERIES).register();
+            .lang("Small Sodium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_sodium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(80000, GTValues.LV)))
+            .tag(CustomTags.LV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_MV_SODIUM = REGISTRATE.item("mv_sodium_battery", ComponentItem::new)
-        .lang("Medium Sodium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_sodium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(360000, GTValues.MV)))
-        .tag(CustomTags.MV_BATTERIES).register();
+            .lang("Medium Sodium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_sodium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(360000, GTValues.MV)))
+            .tag(CustomTags.MV_BATTERIES).register();
     public static ItemEntry<ComponentItem> BATTERY_HV_SODIUM = REGISTRATE.item("hv_sodium_battery", ComponentItem::new)
-        .lang("Large Sodium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_sodium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(1200000, GTValues.HV)))
-        .tag(CustomTags.HV_BATTERIES).register();
+            .lang("Large Sodium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_sodium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(1200000, GTValues.HV)))
+            .tag(CustomTags.HV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> BATTERY_LV_LITHIUM = REGISTRATE.item("lv_lithium_battery", ComponentItem::new)
-        .lang("Small Lithium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_lithium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(120000, GTValues.LV)))
-        .tag(CustomTags.LV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_MV_LITHIUM = REGISTRATE.item("mv_lithium_battery", ComponentItem::new)
-        .lang("Medium Lithium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_lithium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(420000, GTValues.MV)))
-        .tag(CustomTags.MV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_HV_LITHIUM = REGISTRATE.item("hv_lithium_battery", ComponentItem::new)
-        .lang("Large Lithium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_lithium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(1800000, GTValues.HV)))
-        .tag(CustomTags.HV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_LV_LITHIUM = REGISTRATE
+            .item("lv_lithium_battery", ComponentItem::new)
+            .lang("Small Lithium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_lithium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(120000, GTValues.LV)))
+            .tag(CustomTags.LV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_MV_LITHIUM = REGISTRATE
+            .item("mv_lithium_battery", ComponentItem::new)
+            .lang("Medium Lithium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_lithium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(420000, GTValues.MV)))
+            .tag(CustomTags.MV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_HV_LITHIUM = REGISTRATE
+            .item("hv_lithium_battery", ComponentItem::new)
+            .lang("Large Lithium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_lithium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(1800000, GTValues.HV)))
+            .tag(CustomTags.HV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> BATTERY_LV_CADMIUM = REGISTRATE.item("lv_cadmium_battery", ComponentItem::new)
-        .lang("Small Cadmium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_cadmium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(100000, GTValues.LV)))
-        .tag(CustomTags.LV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_MV_CADMIUM = REGISTRATE.item("mv_cadmium_battery", ComponentItem::new)
-        .lang("Medium Cadmium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_cadmium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(400000, GTValues.MV)))
-        .tag(CustomTags.MV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_HV_CADMIUM = REGISTRATE.item("hv_cadmium_battery", ComponentItem::new)
-        .lang("Large Cadmium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_cadmium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(1600000, GTValues.HV)))
-        .tag(CustomTags.HV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_LV_CADMIUM = REGISTRATE
+            .item("lv_cadmium_battery", ComponentItem::new)
+            .lang("Small Cadmium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_cadmium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(100000, GTValues.LV)))
+            .tag(CustomTags.LV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_MV_CADMIUM = REGISTRATE
+            .item("mv_cadmium_battery", ComponentItem::new)
+            .lang("Medium Cadmium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_cadmium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(400000, GTValues.MV)))
+            .tag(CustomTags.MV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_HV_CADMIUM = REGISTRATE
+            .item("hv_cadmium_battery", ComponentItem::new)
+            .lang("Large Cadmium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_cadmium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(1600000, GTValues.HV)))
+            .tag(CustomTags.HV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGIUM_CRYSTAL = REGISTRATE.item("energy_crystal", ComponentItem::new)
-        .lang("Energium Crystal")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "energy_crystal"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
-        .tag(CustomTags.HV_BATTERIES).register();
+            .lang("Energium Crystal")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "energy_crystal"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(6_400_000L, GTValues.HV)))
+            .tag(CustomTags.HV_BATTERIES).register();
     public static ItemEntry<ComponentItem> LAPOTRON_CRYSTAL = REGISTRATE.item("lapotron_crystal", ComponentItem::new)
-        .lang("Lapotron Crystal")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotron_crystal"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(25_000_000L, GTValues.EV)))
-        .tag(CustomTags.EV_BATTERIES).register();
+            .lang("Lapotron Crystal")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotron_crystal"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(25_000_000L, GTValues.EV)))
+            .tag(CustomTags.EV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> BATTERY_EV_VANADIUM = REGISTRATE.item("ev_vanadium_battery", ComponentItem::new)
-        .lang("Small Vanadium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_vanadium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(10_240_000L, GTValues.EV)))
-        .tag(CustomTags.EV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_IV_VANADIUM = REGISTRATE.item("iv_vanadium_battery", ComponentItem::new)
-        .lang("Medium Vanadium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_vanadium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
-        .tag(CustomTags.IV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_LUV_VANADIUM = REGISTRATE.item("luv_vanadium_battery", ComponentItem::new)
-        .lang("Large Vanadium Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_vanadium_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(163_840_000L, GTValues.LuV)))
-        .tag(CustomTags.LuV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_EV_VANADIUM = REGISTRATE
+            .item("ev_vanadium_battery", ComponentItem::new)
+            .lang("Small Vanadium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "small_vanadium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(10_240_000L, GTValues.EV)))
+            .tag(CustomTags.EV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_IV_VANADIUM = REGISTRATE
+            .item("iv_vanadium_battery", ComponentItem::new)
+            .lang("Medium Vanadium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_vanadium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(40_960_000L, GTValues.IV)))
+            .tag(CustomTags.IV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_LUV_VANADIUM = REGISTRATE
+            .item("luv_vanadium_battery", ComponentItem::new)
+            .lang("Large Vanadium Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_vanadium_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(163_840_000L, GTValues.LuV)))
+            .tag(CustomTags.LuV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> BATTERY_ZPM_NAQUADRIA = REGISTRATE.item("zpm_naquadria_battery", ComponentItem::new)
-        .lang("Medium Naquadria Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_naquadria_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(655_360_000L, GTValues.ZPM)))
-        .tag(CustomTags.ZPM_BATTERIES).register();
-    public static ItemEntry<ComponentItem> BATTERY_UV_NAQUADRIA = REGISTRATE.item("uv_naquadria_battery", ComponentItem::new)
-        .lang("Large Naquadria Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_naquadria_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(2_621_440_000L, GTValues.UV)))
-        .tag(CustomTags.UV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_ZPM_NAQUADRIA = REGISTRATE
+            .item("zpm_naquadria_battery", ComponentItem::new)
+            .lang("Medium Naquadria Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "medium_naquadria_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(655_360_000L, GTValues.ZPM)))
+            .tag(CustomTags.ZPM_BATTERIES).register();
+    public static ItemEntry<ComponentItem> BATTERY_UV_NAQUADRIA = REGISTRATE
+            .item("uv_naquadria_battery", ComponentItem::new)
+            .lang("Large Naquadria Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "large_naquadria_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(2_621_440_000L, GTValues.UV)))
+            .tag(CustomTags.UV_BATTERIES).register();
 
-    public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB = REGISTRATE.item("lapotronic_energy_orb", ComponentItem::new)
-        .lang("Lapotronic Energy Orb")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotronic_energy_orb"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(250_000_000L, GTValues.IV)))
-        .tag(CustomTags.IV_BATTERIES).register();
-    public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB_CLUSTER = REGISTRATE.item("lapotronic_energy_orb_cluster", ComponentItem::new)
-        .lang("Lapotronic Energy Orb Cluster")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotronic_energy_orb_cluster"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(1_000_000_000L, GTValues.LuV)))
-        .tag(CustomTags.LuV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB = REGISTRATE
+            .item("lapotronic_energy_orb", ComponentItem::new)
+            .lang("Lapotronic Energy Orb")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotronic_energy_orb"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(250_000_000L, GTValues.IV)))
+            .tag(CustomTags.IV_BATTERIES).register();
+    public static ItemEntry<ComponentItem> ENERGY_LAPOTRONIC_ORB_CLUSTER = REGISTRATE
+            .item("lapotronic_energy_orb_cluster", ComponentItem::new)
+            .lang("Lapotronic Energy Orb Cluster")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "lapotronic_energy_orb_cluster"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(1_000_000_000L, GTValues.LuV)))
+            .tag(CustomTags.LuV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ENERGY_MODULE = REGISTRATE.item("energy_module", ComponentItem::new)
-        .lang("Energy Module")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "energy_module"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
-        .tag(CustomTags.ZPM_BATTERIES).register();
+            .lang("Energy Module")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "energy_module"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(4_000_000_000L, GTValues.ZPM)))
+            .tag(CustomTags.ZPM_BATTERIES).register();
     public static ItemEntry<ComponentItem> ENERGY_CLUSTER = REGISTRATE.item("energy_cluster", ComponentItem::new)
-        .lang("Energy Cluster")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "energy_cluster"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
-        .tag(CustomTags.UV_BATTERIES).register();
+            .lang("Energy Cluster")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "energy_cluster"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(20_000_000_000L, GTValues.UV)))
+            .tag(CustomTags.UV_BATTERIES).register();
 
     public static ItemEntry<ComponentItem> ZERO_POINT_MODULE = REGISTRATE.item("zero_point_module", ComponentItem::new)
-        .lang("Zero Point Module")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "zero_point_module"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
+            .lang("Zero Point Module")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "zero_point_module"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createBattery(2000000000000L, GTValues.ZPM, true))).register();
     public static ItemEntry<ComponentItem> ULTIMATE_BATTERY = REGISTRATE.item("max_battery", ComponentItem::new)
-        .lang("Ultimate Battery")
-        .model(overrideModel(GTCEu.id("battery"), 8))
-        .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "ultimate_battery"))
-        .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
-        .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
-        .tag(CustomTags.UHV_BATTERIES).register();
+            .lang("Ultimate Battery")
+            .model(overrideModel(GTCEu.id("battery"), 8))
+            .onRegister(compassNodeExist(GTCompassSections.BATTERIES, "ultimate_battery"))
+            .onRegister(modelPredicate(GTCEu.id("battery"), ElectricStats::getStoredPredicate))
+            .onRegister(attach(ElectricStats.createRechargeableBattery(Long.MAX_VALUE, GTValues.UHV)))
+            .tag(CustomTags.UHV_BATTERIES).register();
 
     public static ItemEntry<Item> ELECTRIC_MOTOR_LV = REGISTRATE.item("lv_electric_motor", Item::new)
             .lang("LV Electric Motor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "electric_motor"))
@@ -769,365 +916,423 @@ public class GTItems {
             null;
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LV = REGISTRATE.item("lv_electric_pump", ComponentItem::new)
-        .lang("LV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("LV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
 
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_MV = REGISTRATE.item("mv_electric_pump", ComponentItem::new)
-        .lang("MV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("MV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_HV = REGISTRATE.item("hv_electric_pump", ComponentItem::new)
-        .lang("HV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("HV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_EV = REGISTRATE.item("ev_electric_pump", ComponentItem::new)
-        .lang("EV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("EV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_IV = REGISTRATE.item("iv_electric_pump", ComponentItem::new)
-        .lang("IV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("IV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_LuV = REGISTRATE.item("luv_electric_pump", ComponentItem::new)
-        .lang("LuV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("LuV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_ZPM = REGISTRATE.item("zpm_electric_pump", ComponentItem::new)
-        .lang("ZPM Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("ZPM Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UV = REGISTRATE.item("uv_electric_pump", ComponentItem::new)
-        .lang("UV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register();
+            .lang("UV Electric Pump")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                lines.add(
+                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+            .register();
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_electric_pump", ComponentItem::new)
-        .lang("UHV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[8])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register() : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UHV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uhv_electric_pump", ComponentItem::new)
+                    .lang("UHV Electric Pump")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[8])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_electric_pump", ComponentItem::new)
-        .lang("UEV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[9])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register() : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UEV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uev_electric_pump", ComponentItem::new)
+                    .lang("UEV Electric Pump")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[9])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_electric_pump", ComponentItem::new)
-        .lang("UIV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[10])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register() : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UIV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uiv_electric_pump", ComponentItem::new)
+                    .lang("UIV Electric Pump")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[10])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_electric_pump", ComponentItem::new)
-        .lang("UXV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[11])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register() : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_UXV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uxv_electric_pump", ComponentItem::new)
+                    .lang("UXV Electric Pump")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[11])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
-    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_electric_pump", ComponentItem::new)
-        .lang("OpV Electric Pump")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[12])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
-        .register() : null;
+    public static ItemEntry<ComponentItem> ELECTRIC_PUMP_OpV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("opv_electric_pump", ComponentItem::new)
+                    .lang("OpV Electric Pump")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.PUMPS[12])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.electric.pump.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "pump", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE.item("lv_fluid_regulator", ComponentItem::new)
-        .lang("LV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[0])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE.item("mv_fluid_regulator", ComponentItem::new)
-        .lang("MV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[1])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE.item("hv_fluid_regulator", ComponentItem::new)
-        .lang("HV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[2])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE.item("ev_fluid_regulator", ComponentItem::new)
-        .lang("EV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[3])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE.item("iv_fluid_regulator", ComponentItem::new)
-        .lang("IV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[4])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE.item("luv_fluid_regulator", ComponentItem::new)
-        .lang("LuV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE.item("zpm_fluid_regulator", ComponentItem::new)
-        .lang("ZPM Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[6])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE.item("uv_fluid_regulator", ComponentItem::new)
-        .lang("UV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[7])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
-        .register();
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_fluid_regulator", ComponentItem::new)
-        .lang("UHV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[8])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .register() : null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_fluid_regulator", ComponentItem::new)
-        .lang("UEV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[9])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .register() : null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_fluid_regulator", ComponentItem::new)
-        .lang("UIV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[10])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .register() : null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_fluid_regulator", ComponentItem::new)
-        .lang("UXV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[11])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .register() : null;
-    public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_fluid_regulator", ComponentItem::new)
-        .lang("OpV Fluid Regulator")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[12])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
-        })))
-        .register() : null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LV = REGISTRATE
+            .item("lv_fluid_regulator", ComponentItem::new)
+            .lang("LV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_MV = REGISTRATE
+            .item("mv_fluid_regulator", ComponentItem::new)
+            .lang("MV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_HV = REGISTRATE
+            .item("hv_fluid_regulator", ComponentItem::new)
+            .lang("HV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 16 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_EV = REGISTRATE
+            .item("ev_fluid_regulator", ComponentItem::new)
+            .lang("EV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_IV = REGISTRATE
+            .item("iv_fluid_regulator", ComponentItem::new)
+            .lang("IV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_LUV = REGISTRATE
+            .item("luv_fluid_regulator", ComponentItem::new)
+            .lang("LuV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 16 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_ZPM = REGISTRATE
+            .item("zpm_fluid_regulator", ComponentItem::new)
+            .lang("ZPM Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UV = REGISTRATE
+            .item("uv_fluid_regulator", ComponentItem::new)
+            .lang("UV Fluid Regulator")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                lines.add(
+                        Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate", 1280 * 64 * 64 * 4 / 20));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "fluid_regulator"))
+            .register();
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UHV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uhv_fluid_regulator", ComponentItem::new)
+                    .lang("UHV Fluid Regulator")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[8])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UEV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uev_fluid_regulator", ComponentItem::new)
+                    .lang("UEV Fluid Regulator")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[9])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UIV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uiv_fluid_regulator", ComponentItem::new)
+                    .lang("UIV Fluid Regulator")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[10])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_UXV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uxv_fluid_regulator", ComponentItem::new)
+                    .lang("UXV Fluid Regulator")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[11])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> FLUID_REGULATOR_OpV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("opv_fluid_regulator", ComponentItem::new)
+                    .lang("OpV Fluid Regulator")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_REGULATORS[12])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.fluid.regulator.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.fluid_transfer_rate",
+                                1280 * 64 * 64 * 4 / 20));
+                    })))
+                    .register() :
+            null;
 
     public static ItemEntry<ComponentItem> DYNAMITE = REGISTRATE.item("dynamite", ComponentItem::new)
-        .lang("Dynamite")
-        .onRegister(attach(new DynamiteBehaviour()))
-        .tab(TOOL.getKey())
-        .register();
+            .lang("Dynamite")
+            .onRegister(attach(new DynamiteBehaviour()))
+            .tab(TOOL.getKey())
+            .register();
 
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE.item("lv_conveyor_module", ComponentItem::new)
-        .lang("LV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE.item("mv_conveyor_module", ComponentItem::new)
-        .lang("MV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE.item("hv_conveyor_module", ComponentItem::new)
-        .lang("HV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE.item("ev_conveyor_module", ComponentItem::new)
-        .lang("EV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE.item("iv_conveyor_module", ComponentItem::new)
-        .lang("IV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE.item("luv_conveyor_module", ComponentItem::new)
-        .lang("LuV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE.item("zpm_conveyor_module", ComponentItem::new)
-        .lang("ZPM Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[6])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE.item("uv_conveyor_module", ComponentItem::new)
-        .lang("UV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[7])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_conveyor_module", ComponentItem::new)
-        .lang("UHV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[8])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_conveyor_module", ComponentItem::new)
-        .lang("UEV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[9])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_conveyor_module", ComponentItem::new)
-        .lang("UIV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[10])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_conveyor_module", ComponentItem::new)
-        .lang("UXV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[11])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_conveyor_module", ComponentItem::new)
-        .lang("OpV Conveyor Module")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[12])))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
-        .register() : null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LV = REGISTRATE
+            .item("lv_conveyor_module", ComponentItem::new)
+            .lang("LV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_MV = REGISTRATE
+            .item("mv_conveyor_module", ComponentItem::new)
+            .lang("MV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_HV = REGISTRATE
+            .item("hv_conveyor_module", ComponentItem::new)
+            .lang("HV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_EV = REGISTRATE
+            .item("ev_conveyor_module", ComponentItem::new)
+            .lang("EV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_IV = REGISTRATE
+            .item("iv_conveyor_module", ComponentItem::new)
+            .lang("IV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_LuV = REGISTRATE
+            .item("luv_conveyor_module", ComponentItem::new)
+            .lang("LuV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_ZPM = REGISTRATE
+            .item("zpm_conveyor_module", ComponentItem::new)
+            .lang("ZPM Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UV = REGISTRATE
+            .item("uv_conveyor_module", ComponentItem::new)
+            .lang("UV Conveyor Module")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UHV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uhv_conveyor_module", ComponentItem::new)
+                    .lang("UHV Conveyor Module")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[8])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UEV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uev_conveyor_module", ComponentItem::new)
+                    .lang("UEV Conveyor Module")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[9])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UIV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uiv_conveyor_module", ComponentItem::new)
+                    .lang("UIV Conveyor Module")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[10])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_UXV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uxv_conveyor_module", ComponentItem::new)
+                    .lang("UXV Conveyor Module")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[11])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> CONVEYOR_MODULE_OpV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("opv_conveyor_module", ComponentItem::new)
+                    .lang("OpV Conveyor Module")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.CONVEYORS[12])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.conveyor.module.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "conveyor", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
     public static ItemEntry<Item> ELECTRIC_PISTON_LV = REGISTRATE.item("lv_electric_piston", Item::new)
             .lang("LV Electric Piston").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "piston")).register();
@@ -1169,109 +1374,132 @@ public class GTItems {
             null;
 
     public static ItemEntry<ComponentItem> ROBOT_ARM_LV = REGISTRATE.item("lv_robot_arm", ComponentItem::new)
-        .lang("LV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("LV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[0])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_MV = REGISTRATE.item("mv_robot_arm", ComponentItem::new)
-        .lang("MV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("MV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[1])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 32));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_HV = REGISTRATE.item("hv_robot_arm", ComponentItem::new)
-        .lang("HV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("HV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[2])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate", 64));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_EV = REGISTRATE.item("ev_robot_arm", ComponentItem::new)
-        .lang("EV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("EV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[3])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 3));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_IV = REGISTRATE.item("iv_robot_arm", ComponentItem::new)
-        .lang("IV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("IV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[4])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 8));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_LuV = REGISTRATE.item("luv_robot_arm", ComponentItem::new)
-        .lang("LuV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("LuV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[5])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_ZPM = REGISTRATE.item("zpm_robot_arm", ComponentItem::new)
-        .lang("ZPM Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[6]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
+            .lang("ZPM Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[6])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> ROBOT_ARM_UV = REGISTRATE.item("uv_robot_arm", ComponentItem::new)
-        .lang("UV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[7]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UHV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uhv_robot_arm", ComponentItem::new)
-        .lang("UHV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[8]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UEV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uev_robot_arm", ComponentItem::new)
-        .lang("UEV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[9]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UIV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uiv_robot_arm", ComponentItem::new)
-        .lang("UIV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[10]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_UXV = GTCEuAPI.isHighTier() ? REGISTRATE.item("uxv_robot_arm", ComponentItem::new)
-        .lang("UXV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[11]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register() : null;
-    public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_robot_arm", ComponentItem::new)
-        .lang("OpV Robot Arm")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[12]))).onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
-            lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
-        })))
-        .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
-        .register() : null;
+            .lang("UV Robot Arm")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[7])))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+            })))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UHV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uhv_robot_arm", ComponentItem::new)
+                    .lang("UHV Robot Arm")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[8])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UEV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uev_robot_arm", ComponentItem::new)
+                    .lang("UEV Robot Arm")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[9])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UIV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uiv_robot_arm", ComponentItem::new)
+                    .lang("UIV Robot Arm")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[10])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_UXV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("uxv_robot_arm", ComponentItem::new)
+                    .lang("UXV Robot Arm")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[11])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+                    .register() :
+            null;
+    public static ItemEntry<ComponentItem> ROBOT_ARM_OpV = GTCEuAPI.isHighTier() ?
+            REGISTRATE.item("opv_robot_arm", ComponentItem::new)
+                    .lang("OpV Robot Arm")
+                    .onRegister(attach(new CoverPlaceBehavior(GTCovers.ROBOT_ARMS[12])))
+                    .onRegister(attach(new TooltipBehavior(lines -> {
+                        lines.add(Component.translatable("item.gtceu.robot.arm.tooltip"));
+                        lines.add(Component.translatable("gtceu.universal.tooltip.item_transfer_rate_stacks", 16));
+                    })))
+                    .onRegister(compassNodeExist(GTCompassSections.COVERS, "robot_arm", GTCompassNodes.COVER))
+                    .register() :
+            null;
 
     public static ItemEntry<Item> FIELD_GENERATOR_LV = REGISTRATE.item("lv_field_generator", Item::new)
             .lang("LV Field Generator").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "field_generator"))
@@ -1377,10 +1605,15 @@ public class GTItems {
     public static ItemEntry<Item> SENSOR_OpV = GTCEuAPI.isHighTier() ? REGISTRATE.item("opv_sensor", Item::new)
             .lang("OpV Sensor").onRegister(compassNodeExist(GTCompassSections.COMPONENTS, "sensor")).register() : null;
 
-
-    public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::new).lang("Data Stick").onRegister(attach(new DataItemBehavior())).onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
-    public static ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::new).lang("Data Orb").onRegister(attach(new DataItemBehavior())).onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
-    public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::new).lang("Data Module").onRegister(attach(new DataItemBehavior(true))).onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
+    public static ItemEntry<ComponentItem> TOOL_DATA_STICK = REGISTRATE.item("data_stick", ComponentItem::new)
+            .lang("Data Stick").onRegister(attach(new DataItemBehavior()))
+            .onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
+    public static ItemEntry<ComponentItem> TOOL_DATA_ORB = REGISTRATE.item("data_orb", ComponentItem::new)
+            .lang("Data Orb").onRegister(attach(new DataItemBehavior()))
+            .onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
+    public static ItemEntry<ComponentItem> TOOL_DATA_MODULE = REGISTRATE.item("data_module", ComponentItem::new)
+            .lang("Data Module").onRegister(attach(new DataItemBehavior(true)))
+            .onRegister(compassNode(GTCompassSections.COMPONENTS)).register();
 
     public static final Map<MarkerMaterial, ItemEntry<Item>> GLASS_LENSES = new HashMap<>();
 
@@ -1389,10 +1622,10 @@ public class GTItems {
             MarkerMaterial color = MarkerMaterials.Color.VALUES[i];
             if (color != MarkerMaterials.Color.White) {
                 GLASS_LENSES.put(color, REGISTRATE.item(String.format("%s_glass_lens", color.getName()), Item::new)
-                    .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
-                    .transform(unificationItem(TagPrefix.lens, color))
-                    .onRegister(compassNodeExist(GTCompassSections.MISC, "glass_lens"))
-                    .register());
+                        .lang("Glass Lens (%s)".formatted(toEnglishName(color.getName())))
+                        .transform(unificationItem(TagPrefix.lens, color))
+                        .onRegister(compassNodeExist(GTCompassSections.MISC, "glass_lens"))
+                        .register());
             }
         }
     }
@@ -1694,15 +1927,11 @@ public class GTItems {
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<Item> IRON_MINECART_WHEELS = REGISTRATE.item("iron_minecart_wheels", Item::new)
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, GTValues.M))))
-        .register();
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iron, GTValues.M))))
+            .register();
     public static ItemEntry<Item> STEEL_MINECART_WHEELS = REGISTRATE.item("steel_minecart_wheels", Item::new)
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M))))
-        .register();
-
-    public static ItemEntry<Item> QUANTUM_EYE = REGISTRATE.item("quantum_eye", Item::new).lang("Quantum Eye").onRegister(compassNode(GTCompassSections.MISC)).register();
-    public static ItemEntry<Item> QUANTUM_STAR = REGISTRATE.item("quantum_star", Item::new).lang("Quantum Star").onRegister(compassNode(GTCompassSections.MISC)).register();
-    public static ItemEntry<Item> GRAVI_STAR = REGISTRATE.item("gravi_star", Item::new).lang("Gravi-Star").onRegister(compassNode(GTCompassSections.MISC)).register();
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M))))
+            .register();
 
     public static ItemEntry<Item> QUANTUM_EYE = REGISTRATE.item("quantum_eye", Item::new).lang("Quantum Eye")
             .onRegister(compassNode(GTCompassSections.MISC)).register();
@@ -1715,181 +1944,233 @@ public class GTItems {
     // *********** COVERS ***********//
     /////////////////////////////////////////
 
-
     public static ItemEntry<ComponentItem> ITEM_FILTER = REGISTRATE.item("item_filter", ComponentItem::new)
-        .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2), new MaterialStack(GTMaterials.Steel, GTValues.M))))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE.item("item_tag_filter", ComponentItem::new)
-        .lang("Item Tag Filter")
-        .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter), new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
+            .onRegister(attach(new ItemFilterBehaviour(SimpleItemFilter::loadFilter),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.Steel, GTValues.M))))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> ORE_DICTIONARY_FILTER = REGISTRATE
+            .item("item_tag_filter", ComponentItem::new)
+            .lang("Item Tag Filter")
+            .onRegister(attach(new ItemFilterBehaviour(TagItemFilter::loadFilter),
+                    new CoverPlaceBehavior(GTCovers.ITEM_FILTER)))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
     public static ItemEntry<ComponentItem> FLUID_FILTER = REGISTRATE.item("fluid_filter", ComponentItem::new)
-        .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
+            .onRegister(attach(new FluidFilterBehaviour(SimpleFluidFilter::loadFilter),
+                    new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 2))))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
     public static ItemEntry<ComponentItem> TAG_FLUID_FILTER = REGISTRATE.item("fluid_tag_filter", ComponentItem::new)
-        .lang("Fluid Tag Filter")
-        .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter), new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
-        .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
+            .lang("Fluid Tag Filter")
+            .onRegister(attach(new FluidFilterBehaviour(TagFluidFilter::loadFilter),
+                    new CoverPlaceBehavior(GTCovers.FLUID_FILTER)))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Zinc, GTValues.M * 3 / 2))))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
 
+    public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE
+            .item("machine_controller_cover", ComponentItem::new)
+            .lang("Machine Controller")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.MACHINE_CONTROLLER)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
 
-    public static ItemEntry<ComponentItem> COVER_MACHINE_CONTROLLER = REGISTRATE.item("machine_controller_cover", ComponentItem::new)
-        .lang("Machine Controller")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.MACHINE_CONTROLLER)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-
-
-    public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE.item("activity_detector_cover", ComponentItem::new)
-        .lang("Activity Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_activity_detector_cover", ComponentItem::new)
-        .lang("Advanced Activity Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR_ADVANCED)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR = REGISTRATE.item("fluid_detector_cover", ComponentItem::new)
-        .lang("Fluid Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE.item("advanced_fluid_detector_cover", ComponentItem::new)
-        .lang("Advanced Fluid Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR_ADVANCED)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE.item("item_detector_cover", ComponentItem::new)
-        .lang("Item Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE.item("advanced_item_detector_cover", ComponentItem::new)
-        .lang("Advanced Item Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE.item("energy_detector_cover", ComponentItem::new)
-        .lang("Energy Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE.item("advanced_energy_detector_cover", ComponentItem::new)
-        .lang("Advanced Energy Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR_ADVANCED)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE.item("maintenance_detector_cover", ComponentItem::new)
-        .lang("Maintenance Detector")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-
+    public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR = REGISTRATE
+            .item("activity_detector_cover", ComponentItem::new)
+            .lang("Activity Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ACTIVITY_DETECTOR_ADVANCED = REGISTRATE
+            .item("advanced_activity_detector_cover", ComponentItem::new)
+            .lang("Advanced Activity Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ACTIVITY_DETECTOR_ADVANCED)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR = REGISTRATE
+            .item("fluid_detector_cover", ComponentItem::new)
+            .lang("Fluid Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_DETECTOR_ADVANCED = REGISTRATE
+            .item("advanced_fluid_detector_cover", ComponentItem::new)
+            .lang("Advanced Fluid Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_DETECTOR_ADVANCED)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR = REGISTRATE
+            .item("item_detector_cover", ComponentItem::new)
+            .lang("Item Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_DETECTOR_ADVANCED = REGISTRATE
+            .item("advanced_item_detector_cover", ComponentItem::new)
+            .lang("Advanced Item Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_DETECTOR_ADVANCED)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR = REGISTRATE
+            .item("energy_detector_cover", ComponentItem::new)
+            .lang("Energy Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ENERGY_DETECTOR_ADVANCED = REGISTRATE
+            .item("advanced_energy_detector_cover", ComponentItem::new)
+            .lang("Advanced Energy Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ENERGY_DETECTOR_ADVANCED)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_MAINTENANCE_DETECTOR = REGISTRATE
+            .item("maintenance_detector_cover", ComponentItem::new)
+            .lang("Maintenance Detector")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.MAINTENANCE_DETECTOR)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
 
     public static ItemEntry<ComponentItem> COVER_SCREEN = REGISTRATE.item("computer_monitor_cover", ComponentItem::new)
-        .lang("Computer Monitor")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
+            .lang("Computer Monitor")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.COMPUTER_MONITOR)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> COVER_CRAFTING = REGISTRATE.item("crafting_table_cover", ComponentItem::new)
-        .lang("Crafting Table Cover")
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
+            .lang("Crafting Table Cover")
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
     public static ItemEntry<ComponentItem> COVER_SHUTTER = REGISTRATE.item("shutter_module_cover", ComponentItem::new)
-        .lang("Shutter Module")
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
+            .lang("Shutter Module")
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.SHUTTER)))
+            .register();
 
-    public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE.item("infinite_water_cover", ComponentItem::new)
-        .lang("Infinite Water Cover")
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .onRegister(attach(new TooltipBehavior(lines -> {
-            lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
-        }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
+    public static ItemEntry<ComponentItem> COVER_INFINITE_WATER = REGISTRATE
+            .item("infinite_water_cover", ComponentItem::new)
+            .lang("Infinite Water Cover")
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.add(Component.translatable("gtceu.universal.tooltip.produces_fluid", 16_000 / 20));
+            }), new CoverPlaceBehavior(GTCovers.INFINITE_WATER))).register();
 
-    public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE.item("ender_fluid_link_cover", ComponentItem::new)
-        .lang("Ender Fluid Link")
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE = REGISTRATE.item("digital_interface_cover", ComponentItem::new)
-        .lang("Digital Interface")
-        .register();
-    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE_WIRELESS = REGISTRATE.item("wireless_digital_interface_cover", ComponentItem::new)
-        .lang("Wireless Digital Interface")
-        .register();
-    public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE.item("fluid_voiding_cover", ComponentItem::new)
-        .lang("Fluid Voiding Cover")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE.item("advanced_fluid_voiding_cover", ComponentItem::new)
-        .lang("Advanced Fluid Voiding Cover")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING_ADVANCED)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE.item("item_voiding_cover", ComponentItem::new)
-        .lang("Item Voiding Cover")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
-    public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE.item("advanced_item_voiding_cover", ComponentItem::new)
-        .lang("Advanced Item Voiding Cover")
-        .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING_ADVANCED)))
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
+    public static ItemEntry<ComponentItem> COVER_ENDER_FLUID_LINK = REGISTRATE
+            .item("ender_fluid_link_cover", ComponentItem::new)
+            .lang("Ender Fluid Link")
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE = REGISTRATE
+            .item("digital_interface_cover", ComponentItem::new)
+            .lang("Digital Interface")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_DIGITAL_INTERFACE_WIRELESS = REGISTRATE
+            .item("wireless_digital_interface_cover", ComponentItem::new)
+            .lang("Wireless Digital Interface")
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING = REGISTRATE
+            .item("fluid_voiding_cover", ComponentItem::new)
+            .lang("Fluid Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_FLUID_VOIDING_ADVANCED = REGISTRATE
+            .item("advanced_fluid_voiding_cover", ComponentItem::new)
+            .lang("Advanced Fluid Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.FLUID_VOIDING_ADVANCED)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING = REGISTRATE
+            .item("item_voiding_cover", ComponentItem::new)
+            .lang("Item Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
+    public static ItemEntry<ComponentItem> COVER_ITEM_VOIDING_ADVANCED = REGISTRATE
+            .item("advanced_item_voiding_cover", ComponentItem::new)
+            .lang("Advanced Item Voiding Cover")
+            .onRegister(attach(new CoverPlaceBehavior(GTCovers.ITEM_VOIDING_ADVANCED)))
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
 
     public static ItemEntry<ComponentItem> COVER_FACADE = REGISTRATE.item("facade_cover", ComponentItem::new)
-        .lang("Cover Facade")
-        .onRegister(attach(new FacadeItemBehaviour(), new CoverPlaceBehavior(GTCovers.FACADE)))
-        .model(NonNullBiConsumer.noop())
-        .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
-        .register();
+            .lang("Cover Facade")
+            .onRegister(attach(new FacadeItemBehaviour(), new CoverPlaceBehavior(GTCovers.FACADE)))
+            .model(NonNullBiConsumer.noop())
+            .onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER))
+            .register();
 
     // Solar Panels: ID 331-346
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE.item("solar_panel", ComponentItem::new).lang("Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
-    }))).onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE.item("ulv_solar_panel", ComponentItem::new).lang("Ultra Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ULV], GTValues.VNF[GTValues.ULV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[0]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE.item("lv_solar_panel", ComponentItem::new).lang("Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LV], GTValues.VNF[GTValues.LV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[1]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE.item("mv_solar_panel", ComponentItem::new).lang("Medium Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.MV], GTValues.VNF[GTValues.MV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[2]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE.item("hv_solar_panel", ComponentItem::new).lang("High Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.HV], GTValues.VNF[GTValues.HV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[3]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE.item("ev_solar_panel", ComponentItem::new).lang("Extreme Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.EV], GTValues.VNF[GTValues.EV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[4]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE.item("iv_solar_panel", ComponentItem::new).lang("Insane Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.IV], GTValues.VNF[GTValues.IV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LUV = REGISTRATE.item("luv_solar_panel", ComponentItem::new).lang("Ludicrous Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LuV], GTValues.VNF[GTValues.LuV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[6]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE.item("zpm_solar_panel", ComponentItem::new).lang("Zero Point Module Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ZPM], GTValues.VNF[GTValues.ZPM]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[7]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
-    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE.item("uv_solar_panel", ComponentItem::new).lang("Ultimate Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
-        lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
-        lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.UV], GTValues.VNF[GTValues.UV]));
-    }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8]))).onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL = REGISTRATE.item("solar_panel", ComponentItem::new)
+            .lang("Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", 1, GTValues.VNF[GTValues.ULV]));
+            }))).onRegister(compassNode(GTCompassSections.COVERS, GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ULV = REGISTRATE
+            .item("ulv_solar_panel", ComponentItem::new).lang("Ultra Low Voltage Solar Panel")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ULV],
+                        GTValues.VNF[GTValues.ULV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[0])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LV = REGISTRATE.item("lv_solar_panel", ComponentItem::new)
+            .lang("Low Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LV],
+                        GTValues.VNF[GTValues.LV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[1])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_MV = REGISTRATE.item("mv_solar_panel", ComponentItem::new)
+            .lang("Medium Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.MV],
+                        GTValues.VNF[GTValues.MV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[2])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_HV = REGISTRATE.item("hv_solar_panel", ComponentItem::new)
+            .lang("High Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.HV],
+                        GTValues.VNF[GTValues.HV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[3])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_EV = REGISTRATE.item("ev_solar_panel", ComponentItem::new)
+            .lang("Extreme Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.EV],
+                        GTValues.VNF[GTValues.EV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[4])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_IV = REGISTRATE.item("iv_solar_panel", ComponentItem::new)
+            .lang("Insane Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.IV],
+                        GTValues.VNF[GTValues.IV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[5])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_LUV = REGISTRATE
+            .item("luv_solar_panel", ComponentItem::new).lang("Ludicrous Voltage Solar Panel")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.LuV],
+                        GTValues.VNF[GTValues.LuV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[6])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_ZPM = REGISTRATE
+            .item("zpm_solar_panel", ComponentItem::new).lang("Zero Point Module Solar Panel")
+            .onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.ZPM],
+                        GTValues.VNF[GTValues.ZPM]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[7])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
+    public static ItemEntry<ComponentItem> COVER_SOLAR_PANEL_UV = REGISTRATE.item("uv_solar_panel", ComponentItem::new)
+            .lang("Ultimate Voltage Solar Panel").onRegister(attach(new TooltipBehavior(lines -> {
+                lines.addAll(LangHandler.getMultiLang("metaitem.cover.solar.panel.tooltip"));
+                lines.add(Component.translatable("gtceu.universal.tooltip.voltage_out", GTValues.V[GTValues.UV],
+                        GTValues.VNF[GTValues.UV]));
+            }))).onRegister(attach(new CoverPlaceBehavior(GTCovers.SOLAR_PANEL[8])))
+            .onRegister(compassNodeExist(GTCompassSections.COVERS, "solar_panel", GTCompassNodes.COVER)).register();
 
     // Plugin
     public static ItemEntry<Item> PLUGIN_TEXT;
@@ -1897,94 +2178,111 @@ public class GTItems {
     public static ItemEntry<Item> PLUGIN_FAKE_GUI;
     public static ItemEntry<Item> PLUGIN_ADVANCED_MONITOR;
 
-    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT = REGISTRATE.item("programmed_circuit", ComponentItem::new)
-        .lang("Programmed Circuit")
-        .model(overrideModel(GTCEu.id("circuit"), 33))
-        .onRegister(modelPredicate(GTCEu.id("circuit"), (itemStack) -> IntCircuitBehaviour.getCircuitConfiguration(itemStack) / 100f))
-        .onRegister(attach(new IntCircuitBehaviour()))
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .register();
+    public static ItemEntry<ComponentItem> INTEGRATED_CIRCUIT = REGISTRATE
+            .item("programmed_circuit", ComponentItem::new)
+            .lang("Programmed Circuit")
+            .model(overrideModel(GTCEu.id("circuit"), 33))
+            .onRegister(modelPredicate(GTCEu.id("circuit"),
+                    (itemStack) -> IntCircuitBehaviour.getCircuitConfiguration(itemStack) / 100f))
+            .onRegister(attach(new IntCircuitBehaviour()))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .register();
 
-
-//    public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer", ComponentItem::new).onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
-    public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();
+    // public static ItemEntry<ComponentItem> FOAM_SPRAYER = REGISTRATE.item("foam_sprayer",
+    // ComponentItem::new).onRegister(attach(new FoamSprayerBehavior()).setMaxStackSize(1);
+    public static ItemEntry<Item> GELLED_TOLUENE = REGISTRATE.item("gelled_toluene", Item::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<Item> BOTTLE_PURPLE_DRINK = REGISTRATE.item("purple_drink", Item::new)
-        .lang("Purple Drink")
-        .properties(p -> p.food(GTFoods.DRINK))
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .register();
-    public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::new).onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(75)).register();
-    public static ItemEntry<ComponentItem> STICKY_RESIN = REGISTRATE.item("sticky_resin", ComponentItem::new).lang("Sticky Resin").onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(200)).register();
-    public static ItemEntry<ComponentItem> BIO_CHAFF = REGISTRATE.item("bio_chaff", ComponentItem::new).onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(200)).register();
-    public static ItemEntry<Item> ENERGIUM_DUST = REGISTRATE.item("energium_dust", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();
+            .lang("Purple Drink")
+            .properties(p -> p.food(GTFoods.DRINK))
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .register();
+    public static ItemEntry<ComponentItem> PLANT_BALL = REGISTRATE.item("plant_ball", ComponentItem::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(75)).register();
+    public static ItemEntry<ComponentItem> STICKY_RESIN = REGISTRATE.item("sticky_resin", ComponentItem::new)
+            .lang("Sticky Resin").onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(200)).register();
+    public static ItemEntry<ComponentItem> BIO_CHAFF = REGISTRATE.item("bio_chaff", ComponentItem::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).onRegister(burnTime(200)).register();
+    public static ItemEntry<Item> ENERGIUM_DUST = REGISTRATE.item("energium_dust", Item::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static ItemEntry<ComponentItem> POWER_UNIT_LV = REGISTRATE.item("lv_power_unit", ComponentItem::new)
-        .lang("LV Power Unit")
-        .properties(p -> p.stacksTo(8))
-        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_lv")))
-        .onRegister(attach(ElectricStats.createElectricItem(100000L, GTValues.LV)))
-        .register();
+            .lang("LV Power Unit")
+            .properties(p -> p.stacksTo(8))
+            .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_lv")))
+            .onRegister(attach(ElectricStats.createElectricItem(100000L, GTValues.LV)))
+            .register();
     public static ItemEntry<ComponentItem> POWER_UNIT_MV = REGISTRATE.item("mv_power_unit", ComponentItem::new)
-        .lang("MV Power Unit")
-        .properties(p -> p.stacksTo(8))
-        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_mv")))
-        .onRegister(attach(ElectricStats.createElectricItem(400000L, GTValues.MV)))
-        .register();
+            .lang("MV Power Unit")
+            .properties(p -> p.stacksTo(8))
+            .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_mv")))
+            .onRegister(attach(ElectricStats.createElectricItem(400000L, GTValues.MV)))
+            .register();
     public static ItemEntry<ComponentItem> POWER_UNIT_HV = REGISTRATE.item("hv_power_unit", ComponentItem::new)
-        .lang("HV Power Unit")
-        .properties(p -> p.stacksTo(8))
-        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_hv")))
-        .onRegister(attach(ElectricStats.createElectricItem(1600000L, GTValues.HV)))
-        .register();
+            .lang("HV Power Unit")
+            .properties(p -> p.stacksTo(8))
+            .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_hv")))
+            .onRegister(attach(ElectricStats.createElectricItem(1600000L, GTValues.HV)))
+            .register();
     public static ItemEntry<ComponentItem> POWER_UNIT_EV = REGISTRATE.item("ev_power_unit", ComponentItem::new)
-        .lang("EV Power Unit")
-        .properties(p -> p.stacksTo(8))
-        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_ev")))
-        .onRegister(attach(ElectricStats.createElectricItem(6400000L, GTValues.EV)))
-        .register();
+            .lang("EV Power Unit")
+            .properties(p -> p.stacksTo(8))
+            .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_ev")))
+            .onRegister(attach(ElectricStats.createElectricItem(6400000L, GTValues.EV)))
+            .register();
     public static ItemEntry<ComponentItem> POWER_UNIT_IV = REGISTRATE.item("iv_power_unit", ComponentItem::new)
-        .lang("IV Power Unit")
-        .properties(p -> p.stacksTo(8))
-        .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_iv")))
-        .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
-        .register();
+            .lang("IV Power Unit")
+            .properties(p -> p.stacksTo(8))
+            .model((ctx, prov) -> prov.generated(ctx, prov.modLoc("item/tools/power_unit_iv")))
+            .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
+            .register();
 
     public static ItemEntry<Item> NANO_SABER;
     public static ItemEntry<ComponentItem> PROSPECTOR_LV = REGISTRATE.item("lv_prospector", ComponentItem::new)
-        .lang("Ore Prospector (LV)")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
-        .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ProspectorScannerBehavior(2, GTValues.V[GTValues.LV] / 16L, ProspectorMode.ORE))).register();
+            .lang("Ore Prospector (LV)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
+            .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV),
+                    new ProspectorScannerBehavior(2, GTValues.V[GTValues.LV] / 16L, ProspectorMode.ORE)))
+            .register();
     public static ItemEntry<ComponentItem> PROSPECTOR_HV = REGISTRATE.item("hv_prospector", ComponentItem::new)
-        .lang("Advanced Prospector (HV)")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
-        .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ProspectorScannerBehavior(3, GTValues.V[GTValues.HV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID, ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null))).register();
+            .lang("Advanced Prospector (HV)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
+            .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV),
+                    new ProspectorScannerBehavior(3, GTValues.V[GTValues.HV] / 16L, ProspectorMode.ORE,
+                            ProspectorMode.FLUID,
+                            ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null)))
+            .register();
     public static ItemEntry<ComponentItem> PROSPECTOR_LUV = REGISTRATE.item("luv_prospector", ComponentItem::new)
-        .lang("Super Prospector (LuV)")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
-        .onRegister(attach(ElectricStats.createElectricItem(1_000_000_000L, GTValues.LuV), new ProspectorScannerBehavior(5, GTValues.V[GTValues.LuV] / 16L, ProspectorMode.ORE, ProspectorMode.FLUID, ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null))).register();
+            .lang("Super Prospector (LuV)")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNodeExist(GTCompassSections.ITEMS, "prospector"))
+            .onRegister(attach(ElectricStats.createElectricItem(1_000_000_000L, GTValues.LuV),
+                    new ProspectorScannerBehavior(5, GTValues.V[GTValues.LuV] / 16L, ProspectorMode.ORE,
+                            ProspectorMode.FLUID,
+                            ConfigHolder.INSTANCE.machines.doBedrockOres ? ProspectorMode.BEDROCK_ORE : null)))
+            .register();
 
     public static ItemEntry<ComponentItem> ITEM_MAGNET_LV = REGISTRATE.item("lv_item_magnet", ComponentItem::new)
-        .lang("LV Item Magnet")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
-        .register();
+            .lang("LV Item Magnet")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(ElectricStats.createElectricItem(100_000L, GTValues.LV), new ItemMagnetBehavior(8)))
+            .register();
     public static ItemEntry<ComponentItem> ITEM_MAGNET_HV = REGISTRATE.item("hv_item_magnet", ComponentItem::new)
-        .lang("HV Item Magnet")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
-        .register();
+            .lang("HV Item Magnet")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(attach(ElectricStats.createElectricItem(1_600_000L, GTValues.HV), new ItemMagnetBehavior(32)))
+            .register();
 
     public static ItemEntry<Item> WIRELESS;
     public static ItemEntry<Item> CAMERA;
     public static ItemEntry<ComponentItem> TERMINAL = REGISTRATE.item("terminal", ComponentItem::new)
-        .lang("Terminal")
-        .properties(p -> p.stacksTo(1))
-        .onRegister(compassNode(GTCompassSections.ITEMS))
-        .onRegister(attach(new TerminalBehavior())).register();
+            .lang("Terminal")
+            .properties(p -> p.stacksTo(1))
+            .onRegister(compassNode(GTCompassSections.ITEMS))
+            .onRegister(attach(new TerminalBehavior())).register();
 
     public static final ItemEntry<Item>[] DYE_ONLY_ITEMS = new ItemEntry[DyeColor.values().length];
     static {
@@ -1992,10 +2290,10 @@ public class GTItems {
         for (int i = 0; i < colors.length; i++) {
             var dyeColor = colors[i];
             DYE_ONLY_ITEMS[i] = REGISTRATE.item("chemical_%s_dye".formatted(dyeColor.getName()), Item::new)
-                .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
-                .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
-                .onRegister(compassNodeExist(GTCompassSections.MISC, "chemical_dye"))
-                .register();
+                    .lang("Chemical %s Dye".formatted(toEnglishName(dyeColor.getName())))
+                    .tag(TagUtil.createItemTag("dyes/" + dyeColor.getName()))
+                    .onRegister(compassNodeExist(GTCompassSections.MISC, "chemical_dye"))
+                    .register();
         }
     }
 
@@ -2004,19 +2302,19 @@ public class GTItems {
         for (int i = 0; i < DyeColor.values().length; i++) {
             var dyeColor = DyeColor.values()[i];
             SPRAY_CAN_DYES[i] = REGISTRATE.item("%s_dye_spray_can".formatted(dyeColor.getName()), ComponentItem::new)
-                .lang("Spray Can (%s)".formatted(toEnglishName(dyeColor.getName())))
-                .properties(p -> p.stacksTo(1))
-                .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_spray_can"))
-                .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, i))).register();
+                    .lang("Spray Can (%s)".formatted(toEnglishName(dyeColor.getName())))
+                    .properties(p -> p.stacksTo(1))
+                    .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_spray_can"))
+                    .onRegister(attach(new ColorSprayBehaviour(() -> SPRAY_EMPTY.asStack(), 512, i))).register();
         }
     }
 
     public static ItemEntry<ComponentItem> TURBINE_ROTOR = REGISTRATE.item("turbine_rotor", ComponentItem::new)
-        .properties(p -> p.stacksTo(1))
-        .model((ctx, prov) -> createTextureModel(ctx, prov, GTCEu.id("item/tools/turbine")))
-        .color(() -> IMaterialPartItem::getItemStackColor)
-        .onRegister(compassNode(GTCompassSections.MISC))
-        .onRegister(attach(new TurbineRotorBehaviour())).register();
+            .properties(p -> p.stacksTo(1))
+            .model((ctx, prov) -> createTextureModel(ctx, prov, GTCEu.id("item/tools/turbine")))
+            .color(() -> IMaterialPartItem::getItemStackColor)
+            .onRegister(compassNode(GTCompassSections.MISC))
+            .onRegister(attach(new TurbineRotorBehaviour())).register();
 
     public static ItemEntry<Item> NEURO_PROCESSOR = REGISTRATE.item("neuro_processing_unit", Item::new)
             .lang("Neuro Processing Unit").onRegister(compassNode(GTCompassSections.MISC)).register();
@@ -2025,132 +2323,67 @@ public class GTItems {
     public static ItemEntry<Item> PETRI_DISH = REGISTRATE.item("petri_dish", Item::new)
             .onRegister(compassNode(GTCompassSections.MISC)).register();
 
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_ULV = REGISTRATE.item("ulv_voltage_coil", ComponentItem::new).lang("Ultra Low Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Lead, GTValues.M * 2), new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_LV = REGISTRATE.item("lv_voltage_coil", ComponentItem::new).lang("Low Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 2), new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_MV = REGISTRATE.item("mv_voltage_coil", ComponentItem::new).lang("Medium Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 2), new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_HV = REGISTRATE.item("hv_voltage_coil", ComponentItem::new).lang("High Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlackSteel, GTValues.M * 2), new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_EV = REGISTRATE.item("ev_voltage_coil", ComponentItem::new).lang("Extreme Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 2), new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_IV = REGISTRATE.item("iv_voltage_coil", ComponentItem::new).lang("Insane Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iridium, GTValues.M * 2), new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_LuV = REGISTRATE.item("luv_voltage_coil", ComponentItem::new).lang("Ludicrous Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Osmiridium, GTValues.M * 2), new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_ZPM = REGISTRATE.item("zpm_voltage_coil", ComponentItem::new).lang("Zero Point Module Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 2), new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2)))).register();
-    public static ItemEntry<ComponentItem> VOLTAGE_COIL_UV = REGISTRATE.item("uv_voltage_coil", ComponentItem::new).lang("Ultimate Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil")).onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2), new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2)))).register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_ULV = REGISTRATE.item("ulv_voltage_coil", ComponentItem::new)
+            .lang("Ultra Low Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Lead, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_LV = REGISTRATE.item("lv_voltage_coil", ComponentItem::new)
+            .lang("Low Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.IronMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_MV = REGISTRATE.item("mv_voltage_coil", ComponentItem::new)
+            .lang("Medium Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Aluminium, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_HV = REGISTRATE.item("hv_voltage_coil", ComponentItem::new)
+            .lang("High Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.BlackSteel, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.SteelMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_EV = REGISTRATE.item("ev_voltage_coil", ComponentItem::new)
+            .lang("Extreme Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_IV = REGISTRATE.item("iv_voltage_coil", ComponentItem::new)
+            .lang("Insane Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Iridium, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.NeodymiumMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_LuV = REGISTRATE.item("luv_voltage_coil", ComponentItem::new)
+            .lang("Ludicrous Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Osmiridium, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_ZPM = REGISTRATE.item("zpm_voltage_coil", ComponentItem::new)
+            .lang("Zero Point Module Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Europium, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
+            .register();
+    public static ItemEntry<ComponentItem> VOLTAGE_COIL_UV = REGISTRATE.item("uv_voltage_coil", ComponentItem::new)
+            .lang("Ultimate Voltage Coil").onRegister(compassNodeExist(GTCompassSections.MISC, "coil"))
+            .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Tritanium, GTValues.M * 2),
+                    new MaterialStack(GTMaterials.SamariumMagnetic, GTValues.M / 2))))
+            .register();
 
     public static ItemEntry<Item> CLIPBOARD;
 
-    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE.item("nightvision_goggles", (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES.getDelegate(), ArmorItem.Type.HELMET, p)
-            .setArmorLogic(new NightvisionGoggles(2,
-                80_000L * (long) Math.max(1, Math.pow(1, ConfigHolder.INSTANCE.tools.voltageTierNightVision - 1)),
-                ConfigHolder.INSTANCE.tools.voltageTierNightVision, ArmorItem.Type.HELMET)))
-        .lang("Nightvision Goggles")
-        .register();
-
-    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE.item("nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.CHESTPLATE,
-                512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-        .lang("NanoMuscle™ Suite Chestplate")
-        .properties(p -> p.rarity(Rarity.UNCOMMON))
-        .register();
-    public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE.item("nanomuscle_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.LEGGINGS, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.LEGGINGS,
-                512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-        .lang("NanoMuscle™ Suite Leggings")
-        .properties(p -> p.rarity(Rarity.UNCOMMON))
-        .register();
-    public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE.item("nanomuscle_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.BOOTS, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
-                512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-        .lang("NanoMuscle™ Suite Boots")
-        .properties(p -> p.rarity(Rarity.UNCOMMON))
-        .register();
-    public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE.item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.HELMET, p)
-            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
-                512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
-        .lang("NanoMuscle™ Suite Helmet")
-        .properties(p -> p.rarity(Rarity.UNCOMMON))
-        .register();
-
-    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE.item("quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.CHESTPLATE,
-                8192,
-                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-        .lang("QuarkTech™ Suite Chestplate")
-        .properties(p -> p.rarity(Rarity.RARE))
-        .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE.item("quarktech_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.LEGGINGS, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.LEGGINGS,
-                8192,
-                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-        .lang("QuarkTech™ Suite Leggings")
-        .properties(p -> p.rarity(Rarity.RARE))
-        .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE.item("quarktech_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.BOOTS, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.BOOTS,
-                8192,
-                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-        .lang("QuarkTech™ Suite Leggings")
-        .properties(p -> p.rarity(Rarity.RARE))
-        .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE.item("quarktech_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.HELMET, p)
-            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.HELMET,
-                8192,
-                100_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
-                ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
-        .lang("QuarkTech™ Suite Helmet")
-        .properties(p -> p.rarity(Rarity.RARE))
-        .register();
-
-    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE.item("liquid_fuel_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new PowerlessJetpack()))
-        .lang("Liquid Fuel Jetpack")
-        .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
-        .register();
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE.item("electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new Jetpack(30,
-                1_000_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
-                ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
-        .lang("Electric Jetpack")
-        .properties(p -> p.rarity(Rarity.UNCOMMON))
-        .model(overrideModel(GTCEu.id("electric_jetpack"), 8))
-        .onRegister(modelPredicate(GTCEu.id("electric_jetpack"), ElectricStats::getStoredPredicate))
-        .register();
-
-    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE.item("advanced_electric_jetpack", (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new AdvancedJetpack(512,
-                6_400_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
-                ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
-        .lang("Advanced Electric Jetpack")
-        .properties(p -> p.rarity(Rarity.RARE))
-        .register();
-    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE.item("avanced_nanomuscle_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new AdvancedNanoMuscleSuite(512,
-                12_800_000L * (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit - 3)),
-                ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit)))
-        .lang("Advanced NanoMuscle™ Suite Chestplate")
-        .properties(p -> p.rarity(Rarity.RARE))
-        .register();
-    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE.item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new AdvancedQuarkTechSuite(8192,
-                1_000_000_000L *
-                    (long) Math.max(1, Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech - 6)),
-                ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech)))
-        .lang("Advanced QuarkTech™ Suite Chestplate")
-        .properties(p -> p.rarity(Rarity.EPIC))
-        .register();
+    public static ItemEntry<ArmorComponentItem> NIGHTVISION_GOGGLES = REGISTRATE
+            .item("nightvision_goggles",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.GOGGLES.getDelegate(), ArmorItem.Type.HELMET, p)
+                            .setArmorLogic(new NightvisionGoggles(2,
+                                    80_000L * (long) Math.max(1,
+                                            Math.pow(1, ConfigHolder.INSTANCE.tools.voltageTierNightVision - 1)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierNightVision, ArmorItem.Type.HELMET)))
+            .lang("Nightvision Goggles")
+            .register();
 
     public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE = REGISTRATE
             .item("nanomuscle_chestplate",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
                             .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.CHESTPLATE,
                                     512,
                                     6_400_000L * (long) Math.max(1,
@@ -2161,7 +2394,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_LEGGINGS = REGISTRATE
             .item("nanomuscle_leggings",
-                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.LEGGINGS, p)
                             .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.LEGGINGS,
                                     512,
                                     6_400_000L * (long) Math.max(1,
@@ -2171,33 +2404,146 @@ public class GTItems {
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_BOOTS = REGISTRATE
-            .item("nanomuscle_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
-                    .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
-                            512,
-                            6_400_000L * (long) Math.max(1,
-                                    Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                            ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
+            .item("nanomuscle_boots",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.BOOTS, p)
+                            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.BOOTS,
+                                    512,
+                                    6_400_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
             .lang("NanoMuscle™ Suite Boots")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .register();
     public static ItemEntry<ArmorComponentItem> NANO_HELMET = REGISTRATE
-            .item("nanomuscle_helmet", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
-                    .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
-                            512,
-                            6_400_000L * (long) Math.max(1,
-                                    Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
-                            ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
+            .item("nanomuscle_helmet",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.HELMET, p)
+                            .setArmorLogic(new NanoMuscleSuite(ArmorItem.Type.HELMET,
+                                    512,
+                                    6_400_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierNanoSuit - 3)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierNanoSuit)))
             .lang("NanoMuscle™ Suite Helmet")
             .properties(p -> p.rarity(Rarity.UNCOMMON))
             .register();
 
-    public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE.item("sus_record", p -> new RecordItem(15, () -> GTSoundEntries.SUS_RECORD.getMainEvent(), p, 820))
-        .lang("Music Disc")
-        .register();
-    public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new).lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC)).onRegister(compassNodeExist(GTCompassSections.MISC, "certificate_of_not_being_a_noob_anymore")).register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE = REGISTRATE
+            .item("quarktech_chestplate",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.CHESTPLATE,
+                                    8192,
+                                    100_000_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+            .lang("QuarkTech™ Suite Chestplate")
+            .properties(p -> p.rarity(Rarity.RARE))
+            .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_LEGGINGS = REGISTRATE
+            .item("quarktech_leggings",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.LEGGINGS, p)
+                            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.LEGGINGS,
+                                    8192,
+                                    100_000_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+            .lang("QuarkTech™ Suite Leggings")
+            .properties(p -> p.rarity(Rarity.RARE))
+            .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_BOOTS = REGISTRATE
+            .item("quarktech_boots",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.BOOTS, p)
+                            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.BOOTS,
+                                    8192,
+                                    100_000_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+            .lang("QuarkTech™ Suite Leggings")
+            .properties(p -> p.rarity(Rarity.RARE))
+            .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_HELMET = REGISTRATE
+            .item("quarktech_helmet",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.HELMET, p)
+                            .setArmorLogic(new QuarkTechSuite(ArmorItem.Type.HELMET,
+                                    8192,
+                                    100_000_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierQuarkTech - 5)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierQuarkTech)))
+            .lang("QuarkTech™ Suite Helmet")
+            .properties(p -> p.rarity(Rarity.RARE))
+            .register();
 
-    public static ItemEntry<ComponentItem> FERTILIZER = REGISTRATE.item("fertilizer", ComponentItem::new).onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
-    public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new).onRegister(compassNode(GTCompassSections.MISC)).register();
+    public static ItemEntry<ArmorComponentItem> LIQUID_FUEL_JETPACK = REGISTRATE
+            .item("liquid_fuel_jetpack",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                            .setArmorLogic(new PowerlessJetpack()))
+            .lang("Liquid Fuel Jetpack")
+            .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
+            .register();
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK = REGISTRATE
+            .item("electric_jetpack",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                            .setArmorLogic(new Jetpack(30,
+                                    1_000_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierImpeller - 2)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierImpeller)))
+            .lang("Electric Jetpack")
+            .properties(p -> p.rarity(Rarity.UNCOMMON))
+            .model(overrideModel(GTCEu.id("electric_jetpack"), 8))
+            .onRegister(modelPredicate(GTCEu.id("electric_jetpack"), ElectricStats::getStoredPredicate))
+            .register();
+
+    public static ItemEntry<ArmorComponentItem> ELECTRIC_JETPACK_ADVANCED = REGISTRATE
+            .item("advanced_electric_jetpack",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.JETPACK.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                            .setArmorLogic(new AdvancedJetpack(512,
+                                    6_400_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller - 4)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierAdvImpeller)))
+            .lang("Advanced Electric Jetpack")
+            .properties(p -> p.rarity(Rarity.RARE))
+            .register();
+    public static ItemEntry<ArmorComponentItem> NANO_CHESTPLATE_ADVANCED = REGISTRATE
+            .item("avanced_nanomuscle_chestplate",
+                    (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(), ArmorItem.Type.CHESTPLATE, p)
+                            .setArmorLogic(new AdvancedNanoMuscleSuite(512,
+                                    12_800_000L * (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit - 3)),
+                                    ConfigHolder.INSTANCE.tools.voltageTierAdvNanoSuit)))
+            .lang("Advanced NanoMuscle™ Suite Chestplate")
+            .properties(p -> p.rarity(Rarity.RARE))
+            .register();
+    public static ItemEntry<ArmorComponentItem> QUANTUM_CHESTPLATE_ADVANCED = REGISTRATE
+            .item("advanced_quarktech_chestplate", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR.getDelegate(),
+                    ArmorItem.Type.CHESTPLATE, p)
+                    .setArmorLogic(new AdvancedQuarkTechSuite(8192,
+                            1_000_000_000L *
+                                    (long) Math.max(1,
+                                            Math.pow(4, ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech - 6)),
+                            ConfigHolder.INSTANCE.tools.voltageTierAdvQuarkTech)))
+            .lang("Advanced QuarkTech™ Suite Chestplate")
+            .properties(p -> p.rarity(Rarity.EPIC))
+            .register();
+
+    public static ItemEntry<Item> POWER_THRUSTER = REGISTRATE.item("power_thruster", Item::new)
+            .properties(p -> p.rarity(Rarity.UNCOMMON)).onRegister(compassNode(GTCompassSections.MISC)).register();
+    public static ItemEntry<Item> POWER_THRUSTER_ADVANCED = REGISTRATE.item("advanced_power_thruster", Item::new)
+            .lang("Advanced Power Thruster").properties(p -> p.rarity(Rarity.RARE))
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
+    public static ItemEntry<Item> GRAVITATION_ENGINE = REGISTRATE.item("gravitation_engine_unit", Item::new)
+            .lang("Gravitation Engine Unit").properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
+
+    public static ItemEntry<RecordItem> SUS_RECORD = REGISTRATE
+            .item("sus_record", p -> new RecordItem(15, () -> GTSoundEntries.SUS_RECORD.getMainEvent(), p, 820))
+            .lang("Music Disc")
+            .register();
+    public static ItemEntry<Item> NAN_CERTIFICATE = REGISTRATE.item("nan_certificate", Item::new)
+            .lang("Certificate of Not Being a Noob Anymore").properties(p -> p.rarity(Rarity.EPIC))
+            .onRegister(compassNodeExist(GTCompassSections.MISC, "certificate_of_not_being_a_noob_anymore")).register();
+
+    public static ItemEntry<ComponentItem> FERTILIZER = REGISTRATE.item("fertilizer", ComponentItem::new)
+            .onRegister(attach(new FertilizerBehavior())).onRegister(compassNode(GTCompassSections.MISC)).register();
+    public static ItemEntry<Item> BLACKLIGHT = REGISTRATE.item("blacklight", Item::new)
+            .onRegister(compassNode(GTCompassSections.MISC)).register();
 
     public static void init() {
         generateMaterialItems();
@@ -2255,7 +2601,6 @@ public class GTItems {
 
                     }
                 }
-
 
                 return ItemInteractionResult.sidedSuccess(world.isClientSide);
             });

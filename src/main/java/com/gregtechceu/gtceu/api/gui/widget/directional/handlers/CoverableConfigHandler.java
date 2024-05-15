@@ -56,6 +56,7 @@ public class CoverableConfigHandler implements IDirectionalConfigHandler {
 
     private CustomItemStackHandler createItemStackTransfer() {
         var transfer = new CustomItemStackHandler(1) {
+
             @Override
             public int getSlotLimit(int slot) {
                 return 1;

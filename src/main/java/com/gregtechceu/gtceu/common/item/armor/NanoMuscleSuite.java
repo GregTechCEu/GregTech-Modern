@@ -9,7 +9,9 @@ import com.gregtechceu.gtceu.api.item.datacomponents.GTArmor;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.input.KeyBind;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
@@ -28,6 +30,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -72,7 +75,8 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
 
                 if (!world.isClientSide) {
                     final boolean finalNightvision = nightvision;
-                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setNightVision(finalNightvision));
+                    itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                            data1 -> data1.setNightVision(finalNightvision));
                 }
             }
 
@@ -85,7 +89,8 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             if (!world.isClientSide && toggleTimer > 0) {
                 --toggleTimer;
                 final byte finalToggleTimer = toggleTimer;
-                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(), data1 -> data1.setToggleTimer(finalToggleTimer));
+                itemStack.update(GTDataComponents.ARMOR_DATA, new GTArmor(),
+                        data1 -> data1.setToggleTimer(finalToggleTimer));
             }
         } else if (type == ArmorItem.Type.BOOTS) {
             updateStepHeight(player);
@@ -95,7 +100,8 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     public static void disableNightVision(@NotNull Level world, Player player, boolean sendMsg) {
         if (!world.isClientSide) {
             player.removeEffect(MobEffects.NIGHT_VISION);
-            if (sendMsg) player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
+            if (sendMsg)
+                player.displayClientMessage(Component.translatable("metaarmor.nms.nightvision.disabled"), true);
         }
     }
 
@@ -105,23 +111,24 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     /*
-    @Override
-    public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
-                                         double damage, ArmorItem.Type equipmentSlot) {
-        IElectricItem container = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
-        int damageLimit = Integer.MAX_VALUE;
-        if (source == DamageSource.FALL && this.getEquipmentSlot(armor) == ArmorItem.Type.FEET) {
-            if (energyPerUse > 0 && container != null) {
-                damageLimit = (int) Math.min(damageLimit, 25.0 * container.getCharge() / (energyPerUse * 10.0D));
-            }
-            return new ArmorProperties(10, (damage < 8.0) ? 1.0 : 0.875, damageLimit);
-        }
-        return super.getProperties(player, armor, source, damage, equipmentSlot);
-    }
-    */
+     * @Override
+     * public ArmorProperties getProperties(EntityLivingBase player, @NotNull ItemStack armor, DamageSource source,
+     * double damage, ArmorItem.Type equipmentSlot) {
+     * IElectricItem container = armor.getCapability(GregtechCapabilities.CAPABILITY_ELECTRIC_ITEM, null);
+     * int damageLimit = Integer.MAX_VALUE;
+     * if (source == DamageSource.FALL && this.getEquipmentSlot(armor) == ArmorItem.Type.FEET) {
+     * if (energyPerUse > 0 && container != null) {
+     * damageLimit = (int) Math.min(damageLimit, 25.0 * container.getCharge() / (energyPerUse * 10.0D));
+     * }
+     * return new ArmorProperties(10, (damage < 8.0) ? 1.0 : 0.875, damageLimit);
+     * }
+     * return super.getProperties(player, armor, source, damage, equipmentSlot);
+     * }
+     */
 
     @Override
-    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage, EquipmentSlot equipmentSlot) {
+    public void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
+                            EquipmentSlot equipmentSlot) {
         IElectricItem item = GTCapabilityHelper.getElectricItem(itemStack);
         if (item != null) {
             item.discharge((long) energyPerUse / 10 * damage, item.getTier(), true, false, false);
@@ -129,14 +136,15 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
     }
 
     @Override
-    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot, ArmorMaterial.Layer layer) {
+    public ResourceLocation getArmorTexture(ItemStack stack, Entity entity, EquipmentSlot slot,
+                                            ArmorMaterial.Layer layer) {
         ItemStack currentChest = Minecraft.getInstance().player.getInventory()
                 .getArmor(ArmorItem.Type.CHESTPLATE.getSlot().getIndex());
         ItemStack advancedChest = GTItems.NANO_CHESTPLATE_ADVANCED.asStack();
         String armorTexture = "nano_muscule_suite";
         if (advancedChest.is(currentChest.getItem())) armorTexture = "advanced_nano_muscle_suite";
         return slot != EquipmentSlot.LEGS ?
-            GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
+                GTCEu.id(String.format("textures/armor/%s_1.png", armorTexture)) :
                 GTCEu.id(String.format("textures/armor/%s_2.png", armorTexture));
     }
 

@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.common.machine.trait.miner;
 
+import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.material.ChemicalHelper;
 import com.gregtechceu.gtceu.api.tag.TagPrefix;
-import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
@@ -124,7 +124,8 @@ public class LargeMinerLogic extends MinerLogic {
                     ItemStack fortunePick = pickaxeTool.copy();
                     fortunePick.enchant(Enchantments.FORTUNE, getDropCountMultiplier());
                     outputStack = ApplyBonusCount.addOreBonusCount(Enchantments.FORTUNE).build().apply(outputStack,
-                            new LootContext.Builder(builder.withParameter(LootContextParams.TOOL, fortunePick).create(LootContextParamSets.BLOCK)).create(null));
+                            new LootContext.Builder(builder.withParameter(LootContextParams.TOOL, fortunePick)
+                                    .create(LootContextParamSets.BLOCK)).create(null));
                 }
             }
             blockDrops.add(outputStack);

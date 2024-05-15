@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.kjs.builders;
 import com.gregtechceu.gtceu.api.material.Element;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.data.material.GTElements;
+
 import net.minecraft.resources.ResourceLocation;
 
 public class ElementBuilder extends BuilderBase<Element> {

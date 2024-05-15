@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.core.mixins;
 
 import com.gregtechceu.gtceu.api.worldgen.ores.OrePlacer;
+
 import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.chunk.ChunkAccess;
@@ -19,7 +20,8 @@ public class ChunkGeneratorMixin {
     private final OrePlacer gtceu$orePlacer = new OrePlacer();
 
     @Inject(method = "applyBiomeDecoration", at = @At("TAIL"))
-    private void gtceu$applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structureManager, CallbackInfo ci) {
+    private void gtceu$applyBiomeDecoration(WorldGenLevel level, ChunkAccess chunk, StructureManager structureManager,
+                                            CallbackInfo ci) {
         gtceu$orePlacer.placeOres(level, (ChunkGenerator) ((Object) this), chunk);
     }
 }

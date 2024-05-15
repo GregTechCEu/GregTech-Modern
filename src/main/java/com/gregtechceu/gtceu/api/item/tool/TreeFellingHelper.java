@@ -17,7 +17,8 @@ import java.util.stream.Collectors;
 
 public class TreeFellingHelper {
 
-    public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos, LivingEntity miner) {
+    public static void fellTree(ItemStack stack, Level level, BlockState origin, BlockPos originPos,
+                                LivingEntity miner) {
         BlockPos.MutableBlockPos mutablePos = new BlockPos.MutableBlockPos();
 
         Queue<BlockPos> checking = new ArrayDeque<>();
@@ -58,7 +59,8 @@ public class TreeFellingHelper {
         }
     }
 
-    public static void breakBlocksPerTick(ServerPlayer player, ItemStack tool, List<BlockPos> posList, Block originBlock) {
+    public static void breakBlocksPerTick(ServerPlayer player, ItemStack tool, List<BlockPos> posList,
+                                          Block originBlock) {
         for (int i = 0; i < posList.size(); i++) {
             int delayTick = i * 2; // 1 block per 2 tick
             BlockPos pos = posList.get(i);

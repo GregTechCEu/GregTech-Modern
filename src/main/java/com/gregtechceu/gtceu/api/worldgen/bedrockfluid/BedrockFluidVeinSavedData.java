@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.worldgen.bedrockfluid;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.worldgen.WorldGeneratorUtils;
 
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
@@ -44,7 +44,11 @@ public class BedrockFluidVeinSavedData extends SavedData {
     private final ServerLevel serverLevel;
 
     public static BedrockFluidVeinSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(() -> new BedrockFluidVeinSavedData(serverLevel), (tag, provider) -> new BedrockFluidVeinSavedData(serverLevel, tag)), "gtceu_bedrock_fluid");
+        return serverLevel.getDataStorage()
+                .computeIfAbsent(
+                        new SavedData.Factory<>(() -> new BedrockFluidVeinSavedData(serverLevel),
+                                (tag, provider) -> new BedrockFluidVeinSavedData(serverLevel, tag)),
+                        "gtceu_bedrock_fluid");
     }
 
     public BedrockFluidVeinSavedData(ServerLevel serverLevel) {

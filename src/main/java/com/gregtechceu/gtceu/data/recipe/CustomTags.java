@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.tag.TagUtil;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -10,7 +11,6 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.common.Tags;
 
 public class CustomTags {
@@ -57,8 +57,6 @@ public class CustomTags {
     public static final TagKey<Item> UV_BATTERIES = TagUtil.createModItemTag("batteries/uv");
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createModItemTag("batteries/uhv");
 
-    public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
-
     // Platform-dependent tags
     public static final TagKey<Item> RUBBER_LOGS_ITEM = TagUtil.createModItemTag("logs/rubber");
     public static final TagKey<Item> WOODEN_CHESTS = TagUtil.createItemTag("chests/wooden");
@@ -68,8 +66,10 @@ public class CustomTags {
     public static final TagKey<Block> NEEDS_NETHERITE_TOOL = Tags.Blocks.NEEDS_NETHERITE_TOOL;
     public static final TagKey<Block> NEEDS_DURANIUM_TOOL = TagUtil.createModBlockTag("needs_duranium_tool");
     public static final TagKey<Block> NEEDS_NEUTRONIUM_TOOL = TagUtil.createModBlockTag("needs_neutronium_tool");
-    public static final TagKey<Block> INCORRECT_FOR_DURANIUM_TOOL = TagUtil.createModBlockTag("incorrect_for_duranium_tool");
-    public static final TagKey<Block> INCORRECT_FOR_NEUTRONIUM_TOOL = TagUtil.createModBlockTag("incorrect_for_neutronium_tool");
+    public static final TagKey<Block> INCORRECT_FOR_DURANIUM_TOOL = TagUtil
+            .createModBlockTag("incorrect_for_duranium_tool");
+    public static final TagKey<Block> INCORRECT_FOR_NEUTRONIUM_TOOL = TagUtil
+            .createModBlockTag("incorrect_for_neutronium_tool");
 
     public static final TagKey<Block> MINEABLE_WITH_WRENCH = TagUtil.createBlockTag("mineable/wrench", false);
     public static final TagKey<Block> MINEABLE_WITH_WIRE_CUTTER = TagUtil.createBlockTag("mineable/wire_cutter", false);
@@ -87,13 +87,13 @@ public class CustomTags {
 
     @SuppressWarnings("unchecked")
     public static final TagKey<Block>[] INCORRECT_TOOL_TIERS = new TagKey[] {
-        BlockTags.INCORRECT_FOR_WOODEN_TOOL,
-        BlockTags.INCORRECT_FOR_STONE_TOOL,
-        BlockTags.INCORRECT_FOR_IRON_TOOL,
-        BlockTags.INCORRECT_FOR_DIAMOND_TOOL,
-        BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
-        INCORRECT_FOR_DURANIUM_TOOL,
-        INCORRECT_FOR_NEUTRONIUM_TOOL,
+            BlockTags.INCORRECT_FOR_WOODEN_TOOL,
+            BlockTags.INCORRECT_FOR_STONE_TOOL,
+            BlockTags.INCORRECT_FOR_IRON_TOOL,
+            BlockTags.INCORRECT_FOR_DIAMOND_TOOL,
+            BlockTags.INCORRECT_FOR_NETHERITE_TOOL,
+            INCORRECT_FOR_DURANIUM_TOOL,
+            INCORRECT_FOR_NEUTRONIUM_TOOL,
     };
 
     public static final TagKey<Block> ENDSTONE_ORE_REPLACEABLES = TagUtil.createBlockTag("end_stone_ore_replaceables");
@@ -112,7 +112,8 @@ public class CustomTags {
     public static final TagKey<Biome> HAS_RUBBER_TREE = TagUtil.createModTag(Registries.BIOME, "has_rubber_tree");
 
     public static final TagKey<EntityType<?>> HEAT_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "heat_immune");
-    public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE, "chemical_immune");
+    public static final TagKey<EntityType<?>> CHEMICAL_IMMUNE = TagUtil.createModTag(Registries.ENTITY_TYPE,
+            "chemical_immune");
 
     public static final TagKey<EntityType<?>> IRON_GOLEMS = TagUtil.createModTag(Registries.ENTITY_TYPE, "iron_golems");
     public static final TagKey<EntityType<?>> SPIDERS = TagUtil.createModTag(Registries.ENTITY_TYPE, "spiders");

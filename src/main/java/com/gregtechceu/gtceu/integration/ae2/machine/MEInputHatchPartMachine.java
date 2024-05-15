@@ -1,11 +1,5 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.stacks.AEFluidKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -22,9 +16,17 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -86,7 +88,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
                 GenericStack exceedFluid = aeTank.exceedStack();
                 if (exceedFluid != null) {
                     int total = (int) exceedFluid.amount();
-                    int inserted = (int) aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE, this.actionSource);
+                    int inserted = (int) aeNetwork.insert(exceedFluid.what(), exceedFluid.amount(), Actionable.MODULATE,
+                            this.actionSource);
                     if (inserted > 0) {
                         aeTank.drain(inserted, IFluidHandler.FluidAction.EXECUTE);
                         continue;
@@ -134,8 +137,10 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
 
         @Override
         public CustomFluidTank[] getStorages() {
-            if(this.fluidStorages == null) {
-                this.fluidStorages = Arrays.stream(this.tanks).map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank)).toArray(CustomFluidTank[]::new);
+            if (this.fluidStorages == null) {
+                this.fluidStorages = Arrays.stream(this.tanks)
+                        .map(tank -> new WrappingFluidStorage(tank.getCapacity(), tank))
+                        .toArray(CustomFluidTank[]::new);
                 return this.fluidStorages;
             } else {
                 return this.fluidStorages;
@@ -143,7 +148,8 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
             return handleIngredient(io, recipe, left, simulate, this.handlerIO, getStorages());
         }
 
@@ -178,6 +184,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         }
 
         private static class WrappingFluidStorage extends CustomFluidTank {
+
             private final ExportOnlyAEFluid fluid;
 
             public WrappingFluidStorage(int capacity, ExportOnlyAEFluid fluid) {
@@ -241,7 +248,12 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
         public FluidStack getFluid() {
             if (this.stock != null && this.stock.what() instanceof AEFluidKey fluidKey) {
                 // TODO fix nbt once AE2 1.20.5 is out
-                return new FluidStack(fluidKey.getFluid(), this.stock == null ? 0 : (int) this.stock.amount()/*, fluidKey.getTag()*/);
+                return new FluidStack(fluidKey.getFluid(), this.stock == null ? 0 : (int) this.stock.amount()/*
+                                                                                                              * ,
+                                                                                                              * fluidKey
+                                                                                                              * .getTag(
+                                                                                                              * )
+                                                                                                              */);
             }
             return FluidStack.EMPTY;
         }
@@ -303,7 +315,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             }
             int drained = (int) Math.min(this.stock.amount(), maxDrain);
             // TODO fix nbt once AE2 1.20.5 is out
-            FluidStack result = new FluidStack(fluidKey.getFluid(), drained/*, fluidKey.getTag()*/);
+            FluidStack result = new FluidStack(fluidKey.getFluid(), drained/* , fluidKey.getTag() */);
             if (action == FluidAction.EXECUTE) {
                 this.stock = new GenericStack(this.stock.what(), this.stock.amount() - drained);
                 if (this.stock.amount() == 0) {
@@ -314,8 +326,7 @@ public class MEInputHatchPartMachine extends MEHatchPartMachine
             return result;
         }
 
-
-        //@Override
+        // @Override
         public void onContentsChanged() {
             if (onContentsChanged != null) {
                 onContentsChanged.run();

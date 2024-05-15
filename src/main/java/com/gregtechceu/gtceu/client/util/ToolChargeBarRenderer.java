@@ -2,12 +2,11 @@ package com.gregtechceu.gtceu.client.util;
 
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.component.DataComponents;
@@ -61,7 +60,8 @@ public final class ToolChargeBarRenderer {
         }
     }
 
-    public static void renderBarsItem(GuiGraphics graphics, IComponentItem item, ItemStack stack, int xPosition, int yPosition) {
+    public static void renderBarsItem(GuiGraphics graphics, IComponentItem item, ItemStack stack, int xPosition,
+                                      int yPosition) {
         boolean renderedDurability = false;
         IDurabilityBar bar = null;
         for (IItemComponent component : item.getComponents()) {

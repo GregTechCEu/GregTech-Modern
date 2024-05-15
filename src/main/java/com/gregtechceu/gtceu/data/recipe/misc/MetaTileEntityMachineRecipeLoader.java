@@ -1,23 +1,16 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.common.data.machines.GTAEMachines;
-import com.gregtechceu.gtceu.data.recipe.CustomTags;
-import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
-
-import net.minecraft.data.recipes.FinishedRecipe;
-import net.minecraft.world.item.ItemStack;
-
-import appeng.core.definitions.AEItems;
-import appeng.core.definitions.AEParts;
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.data.machine.GTAEMachines;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.core.definitions.AEItems;
+import appeng.core.definitions.AEParts;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
@@ -804,7 +797,6 @@ public class MetaTileEntityMachineRecipeLoader {
 
     // TODO clean this up with a CraftingComponent rework
     private static void registerLaserRecipes(RecipeOutput provider) {
-
         // 256A Laser Target Hatches
         ASSEMBLER_RECIPES.recipeBuilder("iv_256a_laser_target_hatch")
                 .inputItems(HULL[IV])

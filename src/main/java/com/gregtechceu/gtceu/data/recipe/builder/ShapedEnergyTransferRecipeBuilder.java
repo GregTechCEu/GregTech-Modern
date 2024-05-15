@@ -1,13 +1,9 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -17,6 +13,11 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.Objects;
  */
 @Accessors(fluent = true, chain = true)
 public class ShapedEnergyTransferRecipeBuilder {
+
     @Setter
     protected Ingredient chargeIngredient = Ingredient.EMPTY;
     @Setter
@@ -44,7 +46,6 @@ public class ShapedEnergyTransferRecipeBuilder {
     protected boolean transferMaxCharge;
     @Setter
     protected boolean overrideCharge;
-
 
     private final List<String> rows = Lists.newArrayList();
     private final Map<Character, Ingredient> key = Maps.newLinkedHashMap();
@@ -70,7 +71,7 @@ public class ShapedEnergyTransferRecipeBuilder {
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
         if (!itemStack.getComponents().isEmpty()) {
             key.put(cha, DataComponentIngredient.of(true, itemStack));
-        }else {
+        } else {
             key.put(cha, Ingredient.of(itemStack));
         }
         return this;
@@ -93,7 +94,9 @@ public class ShapedEnergyTransferRecipeBuilder {
     }
 
     public ShapedEnergyTransferRecipe build() {
-        return new ShapedEnergyTransferRecipe(Objects.requireNonNullElse(this.group, ""), this.category, ShapedRecipePattern.of(this.key, this.rows), this.chargeIngredient, this.overrideCharge, this.transferMaxCharge, this.output, false);
+        return new ShapedEnergyTransferRecipe(Objects.requireNonNullElse(this.group, ""), this.category,
+                ShapedRecipePattern.of(this.key, this.rows), this.chargeIngredient, this.overrideCharge,
+                this.transferMaxCharge, this.output, false);
     }
 
     protected ResourceLocation defaultId() {
@@ -102,6 +105,7 @@ public class ShapedEnergyTransferRecipeBuilder {
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shaped" + "/" + recipeId.getPath()), build(), null);
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shaped" + "/" + recipeId.getPath()), build(),
+                null);
     }
 }

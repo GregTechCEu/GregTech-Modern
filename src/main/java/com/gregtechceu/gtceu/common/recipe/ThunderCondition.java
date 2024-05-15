@@ -3,19 +3,18 @@ package com.gregtechceu.gtceu.common.recipe;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -26,9 +25,11 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class ThunderCondition extends RecipeCondition {
-    public static final MapCodec<ThunderCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
-        .apply(instance, ThunderCondition::new));
+
+    public static final MapCodec<ThunderCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .and(Codec.FLOAT.fieldOf("level").forGetter(val -> val.level))
+                    .apply(instance, ThunderCondition::new));
 
     public final static ThunderCondition INSTANCE = new ThunderCondition();
     private float level;
@@ -37,6 +38,7 @@ public class ThunderCondition extends RecipeCondition {
         super(isReverse);
         this.level = level;
     }
+
     public ThunderCondition(float level) {
         this.level = level;
     }

@@ -22,6 +22,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class TitleBarWidget extends WidgetGroup {
+
     private static final int BORDER_SIZE = 3;
     private static final int HORIZONTAL_MARGIN = 8;
     private static final int HEIGHT = 16;
@@ -59,21 +60,22 @@ public class TitleBarWidget extends WidgetGroup {
 
         addWidget(this.buttonGroup = new WidgetGroup(0, BORDER_SIZE, width, innerHeight));
         buttonGroup.setBackground(GuiTextures.TITLE_BAR_BACKGROUND);
-        buttonGroup.addWidget(this.backButton = new ButtonWidget(0, BORDER_SIZE, BTN_WIDTH, HEIGHT - BORDER_SIZE, new TextTexture(" <").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor()), onBackClicked)
-            .setHoverTooltips("gtceu.gui.title_bar.back"));
-        buttonGroup.addWidget(this.menuButton = new ButtonWidget(width - BTN_WIDTH, BORDER_SIZE, BTN_WIDTH, HEIGHT - BORDER_SIZE, new TextTexture("+").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor()), onMenuClicked)
-            .setHoverTooltips("gtceu.gui.title_bar.page_switcher"));
+        buttonGroup.addWidget(this.backButton = new ButtonWidget(0, BORDER_SIZE, BTN_WIDTH, HEIGHT - BORDER_SIZE,
+                new TextTexture(" <").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor()), onBackClicked)
+                .setHoverTooltips("gtceu.gui.title_bar.back"));
+        buttonGroup.addWidget(this.menuButton = new ButtonWidget(width - BTN_WIDTH, BORDER_SIZE, BTN_WIDTH,
+                HEIGHT - BORDER_SIZE,
+                new TextTexture("+").setDropShadow(false).setColor(ChatFormatting.BLACK.getColor()), onMenuClicked)
+                .setHoverTooltips("gtceu.gui.title_bar.page_switcher"));
 
         addWidget(this.mainSection = new WidgetGroup(BTN_WIDTH, 0, width, HEIGHT));
         mainSection.setBackground(GuiTextures.TITLE_BAR_BACKGROUND);
         mainSection.addWidget(this.tabIcon = new ImageWidget(
-            BORDER_SIZE + 1, BORDER_SIZE + 1,
-            innerHeight - 2, innerHeight - 2,
-            IGuiTexture.EMPTY
-        ));
+                BORDER_SIZE + 1, BORDER_SIZE + 1,
+                innerHeight - 2, innerHeight - 2,
+                IGuiTexture.EMPTY));
         mainSection.addWidget(this.tabTitle = new ImageWidget(
-            BORDER_SIZE + innerHeight, BORDER_SIZE, 0, 0, IGuiTexture.EMPTY
-        ));
+                BORDER_SIZE + innerHeight, BORDER_SIZE, 0, 0, IGuiTexture.EMPTY));
     }
 
     public void updateState(IFancyUIProvider currentPage, boolean showBackButton, boolean showMenuButton) {
@@ -81,8 +83,8 @@ public class TitleBarWidget extends WidgetGroup {
         this.showMenuButton = showMenuButton;
 
         titleText = new TextTexture(ChatFormatting.BLACK + currentPage.getTitle().copy().getString())
-            .setDropShadow(false)
-            .setType(TextTexture.TextType.ROLL);
+                .setDropShadow(false)
+                .setType(TextTexture.TextType.ROLL);
         titleText.setRollSpeed(ROLL_SPEED);
 
         tabIcon.setImage(currentPage.getTabIcon());

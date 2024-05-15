@@ -10,10 +10,7 @@ import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.Sheets;
@@ -63,9 +60,12 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            Tag fluidNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().get("stored");
+            Tag fluidNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag()
+                    .get("stored");
             if (fluidNbt != null) {
-                FluidStack tank = FluidStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), fluidNbt).getOrThrow();
+                FluidStack tank = FluidStack.OPTIONAL_CODEC.parse(
+                        Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        fluidNbt).getOrThrow();
                 // Don't need to handle locked fluids here since they don't get saved to the item
                 renderTank(poseStack, buffer, Direction.NORTH, tank, FluidStack.EMPTY);
 
@@ -78,9 +78,12 @@ public class QuantumTankRenderer extends TieredHullMachineRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay) {
-        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity && machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
-            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(), machine.getCache().getLockedFluid().getFluid());
+    public void render(BlockEntity blockEntity, float partialTicks, PoseStack poseStack, MultiBufferSource buffer,
+                       int combinedLight, int combinedOverlay) {
+        if (blockEntity instanceof IMachineBlockEntity machineBlockEntity &&
+                machineBlockEntity.getMetaMachine() instanceof QuantumTankMachine machine) {
+            renderTank(poseStack, buffer, machine.getFrontFacing(), machine.getStored(),
+                    machine.getCache().getLockedFluid().getFluid());
         }
     }
 

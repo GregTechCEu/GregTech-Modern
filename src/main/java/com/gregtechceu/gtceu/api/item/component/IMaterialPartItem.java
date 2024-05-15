@@ -4,13 +4,11 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.codec.ByteBufCodecs;
@@ -22,6 +20,9 @@ import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -50,7 +51,8 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     default void setPartMaterial(ItemStack itemStack, @NotNull Material material) {
         if (!material.hasProperty(PropertyKey.INGOT))
             throw new IllegalArgumentException("Part material must have an Ingot!");
-        itemStack.update(GTDataComponents.PART_STATS, new PartStats(GTMaterials.Neutronium, 0), stats -> stats.setMaterial(material));
+        itemStack.update(GTDataComponents.PART_STATS, new PartStats(GTMaterials.Neutronium, 0),
+                stats -> stats.setMaterial(material));
     }
 
     default int getPartDamage(ItemStack itemStack) {
@@ -62,17 +64,20 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     }
 
     default void setPartDamage(ItemStack itemStack, int damage) {
-        itemStack.update(GTDataComponents.PART_STATS, new PartStats(GTMaterials.Neutronium, 0), stats -> stats.setDamage(damage));
+        itemStack.update(GTDataComponents.PART_STATS, new PartStats(GTMaterials.Neutronium, 0),
+                stats -> stats.setDamage(damage));
     }
 
     @Override
     default String getItemStackDisplayName(ItemStack itemStack) {
         var material = getPartMaterial(itemStack);
-        return LocalizationUtils.format(material.getUnlocalizedName()) + " " + LocalizationUtils.format(itemStack.getItem().getDescriptionId());
+        return LocalizationUtils.format(material.getUnlocalizedName()) + " " +
+                LocalizationUtils.format(itemStack.getItem().getDescriptionId());
     }
 
     @Override
-    default void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    default void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                 TooltipFlag isAdvanced) {
         var material = getPartMaterial(stack);
         var maxDurability = getPartMaxDurability(stack);
         var damage = getPartDamage(stack);
@@ -102,17 +107,16 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
         return (maxDurability - getPartDamage(itemStack)) * 1f / maxDurability;
     }
 
-
     record PartStats(Material material, int damage) {
+
         public static final Codec<PartStats> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            GTCEuAPI.materialManager.codec().fieldOf("material").forGetter(PartStats::material),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("damage").forGetter(PartStats::damage)
-        ).apply(instance, PartStats::new));
+                GTCEuAPI.materialManager.codec().fieldOf("material").forGetter(PartStats::material),
+                ExtraCodecs.NON_NEGATIVE_INT.fieldOf("damage").forGetter(PartStats::damage))
+                .apply(instance, PartStats::new));
         public static final StreamCodec<ByteBuf, PartStats> STREAM_CODEC = StreamCodec.composite(
-            GTCEuAPI.materialManager.streamCodec(), PartStats::material,
-            ByteBufCodecs.VAR_INT, PartStats::damage,
-            PartStats::new
-        );
+                GTCEuAPI.materialManager.streamCodec(), PartStats::material,
+                ByteBufCodecs.VAR_INT, PartStats::damage,
+                PartStats::new);
 
         public PartStats setMaterial(Material material) {
             return new PartStats(material, damage);
@@ -122,5 +126,4 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
             return new PartStats(material, damage);
         }
     }
-
 }

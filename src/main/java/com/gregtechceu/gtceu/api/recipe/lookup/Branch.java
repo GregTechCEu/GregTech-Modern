@@ -2,9 +2,10 @@ package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 
+import net.minecraft.world.item.crafting.RecipeHolder;
+
 import com.mojang.datafixers.util.Either;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import net.minecraft.world.item.crafting.RecipeHolder;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
@@ -21,15 +22,18 @@ public class Branch {
         Stream<GTRecipe> stream = null;
         if (nodes != null) {
             stream = nodes.values().stream()
-                    .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()), right -> right.getRecipes(filterHidden)));
+                    .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()),
+                            right -> right.getRecipes(filterHidden)));
         }
         if (specialNodes != null) {
             if (stream == null) {
                 stream = specialNodes.values().stream()
-                        .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()), right -> right.getRecipes(filterHidden)));
+                        .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()),
+                                right -> right.getRecipes(filterHidden)));
             } else {
                 stream = Stream.concat(stream, specialNodes.values().stream()
-                        .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()), right -> right.getRecipes(filterHidden))));
+                        .flatMap(either -> either.map(recipe -> Stream.of(recipe.value()),
+                                right -> right.getRecipes(filterHidden))));
             }
         }
         if (stream == null) {

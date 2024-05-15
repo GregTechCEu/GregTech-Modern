@@ -20,6 +20,15 @@ import com.lowdragmc.lowdraglib.utils.Position;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.GridHelper;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.networking.security.IActionSource;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.helpers.externalstorage.GenericStackInv;
+import appeng.me.helpers.IGridConnectedBlockEntity;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -102,7 +111,9 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
     }
 
     private static class InaccessibleInfiniteSlot extends NotifiableFluidTank implements IItemHandlerModifiable {
-        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
+
+        protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+                InaccessibleInfiniteSlot.class, NotifiableFluidTank.MANAGED_FIELD_HOLDER);
 
         private final GenericStackInv internalBuffer;
 
@@ -119,13 +130,16 @@ public class MEOutputHatchPartMachine extends MEHatchPartMachine
         }
 
         @Override
-        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO, Stream.generate(() -> new CustomFluidTank(0) {
-                @Override
-                public int fill(FluidStack resource, FluidAction action) {
-                    return InaccessibleInfiniteSlot.this.fill(resource, action);
-                }
-            }).limit(this.internalBuffer.size()).toArray(CustomFluidTank[]::new));
+        public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                       @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
+                    Stream.generate(() -> new CustomFluidTank(0) {
+
+                        @Override
+                        public int fill(FluidStack resource, FluidAction action) {
+                            return InaccessibleInfiniteSlot.this.fill(resource, action);
+                        }
+                    }).limit(this.internalBuffer.size()).toArray(CustomFluidTank[]::new));
         }
 
         @NotNull

@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.material;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;

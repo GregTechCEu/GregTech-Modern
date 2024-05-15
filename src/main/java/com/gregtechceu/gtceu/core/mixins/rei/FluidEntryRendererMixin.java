@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.core.mixins.rei;
 
 import com.gregtechceu.gtceu.client.TooltipsHandler;
+
+import net.minecraft.network.chat.Component;
+import net.neoforged.neoforge.fluids.FluidStack;
+
 import me.shedaniel.rei.api.client.gui.widgets.Tooltip;
 import me.shedaniel.rei.api.client.gui.widgets.TooltipContext;
 import me.shedaniel.rei.api.common.entry.EntryStack;
 import me.shedaniel.rei.plugin.client.entry.FluidEntryDefinition;
-import net.minecraft.network.chat.Component;
-import net.neoforged.neoforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;

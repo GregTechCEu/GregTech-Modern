@@ -16,7 +16,8 @@ public class GTRecipeDisplay extends ModularDisplay<WidgetGroup> {
     private final RecipeHolder<GTRecipe> recipe;
 
     public GTRecipeDisplay(RecipeHolder<GTRecipe> recipe) {
-        super(() -> new GTRecipeWidget(recipe), GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipe.value().recipeType));
+        super(() -> new GTRecipeWidget(recipe),
+                GTRecipeTypeDisplayCategory.CATEGORIES.apply(recipe.value().recipeType));
         this.recipe = recipe;
     }
 

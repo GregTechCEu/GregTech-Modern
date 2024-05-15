@@ -33,7 +33,8 @@ public class SimpleKineticElectricWorkableMachine extends SimpleTieredMachine im
     @Persisted
     protected final NotifiableStressTrait stressTrait;
 
-    public SimpleKineticElectricWorkableMachine(IMachineBlockEntity holder, int tier, Int2IntFunction tankScalingFunction, Object... args) {
+    public SimpleKineticElectricWorkableMachine(IMachineBlockEntity holder, int tier,
+                                                Int2IntFunction tankScalingFunction, Object... args) {
         super(holder, tier, tankScalingFunction, args);
         this.stressTrait = createStressTrait(args);
     }

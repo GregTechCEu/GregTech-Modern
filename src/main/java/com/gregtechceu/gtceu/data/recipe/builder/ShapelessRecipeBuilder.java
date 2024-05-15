@@ -1,29 +1,22 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.lowdragmc.lowdraglib.LDLib;
-import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.CraftingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
-import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapelessRecipe;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -33,6 +26,7 @@ import java.util.Objects;
  */
 @Accessors(chain = true, fluent = true)
 public class ShapelessRecipeBuilder {
+
     private NonNullList<Ingredient> ingredients = NonNullList.create();
     @Setter
     protected String group;
@@ -54,7 +48,7 @@ public class ShapelessRecipeBuilder {
     public ShapelessRecipeBuilder requires(ItemStack itemStack) {
         if (!itemStack.getComponents().isEmpty()) {
             requires(DataComponentIngredient.of(true, itemStack));
-        }else {
+        } else {
             requires(Ingredient.of(itemStack));
         }
         return this;
@@ -85,12 +79,14 @@ public class ShapelessRecipeBuilder {
     }
 
     public ShapelessRecipe build() {
-        return new ShapelessRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.output, this.ingredients);
+        return new ShapelessRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.output,
+                this.ingredients);
     }
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
 
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shapeless" + "/" + recipeId.getPath()), build(), null);
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shapeless" + "/" + recipeId.getPath()), build(),
+                null);
     }
 }

@@ -1,25 +1,27 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
 import com.lowdragmc.lowdraglib.syncdata.IContentChangeAware;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.ItemStackHandler;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.function.Predicate;
 
 public class CustomItemStackHandler extends ItemStackHandler implements IContentChangeAware {
 
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Runnable onContentsChanged = () -> {};
-    @Getter @Setter
+    @Getter
+    @Setter
     protected Predicate<ItemStack> filter = stack -> true;
 
-    public CustomItemStackHandler() {
-
-    }
+    public CustomItemStackHandler() {}
 
     public CustomItemStackHandler(ItemStack stack) {
         this(NonNullList.of(stack));

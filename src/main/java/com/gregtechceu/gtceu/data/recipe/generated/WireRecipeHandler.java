@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.data.recipes.RecipeOutput;
 
 import com.google.common.collect.ImmutableMap;
@@ -52,7 +53,6 @@ public class WireRecipeHandler {
     private static final TagPrefix[] wireSizes = { wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex };
 
     public static void init(RecipeOutput provider) {
-
         // Generate Wire creation recipes (Wiremill, Extruder, Wire Cutters)
         // Wiremill: Ingot -> 1x, 2x, 4x, 8x, 16x, Fine
         // Wiremill: 1x Wire -> Fine
@@ -68,9 +68,10 @@ public class WireRecipeHandler {
         wireGtHex.executeHandler(provider, PropertyKey.WIRE, WireRecipeHandler::generateCableCovering);
     }
 
-
-    public static void processWireSingle(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
-        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot : material.hasProperty(PropertyKey.GEM) ? gem : dust;
+    public static void processWires(TagPrefix wirePrefix, Material material, WireProperties property,
+                                    RecipeOutput provider) {
+        TagPrefix prefix = material.hasProperty(PropertyKey.INGOT) ? ingot :
+                material.hasProperty(PropertyKey.GEM) ? gem : dust;
 
         EXTRUDER_RECIPES.recipeBuilder("extrude_" + material.getName() + "_wire")
                 .inputItems(prefix, material)
@@ -116,8 +117,8 @@ public class WireRecipeHandler {
         }
     }
 
-    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
-
+    public static void generateCableCovering(TagPrefix wirePrefix, Material material, WireProperties property,
+                                             RecipeOutput provider) {
         // Superconductors have no Cables, so exit early
         if (property.isSuperconductor()) return;
 
@@ -187,7 +188,8 @@ public class WireRecipeHandler {
                 .save(provider);
     }
 
-    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix, int cableAmount, RecipeOutput provider) {
+    private static void generateManualRecipe(TagPrefix wirePrefix, Material material, TagPrefix cablePrefix,
+                                             int cableAmount, RecipeOutput provider) {
         int insulationAmount = INSULATION_AMOUNT.get(cablePrefix);
         Object[] ingredients = new Object[insulationAmount + 1];
         ingredients[0] = new UnificationEntry(wirePrefix, material);

@@ -6,8 +6,8 @@ import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
 import com.gregtechceu.gtceu.utils.GTStringUtils;
-import dev.latvian.mods.kubejs.recipe.RecipeJS;
-import lombok.NoArgsConstructor;
+import com.gregtechceu.gtceu.utils.ResearchManager;
+
 import net.minecraft.world.item.ItemStack;
 
 import lombok.NoArgsConstructor;

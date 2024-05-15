@@ -81,6 +81,7 @@ public interface BlockPropertiesAccessor {
 
     @Accessor
     boolean isSpawnTerrainParticles();
+
     @Accessor
     FeatureFlagSet getRequiredFeatures();
 

@@ -77,9 +77,11 @@ public class BlockLang {
         provider.add("block.gtceu.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
         provider.add("block.gtceu.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
 
-        provider.add("block.gtceu.explosive.breaking_tooltip", "Primes explosion when mined, sneak mine to pick back up");
+        provider.add("block.gtceu.explosive.breaking_tooltip",
+                "Primes explosion when mined, sneak mine to pick back up");
         provider.add("block.gtceu.explosive.lighting_tooltip", "Cannot be lit with Redstone");
-        provider.add("block.gtceu.powderbarrel.drops_tooltip", "Slightly larger than TNT, drops all destroyed Blocks as Items");
+        provider.add("block.gtceu.powderbarrel.drops_tooltip",
+                "Slightly larger than TNT, drops all destroyed Blocks as Items");
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
     }
 }

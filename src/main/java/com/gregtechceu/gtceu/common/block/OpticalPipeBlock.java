@@ -9,9 +9,10 @@ import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.client.renderer.block.PipeBlockRenderer;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
-import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.common.pipelike.optical.LevelOpticalPipeNet;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeProperties;
 import com.gregtechceu.gtceu.common.pipelike.optical.OpticalPipeType;
+import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
 
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -21,6 +22,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -55,7 +58,8 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
                     opticalPipeBlockEntity.initHandlers();
                 }
                 opticalPipeBlockEntity.checkNetwork();
-                return opticalPipeBlockEntity.getHandlers().getOrDefault(side, opticalPipeBlockEntity.getDefaultHandler());
+                return opticalPipeBlockEntity.getHandlers().getOrDefault(side,
+                        opticalPipeBlockEntity.getDefaultHandler());
             }
             return null;
         }, this);
@@ -68,7 +72,8 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
                     opticalPipeBlockEntity.initHandlers();
                 }
                 opticalPipeBlockEntity.checkNetwork();
-                return opticalPipeBlockEntity.getHandlers().getOrDefault(side, opticalPipeBlockEntity.getDefaultHandler());
+                return opticalPipeBlockEntity.getHandlers().getOrDefault(side,
+                        opticalPipeBlockEntity.getDefaultHandler());
             }
             return null;
         }, this);
@@ -125,9 +130,13 @@ public class OpticalPipeBlock extends PipeBlock<OpticalPipeType, OpticalPipeProp
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<OpticalPipeType, OpticalPipeProperties> selfTile, Direction side, @Nullable BlockEntity tile) {
+    public boolean canPipeConnectToBlock(IPipeNode<OpticalPipeType, OpticalPipeProperties> selfTile, Direction side,
+                                         @Nullable BlockEntity tile) {
         if (tile == null || tile.getLevel() == null) return false;
-        if (tile.getLevel().getCapability(GTCapability.CAPABILITY_DATA_ACCESS, tile.getBlockPos(), side.getOpposite()) != null) return true;
-        return tile.getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, tile.getBlockPos(), side.getOpposite()) != null;
+        if (tile.getLevel().getCapability(GTCapability.CAPABILITY_DATA_ACCESS, tile.getBlockPos(),
+                side.getOpposite()) != null)
+            return true;
+        return tile.getLevel().getCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, tile.getBlockPos(),
+                side.getOpposite()) != null;
     }
 }

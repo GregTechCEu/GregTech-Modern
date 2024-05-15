@@ -6,9 +6,7 @@ import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.cover.filter.SimpleFluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
-import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 
@@ -21,11 +19,14 @@ import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Map;
 
 public class FluidRegulatorCover extends PumpCover {
+
     private static final int MAX_STACK_SIZE = 2_048_000_000; // Capacity of quantum tank IX
 
     @Persisted
@@ -37,10 +38,11 @@ public class FluidRegulatorCover extends PumpCover {
     @DescSynced
     @Getter
     private BucketMode transferBucketMode = BucketMode.MILLI_BUCKET;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected int globalTransferSizeMillibuckets;
     protected long fluidTransferBuffered = 0L;
-
 
     private NumberInputWidget<Integer> transferSizeInput;
     private EnumSelectorWidget<BucketMode> transferBucketModeInput;
@@ -54,7 +56,8 @@ public class FluidRegulatorCover extends PumpCover {
     //////////////////////////////////////
 
     @Override
-    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
+    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+                                           int platformTransferLimit) {
         return switch (transferMode) {
             case TRANSFER_ANY -> transferAny(source, destination, platformTransferLimit);
             case TRANSFER_EXACT -> transferExact(source, destination, platformTransferLimit);
@@ -107,11 +110,13 @@ public class FluidRegulatorCover extends PumpCover {
         return platformTransferLimit - fluidLeftToTransfer;
     }
 
-    private int keepExact(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
+    private int keepExact(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+                          int platformTransferLimit) {
         int fluidLeftToTransfer = platformTransferLimit;
 
         final Map<FluidStack, Integer> sourceAmounts = enumerateDistinctFluids(source, TransferDirection.EXTRACT);
-        final Map<FluidStack, Integer> destinationAmounts = enumerateDistinctFluids(destination, TransferDirection.INSERT);
+        final Map<FluidStack, Integer> destinationAmounts = enumerateDistinctFluids(destination,
+                TransferDirection.INSERT);
 
         for (FluidStack fluidStack : sourceAmounts.keySet()) {
             if (fluidLeftToTransfer <= 0L)
@@ -203,8 +208,8 @@ public class FluidRegulatorCover extends PumpCover {
                 new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
 
         this.transferSizeInput = new IntInputWidget(35, 45, 84, 20,
-                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize
-        ).setMin(0).setMax(Integer.MAX_VALUE);
+                this::getCurrentBucketModeTransferSize, this::setCurrentBucketModeTransferSize).setMin(0)
+                .setMax(Integer.MAX_VALUE);
         configureTransferSizeInput();
         group.addWidget(this.transferSizeInput);
 
@@ -218,7 +223,8 @@ public class FluidRegulatorCover extends PumpCover {
     }
 
     private void setCurrentBucketModeTransferSize(int transferSize) {
-        this.globalTransferSizeMillibuckets = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0), MAX_STACK_SIZE);
+        this.globalTransferSizeMillibuckets = Math.min(Math.max(transferSize * this.transferBucketMode.multiplier, 0),
+                MAX_STACK_SIZE);
     }
 
     private void configureTransferSizeInput() {

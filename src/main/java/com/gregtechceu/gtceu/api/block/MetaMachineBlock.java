@@ -130,6 +130,11 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
+    public boolean isCollisionShapeFullBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        return false;
+    }
+
+    @Override
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity player,
                             ItemStack pStack) {
         if (!pLevel.isClientSide) {
@@ -194,7 +199,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
-    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos, Player player) {
+    public ItemStack getCloneItemStack(BlockState state, HitResult target, LevelReader level, BlockPos pos,
+                                       Player player) {
         ItemStack itemStack = super.getCloneItemStack(state, target, level, pos, player);
         if (getMachine(level, pos) instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.savePickClone()) {
             CompoundTag tag = itemStack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
@@ -205,7 +211,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext level, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, @Nullable Item.TooltipContext level, List<Component> tooltip,
+                                TooltipFlag flag) {
         definition.getTooltipBuilder().accept(stack, tooltip);
         String mainKey = String.format("%s.machine.%s.tooltip", definition.getId().getNamespace(),
                 definition.getId().getPath());
@@ -246,7 +253,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
             if (machine instanceof IDropSaveMachine dropSaveMachine && dropSaveMachine.saveBreak()) {
                 for (ItemStack drop : drops) {
                     if (drop.getItem() instanceof MetaMachineItem item && item.getBlock() == this) {
-                        CompoundTag tag = drop.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag();
+                        CompoundTag tag = drop.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY)
+                                .copyTag();
                         dropSaveMachine.saveToItem(tag);
                         drop.set(DataComponents.BLOCK_ENTITY_DATA, CustomData.of(tag));
                         // break here to not dupe contents if a machine drops multiple of itself for whatever reason.
@@ -282,14 +290,16 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level world, BlockPos pos, Player player,
+                                               BlockHitResult hit) {
         var machine = getMachine(world, pos);
         ItemStack itemStack = player.getItemInHand(InteractionHand.MAIN_HAND);
         boolean shouldOpenUi = true;
 
         Set<GTToolType> types = ToolHelper.getToolTypes(itemStack);
         if (machine != null && !types.isEmpty() && ToolHelper.canUse(itemStack)) {
-            var result = machine.onToolClick(types, itemStack, new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+            var result = machine.onToolClick(types, itemStack,
+                    new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
             if (result.getSecond() == InteractionResult.CONSUME && player instanceof ServerPlayer serverPlayer) {
                 ToolHelper.playToolSound(result.getFirst(), serverPlayer);
 
@@ -305,7 +315,8 @@ public class MetaMachineBlock extends AppearanceBlock implements IMachineBlock {
         }
 
         if (itemStack.getItem() instanceof IGTTool gtToolItem) {
-            shouldOpenUi = gtToolItem.definition$shouldOpenUIAfterUse(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
+            shouldOpenUi = gtToolItem
+                    .definition$shouldOpenUIAfterUse(new UseOnContext(player, InteractionHand.MAIN_HAND, hit));
         }
 
         if (machine instanceof IInteractedMachine interactedMachine) {

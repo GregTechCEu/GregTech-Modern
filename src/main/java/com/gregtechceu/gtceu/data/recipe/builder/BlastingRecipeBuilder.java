@@ -1,10 +1,7 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import lombok.Setter;
-import lombok.experimental.Accessors;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -14,6 +11,9 @@ import net.minecraft.world.item.crafting.CookingBookCategory;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Objects;
@@ -51,7 +51,7 @@ public class BlastingRecipeBuilder {
     public BlastingRecipeBuilder input(ItemStack itemStack) {
         if (!itemStack.getComponents().isEmpty()) {
             input = DataComponentIngredient.of(true, itemStack);
-        }else {
+        } else {
             input = Ingredient.of(itemStack);
         }
         return this;
@@ -82,11 +82,13 @@ public class BlastingRecipeBuilder {
     }
 
     private BlastingRecipe create() {
-        return new BlastingRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.input, this.output, this.experience, this.cookingTime);
+        return new BlastingRecipe(Objects.requireNonNullElse(this.group, ""), this.category, this.input, this.output,
+                this.experience, this.cookingTime);
     }
 
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "blasting/" + recipeId.getPath()), create(), null);
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "blasting/" + recipeId.getPath()), create(),
+                null);
     }
 }

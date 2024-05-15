@@ -24,7 +24,6 @@ import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
 import java.util.function.Supplier;
 
@@ -38,6 +37,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GTRecipe implements Recipe<Container> {
+
     public final GTRecipeType recipeType;
     public final Map<RecipeCapability<?>, List<Content>> inputs;
     public final Map<RecipeCapability<?>, List<Content>> outputs;
@@ -93,7 +93,9 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy() {
-        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null), copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
+        return new GTRecipe(recipeType, copyContents(inputs, null), copyContents(outputs, null),
+                copyContents(tickInputs, null), copyContents(tickOutputs, null), new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, isFuel);
     }
 
     public GTRecipe copy(ContentModifier modifier) {
@@ -101,7 +103,9 @@ public class GTRecipe implements Recipe<Container> {
     }
 
     public GTRecipe copy(ContentModifier modifier, boolean modifyDuration) {
-        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier), copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions), new ArrayList<>(ingredientActions), data, duration, isFuel);
+        var copied = new GTRecipe(recipeType, copyContents(inputs, modifier), copyContents(outputs, modifier),
+                copyContents(tickInputs, modifier), copyContents(tickOutputs, modifier), new ArrayList<>(conditions),
+                new ArrayList<>(ingredientActions), data, duration, isFuel);
         if (modifyDuration) {
             copied.duration = modifier.apply(this.duration).intValue();
         }
@@ -142,7 +146,6 @@ public class GTRecipe implements Recipe<Container> {
     // **********************internal logic********************* //
     ///////////////////////////////////////////////////////////////
 
-
     public List<Content> getInputContents(RecipeCapability<?> capability) {
         return inputs.getOrDefault(capability, Collections.emptyList());
     }
@@ -179,7 +182,8 @@ public class GTRecipe implements Recipe<Container> {
         return ActionResult.SUCCESS;
     }
 
-    public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+    public ActionResult matchRecipeContents(IO io, IRecipeCapabilityHolder holder,
+                                            Map<RecipeCapability<?>, List<Content>> contents) {
         RecipeRunner runner = new RecipeRunner(this, io, holder, true);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var result = runner.handle(entry);
@@ -188,9 +192,11 @@ public class GTRecipe implements Recipe<Container> {
 
             if (result.result().content != null || !result.result().slots.isEmpty()) {
                 if (io == IO.IN) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in").append(": ").append(result.capability().getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_in")
+                            .append(": ").append(result.capability().getName()), 0f);
                 } else if (io == IO.OUT) {
-                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out").append(": ").append(result.capability().getName()), 0f);
+                    return ActionResult.fail(() -> Component.translatable("gtceu.recipe_logic.insufficient_out")
+                            .append(": ").append(result.capability().getName()), 0f);
                 } else {
                     return ActionResult.FAIL_NO_REASON;
                 }
@@ -209,7 +215,8 @@ public class GTRecipe implements Recipe<Container> {
         return handleRecipe(io, holder, io == IO.IN ? inputs : outputs);
     }
 
-    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder, Map<RecipeCapability<?>, List<Content>> contents) {
+    public boolean handleRecipe(IO io, IRecipeCapabilityHolder holder,
+                                Map<RecipeCapability<?>, List<Content>> contents) {
         RecipeRunner runner = new RecipeRunner(this, io, holder, false);
         for (Map.Entry<RecipeCapability<?>, List<Content>> entry : contents.entrySet()) {
             var handled = runner.handle(entry);
@@ -223,8 +230,6 @@ public class GTRecipe implements Recipe<Container> {
         }
         return true;
     }
-
-
 
     public boolean hasTick() {
         return !tickInputs.isEmpty() || !tickOutputs.isEmpty();
@@ -476,16 +481,16 @@ public class GTRecipe implements Recipe<Container> {
     @Override
     public String toString() {
         return "GTRecipe{" +
-            "recipeType=" + recipeType +
-            ", inputs=" + inputs +
-            ", outputs=" + outputs +
-            ", tickInputs=" + tickInputs +
-            ", tickOutputs=" + tickOutputs +
-            ", conditions=" + conditions +
-            ", data=" + data +
-            ", duration=" + duration +
-            ", isFuel=" + isFuel +
-            '}';
+                "recipeType=" + recipeType +
+                ", inputs=" + inputs +
+                ", outputs=" + outputs +
+                ", tickInputs=" + tickInputs +
+                ", tickOutputs=" + tickOutputs +
+                ", conditions=" + conditions +
+                ", data=" + data +
+                ", duration=" + duration +
+                ", isFuel=" + isFuel +
+                '}';
     }
 
     public void toNetwork(RegistryFriendlyByteBuf buf) {

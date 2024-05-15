@@ -7,7 +7,7 @@ import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
-import io.netty.buffer.Unpooled;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.network.FriendlyByteBuf;
 

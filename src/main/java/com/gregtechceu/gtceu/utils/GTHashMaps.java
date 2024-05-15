@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.utils;
 
-import it.unimi.dsi.fastutil.objects.*;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
@@ -97,7 +96,8 @@ public final class GTHashMaps {
      * Maps all fluids in the {@link IFluidHandler} into a {@link FluidKey}, {@link Integer} value as amount
      *
      * @param fluidInputs The combined fluid input inventory handler, in the form of an {@link IFluidHandler}
-     * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if required
+     * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if
+     *         required
      */
     public static Map<FluidKey, Long> fromFluidHandler(IFluidHandler fluidInputs) {
         final Object2LongMap<FluidKey> map = new Object2LongLinkedOpenHashMap<>();
@@ -120,7 +120,8 @@ public final class GTHashMaps {
      * amount
      *
      * @param fluidInputs The combined fluid input inventory handler, in the form of an {@link IFluidHandler}
-     * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if required
+     * @return a {@link Set} of unique {@link FluidKey}s for each fluid in the handler. Will be oversized stacks if
+     *         required
      */
     public static Map<FluidKey, Long> fromFluidCollection(Collection<FluidStack> fluidInputs) {
         final Object2LongMap<FluidKey> map = new Object2LongLinkedOpenHashMap<>();

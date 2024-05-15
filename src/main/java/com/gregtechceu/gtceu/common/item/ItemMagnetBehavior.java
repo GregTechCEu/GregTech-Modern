@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +29,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,10 +47,11 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player,
+                                                  InteractionHand hand) {
         if (!player.level().isClientSide && player.isShiftKeyDown()) {
             player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+                    "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
         }
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
@@ -186,7 +189,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Item.TooltipContext context, List<Component> lines, TooltipFlag isAdvanced) {
-        lines.add(Component.translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
+    public void appendHoverText(ItemStack itemStack, @Nullable Item.TooltipContext context, List<Component> lines,
+                                TooltipFlag isAdvanced) {
+        lines.add(Component
+                .translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
     }
 }

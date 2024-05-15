@@ -6,17 +6,17 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.NoArgsConstructor;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -27,9 +27,11 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class RPMCondition extends RecipeCondition {
-    public static final MapCodec<RPMCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(Codec.FLOAT.fieldOf("rpm").forGetter(val -> val.rpm))
-        .apply(instance, RPMCondition::new));
+
+    public static final MapCodec<RPMCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .and(Codec.FLOAT.fieldOf("rpm").forGetter(val -> val.rpm))
+                    .apply(instance, RPMCondition::new));
 
     public final static RPMCondition INSTANCE = new RPMCondition();
     private float rpm;
@@ -38,6 +40,7 @@ public class RPMCondition extends RecipeCondition {
         super(isReverse);
         this.rpm = rpm;
     }
+
     public RPMCondition(float rpm) {
         this.rpm = rpm;
     }

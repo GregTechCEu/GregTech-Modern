@@ -15,6 +15,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -100,7 +101,8 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
         if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
-        IItemHandler handler = neighbourTile.getLevel().getCapability(Capabilities.ItemHandler.BLOCK, neighbourTile.getBlockPos(), faceToNeighbour.getOpposite());
+        IItemHandler handler = neighbourTile.getLevel().getCapability(Capabilities.ItemHandler.BLOCK,
+                neighbourTile.getBlockPos(), faceToNeighbour.getOpposite());
         if (handler != null) {
             List<Predicate<ItemStack>> filters = new ArrayList<>(this.filters);
             List<Predicate<ItemStack>> moreFilters = nextFilters.get(faceToNeighbour);

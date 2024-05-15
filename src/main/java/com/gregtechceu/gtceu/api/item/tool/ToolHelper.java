@@ -4,20 +4,20 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.datacomponents.GTTool;
+import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
@@ -26,8 +26,7 @@ import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.DummyMachineBlockEntity;
 import com.gregtechceu.gtceu.utils.InfiniteEnergyContainer;
-import com.lowdragmc.lowdraglib.Platform;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -64,6 +63,12 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.CommonHooks;
 import net.neoforged.neoforge.common.IShearable;
 import net.neoforged.neoforge.event.EventHooks;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -76,6 +81,7 @@ import java.util.function.Supplier;
  * @implNote ToolHelper
  */
 public class ToolHelper {
+
     // Crafting Symbols
     private static final BiMap<Character, GTToolType> symbols = HashBiMap.create();
 
@@ -198,9 +204,11 @@ public class ToolHelper {
         var entry = GTItems.TOOL_ITEMS.get(material, toolType);
         if (entry == null) return ItemStack.EMPTY;
         ItemStack stack = entry.get().getRaw();
-        stack.update(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(Collections.emptyList(), true), val -> val.withTooltip(false));
+        stack.update(DataComponents.ATTRIBUTE_MODIFIERS, new ItemAttributeModifiers(Collections.emptyList(), true),
+                val -> val.withTooltip(false));
         stack.set(DataComponents.MAX_DAMAGE, maxDurability);
-        GTTool toolComponent = new GTTool(Optional.of(toolSpeed), Optional.of(attackDamage), Optional.empty(), Optional.of(harvestLevel), Optional.empty());
+        GTTool toolComponent = new GTTool(Optional.of(toolSpeed), Optional.of(attackDamage), Optional.empty(),
+                Optional.of(harvestLevel), Optional.empty());
         stack.set(GTDataComponents.GT_TOOL, toolComponent);
         ToolProperty toolProperty = material.getProperty(PropertyKey.TOOL);
         if (toolProperty != null) {
@@ -272,7 +280,8 @@ public class ToolHelper {
     public static Set<BlockPos> iterateAoE(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
                                            Player player, HitResult rayTraceResult,
                                            AOEFunction function) {
-        if (aoeDefinition != null && aoeDefinition != AoESymmetrical.none() && rayTraceResult instanceof BlockHitResult blockHit && blockHit.getDirection() != null) {
+        if (aoeDefinition != null && aoeDefinition != AoESymmetrical.none() &&
+                rayTraceResult instanceof BlockHitResult blockHit && blockHit.getDirection() != null) {
             int column = aoeDefinition.column;
             int row = aoeDefinition.row;
             int layer = aoeDefinition.layer;
@@ -368,11 +377,16 @@ public class ToolHelper {
                 // Stack lists can be immutable going into Recipe#matches barring no rewrites
                 // Search for forge hammer recipes from all drops individually (only LV or under)
 
-                Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> caps = Tables.newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
-                DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV, GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachines.defaultTankSizeFunction, caps);
-                caps.put(IO.IN, EURecipeCapability.CAP, List.of(new InfiniteEnergyContainer(be.getMetaMachine(), GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1)));
-                caps.put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 1, IO.IN, IO.IN, (slots) -> new CustomItemStackHandler(silktouchDrop))));
-                caps.put(IO.OUT, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
+                Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> caps = Tables
+                        .newCustomTable(new EnumMap<>(IO.class), IdentityHashMap::new);
+                DummyMachineBlockEntity be = new DummyMachineBlockEntity(GTValues.LV,
+                        GTRecipeTypes.FORGE_HAMMER_RECIPES, GTMachines.defaultTankSizeFunction, caps);
+                caps.put(IO.IN, EURecipeCapability.CAP, List.of(new InfiniteEnergyContainer(be.getMetaMachine(),
+                        GTValues.V[GTValues.LV], GTValues.V[GTValues.LV], 1, GTValues.V[GTValues.LV], 1)));
+                caps.put(IO.IN, ItemRecipeCapability.CAP, List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 1,
+                        IO.IN, IO.IN, (slots) -> new CustomItemStackHandler(silktouchDrop))));
+                caps.put(IO.OUT, ItemRecipeCapability.CAP,
+                        List.of(new NotifiableItemStackHandler(be.getMetaMachine(), 2, IO.OUT)));
                 be.getMetaMachine().reinitializeCapabilities(caps);
 
                 Iterator<GTRecipe> hammerRecipes = GTRecipeTypes.FORGE_HAMMER_RECIPES.searchRecipe(be.metaMachine);
@@ -383,7 +397,8 @@ public class ToolHelper {
                     if (prefix == null) {
                         for (Content output : hammerRecipe.getOutputContents(ItemRecipeCapability.CAP)) {
                             if (dropChance >= 1.0F || random.nextFloat() <= dropChance) {
-                                drops.add(ItemRecipeCapability.CAP.copyInner(ItemRecipeCapability.CAP.of(output.content)).getItems()[0]);
+                                drops.add(ItemRecipeCapability.CAP
+                                        .copyInner(ItemRecipeCapability.CAP.of(output.content)).getItems()[0]);
                             }
                         }
                     } else if (TagPrefix.ORES.containsKey(prefix)) {
@@ -553,7 +568,8 @@ public class ToolHelper {
     }
 
     // encompasses all vanilla special case tool checks for harvesting
-    public static boolean isToolEffective(ItemStack stack, BlockState state, Set<GTToolType> toolClasses, int harvestLevel) {
+    public static boolean isToolEffective(ItemStack stack, BlockState state, Set<GTToolType> toolClasses,
+                                          int harvestLevel) {
         Block block = state.getBlock();
 
         if (toolClasses.contains(GTToolType.PICKAXE)) {
@@ -643,7 +659,8 @@ public class ToolHelper {
             BlockState state = world.getBlockState(pos);
             if (state.getBlock() instanceof IShearable shearable) {
                 if (shearable.isShearable(tool, world, pos)) {
-                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos, tool.getEnchantmentLevel(Enchantments.FORTUNE));
+                    List<ItemStack> shearedDrops = shearable.onSheared(player, tool, world, pos,
+                            tool.getEnchantmentLevel(Enchantments.FORTUNE));
                     boolean relocateMinedBlocks = tool.has(GTDataComponents.RELOCATE_MINED_BLOCKS);
                     Iterator<ItemStack> iter = shearedDrops.iterator();
                     while (iter.hasNext()) {

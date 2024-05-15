@@ -1,21 +1,30 @@
 package com.gregtechceu.gtceu.integration;
 
-import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ImageWidget;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TankWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.jei.IngredientIO;
-import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
+import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
+
+import net.minecraft.core.NonNullList;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import com.google.common.collect.ImmutableList;
+import com.mojang.datafixers.util.Either;
+import com.mojang.datafixers.util.Pair;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -115,13 +124,11 @@ public class GTOreByProductWidget extends WidgetGroup {
         TagOrCycleItemStackTransfer itemInputsHandler = new TagOrCycleItemStackTransfer(itemInputs);
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
-            final int finalI = i;
             itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i),
                     ITEM_INPUT_LOCATIONS.get(i + 1))
                     .setCanTakeItems(false).setCanPutItems(false)
                     .setIngredientIO(IngredientIO.INPUT)
-                    .setOnAddedTooltips((slot, tooltips) -> recipeWrapper.getTooltip(finalI / 2, tooltips))
-                    .setBackground((IGuiTexture) null));
+                    .setHoverTooltips(recipeWrapper.getTooltip(i / 2)).setBackground((IGuiTexture) null));
         }
 
         NonNullList<ItemStack> itemOutputs = recipeWrapper.itemOutputs;
@@ -143,10 +150,9 @@ public class GTOreByProductWidget extends WidgetGroup {
             itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i),
                     ITEM_OUTPUT_LOCATIONS.get(i + 1))
                     .setCanTakeItems(false).setCanPutItems(false)
-                    .setIngredientIO(IngredientIO.OUTPUT).setXEIChance(xeiChance)
-                    .setOnAddedTooltips(
-                            (slot, tooltips) -> recipeWrapper.getTooltip(slotIndex + itemInputs.size(), tooltips))
-                    .setBackground((IGuiTexture) null).setOverlay(overlay));
+                    .setIngredientIO(IngredientIO.OUTPUT).setXEIChance(xeiChance).setOverlay(overlay)
+                    .setHoverTooltips(recipeWrapper.getTooltip(slotIndex + itemInputs.size()))
+                    .setBackground((IGuiTexture) null));
             itemOutputExists.add(true);
         }
 
@@ -155,9 +161,11 @@ public class GTOreByProductWidget extends WidgetGroup {
         WidgetGroup fluidStackGroup = new WidgetGroup();
         for (int i = 0; i < FLUID_LOCATIONS.size(); i += 2) {
             int slotIndex = i / 2;
-            if (!fluidInputs.get(slotIndex).isEmpty()) {
-                fluidStackGroup.addWidget(new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)), FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
-                    .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT));
+            if (!fluidInputs.get(slotIndex).map(Function.identity(), Function.identity()).isEmpty()) {
+                fluidStackGroup
+                        .addWidget(new TankWidget(new CustomFluidTank(fluidInputsHandler.getFluidInTank(slotIndex)),
+                                FLUID_LOCATIONS.get(i), FLUID_LOCATIONS.get(i + 1), false, false)
+                                .setIngredientIO(IngredientIO.INPUT).setBackground(GuiTextures.FLUID_SLOT));
             }
         }
 

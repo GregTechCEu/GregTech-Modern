@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.integration.ae2.util;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.machine.MEInputHatchPartMachine;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.DrawerHelper;
@@ -16,10 +17,8 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
@@ -27,6 +26,10 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import appeng.api.stacks.AEFluidKey;
+import appeng.api.stacks.GenericStack;
+import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -65,7 +68,8 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         int stackY = position.y + 1;
         if (config != null) {
             // TODO fix nbt once AE2 1.20.5 is out
-            FluidStack stack = config.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) config.amount()/*, key.getTag()*/) : FluidStack.EMPTY;
+            FluidStack stack = config.what() instanceof AEFluidKey key ?
+                    new FluidStack(key.getFluid(), (int) config.amount()/* , key.getTag() */) : FluidStack.EMPTY;
 
             DrawerHelper.drawFluidForGui(graphics, stack, config.amount(), stackX, stackY, 17, 17);
             String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4) + "mB";
@@ -73,7 +77,8 @@ public class AEFluidConfigSlot extends AEConfigSlot {
         }
         // TODO fix nbt once AE2 1.20.5 is out
         if (stock != null) {
-            FluidStack stack = stock.what() instanceof AEFluidKey key ? new FluidStack(key.getFluid(), (int) stock.amount()/*, key.getTag()*/) : FluidStack.EMPTY;
+            FluidStack stack = stock.what() instanceof AEFluidKey key ?
+                    new FluidStack(key.getFluid(), (int) stock.amount()/* , key.getTag() */) : FluidStack.EMPTY;
 
             DrawerHelper.drawFluidForGui(graphics, stack, stock.amount(), stackX, stackY + 18, 17, 17);
             String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4) + "mB";
@@ -131,7 +136,8 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             writeUpdateInfo(REMOVE_ID, buf -> {});
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()), buffer.readVarInt());
+            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()),
+                    buffer.readVarInt());
             slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
             this.parentWidget.enableAmount(this.index);
             if (fluid != FluidStack.EMPTY) {
@@ -178,7 +184,8 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             slot.setConfig(null);
         }
         if (id == UPDATE_ID) {
-            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()), buffer.readVarInt());
+            FluidStack fluid = new FluidStack(BuiltInRegistries.FLUID.get(buffer.readResourceLocation()),
+                    buffer.readVarInt());
             slot.setConfig(new GenericStack(AEFluidKey.of(fluid.getFluid()), fluid.getAmount()));
         }
         if (id == AMOUNT_CHANGE_ID) {
@@ -197,10 +204,11 @@ public class AEFluidConfigSlot extends AEConfigSlot {
                 FluidStack stack = new FluidStack(key.getFluid(), (int) slot.getStock().amount());
 
                 // TODO fix nbt once AE2 1.20.5 is out
-                //if (key.hasTag()) {
-                //    stack.setTag(key.getTag().copy());
-                //}
-                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(), Math.max(0, (slot.getStock().amount() - stack.getAmount())));
+                // if (key.hasTag()) {
+                // stack.setTag(key.getTag().copy());
+                // }
+                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
+                        Math.max(0, (slot.getStock().amount() - stack.getAmount())));
                 slot.setStock(stack1.amount() == 0 ? null : stack1);
             }
         }
@@ -226,7 +234,10 @@ public class AEFluidConfigSlot extends AEConfigSlot {
                 FluidStack stack = getFluidFromContainer(ingredient);
 
                 if (stack != null) {
-                    Tag compound = FluidStack.OPTIONAL_CODEC.encodeStart(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE), stack).getOrThrow();
+                    Tag compound = FluidStack.OPTIONAL_CODEC
+                            .encodeStart(Platform.getFrozenRegistry().createSerializationContext(NbtOps.INSTANCE),
+                                    stack)
+                            .getOrThrow();
                     writeClientAction(LOAD_PHANTOM_FLUID_STACK_FROM_NBT, buf -> buf.writeNbt(compound));
                 }
             }
@@ -242,7 +253,9 @@ public class AEFluidConfigSlot extends AEConfigSlot {
             return false;
         }
         // TODO fix nbt once AE2 1.20.5 is out
-        FluidStack fluid = slot.getConfig().what() instanceof AEFluidKey fluidKey ? new FluidStack(fluidKey.getFluid(), (int) slot.getConfig().amount()/*, fluidKey.getTag()*/) : FluidStack.EMPTY;
+        FluidStack fluid = slot.getConfig().what() instanceof AEFluidKey fluidKey ?
+                new FluidStack(fluidKey.getFluid(), (int) slot.getConfig().amount()/* , fluidKey.getTag() */) :
+                FluidStack.EMPTY;
         long amt;
         if (isCtrlDown()) {
             amt = scrollY > 0 ? fluid.getAmount() * 2L : fluid.getAmount() / 2L;

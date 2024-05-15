@@ -11,7 +11,6 @@ import com.lowdragmc.lowdraglib.utils.Size;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
@@ -133,7 +132,7 @@ public class AEItemConfigSlot extends AEConfigSlot {
         if (id == UPDATE_ID) {
             ItemStack item = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
             // TODO fix nbt once AE2 1.20.5 is out
-            slot.setConfig(new GenericStack(AEItemKey.of(item.getItem()/*, item.getTag()*/), item.getCount()));
+            slot.setConfig(new GenericStack(AEItemKey.of(item.getItem()/* , item.getTag() */), item.getCount()));
             this.parentWidget.enableAmount(this.index);
             if (!item.isEmpty()) {
                 writeUpdateInfo(UPDATE_ID, buf -> ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, item));
@@ -147,12 +146,14 @@ public class AEItemConfigSlot extends AEConfigSlot {
             }
         }
         if (id == PICK_UP_ID) {
-            if (slot.getStock() != null && this.gui.getModularUIContainer().getCarried() == ItemStack.EMPTY && slot.getStock().what() instanceof AEItemKey key) {
-                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize(key.getItem().getDefaultInstance())));
+            if (slot.getStock() != null && this.gui.getModularUIContainer().getCarried() == ItemStack.EMPTY &&
+                    slot.getStock().what() instanceof AEItemKey key) {
+                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(),
+                        key.getItem().getMaxStackSize(key.getItem().getDefaultInstance())));
                 // TODO fix nbt once AE2 1.20.5 is out
-                //if (key.hasTag()) {
-                //    stack.setTag(key.getTag().copy());
-                //}
+                // if (key.hasTag()) {
+                // stack.setTag(key.getTag().copy());
+                // }
                 this.gui.getModularUIContainer().setCarried(stack);
                 GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
                         Math.max(0, (slot.getStock().amount() - stack.getCount())));
@@ -172,7 +173,7 @@ public class AEItemConfigSlot extends AEConfigSlot {
         if (id == UPDATE_ID) {
             ItemStack item = ItemStack.OPTIONAL_STREAM_CODEC.decode(buffer);
             // TODO fix nbt once AE2 1.20.5 is out
-            slot.setConfig(new GenericStack(AEItemKey.of(item.getItem()/*, item.getTag()*/), item.getCount()));
+            slot.setConfig(new GenericStack(AEItemKey.of(item.getItem()/* , item.getTag() */), item.getCount()));
         }
         if (id == AMOUNT_CHANGE_ID) {
             if (slot.getConfig() != null) {
@@ -182,11 +183,12 @@ public class AEItemConfigSlot extends AEConfigSlot {
         }
         if (id == PICK_UP_ID) {
             if (slot.getStock() != null && slot.getStock().what() instanceof AEItemKey key) {
-                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize(key.getItem().getDefaultInstance())));
+                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(),
+                        key.getItem().getMaxStackSize(key.getItem().getDefaultInstance())));
                 // TODO fix nbt once AE2 1.20.5 is out
-                //if (key.hasTag()) {
-                //    stack.setTag(key.getTag().copy());
-                //}
+                // if (key.hasTag()) {
+                // stack.setTag(key.getTag().copy());
+                // }
                 this.gui.getModularUIContainer().setCarried(stack);
                 GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
                         Math.max(0, (slot.getStock().amount() - stack.getCount())));
@@ -213,7 +215,8 @@ public class AEItemConfigSlot extends AEConfigSlot {
             @Override
             public void accept(@NotNull Object ingredient) {
                 if (ingredient instanceof ItemStack) {
-                    writeClientAction(UPDATE_ID, buf -> ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, (ItemStack) ingredient));
+                    writeClientAction(UPDATE_ID,
+                            buf -> ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, (ItemStack) ingredient));
                 }
             }
         });

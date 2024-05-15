@@ -5,18 +5,12 @@ import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.core.mixins.LootPoolAccessor;
 import com.gregtechceu.gtceu.utils.ItemStackHashStrategy;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.LootPool;
@@ -26,14 +20,18 @@ import net.minecraft.world.level.storage.loot.entries.LootPoolEntryContainer;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunction;
 import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
-import net.minecraft.world.level.storage.loot.functions.SetItemCountFunction;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
 import net.minecraft.world.level.storage.loot.providers.number.UniformGenerator;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.LootTableLoadEvent;
-import org.apache.commons.lang3.ArrayUtils;
+
+import com.google.common.base.Preconditions;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -69,7 +67,7 @@ public final class ChestGenHooks {
                 }
 
                 try {
-                    List<LootPoolEntryContainer> entries = new ArrayList<>(((LootPoolAccessor)mainPool).getEntries());
+                    List<LootPoolEntryContainer> entries = new ArrayList<>(((LootPoolAccessor) mainPool).getEntries());
                     entries.add(entry);
                     ((LootPoolAccessor) mainPool).setEntries(entries);
                 } catch (RuntimeException e) {
@@ -131,13 +129,16 @@ public final class ChestGenHooks {
     }
 
     public static class RandomWeightLootFunction extends LootItemConditionalFunction implements LootItemFunction {
-        public static final MapCodec<RandomWeightLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            ItemStack.CODEC.fieldOf("stack").forGetter(val -> val.stack),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("min").forGetter(val -> val.minAmount),
-            ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(val -> val.maxAmount)
-        ).apply(instance, RandomWeightLootFunction::new));
 
-        public static final LootItemFunctionType<RandomWeightLootFunction> TYPE = GTRegistries.register(BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType<>(CODEC));
+        public static final MapCodec<RandomWeightLootFunction> CODEC = RecordCodecBuilder.mapCodec(instance -> instance
+                .group(
+                        ItemStack.CODEC.fieldOf("stack").forGetter(val -> val.stack),
+                        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("min").forGetter(val -> val.minAmount),
+                        ExtraCodecs.NON_NEGATIVE_INT.fieldOf("max").forGetter(val -> val.maxAmount))
+                .apply(instance, RandomWeightLootFunction::new));
+
+        public static final LootItemFunctionType<RandomWeightLootFunction> TYPE = GTRegistries.register(
+                BuiltInRegistries.LOOT_FUNCTION_TYPE, GTCEu.id("random_weight"), new LootItemFunctionType<>(CODEC));
 
         private final ItemStack stack;
         @Getter

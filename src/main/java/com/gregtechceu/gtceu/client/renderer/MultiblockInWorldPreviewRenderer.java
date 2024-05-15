@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.client.renderer;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
-import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
+
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.client.scene.WorldSceneRenderer;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
@@ -31,6 +32,10 @@ import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.*;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 import org.lwjgl.opengl.GL11;
 
@@ -95,7 +100,7 @@ public class MultiblockInWorldPreviewRenderer {
 
     /**
      * Show the multiblock preview in the world by the given pos, side, and shape info.
-     *
+     * 
      * @param pos       the pos of the controller
      * @param front     the front of the controller
      * @param shapeInfo the shape info of the multiblock
@@ -182,8 +187,9 @@ public class MultiblockInWorldPreviewRenderer {
 
                     BlockPos realPos = pos.offset(offset);
 
-                    if (column[z].getBlockEntity(realPos, Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder
-                        && holder.getMetaMachine() instanceof IMultiController controller) {
+                    if (column[z].getBlockEntity(realPos,
+                            Platform.getFrozenRegistry()) instanceof IMachineBlockEntity holder &&
+                            holder.getMetaMachine() instanceof IMultiController controller) {
                         holder.getSelf().setLevel(LEVEL);
                         controllerBase = controller;
                     } else {
@@ -229,11 +235,11 @@ public class MultiblockInWorldPreviewRenderer {
                         if (tile != null) {
                             poseStack.pushPose();
                             poseStack.translate(pos.getX(), pos.getY(), pos.getZ());
-                            BlockEntityRenderer<BlockEntity> ber = Minecraft.getInstance()
+                            BlockEntityRenderer<BlockEntity> tileentityrenderer = Minecraft.getInstance()
                                     .getBlockEntityRenderDispatcher().getRenderer(tile);
-                            if (ber != null) {
+                            if (tileentityrenderer != null) {
                                 if (tile.hasLevel() && tile.getType().isValid(tile.getBlockState())) {
-                                    ber.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
+                                    tileentityrenderer.render(tile, partialTicks, poseStack, buffers, 0xF000F0,
                                             OverlayTexture.NO_OVERLAY);
                                 }
                             }
@@ -398,7 +404,8 @@ public class MultiblockInWorldPreviewRenderer {
                 poseStack.translate(-0.5, -0.5, -0.5);
 
                 level.setRenderFilter(p -> p.equals(pos));
-                WorldSceneRenderer.renderBlocksForge(dispatcher, state, pos, level, poseStack, wrapperBuffer, GTValues.RNG, layer);
+                WorldSceneRenderer.renderBlocksForge(dispatcher, state, pos, level, poseStack, wrapperBuffer,
+                        GTValues.RNG, layer);
                 level.setRenderFilter(p -> true);
                 poseStack.popPose();
             }

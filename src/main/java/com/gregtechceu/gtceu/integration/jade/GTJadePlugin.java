@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.integration.jade.provider.ControllableBlockProvider
 import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.WorkableBlockProvider;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
+
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
@@ -34,20 +36,21 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }
 
-    /* TODO fix once Jade 1.20.5 is out
-    static {
-        GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(GTCEu.id(type.name), true, map
-                .values()
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(ItemProviderEntry::isBound)
-                .map(ItemProviderEntry::asItem)
-                .map(Item::getDefaultInstance)
-                .toList()
-            ));
-        });
-    }
-    */
+    /*
+     * TODO fix once Jade 1.20.5 is out
+     * static {
+     * GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
+     * if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
+     * HarvestToolProvider.registerHandler(new SimpleToolHandler(GTCEu.id(type.name), true, map
+     * .values()
+     * .stream()
+     * .filter(Objects::nonNull)
+     * .filter(ItemProviderEntry::isBound)
+     * .map(ItemProviderEntry::asItem)
+     * .map(Item::getDefaultInstance)
+     * .toList()
+     * ));
+     * });
+     * }
+     */
 }

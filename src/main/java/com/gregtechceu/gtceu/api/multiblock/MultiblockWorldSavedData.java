@@ -2,8 +2,7 @@ package com.gregtechceu.gtceu.api.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -13,14 +12,18 @@ import net.minecraft.world.level.saveddata.SavedData;
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 import java.util.concurrent.*;
 
 public class MultiblockWorldSavedData extends SavedData {
+
     public static MultiblockWorldSavedData getOrCreate(ServerLevel serverLevel) {
-        return serverLevel.getDataStorage().computeIfAbsent(new SavedData.Factory<>(MultiblockWorldSavedData::new, MultiblockWorldSavedData::new), "gtceu_multiblock");
+        return serverLevel.getDataStorage().computeIfAbsent(
+                new SavedData.Factory<>(MultiblockWorldSavedData::new, MultiblockWorldSavedData::new),
+                "gtceu_multiblock");
     }
 
     /**
@@ -74,7 +77,7 @@ public class MultiblockWorldSavedData extends SavedData {
             .setNameFormat("GTCEu Multiblock Async Thread-%d")
             .setDaemon(true)
             .build();
-    private static final ThreadLocal<Boolean> IN_SERVICE = ThreadLocal.withInitial(()->false);
+    private static final ThreadLocal<Boolean> IN_SERVICE = ThreadLocal.withInitial(() -> false);
     @Getter
     private long periodID = Long.MIN_VALUE;
 
@@ -132,5 +135,4 @@ public class MultiblockWorldSavedData extends SavedData {
         }
         executorService = null;
     }
-
 }

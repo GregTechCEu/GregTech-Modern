@@ -32,8 +32,10 @@ public class BlockTagLoader {
                 Blocks.RED_CONCRETE_POWDER, Blocks.BLACK_CONCRETE_POWDER);
         create(provider, CustomTags.ENDSTONE_ORE_REPLACEABLES, Blocks.END_STONE);
 
-        create(provider, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, CustomTags.NEEDS_NETHERITE_TOOL, CustomTags.NEEDS_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
-        create(provider, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, CustomTags.NEEDS_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
+        create(provider, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, CustomTags.NEEDS_NETHERITE_TOOL,
+                CustomTags.NEEDS_DURANIUM_TOOL, CustomTags.NEEDS_NEUTRONIUM_TOOL);
+        create(provider, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, CustomTags.NEEDS_DURANIUM_TOOL,
+                CustomTags.NEEDS_NEUTRONIUM_TOOL);
 
         create(provider, BlockTags.REPLACEABLE,
                 GTMaterials.Oil.getFluid().defaultFluidState().createLegacyBlock().getBlock(),

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
@@ -24,7 +25,5 @@ public interface IComponentItem extends ItemLike {
         }
     }
 
-    default void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {
-
-    }
+    default void fillItemCategory(CreativeModeTab category, NonNullList<ItemStack> items) {}
 }

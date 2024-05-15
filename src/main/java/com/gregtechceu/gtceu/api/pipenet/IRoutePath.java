@@ -5,6 +5,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.capabilities.BlockCapability;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,6 +29,7 @@ public interface IRoutePath<T> {
 
     @Nullable
     default <I> I getTargetCapability(BlockCapability<I, Direction> capability, Level level) {
-        return level.getCapability(capability, getTargetPipePos().relative(getTargetFacing()), getTargetFacing().getOpposite());
+        return level.getCapability(capability, getTargetPipePos().relative(getTargetFacing()),
+                getTargetFacing().getOpposite());
     }
 }

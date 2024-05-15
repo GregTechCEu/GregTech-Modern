@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.google.common.collect.Lists;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
-import net.neoforged.neoforge.common.crafting.ICustomIngredient;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
 import com.google.common.collect.Lists;
@@ -47,7 +44,8 @@ public class IngredientEquality {
         }
     };
 
-    public static final Comparator<ItemStack> ITEM_STACK_COMPARATOR = Comparator.comparingInt(ItemStack::getCount).thenComparing(ItemStack::getItem, Comparator.comparing(BuiltInRegistries.ITEM::getKey));
+    public static final Comparator<ItemStack> ITEM_STACK_COMPARATOR = Comparator.comparingInt(ItemStack::getCount)
+            .thenComparing(ItemStack::getItem, Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
     public static final Comparator<Ingredient> INGREDIENT_COMPARATOR = new Comparator<>() {
 

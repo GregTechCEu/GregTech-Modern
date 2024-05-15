@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.material.material;
 
 import com.gregtechceu.gtceu.api.material.material.registry.MaterialRegistry;
+
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.resources.ResourceLocation;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
 import io.netty.buffer.ByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -103,7 +105,8 @@ public interface IMaterialRegistryManager {
     }
 
     default StreamCodec<ByteBuf, Material> streamCodec() {
-        return ResourceLocation.STREAM_CODEC.map(id -> this.getRegistry(id.getNamespace()).get(id.getPath()), Material::getResourceLocation);
+        return ResourceLocation.STREAM_CODEC.map(id -> this.getRegistry(id.getNamespace()).get(id.getPath()),
+                Material::getResourceLocation);
     }
 
     enum Phase {

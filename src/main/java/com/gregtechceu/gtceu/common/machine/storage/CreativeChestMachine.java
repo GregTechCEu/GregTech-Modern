@@ -30,6 +30,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeChestMachine extends QuantumChestMachine {
@@ -139,7 +140,8 @@ public class CreativeChestMachine extends QuantumChestMachine {
         if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0) return;
         if (getLevel().isClientSide || !isWorkingEnabled() || stack.isEmpty()) return;
 
-        IItemHandler transfer = getLevel().getCapability(Capabilities.ItemHandler.BLOCK, getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
+        IItemHandler transfer = getLevel().getCapability(Capabilities.ItemHandler.BLOCK,
+                getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
         if (transfer != null) {
             stack.setCount(itemsPerCycle);
 

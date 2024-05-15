@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
 import com.lowdragmc.lowdraglib.utils.ShapeUtils;
 
@@ -22,6 +23,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -58,24 +63,31 @@ public class MachineDefinition implements Supplier<IMachineBlock> {
     @Getter
     @Setter
     private int defaultPaintingColor;
-    @Getter @Setter
+    @Getter
+    @Setter
     private RecipeModifier recipeModifier;
-    @Getter @Setter
+    @Getter
+    @Setter
     private boolean alwaysTryModifyRecipe;
     @NotNull
-    @Getter @Setter
-    private Predicate<IRecipeLogicMachine> beforeWorking = (machine) -> true;
+    @Getter
+    @Setter
+    private BiPredicate<IRecipeLogicMachine, GTRecipe> beforeWorking = (machine, recipe) -> true;
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Predicate<IRecipeLogicMachine> onWorking = (machine) -> true;
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Consumer<IRecipeLogicMachine> onWaiting = (machine) -> {};
     @NotNull
-    @Getter @Setter
+    @Getter
+    @Setter
     private Consumer<IRecipeLogicMachine> afterWorking = (machine) -> {};
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private IRenderer renderer;
     @Setter
     private VoxelShape shape;

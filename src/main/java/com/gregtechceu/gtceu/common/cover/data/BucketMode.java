@@ -17,7 +17,6 @@ public enum BucketMode implements EnumSelectorWidget.SelectableEnum {
     @Getter
     public final IGuiTexture icon;
 
-
     public final int multiplier;
 
     BucketMode(String tooltip, String textureName, int multiplier) {

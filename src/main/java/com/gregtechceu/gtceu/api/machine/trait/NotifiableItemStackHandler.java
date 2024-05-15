@@ -7,18 +7,20 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.api.recipe.DummyCraftingContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
-import lombok.Getter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import dev.latvian.mods.kubejs.recipe.ingredientaction.IngredientAction;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -33,7 +35,8 @@ import java.util.function.Function;
  * @date 2023/2/20
  * @implNote NotifiableItemStackHandler
  */
-public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<SizedIngredient> implements ICapabilityTrait, IItemHandlerModifiable {
+public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<SizedIngredient>
+                                        implements ICapabilityTrait, IItemHandlerModifiable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             NotifiableItemStackHandler.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
@@ -41,11 +44,13 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     public final IO handlerIO;
     @Getter
     public final IO capabilityIO;
-    @Persisted(subPersisted = true) @DescSynced
+    @Persisted(subPersisted = true)
+    @DescSynced
     public final CustomItemStackHandler storage;
     private Boolean isEmpty;
 
-    public NotifiableItemStackHandler(MetaMachine machine, int slots, IO handlerIO, IO capabilityIO, Function<Integer, CustomItemStackHandler> transferFactory) {
+    public NotifiableItemStackHandler(MetaMachine machine, int slots, @NotNull IO handlerIO, @NotNull IO capabilityIO,
+                                      Function<Integer, CustomItemStackHandler> transferFactory) {
         super(machine);
         this.handlerIO = handlerIO;
         this.storage = transferFactory.apply(slots);
@@ -77,12 +82,15 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     }
 
     @Override
-    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left, @Nullable String slotName, boolean simulate) {
+    public List<SizedIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storage);
     }
 
     @Nullable
-    public static List<SizedIngredient> handleIngredient(IO io, GTRecipe recipe, List<SizedIngredient> left, boolean simulate, IO handlerIO, CustomItemStackHandler storage) {
+    public static List<SizedIngredient> handleIngredient(IO io, GTRecipe recipe, List<SizedIngredient> left,
+                                                         boolean simulate, IO handlerIO,
+                                                         CustomItemStackHandler storage) {
         if (io != handlerIO) return left;
         var capability = simulate ? storage.copy() : storage;
         Iterator<SizedIngredient> iterator = left.iterator();
@@ -101,8 +109,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                                 ItemStack extracted = ItemStack.EMPTY;
                                 boolean didRunIngredientAction = false;
                                 if (GTCEu.isKubeJSLoaded()) {
-                                    //noinspection unchecked must be List<?> to be able to load without KJS.
-                                    ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i, (List<IngredientAction>) recipe.ingredientActions);
+                                    // noinspection unchecked must be List<?> to be able to load without KJS.
+                                    ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
+                                            (List<IngredientAction>) recipe.ingredientActions);
                                     if (!actioned.isEmpty()) {
                                         extracted = actioned;
                                         didRunIngredientAction = true;
@@ -135,8 +144,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
                         ItemStack leftStack = ItemStack.EMPTY;
                         boolean didRunIngredientAction = false;
                         if (GTCEu.isKubeJSLoaded()) {
-                            //noinspection unchecked must be List<?> to be able to load without KJS.
-                            ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i, (List<IngredientAction>) recipe.ingredientActions);
+                            // noinspection unchecked must be List<?> to be able to load without KJS.
+                            ItemStack actioned = KJSCallWrapper.applyIngredientAction(capability, i,
+                                    (List<IngredientAction>) recipe.ingredientActions);
                             if (!actioned.isEmpty()) {
                                 leftStack = actioned;
                                 didRunIngredientAction = true;
@@ -275,7 +285,9 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
     }
 
     public static class KJSCallWrapper {
-        public static ItemStack applyIngredientAction(CustomItemStackHandler storage, int index, List<IngredientAction> ingredientActions) {
+
+        public static ItemStack applyIngredientAction(CustomItemStackHandler storage, int index,
+                                                      List<IngredientAction> ingredientActions) {
             var stack = storage.getStackInSlot(index);
 
             if (stack.isEmpty()) {
@@ -292,5 +304,4 @@ public class NotifiableItemStackHandler extends NotifiableRecipeHandlerTrait<Siz
             return ItemStack.EMPTY;
         }
     }
-
 }

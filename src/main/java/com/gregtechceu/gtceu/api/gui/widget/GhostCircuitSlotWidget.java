@@ -8,13 +8,13 @@ import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -150,11 +150,11 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                 .setBackground(new GuiTextureGroup(GuiTextures.SLOT, GuiTextures.INT_CIRCUIT_OVERLAY)));
         if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
             group.addWidget(new ButtonWidget((group.getSize().width - 18) / 2, 20, 18, 18, IGuiTexture.EMPTY,
-                clickData -> {
-                    if (!clickData.isRemote) {
-                        circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
-                    }
-                }));
+                    clickData -> {
+                        if (!clickData.isRemote) {
+                            circuitInventory.setStackInSlot(0, ItemStack.EMPTY);
+                        }
+                    }));
         }
         int idx = 0;
         for (int x = 0; x <= 2; x++) {
@@ -172,7 +172,6 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                                 } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
                                     circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
                                 }
-                                circuitInventory.onContentsChanged();
                             }
                         }));
                 idx++;
@@ -194,23 +193,6 @@ public class GhostCircuitSlotWidget extends SlotWidget {
                             }
                         }
                     }));
-                idx++;
-            }
-        }
-        for(int x = 0; x <= 5; x++) {
-            int finalIdx = x + 27;
-            group.addWidget(new ButtonWidget(5 + (18 * x), 102, 18, 18, new GuiTextureGroup(GuiTextures.SLOT, new ItemStackTexture(IntCircuitBehaviour.stack(finalIdx)).scale(16f / 18)),
-                clickData -> {
-                    if (!clickData.isRemote) {
-                        ItemStack stack = circuitInventory.getStackInSlot(0).copy();
-                        if (IntCircuitBehaviour.isIntegratedCircuit(stack)) {
-                            IntCircuitBehaviour.setCircuitConfiguration(stack, finalIdx);
-                            circuitInventory.setStackInSlot(0, stack);
-                        } else if (ConfigHolder.INSTANCE.machines.ghostCircuit) {
-                            circuitInventory.setStackInSlot(0, IntCircuitBehaviour.stack(finalIdx));
-                        }
-                    }
-                }));
         }
         group.setBackground(GuiTextures.BACKGROUND);
         return group;

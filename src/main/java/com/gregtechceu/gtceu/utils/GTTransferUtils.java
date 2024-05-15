@@ -6,14 +6,17 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import it.unimi.dsi.fastutil.ints.IntArrayList;
-import it.unimi.dsi.fastutil.ints.IntList;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 import java.util.function.Predicate;
@@ -24,11 +27,13 @@ public class GTTransferUtils {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler, int transferLimit) {
+    public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler,
+                                     int transferLimit) {
         return transferFluids(sourceHandler, destHandler, transferLimit, fluidStack -> true);
     }
 
-    public static int transferFluids(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler, int transferLimit, @Nonnull Predicate<FluidStack> fluidFilter) {
+    public static int transferFluids(@NotNull IFluidHandler sourceHandler, @NotNull IFluidHandler destHandler,
+                                     int transferLimit, @NotNull Predicate<FluidStack> fluidFilter) {
         int fluidLeftToTransfer = transferLimit;
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
@@ -60,7 +65,8 @@ public class GTTransferUtils {
         return transferLimit - fluidLeftToTransfer;
     }
 
-    public static boolean transferExactFluidStack(@Nonnull IFluidHandler sourceHandler, @Nonnull IFluidHandler destHandler, FluidStack fluidStack) {
+    public static boolean transferExactFluidStack(@NotNull IFluidHandler sourceHandler,
+                                                  @NotNull IFluidHandler destHandler, FluidStack fluidStack) {
         long amount = fluidStack.getAmount();
         FluidStack sourceFluid = sourceHandler.drain(fluidStack, IFluidHandler.FluidAction.SIMULATE);
         if (sourceFluid == FluidStack.EMPTY || sourceFluid.getAmount() != amount) {
@@ -163,7 +169,8 @@ public class GTTransferUtils {
         return true;
     }
 
-    public static long fillFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack, IFluidHandler.FluidAction action) {
+    public static long fillFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack,
+                                                      IFluidHandler.FluidAction action) {
         if (stack.isEmpty()) return 0;
         if (handler instanceof FluidTransferList transferList) {
             var copied = stack.copy();
@@ -181,7 +188,8 @@ public class GTTransferUtils {
         return handler.fill(stack, action);
     }
 
-    public static FluidStack drainFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack, IFluidHandler.FluidAction action) {
+    public static FluidStack drainFluidAccountNotifiableList(IFluidHandler handler, FluidStack stack,
+                                                             IFluidHandler.FluidAction action) {
         if (stack.isEmpty()) return FluidStack.EMPTY;
         if (handler instanceof FluidTransferList transferList) {
             var copied = stack.copy();
@@ -235,7 +243,8 @@ public class GTTransferUtils {
         return stack;
     }
 
-    public static ItemStack insertItemAccountNotifiableList(IItemHandler handler, int slot, ItemStack stack, boolean simulate) {
+    public static ItemStack insertItemAccountNotifiableList(IItemHandler handler, int slot, ItemStack stack,
+                                                            boolean simulate) {
         if (handler instanceof ItemTransferList transferList) {
             int index = 0;
             for (var transfer : transferList.transfers) {

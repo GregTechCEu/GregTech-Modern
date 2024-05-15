@@ -15,7 +15,7 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import com.lowdragmc.lowdraglib.gui.editor.Icons;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
@@ -103,7 +103,9 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
     @Getter
     @Setter
     private boolean isVoiding;
-    @Persisted(subPersisted = true) @DescSynced @Getter
+    @Persisted(subPersisted = true)
+    @DescSynced
+    @Getter
     private final CustomItemStackHandler lockedItem;
 
     public QuantumChestMachine(IMachineBlockEntity holder, int tier, int maxStoredItems, Object... args) {
@@ -405,13 +407,17 @@ public class QuantumChestMachine extends TieredMachine implements IAutoOutputIte
                         })
                         .setBackgroundTexture(GuiTextures.SLOT))
                 .addWidget(new ButtonWidget(87, 42, 18, 18,
-                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)),cd -> {
-                    if (!cd.isRemote) {
-                        var stored = cache.getStackInSlot(0);
-                        if (!stored.isEmpty()) {
-                            var extracted = cache.extractItem(0, Math.min(stored.getCount(), stored.getMaxStackSize()), false);
-                            if (!group.getGui().entityPlayer.addItem(extracted)) {
-                                Block.popResource(group.getGui().entityPlayer.level(), group.getGui().entityPlayer.getOnPos(), extracted);
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, Icons.DOWN.scale(0.7f)), cd -> {
+                            if (!cd.isRemote) {
+                                var stored = cache.getStackInSlot(0);
+                                if (!stored.isEmpty()) {
+                                    var extracted = cache.extractItem(0,
+                                            Math.min(stored.getCount(), stored.getMaxStackSize()), false);
+                                    if (!group.getGui().entityPlayer.addItem(extracted)) {
+                                        Block.popResource(group.getGui().entityPlayer.level(),
+                                                group.getGui().entityPlayer.getOnPos(), extracted);
+                                    }
+                                }
                             }
                         }))
                 .addWidget(new PhantomSlotWidget(lockedItem, 0, 58, 41))

@@ -31,9 +31,7 @@ public class OreVeinWorldEntry {
         this.operationsRemaining = operationsRemaining;
     }
 
-    private OreVeinWorldEntry() {
-
-    }
+    private OreVeinWorldEntry() {}
 
     @SuppressWarnings("unused")
     public void setOperationsRemaining(int amount) {

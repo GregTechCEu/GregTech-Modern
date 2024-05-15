@@ -1,8 +1,7 @@
 package com.gregtechceu.gtceu.common.worldgen;
 
 import com.gregtechceu.gtceu.data.worldgen.GTPlacerTypes;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
@@ -13,7 +12,7 @@ import net.minecraft.world.level.levelgen.feature.configurations.TreeConfigurati
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacer;
 import net.minecraft.world.level.levelgen.feature.foliageplacers.FoliagePlacerType;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -21,7 +20,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class RubberFoliagePlacer extends FoliagePlacer {
-    public static final MapCodec<RubberFoliagePlacer> CODEC = RecordCodecBuilder.mapCodec(instance -> foliagePlacerParts(instance).apply(instance, RubberFoliagePlacer::new));
+
+    public static final MapCodec<RubberFoliagePlacer> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> foliagePlacerParts(instance).apply(instance, RubberFoliagePlacer::new));
 
     public RubberFoliagePlacer(IntProvider pRadius, IntProvider pOffset) {
         super(pRadius, pOffset);

@@ -51,10 +51,10 @@ public class ElectricContainerBlockProvider extends CapabilityBlockProvider<IEne
                         getProgress(stored, maxStorage),
                         Component.translatable("gtceu.jade.energy_stored", stored, maxStorage),
                         helper.progressStyle().color(0xFFEEE600, 0xFFEEE600).textColor(-1),
-                        Util.make(BoxStyle.GradientBorder.DEFAULT_VIEW_GROUP, style -> style.borderColor = new int[] {0xFF555555, 0xFF555555, 0xFF555555, 0xFF555555}),
-                        true
-                )
-        );
+                        Util.make(BoxStyle.GradientBorder.DEFAULT_VIEW_GROUP,
+                                style -> style.borderColor = new int[] { 0xFF555555, 0xFF555555, 0xFF555555,
+                                        0xFF555555 }),
+                        true));
     }
 
     @Override

@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.material.material.properties.ItemPipeProperties
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
 import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.utils.FacingPos;
+
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 
 import net.minecraft.core.BlockPos;
@@ -11,6 +12,8 @@ import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.items.IItemHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -51,7 +54,8 @@ public class ItemRoutePath implements IRoutePath<IItemHandler> {
 
     @Override
     public @Nullable IItemHandler getHandler(Level world) {
-        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
+        return ItemTransferHelper.getItemTransfer(world, getTargetPipePos().relative(targetFacing),
+                targetFacing.getOpposite());
     }
 
     public boolean matchesFilters(ItemStack stack) {

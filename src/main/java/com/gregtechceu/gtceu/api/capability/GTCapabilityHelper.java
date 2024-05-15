@@ -22,6 +22,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote EnergyContainerHelper
  */
 public class GTCapabilityHelper {
+
     @Nullable
     public static IElectricItem getElectricItem(ItemStack itemStack) {
         return itemStack.getCapability(GTCapability.CAPABILITY_ELECTRIC_ITEM);
@@ -72,7 +73,8 @@ public class GTCapabilityHelper {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {
-                return blockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(), blockEntity.getBlockState(), blockEntity, side);
+                return blockEntity.getLevel().getCapability(Capabilities.EnergyStorage.BLOCK, blockEntity.getBlockPos(),
+                        blockEntity.getBlockState(), blockEntity, side);
             }
         }
         return null;
@@ -94,7 +96,19 @@ public class GTCapabilityHelper {
     }
 
     @Nullable
-    private static <T> T getBlockEntityCapability(BlockCapability<T, Direction> capability, Level level, BlockPos pos, @Nullable Direction side) {
+    public static IOpticalComputationProvider getOpticalComputationProvider(Level level, BlockPos pos,
+                                                                            @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_COMPUTATION_PROVIDER, level, pos, side);
+    }
+
+    @Nullable
+    public static IDataAccessHatch getDataAccess(Level level, BlockPos pos, @Nullable Direction side) {
+        return getBlockEntityCapability(GTCapability.CAPABILITY_DATA_ACCESS, level, pos, side);
+    }
+
+    @Nullable
+    private static <T> T getBlockEntityCapability(BlockCapability<T, Direction> capability, Level level, BlockPos pos,
+                                                  @Nullable Direction side) {
         if (level.getBlockState(pos).hasBlockEntity()) {
             var blockEntity = level.getBlockEntity(pos);
             if (blockEntity != null) {

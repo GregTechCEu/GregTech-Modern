@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.entity;
 
 import com.gregtechceu.gtceu.core.mixins.PrimedTntAccessor;
+
 import net.minecraft.network.protocol.game.ClientboundExplodePacket;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -12,11 +13,14 @@ import net.minecraft.world.level.Explosion;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.event.EventHooks;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public abstract class GTExplosiveEntity extends PrimedTnt {
-    public GTExplosiveEntity(EntityType<? extends GTExplosiveEntity> type, Level level, double x, double y, double z, @Nullable LivingEntity owner) {
+
+    public GTExplosiveEntity(EntityType<? extends GTExplosiveEntity> type, Level level, double x, double y, double z,
+                             @Nullable LivingEntity owner) {
         this(type, level);
         this.setPos(x, y, z);
         double d = level.random.nextDouble() * (float) (Math.PI * 2);
@@ -25,7 +29,7 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
         this.xo = x;
         this.yo = y;
         this.zo = z;
-        ((PrimedTntAccessor)this).setOwner(owner);
+        ((PrimedTntAccessor) this).setOwner(owner);
     }
 
     public GTExplosiveEntity(EntityType<? extends GTExplosiveEntity> type, Level world) {
@@ -60,30 +64,29 @@ public abstract class GTExplosiveEntity extends PrimedTnt {
     }
 
     protected void explode(
-        Level level, @Nullable Entity source,
-        double x, double y, double z, float radius, boolean dropBlocks) {
+                           Level level, @Nullable Entity source,
+                           double x, double y, double z, float radius, boolean dropBlocks) {
         Explosion explosion = new Explosion(
-            level, source,
-            x, y, z,
-            radius,
-            false,
-            dropBlocks ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY
-        );
+                level, source,
+                x, y, z,
+                radius,
+                false,
+                dropBlocks ? Explosion.BlockInteraction.DESTROY_WITH_DECAY : Explosion.BlockInteraction.DESTROY);
         if (!EventHooks.onExplosionStart(level, explosion)) {
             explosion.explode();
             explosion.finalizeExplosion(false);
         }
 
         if (level instanceof ServerLevel serverLevel) {
-            for(ServerPlayer serverplayer : serverLevel.players()) {
+            for (ServerPlayer serverplayer : serverLevel.players()) {
                 if (serverplayer.distanceToSqr(x, y, z) < 4096.0) {
                     serverplayer.connection.send(new ClientboundExplodePacket(x, y, z, radius,
-                        explosion.getToBlow(),
-                        explosion.getHitPlayers().get(serverplayer),
-                        explosion.getBlockInteraction(),
-                        explosion.getSmallExplosionParticles(),
-                        explosion.getLargeExplosionParticles(),
-                        explosion.getExplosionSound()));
+                            explosion.getToBlow(),
+                            explosion.getHitPlayers().get(serverplayer),
+                            explosion.getBlockInteraction(),
+                            explosion.getSmallExplosionParticles(),
+                            explosion.getLargeExplosionParticles(),
+                            explosion.getExplosionSound()));
                 }
             }
         }

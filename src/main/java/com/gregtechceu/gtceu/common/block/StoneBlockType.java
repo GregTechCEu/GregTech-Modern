@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.block;
 import javax.annotation.Nonnull;
 
 public enum StoneBlockType {
+
     STONE("stone", "%s"),
     COBBLE("cobble", "%s_cobblestone", 2.0f, 6.0f),
     COBBLE_MOSSY("cobble_mossy", "mossy_%s_cobblestone", 2.0f, 6.0f),

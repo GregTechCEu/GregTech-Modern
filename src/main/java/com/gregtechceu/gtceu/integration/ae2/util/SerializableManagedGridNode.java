@@ -1,17 +1,14 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
-import com.lowdragmc.lowdraglib.syncdata.ITagSerializable;
-
-import net.minecraft.nbt.CompoundTag;
-
-import appeng.api.networking.IGridNodeListener;
-import appeng.me.ManagedGridNode;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.neoforged.neoforge.common.util.INBTSerializable;
-import org.jetbrains.annotations.UnknownNullability;
+
+import appeng.api.networking.IGridNodeListener;
+import appeng.me.ManagedGridNode;
 
 public class SerializableManagedGridNode extends ManagedGridNode implements INBTSerializable<CompoundTag> {
+
     public <T> SerializableManagedGridNode(T nodeOwner, IGridNodeListener<? super T> listener) {
         super(nodeOwner, listener);
     }

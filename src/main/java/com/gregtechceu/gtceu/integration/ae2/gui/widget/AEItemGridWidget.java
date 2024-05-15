@@ -4,23 +4,13 @@ import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 
-import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
 
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
-import appeng.helpers.externalstorage.GenericStackInv;
-import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import it.unimi.dsi.fastutil.objects.Object2LongMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
-
-import java.io.IOException;
 
 /**
  * @Author GlodBlock
@@ -92,9 +82,9 @@ public class AEItemGridWidget extends AEListGridWidget {
                 if (item.what() instanceof AEItemKey key) {
                     ItemStack stack = new ItemStack(key.getItem(), (int) item.amount());
                     // TODO fix nbt once AE2 1.20.5 is out
-                    //if (key.hasTag()) {
-                    //    stack.setTag(key.getTag().copy());
-                    //}
+                    // if (key.hasTag()) {
+                    // stack.setTag(key.getTag().copy());
+                    // }
                     ItemStack.OPTIONAL_STREAM_CODEC.encode(buf, stack);
                     buf.writeVarLong(this.changeMap.getLong(item));
                 }
@@ -111,7 +101,7 @@ public class AEItemGridWidget extends AEListGridWidget {
             long delta = buffer.readVarLong();
             if (!item.isEmpty()) {
                 // TODO fix nbt once AE2 1.20.5 is out
-                GenericStack stack = new GenericStack(AEItemKey.of(item.getItem()/*, item.getTag()*/), delta);
+                GenericStack stack = new GenericStack(AEItemKey.of(item.getItem()/* , item.getTag() */), delta);
                 this.displayList.setStack(i, stack);
             }
         }

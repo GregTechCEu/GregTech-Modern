@@ -3,18 +3,17 @@ package com.gregtechceu.gtceu.common.recipe;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.GsonHelper;
 
 import com.google.gson.JsonObject;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -25,11 +24,13 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class PositionYCondition extends RecipeCondition {
-    public static final MapCodec<PositionYCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(instance.group(
-            Codec.INT.fieldOf("min").forGetter(val -> val.min),
-            Codec.INT.fieldOf("max").forGetter(val -> val.max)
-        )).apply(instance, PositionYCondition::new));
+
+    public static final MapCodec<PositionYCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition
+            .isReverse(instance)
+            .and(instance.group(
+                    Codec.INT.fieldOf("min").forGetter(val -> val.min),
+                    Codec.INT.fieldOf("max").forGetter(val -> val.max)))
+            .apply(instance, PositionYCondition::new));
 
     public final static PositionYCondition INSTANCE = new PositionYCondition();
     private int min;

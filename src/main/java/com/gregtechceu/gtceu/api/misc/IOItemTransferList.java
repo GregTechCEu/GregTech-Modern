@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.api.misc;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import lombok.Getter;
+
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;

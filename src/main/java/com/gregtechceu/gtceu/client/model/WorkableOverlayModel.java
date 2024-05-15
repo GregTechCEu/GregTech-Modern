@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.client.model;
 
-import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
@@ -20,6 +20,10 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
@@ -102,11 +106,14 @@ public class WorkableOverlayModel {
         }
 
         @Nullable
-        private TextureAtlasSprite getTextureAtlasSprite(boolean active, boolean workingEnabled, @Nullable ResourceLocation activeSprite, @Nullable ResourceLocation pausedSprite, @Nullable ResourceLocation normalSprite) {
+        private TextureAtlasSprite getTextureAtlasSprite(boolean active, boolean workingEnabled,
+                                                         @Nullable ResourceLocation activeSprite,
+                                                         @Nullable ResourceLocation pausedSprite,
+                                                         @Nullable ResourceLocation normalSprite) {
             if (active) {
                 if (workingEnabled) {
                     return activeSprite == null ? null : ModelFactory.getBlockSprite(activeSprite);
-                } else  {
+                } else {
                     return pausedSprite == null ? null : ModelFactory.getBlockSprite(pausedSprite);
                 }
             }
@@ -126,19 +133,13 @@ public class WorkableOverlayModel {
                                      boolean isActive, boolean isWorkingEnabled) {
         var quads = new ArrayList<BakedQuad>();
 
-        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? 1 :
-                upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? -1 : 0);
-
-        Matrix4f matrix = new Matrix4f();
-
-        if (frontFacing.getAxis() != Direction.Axis.Y) {
-            double rotationRad = Math.toRadians(frontFacing.toYRot());
-            Quaternionf worldUp = new Quaternionf().rotationAxis(Mth.PI - (float) rotationRad, 0, 1, 0);
-            matrix.rotate(worldUp);
-        } else {
-            matrix.rotate(Mth.HALF_PI, frontFacing.getStepY(), 0, 0);
-            if (upwardsFacing.getAxis() == Direction.Axis.Z) {
-                matrix.rotate(Mth.PI, 0, 0, upwardsFacing.getStepZ());
+    @OnlyIn(Dist.CLIENT)
+    public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, boolean isActive,
+                                     boolean isWorkingEnabled) {
+        synchronized (caches) {
+            if (side == null) return Collections.emptyList();
+            if (!caches.contains(side, frontFacing)) {
+                caches.put(side, frontFacing, new List[2][2]);
             }
             var cache = caches.get(side, frontFacing);
             assert cache != null;
@@ -150,19 +151,33 @@ public class WorkableOverlayModel {
                     if (predicate != null) {
                         var texture = predicate.getSprite(isActive, isWorkingEnabled);
                         if (texture != null) {
-                            var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true, true);
+                            var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
+                                    true);
                             if (quad.getDirection() == side) {
                                 quads.add(quad);
                             }
                         }
-                    } else {
-                        var quad = StaticFaceBakery.bakeFace(StaticFaceBakery.SLIGHTLY_OVER_BLOCK, renderSide, texture,
-                                rotation, -1, 0, true, true);
-                        if (quad.getDirection() == side) {
-                            quads.add(quad);
+
+                        texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
+                        if (texture != null) {
+                            if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -101, 15,
+                                        true, false);
+                                if (quad.getDirection() == side) {
+                                    quads.add(quad);
+                                }
+                            } else {
+                                var quad = FaceQuad.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
+                                        true);
+                                if (quad.getDirection() == side) {
+                                    quads.add(quad);
+                                }
+                            }
                         }
                     }
                 }
+                // return quads;
+                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
             }
         }
         return quads;
@@ -182,8 +197,9 @@ public class WorkableOverlayModel {
     public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack,
                            MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         IItemRendererProvider.disabled.set(true);
-        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
-            (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, false, false));
+        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer,
+                combinedLight, combinedOverlay,
+                (ItemBakedModel) (state, direction, random) -> bakeQuads(direction, Direction.NORTH, false, false));
         IItemRendererProvider.disabled.set(false);
     }
 
@@ -191,11 +207,9 @@ public class WorkableOverlayModel {
     public void registerTextureAtlas(Consumer<ResourceLocation> register) {
         ResourceManager resManager = Minecraft.getInstance().getResourceManager();
 
-
         sprites.clear();
         for (OverlayFace overlayFace : OverlayFace.VALUES) {
             final String overlayPath = "/overlay_" + overlayFace.name().toLowerCase(Locale.ROOT);
-
 
             var normalSprite = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath);
             var normalSprite1 = getTextureLocation(normalSprite);
@@ -206,36 +220,40 @@ public class WorkableOverlayModel {
             final String active = String.format("%s_active", overlayPath);
             ResourceLocation activeSprite = new ResourceLocation(location.getNamespace(), location.getPath() + active);
             var activeSprite1 = getTextureLocation(activeSprite);
-            if (resManager.getResource(activeSprite1).isPresent()) register.accept(activeSprite); else activeSprite = normalSprite;
-
+            if (resManager.getResource(activeSprite1).isPresent()) register.accept(activeSprite);
+            else activeSprite = normalSprite;
 
             final String paused = String.format("%s_paused", overlayPath);
             ResourceLocation pausedSprite = new ResourceLocation(location.getNamespace(), location.getPath() + paused);
             var pausedSprite1 = getTextureLocation(pausedSprite);
-            if (resManager.getResource(pausedSprite1).isPresent()) register.accept(pausedSprite); else pausedSprite = normalSprite;
-
+            if (resManager.getResource(pausedSprite1).isPresent()) register.accept(pausedSprite);
+            else pausedSprite = normalSprite;
 
             // emissive
-            ResourceLocation normalSpriteEmissive = new ResourceLocation(location.getNamespace(), location.getPath() + overlayPath + "_emissive");
+            ResourceLocation normalSpriteEmissive = new ResourceLocation(location.getNamespace(),
+                    location.getPath() + overlayPath + "_emissive");
             var normalSpriteEmissive1 = getTextureLocation(normalSpriteEmissive);
-            if (resManager.getResource(normalSpriteEmissive1).isPresent()) register.accept(normalSpriteEmissive); else normalSpriteEmissive = null;
+            if (resManager.getResource(normalSpriteEmissive1).isPresent()) register.accept(normalSpriteEmissive);
+            else normalSpriteEmissive = null;
 
-            ResourceLocation activeSpriteEmissive = new ResourceLocation(location.getNamespace(), location.getPath() + active + "_emissive");
+            ResourceLocation activeSpriteEmissive = new ResourceLocation(location.getNamespace(),
+                    location.getPath() + active + "_emissive");
             var activeSpriteEmissive1 = getTextureLocation(activeSpriteEmissive);
-            if (resManager.getResource(activeSpriteEmissive1).isPresent()) register.accept(activeSpriteEmissive); else activeSpriteEmissive = null;
+            if (resManager.getResource(activeSpriteEmissive1).isPresent()) register.accept(activeSpriteEmissive);
+            else activeSpriteEmissive = null;
 
-            ResourceLocation pausedSpriteEmissive = new ResourceLocation(location.getNamespace(), location.getPath() + paused + "_emissive");
+            ResourceLocation pausedSpriteEmissive = new ResourceLocation(location.getNamespace(),
+                    location.getPath() + paused + "_emissive");
             var pausedSpriteEmissive1 = getTextureLocation(pausedSpriteEmissive);
-            if (resManager.getResource(pausedSpriteEmissive1).isPresent()) register.accept(pausedSpriteEmissive); else pausedSpriteEmissive = null;
-
+            if (resManager.getResource(pausedSpriteEmissive1).isPresent()) register.accept(pausedSpriteEmissive);
+            else pausedSpriteEmissive = null;
 
             sprites.put(overlayFace, new ActivePredicate(normalSprite, activeSprite, pausedSprite,
-                normalSpriteEmissive, activeSpriteEmissive, pausedSpriteEmissive));
+                    normalSpriteEmissive, activeSpriteEmissive, pausedSpriteEmissive));
         }
     }
 
     private ResourceLocation getTextureLocation(ResourceLocation location) {
         return new ResourceLocation(location.getNamespace(), "textures/%s.png".formatted(location.getPath()));
     }
-
 }

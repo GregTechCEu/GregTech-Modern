@@ -1,5 +1,6 @@
 package com.gregtechceu.gtceu.api.machine;
 
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.BlockProperties;
 import com.gregtechceu.gtceu.api.block.IAppearance;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
-import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.fancy.IFancyTooltip;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
@@ -23,7 +23,6 @@ import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
-import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
 
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
@@ -64,7 +63,6 @@ import net.neoforged.api.distmarker.OnlyIn;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 
 import com.mojang.datafixers.util.Pair;
 import lombok.Getter;
@@ -78,10 +76,6 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-
-import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsTag;
-import static com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior.ModeType.BOTH;
-import static com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior.ModeType.ITEM;
 
 /**
  * @author KilaBash
@@ -409,55 +403,6 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
-        var itemStack = playerIn.getItemInHand(hand);
-        var tagCompound = getBehaviorsTag(itemStack);
-        if (isRemote())
-            return InteractionResult.CONSUME;
-        if (playerIn.isShiftKeyDown()) {
-            boolean flag = false;
-            if (this instanceof IAutoOutputItem autoOutputItem) {
-                if (autoOutputItem.getOutputFacingItems() == gridSide) {
-                    autoOutputItem.setAllowInputFromOutputSideItems(!autoOutputItem.isAllowInputFromOutputSideItems());
-                    playerIn.displayClientMessage(Component
-                            .translatable("gtceu.machine.basic.input_from_output_side." +
-                                    (autoOutputItem.isAllowInputFromOutputSideItems() ? "allow" : "disallow"))
-                            .append(Component.translatable("gtceu.creative.chest.item")), true);
-                    flag = true;
-                }
-            }
-            if (this instanceof IAutoOutputFluid autoOutputFluid) {
-                if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
-                    autoOutputFluid
-                            .setAllowInputFromOutputSideFluids(!autoOutputFluid.isAllowInputFromOutputSideFluids());
-                    playerIn.displayClientMessage(Component
-                            .translatable("gtceu.machine.basic.input_from_output_side." +
-                                    (autoOutputFluid.isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
-                            .append(Component.translatable("gtceu.creative.tank.fluid")), true);
-                    flag = true;
-                }
-            }
-            if (flag) {
-                return InteractionResult.SUCCESS;
-            }
-        } else {
-            boolean flag = false;
-            if (this instanceof IAutoOutputItem autoOutputItem) {
-                if (autoOutputItem.getOutputFacingItems() == gridSide) {
-                    autoOutputItem.setAutoOutputItems(!autoOutputItem.isAutoOutputItems());
-                    flag = true;
-                }
-            }
-            if (this instanceof IAutoOutputFluid autoOutputFluid) {
-                if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
-                    autoOutputFluid.setAutoOutputFluids(!autoOutputFluid.isAutoOutputFluids());
-                    flag = true;
-
-                }
-            }
-            if (flag) {
-                return InteractionResult.SUCCESS;
-            }
-        }
         return InteractionResult.PASS;
     }
 

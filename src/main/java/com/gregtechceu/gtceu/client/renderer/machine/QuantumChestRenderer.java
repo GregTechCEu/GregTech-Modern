@@ -25,6 +25,10 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
 import org.joml.Quaternionf;
 
 /**
@@ -54,10 +58,14 @@ public class QuantumChestRenderer extends TieredHullMachineRenderer {
             model.getTransforms().getTransform(transformType).apply(leftHand, poseStack);
             poseStack.translate(-0.5D, -0.5D, -0.5D);
 
-            Tag itemNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().get("stored");
+            Tag itemNbt = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag()
+                    .get("stored");
             if (itemNbt != null) {
-                ItemStack itemStack = ItemStack.OPTIONAL_CODEC.parse(Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE), itemNbt).getOrThrow();
-                int storedAmount = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag().getInt("storedAmount");
+                ItemStack itemStack = ItemStack.OPTIONAL_CODEC.parse(
+                        Minecraft.getInstance().level.registryAccess().createSerializationContext(NbtOps.INSTANCE),
+                        itemNbt).getOrThrow();
+                int storedAmount = stack.getOrDefault(DataComponents.BLOCK_ENTITY_DATA, CustomData.EMPTY).copyTag()
+                        .getInt("storedAmount");
                 float tick = Minecraft.getInstance().level.getGameTime() + Minecraft.getInstance().getFrameTime();
                 // Don't need to handle locked items here since they don't get saved to the item
                 renderChest(poseStack, buffer, Direction.NORTH, itemStack, storedAmount, tick, ItemStack.EMPTY);

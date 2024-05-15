@@ -4,24 +4,20 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeCapabilityHolder;
 import com.gregtechceu.gtceu.api.capability.recipe.ItemRecipeCapability;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
 import com.gregtechceu.gtceu.api.item.component.IItemComponent;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.netty.buffer.ByteBuf;
+
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.data.recipes.RecipeOutput;
@@ -32,9 +28,11 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeHolder;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.ApiStatus;
 
 import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import io.netty.buffer.ByteBuf;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -43,7 +41,6 @@ import java.util.Collections;
 import java.util.List;
 
 public final class ResearchManager {
-
 
     @NotNull
     public static ItemStack getDefaultScannerItem() {
@@ -69,7 +66,8 @@ public final class ResearchManager {
      * @param stack      the ItemStack to write to
      * @param researchId the research id
      */
-    public static void writeResearchToComponent(@NotNull ItemStack stack, @NotNull String researchId, GTRecipeType recipeType) {
+    public static void writeResearchToComponent(@NotNull ItemStack stack, @NotNull String researchId,
+                                                GTRecipeType recipeType) {
         stack.set(GTDataComponents.RESEARCH_ITEM, new ResearchItem(researchId, recipeType.registryName));
     }
 
@@ -83,7 +81,8 @@ public final class ResearchManager {
 
         ResearchItem researchItem = stack.get(GTDataComponents.RESEARCH_ITEM);
         ResourceLocation researchRecipeType = researchItem.researchRecipeType;
-        return researchItem.researchId.isEmpty() || researchRecipeType == null ? null : Pair.of(GTRegistries.RECIPE_TYPES.get(researchRecipeType), researchItem.researchId);
+        return researchItem.researchId.isEmpty() || researchRecipeType == null ? null :
+                Pair.of(GTRegistries.RECIPE_TYPES.get(researchRecipeType), researchItem.researchId);
     }
 
     /**
@@ -127,7 +126,7 @@ public final class ResearchManager {
 
     public static void createDefaultResearchRecipe(@NotNull GTRecipeType recipeType, @NotNull String researchId,
                                                    @NotNull ItemStack researchItem, @NotNull ItemStack dataItem,
-                                                   int duration, int EUt, int CWUt, Consumer<FinishedRecipe> provider) {
+                                                   int duration, int EUt, int CWUt, RecipeOutput provider) {
         if (!ConfigHolder.INSTANCE.machines.enableResearch) return;
 
         writeResearchToComponent(dataItem, researchId, recipeType);
@@ -154,15 +153,15 @@ public final class ResearchManager {
     }
 
     public record ResearchItem(String researchId, ResourceLocation researchRecipeType) {
+
         public static final Codec<ResearchItem> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
-            ResourceLocation.CODEC.fieldOf("research_type").forGetter(ResearchItem::researchRecipeType)
-        ).apply(instance, ResearchItem::new));
+                Codec.STRING.fieldOf("research_id").forGetter(ResearchItem::researchId),
+                ResourceLocation.CODEC.fieldOf("research_type").forGetter(ResearchItem::researchRecipeType))
+                .apply(instance, ResearchItem::new));
         public static final StreamCodec<ByteBuf, ResearchItem> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, ResearchItem::researchId,
-            ResourceLocation.STREAM_CODEC, ResearchItem::researchRecipeType,
-            ResearchItem::new
-        );
+                ByteBufCodecs.STRING_UTF8, ResearchItem::researchId,
+                ResourceLocation.STREAM_CODEC, ResearchItem::researchRecipeType,
+                ResearchItem::new);
     }
 
     public static class DataStickCopyScannerLogic implements GTRecipeType.ICustomScannerLogic {
@@ -173,8 +172,8 @@ public final class ResearchManager {
         @Override
         public GTRecipe createCustomRecipe(IRecipeCapabilityHolder holder) {
             var itemInputs = holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP).stream()
-                    .filter(IItemTransfer.class::isInstance).map(IItemTransfer.class::cast)
-                    .toArray(IItemTransfer[]::new);
+                    .filter(IItemHandlerModifiable.class::isInstance).map(IItemHandlerModifiable.class::cast)
+                    .toArray(IItemHandlerModifiable[]::new);
             var inputs = new ItemTransferList(itemInputs);
             if (inputs.getSlots() > 1) {
                 // try the data recipe both ways, prioritizing overwriting the first
@@ -212,12 +211,14 @@ public final class ResearchManager {
             ItemStack resultStick = GTItems.TOOL_DATA_STICK.asStack();
             resultStick.set(DataComponents.CUSTOM_NAME, Component.translatable("gtceu.scanner.copy_stick_to"));
             return Collections.singletonList(
-                    new RecipeHolder<>(GTCEu.id("copy_" + GTStringUtils.itemStackToString(copiedStick)), GTRecipeTypes.SCANNER_RECIPES.recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
-                        .inputItems(emptyStick)
-                        .notConsumable(copiedStick)
-                        .outputItems(resultStick)
-                        .duration(DURATION).EUt(EUT)
-                        .buildRecipe()));
+                    new RecipeHolder<>(GTCEu.id("copy_" + GTStringUtils.itemStackToString(copiedStick)),
+                            GTRecipeTypes.SCANNER_RECIPES
+                                    .recipeBuilder("copy_" + GTStringUtils.itemStackToString(copiedStick))
+                                    .inputItems(emptyStick)
+                                    .notConsumable(copiedStick)
+                                    .outputItems(resultStick)
+                                    .duration(DURATION).EUt(EUT)
+                                    .buildRecipe()));
         }
     }
 }

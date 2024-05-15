@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
+import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.api.worldgen.IWorldGenLayer;
 import com.gregtechceu.gtceu.api.worldgen.SimpleWorldGenLayer;
-import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+
+import net.minecraft.resources.ResourceLocation;
+
 import dev.latvian.mods.kubejs.level.ruletest.AnyMatchRuleTest;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import lombok.experimental.Accessors;
-import net.minecraft.resources.ResourceLocation;
 
 import java.util.Arrays;
 import java.util.Collections;

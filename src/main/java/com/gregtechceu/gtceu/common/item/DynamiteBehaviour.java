@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.common.entity.DynamiteEntity;
+
 import net.minecraft.Util;
 import net.minecraft.core.Direction;
 import net.minecraft.core.dispenser.BlockSource;
@@ -25,7 +26,9 @@ public class DynamiteBehaviour implements IInteractionItem {
             public ItemStack execute(BlockSource source, ItemStack stack) {
                 Vec3 position = source.center();
                 Direction direction = source.state().getValue(DispenserBlock.FACING);
-                DynamiteEntity dynamite = Util.make(new DynamiteEntity(position.x(), position.y(), position.z(), source.level()), entity -> entity.setItem(stack));
+                DynamiteEntity dynamite = Util.make(
+                        new DynamiteEntity(position.x(), position.y(), position.z(), source.level()),
+                        entity -> entity.setItem(stack));
                 dynamite.shoot(direction.getStepX(), direction.getStepY(), direction.getStepZ(), 1.1F, 6.0F);
                 source.level().addFreshEntity(dynamite);
                 stack.shrink(1);
@@ -35,7 +38,8 @@ public class DynamiteBehaviour implements IInteractionItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         ItemStack itemstack = player.getItemInHand(usedHand);
 
         if (!player.isCreative()) {

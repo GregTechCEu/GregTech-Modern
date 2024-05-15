@@ -6,11 +6,11 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
 import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.chat.Component;
 
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
@@ -21,8 +21,10 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class VentCondition extends RecipeCondition {
-    public static final MapCodec<VentCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .apply(instance, VentCondition::new));
+
+    public static final MapCodec<VentCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .apply(instance, VentCondition::new));
     public final static VentCondition INSTANCE = new VentCondition();
 
     public VentCondition(boolean isReverse) {

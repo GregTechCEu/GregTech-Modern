@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.capability.IPropertyFluidFilter;
 import com.gregtechceu.gtceu.api.fluid.FluidState;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
@@ -23,9 +24,11 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
      */
     public static final int MAX_PIPE_CHANNELS = 9;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     private int throughput;
-    @Getter @Setter
+    @Getter
+    @Setter
     private int channels;
     @Getter
     @Setter
@@ -42,8 +45,8 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
 
     private final Object2BooleanMap<FluidAttribute> containmentPredicate = new Object2BooleanOpenHashMap<>();
 
-
-    public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof, int channels) {
+    public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
+                               boolean cryoProof, boolean plasmaProof, int channels) {
         this.maxFluidTemperature = maxFluidTemperature;
         this.throughput = throughput;
         this.gasProof = gasProof;
@@ -56,7 +59,8 @@ public class FluidPipeProperties implements IMaterialProperty<FluidPipePropertie
     /**
      * Default property constructor.
      */
-    public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof, boolean cryoProof, boolean plasmaProof) {
+    public FluidPipeProperties(int maxFluidTemperature, int throughput, boolean gasProof, boolean acidProof,
+                               boolean cryoProof, boolean plasmaProof) {
         this(maxFluidTemperature, throughput, gasProof, acidProof, cryoProof, plasmaProof, 1);
     }
 

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.client.util.StaticFaceBakery;
 import com.gregtechceu.gtceu.common.machine.electric.ChargerMachine;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 
+import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -17,6 +18,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -55,26 +57,24 @@ public class ChargerRenderer extends TieredHullMachineRenderer {
         if (side == frontFacing && modelFacing != null) {
             var bakedFaces = new ArrayList<BakedQuad>();
             switch (state) {
-                case IDLE -> bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                        ModelFactory.getBlockSprite(CHARGER_IDLE),
+                case IDLE -> bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_IDLE),
                         modelState, -1, 0, false, true));
                 case RUNNING -> {
-                    bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                            ModelFactory.getBlockSprite(CHARGER_RUNNING),
+                    bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING),
                             modelState, -1, 0, true, true));
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                                ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE),
-                                modelState, -101, 15, true, false));
+                        bakedFaces.add(
+                                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_RUNNING_EMISSIVE),
+                                        modelState, -101, 15, true, false));
                     }
                 }
                 case FINISHED -> {
-                    bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED),
+                    bakedFaces.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED),
                             modelState, -1, 0, true, true));
                     if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                        bakedFaces.add(StaticFaceBakery.bakeFace(modelFacing,
-                                ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE),
-                                modelState, -101, 15, true, false));
+                        bakedFaces.add(
+                                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(CHARGER_FINISHED_EMISSIVE),
+                                        modelState, -101, 15, true, false));
                     }
                 }
             }

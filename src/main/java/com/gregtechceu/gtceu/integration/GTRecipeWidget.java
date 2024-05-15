@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.integration;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.CWURecipeCapability;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
@@ -10,45 +8,36 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.WidgetUtils;
 import com.gregtechceu.gtceu.api.gui.widget.PredicatedButtonWidget;
 import com.gregtechceu.gtceu.api.recipe.*;
-import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
-import com.gregtechceu.gtceu.core.mixins.IngredientAccessor;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.compass.CompassManager;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
-import com.lowdragmc.lowdraglib.utils.TagOrCycleFluidTransfer;
-import com.lowdragmc.lowdraglib.utils.TagOrCycleItemStackTransfer;
-import com.mojang.datafixers.util.Either;
-import com.mojang.datafixers.util.Pair;
 import com.lowdragmc.lowdraglib.gui.widget.ButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
-import it.unimi.dsi.fastutil.longs.LongIntPair;
-import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
 import net.minecraft.util.Mth;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
-import net.minecraft.world.level.material.Fluid;
-import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
-import net.neoforged.neoforge.fluids.FluidStack;
+
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import it.unimi.dsi.fastutil.longs.LongIntPair;
+import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
+import lombok.Getter;
 import org.apache.commons.lang3.mutable.MutableInt;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
@@ -64,6 +53,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
  * @implNote GTRecipeWidget
  */
 public class GTRecipeWidget extends WidgetGroup {
+
     public static final int LINE_HEIGHT = 10;
 
     private final int xOffset;
@@ -77,7 +67,8 @@ public class GTRecipeWidget extends WidgetGroup {
     private LabelWidget voltageTextWidget;
 
     public GTRecipeWidget(RecipeHolder<GTRecipe> recipeHolder) {
-        super(getXOffset(recipeHolder.value()), 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width, recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
+        super(getXOffset(recipeHolder.value()), 0, recipeHolder.value().recipeType.getRecipeUI().getJEISize().width,
+                recipeHolder.value().recipeType.getRecipeUI().getJEISize().height);
         this.recipe = recipeHolder.value();
         this.recipeId = recipeHolder.id();
         this.xOffset = getXOffset(recipe);
@@ -89,7 +80,8 @@ public class GTRecipeWidget extends WidgetGroup {
 
     private static int getXOffset(GTRecipe recipe) {
         if (recipe.recipeType.getRecipeUI().getOriginalWidth() != recipe.recipeType.getRecipeUI().getJEISize().width) {
-            return (recipe.recipeType.getRecipeUI().getJEISize().width - recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
+            return (recipe.recipeType.getRecipeUI().getJEISize().width -
+                    recipe.recipeType.getRecipeUI().getOriginalWidth()) / 2;
         }
         return 0;
     }
@@ -99,10 +91,12 @@ public class GTRecipeWidget extends WidgetGroup {
         setClientSideWidget();
 
         var storages = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, Object>::new);
-        var contents = Tables.newCustomTable(new EnumMap<>(IO.class), LinkedHashMap<RecipeCapability<?>, List<Content>>::new);
+        var contents = Tables.newCustomTable(new EnumMap<>(IO.class),
+                LinkedHashMap<RecipeCapability<?>, List<Content>>::new);
         collectStorage(storages, contents, recipe);
 
-        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress, storages, recipe.data.copy(), recipe.conditions);
+        WidgetGroup group = recipe.recipeType.getRecipeUI().createUITemplate(ProgressWidget.JEIProgress, storages,
+                recipe.data.copy(), recipe.conditions);
         addSlots(contents, group, recipe);
 
         var size = group.getSize();
@@ -197,8 +191,7 @@ public class GTRecipeWidget extends WidgetGroup {
                     recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.min(recipe.tickInputs.get(CWURecipeCapability.CAP).stream()
                         .map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
-                texts.add(Component.translatable("gtceu.recipe.max_eu",
-                        FormattingUtil.formatNumbers(euTotal / minimumCWUt)));
+                texts.add(Component.translatable("gtceu.recipe.max_eu", euTotal / minimumCWUt));
             } else {
                 texts.add(Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal)));
             }
@@ -216,8 +209,11 @@ public class GTRecipeWidget extends WidgetGroup {
             x = getSize().width - xOffset - 18;
             y = getSize().height - 30;
         }
-        addWidget(new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")), cd ->
-            Minecraft.getInstance().keyboardHandler.setClipboard(recipeId.toString()), () -> CompassManager.INSTANCE.devMode, CompassManager.INSTANCE.devMode).setHoverTooltips("click to copy: " + recipeId));
+        addWidget(
+                new PredicatedButtonWidget(x, y, 15, 15, new GuiTextureGroup(GuiTextures.BUTTON, new TextTexture("ID")),
+                        cd -> Minecraft.getInstance().keyboardHandler.setClipboard(recipeId.toString()),
+                        () -> CompassManager.INSTANCE.devMode, CompassManager.INSTANCE.devMode)
+                        .setHoverTooltips("click to copy: " + recipeId));
     }
 
     private int getVoltageXOffset() {
@@ -274,10 +270,11 @@ public class GTRecipeWidget extends WidgetGroup {
         var chance = content.chance;
         if (chance < 1) {
             tooltips.add(chance == 0 ?
-                Component.translatable("gtceu.gui.content.chance_0") :
-                FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
+                    Component.translatable("gtceu.gui.content.chance_0") :
+                    FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance * 100));
             if (content.tierChanceBoost != 0) {
-                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", content.tierChanceBoost * 100));
+                tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost",
+                        content.tierChanceBoost * 100));
             }
         }
     }
@@ -294,7 +291,8 @@ public class GTRecipeWidget extends WidgetGroup {
         setTier(getMinTier());
     }
 
-    public void collectStorage(Table<IO, RecipeCapability<?>, Object> extraTable, Table<IO, RecipeCapability<?>, List<Content>> extraContents, GTRecipe recipe) {
+    public void collectStorage(Table<IO, RecipeCapability<?>, Object> extraTable,
+                               Table<IO, RecipeCapability<?>, List<Content>> extraContents, GTRecipe recipe) {
         Map<RecipeCapability<?>, List<Object>> inputCapabilities = new Object2ObjectLinkedOpenHashMap<>();
         for (var entry : recipe.inputs.entrySet()) {
             RecipeCapability<?> cap = entry.getKey();
@@ -334,7 +332,8 @@ public class GTRecipeWidget extends WidgetGroup {
             outputCapabilities.put(cap, cap.createXEIContainerContents(contents, recipe, IO.OUT));
         }
         for (var entry : outputCapabilities.entrySet()) {
-            while (entry.getValue().size() < recipe.recipeType.getMaxOutputs(entry.getKey())) entry.getValue().add(null);
+            while (entry.getValue().size() < recipe.recipeType.getMaxOutputs(entry.getKey()))
+                entry.getValue().add(null);
             var container = entry.getKey().createXEIContainer(entry.getValue());
             if (container != null) {
                 extraTable.put(IO.OUT, entry.getKey(), container);
@@ -342,7 +341,8 @@ public class GTRecipeWidget extends WidgetGroup {
         }
     }
 
-    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable, WidgetGroup group, GTRecipe recipe) {
+    public void addSlots(Table<IO, RecipeCapability<?>, List<Content>> contentTable, WidgetGroup group,
+                         GTRecipe recipe) {
         for (var capabilityEntry : contentTable.rowMap().entrySet()) {
             IO io = capabilityEntry.getKey();
             for (var contentsEntry : capabilityEntry.getValue().entrySet()) {
@@ -350,14 +350,16 @@ public class GTRecipeWidget extends WidgetGroup {
                 int nonTickCount = (io == IO.IN ? recipe.getInputContents(cap) : recipe.getOutputContents(cap)).size();
                 List<Content> contents = contentsEntry.getValue();
                 // bind fluid out overlay
-                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(), widget -> {
-                    var index = WidgetUtils.widgetIdIndex(widget);
-                    if (index >= 0 && index < contents.size()) {
-                        var content = contents.get(index);
-                        cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content, null);
-                        widget.setOverlay(content.createOverlay(index >= nonTickCount));
-                    }
-                });
+                WidgetUtils.widgetByIdForEach(group, "^%s_[0-9]+$".formatted(cap.slotName(io)), cap.getWidgetClass(),
+                        widget -> {
+                            var index = WidgetUtils.widgetIdIndex(widget);
+                            if (index >= 0 && index < contents.size()) {
+                                var content = contents.get(index);
+                                cap.applyWidgetInfo(widget, index, true, io, null, recipe.getType(), recipe, content,
+                                        null);
+                                widget.setOverlay(content.createOverlay(index >= nonTickCount));
+                            }
+                        });
             }
         }
     }

@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.material.material.properties;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.material.material.Material;
+
 import com.lowdragmc.lowdraglib.Platform;
 
 import java.util.*;

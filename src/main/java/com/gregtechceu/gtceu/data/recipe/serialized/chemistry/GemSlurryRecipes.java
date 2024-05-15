@@ -11,7 +11,6 @@ import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.MIXER_RECIPES;
 public class GemSlurryRecipes {
 
     public static void init(RecipeOutput provider) {
-
         // Ruby
         MIXER_RECIPES.recipeBuilder("ruby_slurry").duration(280).EUt(VA[EV])
                 .inputItems(crushed, Ruby, 2)
