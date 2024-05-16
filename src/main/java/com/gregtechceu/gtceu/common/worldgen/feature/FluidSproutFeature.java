@@ -72,7 +72,7 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
                         final int currentZ = z0 + z;
 
                         setBlock(mutablePos, currentX, currentY, currentZ,
-                            bulkSectionAccess, level, random,
+                            bulkSectionAccess, level,
                             config, placedAmount);
                     }
                 }
@@ -85,20 +85,20 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
                 int springHeight = surfaceHeight + config.surfaceOffset().sample(random);
                 for (int currentY = blockpos.getY(); currentY <= springHeight; ++currentY) {
                     setBlock(mutablePos, currentX, currentY, currentZ,
-                        bulkSectionAccess, level, random,
+                        bulkSectionAccess, level,
                         config, placedAmount);
                     if (currentY <= surfaceHeight) {
                         setBlock(mutablePos, currentX + 1, currentY, currentZ,
-                            bulkSectionAccess, level, random,
+                            bulkSectionAccess, level,
                             config, placedAmount);
                         setBlock(mutablePos, currentX - 1, currentY, currentZ,
-                            bulkSectionAccess, level, random,
+                            bulkSectionAccess, level,
                             config, placedAmount);
                         setBlock(mutablePos, currentX, currentY, currentZ + 1,
-                            bulkSectionAccess, level, random,
+                            bulkSectionAccess, level,
                             config, placedAmount);
                         setBlock(mutablePos, currentX, currentY, currentZ - 1,
-                            bulkSectionAccess, level, random,
+                            bulkSectionAccess, level,
                             config, placedAmount);
                     }
                 }
@@ -109,7 +109,7 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
     }
 
     public void setBlock(BlockPos.MutableBlockPos mutablePos, int currentX, int currentY, int currentZ,
-                         BulkSectionAccess access, WorldGenLevel level, RandomSource random,
+                         BulkSectionAccess access, WorldGenLevel level,
                          FluidSproutConfiguration config, MutableInt placedAmount) {
         mutablePos.set(currentX, currentY, currentZ);
         if (!level.ensureCanWrite(mutablePos))
