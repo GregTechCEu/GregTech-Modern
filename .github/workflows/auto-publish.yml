@@ -43,15 +43,11 @@ jobs:
         uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - if: ${{ inputs.publishMaven }}
         name: Publish to Maven
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: publish
+        run: ./gradlew publish
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: Get Version
@@ -89,7 +85,7 @@ jobs:
             ${{ github.ref_name }}
           game-version-filter: none
           java: |
-            17
+            21
           retry-attempts: 2
           retry-delay: 10000
           fail-mode: fail

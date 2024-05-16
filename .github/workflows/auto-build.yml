@@ -22,9 +22,7 @@ jobs:
         uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - name: Get Version
         id: var
