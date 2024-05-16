@@ -93,6 +93,6 @@ public class MaterialBlockItem extends BlockItem implements IItemRendererProvide
         DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
         if (property != null)
             return (int) (property.getBurnTime() * getBlock().tagPrefix.getMaterialAmount(material) / GTValues.M);
-        return -1;
+        return 0;
     }
 }

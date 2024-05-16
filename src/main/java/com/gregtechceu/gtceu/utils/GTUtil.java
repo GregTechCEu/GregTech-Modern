@@ -311,7 +311,7 @@ public class GTUtil {
     }
 
     public static int getItemBurnTime(Item item) {
-        return CommonHooks.getBurnTime(item.getDefaultInstance(), RecipeType.SMELTING);
+        return item.getDefaultInstance().getBurnTime(RecipeType.SMELTING);
     }
 
     public static int getPumpBiomeModifier(Holder<Biome> biome) {

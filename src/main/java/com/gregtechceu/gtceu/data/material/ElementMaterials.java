@@ -506,7 +506,7 @@ public class ElementMaterials {
                 .color(0x9a8b94).secondaryColor(0x2c2c2c).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nd)
-                .rotorStats(100, 115,2.0f, 512)
+                .rotorStats(100, 115, 2.0f, 512)
                 .blastTemp(1297, GasTier.MID)
                 .buildAndRegister();
 
@@ -981,7 +981,7 @@ public class ElementMaterials {
                         GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .element(GTElements.Tr)
                 .cableProperties(GTValues.V[8], 1, 8)
-                .rotorStats(220,220, 6.0f, 10240)
+                .rotorStats(220, 220, 6.0f, 10240)
                 .buildAndRegister();
 
         Duranium = new Material.Builder(GTCEu.id("duranium"))

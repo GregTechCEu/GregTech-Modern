@@ -50,7 +50,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 public class ComponentItem extends Item
                            implements HeldItemUIFactory.IHeldItemUIHolder, IItemRendererProvider, IComponentItem {
 
-    protected int burnTime = -1;
+    protected int burnTime = 0;
 
     @Getter
     protected List<IItemComponent> components;
