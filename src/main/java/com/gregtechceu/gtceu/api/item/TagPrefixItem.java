@@ -106,7 +106,7 @@ public class TagPrefixItem extends Item {
 
 
                 if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) { //ignore hazards for hot ingots
-                    GTUtil.applyHazardEffects(material,livingEntity,()->material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
+                    GTUtil.applyHazardEffects(material, livingEntity, () -> material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
                     return;
                 }
 

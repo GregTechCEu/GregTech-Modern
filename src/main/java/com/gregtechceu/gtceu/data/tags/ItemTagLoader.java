@@ -6,13 +6,10 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.tag.TagUtil;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.tterrag.registrate.providers.RegistrateTagsProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.ItemTags;
 import net.minecraft.tags.TagEntry;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -34,7 +31,6 @@ public class ItemTagLoader {
         create(provider, lens, Color.Blue, GTItems.MATERIAL_ITEMS.get(lens, Sapphire).getId());
 
         create(provider, CustomTags.TAG_PISTONS, Items.PISTON, Items.STICKY_PISTON);
-        create(provider, "personal_protective_equipment",Items.DIAMOND_HELMET.kjs$getIdLocation(),Items.DIAMOND_CHESTPLATE.kjs$getIdLocation(),Items.DIAMOND_LEGGINGS.kjs$getIdLocation(),Items.DIAMOND_BOOTS.kjs$getIdLocation()); //TODO equipment
 
         // add treated wood stick to vanilla sticks tag
         //noinspection DataFlowIssue ChemicalHelper#getTag can't return null with treated wood rod

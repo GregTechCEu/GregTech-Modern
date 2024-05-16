@@ -121,7 +121,7 @@ public class GTItems {
                                 .properties(p -> p.stacksTo(tagPrefix.maxStackSize()))
                                 .model(NonNullBiConsumer.noop())
                                 .color(() -> TagPrefixItem::tintColor)
-
+                                .onRegister(GTItems::cauldronInteraction)
                                 .onRegister(item -> {
                                     switch (tagPrefix.name) {
                                         case "buzzSawBlade", "screwDriverTip", "drillHead", "chainSawHead", "wrenchTip", "turbineBlade" ->
@@ -1572,7 +1572,7 @@ public class GTItems {
         .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
         .register();
 
-    public static ItemEntry<ComponentItem> MASK_FILTER= REGISTRATE.item("mask_filter", ComponentItem::create)
+    public static ItemEntry<ComponentItem> MASK_FILTER = REGISTRATE.item("mask_filter", ComponentItem::create)
         .lang("Gas Mask Filter")
         .properties(p -> p.stacksTo(1))
         .register();

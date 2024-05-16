@@ -102,7 +102,7 @@ public class GTBucketItem extends BucketItem {
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if(entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0)
-           GTUtil.applyHazardEffects(material,livingEntity,()->true);
+           GTUtil.applyHazardEffects(material, livingEntity, () -> true);
 
     }
 

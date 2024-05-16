@@ -976,7 +976,7 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2,1))
+                .hazard(HazardProperty.HazardType.CORROSIVE, new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2, 1))
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))

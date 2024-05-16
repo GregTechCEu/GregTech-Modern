@@ -403,16 +403,20 @@ public class GTUtil {
     }
 
     public static boolean canSeeSunClearly(Level world, BlockPos blockPos) {
-        if (!world.canSeeSky(blockPos.above()))
+        if (!world.canSeeSky(blockPos.above())) {
             return false;
+        }
 
         Biome biome = world.getBiome(blockPos.above()).value();
-        if (world.isRaining())
-            if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above()))
+        if (world.isRaining()) {
+            if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
                 return false;
+            }
+        }
 
-        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END))
+        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
             return false;
+        }
 
         return world.isDay();
     }
