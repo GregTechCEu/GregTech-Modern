@@ -9,16 +9,21 @@ import com.gregtechceu.gtceu.data.recipe.misc.*;
 import com.gregtechceu.gtceu.data.recipe.serialized.chemistry.ChemistryRecipes;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.minecraft.advancements.Advancement;
+import net.minecraft.advancements.AdvancementHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.level.block.ComposterBlock;
-
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import net.neoforged.neoforge.common.conditions.ICondition;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Set;
 import java.util.function.Consumer;
 
 public class GTRecipes {
+    private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
     private static final Set<ResourceLocation> RECIPE_FILTERS = new ObjectOpenHashSet<>();
 
@@ -31,7 +36,24 @@ public class GTRecipes {
      * This should also be used for recipes that need
      * to respond to a config option in ConfigHolder.
      */
-    public static void recipeAddition(RecipeOutput consumer) {
+    public static void recipeAddition(RecipeOutput originalConsumer) {
+        RecipeOutput consumer = new RecipeOutput() {
+            @Override
+            public void accept(ResourceLocation id, Recipe<?> recipe, @Nullable AdvancementHolder advancement, ICondition... conditions) {
+                if (!RECIPE_FILTERS.contains(id)) {
+                    originalConsumer.accept(id, recipe, advancement, conditions);
+                }
+            }
+
+            @Override
+            public Advancement.Builder advancement() {
+                return originalConsumer.advancement();
+            }
+        };
+
+        ComposterRecipes.addComposterRecipes(ComposterBlock.COMPOSTABLES::put);
+        ResearchManager.registerScannerLogic();
+
         // Decomposition info loading
         MaterialInfoLoader.init();
 
