@@ -248,17 +248,23 @@ public class ChemicalHelper {
                 return true;
             });
 
-            unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemKey,
-                    item -> UnificationEntry.EmptyMapMarkerEntry);
+            // guess an entry based on the item's tags if none are pre-registered.
+            unifyingEntry = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemKey, item -> {
+                for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
+                    UnificationEntry unificationEntry = getUnificationEntry(itemTag);
+                    // check that it's not the empty marker and that it's not a parent tag
+                    if (unificationEntry != null && Arrays.stream(unificationEntry.tagPrefix.getItemParentTags()).noneMatch(itemTag::equals)) {
+                        return unificationEntry;
+                    }
+                }
+                return UnificationEntry.EmptyMapMarkerEntry;
+            });
         }
         return unifyingEntry != UnificationEntry.EmptyMapMarkerEntry ? unifyingEntry : null;
     }
 
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
-        if (TAG_UNIFICATION_ENTRY.isEmpty()) {
-            // If the map is empty, resolve all possible tags to their values in an attempt to save time on later
-            // lookups.
-            Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
+        UnificationEntry entry = TAG_UNIFICATION_ENTRY.computeIfAbsent(tag, tagKey -> {
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                     if (Arrays.stream(prefix.getItemTags(material))
@@ -269,18 +275,7 @@ public class ChemicalHelper {
             }
             return UnificationEntry.EmptyMapMarkerEntry;
         });
-    }
-
-    // TODO optimize this so it can be used in tooltips/etc.
-    @Nullable
-    public static UnificationEntry getOrComputeUnificationEntry(ItemLike itemLike) {
-        var value = ITEM_UNIFICATION_ENTRY_COLLECTED.computeIfAbsent(itemLike, item -> {
-            Holder<Item> holder = BuiltInRegistries.ITEM.wrapAsHolder(item.asItem());
-            return holder.tags().map(ChemicalHelper::getUnificationEntry).filter(Objects::nonNull)
-                    .filter(entry -> !(entry == UnificationEntry.EmptyMapMarkerEntry)).findFirst()
-                    .orElse(UnificationEntry.EmptyMapMarkerEntry);
-        });
-        return value != UnificationEntry.EmptyMapMarkerEntry ? value : null;
+        return entry != UnificationEntry.EmptyMapMarkerEntry ? entry : null;
     }
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
