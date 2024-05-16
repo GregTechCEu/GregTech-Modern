@@ -15,12 +15,15 @@ import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
 import com.gregtechceu.gtceu.data.material.GTMaterials;
 
+import it.unimi.dsi.fastutil.objects.ObjectArraySet;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.item.*;
 
 import com.tterrag.registrate.util.entry.RegistryEntry;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Set;
 
 import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 
@@ -107,11 +110,14 @@ public class GTCreativeModeTabs {
         public void accept(@NotNull CreativeModeTab.ItemDisplayParameters itemDisplayParameters,
                            @NotNull CreativeModeTab.Output output) {
             var tab = registrate.get(name, Registries.CREATIVE_MODE_TAB);
+            Set<Item> added = new ObjectArraySet<>();
             for (var entry : registrate.getAll(Registries.BLOCK)) {
                 if (!registrate.isInCreativeTab(entry, tab))
                     continue;
                 Item item = entry.get().asItem();
                 if (item == Items.AIR)
+                    continue;
+                if (added.contains(item))
                     continue;
                 if (item instanceof IComponentItem componentItem) {
                     NonNullList<ItemStack> list = NonNullList.create();
@@ -124,6 +130,7 @@ public class GTCreativeModeTabs {
                 } else {
                     output.accept(item);
                 }
+                added.add(item);
             }
             for (var entry : registrate.getAll(Registries.ITEM)) {
                 if (!registrate.isInCreativeTab(entry, tab))
@@ -131,6 +138,8 @@ public class GTCreativeModeTabs {
                 Item item = entry.get();
                 if (item instanceof BlockItem)
                     continue;
+                if (added.contains(item))
+                    continue;
                 if (item instanceof IComponentItem componentItem) {
                     NonNullList<ItemStack> list = NonNullList.create();
                     componentItem.fillItemCategory(tab.get(), list);
@@ -142,6 +151,7 @@ public class GTCreativeModeTabs {
                 } else {
                     output.accept(item);
                 }
+                added.add(item);
             }
         }
     }

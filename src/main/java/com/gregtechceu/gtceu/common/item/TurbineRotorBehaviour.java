@@ -54,8 +54,6 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
         return property == null ? -1 : 800 * (int) Math.pow(property.getDurability(), 0.65);
     }
 
-    //TODO : getDamage() and Hurt Player
-
     public int getRotorDurabilityPercent(ItemStack itemStack) {
         return 100 - 100 * getPartDamage(itemStack) / getPartMaxDurability(itemStack);
     }
@@ -69,8 +67,6 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
             setPartDamage(itemStack, resultDamage);
         }
     }
-
-
 
     @Override
     public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Item.TooltipContext context,

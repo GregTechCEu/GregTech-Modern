@@ -80,7 +80,7 @@ public class GTFluidBuilder<P> extends AbstractBuilder<Fluid, GTFluidImpl.Flowin
     @Setter
     public int color = -1;
     @Setter
-    public int burnTime = -1;
+    public int burnTime = 0;
     @Setter
     public FluidState state;
 

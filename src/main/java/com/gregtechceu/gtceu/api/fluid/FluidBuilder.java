@@ -58,7 +58,7 @@ public class FluidBuilder {
     private int luminosity = INFER_LUMINOSITY;
     private int viscosity = INFER_VISCOSITY;
     @Setter
-    private int burnTime = -1;
+    private int burnTime = 0;
 
     @Getter
     @Setter(onMethod_ = @ApiStatus.Internal)

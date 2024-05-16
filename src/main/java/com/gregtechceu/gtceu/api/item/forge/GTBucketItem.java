@@ -81,7 +81,7 @@ public class GTBucketItem extends BucketItem {
                 return gtFluid.getBurnTime();
             }
         }
-        return -1;
+        return 0;
     }
 
     @Override
