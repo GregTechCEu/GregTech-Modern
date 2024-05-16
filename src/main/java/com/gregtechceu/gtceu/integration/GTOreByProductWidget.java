@@ -118,10 +118,12 @@ public class GTOreByProductWidget extends WidgetGroup {
         TagOrCycleItemStackTransfer itemInputsHandler = new TagOrCycleItemStackTransfer(itemInputs);
         WidgetGroup itemStackGroup = new WidgetGroup();
         for (int i = 0; i < ITEM_INPUT_LOCATIONS.size(); i += 2) {
+            final int finalI = i;
             itemStackGroup.addWidget(new SlotWidget(itemInputsHandler, i / 2, ITEM_INPUT_LOCATIONS.get(i), ITEM_INPUT_LOCATIONS.get(i + 1))
                 .setCanTakeItems(false).setCanPutItems(false)
                 .setIngredientIO(IngredientIO.INPUT)
-                .setHoverTooltips(recipeWrapper.getTooltip(i / 2)).setBackground((IGuiTexture) null));
+                .setOnAddedTooltips((slot, tooltips) -> recipeWrapper.getTooltip(finalI / 2, tooltips))
+                .setBackground((IGuiTexture) null));
         }
 
         NonNullList<ItemStack> itemOutputs = recipeWrapper.itemOutputs;
@@ -142,8 +144,9 @@ public class GTOreByProductWidget extends WidgetGroup {
 
             itemStackGroup.addWidget(new SlotWidget(itemOutputsHandler, slotIndex, ITEM_OUTPUT_LOCATIONS.get(i), ITEM_OUTPUT_LOCATIONS.get(i + 1))
                 .setCanTakeItems(false).setCanPutItems(false)
-                .setIngredientIO(IngredientIO.OUTPUT).setXEIChance(xeiChance).setOverlay(overlay)
-                .setHoverTooltips(recipeWrapper.getTooltip(slotIndex + itemInputs.size())).setBackground((IGuiTexture) null));
+                .setIngredientIO(IngredientIO.OUTPUT).setXEIChance(xeiChance)
+                .setOnAddedTooltips((slot, tooltips) -> recipeWrapper.getTooltip(slotIndex + itemInputs.size(), tooltips))
+                .setBackground((IGuiTexture) null).setOverlay(overlay));
             itemOutputExists.add(true);
         }
 

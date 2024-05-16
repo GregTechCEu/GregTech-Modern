@@ -5,14 +5,20 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
@@ -55,11 +61,15 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
     }
 
     //TODO : getDamage() and Hurt Player
+    public float getDamage(ItemStack itemStack) {
+        var property = getPartMaterial(itemStack).getProperty(PropertyKey.ROTOR);
+        return property == null ? -1 : property.getDamage();
+    }
+
 
     public int getRotorDurabilityPercent(ItemStack itemStack) {
         return 100 - 100 * getPartDamage(itemStack) / getPartMaxDurability(itemStack);
     }
-
     public void applyRotorDamage(ItemStack itemStack, int damageApplied) {
         int rotorDurability = getPartMaxDurability(itemStack);
         int resultDamage = getPartDamage(itemStack) + damageApplied;
