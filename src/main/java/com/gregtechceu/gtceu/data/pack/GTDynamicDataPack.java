@@ -39,7 +39,7 @@ import java.util.stream.Collectors;
 public class GTDynamicDataPack implements PackResources {
 
     protected static final ObjectSet<String> SERVER_DOMAINS = new ObjectOpenHashSet<>();
-    protected static final Map<ResourceLocation, JsonObject> DATA = new HashMap<>();
+    protected static final Map<ResourceLocation, byte[]> DATA = new HashMap<>();
 
     private final String name;
 
@@ -70,13 +70,13 @@ public class GTDynamicDataPack implements PackResources {
         if (DATA.containsKey(recipeId)) {
             GTCEu.LOGGER.error("duplicated recipe: {}", recipeId);
         }
-        DATA.put(getRecipeLocation(recipeId), recipeJson);
+        DATA.put(getRecipeLocation(recipeId), recipeJson.toString().getBytes(StandardCharsets.UTF_8));
         if (recipe.serializeAdvancement() != null) {
             JsonObject advancement = recipe.serializeAdvancement();
             if (ConfigHolder.INSTANCE.dev.dumpRecipes) {
                 writeJson(recipe.getAdvancementId(), "advancements", parent, advancement);
             }
-            DATA.put(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())), advancement);
+            DATA.put(getAdvancementLocation(Objects.requireNonNull(recipe.getAdvancementId())), advancement.toString().getBytes(StandardCharsets.UTF_8));
         }
     }
 
@@ -108,7 +108,7 @@ public class GTDynamicDataPack implements PackResources {
     public static void addAdvancement(ResourceLocation loc, JsonObject obj) {
         ResourceLocation l = getAdvancementLocation(loc);
         synchronized (DATA) {
-            DATA.put(l, obj);
+            DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
         }
     }
 
@@ -121,8 +121,9 @@ public class GTDynamicDataPack implements PackResources {
     @Override
     public IoSupplier<InputStream> getResource(PackType type, ResourceLocation location) {
         if (type == PackType.SERVER_DATA) {
-            if (DATA.containsKey(location))
-                return () -> new ByteArrayInputStream(DATA.get(location).toString().getBytes(StandardCharsets.UTF_8));
+            var byteArray = DATA.get(location);
+            if (byteArray != null)
+                return () -> new ByteArrayInputStream(byteArray);
             else return null;
         } else {
             return null;

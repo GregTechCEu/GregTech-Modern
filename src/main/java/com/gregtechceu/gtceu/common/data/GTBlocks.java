@@ -269,7 +269,7 @@ public class GTBlocks {
     private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
         var entry = registrate.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
+                .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
                 .transform(unificationBlock(insulation.tagPrefix, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -312,7 +312,7 @@ public class GTBlocks {
                     if (doMetalPipe(material)) {
                         p.sound(GTSoundTypes.METAL_PIPE);
                     }
-                    return p.dynamicShape().noOcclusion().noLootTable();
+                    return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
                 .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                 .blockstate(NonNullBiConsumer.noop())
@@ -355,7 +355,7 @@ public class GTBlocks {
                     if (doMetalPipe(material)) {
                         p.sound(GTSoundTypes.METAL_PIPE);
                     }
-                    return p.dynamicShape().noOcclusion().noLootTable();
+                    return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
                 })
                 .transform(unificationBlock(itemPipeType.getTagPrefix(), material))
                 .blockstate(NonNullBiConsumer.noop())
@@ -383,7 +383,7 @@ public class GTBlocks {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(p -> p.dynamicShape().noOcclusion())
+                .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
                 .blockstate(NonNullBiConsumer.noop())
                 .defaultLoot()
                 .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
@@ -409,7 +409,7 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE.block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .properties(p -> p.dynamicShape().noOcclusion())
+            .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
@@ -698,12 +698,12 @@ public class GTBlocks {
 
     private static BlockEntry<Block> createSidedCasingBlock(String name, String texture) {
         return createCasingBlock(
-            name, (properties, iRenderer) -> new RendererBlock(properties,
+            name, properties -> new RendererBlock(properties,
                 Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_bottom_top"),
                     Map.of("bottom", GTCEu.id(texture + "/bottom"),
                         "top", GTCEu.id(texture + "/top"),
                         "side", GTCEu.id(texture + "/side"))) : null),
-            GTCEu.id(texture), () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
+            () -> Blocks.IRON_BLOCK, () -> RenderType::cutoutMipped
         );
     }
 
@@ -712,9 +712,13 @@ public class GTBlocks {
     }
 
     public static BlockEntry<Block> createCasingBlock(String name, BiFunction<BlockBehaviour.Properties, IRenderer, ? extends RendererBlock> blockSupplier, ResourceLocation texture, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
-        return REGISTRATE.block(name, p -> (Block) blockSupplier.apply(p,
+        return createCasingBlock(name, p -> blockSupplier.apply(p,
                         Platform.isClient() ? new TextureOverrideRenderer(new ResourceLocation("block/cube_all"),
-                        Map.of("all", texture)) : null))
+                        Map.of("all", texture)) : null), properties, type);
+    }
+
+    public static BlockEntry<Block> createCasingBlock(String name, NonNullFunction<BlockBehaviour.Properties, Block> blockSupplier, NonNullSupplier<? extends Block> properties, Supplier<Supplier<RenderType>> type) {
+        return REGISTRATE.block(name, blockSupplier)
                 .initialProperties(properties)
                 .properties(p -> p.isValidSpawn((state, level, pos, ent) -> false))
                 .addLayer(type)
