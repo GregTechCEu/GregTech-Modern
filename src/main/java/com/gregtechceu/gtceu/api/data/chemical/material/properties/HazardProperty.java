@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import lombok.Getter;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -92,10 +93,11 @@ public class HazardProperty implements IMaterialProperty<HazardProperty>{
 
         public boolean isProtected(LivingEntity livingEntity){
             List<ArmorItem.Type> correctArmorItems = new ArrayList<>();
-            for (ArmorItem.Type equipmentType: equipmentTypes){
+            for (ArmorItem.Type equipmentType: equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
-                if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE())
-                    correctArmorItems.add(armorItem.getType());
+                if(!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE()) || armor.getTags().anyMatch(tag -> tag.location().equals(new ResourceLocation("forge", "ppe"))))){
+                    correctArmorItems.add(equipmentType);
+                }
             }
             return new HashSet<>(correctArmorItems).containsAll(equipmentTypes);
         }
