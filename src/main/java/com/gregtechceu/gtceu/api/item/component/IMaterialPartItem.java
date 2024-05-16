@@ -69,10 +69,10 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     }
 
     @Override
-    default String getItemStackDisplayName(ItemStack itemStack) {
-        var material = getPartMaterial(itemStack);
-        return LocalizationUtils.format(material.getUnlocalizedName()) + " " +
-                LocalizationUtils.format(itemStack.getItem().getDescriptionId());
+    @Nullable
+    default Component getItemName(ItemStack stack) {
+        var material = getPartMaterial(stack);
+        return Component.translatable(stack.getDescriptionId(), material.getLocalizedName());
     }
 
     @Override

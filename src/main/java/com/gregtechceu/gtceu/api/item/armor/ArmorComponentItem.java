@@ -97,6 +97,11 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
+    public int getMaxDamage(ItemStack stack) {
+        return super.getMaxDamage(stack);
+    }
+
+    @Override
     public boolean isValidRepairItem(ItemStack stack, ItemStack repairCandidate) {
         return false;
     }
@@ -259,10 +264,26 @@ public class ArmorComponentItem extends ArmorItem implements IComponentItem {
     }
 
     @Override
+    public Component getName(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof ICustomDescriptionId customDescriptionId) {
+                Component name = customDescriptionId.getItemName(stack);
+                if (name != null) {
+                    return name;
+                }
+            }
+        }
+        return super.getName(stack);
+    }
+
+    @Override
     public String getDescriptionId(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof ICustomDescriptionId customDescriptionId) {
-                return customDescriptionId.getItemStackDisplayName(stack);
+                String langId = customDescriptionId.getItemDescriptionId(stack);
+                if (langId != null) {
+                    return langId;
+                }
             }
         }
         return super.getDescriptionId(stack);

@@ -24,6 +24,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import com.mojang.datafixers.util.Pair;
+import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -149,24 +150,8 @@ public class ArmorUtils {
 
         FoodProperties foodItem = food.getFoodProperties(player);
         if (foodItem != null && player.getFoodData().needsFood()) {
-            if (!player.isCreative()) {
-                food.setCount(food.getCount() - 1);
-            }
-
-            // Find the saturation of the food
-            float saturation = foodItem.saturation();
-
-            // The amount of empty food haunches of the player
-            int hunger = 20 - player.getFoodData().getFoodLevel();
-
-            // Increase the saturation of the food if the food replenishes more than the amount of missing haunches
-            saturation += (hunger - foodItem.nutrition()) < 0 ? foodItem.nutrition() - hunger : 1.0F;
-
-            // Use this method to add stats for compat with TFC, who overrides addStats(int amount, float saturation)
-            // for their food and does nothing
-            player.getFoodData().eat(hunger, saturation);
-
-            return InteractionResultHolder.success(food);
+            ItemStack result = EventHooks.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(), food.finishUsingItem(player.level(), player));
+            return InteractionResultHolder.success(result);
         } else {
             return InteractionResultHolder.fail(food);
         }
