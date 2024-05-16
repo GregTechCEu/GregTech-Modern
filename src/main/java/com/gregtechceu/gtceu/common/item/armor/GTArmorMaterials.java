@@ -16,19 +16,19 @@ import java.util.EnumMap;
 
 @AllArgsConstructor
 public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
-    GOGGLES("goggles", 7, Util.make(new EnumMap<>(EquipmentSlot.class), map -> {
+    GOGGLES("goggles", 0, Util.make(new EnumMap<>(EquipmentSlot.class), map -> {
         map.put(EquipmentSlot.FEET, 0);
         map.put(EquipmentSlot.LEGS, 0);
         map.put(EquipmentSlot.CHEST, 0);
         map.put(EquipmentSlot.HEAD, 0);
     }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
-    JETPACK("jetpack", 15, Util.make(new EnumMap<>(EquipmentSlot.class), map -> {
+    JETPACK("jetpack", 0, Util.make(new EnumMap<>(EquipmentSlot.class), map -> {
         map.put(EquipmentSlot.FEET, 0);
         map.put(EquipmentSlot.LEGS, 0);
         map.put(EquipmentSlot.CHEST, 0);
         map.put(EquipmentSlot.HEAD, 0);
     }), 50, SoundEvents.ARMOR_EQUIP_GENERIC, 0.0F, 0.0F, () -> Ingredient.EMPTY),
-    ARMOR("armor", 40, Util.make(new EnumMap<>(EquipmentSlot.class), map -> {
+    ARMOR("armor", 0, Util.make(new EnumMap<>(EquipmentSlot.class), map -> {
         map.put(EquipmentSlot.FEET, 0);
         map.put(EquipmentSlot.LEGS, 0);
         map.put(EquipmentSlot.CHEST, 0);

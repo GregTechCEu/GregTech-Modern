@@ -12,6 +12,7 @@ import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.mojang.datafixers.util.Either;
 import com.mojang.datafixers.util.Pair;
@@ -292,8 +293,7 @@ public class GTOreByProduct {
         }
     }
 
-    public List<Component> getTooltip(int slotIndex) {
-        List<Component> tooltips = new ArrayList<>();
+    public void getTooltip(int slotIndex, List<Component> tooltips) {
         if (chances.containsKey(slotIndex)) {
             Content entry = chances.get(slotIndex);
             float chance = entry.chance * 100;
@@ -301,7 +301,6 @@ public class GTOreByProduct {
             tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.chance_1", chance));
             tooltips.add(FormattingUtil.formatPercentage2Places("gtceu.gui.content.tier_boost", boost));
         }
-        return tooltips;
     }
 
     public Content getChance(int slot) {
