@@ -1,7 +1,7 @@
 {
   "variants": {
     "": {
-      "model": "gtceu:block/oil_heavy"
+      "model": "gtceu:block/raw_oil"
     }
   }
 }
