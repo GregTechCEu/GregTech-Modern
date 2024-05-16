@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.api.worldgen.modifier.DimensionFilter;
 import com.gregtechceu.gtceu.api.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
+import com.gregtechceu.gtceu.common.worldgen.feature.FluidSproutFeature;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -27,7 +28,9 @@ public class GTFeatures {
             GTCEu.MOD_ID);
 
     public static final DeferredHolder<Feature<?>, StoneBlobFeature> STONE_BLOB = FEATURE_REGISTER
-            .register("stone_blob", StoneBlobFeature::new);
+        .register("stone_blob", StoneBlobFeature::new);
+    public static final DeferredHolder<Feature<?>, FluidSproutFeature> FLUID_SPROUT = FEATURE_REGISTER
+        .register("fluid_sprout", FluidSproutFeature::new);
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time

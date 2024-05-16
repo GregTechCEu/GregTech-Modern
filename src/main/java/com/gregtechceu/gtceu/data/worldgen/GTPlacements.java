@@ -25,6 +25,14 @@ import java.util.List;
  * @implNote GTPlacements
  */
 public class GTPlacements {
+    public static final ResourceKey<PlacedFeature> RUBBER_CHECKED = ResourceKey.create(Registries.PLACED_FEATURE,
+        GTCEu.id("rubber_checked"));
+    public static final ResourceKey<PlacedFeature> RED_GRANITE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE,
+        GTCEu.id("red_granite_blob"));
+    public static final ResourceKey<PlacedFeature> MARBLE_BLOB = ResourceKey.create(Registries.PLACED_FEATURE,
+        GTCEu.id("marble_blob"));
+    public static final ResourceKey<PlacedFeature> RAW_OIL_SPROUT = ResourceKey.create(Registries.PLACED_FEATURE,
+        GTCEu.id("raw_oil_sprout"));
 
     public static final ResourceKey<PlacedFeature> RUBBER_CHECKED = ResourceKey.create(Registries.PLACED_FEATURE,
             GTCEu.id("rubber_checked"));
@@ -56,6 +64,13 @@ public class GTPlacements {
                 RarityFilter.onAverageOnceEvery(10),
                 InSquarePlacement.spread(),
                 BiomeFilter.biome(),
-                HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top()));
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
+        );
+        PlacementUtils.register(ctx, RAW_OIL_SPROUT, featureLookup.getOrThrow(GTConfiguredFeatures.RAW_OIL_SPROUT),
+                RarityFilter.onAverageOnceEvery(64),
+                InSquarePlacement.spread(),
+                BiomeFilter.biome(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(40))
+        );
     }
 }
