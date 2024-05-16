@@ -3,8 +3,8 @@ package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
+import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import lombok.Getter;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
@@ -95,7 +95,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty>{
             List<ArmorItem.Type> correctArmorItems = new ArrayList<>();
             for (ArmorItem.Type equipmentType: equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
-                if(!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE()) || armor.getTags().anyMatch(tag -> tag.location().equals(new ResourceLocation("forge", "ppe"))))){
+                if(!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE()) || armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))){
                     correctArmorItems.add(equipmentType);
                 }
             }

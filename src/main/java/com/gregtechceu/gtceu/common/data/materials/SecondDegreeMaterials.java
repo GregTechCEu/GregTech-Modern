@@ -40,6 +40,7 @@ public class SecondDegreeMaterials {
             .dust(1)
             .color(0x212125).secondaryColor(0x15151a)
             .components(Carbon, 1)
+            .flags(DECOMPOSITION_BY_CENTRIFUGING)
             .buildAndRegister();
 
         Borax = new Material.Builder(GTCEu.id("borax"))
