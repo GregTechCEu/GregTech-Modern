@@ -442,13 +442,6 @@ public class LangHandler {
         replace(provider, GTMaterials.PCBCoolant.getUnlocalizedName(), "PCB Coolant");
         replace(provider, GTMaterials.TungstenSteel.getUnlocalizedName(), "Tungstensteel");
         replace(provider, GTMaterials.Iron3Chloride.getUnlocalizedName(), "Iron III Chloride");
-        replace(provider, GTMaterials.Iron2Chloride.getUnlocalizedName(), "Iron II Chloride");
-        replace(provider, GTMaterials.OilHeavy.getUnlocalizedName(), "Heavy Oil");
-        replace(provider, "block.gtceu.oil_heavy", "Heavy Oil");
-        replace(provider, GTMaterials.OilLight.getUnlocalizedName(), "Light Oil");
-        replace(provider, "block.gtceu.oil_light", "Light Oil");
-        replace(provider, GTMaterials.RawOil.getUnlocalizedName(), "Raw Oil");
-        replace(provider, "block.gtceu.oil_medium", "Raw Oil");
 
         replace(provider, GTMaterials.HydroCrackedButadiene.getUnlocalizedName(), "Hydro-Cracked Butadiene");
         replace(provider, GTMaterials.HydroCrackedButane.getUnlocalizedName(), "Hydro-Cracked Butane");

@@ -66,7 +66,7 @@ public class FuelRecipes {
                 .duration(10)
                 .save(provider);
 
-        LARGE_BOILER_RECIPES.recipeBuilder("oil_heavy")
+        LARGE_BOILER_RECIPES.recipeBuilder("heavy_oil")
                 .inputFluids(OilHeavy.getFluid(32))
                 .duration(10)
                 .save(provider);
