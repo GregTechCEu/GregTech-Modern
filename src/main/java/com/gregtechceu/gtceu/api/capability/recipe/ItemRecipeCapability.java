@@ -240,12 +240,16 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the items in the combined Item Input inventories and create oversized ItemStacks
-        Object2IntMap<ItemStack> ingredientStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
-            .stream()
-            .filter(handler -> !handler.isProxy())
-            .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance).map(ItemStack.class::cast).toList())
-            .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
-            .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum, () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
+        Object2IntMap<ItemStack> ingredientStacks = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .filter(handler -> !handler.isProxy())
+                .map(container -> container.getContents().stream().filter(ItemStack.class::isInstance)
+                        .map(ItemStack.class::cast).toList())
+                .flatMap(container -> GTHashMaps.fromItemStackCollection(container).object2IntEntrySet().stream())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue, Integer::sum,
+                        () -> new Object2IntOpenCustomHashMap<>(ItemStackHashStrategy.comparingAllButCount())));
 
         int minMultiplier = Integer.MAX_VALUE;
         // map the recipe ingredients to account for duplicated and notConsumable ingredients.
@@ -445,7 +449,8 @@ public class ItemRecipeCapability extends RecipeCapability<SizedIngredient> {
                 slot.setXEIChance(content.chance);
                 slot.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
+                    if (index >=
+                            (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });

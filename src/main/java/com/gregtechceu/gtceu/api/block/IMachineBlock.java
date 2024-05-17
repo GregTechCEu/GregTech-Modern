@@ -40,6 +40,10 @@ import appeng.api.networking.IInWorldGridNodeHost;
 import appeng.capabilities.AppEngCapabilities;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * @author KilaBash
  * @date 2023/3/31
@@ -149,8 +153,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IEnergyContainer energyContainer) {
                     return energyContainer;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyContainer.class::isInstance)
-                        .filter(t -> t.hasCapability(side)).map(IEnergyContainer.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
+                        IEnergyContainer.class);
                 if (!list.isEmpty()) {
                     return new EnergyContainerList(list);
                 }
@@ -162,8 +166,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IEnergyInfoProvider energyInfoProvider) {
                     return energyInfoProvider;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyInfoProvider.class::isInstance)
-                        .filter(t -> t.hasCapability(side)).map(IEnergyInfoProvider.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
+                        IEnergyInfoProvider.class);
                 if (!list.isEmpty()) {
                     return new EnergyInfoProviderList(list);
                 }
@@ -249,8 +253,7 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IEnergyStorage energyStorage) {
                     return energyStorage;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IEnergyStorage.class::isInstance)
-                        .filter(t -> t.hasCapability(side)).map(IEnergyStorage.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side, IEnergyStorage.class);
                 if (!list.isEmpty()) {
                     return new EnergyStorageList(list);
                 }
@@ -262,8 +265,7 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof ILaserContainer energyContainer) {
                     return energyContainer;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(ILaserContainer.class::isInstance)
-                        .filter(t -> t.hasCapability(side)).map(ILaserContainer.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side, ILaserContainer.class);
                 if (!list.isEmpty()) {
                     return new LaserContainerList(list);
                 }
@@ -275,9 +277,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IOpticalComputationProvider computationProvider) {
                     return computationProvider;
                 }
-                var list = machine.getMetaMachine().getTraits().stream()
-                        .filter(IOpticalComputationProvider.class::isInstance).filter(t -> t.hasCapability(side))
-                        .map(IOpticalComputationProvider.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
+                        IOpticalComputationProvider.class);
                 if (!list.isEmpty()) {
                     return list.get(0);
                 }
@@ -289,8 +290,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 if (machine.getMetaMachine() instanceof IDataAccessHatch dataAccess) {
                     return dataAccess;
                 }
-                var list = machine.getMetaMachine().getTraits().stream().filter(IDataAccessHatch.class::isInstance)
-                        .filter(t -> t.hasCapability(side)).map(IDataAccessHatch.class::cast).toList();
+                var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
+                        IDataAccessHatch.class);
                 if (!list.isEmpty()) {
                     return list.get(0);
                 }
@@ -303,9 +304,8 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                     if (machine.getMetaMachine() instanceof IInWorldGridNodeHost nodeHost) {
                         return nodeHost;
                     }
-                    var list = machine.getMetaMachine().getTraits().stream()
-                            .filter(IInWorldGridNodeHost.class::isInstance).filter(t -> t.hasCapability(side))
-                            .map(IInWorldGridNodeHost.class::cast).toList();
+                    var list = getCapabilitiesFromTraits(machine.getMetaMachine().getTraits(), side,
+                            IInWorldGridNodeHost.class);
                     if (!list.isEmpty()) {
                         // TODO wrap list in the future (or not.)
                         return list.get(0);
@@ -314,5 +314,17 @@ public interface IMachineBlock extends IBlockRendererProvider, EntityBlock {
                 return null;
             }, this.self());
         }
+    }
+
+    static <T> List<T> getCapabilitiesFromTraits(List<MachineTrait> traits, Direction accessSide,
+                                                 Class<T> capability) {
+        if (traits.isEmpty()) return Collections.emptyList();
+        List<T> list = new ArrayList<>();
+        for (MachineTrait trait : traits) {
+            if (trait.hasCapability(accessSide) && capability.isInstance(trait)) {
+                list.add(capability.cast(trait));
+            }
+        }
+        return list;
     }
 }

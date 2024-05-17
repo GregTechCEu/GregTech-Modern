@@ -49,7 +49,6 @@ import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.item.ItemProperties;
@@ -519,17 +518,22 @@ public class GTItems {
     }
 
     public static ICustomDescriptionId cellName() {
-        return itemStack -> {
-            var held = FluidTransferHelper.getFluidContained(itemStack);
-            var prefix = LocalizationUtils.format("Empty");
-            if (held != null && !held.isEmpty()) {
-                prefix = FluidHelper.getDisplayName(held).getString();
+        return new ICustomDescriptionId() {
+
+            @Override
+            public Component getItemName(ItemStack stack) {
+                var held = FluidTransferHelper.getFluidContained(stack);
+                Component prefix = Component.translatable("gtceu.fluid.empty");
+                if (held != null && !held.isEmpty()) {
+                    prefix = FluidHelper.getDisplayName(held);
+                }
+                return Component.translatable(stack.getDescriptionId(), prefix);
             }
-            return "%s %s".formatted(prefix, itemStack.getItem().getDescription().getString());
         };
     }
 
     public static ItemEntry<ComponentItem> FLUID_CELL = REGISTRATE.item("fluid_cell", ComponentItem::new)
+            .lang("%s Fluid Cell")
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .color(() -> GTItems::cellColor)
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -539,7 +543,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_UNIVERSAL = REGISTRATE
             .item("universal_fluid_cell", ComponentItem::new)
-            .lang("Universal Cell")
+            .lang("%s Universal Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -549,7 +553,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STEEL = REGISTRATE
             .item("steel_fluid_cell", ComponentItem::new)
-            .lang("Steel Cell")
+            .lang("%s Steel Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -562,7 +566,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_ALUMINIUM = REGISTRATE
             .item("aluminium_fluid_cell", ComponentItem::new)
-            .lang("Aluminium Cell")
+            .lang("%s Aluminium Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -575,7 +579,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_STAINLESS_STEEL = REGISTRATE
             .item("stainless_steel_fluid_cell", ComponentItem::new)
-            .lang("Stainless Steel Cell")
+            .lang("%s Stainless Steel Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -589,7 +593,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TITANIUM = REGISTRATE
             .item("titanium_fluid_cell", ComponentItem::new)
-            .lang("Titanium Cell")
+            .lang("%s Titanium Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNodeExist(GTCompassSections.ITEMS, "empty_cell"))
@@ -602,7 +606,7 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_LARGE_TUNGSTEN_STEEL = REGISTRATE
             .item("tungstensteel_fluid_cell", ComponentItem::new)
-            .lang("Tungstensteel Cell")
+            .lang("%s Tungstensteel Cell")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .properties(p -> p.stacksTo(32))
@@ -616,6 +620,7 @@ public class GTItems {
                     materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.TungstenSteel, GTValues.M * 8))))
             .register();
     public static ItemEntry<ComponentItem> FLUID_CELL_GLASS_VIAL = REGISTRATE.item("glass_vial", ComponentItem::new)
+            .lang("%s Glass Vial")
             .color(() -> GTItems::cellColor)
             .setData(ProviderType.ITEM_MODEL, NonNullBiConsumer.noop())
             .onRegister(compassNode(GTCompassSections.ITEMS))

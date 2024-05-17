@@ -253,7 +253,8 @@ public class ChemicalHelper {
                 for (TagKey<Item> itemTag : item.asItem().builtInRegistryHolder().tags().toList()) {
                     UnificationEntry unificationEntry = getUnificationEntry(itemTag);
                     // check that it's not the empty marker and that it's not a parent tag
-                    if (unificationEntry != null && Arrays.stream(unificationEntry.tagPrefix.getItemParentTags()).noneMatch(itemTag::equals)) {
+                    if (unificationEntry != null &&
+                            Arrays.stream(unificationEntry.tagPrefix.getItemParentTags()).noneMatch(itemTag::equals)) {
                         return unificationEntry;
                     }
                 }

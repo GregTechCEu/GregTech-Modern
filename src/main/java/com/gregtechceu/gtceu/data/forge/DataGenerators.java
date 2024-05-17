@@ -44,10 +44,11 @@ public class DataGenerators {
                     packOutput, registries, new RegistrySetBuilder()
                             .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
-                .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
-                .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap), set));
+                            .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
+                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
+                            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap),
+                    set));
         }
     }
 }
