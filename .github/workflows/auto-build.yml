@@ -27,7 +27,7 @@ jobs:
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep dev.jar -v | grep slim.jar -v | grep all.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
+          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo "version=$MESSAGE" >> $GITHUB_OUTPUT
           echo "version: $MESSAGE"
 
@@ -35,10 +35,11 @@ jobs:
         id: release
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
+          version: ${{ steps.var.outputs.version }}
           github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+            build/libs/!(*-@(slim|sources|javadoc)).jar
 
       - name: Print Output
         run: |

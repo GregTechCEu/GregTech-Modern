@@ -2,20 +2,12 @@ java {
     withSourcesJar()
 }
 
-shadowJar {
-    exclude "fabric.mod.json"
-    exclude "architectury.common.json"
-
-    configurations = [project.configurations.shadow]
-
-    archiveClassifier = null
+tasks.jar {
+    archiveClassifier.set("slim")
 }
 
-jar {
-    archiveClassifier = "dev"
+tasks.jarJar {
+    archiveClassifier.convention(null)
 }
-
-tasks.shadowJar.dependsOn('remapSlimJar')
-
 
 archivesBaseName = "${project.name}-${libs.versions.minecraft.get()}"
