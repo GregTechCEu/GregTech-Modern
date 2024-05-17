@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
 
 import net.minecraft.ChatFormatting;
@@ -76,7 +77,7 @@ public class RecipeLogicProvider extends CapabilityBlockProvider<RecipeLogic> {
                 // Default behavior, if this TE is not a steam machine (or somehow not instanceof
                 // IGregTechTileEntity...)
                 var tier = GTUtil.getTierByVoltage(absEUt);
-                Component text = Component.literal(Long.toString(absEUt)).withStyle(ChatFormatting.RED)
+                Component text = Component.literal(FormattingUtil.formatNumbers(absEUt)).withStyle(ChatFormatting.RED)
                         .append(Component.literal(" EU/t").withStyle(ChatFormatting.RESET)
                                 .append(Component.literal(" (").withStyle(ChatFormatting.GREEN)
                                         .append(Component.literal(GTValues.VNF[tier])

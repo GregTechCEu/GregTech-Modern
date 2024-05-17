@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.sound.GTSoundEntries;
+import com.gregtechceu.gtceu.utils.FormattingUtil;
 
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.utils.CycleItemStackHandler;
@@ -42,7 +43,7 @@ public class GCyMRecipeTypes {
             .setSlotOverlay(true, true, true, GuiTextures.FURNACE_OVERLAY_2)
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
-                return LocalizationUtils.format("gtceu.recipe.temperature", temp);
+                return LocalizationUtils.format("gtceu.recipe.temperature", FormattingUtil.formatNumbers(temp));
             })
             .addDataInfo(data -> {
                 int temp = data.getInt("ebf_temp");
