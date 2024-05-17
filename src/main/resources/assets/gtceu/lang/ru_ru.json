@@ -6968,5 +6968,6 @@
     "item.gtceu.quarktech_boots": "QuarkTech™ Поножи",
     "item.gtceu.quarktech_chestplate": "QuarkTech™ Кираса",
     "item.gtceu.sus_record": "Музыкальный диск",
-    "material.gtceu.quantum_echo": "Квантовое эхо"
+    "material.gtceu.quantum_echo": "Квантовое эхо",
+    "gtceu.recipe.coil.tier": "Катушка: %s"
 }
