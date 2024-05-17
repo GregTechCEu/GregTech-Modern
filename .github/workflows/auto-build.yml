@@ -28,7 +28,8 @@ jobs:
         id: var
         run: |
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep dev.jar -v | grep slim.jar -v | grep all.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
-          echo version=$MESSAGE >> $GITHUB_OUTPUT
+          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "version: $MESSAGE"
 
       - name: Release
         id: release
@@ -37,10 +38,10 @@ jobs:
           github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
-            build/libs/!(*-@(dev|sources|javadoc)).jar
+            build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
 
       - name: Print Output
         run: |
-          echo "Release tag: ${{ steps.release.outputs.github-tag }}"
-          echo "Release URL: ${{ steps.release.outputs.github-url }}"
-          echo "Released files: ${{ steps.release.outputs.github-files }}"
+          echo "Release tag: ${{ steps.publish.outputs.github-tag }}"
+          echo "Release URL: ${{ steps.publish.outputs.github-url }}"
+          echo "Released files: ${{ steps.publish.outputs.github-files }}"
