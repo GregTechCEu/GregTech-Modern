@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
-
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.cover.RobotArmCover;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -16,6 +17,7 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -37,10 +39,15 @@ public class RobotArmCoverRenderer implements ICoverRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, ModelState modelState) {
-        if (side == coverBehavior.attachedSide && coverBehavior instanceof RobotArmCover robotArm && modelFacing != null) {
+    public void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+                            @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing,
+                            ModelState modelState) {
+        if (side == coverBehavior.attachedSide && coverBehavior instanceof RobotArmCover robotArm &&
+                modelFacing != null) {
             quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ARM_OVERLAY), modelState));
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(robotArm.getIo() == IO.OUT ? ARM_OVERLAY_OUT : AR_OVERLAY_IN),  modelState, -101, 15));
+            quads.add(FaceQuad.bakeFace(modelFacing,
+                    ModelFactory.getBlockSprite(robotArm.getIo() == IO.OUT ? ARM_OVERLAY_OUT : AR_OVERLAY_IN),
+                    modelState, -101, 15));
         }
     }
 

@@ -3,7 +3,9 @@ package com.gregtechceu.gtceu.client.renderer.machine;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
@@ -13,6 +15,7 @@ import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -21,6 +24,7 @@ import java.util.List;
  * @implNote PartRenderer
  */
 public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer implements IPartRenderer {
+
     protected IModelRenderer overlayModel;
 
     public OverlayTieredMachineRenderer(int tier, ResourceLocation overlayModel) {
@@ -30,7 +34,9 @@ public class OverlayTieredMachineRenderer extends TieredHullMachineRenderer impl
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing, ModelState modelState) {
+    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                              Direction frontFacing, @Nullable Direction side, RandomSource rand, Direction modelFacing,
+                              ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         quads.addAll(overlayModel.getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand));
     }

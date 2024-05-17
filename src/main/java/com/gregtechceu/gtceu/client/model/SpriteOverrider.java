@@ -15,11 +15,11 @@ import java.util.function.Function;
  * @implNote SpriteOverrider
  */
 @OnlyIn(Dist.CLIENT)
-public record SpriteOverrider(Map<String, ResourceLocation> override) implements Function<Material, TextureAtlasSprite> {
+public record SpriteOverrider(Map<String, ResourceLocation> override)
+        implements Function<Material, TextureAtlasSprite> {
 
     @Override
     public TextureAtlasSprite apply(Material material) {
         return material.sprite();
     }
-
 }

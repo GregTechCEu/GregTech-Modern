@@ -1,25 +1,25 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.material.material.MarkerMaterials;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.GELLED_TOLUENE;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.item.GTItems.GELLED_TOLUENE;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
 
 public class ReactorRecipes {
 
     public static void init(RecipeOutput provider) {
-
         CHEMICAL_RECIPES.recipeBuilder("raw_rubber_from_air")
                 .circuitMeta(1)
                 .inputFluids(Isoprene.getFluid(144))
@@ -76,8 +76,6 @@ public class ReactorRecipes {
                 .outputItems(dust, Salt, 4)
                 .outputFluids(PolyphenyleneSulfide.getFluid(1500))
                 .duration(240).EUt(360).save(provider);
-
-
 
         CHEMICAL_RECIPES.recipeBuilder("silicone_rubber")
                 .inputItems(dust, Polydimethylsiloxane, 9)
@@ -601,11 +599,11 @@ public class ReactorRecipes {
                 .duration(200).EUt(24).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("itnt_from_toluene")
-            .inputItems(GELLED_TOLUENE, 4)
-            .inputFluids(NitrationMixture.getFluid(200))
-            .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
-            .outputFluids(DilutedSulfuricAcid.getFluid(150))
-            .duration(80).EUt(VA[HV]).save(provider);
+                .inputItems(GELLED_TOLUENE, 4)
+                .inputFluids(NitrationMixture.getFluid(200))
+                .outputItems(new ItemStack(GTBlocks.INDUSTRIAL_TNT))
+                .outputFluids(DilutedSulfuricAcid.getFluid(150))
+                .duration(80).EUt(VA[HV]).save(provider);
 
         CHEMICAL_RECIPES.recipeBuilder("phenol_from_dichlorobenzene")
                 .inputItems(dust, SodiumHydroxide, 6)

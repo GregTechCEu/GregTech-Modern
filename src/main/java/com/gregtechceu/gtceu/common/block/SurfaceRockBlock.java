@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.common.block;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -27,6 +28,8 @@ import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -34,10 +37,11 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class SurfaceRockBlock extends Block {
+
     public static final DirectionProperty FACING = BlockStateProperties.FACING;
 
     private static final VoxelShape AABB_NORTH = Block.box(2, 2, 0, 14, 14, 3);
-    private static final VoxelShape AABB_SOUTH = Block.box(2, 2,13, 14, 14 ,16);
+    private static final VoxelShape AABB_SOUTH = Block.box(2, 2, 13, 14, 14, 16);
     private static final VoxelShape AABB_WEST = Block.box(0, 2, 2, 3, 14, 14);
     private static final VoxelShape AABB_EAST = Block.box(13, 2, 2, 16, 14, 14);
     private static final VoxelShape AABB_UP = Block.box(2, 13, 2, 14, 16, 14);
@@ -58,7 +62,8 @@ public class SurfaceRockBlock extends Block {
     }
 
     @Override
-    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
+    protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player,
+                                               BlockHitResult hit) {
         if (level.destroyBlock(pos, true, player)) {
             return InteractionResult.SUCCESS;
         }
@@ -96,7 +101,8 @@ public class SurfaceRockBlock extends Block {
     }
 
     @Override
-    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos, boolean movedByPiston) {
+    public void neighborChanged(BlockState state, Level level, BlockPos pos, Block neighborBlock, BlockPos neighborPos,
+                                boolean movedByPiston) {
         super.neighborChanged(state, level, pos, neighborBlock, neighborPos, movedByPiston);
 
         if (!canSurvive(state, level, pos)) {

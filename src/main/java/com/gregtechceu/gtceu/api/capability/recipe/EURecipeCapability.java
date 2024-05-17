@@ -1,10 +1,17 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
+import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
+import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
+import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author KilaBash
@@ -32,5 +39,33 @@ public class EURecipeCapability extends RecipeCapability<Long> {
     @Override
     public List<Object> compressIngredients(Collection<Object> ingredients) {
         return List.of(ingredients.stream().map(Long.class::cast).reduce(0L, Long::sum));
+    }
+
+    @Override
+    public int limitParallel(GTRecipe recipe, IRecipeCapabilityHolder holder, int multiplier) {
+        long maxVoltage = Long.MAX_VALUE;
+        if (holder instanceof IOverclockMachine overclockMachine) {
+            maxVoltage = overclockMachine.getOverclockVoltage();
+        } else if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = GTValues.V[tieredMachine.getTier()];
+        }
+
+        long recipeEUt = RecipeHelper.getInputEUt(recipe);
+        if (recipeEUt == 0) {
+            recipeEUt = RecipeHelper.getOutputEUt(recipe);
+        }
+        return Math.abs((int) (maxVoltage / recipeEUt));
+    }
+
+    @Override
+    public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
+        long needed = RecipeHelper.getInputEUt(recipe);
+        long available = Objects
+                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP),
+                        Collections::<IRecipeHandler<?>>emptyList)
+                .stream()
+                .map(handler -> Double.valueOf(handler.getTotalContentAmount()).longValue())
+                .reduce(0L, Long::sum);
+        return (int) Math.min(parallelAmount, available / needed);
     }
 }

@@ -4,41 +4,44 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IDataInfoProvider;
+import com.gregtechceu.gtceu.api.material.material.properties.WireProperties;
 import com.gregtechceu.gtceu.common.block.CableBlock;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.item.PortableScannerBehavior;
 import com.gregtechceu.gtceu.common.pipelike.cable.*;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -48,7 +51,9 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties> implements IDataInfoProvider {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CableBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CableBlockEntity.class,
+            PipeBlockEntity.MANAGED_FIELD_HOLDER);
 
     protected WeakReference<EnergyNet> currentEnergyNet = new WeakReference<>(null);
 
@@ -61,7 +66,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     private EnergyNetHandler defaultHandler;
     private int heatQueue;
     @Getter
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     private int temperature = getDefaultTemp();
     private TickableSubscription heatSubs;
 
@@ -79,7 +85,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             if (level.getBlockEntity(getBlockPos().relative(side)) instanceof CableBlockEntity) {
                 return false;
             }
-            return GTCapabilityHelper.getEnergyContainer(level, getBlockPos().relative(side), side.getOpposite()) != null;
+            return GTCapabilityHelper.getEnergyContainer(level, getBlockPos().relative(side), side.getOpposite()) !=
+                    null;
         }
         return false;
     }
@@ -90,7 +97,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             return null;
         EnergyNet currentEnergyNet = this.currentEnergyNet.get();
         if (currentEnergyNet != null && currentEnergyNet.isValid() &&
-            currentEnergyNet.containsNode(getBlockPos()))
+                currentEnergyNet.containsNode(getBlockPos()))
             return currentEnergyNet; // return current net if it is still valid
         LevelEnergyNet worldENet = LevelEnergyNet.getOrCreate(serverLevel);
         currentEnergyNet = worldENet.getNetFromPos(getBlockPos());
@@ -204,7 +211,7 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         if (voltage > maxVoltageCounter.get(getLevel())) {
             maxVoltageCounter.set(getLevel(), voltage);
         }
-        averageVoltageCounter.increment(getLevel(), voltage);
+        averageVoltageCounter.increment(getLevel(), voltage * amps);
         averageAmperageCounter.increment(getLevel(), amps);
 
         int dif = (int) (averageAmperageCounter.getLast(getLevel()) - getMaxAmperage());
@@ -259,7 +266,8 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
         int temp = temperature;
         setTemperature(getDefaultTemp());
         int index = getPipeType().insulationLevel;
-        CableBlock newBlock = GTBlocks.CABLE_BLOCKS.get(Insulation.values()[index].tagPrefix, getPipeBlock().material).get();
+        CableBlock newBlock = GTBlocks.CABLE_BLOCKS.get(Insulation.values()[index].tagPrefix, getPipeBlock().material)
+                .get();
         level.setBlockAndUpdate(getBlockPos(), newBlock.defaultBlockState());
         CableBlockEntity newCable = (CableBlockEntity) level.getBlockEntity(getBlockPos());
         if (newCable != null) { // should never be null
@@ -290,17 +298,17 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
             float xSpd = (float) Math.sin(temp) * 0.1F;
             float zSpd = (float) Math.cos(temp) * 0.1F;
 
-            ((ServerLevel)level).sendParticles(ParticleTypes.SMOKE,
-                xPos + GTValues.RNG.nextFloat() * 0.5F,
-                yPos + GTValues.RNG.nextFloat() * 0.5F,
-                zPos + GTValues.RNG.nextFloat() * 0.5F,
-                0,
-                xSpd, ySpd, zSpd, 1);
+            ((ServerLevel) level).sendParticles(ParticleTypes.SMOKE,
+                    xPos + GTValues.RNG.nextFloat() * 0.5F,
+                    yPos + GTValues.RNG.nextFloat() * 0.5F,
+                    zPos + GTValues.RNG.nextFloat() * 0.5F,
+                    0,
+                    xSpd, ySpd, zSpd, 1);
         }
     }
 
     //////////////////////////////////////
-    //*******     Interaction    *******//
+    // ******* Interaction *******//
     //////////////////////////////////////
 
     @Override
@@ -323,13 +331,14 @@ public class CableBlockEntity extends PipeBlockEntity<Insulation, WireProperties
     public List<Component> getDataInfo(PortableScannerBehavior.DisplayMode mode) {
         List<Component> list = new ArrayList<>();
 
-        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL || mode == PortableScannerBehavior.DisplayMode.SHOW_ELECTRICAL_INFO) {
+        if (mode == PortableScannerBehavior.DisplayMode.SHOW_ALL ||
+                mode == PortableScannerBehavior.DisplayMode.SHOW_ELECTRICAL_INFO) {
             list.add(Component.translatable("behavior.portable_scanner.eu_per_sec",
-                Component.translatable(FormattingUtil.formatNumbers(getAverageVoltage()))
-                    .withStyle(ChatFormatting.RED)));
+                    Component.translatable(FormattingUtil.formatNumbers(getAverageVoltage()))
+                            .withStyle(ChatFormatting.RED)));
             list.add(Component.translatable("behavior.portable_scanner.amp_per_sec",
-                Component.translatable(FormattingUtil.formatNumbers(getAverageAmperage()))
-                    .withStyle(ChatFormatting.RED)));
+                    Component.translatable(FormattingUtil.formatNumbers(getAverageAmperage()))
+                            .withStyle(ChatFormatting.RED)));
         }
 
         return list;

@@ -3,8 +3,7 @@ package com.gregtechceu.gtceu.client.model;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -19,6 +18,9 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.vertex.PoseStack;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -46,9 +48,12 @@ public class PipeModel {
     public ResourceLocation sideOverlayTexture, endOverlayTexture;
 
     @OnlyIn(Dist.CLIENT)
-    TextureAtlasSprite sideSprite, endSprite, secondarySideSprite, secondaryEndSprite, sideOverlaySprite, endOverlaySprite;
+    TextureAtlasSprite sideSprite, endSprite, secondarySideSprite, secondaryEndSprite, sideOverlaySprite,
+            endOverlaySprite;
 
-    public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture, @Nullable Supplier<@Nullable ResourceLocation> secondarySideTexture, @Nullable Supplier<@Nullable ResourceLocation> secondaryEndTexture) {
+    public PipeModel(float thickness, Supplier<ResourceLocation> sideTexture, Supplier<ResourceLocation> endTexture,
+                     @Nullable Supplier<@Nullable ResourceLocation> secondarySideTexture,
+                     @Nullable Supplier<@Nullable ResourceLocation> secondaryEndTexture) {
         this.sideTexture = sideTexture;
         this.endTexture = endTexture;
         this.secondarySideTexture = secondarySideTexture;
@@ -118,17 +123,21 @@ public class PipeModel {
 
             if (isConnected(connections, side)) { // side connected
                 List<BakedQuad> quads = new ArrayList<>();
-                quads.add(FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV().tintIndex(1).bake());
+                quads.add(FaceQuad.builder(side, endSprite).cube(sideCubes.get(side).inflate(-0.001)).cubeUV()
+                        .tintIndex(1).bake());
                 if (secondaryEndSprite != null) {
-                    quads.add(FaceQuad.builder(side, secondaryEndSprite).cube(sideCubes.get(side)).cubeUV().tintIndex(1).bake());
+                    quads.add(FaceQuad.builder(side, secondaryEndSprite).cube(sideCubes.get(side)).cubeUV().tintIndex(1)
+                            .bake());
                 }
                 if (endOverlaySprite != null) {
-                    quads.add(FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(0).bake());
+                    quads.add(FaceQuad.builder(side, endOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(0)
+                            .bake());
                 }
                 if (sideOverlaySprite != null) {
                     for (Direction face : Direction.values()) {
                         if (face != side && face != side.getOpposite()) {
-                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side)).cubeUV().tintIndex(2).bake());
+                            quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(side)).cubeUV()
+                                    .tintIndex(2).bake());
                         }
                     }
                 }
@@ -145,19 +154,23 @@ public class PipeModel {
                 if (!isConnected(connections, face)) {
                     quads.add(FaceQuad.builder(face, sideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
                     if (secondarySideSprite != null) {
-                        quads.add(FaceQuad.builder(face, secondarySideSprite).cube(coreCube).cubeUV().tintIndex(0).bake());
+                        quads.add(FaceQuad.builder(face, secondarySideSprite).cube(coreCube).cubeUV().tintIndex(0)
+                                .bake());
                     }
                 }
                 // render each connected side
                 for (Direction facing : Direction.values()) {
                     if (facing.getAxis() != face.getAxis()) {
                         if (isConnected(connections, facing)) {
-                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
+                            quads.add(FaceQuad.builder(face, sideSprite).cube(sideCubes.get(facing)).cubeUV()
+                                    .tintIndex(0).bake());
                             if (secondarySideSprite != null) {
-                                quads.add(FaceQuad.builder(face, secondarySideSprite).cube(sideCubes.get(facing)).cubeUV().tintIndex(0).bake());
+                                quads.add(FaceQuad.builder(face, secondarySideSprite).cube(sideCubes.get(facing))
+                                        .cubeUV().tintIndex(0).bake());
                             }
                             if (sideOverlaySprite != null) {
-                                quads.add(FaceQuad.builder(face, sideOverlaySprite).cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(2).bake());
+                                quads.add(FaceQuad.builder(face, sideOverlaySprite)
+                                        .cube(sideCubes.get(facing).inflate(0.001)).cubeUV().tintIndex(2).bake());
                             }
                         }
                     }
@@ -179,14 +192,14 @@ public class PipeModel {
     private final Map<Optional<Direction>, List<BakedQuad>> itemModelCache = new ConcurrentHashMap<>();
 
     @OnlyIn(Dist.CLIENT)
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack,
+                           MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         IItemRendererProvider.disabled.set(true);
-        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
+        Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer,
+                combinedLight, combinedOverlay,
                 (ItemBakedModel) (state, direction, random) -> itemModelCache.computeIfAbsent(
                         Optional.ofNullable(direction),
-                        direction1 -> bakeQuads(direction1.orElse(null), ITEM_CONNECTIONS)
-                )
-        );
+                        direction1 -> bakeQuads(direction1.orElse(null), ITEM_CONNECTIONS)));
         IItemRendererProvider.disabled.set(false);
     }
 
@@ -201,6 +214,4 @@ public class PipeModel {
         endSprite = null;
         endOverlaySprite = null;
     }
-
-
 }

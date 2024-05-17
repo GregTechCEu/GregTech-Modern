@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.Tool;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.block.state.BlockState;
+
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 import java.util.List;
 
@@ -98,5 +99,4 @@ public interface IGTToolDefinition {
     default ItemStack getBrokenStack() {
         return ItemStack.EMPTY;
     }
-
 }

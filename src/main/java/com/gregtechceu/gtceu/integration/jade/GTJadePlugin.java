@@ -1,30 +1,21 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
-import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.integration.jade.provider.ControllableBlockProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
 import com.gregtechceu.gtceu.integration.jade.provider.WorkableBlockProvider;
-import com.tterrag.registrate.util.entry.ItemEntry;
-import com.tterrag.registrate.util.entry.ItemProviderEntry;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.TieredItem;
+
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
-import snownee.jade.addon.harvest.HarvestToolProvider;
-import snownee.jade.addon.harvest.SimpleToolHandler;
+
 import snownee.jade.api.IWailaClientRegistration;
 import snownee.jade.api.IWailaCommonRegistration;
 import snownee.jade.api.IWailaPlugin;
 import snownee.jade.api.WailaPlugin;
 
-import java.util.Objects;
-
 @WailaPlugin
 public class GTJadePlugin implements IWailaPlugin {
+
     @Override
     public void register(IWailaCommonRegistration registration) {
         registration.registerBlockDataProvider(new ElectricContainerBlockProvider(), BlockEntity.class);
@@ -41,20 +32,21 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
     }
 
-    /* TODO fix once Jade 1.20.5 is out
-    static {
-        GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
-            if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
-            HarvestToolProvider.registerHandler(new SimpleToolHandler(GTCEu.id(type.name), true, map
-                .values()
-                .stream()
-                .filter(Objects::nonNull)
-                .filter(ItemProviderEntry::isBound)
-                .map(ItemProviderEntry::asItem)
-                .map(Item::getDefaultInstance)
-                .toList()
-            ));
-        });
-    }
-    */
+    /*
+     * TODO fix once Jade 1.20.5 is out
+     * static {
+     * GTItems.TOOL_ITEMS.columnMap().forEach((type, map) -> {
+     * if (type.harvestTags.isEmpty() || type.harvestTags.get(0).location().getNamespace().equals("minecraft")) return;
+     * HarvestToolProvider.registerHandler(new SimpleToolHandler(GTCEu.id(type.name), true, map
+     * .values()
+     * .stream()
+     * .filter(Objects::nonNull)
+     * .filter(ItemProviderEntry::isBound)
+     * .map(ItemProviderEntry::asItem)
+     * .map(Item::getDefaultInstance)
+     * .toList()
+     * ));
+     * });
+     * }
+     */
 }

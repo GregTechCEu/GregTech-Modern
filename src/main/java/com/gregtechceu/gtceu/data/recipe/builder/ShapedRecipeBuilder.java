@@ -1,15 +1,11 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.common.collect.Lists;
-import com.google.common.collect.Maps;
 import com.gregtechceu.gtceu.api.recipe.StrictShapedRecipe;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeCategory;
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
@@ -19,6 +15,11 @@ import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.item.crafting.ShapedRecipePattern;
 import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+
+import com.google.common.collect.Lists;
+import com.google.common.collect.Maps;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -32,6 +33,7 @@ import java.util.Objects;
  */
 @Accessors(chain = true, fluent = true)
 public class ShapedRecipeBuilder {
+
     @Setter
     protected ItemStack output = ItemStack.EMPTY;
     @Setter
@@ -67,7 +69,7 @@ public class ShapedRecipeBuilder {
     public ShapedRecipeBuilder define(char cha, ItemStack itemStack) {
         if (!itemStack.getComponents().isEmpty()) {
             key.put(cha, DataComponentIngredient.of(true, itemStack));
-        }else {
+        } else {
             key.put(cha, Ingredient.of(itemStack));
         }
         return this;
@@ -96,18 +98,18 @@ public class ShapedRecipeBuilder {
     public void save(RecipeOutput consumer) {
         var recipeId = id == null ? defaultId() : id;
         ShapedRecipe shapedrecipe = isStrict ? new StrictShapedRecipe(
-            Objects.requireNonNullElse(this.group, ""),
-            RecipeBuilder.determineBookCategory(this.category),
-            ShapedRecipePattern.of(key, rows),
-            this.output,
-            false
-        ) : new ShapedRecipe(
-            Objects.requireNonNullElse(this.group, ""),
-            RecipeBuilder.determineBookCategory(this.category),
-            ShapedRecipePattern.of(key, rows),
-            this.output,
-            false
-        );
-        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shaped/" + recipeId.getPath()), shapedrecipe, null);
+                Objects.requireNonNullElse(this.group, ""),
+                RecipeBuilder.determineBookCategory(this.category),
+                ShapedRecipePattern.of(key, rows),
+                this.output,
+                false) :
+                new ShapedRecipe(
+                        Objects.requireNonNullElse(this.group, ""),
+                        RecipeBuilder.determineBookCategory(this.category),
+                        ShapedRecipePattern.of(key, rows),
+                        this.output,
+                        false);
+        consumer.accept(new ResourceLocation(recipeId.getNamespace(), "shaped/" + recipeId.getPath()), shapedrecipe,
+                null);
     }
 }

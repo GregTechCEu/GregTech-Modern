@@ -62,7 +62,7 @@ public class BlockLang {
         replace(provider, "block.gtceu.steam_casing_bricked_steel", "Bricked Wrought Iron Hull");
         provider.add("block.gtceu.steam_casing_bricked_steel.tooltip", "§7For improved Steam Machines");
 
-        //GCyM Casings
+        // GCyM Casings
         replace(provider, "block.gtceu.laser_safe_engraving_casing", "Laser-Safe Engraving Casing");
         replace(provider, "block.gtceu.large_scale_assembler_casing", "Large-Scale Assembler Casing");
         replace(provider, "block.gtceu.reaction_safe_mixing_casing", "Reaction-Safe Mixing Casing");
@@ -77,9 +77,11 @@ public class BlockLang {
         provider.add("block.gtceu.filter_casing.tooltip", "Creates a §aParticle-Free§7 environment");
         provider.add("block.gtceu.sterilizing_filter_casing.tooltip", "Creates a §aSterilized§7 environment");
 
-        provider.add("block.gtceu.explosive.breaking_tooltip", "Primes explosion when mined, sneak mine to pick back up");
+        provider.add("block.gtceu.explosive.breaking_tooltip",
+                "Primes explosion when mined, sneak mine to pick back up");
         provider.add("block.gtceu.explosive.lighting_tooltip", "Cannot be lit with Redstone");
-        provider.add("block.gtceu.powderbarrel.drops_tooltip", "Slightly larger than TNT, drops all destroyed Blocks as Items");
+        provider.add("block.gtceu.powderbarrel.drops_tooltip",
+                "Slightly larger than TNT, drops all destroyed Blocks as Items");
         provider.add("block.gtceu.itnt.drops_tooltip", "Much larger than TNT, drops all destroyed Blocks as Items");
     }
 }

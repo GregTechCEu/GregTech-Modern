@@ -4,29 +4,41 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -35,17 +47,26 @@ import java.util.List;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotorHolderPartMachine extends TieredPartMachine implements IMachineModifyDrops, IRotorHolderMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
+public class RotorHolderPartMachine extends TieredPartMachine
+                                    implements IMachineModifyDrops, IRotorHolderMachine, IInteractedMachine {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     public final NotifiableItemStackHandler inventory;
     @Getter
     public final int maxRotorHolderSpeed;
-    @Getter @Setter
-    @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     public int rotorSpeed;
-    @Setter @Persisted @DescSynced @RequireRerender
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     public int rotorColor; // 0 - no rotor
     @Nullable
     protected TickableSubscription rotorSpeedSubs;
@@ -59,7 +80,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -97,7 +118,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     }
 
     //////////////////////////////////////
-    //******     Rotor Holder     ******//
+    // ****** Rotor Holder ******//
     //////////////////////////////////////
 
     private void onRotorInventoryChanged() {
@@ -179,8 +200,18 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
         inventory.onContentsChanged();
     }
 
+    public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
+        if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
+            player.hurt(GTDamageTypes.TURBINE.source(level),
+                    TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
+            return InteractionResult.FAIL;
+        }
+        return InteractionResult.PASS;
+    }
+
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
@@ -192,5 +223,4 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
         group.addWidget(container);
         return group;
     }
-
 }

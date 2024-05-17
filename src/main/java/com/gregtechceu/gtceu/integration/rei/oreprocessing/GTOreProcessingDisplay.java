@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.integration.rei.oreprocessing;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.integration.GTOreByProductWidget;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.rei.ModularDisplay;
+
 import net.minecraft.resources.ResourceLocation;
 
 import java.util.Optional;

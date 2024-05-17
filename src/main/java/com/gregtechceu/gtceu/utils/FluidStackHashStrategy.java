@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
-import it.unimi.dsi.fastutil.Hash;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import it.unimi.dsi.fastutil.Hash;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Objects;
  * considering equality.
  */
 public interface FluidStackHashStrategy extends Hash.Strategy<FluidStack> {
+
     /**
      * @return a builder object for producing a custom FluidStackHashStrategy.
      */
@@ -46,6 +48,7 @@ public interface FluidStackHashStrategy extends Hash.Strategy<FluidStack> {
      * Builder pattern class for generating customized FluidStackHashStrategy
      */
     class FluidStackHashStrategyBuilder {
+
         private boolean fluid, amount, damage, tag;
 
         /**
@@ -86,13 +89,13 @@ public interface FluidStackHashStrategy extends Hash.Strategy<FluidStack> {
          */
         public FluidStackHashStrategy build() {
             return new FluidStackHashStrategy() {
+
                 @Override
                 public int hashCode(@Nullable FluidStack o) {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             fluid ? o.getFluid() : null,
                             amount ? o.getAmount() : null,
-                            tag ? o.getComponents() : null
-                    );
+                            tag ? o.getComponents() : null);
                 }
 
                 @Override

@@ -1,11 +1,14 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
-import lombok.Getter;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -17,6 +20,7 @@ import java.util.function.Predicate;
  * @implNote IOFluidTransferList
  */
 public class IOFluidTransferList extends FluidTransferList implements IFluidHandlerModifiable {
+
     @Getter
     private final IO io;
 

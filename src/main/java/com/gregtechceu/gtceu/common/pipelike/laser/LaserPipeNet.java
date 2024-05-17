@@ -3,16 +3,18 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
-import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 
+import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Map;
 
 public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
@@ -49,8 +51,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
     }
 
     @Override
-    protected void writeNodeData(LaserPipeProperties laserPipeProperties, CompoundTag compoundTag) {
-    }
+    protected void writeNodeData(LaserPipeProperties laserPipeProperties, CompoundTag compoundTag) {}
 
     @Override
     protected LaserPipeProperties readNodeData(CompoundTag tagCompound) {
@@ -59,6 +60,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
 
     @AllArgsConstructor
     public static class LaserData {
+
         /**
          * The current position of the pipe
          */
@@ -90,6 +92,7 @@ public class LaserPipeNet extends PipeNet<LaserPipeProperties> {
 
         /**
          * Gets the handler if it exists
+         * 
          * @param world the world to get the handler from
          * @return the handler
          */

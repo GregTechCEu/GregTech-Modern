@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.SimpleEnergyContent;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.inventory.CraftingContainer;
@@ -19,6 +19,7 @@ import net.minecraft.world.item.crafting.CustomRecipe;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.SimpleCraftingRecipeSerializer;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -27,7 +28,9 @@ import java.util.List;
 import java.util.Map;
 
 public class ToolHeadReplaceRecipe extends CustomRecipe {
-    public static SimpleCraftingRecipeSerializer<ToolHeadReplaceRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(ToolHeadReplaceRecipe::new);
+
+    public static SimpleCraftingRecipeSerializer<ToolHeadReplaceRecipe> SERIALIZER = new SimpleCraftingRecipeSerializer<>(
+            ToolHeadReplaceRecipe::new);
 
     private static final Map<TagPrefix, GTToolType[]> TOOL_HEAD_TO_TOOL_MAP = new HashMap<>();
 
@@ -69,7 +72,7 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else return false;
 
             if (!tool.isElectric()) return false;
-            if (toolHead == null || toolHead == UnificationEntry.EmptyMapMarkerEntry) return false;
+            if (toolHead == null) return false;
             GTToolType[] output = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix);
             return output != null && output[tool.getElectricTier()] != null;
         }
@@ -105,10 +108,10 @@ public class ToolHeadReplaceRecipe extends CustomRecipe {
             } else return ItemStack.EMPTY;
             if (!tool.isElectric()) return ItemStack.EMPTY;
             SimpleEnergyContent powerUnit = realTool.get(GTDataComponents.ENERGY_CONTENT);
-            if (toolHead == null || toolHead == UnificationEntry.EmptyMapMarkerEntry) return ItemStack.EMPTY;
+            if (toolHead == null) return ItemStack.EMPTY;
             GTToolType[] toolArray = TOOL_HEAD_TO_TOOL_MAP.get(toolHead.tagPrefix);
             ItemStack newTool = GTItems.TOOL_ITEMS.get(toolHead.material, toolArray[tool.getElectricTier()])
-                .get().get(powerUnit.charge(), powerUnit.maxCharge());
+                    .get().get(powerUnit.charge(), powerUnit.maxCharge());
             if (newTool == null) return ItemStack.EMPTY;
 
             return newTool;

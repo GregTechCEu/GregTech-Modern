@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.blockentity.MetaMachineBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
@@ -16,24 +15,17 @@ import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockControllerMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.TieredWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMachine;
-import com.gregtechceu.gtceu.api.pattern.BlockPattern;
-import com.gregtechceu.gtceu.api.pattern.MultiblockShapeInfo;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+import com.gregtechceu.gtceu.api.multiblock.BlockPattern;
+import com.gregtechceu.gtceu.api.multiblock.MultiblockShapeInfo;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
 import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.PrimitiveFancyUIWorkableMachine;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import dev.latvian.mods.kubejs.script.ScriptType;
-import dev.latvian.mods.kubejs.util.UtilsJS;
-import dev.latvian.mods.rhino.BaseFunction;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -46,21 +38,34 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.apache.commons.lang3.function.TriFunction;
 
+import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import dev.latvian.mods.kubejs.script.ScriptType;
+import dev.latvian.mods.kubejs.util.UtilsJS;
+import dev.latvian.mods.rhino.BaseFunction;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
 import java.util.function.*;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
-    protected CustomMultiblockBuilder(String name, Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
-        super(GTRegistration.REGISTRATE, name, metaMachine, MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+
+    protected CustomMultiblockBuilder(String name,
+                                      Function<IMachineBlockEntity, ? extends MultiblockControllerMachine> metaMachine) {
+        super(GTRegistration.REGISTRATE, name, metaMachine, MetaMachineBlock::new, MetaMachineItem::new,
+                MetaMachineBlockEntity::createBlockEntity);
     }
 
     public static CustomMultiblockBuilder[] tieredMultis(String name,
@@ -68,7 +73,8 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                                                          Integer... tiers) {
         CustomMultiblockBuilder[] builders = new CustomMultiblockBuilder[GTValues.TIER_COUNT];
         for (int tier : tiers) {
-            var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name, holder -> factory.apply(holder, tier))
+            var builder = new CustomMultiblockBuilder(GTValues.VN[tier].toLowerCase(Locale.ROOT) + "_" + name,
+                    holder -> factory.apply(holder, tier))
                     .tier(tier);
             builders[tier] = builder;
         }
@@ -80,29 +86,33 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
         return (CustomMultiblockBuilder) super.tier(tier);
     }
 
-
     @SuppressWarnings("unchecked")
     public static MachineBuilder<MultiblockMachineDefinition> createMultiblock(String name, Object... args) {
         CustomMultiblockBuilder[] builders;
         int start = 0;
-        while (start < args.length && (!(args[start] instanceof Number || args[start] instanceof Number[] || args[start] instanceof int[]))) {
+        while (start < args.length &&
+                (!(args[start] instanceof Number || args[start] instanceof Number[] || args[start] instanceof int[]))) {
             ++start;
         }
         Object[] tierObjects = MachineFunctionPresets.copyArgs(args, start);
         Integer[] tiers = MachineFunctionPresets.mapTierArray(tierObjects);
         if (tiers.length > 0) {
-            if (args.length > 0 && args[0] instanceof BiFunction<?,?,?> machineFunction) {
-                builders = tieredMultis(name, (BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine>) machineFunction, tiers);
+            if (args.length > 0 && args[0] instanceof BiFunction<?, ?, ?> machineFunction) {
+                builders = tieredMultis(name,
+                        (BiFunction<IMachineBlockEntity, Integer, MultiblockControllerMachine>) machineFunction, tiers);
             } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
-                builders = tieredMultis(name, UtilsJS.makeFunctionProxy(ScriptType.STARTUP, BiFunction.class, machineFunction), tiers);
+                builders = tieredMultis(name,
+                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP, BiFunction.class, machineFunction), tiers);
             } else {
                 builders = tieredMultis(name, TieredWorkableElectricMultiblockMachine::new, tiers);
             }
         } else {
-            if (args.length > 0 && args[0] instanceof Function<?,?> machineFunction) {
-                return new CustomMultiblockBuilder(name, (Function<IMachineBlockEntity, MultiblockControllerMachine>)machineFunction);
+            if (args.length > 0 && args[0] instanceof Function<?, ?> machineFunction) {
+                return new CustomMultiblockBuilder(name,
+                        (Function<IMachineBlockEntity, MultiblockControllerMachine>) machineFunction);
             } else if (args.length > 0 && args[0] instanceof BaseFunction machineFunction) {
-                return new CustomMultiblockBuilder(name, UtilsJS.makeFunctionProxy(ScriptType.STARTUP, Function.class, machineFunction));
+                return new CustomMultiblockBuilder(name,
+                        UtilsJS.makeFunctionProxy(ScriptType.STARTUP, Function.class, machineFunction));
             } else {
                 return new CustomMultiblockBuilder(name, WorkableElectricMultiblockMachine::new);
             }
@@ -116,6 +126,7 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
     public static CustomMultiblockBuilder tieredBuilder(String name, CustomMultiblockBuilder[] builders) {
         return new CustomMultiblockBuilder(name, holder -> null) {
+
             @Override
             public MultiblockMachineBuilder pattern(Function<MultiblockMachineDefinition, BlockPattern> pattern) {
                 for (var builder : builders) {
@@ -398,7 +409,8 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
                 return this;
             }
 
-            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier, boolean alwaysTryModifyRecipe) {
+            public CustomMultiblockBuilder recipeModifier(RecipeModifier recipeModifier,
+                                                          boolean alwaysTryModifyRecipe) {
                 recipeModifier(recipeModifier);
                 alwaysTryModifyRecipe(alwaysTryModifyRecipe);
                 return this;
@@ -443,11 +455,13 @@ public class CustomMultiblockBuilder extends MultiblockMachineBuilder {
 
     @FunctionalInterface
     public interface BuilderConsumer extends Consumer<CustomMultiblockBuilder> {
+
         void accept(CustomMultiblockBuilder builder);
     }
 
     @FunctionalInterface
     public interface TieredBuilderConsumer {
+
         void accept(int tier, CustomMultiblockBuilder builder);
     }
 }

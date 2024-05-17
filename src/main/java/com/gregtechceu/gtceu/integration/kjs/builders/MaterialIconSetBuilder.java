@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.integration.kjs.builders;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet;
+import com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
+
 import net.minecraft.resources.ResourceLocation;
 
 public class MaterialIconSetBuilder extends BuilderBase<MaterialIconSet> {
+
     private transient MaterialIconSet parent;
 
     public MaterialIconSetBuilder(ResourceLocation id, Object... args) {

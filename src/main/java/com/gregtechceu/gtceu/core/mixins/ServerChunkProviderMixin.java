@@ -1,15 +1,18 @@
 package com.gregtechceu.gtceu.core.mixins;
 
-import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.multiblock.MultiblockWorldSavedData;
+
 import com.lowdragmc.lowdraglib.async.AsyncThreadData;
-import com.mojang.datafixers.util.Either;
+
 import net.minecraft.server.level.ChunkHolder;
 import net.minecraft.server.level.ChunkResult;
 import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.chunk.LevelChunk;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
+
+import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
@@ -18,23 +21,26 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import org.jetbrains.annotations.Nullable;
 import java.util.Arrays;
 
 @Mixin(ServerChunkCache.class)
 public abstract class ServerChunkProviderMixin {
 
-    @Shadow @Final Thread mainThread;
+    @Shadow
+    @Final
+    Thread mainThread;
 
     private final long[] mbdLastChunkPos = new long[4];
 
     private final LevelChunk[] mbdLastChunk = new LevelChunk[4];
 
-    @Shadow @Nullable protected abstract ChunkHolder getVisibleChunkIfPresent(long p_217213_1_);
+    @Shadow
+    @Nullable
+    protected abstract ChunkHolder getVisibleChunkIfPresent(long p_217213_1_);
 
     private void storeInCache(long pos, LevelChunk chunkAccess) {
         synchronized (this.mbdLastChunkPos) {
-            for(int i = 3; i > 0; --i) {
+            for (int i = 3; i > 0; --i) {
                 this.mbdLastChunkPos[i] = this.mbdLastChunkPos[i - 1];
                 this.mbdLastChunk[i] = this.mbdLastChunk[i - 1];
             }
@@ -54,10 +60,11 @@ public abstract class ServerChunkProviderMixin {
 
     @Inject(method = "getChunkNow", at = @At(value = "HEAD"), cancellable = true)
     private void getTileEntity(int pChunkX, int pChunkZ, CallbackInfoReturnable<LevelChunk> cir) {
-        if (Thread.currentThread() != this.mainThread && (MultiblockWorldSavedData.isThreadService() || AsyncThreadData.isThreadService())) {
+        if (Thread.currentThread() != this.mainThread &&
+                (MultiblockWorldSavedData.isThreadService() || AsyncThreadData.isThreadService())) {
             long i = ChunkPos.asLong(pChunkX, pChunkZ);
 
-            for(int j = 0; j < 4; ++j) {
+            for (int j = 0; j < 4; ++j) {
                 if (i == this.mbdLastChunkPos[j]) {
                     cir.setReturnValue(this.mbdLastChunk[j]);
                     return;
@@ -79,5 +86,4 @@ public abstract class ServerChunkProviderMixin {
             cir.setReturnValue(null);
         }
     }
-
 }

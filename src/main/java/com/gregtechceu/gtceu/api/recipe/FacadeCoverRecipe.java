@@ -1,19 +1,15 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
+import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.NonNullList;
-import net.minecraft.core.RegistryAccess;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceLocation;
@@ -28,6 +24,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
+import com.mojang.serialization.MapCodec;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -41,8 +39,10 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     public static final FacadeCoverRecipe INSTANCE = new FacadeCoverRecipe();
     public static final MapCodec<FacadeCoverRecipe> CODEC = MapCodec.unit(INSTANCE);
-    public static final StreamCodec<RegistryFriendlyByteBuf, FacadeCoverRecipe> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, FacadeCoverRecipe> STREAM_CODEC = StreamCodec
+            .unit(INSTANCE);
     public static final RecipeSerializer<FacadeCoverRecipe> SERIALIZER = new RecipeSerializer<>() {
+
         @Override
         public MapCodec<FacadeCoverRecipe> codec() {
             return FacadeCoverRecipe.CODEC;
@@ -53,7 +53,6 @@ public class FacadeCoverRecipe implements CraftingRecipe {
             return FacadeCoverRecipe.STREAM_CODEC;
         }
     };
-
 
     public static ResourceLocation ID = GTCEu.id("crafting/facade_cover");
 

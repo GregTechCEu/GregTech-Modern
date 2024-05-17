@@ -9,31 +9,35 @@ import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.energy.IEnergyStorage;
 
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author lucifer_ll
@@ -43,9 +47,11 @@ import java.util.List;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ChargerMachine extends TieredEnergyMachine implements IControllable, IFancyUIMachine, IMachineModifyDrops {
+
     public static final long AMPS_PER_ITEM = 4L;
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ChargerMachine.class,
+            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     public enum State {
         IDLE,
@@ -77,7 +83,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -91,7 +97,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
 
     protected CustomItemStackHandler createChargerInventory(Object... args) {
         var itemTransfer = new CustomItemStackHandler(this.inventorySize);
-        itemTransfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null || GTCapabilityHelper.getPlatformEnergyItem(item) != null);
+        itemTransfer.setFilter(item -> item.get(GTDataComponents.ENERGY_CONTENT) != null ||
+                GTCapabilityHelper.getPlatformEnergyItem(item) != null);
         return itemTransfer;
     }
 
@@ -109,7 +116,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -139,7 +146,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         var size = group.getSize();
         energyBar.setSelfPosition(new Position(3, (size.height - energyBar.getSize().height) / 2));
         template.setSelfPosition(new Position(
-                (size.width - energyBar.getSize().width - 4 - template.getSize().width) / 2 + 2 + energyBar.getSize().width + 2,
+                (size.width - energyBar.getSize().width - 4 - template.getSize().width) / 2 + 2 +
+                        energyBar.getSize().width + 2,
                 (size.height - template.getSize().height) / 2));
         group.addWidget(energyBar);
         group.addWidget(template);
@@ -148,7 +156,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     }
 
     //////////////////////////////////////
-    //******    Charger Logic     ******//
+    // ****** Charger Logic ******//
     //////////////////////////////////////
 
     private List<Pair<ItemStack, Object>> getNonFullElectricItem() {
@@ -181,7 +189,8 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
     protected class EnergyBatteryTrait extends NotifiableEnergyContainer {
 
         protected EnergyBatteryTrait(int inventorySize) {
-            super(ChargerMachine.this, GTValues.V[tier] * inventorySize * 32L, GTValues.V[tier], inventorySize * AMPS_PER_ITEM, 0L, 0L);
+            super(ChargerMachine.this, GTValues.V[tier] * inventorySize * 32L, GTValues.V[tier],
+                    inventorySize * AMPS_PER_ITEM, 0L, 0L);
             this.setSideInputCondition(side -> isWorkingEnabled());
             this.setSideOutputCondition(side -> false);
         }
@@ -211,7 +220,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     return usedAmps;
                 }
 
-                //Prioritizes as many packets as available from the buffer
+                // Prioritizes as many packets as available from the buffer
                 long internalAmps = Math.min(maxAmps, Math.max(0, getInternalStorage() / voltage));
 
                 usedAmps = Math.min(usedAmps, maxAmps - internalAmps);
@@ -225,9 +234,11 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                 for (var pair : electricItems) {
                     Object electricItem = pair.getSecond();
                     if (electricItem instanceof IElectricItem item) {
-                        charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM), getTier(), true, false);
+                        charged += item.charge(Math.min(distributed, GTValues.V[item.getTier()] * AMPS_PER_ITEM),
+                                getTier(), true, false);
                     } else if (electricItem instanceof IEnergyStorage energyStorage) {
-                        energy += FeCompat.insertEu(energyStorage, Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM));
+                        energy += FeCompat.insertEu(energyStorage,
+                                Math.min(distributed, GTValues.V[getTier()] * AMPS_PER_ITEM));
                     }
                     if (charged > 0) {
                         changed = true;
@@ -240,7 +251,7 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
                     changeState(State.RUNNING);
                 }
 
-                //Remove energy used and then transfer overflow energy into the internal buffer
+                // Remove energy used and then transfer overflow energy into the internal buffer
                 setEnergyStored(getInternalStorage() - internalAmps * voltage + energy);
                 return usedAmps;
             }
@@ -298,6 +309,5 @@ public class ChargerMachine extends TieredEnergyMachine implements IControllable
         private long getInternalStorage() {
             return energyStored;
         }
-
     }
 }

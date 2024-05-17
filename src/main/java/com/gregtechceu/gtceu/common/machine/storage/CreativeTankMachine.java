@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -15,18 +16,24 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeTankMachine extends QuantumTankMachine {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class, QuantumTankMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted @DropSaved
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeTankMachine.class,
+            QuantumTankMachine.MANAGED_FIELD_HOLDER);
+
+    @Persisted
+    @DropSaved
     private int mBPerCycle = 1;
-    @Persisted @DropSaved
+    @Persisted
+    @DropSaved
     private int ticksPerCycle = 1;
 
     private final InfiniteFluidTransferProxy capabilityTransferProxy;
@@ -50,12 +57,11 @@ public class CreativeTankMachine extends QuantumTankMachine {
         return new NotifiableFluidTank(this, 1, 1000, IO.BOTH, IO.NONE);
     }
 
-
     @Override
     protected void updateAutoOutputSubscription() {
         var outputFacing = getOutputFacingFluids();
-        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null
-            && FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) {
+        if ((isAutoOutputFluids() && !cache.isEmpty()) && outputFacing != null && FluidTransferHelper
+                .getFluidTransfer(getLevel(), getPos().relative(outputFacing), outputFacing.getOpposite()) != null) {
             autoOutputSubs = subscribeServerTick(autoOutputSubs, this::checkAutoOutput);
         } else if (autoOutputSubs != null) {
             autoOutputSubs.unsubscribe();
@@ -75,8 +81,9 @@ public class CreativeTankMachine extends QuantumTankMachine {
     @Override
     public WidgetGroup createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
-        group.addWidget(new PhantomFluidWidget(this.cache.getStorages()[0], 0, 36, 6, 18, 18, () -> this.cache.getStorages()[0].getFluid(), (fluid) -> this.cache.getStorages()[0].setFluid(fluid))
-            .setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
+        group.addWidget(new PhantomFluidWidget(this.cache.getStorages()[0], 0, 36, 6, 18, 18,
+                () -> this.cache.getStorages()[0].getFluid(), (fluid) -> this.cache.getStorages()[0].setFluid(fluid))
+                .setShowAmount(false).setBackground(GuiTextures.FLUID_SLOT));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.tank.fluid"));
         group.addWidget(new ImageWidget(7, 45, 154, 14, GuiTextures.DISPLAY));
         group.addWidget(new TextFieldWidget(9, 47, 152, 10, () -> String.valueOf(mBPerCycle), value -> {
@@ -95,19 +102,23 @@ public class CreativeTankMachine extends QuantumTankMachine {
         group.addWidget(new LabelWidget(7, 65, "gtceu.creative.tank.tpc"));
 
         group.addWidget(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
-            .setTexture(
-                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.activity.off")),
-                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.activity.on")))
-            .setPressed(isWorkingEnabled()));
+                .setTexture(
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                new TextTexture("gtceu.creative.activity.off")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                new TextTexture("gtceu.creative.activity.on")))
+                .setPressed(isWorkingEnabled()));
 
         return group;
     }
 
     public void updateFluidTick() {
-        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 || cache.getStorages()[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
+        if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0 ||
+                cache.getStorages()[0].getFluid().isEmpty() || getLevel().isClientSide || !isWorkingEnabled())
             return;
 
-        IFluidHandler transfer = getLevel().getCapability(Capabilities.FluidHandler.BLOCK, getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
+        IFluidHandler transfer = getLevel().getCapability(Capabilities.FluidHandler.BLOCK,
+                getPos().relative(getOutputFacingFluids()), getOutputFacingFluids().getOpposite());
         if (transfer != null) {
             FluidStack stack = cache.getStorages()[0].getFluid().copy();
             stack.setAmount(mBPerCycle);

@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
  * @implNote ICapabilityTrait
  */
 public interface ICapabilityTrait {
+
     IO getCapabilityIO();
 
     default boolean canCapInput() {

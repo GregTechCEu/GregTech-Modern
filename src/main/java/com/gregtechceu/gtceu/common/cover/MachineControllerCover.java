@@ -12,13 +12,14 @@ import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
 import com.gregtechceu.gtceu.common.cover.data.ControllerMode;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,18 +29,23 @@ import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class MachineControllerCover extends CoverBehavior implements IUICover {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineControllerCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MachineControllerCover.class,
+            CoverBehavior.MANAGED_FIELD_HOLDER);
     private CustomItemStackHandler sideCoverSlot;
     private ButtonWidget modeButton;
 
@@ -48,14 +54,17 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         return MANAGED_FIELD_HOLDER;
     }
 
-
-    @Persisted @Getter
+    @Persisted
+    @Getter
     private boolean isInverted = false;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     private int minRedstoneStrength = 1;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     private ControllerMode controllerMode = ControllerMode.MACHINE;
 
     public MachineControllerCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -116,7 +125,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
     }
 
     ///////////////////////////////////////////////////
-    //***********     CONTROLLER LOGIC    ***********//
+    // *********** CONTROLLER LOGIC ***********//
     ///////////////////////////////////////////////////
 
     @Nullable
@@ -177,12 +186,11 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
         Level level = coverHolder.getLevel();
         BlockPos sourcePos = coverHolder.getPos().relative(attachedSide);
 
-        return level.getBlockState(sourcePos).getSignal(level, sourcePos, attachedSide);
+        return level.getSignal(sourcePos, attachedSide);
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -191,31 +199,29 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
         group.addWidget(new LabelWidget(10, 5, "cover.machine_controller.title"));
         group.addWidget(new IntInputWidget(10, 20, 131, 20,
-                this::getMinRedstoneStrength, this::setMinRedstoneStrength
-        ).setMin(1).setMax(15));
+                this::getMinRedstoneStrength, this::setMinRedstoneStrength).setMin(1).setMax(15));
 
         modeButton = new ButtonWidget(10, 45, 131, 20,
                 new GuiTextureGroup(GuiTextures.VANILLA_BUTTON),
-                cd -> selectNextMode()
-        );
+                cd -> selectNextMode());
         group.addWidget(modeButton);
 
         // Inverted Mode Toggle:
         group.addWidget(new ToggleButtonWidget(
                 146, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted
-        ) {
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+
             @Override
             public void updateScreen() {
                 super.updateScreen();
                 setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.machine_controller.invert." + (isPressed ? "enabled" : "disabled")
-                )));
+                        "cover.machine_controller.invert." + (isPressed ? "enabled" : "disabled"))));
             }
         });
 
         sideCoverSlot = new CustomItemStackHandler(1);
         group.addWidget(new PhantomSlotWidget(sideCoverSlot, 0, 147, 46) {
+
             @Override
             public ItemStack slotClickPhantom(Slot slot, int mouseButton, ClickType clickTypeIn, ItemStack stackHeld) {
                 return sideCoverSlot.getStackInSlot(0);
@@ -249,8 +255,7 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
 
         modeButton.setButtonTexture(new GuiTextureGroup(
                 GuiTextures.VANILLA_BUTTON,
-                new TextTexture(controllerMode.localeName)
-        ));
+                new TextTexture(controllerMode.localeName)));
     }
 
     private void updateCoverSlot() {
@@ -268,7 +273,6 @@ public class MachineControllerCover extends CoverBehavior implements IUICover {
                         () -> {
                             sideCoverSlot.setStackInSlot(0, ItemStack.EMPTY);
                             sideCoverSlot.onContentsChanged(0);
-                        }
-                );
+                        });
     }
 }

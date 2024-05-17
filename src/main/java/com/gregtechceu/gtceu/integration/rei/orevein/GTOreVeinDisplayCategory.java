@@ -1,28 +1,32 @@
 package com.gregtechceu.gtceu.integration.rei.orevein;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTItems;
+import com.gregtechceu.gtceu.api.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.data.item.GTItems;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
+
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.rei.IGui2Renderer;
 import com.lowdragmc.lowdraglib.rei.ModularUIDisplayCategory;
 import com.lowdragmc.lowdraglib.utils.Size;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.world.item.Items;
+
 import lombok.Getter;
 import me.shedaniel.rei.api.client.gui.Renderer;
 import me.shedaniel.rei.api.client.registry.category.CategoryRegistry;
 import me.shedaniel.rei.api.client.registry.display.DisplayRegistry;
 import me.shedaniel.rei.api.common.category.CategoryIdentifier;
 import me.shedaniel.rei.api.common.util.EntryStacks;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.item.Items;
-
 import org.jetbrains.annotations.NotNull;
 
 @Getter
 public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVeinDisplay> {
-    public static final CategoryIdentifier<GTOreVeinDisplay> CATEGORY = CategoryIdentifier.of(GTCEu.id("ore_vein_diagram"));
+
+    public static final CategoryIdentifier<GTOreVeinDisplay> CATEGORY = CategoryIdentifier
+            .of(GTCEu.id("ore_vein_diagram"));
 
     private final Renderer icon;
 
@@ -55,7 +59,7 @@ public class GTOreVeinDisplayCategory extends ModularUIDisplayCategory<GTOreVein
     }
 
     public static void registerDisplays(DisplayRegistry registry) {
-        for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS){
+        for (GTOreDefinition oreDefinition : GTRegistries.ORE_VEINS) {
             registry.add(new GTOreVeinDisplay(oreDefinition));
         }
     }

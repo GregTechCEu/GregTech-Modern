@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.tool.behavior;
 
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.datacomponents.ToolBehaviorsComponent;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -27,17 +28,14 @@ import java.util.List;
  */
 public interface IToolBehavior<T extends IToolBehavior<T>> {
 
-    default void init(IGTTool toolItem) {
-
-    }
+    default void init(IGTTool toolItem) {}
 
     /**
      * @param stack    The current ItemStack
      * @param target   the entity being hit
      * @param attacker the entity hitting the other
      */
-    default void hitEntity(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {
-    }
+    default void hitEntity(@NotNull ItemStack stack, @NotNull LivingEntity target, @NotNull LivingEntity attacker) {}
 
     /**
      * Called before a block is broken.
@@ -48,8 +46,7 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param pos    Block's position in world
      * @param player The Player that is wielding the item
      */
-    default void onBlockStartBreak(@NotNull ItemStack stack, @NotNull BlockPos pos, @NotNull Player player) {
-    }
+    default void onBlockStartBreak(@NotNull ItemStack stack, @NotNull BlockPos pos, @NotNull Player player) {}
 
     /**
      * Called when a Block is destroyed using this Item.
@@ -60,8 +57,8 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param pos          The position of the destroyed block
      * @param entityLiving the entity destroying the block
      */
-    default void onBlockDestroyed(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state, @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {
-    }
+    default void onBlockDestroyed(@NotNull ItemStack stack, @NotNull Level world, @NotNull BlockState state,
+                                  @NotNull BlockPos pos, @NotNull LivingEntity entityLiving) {}
 
     /**
      * Called when an entity tries to play the 'swing' animation.
@@ -69,14 +66,13 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param entityLiving The entity swinging the item.
      * @param stack        The Item stack
      */
-    default void onEntitySwing(@NotNull LivingEntity entityLiving, @NotNull ItemStack stack) {
-    }
+    default void onEntitySwing(@NotNull LivingEntity entityLiving, @NotNull ItemStack stack) {}
 
     /**
      *
-     * @param stack  the tool
-     * @param shield the shield to disable
-     * @param entity the entity holding the shield
+     * @param stack    the tool
+     * @param shield   the shield to disable
+     * @param entity   the entity holding the shield
      * @param attacker the entity attacking the shield
      * @return if the tool can disable shields
      */
@@ -87,7 +83,7 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
     /**
      * Called when a Block is right-clicked with this Item, but before the block is activated
      *
-     * @param stack the stack used
+     * @param stack   the stack used
      * @param context the context containing all information about the click.
      */
     default InteractionResult onItemUseFirst(ItemStack stack, UseOnContext context) {
@@ -112,7 +108,8 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
      * @param hand   the hand holding the item
      */
     @NotNull
-    default InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player, @NotNull InteractionHand hand) {
+    default InteractionResultHolder<ItemStack> onItemRightClick(@NotNull Level world, @NotNull Player player,
+                                                                @NotNull InteractionHand hand) {
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
 
@@ -127,16 +124,16 @@ public interface IToolBehavior<T extends IToolBehavior<T>> {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void addInformation(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
-    }
+    default void addInformation(@NotNull ItemStack stack, Item.TooltipContext context, @NotNull List<Component> tooltip,
+                                @NotNull TooltipFlag flag) {}
 
     /**
      * Add the necessary NBT information to the tool
+     * 
      * @param stack the tool
      * @param tag   the nbt tag to add to
      */
-    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviorsComponent tag) {
-    }
+    default void addBehaviorComponent(@NotNull ItemStack stack, @NotNull ToolBehaviorsComponent tag) {}
 
     public ToolBehaviorType<T> getType();
 }

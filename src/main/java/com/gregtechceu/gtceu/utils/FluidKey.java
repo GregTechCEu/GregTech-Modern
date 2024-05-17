@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.utils;
 
-import lombok.Getter;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+
+import lombok.Getter;
 
 import java.util.Objects;
 
@@ -25,7 +26,6 @@ public class FluidKey {
     public FluidKey copy() {
         return new FluidKey(new FluidStack(getFluid(), this.amount, component));
     }
-
 
     @Override
     public boolean equals(Object o) {
@@ -54,5 +54,4 @@ public class FluidKey {
                 ", tag=" + component +
                 '}';
     }
-
 }

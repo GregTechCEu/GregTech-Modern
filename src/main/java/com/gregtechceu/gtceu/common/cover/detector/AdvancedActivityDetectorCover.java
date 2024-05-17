@@ -4,15 +4,16 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
-
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedActivityDetectorCover extends ActivityDetectorCover {
+
     public AdvancedActivityDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
     }
@@ -26,9 +27,10 @@ public class AdvancedActivityDetectorCover extends ActivityDetectorCover {
         if (workable == null || workable.getMaxProgress() == 0)
             return;
 
-        int outputAmount = RedstoneUtil.computeRedstoneValue(workable.getProgress(), workable.getMaxProgress(), isInverted());
+        int outputAmount = RedstoneUtil.computeRedstoneValue(workable.getProgress(), workable.getMaxProgress(),
+                isInverted());
 
-        //nonstandard logic for handling off state
+        // nonstandard logic for handling off state
         if (!workable.isWorkingEnabled() || !workable.isActive())
             outputAmount = 0;
 

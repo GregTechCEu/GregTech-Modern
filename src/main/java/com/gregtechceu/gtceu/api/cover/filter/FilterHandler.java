@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.cover.filter;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -12,14 +13,17 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.function.Consumer;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -27,7 +31,9 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
 
     private final IEnhancedManaged container;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     private @NotNull ItemStack filterItem = ItemStack.EMPTY;
 
     private @Nullable F filter;
@@ -43,12 +49,13 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     }
 
     protected abstract F loadFilter(ItemStack filterItem);
+
     protected abstract F getEmptyFilter();
+
     protected abstract boolean canInsertFilterItem(ItemStack itemStack);
 
-
     //////////////////////////////////
-    //*****     PUBLIC API    ******//
+    // ***** PUBLIC API ******//
     //////////////////////////////////
 
     public Widget createFilterSlotUI(int xPos, int yPos) {
@@ -102,7 +109,7 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
     }
 
     ///////////////////////////////////////
-    //*****     FILTER HANDLING    ******//
+    // ***** FILTER HANDLING ******//
     ///////////////////////////////////////
 
     private CustomItemStackHandler getFilterSlot() {
@@ -155,9 +162,8 @@ public abstract class FilterHandler<T, F extends Filter<T, F>> implements IEnhan
         }
     }
 
-
     //////////////////////////////////////
-    //*****     LDLib SyncData    ******//
+    // ***** LDLib SyncData ******//
     //////////////////////////////////////
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FilterHandler.class);

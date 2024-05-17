@@ -10,16 +10,18 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.machine.feature.IExplosionMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -28,11 +30,13 @@ import java.util.function.Predicate;
 
 public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long> implements IEnergyContainer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            NotifiableEnergyContainer.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     protected IO handlerIO;
     @Getter
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     protected long energyStored;
     @Getter
     private long energyCapacity, inputVoltage, inputAmperage, outputVoltage, outputAmperage;
@@ -45,13 +49,13 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Nullable
     protected TickableSubscription updateSubs;
 
-
     protected long lastEnergyInputPerSec = 0;
     protected long lastEnergyOutputPerSec = 0;
     protected long energyInputPerSec = 0;
     protected long energyOutputPerSec = 0;
 
-    public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
+    public NotifiableEnergyContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage,
+                                     long maxOutputVoltage, long maxOutputAmperage) {
         super(machine);
         this.lastTimeStamp = Long.MIN_VALUE;
         this.energyCapacity = maxCapacity;
@@ -64,15 +68,18 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         this.handlerIO = (isIn && isOut) ? IO.BOTH : isIn ? IO.IN : isOut ? IO.OUT : IO.NONE;
     }
 
-    public static NotifiableEnergyContainer emitterContainer(MetaMachine machine, long maxCapacity, long maxOutputVoltage, long maxOutputAmperage) {
+    public static NotifiableEnergyContainer emitterContainer(MetaMachine machine, long maxCapacity,
+                                                             long maxOutputVoltage, long maxOutputAmperage) {
         return new NotifiableEnergyContainer(machine, maxCapacity, 0L, 0L, maxOutputVoltage, maxOutputAmperage);
     }
 
-    public static NotifiableEnergyContainer receiverContainer(MetaMachine machine, long maxCapacity, long maxInputVoltage, long maxInputAmperage) {
+    public static NotifiableEnergyContainer receiverContainer(MetaMachine machine, long maxCapacity,
+                                                              long maxInputVoltage, long maxInputAmperage) {
         return new NotifiableEnergyContainer(machine, maxCapacity, maxInputVoltage, maxInputAmperage, 0L, 0L);
     }
 
-    public void resetBasicInfo(long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage, long maxOutputAmperage) {
+    public void resetBasicInfo(long maxCapacity, long maxInputVoltage, long maxInputAmperage, long maxOutputVoltage,
+                               long maxOutputAmperage) {
         this.energyCapacity = maxCapacity;
         this.inputVoltage = maxInputVoltage;
         this.inputAmperage = maxInputAmperage;
@@ -158,9 +165,11 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
             for (Direction side : GTUtil.DIRECTIONS) {
                 if (!outputsEnergy(side)) continue;
                 var oppositeSide = side.getOpposite();
-                var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(), machine.getPos().relative(side), oppositeSide);
+                var energyContainer = GTCapabilityHelper.getEnergyContainer(machine.getLevel(),
+                        machine.getPos().relative(side), oppositeSide);
                 if (energyContainer != null && energyContainer.inputsEnergy(oppositeSide)) {
-                    amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage, outputAmperes - amperesUsed);
+                    amperesUsed += energyContainer.acceptEnergyFromNetwork(oppositeSide, outputVoltage,
+                            outputAmperes - amperesUsed);
                     if (amperesUsed == outputAmperes) break;
                 }
             }
@@ -170,7 +179,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         }
     }
 
-    public boolean dischargeOrRechargeEnergyContainers(IItemHandlerModifiable itemHandler, int slotIndex, boolean simulate) {
+    public boolean dischargeOrRechargeEnergyContainers(IItemHandlerModifiable itemHandler, int slotIndex,
+                                                       boolean simulate) {
         var stackInSlot = itemHandler.getStackInSlot(slotIndex).copy();
         if (stackInSlot.isEmpty()) { // no stack to charge/discharge
             return false;
@@ -198,7 +208,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
             // Drain from the battery if we are below half energy capacity, and if the tier matches
             if (chargePercent <= 0.5 && chargeTier == machineTier) {
-                long dischargedBy = electricItem.discharge(getEnergyCanBeInserted(), machineTier, false, true, simulate);
+                long dischargedBy = electricItem.discharge(getEnergyCanBeInserted(), machineTier, false, true,
+                        simulate);
                 if (!simulate) {
                     addEnergy(dischargedBy);
                 }
@@ -216,7 +227,6 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
         }
         return false;
     }
-
 
     @Override
     public long acceptEnergyFromNetwork(Direction side, long voltage, long amperage) {
@@ -246,7 +256,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
 
     @Override
     public boolean inputsEnergy(Direction side) {
-        return !outputsEnergy(side) && getInputVoltage() > 0 && (sideInputCondition == null || sideInputCondition.test(side));
+        return !outputsEnergy(side) && getInputVoltage() > 0 &&
+                (sideInputCondition == null || sideInputCondition.test(side));
     }
 
     @Override
@@ -257,7 +268,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     @Override
     public long changeEnergy(long energyToAdd) {
         long oldEnergyStored = getEnergyStored();
-        long newEnergyStored = (energyCapacity - oldEnergyStored < energyToAdd) ? energyCapacity : (oldEnergyStored + energyToAdd);
+        long newEnergyStored = (energyCapacity - oldEnergyStored < energyToAdd) ? energyCapacity :
+                (oldEnergyStored + energyToAdd);
         if (newEnergyStored < 0)
             newEnergyStored = 0;
         setEnergyStored(newEnergyStored);
@@ -265,7 +277,8 @@ public class NotifiableEnergyContainer extends NotifiableRecipeHandlerTrait<Long
     }
 
     @Override
-    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName, boolean simulate) {
+    public List<Long> handleRecipeInner(IO io, GTRecipe recipe, List<Long> left, @Nullable String slotName,
+                                        boolean simulate) {
         IEnergyContainer capability = this;
         long sum = left.stream().reduce(0L, Long::sum);
         if (io == IO.IN) {

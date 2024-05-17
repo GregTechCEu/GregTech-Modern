@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import com.gregtechceu.gtceu.api.item.capability.ElectricItem;
 import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionHand;
@@ -26,7 +26,8 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
 
-public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle, IComponentCapability {
+public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInformation, IItemLifeCycle,
+                           IComponentCapability {
 
     public static final ElectricStats EMPTY = ElectricStats.create(0, 0, false, false);
 
@@ -48,7 +49,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void attachCaps(RegisterCapabilitiesEvent event, Item item) {
+    public void attachCapabilites(RegisterCapabilitiesEvent event, Item item) {
         event.registerItem(GTCapability.CAPABILITY_ELECTRIC_ITEM, (stack, unused) -> createItem(stack), item);
     }
 
@@ -65,9 +66,9 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         return 0;
     }
 
-
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player, InteractionHand usedHand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level level, Player player,
+                                                  InteractionHand usedHand) {
         var itemStack = player.getItemInHand(usedHand);
         var electricItem = GTCapabilityHelper.getElectricItem(itemStack);
         if (electricItem != null && electricItem.canProvideChargeExternally() && player.isShiftKeyDown()) {
@@ -105,7 +106,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
         }
     }
 
-    private static long chargeElectricItem(ItemStack stack, long maxDischargeAmount, IElectricItem source, IElectricItem target) {
+    private static long chargeElectricItem(ItemStack stack, long maxDischargeAmount, IElectricItem source,
+                                           IElectricItem target) {
         long maxDischarged = source.discharge(maxDischargeAmount, source.getTier(), false, false, true);
         long maxReceived = target.charge(maxDischarged, source.getTier(), false, true);
         if (maxReceived > 0L) {
@@ -121,7 +123,8 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem != null && electricItem.canProvideChargeExternally()) {
             addTotalChargeTooltip(tooltipComponents, electricItem.getMaxCharge(), electricItem.getTier());
@@ -158,7 +161,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
     }
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         items.add(new ItemStack(item));
         var stack = new ItemStack(item);
         var electricItem = GTCapabilityHelper.getElectricItem(stack);

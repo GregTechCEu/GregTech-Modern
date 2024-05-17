@@ -5,26 +5,32 @@ import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class FluidVoidingCover extends PumpCover {
-    @Persisted @Getter
+
+    @Persisted
+    @Getter
     protected boolean isEnabled = false;
 
     public FluidVoidingCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -37,7 +43,7 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     //////////////////////////////////////////////
-    //***********     COVER LOGIC    ***********//
+    // *********** COVER LOGIC ***********//
     //////////////////////////////////////////////
 
     @Override
@@ -82,7 +88,7 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -93,7 +99,7 @@ public class FluidVoidingCover extends PumpCover {
         group.addWidget(new ToggleButtonWidget(10, 20, 20, 20,
                 GuiTextures.BUTTON_POWER, this::isEnabled, this::setEnabled));
 
-        //group.addWidget(filterHandler.createFilterSlotUI(36, 21));
+        // group.addWidget(filterHandler.createFilterSlotUI(36, 21));
         group.addWidget(filterHandler.createFilterSlotUI(148, 91));
         group.addWidget(filterHandler.createFilterConfigUI(10, 50, 126, 60));
 
@@ -116,10 +122,11 @@ public class FluidVoidingCover extends PumpCover {
     }
 
     //////////////////////////////////////
-    //*****     LDLib SyncData    ******//
+    // ***** LDLib SyncData ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidVoidingCover.class, PumpCover.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(FluidVoidingCover.class,
+            PumpCover.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

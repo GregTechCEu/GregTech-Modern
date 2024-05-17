@@ -1,22 +1,21 @@
 package com.gregtechceu.gtceu.common.recipe;
 
-import com.google.gson.JsonObject;
+import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
-import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import lombok.NoArgsConstructor;
-import net.minecraft.network.FriendlyByteBuf;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.GsonHelper;
 import net.minecraft.world.level.Level;
 
+import com.google.gson.JsonObject;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,9 +25,11 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class DimensionCondition extends RecipeCondition {
-    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(ResourceLocation.CODEC.fieldOf("dimension").forGetter(val -> val.dimension))
-        .apply(instance, DimensionCondition::new));
+
+    public static final MapCodec<DimensionCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .and(ResourceLocation.CODEC.fieldOf("dimension").forGetter(val -> val.dimension))
+                    .apply(instance, DimensionCondition::new));
 
     public final static DimensionCondition INSTANCE = new DimensionCondition();
     private ResourceLocation dimension = new ResourceLocation("dummy");
@@ -54,7 +55,7 @@ public class DimensionCondition extends RecipeCondition {
 
     @Override
     public Component getTooltips() {
-        return Component.translatable("recipe.condition.dimension.tooltip", dimension);
+        return Component.translatable("recipe.condition.dimension.tooltip", dimension.toString());
     }
 
     public ResourceLocation getDimension() {
@@ -100,5 +101,4 @@ public class DimensionCondition extends RecipeCondition {
         super.toNetwork(buf);
         buf.writeUtf(dimension.toString());
     }
-
 }

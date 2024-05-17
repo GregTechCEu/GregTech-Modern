@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
-import com.mojang.serialization.MapCodec;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -27,6 +26,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.ToolActions;
+
+import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -80,7 +82,10 @@ public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
 
         boolean pathed = false;
         for (BlockPos blockPos : blocks) {
-            pathed |= level.setBlock(blockPos, getScraped(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))), Block.UPDATE_ALL);
+            pathed |= level.setBlock(blockPos,
+                    getScraped(level.getBlockState(blockPos),
+                            new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))),
+                    Block.UPDATE_ALL);
             level.levelEvent(player, LevelEvent.PARTICLES_SCRAPE, blockPos, 0);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
@@ -99,12 +104,14 @@ public class ScrapeBehavior implements IToolBehavior<ScrapeBehavior> {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getScrapableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level, Player player, HitResult rayTraceResult) {
+    public static Set<BlockPos> getScrapableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
+                                                   Player player, HitResult rayTraceResult) {
         return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
                 ScrapeBehavior.INSTANCE::isBlockScrapable);
     }
 
-    protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
+    protected boolean isBlockScrapable(ItemStack stack, Level level, Player player, BlockPos pos,
+                                       UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_SCRAPE, false);
         return newState != null && newState != state;

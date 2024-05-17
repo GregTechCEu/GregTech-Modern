@@ -1,20 +1,24 @@
 package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -43,37 +47,38 @@ public class PageSwitcher implements IFancyUIProvider {
         scrollableGroup.setYBarStyle(GuiTextures.SLIDER_BACKGROUND_VERTICAL, GuiTextures.BUTTON);
         container.addWidget(scrollableGroup);
 
-        var groupedPages = pages.stream().collect(Collectors.groupingBy(page ->
-            Objects.requireNonNullElse(page.getPageGroupingData(), new PageGroupingData(null, -1))
-        ));
+        var groupedPages = pages.stream().collect(Collectors.groupingBy(
+                page -> Objects.requireNonNullElse(page.getPageGroupingData(), new PageGroupingData(null, -1))));
 
         final MutableInt currentY = new MutableInt(0);
         groupedPages.keySet().stream()
-            .sorted(Comparator.comparingInt(PageGroupingData::groupPositionWeight))
-            .forEachOrdered(group -> {
-                if (group.groupKey() != null) {
-                    scrollableGroup.addWidget(new LabelWidget(0, currentY.getAndAdd(12), group.groupKey()).setDropShadow(false));
-                }
+                .sorted(Comparator.comparingInt(PageGroupingData::groupPositionWeight))
+                .forEachOrdered(group -> {
+                    if (group.groupKey() != null) {
+                        scrollableGroup.addWidget(
+                                new LabelWidget(0, currentY.getAndAdd(12), group.groupKey()).setDropShadow(false));
+                    }
 
-                final var currentPage = new MutableInt(0);
-                currentY.subtract(30); // To account for adding it back on the first page inside this group
+                    final var currentPage = new MutableInt(0);
+                    currentY.subtract(30); // To account for adding it back on the first page inside this group
 
-                groupedPages.get(group).forEach(page -> {
-                    var index = currentPage.getAndIncrement();
-                    var y = currentY.addAndGet(index % 5 == 0 ? 30 : 0); // Jump to the next row every 5 parts
+                    groupedPages.get(group).forEach(page -> {
+                        var index = currentPage.getAndIncrement();
+                        var y = currentY.addAndGet(index % 5 == 0 ? 30 : 0); // Jump to the next row every 5 parts
 
-                    var pageWidget = new WidgetGroup((index % 5) * 30, y, 25, 25);
-                    pageWidget.addWidget(new ButtonWidget(0, 0, 25, 25, GuiTextures.BACKGROUND, clickData -> onPageSwitched.accept(page)));
-                    pageWidget.addWidget(new ImageWidget(4, 4, 17, 17, page.getTabIcon()));
-                    // For some reason, this doesn't work in any other way:
-                    pageWidget.widgets.getFirst().setHoverTooltips(page.getTitle());
-                    scrollableGroup.addWidget(pageWidget);
+                        var pageWidget = new WidgetGroup((index % 5) * 30, y, 25, 25);
+                        pageWidget.addWidget(new ButtonWidget(0, 0, 25, 25, GuiTextures.BACKGROUND,
+                                clickData -> onPageSwitched.accept(page)));
+                        pageWidget.addWidget(new ImageWidget(4, 4, 17, 17, page.getTabIcon()));
+                        // For some reason, this doesn't work in any other way:
+                        pageWidget.widgets.getFirst().setHoverTooltips(page.getTitle());
+                        scrollableGroup.addWidget(pageWidget);
+                    });
+
+                    if (!groupedPages.get(group).isEmpty()) {
+                        currentY.add(30);
+                    }
                 });
-
-                if (!groupedPages.get(group).isEmpty()) {
-                    currentY.add(30);
-                }
-            });
 
         return container;
     }

@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.transfer.fluid;
 
 import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
-import lombok.AllArgsConstructor;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import lombok.AllArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 @AllArgsConstructor
 public class ModifiableFluidHandlerWrapper implements IFluidHandlerModifiable {
+
     private IFluidHandler handler;
 
     @Override

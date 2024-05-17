@@ -1,21 +1,23 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.google.common.collect.Lists;
-import net.minecraft.resources.ResourceLocation;
-import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
-import net.neoforged.neoforge.common.crafting.ICustomIngredient;
-import net.neoforged.neoforge.common.crafting.SizedIngredient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+import net.neoforged.neoforge.common.crafting.DataComponentIngredient;
+import net.neoforged.neoforge.common.crafting.ICustomIngredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
+
+import com.google.common.collect.Lists;
 
 import java.util.*;
 
 public class IngredientEquality {
-    public static final Comparator<ItemStack> STACK_COMPARATOR = Comparator.comparing(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()));
+
+    public static final Comparator<ItemStack> STACK_COMPARATOR = Comparator
+            .comparing(stack -> BuiltInRegistries.ITEM.getKey(stack.getItem()));
 
     public static final Comparator<Ingredient.Value> INGREDIENT_VALUE_COMPARATOR = new Comparator<>() {
+
         @Override
         public int compare(Ingredient.Value value1, Ingredient.Value value2) {
             if (value1 instanceof Ingredient.TagValue tagValue) {
@@ -42,9 +44,11 @@ public class IngredientEquality {
         }
     };
 
-    public static final Comparator<ItemStack> ITEM_STACK_COMPARATOR = Comparator.comparingInt(ItemStack::getCount).thenComparing(ItemStack::getItem, Comparator.comparing(BuiltInRegistries.ITEM::getKey));
+    public static final Comparator<ItemStack> ITEM_STACK_COMPARATOR = Comparator.comparingInt(ItemStack::getCount)
+            .thenComparing(ItemStack::getItem, Comparator.comparing(BuiltInRegistries.ITEM::getKey));
 
     public static final Comparator<Ingredient> INGREDIENT_COMPARATOR = new Comparator<>() {
+
         @Override
         public int compare(Ingredient first, Ingredient second) {
             if (first.getCustomIngredient() instanceof DataComponentIngredient strict1 && strict1.isStrict()) {

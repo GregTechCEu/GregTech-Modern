@@ -1,26 +1,28 @@
 package com.gregtechceu.gtceu.data.recipe.generated;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.material.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
+
 import net.minecraft.data.recipes.RecipeOutput;
+
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Map;
 
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.PACKER_RECIPES;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.PACKER_RECIPES;
 
 public class WireCombiningHandler {
 
-    private static final TagPrefix[] WIRE_DOUBLING_ORDER = new TagPrefix[]{
+    private static final TagPrefix[] WIRE_DOUBLING_ORDER = new TagPrefix[] {
             wireGtSingle, wireGtDouble, wireGtQuadruple, wireGtOctal, wireGtHex
     };
 
@@ -29,11 +31,9 @@ public class WireCombiningHandler {
             cableGtDouble, wireGtDouble,
             cableGtQuadruple, wireGtQuadruple,
             cableGtOctal, wireGtOctal,
-            cableGtHex, wireGtHex
-    );
+            cableGtHex, wireGtHex);
 
     public static void init(RecipeOutput provider) {
-
         // Generate Wire Packer/Unpacker recipes
         wireGtSingle.executeHandler(provider, PropertyKey.WIRE, WireCombiningHandler::processWireCompression);
 
@@ -48,24 +48,28 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property, RecipeOutput provider) {
+    private static void generateWireCombiningRecipe(TagPrefix wirePrefix, Material material, WireProperties property,
+                                                    RecipeOutput provider) {
         int wireIndex = ArrayUtils.indexOf(WIRE_DOUBLING_ORDER, wirePrefix);
 
         if (wireIndex < WIRE_DOUBLING_ORDER.length - 1) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_wire_%s_doubling", material.getName(), wirePrefix),
+            VanillaRecipeHelper.addShapelessRecipe(provider,
+                    String.format("%s_wire_%s_doubling", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex + 1], material),
                     new UnificationEntry(wirePrefix, material),
                     new UnificationEntry(wirePrefix, material));
         }
 
         if (wireIndex > 0) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_wire_%s_splitting", material.getName(), wirePrefix),
+            VanillaRecipeHelper.addShapelessRecipe(provider,
+                    String.format("%s_wire_%s_splitting", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex - 1], material, 2),
                     new UnificationEntry(wirePrefix, material));
         }
 
         if (wireIndex < 3) {
-            VanillaRecipeHelper.addShapelessRecipe(provider, String.format("%s_wire_%s_quadrupling", material.getName(), wirePrefix),
+            VanillaRecipeHelper.addShapelessRecipe(provider,
+                    String.format("%s_wire_%s_quadrupling", material.getName(), wirePrefix),
                     ChemicalHelper.get(WIRE_DOUBLING_ORDER[wireIndex + 2], material),
                     new UnificationEntry(wirePrefix, material),
                     new UnificationEntry(wirePrefix, material),
@@ -74,7 +78,8 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property, RecipeOutput provider) {
+    private static void processWireCompression(TagPrefix prefix, Material material, WireProperties property,
+                                               RecipeOutput provider) {
         for (int startTier = 0; startTier < 4; startTier++) {
             for (int i = 1; i < 5 - startTier; i++) {
                 PACKER_RECIPES.recipeBuilder("pack_" + material.getName() + "_wires_" + i + "_" + startTier)
@@ -94,11 +99,13 @@ public class WireCombiningHandler {
         }
     }
 
-    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property, RecipeOutput provider) {
+    private static void processCableStripping(TagPrefix prefix, Material material, WireProperties property,
+                                              RecipeOutput provider) {
         PACKER_RECIPES.recipeBuilder("strip_" + material.getName() + "_" + prefix.name)
                 .inputItems(prefix, material)
                 .outputItems(cableToWireMap.get(prefix), material)
-                .outputItems(plate, GTMaterials.Rubber, (int) (prefix.secondaryMaterials().get(0).amount() / GTValues.M))
+                .outputItems(plate, GTMaterials.Rubber,
+                        (int) (prefix.secondaryMaterials().get(0).amount() / GTValues.M))
                 .duration(100).EUt(GTValues.VA[GTValues.ULV])
                 .save(provider);
     }

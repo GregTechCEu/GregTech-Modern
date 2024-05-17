@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.item.component;
 
-import com.gregtechceu.gtceu.api.item.ComponentItem;
 import net.minecraft.core.NonNullList;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 /**
@@ -11,7 +11,8 @@ import net.minecraft.world.item.ItemStack;
  * @implNote ISubItemHandler
  */
 public interface ISubItemHandler extends IItemComponent {
-    default void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
+
+    default void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
         items.add(new ItemStack(item));
     }
 }

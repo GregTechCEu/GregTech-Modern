@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.common.item;
 
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -16,6 +18,7 @@ import java.util.function.Consumer;
  * @implNote TooltipBehavior
  */
 public class TooltipBehavior implements IAddInformation {
+
     private final Consumer<List<Component>> tooltips;
 
     /**
@@ -24,8 +27,10 @@ public class TooltipBehavior implements IAddInformation {
     public TooltipBehavior(@NotNull Consumer<List<Component>> tooltips) {
         this.tooltips = tooltips;
     }
+
     @Override
-    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         tooltips.accept(tooltipComponents);
     }
 }

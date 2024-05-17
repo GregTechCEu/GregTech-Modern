@@ -2,20 +2,22 @@ package com.gregtechceu.gtceu.common.machine.trait;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
-import com.gregtechceu.gtceu.api.data.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.BedrockFluidVeinSavedData;
+import com.gregtechceu.gtceu.api.worldgen.bedrockfluid.FluidVeinWorldEntry;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.FluidDrillMachine;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
-import lombok.Getter;
+
 import net.minecraft.core.SectionPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -24,9 +26,11 @@ import org.jetbrains.annotations.Nullable;
  * @implNote FluidDrillLogic
  */
 public class FluidDrillLogic extends RecipeLogic {
+
     public static final int MAX_PROGRESS = 20;
 
-    @Getter @Nullable
+    @Getter
+    @Nullable
     private Fluid veinFluid;
 
     public FluidDrillLogic(FluidDrillMachine machine) {
@@ -35,7 +39,7 @@ public class FluidDrillLogic extends RecipeLogic {
 
     @Override
     public FluidDrillMachine getMachine() {
-        return (FluidDrillMachine)super.getMachine();
+        return (FluidDrillMachine) super.getMachine();
     }
 
     @Override
@@ -70,7 +74,8 @@ public class FluidDrillLogic extends RecipeLogic {
             var recipe = GTRecipeBuilder.ofRaw()
                     .duration(MAX_PROGRESS)
                     .EUt(GTValues.VA[getMachine().getEnergyTier()])
-                    .outputFluids(new FluidStack(veinFluid, getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
+                    .outputFluids(new FluidStack(veinFluid,
+                            getFluidToProduce(data.getFluidVeinWorldEntry(getChunkX(), getChunkZ()))))
                     .buildRecipe();
             if (recipe.matchRecipe(getMachine()).isSuccess() && recipe.matchTickRecipe(getMachine()).isSuccess()) {
                 return recipe;
@@ -94,7 +99,8 @@ public class FluidDrillLogic extends RecipeLogic {
             int regularYield = entry.getFluidYield();
             int remainingOperations = entry.getOperationsRemaining();
 
-            int produced = Math.max(depletedYield, regularYield * remainingOperations / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
+            int produced = Math.max(depletedYield,
+                    regularYield * remainingOperations / BedrockFluidVeinSavedData.MAXIMUM_VEIN_OPERATIONS);
             produced *= FluidDrillMachine.getRigMultiplier(getMachine().getTier());
 
             // Overclocks produce 50% more fluid
@@ -150,5 +156,4 @@ public class FluidDrillLogic extends RecipeLogic {
     private int getChunkZ() {
         return SectionPos.blockToSectionCoord(getMachine().getPos().getZ());
     }
-
 }

@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.client.renderer.machine;
 
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -16,12 +17,15 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+
+import com.google.common.collect.ImmutableMap;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
 import java.util.function.Consumer;
 
 public class MinerRenderer extends WorkableTieredHullMachineRenderer {
+
     public static final ResourceLocation PIPE_IN_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe_in");
     public static final ImmutableMap<Material, ResourceLocation> MATERIALS_TO_CASING_MODELS;
 
@@ -46,9 +50,12 @@ public class MinerRenderer extends WorkableTieredHullMachineRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
+    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                              Direction frontFacing, @Nullable Direction side, RandomSource rand,
+                              @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
-        if (side == Direction.DOWN) quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState));
+        if (side == Direction.DOWN) quads.add(
+                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(MinerRenderer.PIPE_IN_OVERLAY), modelState));
     }
 
     @Override

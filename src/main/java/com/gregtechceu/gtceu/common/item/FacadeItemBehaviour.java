@@ -1,25 +1,28 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
-import com.gregtechceu.gtceu.api.item.datacomponents.FacadeWrapper;
-import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.api.item.datacomponents.FacadeWrapper;
+import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
+
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -36,15 +39,15 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack itemStack) {
-        ItemStack facadeStack = getFacadeStack(itemStack);
-        String name = facadeStack.getItem().getDescriptionId(facadeStack);
-        return LocalizationUtils.format(name) + " " + LocalizationUtils.format(itemStack.getItem().getDescriptionId());
+    public @Nullable Component getItemName(ItemStack stack) {
+        ItemStack facadeStack = getFacadeStack(stack);
+        return Component.translatable(stack.getDescriptionId(), facadeStack.getHoverName());
     }
 
     @Override
-    public void fillItemCategory(ComponentItem item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE), GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
+    public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
+        List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE),
+                GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
         for (ItemStack facadeStack : validFacades) {
             ItemStack resultStack = item.getDefaultInstance();
             setFacadeStack(resultStack, facadeStack);
@@ -89,5 +92,4 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
         }
         return facadeStack;
     }
-
 }

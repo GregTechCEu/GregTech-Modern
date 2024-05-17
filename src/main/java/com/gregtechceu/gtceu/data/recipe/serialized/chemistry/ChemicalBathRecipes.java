@@ -1,19 +1,19 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.item.Items;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_BATH_RECIPES;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.CHEMICAL_BATH_RECIPES;
 
 public class ChemicalBathRecipes {
 
     public static void init(RecipeOutput provider) {
-
         CHEMICAL_BATH_RECIPES.recipeBuilder("paper_from_wood_dust")
                 .inputItems(dust, Wood)
                 .inputFluids(Water.getFluid(100))
@@ -57,11 +57,11 @@ public class ChemicalBathRecipes {
                 .duration(100).EUt(VA[ULV]).save(provider);
 
         // TODO Concrete
-        //CHEMICAL_BATH_RECIPES.recipeBuilder()
-        //        .inputs(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT))
-        //        .inputFluids(Water.getFluid(100))
-        //        .outputs(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK))
-        //        .duration(100).EUt(VA[ULV]).save(provider);
+        // CHEMICAL_BATH_RECIPES.recipeBuilder()
+        // .inputs(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_LIGHT))
+        // .inputFluids(Water.getFluid(100))
+        // .outputs(MetaBlocks.STONE_SMOOTH.getItemVariant(BlockStoneSmooth.BlockType.CONCRETE_DARK))
+        // .duration(100).EUt(VA[ULV]).save(provider);
 
         CHEMICAL_BATH_RECIPES.recipeBuilder("tungstic_acid_from_scheelite")
                 .inputItems(dust, Scheelite, 6)

@@ -1,17 +1,14 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ItemStackTexture;
 import com.lowdragmc.lowdraglib.json.SimpleIGuiTextureJsonUtils;
 import com.lowdragmc.lowdraglib.utils.Position;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.CachedOutput;
@@ -23,13 +20,19 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -40,6 +43,7 @@ import java.util.function.Supplier;
 @MethodsReturnNonnullByDefault
 @Accessors(fluent = true, chain = true)
 public class CompassNode {
+
     @Getter
     private final ResourceLocation sectionID;
     @Getter
@@ -48,14 +52,17 @@ public class CompassNode {
     private ResourceLocation page;
     @Setter
     private int size = 24;
-    @Setter @Nullable // null - auto layout
+    @Setter
+    @Nullable // null - auto layout
     private Position position = null;
     private final Set<ResourceLocation> preNodes = new HashSet<>();
     private final List<Supplier<? extends Item>> items = new ArrayList<>();
     private final Set<TagKey<Item>> tags = new HashSet<>();
-    @Setter @Nullable
+    @Setter
+    @Nullable
     private Supplier<IGuiTexture> icon = null;
-    @Setter @Getter
+    @Setter
+    @Getter
     private String lang;
 
     private CompassNode(ResourceLocation sectionID, String nodeID) {
@@ -118,6 +125,7 @@ public class CompassNode {
     }
 
     public static class CompassNodeProvider implements DataProvider {
+
         private final PackOutput output;
         private final ExistingFileHelper existingHelper;
 
@@ -172,7 +180,8 @@ public class CompassNode {
         private CompletableFuture<?> genNodeData(Path path, CachedOutput cache, CompassNode node) {
             if (node.position == null) return CompletableFuture.completedFuture(null);
             var resourcePath = "compass/nodes/" + node.nodeID.getPath() + ".json";
-            if (existingHelper.exists(GTCEu.id(resourcePath), PackType.CLIENT_RESOURCES)) return CompletableFuture.completedFuture(null);
+            if (existingHelper.exists(GTCEu.id(resourcePath), PackType.CLIENT_RESOURCES))
+                return CompletableFuture.completedFuture(null);
 
             JsonObject json = new JsonObject();
             json.addProperty("section", node.sectionID.toString());
@@ -184,7 +193,7 @@ public class CompassNode {
                     node.icon = () -> IGuiTexture.EMPTY;
                 }
             }
-            json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(node.icon.get()));
+            json.add("button_texture", SimpleIGuiTextureJsonUtils.toJson(node.icon.get()));
             if (node.size != 24) {
                 json.addProperty("size", node.size);
             }
@@ -216,7 +225,5 @@ public class CompassNode {
 
             return DataProvider.saveStable(cache, json, path.resolve(resourcePath));
         }
-
     }
-
 }

@@ -5,15 +5,16 @@ import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.gui.factory.CoverUIFactory;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverRenderer;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,14 +26,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Represents cover instance attached on the specific side of meta tile entity
@@ -49,9 +52,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     public final CoverDefinition coverDefinition;
     public final ICoverable coverHolder;
     public final Direction attachedSide;
-    @Getter @Persisted @DescSynced
+    @Getter
+    @Persisted
+    @DescSynced
     protected ItemStack attachItem = ItemStack.EMPTY;
-    @Getter @Persisted
+    @Getter
+    @Persisted
     protected int redstoneSignalOutput = 0;
 
     public CoverBehavior(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -61,7 +67,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public void scheduleRenderUpdate() {
@@ -102,16 +108,12 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
         attachItem.setCount(1);
     }
 
-    public void onLoad() {
+    public void onLoad() {}
 
-    }
-
-    public void onUnload() {
-
-    }
+    public void onUnload() {}
 
     //////////////////////////////////////
-    //**********     Misc    ***********//
+    // ********** Misc ***********//
     //////////////////////////////////////
     public ItemStack getPickItem() {
         return attachItem;
@@ -128,11 +130,9 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
      * Called prior to cover removing on the server side
      * Will also be called during machine dismantling, as machine loses installed covers after that
      */
-    public void onRemoved() {
-    }
+    public void onRemoved() {}
 
-    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {
-    }
+    public void onNeighborChanged(Block block, BlockPos fromPos, boolean isMoving) {}
 
     public void setRedstoneSignalOutput(int redstoneSignalOutput) {
         this.redstoneSignalOutput = redstoneSignalOutput;
@@ -145,7 +145,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     //////////////////////////////////////
-    //*******     Interaction    *******//
+    // ******* Interaction *******//
     //////////////////////////////////////
     public InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, BlockHitResult hitResult) {
         if (this instanceof IUICover) {
@@ -162,7 +162,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     //////////////////////////////////////
-    //*******     Rendering     ********//
+    // ******* Rendering ********//
     //////////////////////////////////////
     /**
      * @return If the pipe this is placed on and a pipe on the other side should be able to connect
@@ -181,7 +181,8 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
 
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
-        return toolTypes.contains(GTToolType.CROWBAR) || (toolTypes.contains(GTToolType.SCREWDRIVER ) && this instanceof IUICover);
+        return toolTypes.contains(GTToolType.CROWBAR) ||
+                (toolTypes.contains(GTToolType.SCREWDRIVER) && this instanceof IUICover);
     }
 
     @Override
@@ -204,7 +205,7 @@ public abstract class CoverBehavior implements IEnhancedManaged, IToolGridHighLi
     }
 
     //////////////////////////////////////
-    //*******    Capabilities    *******//
+    // ******* Capabilities *******//
     //////////////////////////////////////
 
     // TODO possibly refactor this in the future, using some sort of cross-platform capability-like system

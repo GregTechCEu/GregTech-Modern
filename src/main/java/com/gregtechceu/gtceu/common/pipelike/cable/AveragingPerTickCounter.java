@@ -38,16 +38,12 @@ public class AveragingPerTickCounter {
                 Arrays.fill(values, defaultValue);
                 currentIndex = 0;
             } else {
-                currentIndex += dif;
-                if (currentIndex > values.length - 1)
-                    currentIndex -= values.length;
-                int index;
-                for (int i = 0, n = values.length; i < dif; i++) {
-                    index = i + currentIndex;
-                    if (index >= n)
-                        index -= n;
-                    values[index] = defaultValue;
+                for (int i = currentIndex + 1; i <= currentIndex + dif; i++) {
+                    values[i % values.length] = defaultValue;
                 }
+                currentIndex += dif;
+                if (currentIndex >= values.length)
+                    currentIndex = currentIndex % values.length;
             }
             this.lastUpdatedWorldTime = currentWorldTime;
             dirty = true;

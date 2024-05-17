@@ -10,19 +10,22 @@ import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.blockentity.OpticalPipeBlockEntity;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -51,21 +54,22 @@ public class OpticalDataHatchMachine extends MultiblockPartMachine implements IO
                     if (part instanceof IDataAccessHatch hatch && PartAbility.DATA_ACCESS.isApplicable(block)) {
                         dataAccesses.add(hatch);
                     }
-                    if (part instanceof IDataAccessHatch hatch && PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
+                    if (part instanceof IDataAccessHatch hatch &&
+                            PartAbility.OPTICAL_DATA_RECEPTION.isApplicable(block)) {
                         transmitters.add(hatch);
                     }
                 }
 
                 return isRecipeAvailable(dataAccesses, seen, recipe) ||
-                    isRecipeAvailable(transmitters, seen, recipe);
+                        isRecipeAvailable(transmitters, seen, recipe);
             } else {
                 BlockEntity tileEntity = getLevel().getBlockEntity(getPos().relative(getFrontFacing()));
                 if (tileEntity == null) return false;
 
                 if (tileEntity instanceof OpticalPipeBlockEntity) {
-                    //noinspection DataFlowIssue
+                    // noinspection DataFlowIssue
                     IDataAccessHatch cap = tileEntity.getLevel().getCapability(GTCapability.CAPABILITY_DATA_ACCESS,
-                        tileEntity.getBlockPos(), getFrontFacing().getOpposite());
+                            tileEntity.getBlockPos(), getFrontFacing().getOpposite());
                     return cap != null && cap.isRecipeAvailable(recipe, seen);
                 }
             }

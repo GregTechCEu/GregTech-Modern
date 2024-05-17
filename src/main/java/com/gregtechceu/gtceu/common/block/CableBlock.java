@@ -5,17 +5,18 @@ import com.gregtechceu.gtceu.api.block.MaterialPipeBlock;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.IToolable;
 import com.gregtechceu.gtceu.api.capability.forge.GTCapability;
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.material.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
 import com.gregtechceu.gtceu.client.model.PipeModel;
 import com.gregtechceu.gtceu.common.blockentity.CableBlockEntity;
-import com.gregtechceu.gtceu.common.data.GTBlockEntities;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.common.pipelike.cable.Insulation;
 import com.gregtechceu.gtceu.common.pipelike.cable.LevelEnergyNet;
+import com.gregtechceu.gtceu.data.blockentity.GTBlockEntities;
+import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -28,17 +29,17 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.BlockAndTintGetter;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
-import org.jetbrains.annotations.NotNull;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -75,7 +76,8 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter, @Nullable BlockPos blockPos, int index) {
+    public int tinted(BlockState blockState, @Nullable BlockAndTintGetter blockAndTintGetter,
+                      @Nullable BlockPos blockPos, int index) {
         if (pipeType.isCable && index == 0) {
             return 0x404040;
         }
@@ -103,13 +105,16 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public boolean canPipesConnect(IPipeNode<Insulation, WireProperties> selfTile, Direction side, IPipeNode<Insulation, WireProperties> sideTile) {
+    public boolean canPipesConnect(IPipeNode<Insulation, WireProperties> selfTile, Direction side,
+                                   IPipeNode<Insulation, WireProperties> sideTile) {
         return selfTile instanceof CableBlockEntity && sideTile instanceof CableBlockEntity;
     }
 
     @Override
-    public boolean canPipeConnectToBlock(IPipeNode<Insulation, WireProperties> selfTile, Direction side, @Nullable BlockEntity tile) {
-        return tile != null && tile.getLevel().getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER, tile.getBlockPos(), tile.getBlockState(), tile, side.getOpposite()) != null;
+    public boolean canPipeConnectToBlock(IPipeNode<Insulation, WireProperties> selfTile, Direction side,
+                                         @Nullable BlockEntity tile) {
+        return tile != null && tile.getLevel().getCapability(GTCapability.CAPABILITY_ENERGY_CONTAINER,
+                tile.getBlockPos(), tile.getBlockState(), tile, side.getOpposite()) != null;
     }
 
     @Override
@@ -118,11 +123,13 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
     }
 
     @Override
-    public void appendHoverText(ItemStack stack,Item.TooltipContext context, List<Component> tooltip, TooltipFlag flag) {
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, List<Component> tooltip,
+                                TooltipFlag flag) {
         super.appendHoverText(stack, context, tooltip, flag);
         WireProperties wireProperties = createProperties(defaultBlockState(), stack);
         int tier = GTUtil.getTierByVoltage(wireProperties.getVoltage());
-        if (wireProperties.isSuperconductor()) tooltip.add(Component.translatable("gtceu.cable.superconductor", GTValues.VN[tier]));
+        if (wireProperties.isSuperconductor())
+            tooltip.add(Component.translatable("gtceu.cable.superconductor", GTValues.VN[tier]));
         tooltip.add(Component.translatable("gtceu.cable.voltage", wireProperties.getVoltage(), GTValues.VNF[tier]));
         tooltip.add(Component.translatable("gtceu.cable.amperage", wireProperties.getAmperage()));
         tooltip.add(Component.translatable("gtceu.cable.loss_per_block", wireProperties.getLossPerBlock()));
@@ -142,7 +149,7 @@ public class CableBlock extends MaterialPipeBlock<Insulation, WireProperties, Le
                     entityLiving.hurt(GTDamageTypes.ELECTRIC.source(level), damageAmount);
                     if (entityLiving instanceof ServerPlayer) {
                         // TODO advancments
-                        //AdvancementTriggers.ELECTROCUTION_DEATH.trigger((EntityPlayerMP) entityLiving);
+                        // AdvancementTriggers.ELECTROCUTION_DEATH.trigger((EntityPlayerMP) entityLiving);
                     }
                 }
             }

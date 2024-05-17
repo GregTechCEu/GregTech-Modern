@@ -3,12 +3,14 @@ package com.gregtechceu.gtceu.common.cover.detector;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.cover.CoverDefinition;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+
 import net.minecraft.core.Direction;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 public class FluidDetectorCover extends DetectorCover {
+
     public FluidDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
         super(definition, coverHolder, attachedSide);
     }
@@ -45,6 +47,7 @@ public class FluidDetectorCover extends DetectorCover {
     }
 
     protected IFluidHandler getFluidTransfer() {
-        return coverHolder.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, coverHolder.getPos(), attachedSide);
+        return coverHolder.getLevel().getCapability(Capabilities.FluidHandler.BLOCK, coverHolder.getPos(),
+                attachedSide);
     }
 }

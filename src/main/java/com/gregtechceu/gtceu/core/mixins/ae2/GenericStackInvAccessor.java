@@ -11,6 +11,7 @@ public interface GenericStackInvAccessor {
     @Accessor
     Runnable getListener();
 
-    @Accessor @Mutable
+    @Accessor
+    @Mutable
     void setListener(Runnable listener);
 }

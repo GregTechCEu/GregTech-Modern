@@ -7,10 +7,12 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -115,6 +117,7 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     /**
      * Override it to modify recipe on the fly e.g. applying overclock, change chance, etc
+     * 
      * @param recipe recipe from detected from GTRecipeType
      * @return modified recipe.
      *         null -- this recipe is unavailable
@@ -125,11 +128,10 @@ public interface IMultiPart extends IMachineFeature, IFancyUIMachine {
 
     /**
      * Add text to the multiblock's screen.
+     * 
      * @param textList the text list to add to.
      */
-    default void addMultiText(List<Component> textList) {
-
-    }
+    default void addMultiText(List<Component> textList) {}
 
     /**
      * Attach part's tooltips to the controller.

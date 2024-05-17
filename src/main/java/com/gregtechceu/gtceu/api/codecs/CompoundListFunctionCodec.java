@@ -12,6 +12,7 @@ import java.util.Objects;
 import java.util.function.Function;
 
 public final class CompoundListFunctionCodec<K, V> implements Codec<List<Pair<K, V>>> {
+
     private final Codec<K> keyCodec;
     private final Function<K, Codec<V>> elementCodec;
 
@@ -26,7 +27,8 @@ public final class CompoundListFunctionCodec<K, V> implements Codec<List<Pair<K,
             final ImmutableList.Builder<Pair<K, V>> read = ImmutableList.builder();
             final ImmutableMap.Builder<T, T> failed = ImmutableMap.builder();
 
-            final MutableObject<DataResult<Unit>> result = new MutableObject<>(DataResult.success(Unit.INSTANCE, Lifecycle.experimental()));
+            final MutableObject<DataResult<Unit>> result = new MutableObject<>(
+                    DataResult.success(Unit.INSTANCE, Lifecycle.experimental()));
 
             map.accept((key, value) -> {
                 final DataResult<K> k = keyCodec.parse(ops, key);
@@ -59,7 +61,8 @@ public final class CompoundListFunctionCodec<K, V> implements Codec<List<Pair<K,
         final RecordBuilder<T> builder = ops.mapBuilder();
 
         for (final Pair<K, V> pair : input) {
-            builder.add(keyCodec.encodeStart(ops, pair.getFirst()), elementCodec.apply(pair.getFirst()).encodeStart(ops, pair.getSecond()));
+            builder.add(keyCodec.encodeStart(ops, pair.getFirst()),
+                    elementCodec.apply(pair.getFirst()).encodeStart(ops, pair.getSecond()));
         }
 
         return builder.build(prefix);

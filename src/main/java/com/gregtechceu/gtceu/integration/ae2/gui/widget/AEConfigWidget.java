@@ -1,17 +1,19 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
-import appeng.api.stacks.GenericStack;
 import com.gregtechceu.gtceu.integration.ae2.util.AEConfigSlot;
 import com.gregtechceu.gtceu.integration.ae2.util.AmountSetSlot;
 import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+
+import appeng.api.stacks.GenericStack;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
 
 public abstract class AEConfigWidget extends WidgetGroup {
 
@@ -67,7 +69,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
     public void detectAndSendChanges() {
         super.detectAndSendChanges();
         this.changeMap.clear();
-        for (int index = 0; index < this.config.length; index ++) {
+        for (int index = 0; index < this.config.length; index++) {
             IConfigurableSlot newSlot = this.config[index];
             IConfigurableSlot oldSlot = this.cached[index];
             GenericStack nConfig = newSlot.getConfig();
@@ -109,7 +111,7 @@ public abstract class AEConfigWidget extends WidgetGroup {
         super.readUpdateInfo(id, buffer);
         if (id == UPDATE_ID) {
             int size = buffer.readVarInt();
-            for (int i = 0; i < size; i ++) {
+            for (int i = 0; i < size; i++) {
                 int index = buffer.readVarInt();
                 IConfigurableSlot slot = this.displayList[index];
                 if (buffer.readBoolean()) {
@@ -143,5 +145,4 @@ public abstract class AEConfigWidget extends WidgetGroup {
         }
         return false;
     }
-
 }
