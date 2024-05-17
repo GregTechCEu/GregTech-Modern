@@ -2241,17 +2241,16 @@ public class GTMachines {
     public static MachineDefinition[] registerLaserHatch(IO io, int amperage, PartAbility ability) {
         String name = io == IO.IN ? "target" : "source";
         return registerTieredMachines(amperage + "a_laser_" + name + "_hatch",
-                (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
-                        .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + "A Laser " +
-                                FormattingUtil.toEnglishName(name) + " Hatch")
+                    (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
+                        .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers                          FormattingUtil.toEnglishName(name) + " Hatch")
                         .rotationState(RotationState.ALL)
-                        .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.0"),
-                                Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.1"),
+                        .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip"),
+                                Component.translatable("gtceu.machine.laser_hatch.both.tooltip"),
                                 Component.translatable("gtceu.universal.disabled"))
                         .abilities(ability)
                         .overlayTieredHullRenderer("laser_hatch." + name)
-                        .register(),
-                HIGH_TIERS);
+                                .register(),
+            HIGH_TIERS);
     }
 
     public static MultiblockMachineDefinition[] registerTieredMultis(String name,

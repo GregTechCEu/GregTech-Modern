@@ -649,10 +649,14 @@ public class MachineLang {
                 " Laser Hatches§7.");
 
         multiLang(provider, "gtceu.machine.active_transformer.tooltip",
-                "Transformers: Lasers in Disguise",
-                "Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
-                "Can transmit power at incredible distance with",
-                "Lasers§7.");
+                "§7Transformers: Lasers in Disguise",
+                "§7Can combine any number of Energy §fInputs§7 into any number of Energy §fOutputs§7.",
+                "§7Can transmit power at incredible distance with",
+                " Lasers§7.");
+
+        provider.add("gtceu.machine.laser_hatch.source.tooltip", "§7Transmitting power at distance");
+        provider.add("gtceu.machine.laser_hatch.target.tooltip", "§7Receiving power from distance");
+        provider.add("gtceu.machine.laser_hatch.both.tooltip", "§cLaser Cables must be in a straight line!§7");
 
         multiLang(provider, "gtceu.machine.research_station.tooltip",
                 "More than just a Multiblock Scanner",
