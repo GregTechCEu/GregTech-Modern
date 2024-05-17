@@ -21,6 +21,7 @@ import com.gregtechceu.gtceu.utils.FormattingUtil;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -39,6 +40,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
+
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 public class Material implements Comparable<Material> {
 
@@ -195,7 +198,7 @@ public class Material implements Comparable<Material> {
      * Retrieves a fluid from the material.
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
-     * 
+     *
      * @return the fluid
      * @see #getFluid(FluidStorageKey)
      */
@@ -264,7 +267,7 @@ public class Material implements Comparable<Material> {
      * <br/>
      * Attempts to retrieve with {@link FluidProperty#getPrimaryKey()}, {@link FluidStorageKeys#LIQUID} and
      * {@link FluidStorageKeys#GAS}.
-     * 
+     *
      * @return the fluid builder
      */
     public FluidBuilder getFluidBuilder() {
@@ -287,7 +290,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * NOTE: only available before the fluids are registered.
-     * 
+     *
      * @param key the key for the fluid
      * @return the fluid corresponding with the key
      */
@@ -366,7 +369,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer in ARGB.
-     * 
+     *
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -380,7 +383,7 @@ public class Material implements Comparable<Material> {
 
     /**
      * Gets a specific color layer.
-     * 
+     *
      * @param index the index of the layer [0,10). will crash if you pass values > 10.
      * @return Gets a specific color layer.
      */
@@ -638,7 +641,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a plasma for this material.
-         * 
+         *
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder plasma() {
@@ -660,7 +663,7 @@ public class Material implements Comparable<Material> {
 
         /**
          * Add a gas for this material.
-         * 
+         *
          * @see #fluid(FluidStorageKey, FluidState)
          */
         public Builder gas() {
@@ -1061,6 +1064,43 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
+
+        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect, HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, damage, applyToDerivatives));
+            return this;
+        }
+        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect, HazardProperty.HazardDamage damage) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, damage, true));
+            return this;
+        }
+        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, null, applyToDerivatives));
+            return this;
+        }
+        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, null, damage, applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardEffect effect) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, effect, null, true));
+            return this;
+        }
+        public Builder hazard(HazardProperty.HazardType poisonType, HazardProperty.HazardDamage damage) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, null, damage, true));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType poisonType, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, new HazardProperty.HazardEffect(200, MobEffects.POISON), new HazardProperty.HazardDamage(2,1), applyToDerivatives));
+            return this;
+        }
+
+        public Builder hazard(HazardProperty.HazardType poisonType) {
+            properties.setProperty(HAZARD, new HazardProperty(poisonType, new HazardProperty.HazardEffect(200, MobEffects.POISON), new HazardProperty.HazardDamage(2,1), true));
+            return this;
+        }
+
         public Builder ore() {
             properties.ensureSet(PropertyKey.ORE);
             return this;
@@ -1180,9 +1220,18 @@ public class Material implements Comparable<Material> {
 
         public Material buildAndRegister() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ?
-                    ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
-                            .toArray(MaterialStack[]::new)) :
-                    ImmutableList.copyOf(composition);
+                ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack)
+                    .toArray(MaterialStack[]::new)) :
+                ImmutableList.copyOf(composition);
+            for (MaterialStack materialStack: materialInfo.componentList)
+                if(materialStack.material().getProperties().hasProperty(HAZARD) &&
+                    materialStack.material().getProperties().getProperty(HAZARD).isApplyToDerivatives() &
+                        !properties.hasProperty(HAZARD))
+                    properties.setProperty(HAZARD, materialStack.material().getProperties().getProperty(HAZARD));
+
+            if(properties.hasProperty(HAZARD) &&
+                properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardType.NONE)
+                properties.removeProperty(HAZARD);
             var mat = new Material(materialInfo, properties, flags);
             materialInfo.verifyInfo(properties, averageRGB);
             mat.registerMaterial();

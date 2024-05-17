@@ -1,20 +1,24 @@
 package com.gregtechceu.gtceu.api.item.forge;
 
-import com.gregtechceu.gtceu.api.fluid.GTFluid;
+import com.gregtechceu.gtceu.api.fluids.GTFluid;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.utils.GTUtil;
 
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -27,7 +31,9 @@ import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.FluidUtil;
 
 import org.jetbrains.annotations.Nullable;
+import org.jetbrains.annotations.NotNull;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -68,6 +74,12 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+        super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
+        GTUtil.appendHazardTooltips(material,tooltipComponents);
+    }
+
+    @Override
     public Component getName(ItemStack stack) {
         return this.getDescription();
     }
@@ -85,9 +97,17 @@ public class GTBucketItem extends BucketItem {
     }
 
     @Override
-    public boolean emptyContents(@org.jetbrains.annotations.Nullable Player pPlayer, Level pLevel, BlockPos pPos,
-                                 @org.jetbrains.annotations.Nullable BlockHitResult pResult,
-                                 @org.jetbrains.annotations.Nullable ItemStack container) {
+    public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
+        super.inventoryTick(stack, level, entity, slotId, isSelected);
+        if(entity instanceof LivingEntity livingEntity && livingEntity.tickCount % 20 == 0)
+           GTUtil.applyHazardEffects(material, livingEntity, () -> true);
+
+    }
+
+    @Override
+    public boolean emptyContents(@Nullable Player pPlayer, Level pLevel, BlockPos pPos,
+                                 @Nullable BlockHitResult pResult,
+                                 @Nullable ItemStack container) {
         if (!(this.content instanceof FlowingFluid)) return false;
 
         BlockState blockstate = pLevel.getBlockState(pPos);

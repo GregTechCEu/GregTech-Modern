@@ -36,6 +36,9 @@ public class ConfigHolder {
     @Configurable.Comment("Config options for Tools and Armor")
     public ToolConfigs tools = new ToolConfigs();
     @Configurable
+    @Configurable.Comment("Config options for Game Mechanics")
+    public GameplayConfigs gameplay = new GameplayConfigs();
+    @Configurable
     @Configurable.Comment("Config options for Mod Compatibility")
     public CompatibilityConfigs compat = new CompatibilityConfigs();
     @Configurable
@@ -432,6 +435,12 @@ public class ConfigHolder {
             @Configurable.Comment({ "The EU/t consumption of the NanoSaber.", "Default: 64" })
             public int energyConsumption = 64;
         }
+    }
+
+    public static class GameplayConfigs{
+        @Configurable
+        @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
+        public boolean hazardsEnabled = true;
     }
 
     public static class ClientConfigs {

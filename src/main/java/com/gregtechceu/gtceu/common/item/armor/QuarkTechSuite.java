@@ -254,19 +254,19 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
      * if (energyPerUse > 0) {
      * damageLimit = (int) Math.min(damageLimit, 25.0D * item.getCharge() / (energyPerUse * 100.0D));
      * }
-     * 
+     *
      * if (source == DamageSource.FALL) {
      * if (SLOT == EntityEquipmentSlot.FEET) {
      * return new ArmorProperties(10, 1.0D, damageLimit);
      * }
-     * 
+     *
      * if (SLOT == EntityEquipmentSlot.LEGS) {
      * return new ArmorProperties(9, 0.8D, damageLimit);
      * }
      * }
      * return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
      * }
-     * 
+     *
      * @Override
      * public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
      * double damage, EntityEquipmentSlot equipmentSlot) {
@@ -338,5 +338,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }
+    }
+
+    @Override
+    public boolean isPPE() {
+        return true;
     }
 }

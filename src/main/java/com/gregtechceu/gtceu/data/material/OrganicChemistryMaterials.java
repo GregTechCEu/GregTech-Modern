@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
+
+import net.minecraft.world.effect.MobEffects;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet.FINE;
@@ -31,6 +34,7 @@ public class OrganicChemistryMaterials {
                 .color(0x704936)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 5, Nitrogen, 1, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         RawRubber = new Material.Builder(GTCEu.id("raw_rubber"))
@@ -180,6 +184,7 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0x892CA0)
                 .components(Carbon, 1, Hydrogen, 1, Chlorine, 3)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Cumene = new Material.Builder(GTCEu.id("cumene"))
@@ -282,6 +287,7 @@ public class OrganicChemistryMaterials {
                 .color(0x0F2828)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 1, Nitrogen, 4, Oxygen, 8)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Dimethylamine = new Material.Builder(GTCEu.id("dimethylamine"))
@@ -296,6 +302,7 @@ public class OrganicChemistryMaterials {
                 .color(0x000055)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 8, Nitrogen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         DinitrogenTetroxide = new Material.Builder(GTCEu.id("dinitrogen_tetroxide"))
@@ -344,6 +351,7 @@ public class OrganicChemistryMaterials {
                 .color(0x784421)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 6, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         BisphenolA = new Material.Builder(GTCEu.id("bisphenol_a"))
@@ -358,6 +366,7 @@ public class OrganicChemistryMaterials {
                 .color(0xE1F0F0)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Ethylene = new Material.Builder(GTCEu.id("ethylene"))
@@ -372,6 +381,7 @@ public class OrganicChemistryMaterials {
                 .color(0x1A1A1A)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 6)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Acetone = new Material.Builder(GTCEu.id("acetone"))
@@ -391,11 +401,13 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.BLINDNESS))
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
                 .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.CONFUSION))
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .buildAndRegister();
 
@@ -456,6 +468,7 @@ public class OrganicChemistryMaterials {
                 .color(0x326A3E)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 6, Hydrogen, 5, Chlorine, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Octane = new Material.Builder(GTCEu.id("octane"))
@@ -476,6 +489,7 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 10)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Naphthalene = new Material.Builder(GTCEu.id("naphthalene"))
@@ -529,6 +543,7 @@ public class OrganicChemistryMaterials {
                 .color(0x554A3F)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         PolyvinylButyral = new Material.Builder(GTCEu.id("polyvinyl_butyral"))
@@ -551,6 +566,7 @@ public class OrganicChemistryMaterials {
                 .color(0xCACC0E)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 12, Hydrogen, 8, Chlorine, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister()
                 .setFormula("(C6H4Cl)2", true);
     }

@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 
@@ -34,6 +35,13 @@ public class SecondDegreeMaterials {
                 .color(0xeee0e0).secondaryColor(0xc1b9a9)
                 .components(Obsidian, 2, Water, 1)
                 .buildAndRegister();
+
+        ActivatedCarbon = new Material.Builder(GTCEu.id("activated_carbon"))
+            .dust(1)
+            .color(0x212125).secondaryColor(0x15151a)
+            .components(Carbon, 1)
+            .flags(DECOMPOSITION_BY_CENTRIFUGING)
+            .buildAndRegister();
 
         Borax = new Material.Builder(GTCEu.id("borax"))
                 .dust(1)
@@ -399,6 +407,7 @@ public class SecondDegreeMaterials {
                 .color(0x4C3434)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(CarbonMonoxide, 78, HydrogenSulfide, 21, Neon, 9)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         LiquidNetherAir = new Material.Builder(GTCEu.id("liquid_nether_air"))
@@ -489,6 +498,7 @@ public class SecondDegreeMaterials {
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         EXCLUDE_PLATE_COMPRESSOR_RECIPE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Silicon, 1, Pyrite, 5, Ruby, 1, Mercury, 3)
+                .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
     }
 }
