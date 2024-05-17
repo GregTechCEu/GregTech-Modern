@@ -11,6 +11,8 @@ jobs:
     env:
       GITHUB_ACTION_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
       GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
+    permissions:
+      contents: write
     steps:
       - uses: actions/checkout@v4
         with:
@@ -26,12 +28,20 @@ jobs:
         id: var
         run: |
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep dev.jar -v | grep slim.jar -v | grep all.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
-          echo version=$MESSAGE >> $GITHUB_OUTPUT
+          echo "version=$MESSAGE" >> $GITHUB_OUTPUT
+          echo "version: $MESSAGE"
 
-      - name: release
+      - name: Release
+        id: release
         uses: Kir-Antipov/mc-publish@v3.3.0
         with:
           github-tag: ${{ steps.var.outputs.version }}
           github-token: ${{ secrets.GITHUB_TOKEN }}
           files: |
             build/libs/!(*-@(dev|sources|javadoc|dev-shadow)).jar
+
+      - name: Print Output
+        run: |
+          echo "Release tag: ${{ steps.publish.outputs.github-tag }}"
+          echo "Release URL: ${{ steps.publish.outputs.github-url }}"
+          echo "Released files: ${{ steps.publish.outputs.github-files }}"
