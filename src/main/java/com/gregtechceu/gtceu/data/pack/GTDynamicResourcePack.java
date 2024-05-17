@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.data.pack;
 
-import com.google.common.collect.Sets;
-import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.Platform;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectSet;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.SharedConstants;
 import net.minecraft.network.chat.Component;
@@ -18,12 +16,15 @@ import net.minecraft.server.packs.PackResources;
 import net.minecraft.server.packs.PackType;
 import net.minecraft.server.packs.metadata.MetadataSectionSerializer;
 import net.minecraft.server.packs.metadata.pack.PackMetadataSection;
-import net.minecraft.server.packs.repository.PackSource;
 import net.minecraft.server.packs.resources.IoSupplier;
+
+import com.google.common.collect.Sets;
+import com.google.gson.JsonElement;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -33,12 +34,13 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collection;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 import static com.gregtechceu.gtceu.data.pack.GTDynamicDataPack.writeJson;
 
@@ -70,12 +72,13 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockModel(ResourceLocation loc, JsonElement obj) {
+        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
         ResourceLocation l = getModelLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, obj);
+            writeJson(l, null, parent, modelBytes);
         }
-        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
+        DATA.put(l, modelBytes);
     }
 
     public static void addBlockModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -83,12 +86,13 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addItemModel(ResourceLocation loc, JsonElement obj) {
+        byte[] modelBytes = obj.toString().getBytes(StandardCharsets.UTF_8);
         ResourceLocation l = getItemModelLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, obj);
+            writeJson(l, null, parent, modelBytes);
         }
-        DATA.put(l, obj.toString().getBytes(StandardCharsets.UTF_8));
+        DATA.put(l, modelBytes);
     }
 
     public static void addItemModel(ResourceLocation loc, Supplier<JsonElement> obj) {
@@ -96,12 +100,13 @@ public class GTDynamicResourcePack implements PackResources {
     }
 
     public static void addBlockState(ResourceLocation loc, JsonElement stateJson) {
+        byte[] stateBytes = stateJson.toString().getBytes(StandardCharsets.UTF_8);
         ResourceLocation l = getBlockStateLocation(loc);
         if (ConfigHolder.INSTANCE.dev.dumpAssets) {
             Path parent = Platform.getGamePath().resolve("gtceu/dumped/assets");
-            writeJson(l, null, parent, stateJson);
+            writeJson(l, null, parent, stateBytes);
         }
-        DATA.put(l, stateJson.toString().getBytes(StandardCharsets.UTF_8));
+        DATA.put(l, stateBytes);
     }
 
     public static void addBlockState(ResourceLocation loc, Supplier<JsonElement> generator) {
@@ -133,10 +138,11 @@ public class GTDynamicResourcePack implements PackResources {
             if (subdir != null) {
                 file = parent.resolve(id.getNamespace()).resolve(subdir).resolve(id.getPath() + ".png"); // assume PNG
             } else {
-                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended if a full path is given.
+                file = parent.resolve(id.getNamespace()).resolve(id.getPath()); // assume the file type is also appended
+                                                                                // if a full path is given.
             }
             Files.createDirectories(file.getParent());
-            try(OutputStream output = Files.newOutputStream(file)) {
+            try (OutputStream output = Files.newOutputStream(file)) {
                 output.write(data);
             }
         } catch (IOException e) {
@@ -164,12 +170,13 @@ public class GTDynamicResourcePack implements PackResources {
         if (packType == PackType.CLIENT_RESOURCES) {
             if (!path.endsWith("/")) path += "/";
             final String finalPath = path;
-            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath)).forEach((id) -> {
-                IoSupplier<InputStream> resource = this.getResource(packType, id);
-                if (resource != null) {
-                    resourceOutput.accept(id, resource);
-                }
-            });
+            DATA.keySet().stream().filter(Objects::nonNull).filter(loc -> loc.getPath().startsWith(finalPath))
+                    .forEach((id) -> {
+                        IoSupplier<InputStream> resource = this.getResource(packType, id);
+                        if (resource != null) {
+                            resourceOutput.accept(id, resource);
+                        }
+                    });
         }
     }
 
@@ -181,8 +188,9 @@ public class GTDynamicResourcePack implements PackResources {
     @Nullable
     @Override
     public <T> T getMetadataSection(MetadataSectionSerializer<T> metaReader) {
-        if(metaReader == PackMetadataSection.TYPE) {
-            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"), SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
+        if (metaReader == PackMetadataSection.TYPE) {
+            return (T) new PackMetadataSection(Component.literal("GTCEu dynamic assets"),
+                    SharedConstants.getCurrentVersion().getPackVersion(PackType.CLIENT_RESOURCES));
         }
         return null;
     }
@@ -194,11 +202,12 @@ public class GTDynamicResourcePack implements PackResources {
 
     @Override
     public void close() {
-        //NOOP
+        // NOOP
     }
 
     public static ResourceLocation getBlockStateLocation(ResourceLocation blockId) {
-        return new ResourceLocation(blockId.getNamespace(), String.join("", "blockstates/", blockId.getPath(), ".json"));
+        return new ResourceLocation(blockId.getNamespace(),
+                String.join("", "blockstates/", blockId.getPath(), ".json"));
     }
 
     public static ResourceLocation getModelLocation(ResourceLocation blockId) {
@@ -213,6 +222,7 @@ public class GTDynamicResourcePack implements PackResources {
         if (path == null) {
             return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", tagId.getPath(), ".png"));
         }
-        return new ResourceLocation(tagId.getNamespace(), String.join("", "textures/", path, "/", tagId.getPath(), ".png"));
+        return new ResourceLocation(tagId.getNamespace(),
+                String.join("", "textures/", path, "/", tagId.getPath(), ".png"));
     }
 }

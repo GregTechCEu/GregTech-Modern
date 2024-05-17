@@ -1,16 +1,16 @@
 package com.gregtechceu.gtceu.data.recipe;
 
-import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
+import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty;
+import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.item.GTItems;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 
@@ -69,7 +69,8 @@ public class CraftingComponent {
     public static Component VOLTAGE_COIL;
     public static Component SPRING;
 
-    public static final Map<BlastProperty.GasTier, FluidIngredient> EBF_GASES = new EnumMap<>(BlastProperty.GasTier.class);
+    public static final Map<BlastProperty.GasTier, FluidIngredient> EBF_GASES = new EnumMap<>(
+            BlastProperty.GasTier.class);
 
     static {
         EBF_GASES.put(BlastProperty.GasTier.LOW, FluidIngredient.of(1000, GTMaterials.Nitrogen.getFluid()));
@@ -80,744 +81,740 @@ public class CraftingComponent {
     }
 
     public static void initializeComponents() {
-
         /*
          * GTCEu must supply values for at least tiers 1 through 8 (through UV)
          */
-        CIRCUIT = new Component(Stream.of(new Object[][]{
+        CIRCUIT = new Component(Stream.of(new Object[][] {
 
-                {0, CustomTags.ULV_CIRCUITS},
-                {1, CustomTags.LV_CIRCUITS},
-                {2, CustomTags.MV_CIRCUITS},
-                {3, CustomTags.HV_CIRCUITS},
-                {4, CustomTags.EV_CIRCUITS},
-                {5, CustomTags.IV_CIRCUITS},
-                {6, CustomTags.LuV_CIRCUITS},
-                {7, CustomTags.ZPM_CIRCUITS},
-                {8, CustomTags.UV_CIRCUITS},
-                {9, CustomTags.UHV_CIRCUITS},
-                {10, CustomTags.UEV_CIRCUITS},
-                {11, CustomTags.UIV_CIRCUITS},
-                {12, CustomTags.UXV_CIRCUITS},
-                {13, CustomTags.OpV_CIRCUITS},
-                {14, CustomTags.MAX_CIRCUITS},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        BETTER_CIRCUIT = new Component(Stream.of(new Object[][]{
-
-                {0, CustomTags.LV_CIRCUITS},
-                {1, CustomTags.MV_CIRCUITS},
-                {2, CustomTags.HV_CIRCUITS},
-                {3, CustomTags.EV_CIRCUITS},
-                {4, CustomTags.IV_CIRCUITS},
-                {5, CustomTags.LuV_CIRCUITS},
-                {6, CustomTags.ZPM_CIRCUITS},
-                {7, CustomTags.UV_CIRCUITS},
-                {8, CustomTags.UHV_CIRCUITS},
-                {10, CustomTags.UEV_CIRCUITS},
-                {11, CustomTags.UIV_CIRCUITS},
-                {12, CustomTags.UXV_CIRCUITS},
-                {13, CustomTags.OpV_CIRCUITS},
-                {14, CustomTags.MAX_CIRCUITS},
+                { 0, CustomTags.ULV_CIRCUITS },
+                { 1, CustomTags.LV_CIRCUITS },
+                { 2, CustomTags.MV_CIRCUITS },
+                { 3, CustomTags.HV_CIRCUITS },
+                { 4, CustomTags.EV_CIRCUITS },
+                { 5, CustomTags.IV_CIRCUITS },
+                { 6, CustomTags.LuV_CIRCUITS },
+                { 7, CustomTags.ZPM_CIRCUITS },
+                { 8, CustomTags.UV_CIRCUITS },
+                { 9, CustomTags.UHV_CIRCUITS },
+                { 10, CustomTags.UEV_CIRCUITS },
+                { 11, CustomTags.UIV_CIRCUITS },
+                { 12, CustomTags.UXV_CIRCUITS },
+                { 13, CustomTags.OpV_CIRCUITS },
+                { 14, CustomTags.MAX_CIRCUITS },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        PUMP = new Component(Stream.of(new Object[][]{
+        BETTER_CIRCUIT = new Component(Stream.of(new Object[][] {
 
-                {1, GTItems.ELECTRIC_PUMP_LV.asStack()},
-                {2, GTItems.ELECTRIC_PUMP_MV.asStack()},
-                {3, GTItems.ELECTRIC_PUMP_HV.asStack()},
-                {4, GTItems.ELECTRIC_PUMP_EV.asStack()},
-                {5, GTItems.ELECTRIC_PUMP_IV.asStack()},
-                {6, GTItems.ELECTRIC_PUMP_LuV.asStack()},
-                {7, GTItems.ELECTRIC_PUMP_ZPM.asStack()},
-                {8, GTItems.ELECTRIC_PUMP_UV.asStack()},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        if (GTCEuAPI.isHighTier()) {
-            PUMP.appendIngredients(Stream.of(new Object[][]{
-                    {9, GTItems.ELECTRIC_PUMP_UHV.asStack()},
-                    {10, GTItems.ELECTRIC_PUMP_UEV.asStack()},
-                    {11, GTItems.ELECTRIC_PUMP_UIV.asStack()},
-                    {12, GTItems.ELECTRIC_PUMP_UXV.asStack()},
-                    {13, GTItems.ELECTRIC_PUMP_OpV.asStack()},
-            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-        }
-
-        WIRE_ELECTRIC = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold)},
-                {1, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold)},
-                {2, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Silver)},
-                {3, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Electrum)},
-                {4, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Platinum)},
-                {5, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium)},
-                {6, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium)},
-                {7, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium)},
-                {8, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium)},
+                { 0, CustomTags.LV_CIRCUITS },
+                { 1, CustomTags.MV_CIRCUITS },
+                { 2, CustomTags.HV_CIRCUITS },
+                { 3, CustomTags.EV_CIRCUITS },
+                { 4, CustomTags.IV_CIRCUITS },
+                { 5, CustomTags.LuV_CIRCUITS },
+                { 6, CustomTags.ZPM_CIRCUITS },
+                { 7, CustomTags.UV_CIRCUITS },
+                { 8, CustomTags.UHV_CIRCUITS },
+                { 10, CustomTags.UEV_CIRCUITS },
+                { 11, CustomTags.UIV_CIRCUITS },
+                { 12, CustomTags.UXV_CIRCUITS },
+                { 13, CustomTags.OpV_CIRCUITS },
+                { 14, CustomTags.MAX_CIRCUITS },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        WIRE_QUAD = new Component(Stream.of(new Object[][]{
+        PUMP = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Lead)},
-                {1, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tungsten)},
-                {6, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.YttriumBariumCuprate)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        WIRE_OCT = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Lead)},
-                {1, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Tungsten)},
-                {6, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        WIRE_HEX = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Lead)},
-                {1, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Tungsten)},
-                {6, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.YttriumBariumCuprate)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy)},
-                {1, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum)},
-                {6, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate)},
-                {9, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_DOUBLE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy)},
-                {1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum)},
-                {6, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate)},
-                {9, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_QUAD = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy)},
-                {1, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum)},
-                {6, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate)},
-                {9, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_OCT = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy)},
-                {1, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Platinum)},
-                {6, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.YttriumBariumCuprate)},
-                {9, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_HEX = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy)},
-                {1, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Platinum)},
-                {6, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate)},
-                {9, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_TIER_UP = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin)},
-                {1, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold)},
-                {3, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Aluminium)},
-                {4, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum)},
-                {5, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.NiobiumTitanium)},
-                {6, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.VanadiumGallium)},
-                {7, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate)},
-                {8, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium)},
-                {FALLBACK, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_TIER_UP_DOUBLE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin)},
-                {1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold)},
-                {3, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium)},
-                {4, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum)},
-                {5, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium)},
-                {6, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium)},
-                {7, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate)},
-                {8, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium)},
-                {FALLBACK, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_TIER_UP_QUAD = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin)},
-                {1, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold)},
-                {3, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium)},
-                {4, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum)},
-                {5, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium)},
-                {6, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium)},
-                {7, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate)},
-                {8, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium)},
-                {FALLBACK, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        CABLE_TIER_UP_HEX = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Tin)},
-                {1, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Gold)},
-                {3, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium)},
-                {4, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Platinum)},
-                {5, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium)},
-                {6, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium)},
-                {7, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate)},
-                {8, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium)},
-                {FALLBACK, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        HULL = new Component(Stream.of(new Object[][]{
-
-                {0, GTMachines.HULL[0].asStack()},
-                {1, GTMachines.HULL[1].asStack()},
-                {2, GTMachines.HULL[2].asStack()},
-                {3, GTMachines.HULL[3].asStack()},
-                {4, GTMachines.HULL[4].asStack()},
-                {5, GTMachines.HULL[5].asStack()},
-                {6, GTMachines.HULL[6].asStack()},
-                {7, GTMachines.HULL[7].asStack()},
-                {8, GTMachines.HULL[8].asStack()},
-                {9, GTMachines.HULL[9].asStack()},
+                { 1, GTItems.ELECTRIC_PUMP_LV.asStack() },
+                { 2, GTItems.ELECTRIC_PUMP_MV.asStack() },
+                { 3, GTItems.ELECTRIC_PUMP_HV.asStack() },
+                { 4, GTItems.ELECTRIC_PUMP_EV.asStack() },
+                { 5, GTItems.ELECTRIC_PUMP_IV.asStack() },
+                { 6, GTItems.ELECTRIC_PUMP_LuV.asStack() },
+                { 7, GTItems.ELECTRIC_PUMP_ZPM.asStack() },
+                { 8, GTItems.ELECTRIC_PUMP_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            HULL.appendIngredients(Stream.of(new Object[][]{
-                    {10, GTMachines.HULL[10].asStack()},
-                    {11, GTMachines.HULL[11].asStack()},
-                    {12, GTMachines.HULL[12].asStack()},
-                    {13, GTMachines.HULL[13].asStack()},
-                    {14, GTMachines.HULL[14].asStack()},
+            PUMP.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.ELECTRIC_PUMP_UHV.asStack() },
+                    { 10, GTItems.ELECTRIC_PUMP_UEV.asStack() },
+                    { 11, GTItems.ELECTRIC_PUMP_UIV.asStack() },
+                    { 12, GTItems.ELECTRIC_PUMP_UXV.asStack() },
+                    { 13, GTItems.ELECTRIC_PUMP_OpV.asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        CASING = new Component(Stream.of(new Object[][]{
+        WIRE_ELECTRIC = new Component(Stream.of(new Object[][] {
 
-                {0, GTBlocks.MACHINE_CASING_ULV.asStack()},
-                {1, GTBlocks.MACHINE_CASING_LV.asStack()},
-                {2, GTBlocks.MACHINE_CASING_MV.asStack()},
-                {3, GTBlocks.MACHINE_CASING_HV.asStack()},
-                {4, GTBlocks.MACHINE_CASING_EV.asStack()},
-                {5, GTBlocks.MACHINE_CASING_IV.asStack()},
-                {6, GTBlocks.MACHINE_CASING_LuV.asStack()},
-                {7, GTBlocks.MACHINE_CASING_ZPM.asStack()},
-                {8, GTBlocks.MACHINE_CASING_UV.asStack()},
-                {9, GTBlocks.MACHINE_CASING_UHV.asStack()},
+                { 0, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold) },
+                { 1, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Gold) },
+                { 2, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Silver) },
+                { 3, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Electrum) },
+                { 4, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Platinum) },
+                { 5, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 6, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 7, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+                { 8, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Osmium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        WIRE_QUAD = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Lead) },
+                { 1, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Tungsten) },
+                { 6, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.YttriumBariumCuprate) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        WIRE_OCT = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Lead) },
+                { 1, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.Tungsten) },
+                { 6, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        WIRE_HEX = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Lead) },
+                { 1, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.Tungsten) },
+                { 6, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.wireGtHex, GTMaterials.YttriumBariumCuprate) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.RedAlloy) },
+                { 1, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum) },
+                { 6, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate) },
+                { 9, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_DOUBLE = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.RedAlloy) },
+                { 1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum) },
+                { 6, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate) },
+                { 9, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_QUAD = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.RedAlloy) },
+                { 1, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum) },
+                { 6, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate) },
+                { 9, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_OCT = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.RedAlloy) },
+                { 1, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Platinum) },
+                { 6, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.YttriumBariumCuprate) },
+                { 9, new UnificationEntry(TagPrefix.cableGtOctal, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_HEX = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.RedAlloy) },
+                { 1, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Platinum) },
+                { 6, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate) },
+                { 9, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_TIER_UP = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Tin) },
+                { 1, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Gold) },
+                { 3, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Aluminium) },
+                { 4, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Platinum) },
+                { 5, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.NiobiumTitanium) },
+                { 6, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.VanadiumGallium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.YttriumBariumCuprate) },
+                { 8, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
+                { FALLBACK, new UnificationEntry(TagPrefix.cableGtSingle, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_TIER_UP_DOUBLE = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Tin) },
+                { 1, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Gold) },
+                { 3, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Aluminium) },
+                { 4, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Platinum) },
+                { 5, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.NiobiumTitanium) },
+                { 6, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.VanadiumGallium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.YttriumBariumCuprate) },
+                { 8, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
+                { FALLBACK, new UnificationEntry(TagPrefix.cableGtDouble, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_TIER_UP_QUAD = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Tin) },
+                { 1, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Gold) },
+                { 3, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Aluminium) },
+                { 4, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Platinum) },
+                { 5, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.NiobiumTitanium) },
+                { 6, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.VanadiumGallium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.YttriumBariumCuprate) },
+                { 8, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
+                { FALLBACK, new UnificationEntry(TagPrefix.cableGtQuadruple, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CABLE_TIER_UP_HEX = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Tin) },
+                { 1, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Gold) },
+                { 3, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Aluminium) },
+                { 4, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Platinum) },
+                { 5, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.NiobiumTitanium) },
+                { 6, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.VanadiumGallium) },
+                { 7, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.YttriumBariumCuprate) },
+                { 8, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
+                { FALLBACK, new UnificationEntry(TagPrefix.cableGtHex, GTMaterials.Europium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        HULL = new Component(Stream.of(new Object[][] {
+
+                { 0, GTMachines.HULL[0].asStack() },
+                { 1, GTMachines.HULL[1].asStack() },
+                { 2, GTMachines.HULL[2].asStack() },
+                { 3, GTMachines.HULL[3].asStack() },
+                { 4, GTMachines.HULL[4].asStack() },
+                { 5, GTMachines.HULL[5].asStack() },
+                { 6, GTMachines.HULL[6].asStack() },
+                { 7, GTMachines.HULL[7].asStack() },
+                { 8, GTMachines.HULL[8].asStack() },
+                { 9, GTMachines.HULL[9].asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            CASING.appendIngredients(Stream.of(new Object[][]{
-                    {10, GTBlocks.MACHINE_CASING_UEV.asStack()},
-                    {11, GTBlocks.MACHINE_CASING_UIV.asStack()},
-                    {12, GTBlocks.MACHINE_CASING_UXV.asStack()},
-                    {13, GTBlocks.MACHINE_CASING_OpV.asStack()},
-                    {14, GTBlocks.MACHINE_CASING_MAX.asStack()},
+            HULL.appendIngredients(Stream.of(new Object[][] {
+                    { 10, GTMachines.HULL[10].asStack() },
+                    { 11, GTMachines.HULL[11].asStack() },
+                    { 12, GTMachines.HULL[12].asStack() },
+                    { 13, GTMachines.HULL[13].asStack() },
+                    { 14, GTMachines.HULL[14].asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        PIPE_NORMAL = new Component(Stream.of(new Object[][]{
+        CASING = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze)},
-                {1, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze)},
-                {2, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel)},
-                {3, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.StainlessSteel)},
-                {4, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Titanium)},
-                {5, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Iridium)},
-                {8, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Naquadah)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        PIPE_LARGE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze)},
-                {1, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze)},
-                {2, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Steel)},
-                {3, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel)},
-                {4, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Titanium)},
-                {5, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Ultimet)},
-                {8, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Naquadah)},
+                { 0, GTBlocks.MACHINE_CASING_ULV.asStack() },
+                { 1, GTBlocks.MACHINE_CASING_LV.asStack() },
+                { 2, GTBlocks.MACHINE_CASING_MV.asStack() },
+                { 3, GTBlocks.MACHINE_CASING_HV.asStack() },
+                { 4, GTBlocks.MACHINE_CASING_EV.asStack() },
+                { 5, GTBlocks.MACHINE_CASING_IV.asStack() },
+                { 6, GTBlocks.MACHINE_CASING_LuV.asStack() },
+                { 7, GTBlocks.MACHINE_CASING_ZPM.asStack() },
+                { 8, GTBlocks.MACHINE_CASING_UV.asStack() },
+                { 9, GTBlocks.MACHINE_CASING_UHV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
+        if (GTCEuAPI.isHighTier()) {
+            CASING.appendIngredients(Stream.of(new Object[][] {
+                    { 10, GTBlocks.MACHINE_CASING_UEV.asStack() },
+                    { 11, GTBlocks.MACHINE_CASING_UIV.asStack() },
+                    { 12, GTBlocks.MACHINE_CASING_UXV.asStack() },
+                    { 13, GTBlocks.MACHINE_CASING_OpV.asStack() },
+                    { 14, GTBlocks.MACHINE_CASING_MAX.asStack() },
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
+        PIPE_NORMAL = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze) },
+                { 1, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Bronze) },
+                { 2, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Steel) },
+                { 3, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.StainlessSteel) },
+                { 4, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Titanium) },
+                { 5, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Iridium) },
+                { 8, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Naquadah) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        PIPE_LARGE = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze) },
+                { 1, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Bronze) },
+                { 2, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Steel) },
+                { 3, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.StainlessSteel) },
+                { 4, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Titanium) },
+                { 5, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Ultimet) },
+                { 8, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Naquadah) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         /*
-        Glass: Steam-MV
-        Tempered: HV, EV
-        Laminated Glass: IV, LuV
-        Fusion: ZPM, UV
+         * Glass: Steam-MV
+         * Tempered: HV, EV
+         * Laminated Glass: IV, LuV
+         * Fusion: ZPM, UV
          */
-        GLASS = new Component(Stream.of(new Object[][]{
+        GLASS = new Component(Stream.of(new Object[][] {
 
-                {GTValues.FALLBACK, CustomTags.GLASS_BLOCKS},
-                {ULV, CustomTags.GLASS_BLOCKS},
-                {LV, CustomTags.GLASS_BLOCKS},
-                {MV, CustomTags.GLASS_BLOCKS},
-                {HV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
-                {EV, GTBlocks.CASING_TEMPERED_GLASS.asStack()},
-                {IV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
-                {LuV, GTBlocks.CASING_LAMINATED_GLASS.asStack()},
-                {ZPM, GTBlocks.FUSION_GLASS.asStack()},
-                {UV, GTBlocks.FUSION_GLASS.asStack()}
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        PLATE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron)},
-                {1, new UnificationEntry(TagPrefix.plate, GTMaterials.Steel)},
-                {2, new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium)},
-                {3, new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel)},
-                {4, new UnificationEntry(TagPrefix.plate, GTMaterials.Titanium)},
-                {5, new UnificationEntry(TagPrefix.plate, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.plate, GTMaterials.RhodiumPlatedPalladium)},
-                {7, new UnificationEntry(TagPrefix.plate, GTMaterials.NaquadahAlloy)},
-                {8, new UnificationEntry(TagPrefix.plate, GTMaterials.Darmstadtium)},
-                {9, new UnificationEntry(TagPrefix.plate, GTMaterials.Neutronium)},
+                { GTValues.FALLBACK, CustomTags.GLASS_BLOCKS },
+                { ULV, CustomTags.GLASS_BLOCKS },
+                { LV, CustomTags.GLASS_BLOCKS },
+                { MV, CustomTags.GLASS_BLOCKS },
+                { HV, GTBlocks.CASING_TEMPERED_GLASS.asStack() },
+                { EV, GTBlocks.CASING_TEMPERED_GLASS.asStack() },
+                { IV, GTBlocks.CASING_LAMINATED_GLASS.asStack() },
+                { LuV, GTBlocks.CASING_LAMINATED_GLASS.asStack() },
+                { ZPM, GTBlocks.FUSION_GLASS.asStack() },
+                { UV, GTBlocks.FUSION_GLASS.asStack() }
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        HULL_PLATE = new Component(Stream.of(new Object[][]{
+        PLATE = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.plate, GTMaterials.Wood)},
-                {1, new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron)},
-                {2, new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron)},
-                {3, new UnificationEntry(TagPrefix.plate, GTMaterials.Polyethylene)},
-                {4, new UnificationEntry(TagPrefix.plate, GTMaterials.Polyethylene)},
-                {5, new UnificationEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene)},
-                {6, new UnificationEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene)},
-                {7, new UnificationEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole)},
-                {8, new UnificationEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        MOTOR = new Component(Stream.of(new Object[][]{
-
-                {1, GTItems.ELECTRIC_MOTOR_LV.asStack()},
-                {2, GTItems.ELECTRIC_MOTOR_MV.asStack()},
-                {3, GTItems.ELECTRIC_MOTOR_HV.asStack()},
-                {4, GTItems.ELECTRIC_MOTOR_EV.asStack()},
-                {5, GTItems.ELECTRIC_MOTOR_IV.asStack()},
-                {6, GTItems.ELECTRIC_MOTOR_LuV.asStack()},
-                {7, GTItems.ELECTRIC_MOTOR_ZPM.asStack()},
-                {8, GTItems.ELECTRIC_MOTOR_UV.asStack()},
+                { 0, new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron) },
+                { 1, new UnificationEntry(TagPrefix.plate, GTMaterials.Steel) },
+                { 2, new UnificationEntry(TagPrefix.plate, GTMaterials.Aluminium) },
+                { 3, new UnificationEntry(TagPrefix.plate, GTMaterials.StainlessSteel) },
+                { 4, new UnificationEntry(TagPrefix.plate, GTMaterials.Titanium) },
+                { 5, new UnificationEntry(TagPrefix.plate, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.plate, GTMaterials.RhodiumPlatedPalladium) },
+                { 7, new UnificationEntry(TagPrefix.plate, GTMaterials.NaquadahAlloy) },
+                { 8, new UnificationEntry(TagPrefix.plate, GTMaterials.Darmstadtium) },
+                { 9, new UnificationEntry(TagPrefix.plate, GTMaterials.Neutronium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        if (GTCEuAPI.isHighTier()) {
-            MOTOR.appendIngredients(Stream.of(new Object[][]{
-                    { 9, GTItems.ELECTRIC_MOTOR_UHV.asStack()},
-                    {10, GTItems.ELECTRIC_MOTOR_UEV.asStack()},
-                    {11, GTItems.ELECTRIC_MOTOR_UIV.asStack()},
-                    {12, GTItems.ELECTRIC_MOTOR_UXV.asStack()},
-                    {13, GTItems.ELECTRIC_MOTOR_OpV.asStack()},
-            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-        }
+        HULL_PLATE = new Component(Stream.of(new Object[][] {
 
-        ROTOR = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.rotor, GTMaterials.Tin)},
-                {1, new UnificationEntry(TagPrefix.rotor, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.rotor, GTMaterials.Bronze)},
-                {3, new UnificationEntry(TagPrefix.rotor, GTMaterials.Steel)},
-                {4, new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel)},
-                {5, new UnificationEntry(TagPrefix.rotor, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.rotor, GTMaterials.RhodiumPlatedPalladium)},
-                {7, new UnificationEntry(TagPrefix.rotor, GTMaterials.NaquadahAlloy)},
-                {8, new UnificationEntry(TagPrefix.rotor, GTMaterials.Darmstadtium)},
+                { 0, new UnificationEntry(TagPrefix.plate, GTMaterials.Wood) },
+                { 1, new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron) },
+                { 2, new UnificationEntry(TagPrefix.plate, GTMaterials.WroughtIron) },
+                { 3, new UnificationEntry(TagPrefix.plate, GTMaterials.Polyethylene) },
+                { 4, new UnificationEntry(TagPrefix.plate, GTMaterials.Polyethylene) },
+                { 5, new UnificationEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene) },
+                { 6, new UnificationEntry(TagPrefix.plate, GTMaterials.Polytetrafluoroethylene) },
+                { 7, new UnificationEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole) },
+                { 8, new UnificationEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.plate, GTMaterials.Polybenzimidazole) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        SENSOR = new Component(Stream.of(new Object[][]{
+        MOTOR = new Component(Stream.of(new Object[][] {
 
-                {1, GTItems.SENSOR_LV.asStack()},
-                {2, GTItems.SENSOR_MV.asStack()},
-                {3, GTItems.SENSOR_HV.asStack()},
-                {4, GTItems.SENSOR_EV.asStack()},
-                {5, GTItems.SENSOR_IV.asStack()},
-                {6, GTItems.SENSOR_LuV.asStack()},
-                {7, GTItems.SENSOR_ZPM.asStack()},
-                {8, GTItems.SENSOR_UV.asStack()},
+                { 1, GTItems.ELECTRIC_MOTOR_LV.asStack() },
+                { 2, GTItems.ELECTRIC_MOTOR_MV.asStack() },
+                { 3, GTItems.ELECTRIC_MOTOR_HV.asStack() },
+                { 4, GTItems.ELECTRIC_MOTOR_EV.asStack() },
+                { 5, GTItems.ELECTRIC_MOTOR_IV.asStack() },
+                { 6, GTItems.ELECTRIC_MOTOR_LuV.asStack() },
+                { 7, GTItems.ELECTRIC_MOTOR_ZPM.asStack() },
+                { 8, GTItems.ELECTRIC_MOTOR_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            SENSOR.appendIngredients(Stream.of(new Object[][]{
-                    { 9, GTItems.SENSOR_UHV.asStack()},
-                    {10, GTItems.SENSOR_UEV.asStack()},
-                    {11, GTItems.SENSOR_UIV.asStack()},
-                    {12, GTItems.SENSOR_UXV.asStack()},
-                    {13, GTItems.SENSOR_OpV.asStack()},
+            MOTOR.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.ELECTRIC_MOTOR_UHV.asStack() },
+                    { 10, GTItems.ELECTRIC_MOTOR_UEV.asStack() },
+                    { 11, GTItems.ELECTRIC_MOTOR_UIV.asStack() },
+                    { 12, GTItems.ELECTRIC_MOTOR_UXV.asStack() },
+                    { 13, GTItems.ELECTRIC_MOTOR_OpV.asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        GRINDER = new Component(Stream.of(new Object[][]{
+        ROTOR = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond)},
-                {1, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond)},
-                {2, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond)},
-                {3, GTItems.COMPONENT_GRINDER_DIAMOND.asStack()},
-                {4, GTItems.COMPONENT_GRINDER_DIAMOND.asStack()},
-                {5, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack()},
-                {GTValues.FALLBACK, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack()},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        SAWBLADE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Bronze)},
-                {1, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.CobaltBrass)},
-                {2, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.VanadiumSteel)},
-                {3, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.BlueSteel)},
-                {4, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Ultimet)},
-                {5, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.TungstenCarbide)},
-                {6, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.HSSE)},
-                {7, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.NaquadahAlloy)},
-                {8, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Duranium)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Duranium)},
+                { 0, new UnificationEntry(TagPrefix.rotor, GTMaterials.Tin) },
+                { 1, new UnificationEntry(TagPrefix.rotor, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.rotor, GTMaterials.Bronze) },
+                { 3, new UnificationEntry(TagPrefix.rotor, GTMaterials.Steel) },
+                { 4, new UnificationEntry(TagPrefix.rotor, GTMaterials.StainlessSteel) },
+                { 5, new UnificationEntry(TagPrefix.rotor, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.rotor, GTMaterials.RhodiumPlatedPalladium) },
+                { 7, new UnificationEntry(TagPrefix.rotor, GTMaterials.NaquadahAlloy) },
+                { 8, new UnificationEntry(TagPrefix.rotor, GTMaterials.Darmstadtium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        DIAMOND = new Component(Stream.of(new Object[][]{
+        SENSOR = new Component(Stream.of(new Object[][] {
 
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        PISTON = new Component(Stream.of(new Object[][]{
-
-                {1, GTItems.ELECTRIC_PISTON_LV.asStack()},
-                {2, GTItems.ELECTRIC_PISTON_MV.asStack()},
-                {3, GTItems.ELECTRIC_PISTON_HV.asStack()},
-                {4, GTItems.ELECTRIC_PISTON_EV.asStack()},
-                {5, GTItems.ELECTRIC_PISTON_IV.asStack()},
-                {6, GTItems.ELECTRIC_PISTON_LUV.asStack()},
-                {7, GTItems.ELECTRIC_PISTON_ZPM.asStack()},
-                {8, GTItems.ELECTRIC_PISTON_UV.asStack()},
+                { 1, GTItems.SENSOR_LV.asStack() },
+                { 2, GTItems.SENSOR_MV.asStack() },
+                { 3, GTItems.SENSOR_HV.asStack() },
+                { 4, GTItems.SENSOR_EV.asStack() },
+                { 5, GTItems.SENSOR_IV.asStack() },
+                { 6, GTItems.SENSOR_LuV.asStack() },
+                { 7, GTItems.SENSOR_ZPM.asStack() },
+                { 8, GTItems.SENSOR_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            PISTON.appendIngredients(Stream.of(new Object[][]{
-                    { 9, GTItems.ELECTRIC_PISTON_UHV.asStack()},
-                    {10, GTItems.ELECTRIC_PISTON_UEV.asStack()},
-                    {11, GTItems.ELECTRIC_PISTON_UIV.asStack()},
-                    {12, GTItems.ELECTRIC_PISTON_UXV.asStack()},
-                    {13, GTItems.ELECTRIC_PISTON_OpV.asStack()},
+            SENSOR.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.SENSOR_UHV.asStack() },
+                    { 10, GTItems.SENSOR_UEV.asStack() },
+                    { 11, GTItems.SENSOR_UIV.asStack() },
+                    { 12, GTItems.SENSOR_UXV.asStack() },
+                    { 13, GTItems.SENSOR_OpV.asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        EMITTER = new Component(Stream.of(new Object[][]{
+        GRINDER = new Component(Stream.of(new Object[][] {
 
-                {1, GTItems.EMITTER_LV.asStack()},
-                {2, GTItems.EMITTER_MV.asStack()},
-                {3, GTItems.EMITTER_HV.asStack()},
-                {4, GTItems.EMITTER_EV.asStack()},
-                {5, GTItems.EMITTER_IV.asStack()},
-                {6, GTItems.EMITTER_LuV.asStack()},
-                {7, GTItems.EMITTER_ZPM.asStack()},
-                {8, GTItems.EMITTER_UV.asStack()},
+                { 0, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond) },
+                { 1, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond) },
+                { 2, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond) },
+                { 3, GTItems.COMPONENT_GRINDER_DIAMOND.asStack() },
+                { 4, GTItems.COMPONENT_GRINDER_DIAMOND.asStack() },
+                { 5, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack() },
+                { GTValues.FALLBACK, GTItems.COMPONENT_GRINDER_TUNGSTEN.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        CONVEYOR = new Component(Stream.of(new Object[][]{
+        SAWBLADE = new Component(Stream.of(new Object[][] {
 
-                {1, GTItems.CONVEYOR_MODULE_LV.asStack()},
-                {2, GTItems.CONVEYOR_MODULE_MV.asStack()},
-                {3, GTItems.CONVEYOR_MODULE_HV.asStack()},
-                {4, GTItems.CONVEYOR_MODULE_EV.asStack()},
-                {5, GTItems.CONVEYOR_MODULE_IV.asStack()},
-                {6, GTItems.CONVEYOR_MODULE_LuV.asStack()},
-                {7, GTItems.CONVEYOR_MODULE_ZPM.asStack()},
-                {8, GTItems.CONVEYOR_MODULE_UV.asStack()},
+                { 0, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Bronze) },
+                { 1, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.CobaltBrass) },
+                { 2, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.VanadiumSteel) },
+                { 3, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.BlueSteel) },
+                { 4, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Ultimet) },
+                { 5, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.TungstenCarbide) },
+                { 6, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.HSSE) },
+                { 7, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.NaquadahAlloy) },
+                { 8, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Duranium) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.toolHeadBuzzSaw, GTMaterials.Duranium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        DIAMOND = new Component(Stream.of(new Object[][] {
+
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.gem, GTMaterials.Diamond) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        PISTON = new Component(Stream.of(new Object[][] {
+
+                { 1, GTItems.ELECTRIC_PISTON_LV.asStack() },
+                { 2, GTItems.ELECTRIC_PISTON_MV.asStack() },
+                { 3, GTItems.ELECTRIC_PISTON_HV.asStack() },
+                { 4, GTItems.ELECTRIC_PISTON_EV.asStack() },
+                { 5, GTItems.ELECTRIC_PISTON_IV.asStack() },
+                { 6, GTItems.ELECTRIC_PISTON_LUV.asStack() },
+                { 7, GTItems.ELECTRIC_PISTON_ZPM.asStack() },
+                { 8, GTItems.ELECTRIC_PISTON_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            CONVEYOR.appendIngredients(Stream.of(new Object[][]{
-                    { 9, GTItems.CONVEYOR_MODULE_UHV.asStack()},
-                    {10, GTItems.CONVEYOR_MODULE_UEV.asStack()},
-                    {11, GTItems.CONVEYOR_MODULE_UIV.asStack()},
-                    {12, GTItems.CONVEYOR_MODULE_UXV.asStack()},
-                    {13, GTItems.CONVEYOR_MODULE_OpV.asStack()},
+            PISTON.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.ELECTRIC_PISTON_UHV.asStack() },
+                    { 10, GTItems.ELECTRIC_PISTON_UEV.asStack() },
+                    { 11, GTItems.ELECTRIC_PISTON_UIV.asStack() },
+                    { 12, GTItems.ELECTRIC_PISTON_UXV.asStack() },
+                    { 13, GTItems.ELECTRIC_PISTON_OpV.asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        ROBOT_ARM = new Component(Stream.of(new Object[][]{
+        EMITTER = new Component(Stream.of(new Object[][] {
 
-                {1, GTItems.ROBOT_ARM_LV.asStack()},
-                {2, GTItems.ROBOT_ARM_MV.asStack()},
-                {3, GTItems.ROBOT_ARM_HV.asStack()},
-                {4, GTItems.ROBOT_ARM_EV.asStack()},
-                {5, GTItems.ROBOT_ARM_IV.asStack()},
-                {6, GTItems.ROBOT_ARM_LuV.asStack()},
-                {7, GTItems.ROBOT_ARM_ZPM.asStack()},
-                {8, GTItems.ROBOT_ARM_UV.asStack()},
+                { 1, GTItems.EMITTER_LV.asStack() },
+                { 2, GTItems.EMITTER_MV.asStack() },
+                { 3, GTItems.EMITTER_HV.asStack() },
+                { 4, GTItems.EMITTER_EV.asStack() },
+                { 5, GTItems.EMITTER_IV.asStack() },
+                { 6, GTItems.EMITTER_LuV.asStack() },
+                { 7, GTItems.EMITTER_ZPM.asStack() },
+                { 8, GTItems.EMITTER_UV.asStack() },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        CONVEYOR = new Component(Stream.of(new Object[][] {
+
+                { 1, GTItems.CONVEYOR_MODULE_LV.asStack() },
+                { 2, GTItems.CONVEYOR_MODULE_MV.asStack() },
+                { 3, GTItems.CONVEYOR_MODULE_HV.asStack() },
+                { 4, GTItems.CONVEYOR_MODULE_EV.asStack() },
+                { 5, GTItems.CONVEYOR_MODULE_IV.asStack() },
+                { 6, GTItems.CONVEYOR_MODULE_LuV.asStack() },
+                { 7, GTItems.CONVEYOR_MODULE_ZPM.asStack() },
+                { 8, GTItems.CONVEYOR_MODULE_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            ROBOT_ARM.appendIngredients(Stream.of(new Object[][]{
-                    { 9, GTItems.ROBOT_ARM_UHV.asStack()},
-                    {10, GTItems.ROBOT_ARM_UEV.asStack()},
-                    {11, GTItems.ROBOT_ARM_UIV.asStack()},
-                    {12, GTItems.ROBOT_ARM_UXV.asStack()},
-                    {13, GTItems.ROBOT_ARM_OpV.asStack()},
+            CONVEYOR.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.CONVEYOR_MODULE_UHV.asStack() },
+                    { 10, GTItems.CONVEYOR_MODULE_UEV.asStack() },
+                    { 11, GTItems.CONVEYOR_MODULE_UIV.asStack() },
+                    { 12, GTItems.CONVEYOR_MODULE_UXV.asStack() },
+                    { 13, GTItems.CONVEYOR_MODULE_OpV.asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        COIL_HEATING = new Component(Stream.of(new Object[][]{
+        ROBOT_ARM = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper)},
-                {1, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Cupronickel)},
-                {3, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Kanthal)},
-                {4, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Nichrome)},
-                {5, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.HSSG)},
-                {7, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Naquadah)},
-                {8, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.NaquadahAlloy)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        COIL_HEATING_DOUBLE = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper)},
-                {1, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Cupronickel)},
-                {3, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Kanthal)},
-                {4, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Nichrome)},
-                {5, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.HSSG)},
-                {7, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Naquadah)},
-                {8, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NaquadahAlloy)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-
-        COIL_ELECTRIC = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Tin)},
-                {1, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Silver)},
-                {4, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Steel)},
-                {5, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Graphene)},
-                {6, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NiobiumNitride)},
-                {7, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        STICK_MAGNETIC = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic)},
-                {1, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic)},
-                {2, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic)},
-                {3, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic)},
-                {4, new UnificationEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic)},
-                {5, new UnificationEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic)},
-                {6, new UnificationEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic)},
-                {7, new UnificationEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic)},
-                {8, new UnificationEntry(TagPrefix.block, GTMaterials.NeodymiumMagnetic)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        STICK_DISTILLATION = new Component(Stream.of(new Object[][]{
-
-                {0, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze)},
-                {1, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper)},
-                {2, new UnificationEntry(TagPrefix.spring, GTMaterials.Cupronickel)},
-                {3, new UnificationEntry(TagPrefix.spring, GTMaterials.Kanthal)},
-                {4, new UnificationEntry(TagPrefix.spring, GTMaterials.Nichrome)},
-                {5, new UnificationEntry(TagPrefix.spring, GTMaterials.TungstenSteel)},
-                {6, new UnificationEntry(TagPrefix.spring, GTMaterials.HSSG)},
-                {7, new UnificationEntry(TagPrefix.spring, GTMaterials.Naquadah)},
-                {8, new UnificationEntry(TagPrefix.spring, GTMaterials.NaquadahAlloy)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        FIELD_GENERATOR = new Component(Stream.of(new Object[][]{
-
-                {1, GTItems.FIELD_GENERATOR_LV.asStack()},
-                {2, GTItems.FIELD_GENERATOR_MV.asStack()},
-                {3, GTItems.FIELD_GENERATOR_HV.asStack()},
-                {4, GTItems.FIELD_GENERATOR_EV.asStack()},
-                {5, GTItems.FIELD_GENERATOR_IV.asStack()},
-                {6, GTItems.FIELD_GENERATOR_LuV.asStack()},
-                {7, GTItems.FIELD_GENERATOR_ZPM.asStack()},
-                {8, GTItems.FIELD_GENERATOR_UV.asStack()},
+                { 1, GTItems.ROBOT_ARM_LV.asStack() },
+                { 2, GTItems.ROBOT_ARM_MV.asStack() },
+                { 3, GTItems.ROBOT_ARM_HV.asStack() },
+                { 4, GTItems.ROBOT_ARM_EV.asStack() },
+                { 5, GTItems.ROBOT_ARM_IV.asStack() },
+                { 6, GTItems.ROBOT_ARM_LuV.asStack() },
+                { 7, GTItems.ROBOT_ARM_ZPM.asStack() },
+                { 8, GTItems.ROBOT_ARM_UV.asStack() },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
         if (GTCEuAPI.isHighTier()) {
-            FIELD_GENERATOR.appendIngredients(Stream.of(new Object[][]{
-                    { 9, GTItems.FIELD_GENERATOR_UHV.asStack()},
-                    {10, GTItems.FIELD_GENERATOR_UEV.asStack()},
-                    {11, GTItems.FIELD_GENERATOR_UIV.asStack()},
-                    {12, GTItems.FIELD_GENERATOR_UXV.asStack()},
-                    {13, GTItems.FIELD_GENERATOR_OpV.asStack()},
+            ROBOT_ARM.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.ROBOT_ARM_UHV.asStack() },
+                    { 10, GTItems.ROBOT_ARM_UEV.asStack() },
+                    { 11, GTItems.ROBOT_ARM_UIV.asStack() },
+                    { 12, GTItems.ROBOT_ARM_UXV.asStack() },
+                    { 13, GTItems.ROBOT_ARM_OpV.asStack() },
             }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
         }
 
-        STICK_ELECTROMAGNETIC = new Component(Stream.of(new Object[][]{
+        COIL_HEATING = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron)},
-                {1, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron)},
-                {2, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel)},
-                {3, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel)},
-                {4, new UnificationEntry(TagPrefix.rod, GTMaterials.Neodymium)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.VanadiumGallium)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        STICK_RADIOACTIVE = new Component(Stream.of(new Object[][]{
-
-                {4, new UnificationEntry(TagPrefix.rod, GTMaterials.Uranium235)},
-                {5, new UnificationEntry(TagPrefix.rod, GTMaterials.Plutonium241)},
-                {6, new UnificationEntry(TagPrefix.rod, GTMaterials.NaquadahEnriched)},
-                {7, new UnificationEntry(TagPrefix.rod, GTMaterials.Americium)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.Tritanium)},
+                { 0, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper) },
+                { 1, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Cupronickel) },
+                { 3, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Kanthal) },
+                { 4, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Nichrome) },
+                { 5, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.HSSG) },
+                { 7, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Naquadah) },
+                { 8, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.NaquadahAlloy) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        PIPE_REACTOR = new Component(Stream.of(new Object[][]{
+        COIL_HEATING_DOUBLE = new Component(Stream.of(new Object[][] {
 
-                {0, new ItemStack(Blocks.GLASS, 1)},
-                {1, new ItemStack(Blocks.GLASS, 1)},
-                {2, new ItemStack(Blocks.GLASS, 1)},
-                {3, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polyethylene)},
-                {4, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polyethylene)},
-                {5, new UnificationEntry(TagPrefix.pipeHugeFluid, GTMaterials.Polyethylene)},
-                {6, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polytetrafluoroethylene)},
-                {7, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene)},
-                {8, new UnificationEntry(TagPrefix.pipeHugeFluid, GTMaterials.Polytetrafluoroethylene)},
-                {GTValues.FALLBACK, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polyethylene)},
-
-        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
-
-        POWER_COMPONENT = new Component(Stream.of(new Object[][]{
-
-                {2, GTItems.ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {3, GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {4, GTItems.POWER_INTEGRATED_CIRCUIT.asStack()},
-                {5, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {6, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {7, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {8, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {9, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack()},
-                {GTValues.FALLBACK, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT},
+                { 0, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper) },
+                { 1, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Cupronickel) },
+                { 3, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Kanthal) },
+                { 4, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Nichrome) },
+                { 5, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.HSSG) },
+                { 7, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Naquadah) },
+                { 8, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NaquadahAlloy) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        VOLTAGE_COIL = new Component(Stream.of(new Object[][]{
+        COIL_ELECTRIC = new Component(Stream.of(new Object[][] {
 
-                {0, GTItems.VOLTAGE_COIL_ULV.asStack()},
-                {1, GTItems.VOLTAGE_COIL_LV.asStack()},
-                {2, GTItems.VOLTAGE_COIL_MV.asStack()},
-                {3, GTItems.VOLTAGE_COIL_HV.asStack()},
-                {4, GTItems.VOLTAGE_COIL_EV.asStack()},
-                {5, GTItems.VOLTAGE_COIL_IV.asStack()},
-                {6, GTItems.VOLTAGE_COIL_LuV.asStack()},
-                {7, GTItems.VOLTAGE_COIL_ZPM.asStack()},
-                {8, GTItems.VOLTAGE_COIL_UV.asStack()},
-                {GTValues.FALLBACK, GTItems.VOLTAGE_COIL_UV},
+                { 0, new UnificationEntry(TagPrefix.wireGtSingle, GTMaterials.Tin) },
+                { 1, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.wireGtDouble, GTMaterials.Silver) },
+                { 4, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Steel) },
+                { 5, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.Graphene) },
+                { 6, new UnificationEntry(TagPrefix.wireGtQuadruple, GTMaterials.NiobiumNitride) },
+                { 7, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.wireGtOctal, GTMaterials.YttriumBariumCuprate) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
 
-        SPRING = new Component(Stream.of(new Object[][]{
+        STICK_MAGNETIC = new Component(Stream.of(new Object[][] {
 
-                {0, new UnificationEntry(TagPrefix.spring, GTMaterials.Lead)},
-                {1, new UnificationEntry(TagPrefix.spring, GTMaterials.Tin)},
-                {2, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper)},
-                {3, new UnificationEntry(TagPrefix.spring, GTMaterials.Gold)},
-                {4, new UnificationEntry(TagPrefix.spring, GTMaterials.Aluminium)},
-                {5, new UnificationEntry(TagPrefix.spring, GTMaterials.Tungsten)},
-                {6, new UnificationEntry(TagPrefix.spring, GTMaterials.NiobiumTitanium)},
-                {7, new UnificationEntry(TagPrefix.spring, GTMaterials.VanadiumGallium)},
-                {8, new UnificationEntry(TagPrefix.spring, GTMaterials.YttriumBariumCuprate)},
-                {9, new UnificationEntry(TagPrefix.spring, GTMaterials.Europium)},
+                { 0, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic) },
+                { 1, new UnificationEntry(TagPrefix.rod, GTMaterials.IronMagnetic) },
+                { 2, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic) },
+                { 3, new UnificationEntry(TagPrefix.rod, GTMaterials.SteelMagnetic) },
+                { 4, new UnificationEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic) },
+                { 5, new UnificationEntry(TagPrefix.rod, GTMaterials.NeodymiumMagnetic) },
+                { 6, new UnificationEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic) },
+                { 7, new UnificationEntry(TagPrefix.rodLong, GTMaterials.NeodymiumMagnetic) },
+                { 8, new UnificationEntry(TagPrefix.block, GTMaterials.NeodymiumMagnetic) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        STICK_DISTILLATION = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze) },
+                { 1, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper) },
+                { 2, new UnificationEntry(TagPrefix.spring, GTMaterials.Cupronickel) },
+                { 3, new UnificationEntry(TagPrefix.spring, GTMaterials.Kanthal) },
+                { 4, new UnificationEntry(TagPrefix.spring, GTMaterials.Nichrome) },
+                { 5, new UnificationEntry(TagPrefix.spring, GTMaterials.TungstenSteel) },
+                { 6, new UnificationEntry(TagPrefix.spring, GTMaterials.HSSG) },
+                { 7, new UnificationEntry(TagPrefix.spring, GTMaterials.Naquadah) },
+                { 8, new UnificationEntry(TagPrefix.spring, GTMaterials.NaquadahAlloy) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.Blaze) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        FIELD_GENERATOR = new Component(Stream.of(new Object[][] {
+
+                { 1, GTItems.FIELD_GENERATOR_LV.asStack() },
+                { 2, GTItems.FIELD_GENERATOR_MV.asStack() },
+                { 3, GTItems.FIELD_GENERATOR_HV.asStack() },
+                { 4, GTItems.FIELD_GENERATOR_EV.asStack() },
+                { 5, GTItems.FIELD_GENERATOR_IV.asStack() },
+                { 6, GTItems.FIELD_GENERATOR_LuV.asStack() },
+                { 7, GTItems.FIELD_GENERATOR_ZPM.asStack() },
+                { 8, GTItems.FIELD_GENERATOR_UV.asStack() },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        if (GTCEuAPI.isHighTier()) {
+            FIELD_GENERATOR.appendIngredients(Stream.of(new Object[][] {
+                    { 9, GTItems.FIELD_GENERATOR_UHV.asStack() },
+                    { 10, GTItems.FIELD_GENERATOR_UEV.asStack() },
+                    { 11, GTItems.FIELD_GENERATOR_UIV.asStack() },
+                    { 12, GTItems.FIELD_GENERATOR_UXV.asStack() },
+                    { 13, GTItems.FIELD_GENERATOR_OpV.asStack() },
+            }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+        }
+
+        STICK_ELECTROMAGNETIC = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron) },
+                { 1, new UnificationEntry(TagPrefix.rod, GTMaterials.Iron) },
+                { 2, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel) },
+                { 3, new UnificationEntry(TagPrefix.rod, GTMaterials.Steel) },
+                { 4, new UnificationEntry(TagPrefix.rod, GTMaterials.Neodymium) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.VanadiumGallium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        STICK_RADIOACTIVE = new Component(Stream.of(new Object[][] {
+
+                { 4, new UnificationEntry(TagPrefix.rod, GTMaterials.Uranium235) },
+                { 5, new UnificationEntry(TagPrefix.rod, GTMaterials.Plutonium241) },
+                { 6, new UnificationEntry(TagPrefix.rod, GTMaterials.NaquadahEnriched) },
+                { 7, new UnificationEntry(TagPrefix.rod, GTMaterials.Americium) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.rod, GTMaterials.Tritanium) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        PIPE_REACTOR = new Component(Stream.of(new Object[][] {
+
+                { 0, new ItemStack(Blocks.GLASS, 1) },
+                { 1, new ItemStack(Blocks.GLASS, 1) },
+                { 2, new ItemStack(Blocks.GLASS, 1) },
+                { 3, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polyethylene) },
+                { 4, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polyethylene) },
+                { 5, new UnificationEntry(TagPrefix.pipeHugeFluid, GTMaterials.Polyethylene) },
+                { 6, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polytetrafluoroethylene) },
+                { 7, new UnificationEntry(TagPrefix.pipeLargeFluid, GTMaterials.Polytetrafluoroethylene) },
+                { 8, new UnificationEntry(TagPrefix.pipeHugeFluid, GTMaterials.Polytetrafluoroethylene) },
+                { GTValues.FALLBACK, new UnificationEntry(TagPrefix.pipeNormalFluid, GTMaterials.Polyethylene) },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        POWER_COMPONENT = new Component(Stream.of(new Object[][] {
+
+                { 2, GTItems.ULTRA_LOW_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 3, GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 4, GTItems.POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 5, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 6, GTItems.HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 7, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 8, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { 9, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT.asStack() },
+                { GTValues.FALLBACK, GTItems.ULTRA_HIGH_POWER_INTEGRATED_CIRCUIT },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        VOLTAGE_COIL = new Component(Stream.of(new Object[][] {
+
+                { 0, GTItems.VOLTAGE_COIL_ULV.asStack() },
+                { 1, GTItems.VOLTAGE_COIL_LV.asStack() },
+                { 2, GTItems.VOLTAGE_COIL_MV.asStack() },
+                { 3, GTItems.VOLTAGE_COIL_HV.asStack() },
+                { 4, GTItems.VOLTAGE_COIL_EV.asStack() },
+                { 5, GTItems.VOLTAGE_COIL_IV.asStack() },
+                { 6, GTItems.VOLTAGE_COIL_LuV.asStack() },
+                { 7, GTItems.VOLTAGE_COIL_ZPM.asStack() },
+                { 8, GTItems.VOLTAGE_COIL_UV.asStack() },
+                { GTValues.FALLBACK, GTItems.VOLTAGE_COIL_UV },
+
+        }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
+
+        SPRING = new Component(Stream.of(new Object[][] {
+
+                { 0, new UnificationEntry(TagPrefix.spring, GTMaterials.Lead) },
+                { 1, new UnificationEntry(TagPrefix.spring, GTMaterials.Tin) },
+                { 2, new UnificationEntry(TagPrefix.spring, GTMaterials.Copper) },
+                { 3, new UnificationEntry(TagPrefix.spring, GTMaterials.Gold) },
+                { 4, new UnificationEntry(TagPrefix.spring, GTMaterials.Aluminium) },
+                { 5, new UnificationEntry(TagPrefix.spring, GTMaterials.Tungsten) },
+                { 6, new UnificationEntry(TagPrefix.spring, GTMaterials.NiobiumTitanium) },
+                { 7, new UnificationEntry(TagPrefix.spring, GTMaterials.VanadiumGallium) },
+                { 8, new UnificationEntry(TagPrefix.spring, GTMaterials.YttriumBariumCuprate) },
+                { 9, new UnificationEntry(TagPrefix.spring, GTMaterials.Europium) },
 
         }).collect(Collectors.toMap(data -> (Integer) data[0], data -> data[1])));
     }
-
 
     public static class Component {
 
@@ -846,10 +843,7 @@ public class CraftingComponent {
         @SuppressWarnings("unused")
         public void appendIngredients(Map<Integer, Object> newIngredients) {
             ingredients.remove(GTValues.FALLBACK);
-            newIngredients.forEach((key, value) ->
-                    ingredients.merge(key, value, (v1, v2) -> v2)
-            );
+            newIngredients.forEach((key, value) -> ingredients.merge(key, value, (v1, v2) -> v2));
         }
     }
 }
-

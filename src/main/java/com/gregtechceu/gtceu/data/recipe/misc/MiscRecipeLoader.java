@@ -1,34 +1,35 @@
 package com.gregtechceu.gtceu.data.recipe.misc;
 
-import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
-import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials.Color;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.api.material.ChemicalHelper;
+import com.gregtechceu.gtceu.api.material.material.MarkerMaterials.Color;
+import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.data.recipe.VanillaRecipeHelper;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
-import com.tterrag.registrate.util.entry.ItemEntry;
+
 import net.minecraft.data.recipes.RecipeOutput;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
+import com.tterrag.registrate.util.entry.ItemEntry;
+
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.item.GTItems.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 public class MiscRecipeLoader {
 
     public static void init(RecipeOutput provider) {
-
         // Basic Terminal Recipe
         VanillaRecipeHelper.addShapedRecipe(provider, true, "basic_terminal", TERMINAL.asStack(),
-                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B', new ItemStack(Items.BOOK),
-                                        'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
+                "SGS", "PBP", "PWP", 'S', new UnificationEntry(screw, WroughtIron), 'G', CustomTags.GLASS_PANES, 'B',
+                new ItemStack(Items.BOOK),
+                'P', new UnificationEntry(plate, WroughtIron), 'W', new UnificationEntry(wireGtSingle, RedAlloy));
 
         // Potin Recipe
         VanillaRecipeHelper.addShapelessRecipe(provider, "potin_dust", ChemicalHelper.get(dust, Potin, 8),
@@ -67,13 +68,13 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // TODO Matchbox
-        //PACKER_RECIPES.recipeBuilder()
-        //        .inputItems(TOOL_MATCHES, 16)
-        //        .inputItems(plate, Paper)
-        //        .outputItems(TOOL_MATCHBOX)
-        //        .duration(64)
-        //        .EUt(16)
-        //        .save(provider);
+        // PACKER_RECIPES.recipeBuilder()
+        // .inputItems(TOOL_MATCHES, 16)
+        // .inputItems(plate, Paper)
+        // .outputItems(TOOL_MATCHBOX)
+        // .duration(64)
+        // .EUt(16)
+        // .save(provider);
 
         ROCK_BREAKER_RECIPES.recipeBuilder("cobblestone")
                 .notConsumable(Blocks.COBBLESTONE.asItem())
@@ -147,7 +148,6 @@ public class MiscRecipeLoader {
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
 
-
         ROCK_BREAKER_RECIPES.recipeBuilder("deepslate")
                 .notConsumable(Blocks.DEEPSLATE.asItem())
                 .outputItems(Blocks.DEEPSLATE.asItem())
@@ -156,7 +156,7 @@ public class MiscRecipeLoader {
                 .addData("fluidA", "minecraft:lava")
                 .addData("fluidB", "minecraft:water")
                 .save(provider);
-        
+
         ROCK_BREAKER_RECIPES.recipeBuilder("marble")
                 .notConsumable(rock, Marble)
                 .outputItems(rock, Marble)
@@ -204,10 +204,8 @@ public class MiscRecipeLoader {
                 .save(provider);
 
         // QuarkTech Suite
-        // TODO armor
-        /*
         ASSEMBLER_RECIPES.recipeBuilder("quantum_helmet").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 5)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(SENSOR_IV)
@@ -217,25 +215,25 @@ public class MiscRecipeLoader {
                 .inputItems(foil, Ruthenium, 20)
                 .inputItems(wireFine, Rhodium, 32)
                 .inputFluids(Titanium.getFluid(L * 10))
-                .outputItems(QUANTUM_HELMET)
+                .outputItems(QUANTUM_HELMET.asStack())
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_chestplate").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 8)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
-                .inputItems(EMITTER_IV.getStackForm(2))
+                .inputItems(EMITTER_IV.asStack(2))
                 .inputItems(FIELD_GENERATOR_IV)
                 .inputItems(screw, TungstenSteel, 4)
                 .inputItems(plate, Iridium, 8)
                 .inputItems(foil, Ruthenium, 32)
                 .inputItems(wireFine, Rhodium, 48)
                 .inputFluids(Titanium.getFluid(L * 16))
-                .outputItems(QUANTUM_CHESTPLATE)
+                .outputItems(QUANTUM_CHESTPLATE.asStack())
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_leggings").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 7)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_MOTOR_IV, 4)
@@ -245,11 +243,11 @@ public class MiscRecipeLoader {
                 .inputItems(foil, Ruthenium, 28)
                 .inputItems(wireFine, Rhodium, 40)
                 .inputFluids(Titanium.getFluid(L * 14))
-                .outputItems(QUANTUM_LEGGINGS)
+                .outputItems(QUANTUM_LEGGINGS.asStack())
                 .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("quantum_boots").duration(1500).EUt(VA[IV])
-                .inputItems(circuit, Tier.LuV, 2)
+                .inputItems(CustomTags.LuV_CIRCUITS, 2)
                 .inputItems(wireGtQuadruple, Tungsten, 4)
                 .inputItems(ENERGY_LAPOTRONIC_ORB)
                 .inputItems(ELECTRIC_PISTON_IV, 2)
@@ -259,44 +257,43 @@ public class MiscRecipeLoader {
                 .inputItems(foil, Ruthenium, 16)
                 .inputItems(wireFine, Rhodium, 16)
                 .inputFluids(Titanium.getFluid(L * 8))
-                .outputItems(QUANTUM_BOOTS)
+                .outputItems(QUANTUM_BOOTS.asStack())
                 .save(provider);
 
         ASSEMBLY_LINE_RECIPES.recipeBuilder("quantum_chestplate_advanced").duration(1000).EUt(VA[LuV])
-                .inputNBT(((ArmorMetaItem<?>) QUANTUM_CHESTPLATE.getItem()).getItem(QUANTUM_CHESTPLATE), NBTMatcher.ANY, NBTCondition.ANY)
+                .inputItems(QUANTUM_CHESTPLATE.asItem())
                 .inputItems(HIGH_POWER_INTEGRATED_CIRCUIT, 2)
                 .inputItems(wireFine, NiobiumTitanium, 64)
                 .inputItems(wireGtQuadruple, Osmium, 6)
                 .inputItems(plateDouble, Iridium, 4)
                 .inputItems(GRAVITATION_ENGINE, 2)
-                .inputItems(circuit, Tier.ZPM)
+                .inputItems(CustomTags.ZPM_CIRCUITS)
                 .inputItems(plateDense, RhodiumPlatedPalladium, 2)
                 .inputItems(ENERGY_LAPOTRONIC_ORB_CLUSTER)
                 .inputItems(FIELD_GENERATOR_LuV, 2)
                 .inputItems(ELECTRIC_MOTOR_LuV, 2)
                 .inputItems(screw, HSSS, 8)
-                .outputItems(QUANTUM_CHESTPLATE_ADVANCED)
+                .outputItems(QUANTUM_CHESTPLATE_ADVANCED.asStack())
                 .save(provider);
-        */
 
         // TODO Central monitor
         /*
-        ASSEMBLER_RECIPES.recipeBuilder("monitor_screen").duration(80).EUt(VA[HV])
-                .inputItems(COVER_SCREEN)
-                .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(1))
-                .inputItems(wireFine, AnnealedCopper, 8)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(GTMachines.MONITOR_SCREEN)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("central_monitor").duration(100).EUt(VA[HV])
-                .inputItems(COVER_SCREEN)
-                .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(3))
-                .inputItems(circuit, Tier.HV, 2)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(GTMachines.CENTRAL_MONITOR)
-                .save(provider);
-        */
+         * ASSEMBLER_RECIPES.recipeBuilder("monitor_screen").duration(80).EUt(VA[HV])
+         * .inputItems(COVER_SCREEN)
+         * .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(1))
+         * .inputItems(wireFine, AnnealedCopper, 8)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(GTMachines.MONITOR_SCREEN)
+         * .save(provider);
+         * 
+         * ASSEMBLER_RECIPES.recipeBuilder("central_monitor").duration(100).EUt(VA[HV])
+         * .inputItems(COVER_SCREEN)
+         * .inputItems((ItemStack) CraftingComponent.HULL.getIngredient(3))
+         * .inputItems(circuit, Tier.HV, 2)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(GTMachines.CENTRAL_MONITOR)
+         * .save(provider);
+         */
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_digital_interface").duration(100).EUt(VA[HV])
                 .inputItems(COVER_SCREEN)
@@ -309,66 +306,66 @@ public class MiscRecipeLoader {
 
         // todo digital interface cover
         /*
-        ASSEMBLER_RECIPES.recipeBuilder("cover_wireless_digital_interface").duration(100).EUt(VA[HV])
-                .inputItems(COVER_DIGITAL_INTERFACE)
-                .inputItems(WIRELESS)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(COVER_DIGITAL_INTERFACE_WIRELESS)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("plugin_text").duration(80).EUt(400)
-                .inputItems(COVER_SCREEN)
-                .inputItems(circuit, Tier.LV)
-                .inputItems(wireFine, Copper, 2)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(PLUGIN_TEXT)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("plugin_online_pic").duration(80).EUt(400)
-                .inputItems(COVER_SCREEN)
-                .inputItems(circuit, Tier.LV)
-                .inputItems(wireFine, Silver, 2)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(PLUGIN_ONLINE_PIC)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("plugin_fake_gui").duration(80).EUt(400)
-                .inputItems(COVER_SCREEN)
-                .inputItems(circuit, Tier.LV)
-                .inputItems(wireFine, Gold, 2)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(PLUGIN_FAKE_GUI)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("plugin_advanced_monitor").duration(80).EUt(400)
-                .inputItems(COVER_SCREEN)
-                .inputItems(circuit, Tier.HV)
-                .inputItems(wireFine, Aluminium, 2)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(PLUGIN_ADVANCED_MONITOR)
-                .save(provider);
+         * ASSEMBLER_RECIPES.recipeBuilder("cover_wireless_digital_interface").duration(100).EUt(VA[HV])
+         * .inputItems(COVER_DIGITAL_INTERFACE)
+         * .inputItems(WIRELESS)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(COVER_DIGITAL_INTERFACE_WIRELESS)
+         * .save(provider);
+         * 
+         * ASSEMBLER_RECIPES.recipeBuilder("plugin_text").duration(80).EUt(400)
+         * .inputItems(COVER_SCREEN)
+         * .inputItems(circuit, Tier.LV)
+         * .inputItems(wireFine, Copper, 2)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(PLUGIN_TEXT)
+         * .save(provider);
+         * 
+         * ASSEMBLER_RECIPES.recipeBuilder("plugin_online_pic").duration(80).EUt(400)
+         * .inputItems(COVER_SCREEN)
+         * .inputItems(circuit, Tier.LV)
+         * .inputItems(wireFine, Silver, 2)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(PLUGIN_ONLINE_PIC)
+         * .save(provider);
+         * 
+         * ASSEMBLER_RECIPES.recipeBuilder("plugin_fake_gui").duration(80).EUt(400)
+         * .inputItems(COVER_SCREEN)
+         * .inputItems(circuit, Tier.LV)
+         * .inputItems(wireFine, Gold, 2)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(PLUGIN_FAKE_GUI)
+         * .save(provider);
+         * 
+         * ASSEMBLER_RECIPES.recipeBuilder("plugin_advanced_monitor").duration(80).EUt(400)
+         * .inputItems(COVER_SCREEN)
+         * .inputItems(circuit, Tier.HV)
+         * .inputItems(wireFine, Aluminium, 2)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(PLUGIN_ADVANCED_MONITOR)
+         * .save(provider);
          */
 
         // todo terminal
         /*
-        ASSEMBLER_RECIPES.recipeBuilder("wireless_upgrade").duration(100).EUt(VA[MV])
-                .inputItems(circuit, Tier.MV, 4)
-                .inputItems(EMITTER_MV, 2)
-                .inputItems(SENSOR_MV, 2)
-                .inputItems(plate, StainlessSteel)
-                .inputFluids(Polyethylene.getFluid(L))
-                .outputItems(WIRELESS)
-                .save(provider);
-
-        ASSEMBLER_RECIPES.recipeBuilder("camera_upgrade").duration(100).EUt(VA[LV])
-                .inputItems(ELECTRIC_PISTON_LV, 2)
-                .inputItems(EMITTER_LV)
-                .inputItems(lens, Glass)
-                .inputItems(lens, Diamond)
-                .inputItems(circuit, Tier.LV, 4)
-                .inputFluids(SolderingAlloy.getFluid(L))
-                .outputItems(CAMERA)
-                .save(provider);
+         * ASSEMBLER_RECIPES.recipeBuilder("wireless_upgrade").duration(100).EUt(VA[MV])
+         * .inputItems(circuit, Tier.MV, 4)
+         * .inputItems(EMITTER_MV, 2)
+         * .inputItems(SENSOR_MV, 2)
+         * .inputItems(plate, StainlessSteel)
+         * .inputFluids(Polyethylene.getFluid(L))
+         * .outputItems(WIRELESS)
+         * .save(provider);
+         * 
+         * ASSEMBLER_RECIPES.recipeBuilder("camera_upgrade").duration(100).EUt(VA[LV])
+         * .inputItems(ELECTRIC_PISTON_LV, 2)
+         * .inputItems(EMITTER_LV)
+         * .inputItems(lens, Glass)
+         * .inputItems(lens, Diamond)
+         * .inputItems(circuit, Tier.LV, 4)
+         * .inputFluids(SolderingAlloy.getFluid(L))
+         * .outputItems(CAMERA)
+         * .save(provider);
          */
 
         // Tempered Glass in Arc Furnace
@@ -404,25 +401,42 @@ public class MiscRecipeLoader {
                 .duration(40).EUt(6).save(provider);
 
         // Dyed Lens Recipes
-        GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("").EUt(VA[HV]).duration(200).inputItems(lens, Glass);
+        GTRecipeBuilder builder = CHEMICAL_BATH_RECIPES.recipeBuilder("").EUt(VA[HV]).duration(200).inputItems(lens,
+                Glass);
         final int dyeAmount = 288;
 
-        builder.copy("colorless_lens") .inputFluids(DyeWhite.getFluid(dyeAmount))    .outputItems(lens, Glass)                      .save(provider);
-        builder.copy("orange_lens")    .inputFluids(DyeOrange.getFluid(dyeAmount))   .outputItems(GLASS_LENSES.get(Color.Orange))   .save(provider);
-        builder.copy("magenta_lens")   .inputFluids(DyeMagenta.getFluid(dyeAmount))  .outputItems(GLASS_LENSES.get(Color.Magenta))  .save(provider);
-        builder.copy("light_blue_lens").inputFluids(DyeLightBlue.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.LightBlue)).save(provider);
-        builder.copy("yellow_lens")    .inputFluids(DyeYellow.getFluid(dyeAmount))   .outputItems(GLASS_LENSES.get(Color.Yellow))   .save(provider);
-        builder.copy("lime_lens")      .inputFluids(DyeLime.getFluid(dyeAmount))     .outputItems(GLASS_LENSES.get(Color.Lime))     .save(provider);
-        builder.copy("pink_lens")      .inputFluids(DyePink.getFluid(dyeAmount))     .outputItems(GLASS_LENSES.get(Color.Pink))     .save(provider);
-        builder.copy("gray_lens")      .inputFluids(DyeGray.getFluid(dyeAmount))     .outputItems(GLASS_LENSES.get(Color.Gray))     .save(provider);
-        builder.copy("light_gray_lens").inputFluids(DyeLightGray.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.LightGray)).save(provider);
-        builder.copy("cyan_lens")      .inputFluids(DyeCyan.getFluid(dyeAmount))     .outputItems(GLASS_LENSES.get(Color.Cyan))     .save(provider);
-        builder.copy("purple_lens")    .inputFluids(DyePurple.getFluid(dyeAmount))   .outputItems(GLASS_LENSES.get(Color.Purple))   .save(provider);
-        builder.copy("blue_lens")      .inputFluids(DyeBlue.getFluid(dyeAmount))     .outputItems(GLASS_LENSES.get(Color.Blue))     .save(provider);
-        builder.copy("brown_lens")     .inputFluids(DyeBrown.getFluid(dyeAmount))    .outputItems(GLASS_LENSES.get(Color.Brown))    .save(provider);
-        builder.copy("green_lens")     .inputFluids(DyeGreen.getFluid(dyeAmount))    .outputItems(GLASS_LENSES.get(Color.Green))    .save(provider);
-        builder.copy("red_lens")       .inputFluids(DyeRed.getFluid(dyeAmount))      .outputItems(GLASS_LENSES.get(Color.Red))      .save(provider);
-        builder.copy("black_lens")     .inputFluids(DyeBlack.getFluid(dyeAmount))    .outputItems(GLASS_LENSES.get(Color.Black))    .save(provider);
+        builder.copy("colorless_lens").inputFluids(DyeWhite.getFluid(dyeAmount)).outputItems(lens, Glass)
+                .save(provider);
+        builder.copy("orange_lens").inputFluids(DyeOrange.getFluid(dyeAmount))
+                .outputItems(GLASS_LENSES.get(Color.Orange)).save(provider);
+        builder.copy("magenta_lens").inputFluids(DyeMagenta.getFluid(dyeAmount))
+                .outputItems(GLASS_LENSES.get(Color.Magenta)).save(provider);
+        builder.copy("light_blue_lens").inputFluids(DyeLightBlue.getFluid(dyeAmount))
+                .outputItems(GLASS_LENSES.get(Color.LightBlue)).save(provider);
+        builder.copy("yellow_lens").inputFluids(DyeYellow.getFluid(dyeAmount))
+                .outputItems(GLASS_LENSES.get(Color.Yellow)).save(provider);
+        builder.copy("lime_lens").inputFluids(DyeLime.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Lime))
+                .save(provider);
+        builder.copy("pink_lens").inputFluids(DyePink.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Pink))
+                .save(provider);
+        builder.copy("gray_lens").inputFluids(DyeGray.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Gray))
+                .save(provider);
+        builder.copy("light_gray_lens").inputFluids(DyeLightGray.getFluid(dyeAmount))
+                .outputItems(GLASS_LENSES.get(Color.LightGray)).save(provider);
+        builder.copy("cyan_lens").inputFluids(DyeCyan.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Cyan))
+                .save(provider);
+        builder.copy("purple_lens").inputFluids(DyePurple.getFluid(dyeAmount))
+                .outputItems(GLASS_LENSES.get(Color.Purple)).save(provider);
+        builder.copy("blue_lens").inputFluids(DyeBlue.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Blue))
+                .save(provider);
+        builder.copy("brown_lens").inputFluids(DyeBrown.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Brown))
+                .save(provider);
+        builder.copy("green_lens").inputFluids(DyeGreen.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Green))
+                .save(provider);
+        builder.copy("red_lens").inputFluids(DyeRed.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Red))
+                .save(provider);
+        builder.copy("black_lens").inputFluids(DyeBlack.getFluid(dyeAmount)).outputItems(GLASS_LENSES.get(Color.Black))
+                .save(provider);
 
         // NAN Certificate
         EXTRUDER_RECIPES.recipeBuilder("nan_certificate")
@@ -440,26 +454,48 @@ public class MiscRecipeLoader {
                 .outputItems(FERTILIZER, 4)
                 .duration(100).EUt(VA[LV]).save(provider);
 
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_s") .inputItems(dust, Calcite)       .inputItems(dust, Sulfur)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_t") .inputItems(dust, Calcite)       .inputItems(dust, TricalciumPhosphate).inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_p") .inputItems(dust, Calcite)       .inputItems(dust, Phosphate)          .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_a") .inputItems(dust, Calcite)       .inputItems(dust, Ash, 3)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 1).duration(100).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_d") .inputItems(dust, Calcite)       .inputItems(dust, DarkAsh)            .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 1).duration(100).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_s").inputItems(dust, Calcium)       .inputItems(dust, Sulfur)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_t").inputItems(dust, Calcium)       .inputItems(dust, TricalciumPhosphate).inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 4).duration(400).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_p").inputItems(dust, Calcium)       .inputItems(dust, Phosphate)          .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_a").inputItems(dust, Calcium)       .inputItems(dust, Ash, 3)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_d").inputItems(dust, Calcium)       .inputItems(dust, DarkAsh)            .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_s") .inputItems(dust, Apatite)       .inputItems(dust, Sulfur)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_t") .inputItems(dust, Apatite)       .inputItems(dust, TricalciumPhosphate).inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 4).duration(400).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_p") .inputItems(dust, Apatite)       .inputItems(dust, Phosphate)          .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_a") .inputItems(dust, Apatite)       .inputItems(dust, Ash, 3)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_d") .inputItems(dust, Apatite)       .inputItems(dust, DarkAsh)            .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_s") .inputItems(dust, GlauconiteSand).inputItems(dust, Sulfur)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_t") .inputItems(dust, GlauconiteSand).inputItems(dust, TricalciumPhosphate).inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 4).duration(400).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_p") .inputItems(dust, GlauconiteSand).inputItems(dust, Phosphate)          .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_a") .inputItems(dust, GlauconiteSand).inputItems(dust, Ash, 3)             .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
-        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_d") .inputItems(dust, GlauconiteSand).inputItems(dust, DarkAsh)            .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_s").inputItems(dust, Calcite).inputItems(dust, Sulfur)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_t").inputItems(dust, Calcite).inputItems(dust, TricalciumPhosphate)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_p").inputItems(dust, Calcite).inputItems(dust, Phosphate)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_a").inputItems(dust, Calcite).inputItems(dust, Ash, 3)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 1).duration(100).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_c_d").inputItems(dust, Calcite).inputItems(dust, DarkAsh)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 1).duration(100).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_s").inputItems(dust, Calcium).inputItems(dust, Sulfur)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_t").inputItems(dust, Calcium)
+                .inputItems(dust, TricalciumPhosphate).inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 4)
+                .duration(400).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_p").inputItems(dust, Calcium).inputItems(dust, Phosphate)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_a").inputItems(dust, Calcium).inputItems(dust, Ash, 3)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_ca_d").inputItems(dust, Calcium).inputItems(dust, DarkAsh)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_s").inputItems(dust, Apatite).inputItems(dust, Sulfur)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_t").inputItems(dust, Apatite).inputItems(dust, TricalciumPhosphate)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 4).duration(400).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_p").inputItems(dust, Apatite).inputItems(dust, Phosphate)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_a").inputItems(dust, Apatite).inputItems(dust, Ash, 3)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_a_d").inputItems(dust, Apatite).inputItems(dust, DarkAsh)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_s").inputItems(dust, GlauconiteSand).inputItems(dust, Sulfur)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_t").inputItems(dust, GlauconiteSand)
+                .inputItems(dust, TricalciumPhosphate).inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 4)
+                .duration(400).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_p").inputItems(dust, GlauconiteSand).inputItems(dust, Phosphate)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 3).duration(300).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_a").inputItems(dust, GlauconiteSand).inputItems(dust, Ash, 3)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
+        CHEMICAL_RECIPES.recipeBuilder("fertilizer_g_d").inputItems(dust, GlauconiteSand).inputItems(dust, DarkAsh)
+                .inputFluids(Water.getFluid(1000)).outputItems(FERTILIZER, 2).duration(200).EUt(VA[LV]).save(provider);
 
         ELECTROLYZER_RECIPES.recipeBuilder("fertilizer_decomposition")
                 .inputItems(FERTILIZER)
@@ -493,18 +529,17 @@ public class MiscRecipeLoader {
                 .duration(300).EUt(2)
                 .save(provider);
 
-
         // Minecart wheels
         ASSEMBLER_RECIPES.recipeBuilder("iron_minecart_wheels")
-            .inputItems(rod, Iron)
-            .inputItems(ring, Iron, 2)
-            .outputItems(IRON_MINECART_WHEELS)
-            .duration(100).EUt(20).save(provider);
+                .inputItems(rod, Iron)
+                .inputItems(ring, Iron, 2)
+                .outputItems(IRON_MINECART_WHEELS)
+                .duration(100).EUt(20).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("steel_minecart_wheels")
-            .inputItems(rod, Steel)
-            .inputItems(ring, Steel, 2)
-            .outputItems(STEEL_MINECART_WHEELS)
-            .duration(60).EUt(20).save(provider);
+                .inputItems(rod, Steel)
+                .inputItems(ring, Steel, 2)
+                .outputItems(STEEL_MINECART_WHEELS)
+                .duration(60).EUt(20).save(provider);
     }
 }

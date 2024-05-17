@@ -14,15 +14,17 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ComponentPanelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.DraggableScrollableWidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -30,9 +32,11 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 
 import org.jetbrains.annotations.NotNull;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
@@ -61,7 +65,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
                     if (!capabilitiesProxy.contains(IO.IN, EURecipeCapability.CAP)) {
                         capabilitiesProxy.put(IO.IN, EURecipeCapability.CAP, new ArrayList<>());
                     }
-                    capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP).add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE));
+                    capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP)
+                            .add(new SteamEnergyRecipeHandler(tank, CONVERSION_RATE));
                     return;
                 }
             }
@@ -71,7 +76,7 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
         int duration = recipe.duration;
         var eut = RecipeHelper.getInputEUt(recipe);
-        var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getA();
+        var result = GTRecipeModifiers.accurateParallel(machine, recipe, MAX_PARALLELS, false).getFirst();
         recipe = result == recipe ? result.copy() : result;
 
         // we remove tick inputs, as our "cost" is just steam now, just stored as EU/t
@@ -87,10 +92,12 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         IDisplayUIMachine.super.addDisplayText(textList);
         if (isFormed()) {
             var handlers = capabilitiesProxy.get(IO.IN, EURecipeCapability.CAP);
-            if (handlers != null && handlers.size() > 0 && handlers.get(0) instanceof SteamEnergyRecipeHandler steamHandler) {
+            if (handlers != null && handlers.size() > 0 &&
+                    handlers.get(0) instanceof SteamEnergyRecipeHandler steamHandler) {
                 if (steamHandler.getCapacity() > 0) {
                     long steamStored = steamHandler.getStored();
-                    textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored, steamHandler.getCapacity()));
+                    textList.add(Component.translatable("gtceu.multiblock.steam.steam_stored", steamStored,
+                            steamHandler.getCapacity()));
                 }
             }
 
@@ -107,7 +114,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
             }
 
             if (recipeLogic.isWaiting()) {
-                textList.add(Component.translatable("gtceu.multiblock.steam.low_steam").setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+                textList.add(Component.translatable("gtceu.multiblock.steam.low_steam")
+                        .setStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
             }
         }
     }
@@ -127,6 +135,8 @@ public class SteamParallelMultiblockMachine extends WorkableMultiblockMachine im
         return new ModularUI(176, 216, this, entityPlayer)
                 .background(GuiTextures.BACKGROUND_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks))
                 .widget(screen)
-                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(), GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks), 7, 134, true));
+                .widget(UITemplate.bindPlayerInventory(entityPlayer.getInventory(),
+                        GuiTextures.SLOT_STEAM.get(ConfigHolder.INSTANCE.machines.steelSteamMultiblocks), 7, 134,
+                        true));
     }
 }

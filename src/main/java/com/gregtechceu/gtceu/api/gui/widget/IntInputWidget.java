@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.lowdragmc.lowdraglib.gui.widget.TextFieldWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
 import net.minecraft.util.Mth;
 
 import java.util.function.Consumer;
@@ -12,8 +13,8 @@ import java.util.function.Supplier;
  * A widget containing an integer input field, as well as adjacent buttons for increasing or decreasing the value.
  *
  * <p>
- *     The buttons' change amount can be altered with Ctrl, Shift, or both.<br>
- *     The input is limited by a minimum and maximum value.
+ * The buttons' change amount can be altered with Ctrl, Shift, or both.<br>
+ * The input is limited by a minimum and maximum value.
  * </p>
  */
 public class IntInputWidget extends NumberInputWidget<Integer> {
@@ -30,7 +31,8 @@ public class IntInputWidget extends NumberInputWidget<Integer> {
         super(position, size, valueSupplier, onChanged);
     }
 
-    public IntInputWidget(int x, int y, int width, int height, Supplier<Integer> valueSupplier, Consumer<Integer> onChanged) {
+    public IntInputWidget(int x, int y, int width, int height, Supplier<Integer> valueSupplier,
+                          Consumer<Integer> onChanged) {
         super(x, y, width, height, valueSupplier, onChanged);
     }
 

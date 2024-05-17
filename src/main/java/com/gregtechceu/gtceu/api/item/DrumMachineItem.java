@@ -1,15 +1,12 @@
 package com.gregtechceu.gtceu.api.item;
 
-
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.item.component.forge.IComponentCapability;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
-import com.gregtechceu.gtceu.common.data.GTMachines;
-import net.minecraft.world.item.ItemStack;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.fluids.capability.templates.FluidHandlerItemStack;
-import org.jetbrains.annotations.NotNull;
 
 /**
  * @author KilaBash
@@ -17,6 +14,7 @@ import org.jetbrains.annotations.NotNull;
  * @implNote DrumMachineItem
  */
 public class DrumMachineItem extends MetaMachineItem {
+
     protected DrumMachineItem(IMachineBlock block, Properties properties) {
         super(block, properties);
     }
@@ -26,6 +24,9 @@ public class DrumMachineItem extends MetaMachineItem {
     }
 
     public void attachCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerItem(Capabilities.FluidHandler.ITEM, (stack, ignored) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack, GTMachines.DRUM_CAPACITY.getInt(getDefinition())), this);
+        event.registerItem(Capabilities.FluidHandler.ITEM,
+                (stack, ignored) -> new FluidHandlerItemStack(GTDataComponents.FLUID_CONTENT, stack,
+                        GTMachines.DRUM_CAPACITY.getInt(getDefinition())),
+                this);
     }
 }

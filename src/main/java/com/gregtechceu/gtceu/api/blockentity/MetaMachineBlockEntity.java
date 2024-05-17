@@ -4,9 +4,10 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
@@ -14,6 +15,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
 
 import java.util.Set;
 
@@ -23,6 +26,7 @@ import java.util.Set;
  * @implNote MetaMachineBlockEntity
  */
 public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlockEntity {
+
     public final MultiManagedStorage managedStorage = new MultiManagedStorage();
     @Getter
     public final MetaMachine metaMachine;
@@ -33,13 +37,12 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         this.metaMachine = getDefinition().createMetaMachine(this);
     }
 
-    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
+    public static MetaMachineBlockEntity createBlockEntity(BlockEntityType<?> type, BlockPos pos,
+                                                           BlockState blockState) {
         return new MetaMachineBlockEntity(type, pos, blockState);
     }
 
-    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> type) {
-
-    }
+    public static void onBlockEntityRegister(BlockEntityType<BlockEntity> type) {}
 
     @Override
     public MultiManagedStorage getRootStorage() {
@@ -56,7 +59,6 @@ public class MetaMachineBlockEntity extends BlockEntity implements IMachineBlock
         }
         return false;
     }
-
 
     @Override
     public long getOffset() {

@@ -5,16 +5,15 @@ import com.gregtechceu.gtceu.config.ConfigHolder;
 import net.minecraft.data.recipes.RecipeOutput;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.*;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.ASSEMBLER_RECIPES;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.item.GTItems.*;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.ASSEMBLER_RECIPES;
 
 public class AssemblerRecipeLoader {
 
     public static void init(RecipeOutput provider) {
-
         // Gearbox-like
         ASSEMBLER_RECIPES.recipeBuilder("bronze_gearbox_casing")
                 .inputItems(plate, Bronze, 4)
@@ -78,49 +77,49 @@ public class AssemblerRecipeLoader {
                 .duration(200).EUt(VA[ULV]).save(provider);
 
         // TODO Foam Sprayer
-        //ASSEMBLER_RECIPES.recipeBuilder("foam_sprayer")
-        //        .inputItems(plate, Tin, 6)
-        //        .inputItems(SPRAY_EMPTY)
-        //        .inputItems(paneGlass.name(), 1)
-        //        .outputItems(FOAM_SPRAYER)
-        //        .duration(200).EUt(VA[ULV]).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("foam_sprayer")
+        // .inputItems(plate, Tin, 6)
+        // .inputItems(SPRAY_EMPTY)
+        // .inputItems(paneGlass.name(), 1)
+        // .outputItems(FOAM_SPRAYER)
+        // .duration(200).EUt(VA[ULV]).save(provider);
 
         // TODO Matches/lighters recipes
-        //ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_invar")
-        //        .inputItems(plate, Invar, 2)
-        //        .inputItems(Items.FLINT)
-        //        .outputItems(TOOL_LIGHTER_INVAR)
-        //        .duration(256).EUt(16).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_invar")
+        // .inputItems(plate, Invar, 2)
+        // .inputItems(Items.FLINT)
+        // .outputItems(TOOL_LIGHTER_INVAR)
+        // .duration(256).EUt(16).save(provider);
 
-        //ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_platinum")
-        //        .inputItems(plate, Platinum, 2)
-        //        .inputItems(Items.FLINT)
-        //        .outputItems(TOOL_LIGHTER_PLATINUM)
-        //        .duration(256).EUt(256).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("tool_lighter_platinum")
+        // .inputItems(plate, Platinum, 2)
+        // .inputItems(Items.FLINT)
+        // .outputItems(TOOL_LIGHTER_PLATINUM)
+        // .duration(256).EUt(256).save(provider);
 
-        //ASSEMBLER_RECIPES.recipeBuilder("tool_matches_0")
-        //        .inputItems(bolt, Wood)
-        //        .inputItems(dustSmall, Phosphorus)
-        //        .outputItems(TOOL_MATCHES)
-        //        .duration(16).EUt(16).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("tool_matches_0")
+        // .inputItems(bolt, Wood)
+        // .inputItems(dustSmall, Phosphorus)
+        // .outputItems(TOOL_MATCHES)
+        // .duration(16).EUt(16).save(provider);
 
-        //ASSEMBLER_RECIPES.recipeBuilder("tool_matches_1")
-        //        .inputItems(bolt, Wood)
-        //        .inputItems(dustSmall, TricalciumPhosphate)
-        //        .outputItems(TOOL_MATCHES)
-        //        .duration(16).EUt(16).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("tool_matches_1")
+        // .inputItems(bolt, Wood)
+        // .inputItems(dustSmall, TricalciumPhosphate)
+        // .outputItems(TOOL_MATCHES)
+        // .duration(16).EUt(16).save(provider);
 
-        //ASSEMBLER_RECIPES.recipeBuilder("tool_matches_2")
-        //        .inputItems(bolt, Wood, 4)
-        //        .inputItems(dust, Phosphorus)
-        //        .outputItems(TOOL_MATCHES, 4)
-        //        .duration(64).EUt(16).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("tool_matches_2")
+        // .inputItems(bolt, Wood, 4)
+        // .inputItems(dust, Phosphorus)
+        // .outputItems(TOOL_MATCHES, 4)
+        // .duration(64).EUt(16).save(provider);
 
-        //ASSEMBLER_RECIPES.recipeBuilder("tool_matches_3")
-        //        .inputItems(bolt, Wood, 4)
-        //        .inputItems(dust, TricalciumPhosphate)
-        //        .outputItems(TOOL_MATCHES, 4)
-        //        .duration(64).EUt(16).save(provider);
+        // ASSEMBLER_RECIPES.recipeBuilder("tool_matches_3")
+        // .inputItems(bolt, Wood, 4)
+        // .inputItems(dust, TricalciumPhosphate)
+        // .outputItems(TOOL_MATCHES, 4)
+        // .duration(64).EUt(16).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("small_wood_pipe").duration(200).EUt(VA[LV])
                 .inputItems(plate, Wood)
@@ -164,7 +163,6 @@ public class AssemblerRecipeLoader {
                 .inputFluids(Glue.getFluid(10))
                 .outputItems(pipeLargeFluid, TreatedWood)
                 .save(provider);
-
 
         // Voltage Coils
         ASSEMBLER_RECIPES.recipeBuilder("voltage_coil_ulv").duration(200).EUt(VA[ULV])

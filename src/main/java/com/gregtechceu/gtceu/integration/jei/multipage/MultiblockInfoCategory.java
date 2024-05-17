@@ -3,20 +3,24 @@ package com.gregtechceu.gtceu.integration.jei.multipage;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
-import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
+
 import com.lowdragmc.lowdraglib.jei.ModularUIRecipeCategory;
+
+import net.minecraft.network.chat.Component;
+
 import mezz.jei.api.gui.drawable.IDrawable;
 import mezz.jei.api.helpers.IGuiHelper;
 import mezz.jei.api.helpers.IJeiHelpers;
 import mezz.jei.api.recipe.RecipeType;
 import mezz.jei.api.registration.IRecipeCatalystRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
-import net.minecraft.network.chat.Component;
-
 import org.jetbrains.annotations.NotNull;
 
 public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockInfoWrapper> {
-    public final static RecipeType<MultiblockInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("multiblock_info"), MultiblockInfoWrapper.class);
+
+    public final static RecipeType<MultiblockInfoWrapper> RECIPE_TYPE = new RecipeType<>(GTCEu.id("multiblock_info"),
+            MultiblockInfoWrapper.class);
     private final IDrawable background;
     private final IDrawable icon;
 
@@ -42,7 +46,6 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
         }
     }
 
-
     @Override
     @NotNull
     public RecipeType<MultiblockInfoWrapper> getRecipeType() {
@@ -66,5 +69,4 @@ public class MultiblockInfoCategory extends ModularUIRecipeCategory<MultiblockIn
     public IDrawable getIcon() {
         return icon;
     }
-
 }

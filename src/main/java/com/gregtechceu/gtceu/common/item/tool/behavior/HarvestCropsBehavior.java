@@ -1,13 +1,12 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
-import com.mojang.serialization.MapCodec;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -29,6 +28,9 @@ import net.minecraft.world.level.block.LevelEvent;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
+
+import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,7 +41,8 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
 
     public static final HarvestCropsBehavior INSTANCE = new HarvestCropsBehavior();
     public static final MapCodec<HarvestCropsBehavior> CODEC = MapCodec.unit(INSTANCE);
-    public static final StreamCodec<RegistryFriendlyByteBuf, HarvestCropsBehavior> STREAM_CODEC = StreamCodec.unit(INSTANCE);
+    public static final StreamCodec<RegistryFriendlyByteBuf, HarvestCropsBehavior> STREAM_CODEC = StreamCodec
+            .unit(INSTANCE);
 
     protected HarvestCropsBehavior() {/**/}
 
@@ -72,7 +75,8 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
             if (blockHitResult.getDirection() == null)
                 return InteractionResult.PASS;
 
-            blocks = ToolHelper.iterateAoE(stack, aoeDefinition, player.level(), player, rayTraceResult, HarvestCropsBehavior::isBlockCrops);
+            blocks = ToolHelper.iterateAoE(stack, aoeDefinition, player.level(), player, rayTraceResult,
+                    HarvestCropsBehavior::isBlockCrops);
             if (isBlockCrops(stack, context.getLevel(), player, blockHitResult.getBlockPos(), context)) {
                 blocks.add(blockHitResult.getBlockPos());
             }
@@ -88,7 +92,8 @@ public class HarvestCropsBehavior implements IToolBehavior<HarvestCropsBehavior>
         return harvested ? InteractionResult.SUCCESS : InteractionResult.PASS;
     }
 
-    private static boolean isBlockCrops(ItemStack stack, Level world, Player player, BlockPos pos, @Nullable UseOnContext context) {
+    private static boolean isBlockCrops(ItemStack stack, Level world, Player player, BlockPos pos,
+                                        @Nullable UseOnContext context) {
         if (world.getBlockState(pos.above()).isAir()) {
             Block block = world.getBlockState(pos).getBlock();
             return block instanceof CropBlock;

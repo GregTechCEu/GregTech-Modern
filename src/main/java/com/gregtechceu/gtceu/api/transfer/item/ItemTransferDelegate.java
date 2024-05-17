@@ -3,15 +3,15 @@ package com.gregtechceu.gtceu.api.transfer.item;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.items.IItemHandlerModifiable;
-import org.jetbrains.annotations.NotNull;
 
 import org.jetbrains.annotations.NotNull;
+
 import javax.annotation.ParametersAreNonnullByDefault;
-
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public abstract class ItemTransferDelegate implements IItemHandlerModifiable {
+
     public IItemHandlerModifiable delegate;
 
     public ItemTransferDelegate(IItemHandlerModifiable delegate) {
@@ -22,9 +22,8 @@ public abstract class ItemTransferDelegate implements IItemHandlerModifiable {
         this.delegate = delegate;
     }
 
-
     //////////////////////////////////////
-    //******    OVERRIDE THESE    ******//
+    // ****** OVERRIDE THESE ******//
     //////////////////////////////////////
 
     @Override

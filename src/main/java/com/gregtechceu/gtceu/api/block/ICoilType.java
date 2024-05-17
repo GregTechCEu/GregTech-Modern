@@ -1,11 +1,13 @@
 package com.gregtechceu.gtceu.api.block;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
+import com.gregtechceu.gtceu.api.material.material.Material;
+
 import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -54,15 +56,14 @@ public interface ICoilType {
      */
     ResourceLocation getTexture();
 
-
-    ICoilType[] ALL_COILS_TEMPERATURE_SORTED = GTBlocks.ALL_COILS.keySet().stream()
-        .sorted(Comparator.comparing(ICoilType::getCoilTemperature))
-        .toArray(ICoilType[]::new);
+    ICoilType[] ALL_COILS_TEMPERATURE_SORTED = GTCEuAPI.HEATING_COILS.keySet().stream()
+            .sorted(Comparator.comparing(ICoilType::getCoilTemperature))
+            .toArray(ICoilType[]::new);
 
     @Nullable
     static ICoilType getMinRequiredType(int requiredTemperature) {
         return Arrays.stream(ALL_COILS_TEMPERATURE_SORTED)
-            .filter(coil -> coil.getCoilTemperature() >= requiredTemperature)
-            .findFirst().orElse(null);
+                .filter(coil -> coil.getCoilTemperature() >= requiredTemperature)
+                .findFirst().orElse(null);
     }
 }

@@ -1,29 +1,23 @@
 package com.gregtechceu.gtceu.integration.kjs.builders.machine;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.RotationState;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
-import com.gregtechceu.gtceu.api.data.RotationState;
 import com.gregtechceu.gtceu.api.gui.editor.EditableMachineUI;
 import com.gregtechceu.gtceu.api.item.MetaMachineItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
-import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.SimpleTieredMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.PartAbility;
-import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.recipe.modifier.RecipeModifier;
 import com.gregtechceu.gtceu.api.registry.registrate.MachineBuilder;
-import com.gregtechceu.gtceu.api.registry.registrate.MultiblockMachineBuilder;
-import com.gregtechceu.gtceu.common.data.GTMachines;
 import com.gregtechceu.gtceu.common.registry.GTRegistration;
+import com.gregtechceu.gtceu.data.machine.GTMachines;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.tterrag.registrate.builders.BlockBuilder;
-import com.tterrag.registrate.builders.ItemBuilder;
-import com.tterrag.registrate.util.nullness.NonNullConsumer;
-import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -36,10 +30,15 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
+import com.tterrag.registrate.builders.BlockBuilder;
+import com.tterrag.registrate.builders.ItemBuilder;
+import com.tterrag.registrate.util.nullness.NonNullConsumer;
+import com.tterrag.registrate.util.nullness.NonNullUnaryOperator;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import org.apache.commons.lang3.function.TriFunction;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -48,14 +47,20 @@ import java.util.List;
 import java.util.function.*;
 import java.util.stream.Stream;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
-@SuppressWarnings({"unused"})
+@SuppressWarnings({ "unused" })
 public class MachineFunctionPresets {
 
     public static Integer[] mapTierArray(Object[] tiers) {
         return Arrays.stream(tiers)
-                .flatMap(object -> object.getClass().isArray() ? object.getClass().componentType().isPrimitive() ? Arrays.stream((int[]) object).boxed() : Arrays.stream((Object[])object) : Stream.of(object))
+                .flatMap(
+                        object -> object.getClass().isArray() ?
+                                object.getClass().componentType().isPrimitive() ?
+                                        Arrays.stream((int[]) object).boxed() : Arrays.stream((Object[]) object) :
+                                Stream.of(object))
                 .filter(Number.class::isInstance)
                 .map(Number.class::cast)
                 .map(Number::intValue)
@@ -68,11 +73,14 @@ public class MachineFunctionPresets {
         return copy;
     }
 
-    public static <D extends MachineDefinition, B extends MachineBuilder<D>> MachineBuilder<D> builder(String name, B[] builders, Class<B> builderClass,
-                                                                                                       Function<ResourceLocation, D> definitionFactory,
-                                                                                                       BiFunction<BlockBehaviour.Properties, D, IMachineBlock> blockFactory,
-                                                                                                       TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
-        return new MachineBuilder<D>(GTRegistration.REGISTRATE, name, definitionFactory, holder -> null, blockFactory, MetaMachineItem::new, blockEntityFactory) {
+    public static <D extends MachineDefinition,
+            B extends MachineBuilder<D>> MachineBuilder<D> builder(String name, B[] builders, Class<B> builderClass,
+                                                                   Function<ResourceLocation, D> definitionFactory,
+                                                                   BiFunction<BlockBehaviour.Properties, D, IMachineBlock> blockFactory,
+                                                                   TriFunction<BlockEntityType<?>, BlockPos, BlockState, IMachineBlockEntity> blockEntityFactory) {
+        return new MachineBuilder<D>(GTRegistration.REGISTRATE, name, definitionFactory, holder -> null, blockFactory,
+                MetaMachineItem::new, blockEntityFactory) {
+
             public MachineBuilder<D> renderer(@Nullable Supplier<IRenderer> renderer) {
                 for (var builder : builders) {
                     if (builder == null) continue;
@@ -350,7 +358,8 @@ public class MachineFunctionPresets {
             }
 
             @Override
-            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel) {
+            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing,
+                                                            ResourceLocation workableModel) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.workableCasingRenderer(baseCasing, workableModel);
@@ -359,7 +368,8 @@ public class MachineFunctionPresets {
             }
 
             @Override
-            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel, boolean tint) {
+            public MachineBuilder<D> workableCasingRenderer(ResourceLocation baseCasing, ResourceLocation workableModel,
+                                                            boolean tint) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.workableCasingRenderer(baseCasing, workableModel, tint);
@@ -368,7 +378,8 @@ public class MachineFunctionPresets {
             }
 
             @Override
-            public MachineBuilder<D> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel, boolean tint) {
+            public MachineBuilder<D> sidedWorkableCasingRenderer(String basePath, ResourceLocation overlayModel,
+                                                                 boolean tint) {
                 for (var builder : builders) {
                     if (builder == null) continue;
                     builder.sidedWorkableCasingRenderer(basePath, overlayModel, tint);
@@ -400,14 +411,15 @@ public class MachineFunctionPresets {
                 return this;
             }
 
-            // reflect the tankScalingFunction method because I'm a little bitch teehee (and because it's not a common method, but in both SimpleMachineBuilder and KineticMachineBuilder, which can't inherit from each other)
+            // reflect the tankScalingFunction method because I'm a little bitch teehee (and because it's not a common
+            // method, but in both SimpleMachineBuilder and KineticMachineBuilder, which can't inherit from each other)
             // does nothing if not found, or errors otherwise
             public MachineBuilder<D> tankScalingFunction(Function<Object, Double> tankScalingFunction) {
                 try {
                     Method method = builderClass.getDeclaredMethod("tankScalingFunction", Function.class);
 
                     for (var builder : builders) {
-                    if (builder == null) continue;
+                        if (builder == null) continue;
                         method.invoke(builder, tankScalingFunction);
                     }
                 } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException ignored) {
@@ -434,7 +446,10 @@ public class MachineFunctionPresets {
                     if (builder == null) continue;
                     int tier = builder.tier();
                     Function<Integer, Long> tankScalingFunction = getTankScalingFunction(builder);
-                    builder.tooltips(GTMachines.workableTiered(tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction != null ? tankScalingFunction.apply(tier) : GTMachines.defaultTankSizeFunction.apply(tier), true));
+                    builder.tooltips(GTMachines.workableTiered(
+                            tier, GTValues.V[tier], GTValues.V[tier] * 64, recipeType, tankScalingFunction != null ?
+                                    tankScalingFunction.apply(tier) : GTMachines.defaultTankSizeFunction.apply(tier),
+                            true));
                 }
                 return this;
             }
@@ -447,7 +462,8 @@ public class MachineFunctionPresets {
                 return this;
             }
 
-            public MachineBuilder<D> recipeType(GTRecipeType recipeType, boolean applyWorkableTooltip, boolean applyDefaultGUIFunction) {
+            public MachineBuilder<D> recipeType(GTRecipeType recipeType, boolean applyWorkableTooltip,
+                                                boolean applyDefaultGUIFunction) {
                 this.recipeType(recipeType);
                 if (applyWorkableTooltip) {
                     workableTooltip(recipeType);
@@ -481,11 +497,13 @@ public class MachineFunctionPresets {
 
     @FunctionalInterface
     public interface BuilderConsumer<D extends MachineDefinition> extends Consumer<MachineBuilder<D>> {
+
         void accept(MachineBuilder<D> builder);
     }
 
     @FunctionalInterface
     public interface TieredBuilderConsumer<D extends MachineDefinition> {
+
         void accept(int tier, MachineBuilder<D> builder);
     }
 }

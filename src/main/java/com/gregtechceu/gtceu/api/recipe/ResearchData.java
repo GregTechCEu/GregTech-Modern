@@ -1,5 +1,8 @@
 package com.gregtechceu.gtceu.api.recipe;
 
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.world.item.ItemStack;
+
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
@@ -7,8 +10,6 @@ import com.mojang.serialization.JsonOps;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,7 +18,9 @@ import java.util.List;
 
 @AllArgsConstructor
 public final class ResearchData implements Iterable<ResearchData.ResearchEntry> {
-    public static final Codec<ResearchData> CODEC = ResearchEntry.CODEC.listOf().xmap(ResearchData::new, data -> data.entries);
+
+    public static final Codec<ResearchData> CODEC = ResearchEntry.CODEC.listOf().xmap(ResearchData::new,
+            data -> data.entries);
 
     private final List<ResearchEntry> entries;
 
@@ -72,10 +75,11 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
      * Used for internal research storage and JEI integration.
      */
     public static final class ResearchEntry {
+
         public static final Codec<ResearchEntry> CODEC = RecordCodecBuilder.create(instance -> instance.group(
-            Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
-            ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem)
-        ).apply(instance, ResearchEntry::new));
+                Codec.STRING.fieldOf("researchId").forGetter(val -> val.researchId),
+                ItemStack.CODEC.fieldOf("dataItem").forGetter(val -> val.dataItem))
+                .apply(instance, ResearchEntry::new));
 
         @NotNull
         @Getter
@@ -86,7 +90,7 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
 
         /**
          * @param researchId the id of the research
-         * @param dataItem the item allowed to contain the research
+         * @param dataItem   the item allowed to contain the research
          */
         public ResearchEntry(@NotNull String researchId, @NotNull ItemStack dataItem) {
             this.researchId = researchId;
@@ -94,7 +98,8 @@ public final class ResearchData implements Iterable<ResearchData.ResearchEntry> 
         }
 
         public static ResearchEntry fromJson(JsonObject tag) {
-            return new ResearchEntry(tag.get("researchId").getAsString(), ItemStack.CODEC.parse(JsonOps.INSTANCE, tag.get("dataItem")).getOrThrow());
+            return new ResearchEntry(tag.get("researchId").getAsString(),
+                    ItemStack.CODEC.parse(JsonOps.INSTANCE, tag.get("dataItem")).getOrThrow());
         }
 
         public JsonObject toJson() {

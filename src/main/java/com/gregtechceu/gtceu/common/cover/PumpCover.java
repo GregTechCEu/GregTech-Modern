@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.cover;
 
-import com.google.common.math.IntMath;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.IControllable;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
@@ -13,29 +12,26 @@ import com.gregtechceu.gtceu.api.cover.filter.FilterHandlers;
 import com.gregtechceu.gtceu.api.cover.filter.FluidFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
-import com.gregtechceu.gtceu.api.gui.widget.LongInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.NumberInputWidget;
 import com.gregtechceu.gtceu.api.machine.ConditionalSubscriptionHandler;
 import com.gregtechceu.gtceu.api.transfer.fluid.FluidTransferDelegate;
 import com.gregtechceu.gtceu.api.transfer.fluid.ModifiableFluidHandlerWrapper;
-import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.gregtechceu.gtceu.common.cover.data.BucketMode;
 import com.gregtechceu.gtceu.common.cover.data.ManualIOMode;
 import com.gregtechceu.gtceu.utils.FluidStackHashStrategy;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
+import com.lowdragmc.lowdraglib.side.fluid.IFluidHandlerModifiable;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenCustomHashMap;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -44,11 +40,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
+
+import com.google.common.math.IntMath;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenCustomHashMap;
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -58,27 +59,40 @@ import java.util.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PumpCover extends CoverBehavior implements IUICover, IControllable {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class, CoverBehavior.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PumpCover.class,
+            CoverBehavior.MANAGED_FIELD_HOLDER);
 
     protected static final int MILLIBUCKET_SIZE = FluidHelper.getBucket() / 1000;
 
     public final int tier;
     public final int maxMilliBucketsPerTick;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected int currentMilliBucketsPerTick;
-    @Persisted @DescSynced @Getter @RequireRerender
+    @Persisted
+    @DescSynced
+    @Getter
+    @RequireRerender
     protected IO io = IO.OUT;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected BucketMode bucketMode = BucketMode.MILLI_BUCKET;
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected ManualIOMode manualIOMode = ManualIOMode.DISABLED;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     protected boolean isWorkingEnabled = true;
     protected int milliBucketsLeftToTransferLastSecond;
 
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     protected final FilterHandler<FluidStack, FluidFilter> filterHandler;
     protected final ConditionalSubscriptionHandler subscriptionHandler;
     private NumberInputWidget<Integer> transferRateWidget;
@@ -113,11 +127,12 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     protected @Nullable IFluidHandler getAdjacentFluidTransfer() {
-        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide), attachedSide.getOpposite());
+        return FluidTransferHelper.getFluidTransfer(coverHolder.getLevel(), coverHolder.getPos().relative(attachedSide),
+                attachedSide.getOpposite());
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -170,9 +185,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
     }
 
     //////////////////////////////////////
-    //*****     Transfer Logic     *****//
+    // ***** Transfer Logic *****//
     //////////////////////////////////////
-
 
     public void setTransferRate(int milliBucketsPerTick) {
         this.currentMilliBucketsPerTick = Math.min(Math.max(milliBucketsPerTick, 0), maxMilliBucketsPerTick);
@@ -183,7 +197,6 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         var newMultiplier = bucketMode.multiplier;
 
         this.bucketMode = bucketMode;
-
 
         if (transferRateWidget == null) return;
 
@@ -222,7 +235,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     private long doTransferFluids(int platformTransferLimit) {
         var adjacentFluidTransfer = getAdjacentFluidTransfer();
-        var adjacentModifiable = adjacentFluidTransfer instanceof IFluidHandlerModifiable modifiable ? modifiable : new ModifiableFluidHandlerWrapper(adjacentFluidTransfer);
+        var adjacentModifiable = adjacentFluidTransfer instanceof IFluidHandlerModifiable modifiable ? modifiable :
+                new ModifiableFluidHandlerWrapper(adjacentFluidTransfer);
         var ownFluidTransfer = getOwnFluidTransfer();
 
         if (adjacentFluidTransfer != null && ownFluidTransfer != null) {
@@ -233,25 +247,28 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
             };
         }
         return 0;
-
     }
 
-    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
+    protected int doTransferFluidsInternal(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+                                           int platformTransferLimit) {
         return transferAny(source, destination, platformTransferLimit);
     }
 
-    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination, int platformTransferLimit) {
-        return (int) FluidTransferHelper.transferFluids(source, destination, platformTransferLimit, filterHandler.getFilter());
+    protected int transferAny(IFluidHandlerModifiable source, IFluidHandlerModifiable destination,
+                              int platformTransferLimit) {
+        return (int) FluidTransferHelper.transferFluids(source, destination, platformTransferLimit,
+                filterHandler.getFilter());
     }
-
 
     protected enum TransferDirection {
         INSERT,
         EXTRACT
     }
 
-    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer, TransferDirection direction) {
-        final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(FluidStackHashStrategy.comparingAllButAmount());
+    protected Map<FluidStack, Integer> enumerateDistinctFluids(IFluidHandlerModifiable fluidTransfer,
+                                                               TransferDirection direction) {
+        final Map<FluidStack, Integer> summedFluids = new Object2IntOpenCustomHashMap<>(
+                FluidStackHashStrategy.comparingAllButAmount());
 
         for (int tank = 0; tank < fluidTransfer.getTanks(); tank++) {
             if (!canTransfer(fluidTransfer, direction, tank))
@@ -277,9 +294,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         };
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -295,8 +311,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         group.addWidget(new EnumSelectorWidget<>(
                 146, 20, 20, 20,
                 Arrays.stream(BucketMode.values()).filter(m -> m.multiplier <= maxMilliBucketsPerTick).toList(),
-                bucketMode, this::setBucketMode
-        ).setTooltipSupplier(this::getBucketModeTooltip));
+                bucketMode, this::setBucketMode).setTooltipSupplier(this::getBucketModeTooltip));
 
         group.addWidget(new EnumSelectorWidget<>(10, 45, 20, 20, List.of(IO.IN, IO.OUT), io, this::setIo));
 
@@ -314,8 +329,7 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
 
     private List<Component> getBucketModeTooltip(BucketMode mode, String langKey) {
         return List.of(
-                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick"))
-        );
+                Component.translatable(langKey).append(Component.translatable("gtceu.gui.content.units.per_tick")));
     }
 
     private int getCurrentBucketModeTransferRate() {
@@ -339,9 +353,8 @@ public class PumpCover extends CoverBehavior implements IUICover, IControllable 
         // Do nothing in the base implementation. This is intended to be overridden by subclasses.
     }
 
-
     /////////////////////////////////////
-    //***    CAPABILITY OVERRIDE    ***//
+    // *** CAPABILITY OVERRIDE ***//
     /////////////////////////////////////
 
     private CoverableFluidTransferWrapper fluidTransferWrapper;

@@ -4,19 +4,18 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassNode;
 import com.gregtechceu.gtceu.api.registry.registrate.CompassSection;
 import com.gregtechceu.gtceu.api.registry.registrate.SoundEntryBuilder;
-import com.gregtechceu.gtceu.common.data.GTConfiguredFeatures;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
-import com.gregtechceu.gtceu.common.data.GTPlacements;
-import com.gregtechceu.gtceu.common.data.GTWorldgen;
-import com.gregtechceu.gtceu.common.data.forge.GTBiomeModifiers;
-import com.gregtechceu.gtceu.data.tags.BiomeTagsLoader;
+import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
+import com.gregtechceu.gtceu.data.tag.BiomeTagsLoader;
+import com.gregtechceu.gtceu.data.worldgen.GTConfiguredFeatures;
+import com.gregtechceu.gtceu.data.worldgen.GTPlacements;
+import com.gregtechceu.gtceu.data.worldgen.GTWorldgen;
+
 import net.minecraft.core.RegistrySetBuilder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.DataGenerator;
 import net.minecraft.data.PackOutput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.fml.common.Mod;
 import net.neoforged.neoforge.common.data.DatapackBuiltinEntriesProvider;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
@@ -42,13 +41,15 @@ public class DataGenerators {
             var set = Set.of(GTCEu.MOD_ID);
             generator.addProvider(true, new BiomeTagsLoader(packOutput, registries, existingFileHelper));
             generator.addProvider(true, new DatapackBuiltinEntriesProvider(
-                packOutput, registries, new RegistrySetBuilder()
-                .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
+                    packOutput, registries, new RegistrySetBuilder()
+                            .add(Registries.DAMAGE_TYPE, GTDamageTypes::bootstrap)
 
-                .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
-                .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
-                .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
-                .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> GTBiomeModifiers.bootstrap(ctx, registries)), set));
+                            .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
+                            .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
+                            .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
+                            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS,
+                                    ctx -> GTBiomeModifiers.bootstrap(ctx, registries)),
+                    set));
         }
     }
 }

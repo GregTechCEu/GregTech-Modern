@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.integration.kjs.helpers;
 
-import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
-import com.gregtechceu.gtceu.common.data.GTMaterials;
+import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.material.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.data.material.GTMaterials;
 
 import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
 public record MaterialStackWrapper(Supplier<Material> material, long amount) {
+
     private static final Map<String, MaterialStackWrapper> PARSE_CACHE = new WeakHashMap<>();
 
     public static MaterialStackWrapper fromString(CharSequence str) {

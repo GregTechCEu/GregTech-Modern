@@ -17,20 +17,22 @@ import net.minecraft.world.phys.BlockHitResult;
 public interface IInteractedMachine extends IMachineFeature {
 
     /**
-     * Basically a hook from block {@link net.minecraft.world.level.block.state.BlockBehaviour#use(BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)}
+     * Basically a hook from block
+     * {@link net.minecraft.world.level.block.state.BlockBehaviour#use(BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)}
      * <br>
      * Right-Click
      */
-    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    default InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                    BlockHitResult hit) {
         return InteractionResult.PASS;
     }
 
     /**
      * Left-Click
+     * 
      * @return cancel (true) / keep (false) further processing
      */
     default boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         return false;
     }
-
 }

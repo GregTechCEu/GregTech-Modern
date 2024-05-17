@@ -3,7 +3,7 @@ name: auto-build
 on:
   push:
     branches:
-      - '1.20.5'
+      - 'sc/intermediary-1.20.5-port'
 
 jobs:
   build:
@@ -12,30 +12,20 @@ jobs:
       GITHUB_ACTION_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
       GITHUB_RUN_NUMBER: ${{ vars.GITHUB_RUN_NUMBER }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
 
-      - uses: actions/setup-java@v3
-        with:
-          java-version: '21'
-          distribution: 'adopt'
-
-      - name: Validate Gradle wrapper
-        uses: gradle/wrapper-validation-action@v1
-
-      - name: Grant execute permission for gradlew
-        run: chmod +x gradlew
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
 
       - name: Build
-        uses: gradle/gradle-build-action@v2.4.2
-        with:
-          arguments: build
+        run: ./gradlew build
 
       - name: Get Version
         id: var
         run: |
-          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep shadow.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
+          MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep dev.jar -v | grep slim.jar -v | grep all.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo version=$MESSAGE >> $GITHUB_OUTPUT
 
       - name: release

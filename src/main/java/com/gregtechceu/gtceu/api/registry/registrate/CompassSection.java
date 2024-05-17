@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.utils.FormattingUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.json.SimpleIGuiTextureJsonUtils;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -17,12 +15,18 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.PackType;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 
+import com.google.gson.JsonObject;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.nio.file.Path;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -33,15 +37,18 @@ import java.util.function.Supplier;
 @MethodsReturnNonnullByDefault
 @Accessors(fluent = true, chain = true)
 public class CompassSection {
+
     @Getter
     private final ResourceLocation sectionID;
     @Setter
     private Supplier<IGuiTexture> icon = () -> IGuiTexture.EMPTY;
-    @Setter @Nullable
+    @Setter
+    @Nullable
     private Supplier<IGuiTexture> background = null;
     @Setter
     private int priority = 99;
-    @Setter @Getter
+    @Setter
+    @Getter
     private String lang;
 
     private CompassSection(String section) {
@@ -63,6 +70,7 @@ public class CompassSection {
     }
 
     public static class CompassSectionProvider implements DataProvider {
+
         private final PackOutput output;
         private final ExistingFileHelper existingHelper;
 
@@ -88,15 +96,13 @@ public class CompassSection {
                     return null;
                 }
                 JsonObject json = new JsonObject();
-                json.add("button_texture",SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
+                json.add("button_texture", SimpleIGuiTextureJsonUtils.toJson(section.icon.get()));
                 if (section.background != null) {
-                    json.add("background_texture",SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
+                    json.add("background_texture", SimpleIGuiTextureJsonUtils.toJson(section.background.get()));
                 }
                 json.addProperty("priority", section.priority);
                 return DataProvider.saveStable(cache, json, path.resolve(resourcePath));
             }).filter(Objects::nonNull).toArray(CompletableFuture[]::new));
         }
-
     }
-
 }

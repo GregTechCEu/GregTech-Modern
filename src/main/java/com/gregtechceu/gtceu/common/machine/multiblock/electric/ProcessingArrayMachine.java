@@ -10,7 +10,6 @@ import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
-import com.gregtechceu.gtceu.api.machine.multiblock.MultiblockDisplayText;
 import com.gregtechceu.gtceu.api.machine.multiblock.TieredWorkableElectricMultiblockMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -19,16 +18,18 @@ import com.gregtechceu.gtceu.api.recipe.OverclockingLogic;
 import com.gregtechceu.gtceu.api.recipe.RecipeHelper;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.transfer.item.CustomItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
-import com.gregtechceu.gtceu.common.data.GTRecipeModifiers;
-import com.gregtechceu.gtceu.common.data.GTRecipeTypes;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeModifiers;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeTypes;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
@@ -36,16 +37,17 @@ import net.minecraft.network.chat.Style;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.NotNull;
-
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -58,11 +60,13 @@ import java.util.stream.Collectors;
 @ApiStatus.ScheduledForRemoval(inVersion = "1.3.0")
 public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMachine implements IMachineModifyDrops {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            ProcessingArrayMachine.class, TieredWorkableElectricMultiblockMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     public final NotifiableItemStackHandler machineStorage;
-    //runtime
+    // runtime
     @Nullable
     private GTRecipeType[] recipeTypeCache;
 
@@ -72,7 +76,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -81,6 +85,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     protected NotifiableItemStackHandler createMachineStorage(Object... args) {
         var storage = new NotifiableItemStackHandler(this, 1, IO.NONE, IO.NONE, slots -> new CustomItemStackHandler(1) {
+
             @Override
             public int getSlotLimit(int slot) {
                 return getMachineLimit(getDefinition().getTier());
@@ -99,11 +104,11 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             }
 
             var recipeTypes = definition.getRecipeTypes();
-            if(recipeTypes == null){
+            if (recipeTypes == null) {
                 return false;
             }
-            for(GTRecipeType type : recipeTypes){
-                if(type != GTRecipeTypes.DUMMY_RECIPES){
+            for (GTRecipeType type : recipeTypes) {
+                if (type != GTRecipeTypes.DUMMY_RECIPES) {
                     return true;
                 }
             }
@@ -127,7 +132,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
             recipeTypeCache = definition == null ? null : definition.getRecipeTypes();
         }
         if (recipeTypeCache == null) {
-            recipeTypeCache = new GTRecipeType[]{GTRecipeTypes.DUMMY_RECIPES};
+            recipeTypeCache = new GTRecipeType[] { GTRecipeTypes.DUMMY_RECIPES };
         }
         return recipeTypeCache;
     }
@@ -162,7 +167,7 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     }
 
     //////////////////////////////////////
-    //*******    Recipe Logic    *******//
+    // ******* Recipe Logic *******//
     //////////////////////////////////////
 
     /**
@@ -177,7 +182,8 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     @Override
     public int getOverclockTier() {
         MachineDefinition machineDefinition = getMachineDefinition();
-        int machineTier = machineDefinition == null ? getDefinition().getTier() : Math.min(getDefinition().getTier(), machineDefinition.getTier());
+        int machineTier = machineDefinition == null ? getDefinition().getTier() :
+                Math.min(getDefinition().getTier(), machineDefinition.getTier());
         return Math.min(machineTier, GTUtil.getTierByVoltage(getMaxVoltage()));
     }
 
@@ -193,27 +199,28 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
 
     @Nullable
     public static GTRecipe recipeModifier(MetaMachine machine, @NotNull GTRecipe recipe) {
-        if (machine instanceof ProcessingArrayMachine processingArray && processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
+        if (machine instanceof ProcessingArrayMachine processingArray &&
+                processingArray.machineStorage.storage.getStackInSlot(0).getCount() > 0) {
             if (RecipeHelper.getRecipeEUtTier(recipe) > processingArray.getTier())
                 return null;
 
             int parallelLimit = Math.min(
-                processingArray.machineStorage.storage.getStackInSlot(0).getCount(),
-                (int) (processingArray.getMaxVoltage() / RecipeHelper.getInputEUt(recipe))
-            );
+                    processingArray.machineStorage.storage.getStackInSlot(0).getCount(),
+                    (int) (processingArray.getMaxVoltage() / RecipeHelper.getInputEUt(recipe)));
 
             if (parallelLimit <= 0)
                 return null;
 
             // apply parallel first
             var parallel = Objects.requireNonNull(GTRecipeModifiers.accurateParallel(
-                machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())), false
-            ));
-            int parallelCount = parallel.getB();
-            recipe = parallel.getA();
+                    machine, recipe, Math.min(parallelLimit, getMachineLimit(machine.getDefinition().getTier())),
+                    false));
+            int parallelCount = parallel.getSecond();
+            recipe = parallel.getFirst();
 
             // apply overclock afterward
-            long maxVoltage = Math.min(processingArray.getOverclockVoltage() * parallelCount, processingArray.getMaxVoltage());
+            long maxVoltage = Math.min(processingArray.getOverclockVoltage() * parallelCount,
+                    processingArray.getMaxVoltage());
             recipe = RecipeHelper.applyOverclock(OverclockingLogic.NON_PERFECT_OVERCLOCK, recipe, maxVoltage);
 
             return recipe;
@@ -226,11 +233,12 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         if (getMachineDefinition() != null) {
             return getMachineDefinition().getRecipeOutputLimits();
         }
-        return GTRegistries.RECIPE_CAPABILITIES.values().stream().map(key -> Map.entry(key, 0)).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        return GTRegistries.RECIPE_CAPABILITIES.values().stream().map(key -> Map.entry(key, 0))
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
     }
 
     //////////////////////////////////////
-    //********        Gui       ********//
+    // ******** Gui ********//
     //////////////////////////////////////
 
     @Override
@@ -238,23 +246,24 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
         textList.add(Component.translatable("gtceu.universal.tooltip.deprecated"));
         super.addDisplayText(textList);
         if (isActive()) {
-            textList.add(Component.translatable("gtceu.machine.machine_hatch.locked").withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
+            textList.add(Component.translatable("gtceu.machine.machine_hatch.locked")
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.RED)));
         }
     }
 
     @Override
     public Widget createUIWidget() {
-        var widget =  super.createUIWidget();
+        var widget = super.createUIWidget();
         if (widget instanceof WidgetGroup group) {
             var size = group.getSize();
             group.addWidget(new SlotWidget(machineStorage.storage, 0, size.width - 30, size.height - 30, true, true)
-                .setBackground(GuiTextures.SLOT));
+                    .setBackground(GuiTextures.SLOT));
         }
         return widget;
     }
 
     //////////////////////////////////////
-    //********     Structure    ********//
+    // ******** Structure ********//
     //////////////////////////////////////
     public static Block getCasingState(int tier) {
         if (tier <= GTValues.IV) {
@@ -267,5 +276,4 @@ public class ProcessingArrayMachine extends TieredWorkableElectricMultiblockMach
     public static int getMachineLimit(Integer tier) {
         return tier <= GTValues.IV ? 16 : 64;
     }
-
 }

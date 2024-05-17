@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
-import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.datacomponents.AoESymmetrical;
+import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.item.tool.behavior.ToolBehaviorType;
-import com.gregtechceu.gtceu.common.data.GTToolBehaviors;
-import com.mojang.serialization.MapCodec;
+import com.gregtechceu.gtceu.data.tools.GTToolBehaviors;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
@@ -27,6 +26,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.ToolActions;
+
+import com.google.common.collect.ImmutableSet;
+import com.mojang.serialization.MapCodec;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -80,7 +82,10 @@ public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
 
         boolean pathed = false;
         for (BlockPos blockPos : blocks) {
-            pathed |= level.setBlock(blockPos, getUnWaxed(level.getBlockState(blockPos), new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))), Block.UPDATE_ALL);
+            pathed |= level.setBlock(blockPos,
+                    getUnWaxed(level.getBlockState(blockPos),
+                            new UseOnContext(player, hand, context.getHitResult().withPosition(blockPos))),
+                    Block.UPDATE_ALL);
             level.levelEvent(player, LevelEvent.PARTICLES_WAX_OFF, blockPos, 0);
             if (!player.isCreative()) {
                 ToolHelper.damageItem(context.getItemInHand(), context.getPlayer());
@@ -90,7 +95,8 @@ public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
         }
 
         if (pathed) {
-            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF, SoundSource.PLAYERS, 1.0F, 1.0F);
+            level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.AXE_WAX_OFF,
+                    SoundSource.PLAYERS, 1.0F, 1.0F);
             player.swing(hand);
             return InteractionResult.SUCCESS;
         }
@@ -98,12 +104,14 @@ public class WaxOffBehavior implements IToolBehavior<WaxOffBehavior> {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getUnWaxableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level, Player player, HitResult rayTraceResult) {
+    public static Set<BlockPos> getUnWaxableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level Level,
+                                                   Player player, HitResult rayTraceResult) {
         return ToolHelper.iterateAoE(stack, aoeDefinition, Level, player, rayTraceResult,
                 WaxOffBehavior.INSTANCE::isBlockUnWaxable);
     }
 
-    protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos, UseOnContext context) {
+    protected boolean isBlockUnWaxable(ItemStack stack, Level level, Player player, BlockPos pos,
+                                       UseOnContext context) {
         BlockState state = level.getBlockState(pos);
         BlockState newState = state.getToolModifiedState(context, ToolActions.AXE_WAX_OFF, false);
         return newState != null && newState != state;

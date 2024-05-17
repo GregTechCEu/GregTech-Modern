@@ -1,22 +1,24 @@
 package com.gregtechceu.gtceu.api.capability;
 
-import com.gregtechceu.gtceu.api.fluids.FluidState;
-import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttribute;
-import com.gregtechceu.gtceu.api.fluids.attribute.IAttributedFluid;
+import com.gregtechceu.gtceu.api.fluid.FluidState;
+import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttribute;
+import com.gregtechceu.gtceu.api.fluid.attribute.IAttributedFluid;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.level.material.Fluid;
 import net.neoforged.neoforge.fluids.FluidStack;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.UnmodifiableView;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 
-import static com.gregtechceu.gtceu.api.fluids.FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
+import static com.gregtechceu.gtceu.api.fluid.FluidConstants.CRYOGENIC_FLUID_THRESHOLD;
 
 public interface IPropertyFluidFilter extends Predicate<FluidStack> {
 
@@ -64,12 +66,14 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
     /**
      * Set the container as able to contain an attribute
      *
-     * @param attribute the attribute to change containment status for
+     * @param attribute  the attribute to change containment status for
      * @param canContain whether the attribute can be contained
      */
     void setCanContain(@NotNull FluidAttribute attribute, boolean canContain);
 
-    @NotNull @UnmodifiableView Collection<@NotNull FluidAttribute> getContainedAttributes();
+    @NotNull
+    @UnmodifiableView
+    Collection<@NotNull FluidAttribute> getContainedAttributes();
 
     /**
      * Append tooltips about containment info
@@ -80,7 +84,8 @@ public interface IPropertyFluidFilter extends Predicate<FluidStack> {
      */
     default void appendTooltips(@NotNull List<Component> tooltip, boolean showToolsInfo, boolean showTemperatureInfo) {
         if (GTUtil.isShiftDown()) {
-            if (showTemperatureInfo) tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
+            if (showTemperatureInfo)
+                tooltip.add(Component.translatable("gtceu.fluid_pipe.max_temperature", getMaxFluidTemperature()));
             if (isGasProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.gas_proof"));
             else tooltip.add(Component.translatable("gtceu.fluid_pipe.not_gas_proof"));
             if (isPlasmaProof()) tooltip.add(Component.translatable("gtceu.fluid_pipe.plasma_proof"));

@@ -3,13 +3,15 @@ package com.gregtechceu.gtceu.api.gui.widget;
 import com.lowdragmc.lowdraglib.gui.texture.ProgressTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.gui.widget.ProgressWidget;
-import lombok.Setter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentSerialization;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Setter;
+import lombok.experimental.Accessors;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -17,9 +19,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.DoubleSupplier;
 
-
 @Accessors(chain = true)
 public class ExtendedProgressWidget extends ProgressWidget {
+
     private List<Component> serverTooltips = new ArrayList<>();
     @Setter
     private Consumer<List<Component>> serverTooltipSupplier;
@@ -28,11 +30,13 @@ public class ExtendedProgressWidget extends ProgressWidget {
         super(JEIProgress, 0, 0, 40, 40, new ProgressTexture());
     }
 
-    public ExtendedProgressWidget(DoubleSupplier progressSupplier, int x, int y, int width, int height, ResourceTexture fullImage) {
+    public ExtendedProgressWidget(DoubleSupplier progressSupplier, int x, int y, int width, int height,
+                                  ResourceTexture fullImage) {
         super(progressSupplier, x, y, width, height, fullImage);
     }
 
-    public ExtendedProgressWidget(DoubleSupplier progressSupplier, int x, int y, int width, int height, ProgressTexture progressBar) {
+    public ExtendedProgressWidget(DoubleSupplier progressSupplier, int x, int y, int width, int height,
+                                  ProgressTexture progressBar) {
         super(progressSupplier, x, y, width, height, progressBar);
     }
 
@@ -75,7 +79,8 @@ public class ExtendedProgressWidget extends ProgressWidget {
 
     @Override
     public void drawInForeground(@NotNull GuiGraphics graphics, int mouseX, int mouseY, float partialTicks) {
-        if ((!tooltipTexts.isEmpty() || !serverTooltips.isEmpty()) && isMouseOverElement(mouseX, mouseY) && getHoverElement(mouseX, mouseY) == this && gui != null && gui.getModularUIGui() != null) {
+        if ((!tooltipTexts.isEmpty() || !serverTooltips.isEmpty()) && isMouseOverElement(mouseX, mouseY) &&
+                getHoverElement(mouseX, mouseY) == this && gui != null && gui.getModularUIGui() != null) {
             var tips = new ArrayList<>(tooltipTexts);
             tips.addAll(serverTooltips);
             gui.getModularUIGui().setHoverTooltip(tips, ItemStack.EMPTY, null, null);

@@ -1,23 +1,23 @@
 package com.gregtechceu.gtceu.data.recipe.serialized.chemistry;
 
-import com.gregtechceu.gtceu.common.data.GTBlocks;
+import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
+
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
-import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
-import static com.gregtechceu.gtceu.common.data.GTItems.PLANT_BALL;
-import static com.gregtechceu.gtceu.common.data.GTItems.STICKY_RESIN;
-import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
+import static com.gregtechceu.gtceu.api.tag.TagPrefix.*;
+import static com.gregtechceu.gtceu.data.item.GTItems.PLANT_BALL;
+import static com.gregtechceu.gtceu.data.item.GTItems.STICKY_RESIN;
+import static com.gregtechceu.gtceu.data.material.GTMaterials.*;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 
 public class SeparationRecipes {
 
     public static void init(RecipeOutput provider) {
-
         // Centrifuge
         CENTRIFUGE_RECIPES.recipeBuilder("refinery_gas_separation")
                 .inputFluids(RefineryGas.getFluid(8000))
@@ -81,25 +81,25 @@ public class SeparationRecipes {
 
         // TODO Food -> methane stuff
         /*
-        for (Item item : ForgeRegistries.ITEMS.getValuesCollection()) {
-            if (item instanceof ItemFood) {
-                ItemFood itemFood = (ItemFood) item;
-                Collection<ItemStack> subItems = GTUtility.getAllSubItems(new ItemStack(item, 1, GTValues.W));
-                for (ItemStack itemStack : subItems) {
-                    int healAmount = itemFood.getHealAmount(itemStack);
-                    float saturationModifier = itemFood.getSaturationModifier(itemStack);
-                    if (healAmount > 0) {
-                        FluidStack outputStack = Methane.getFluid(Math.round(9 * healAmount * (1.0f + saturationModifier)));
-
-                        CENTRIFUGE_RECIPES.recipeBuilder().duration(144).EUt(5)
-                                .inputItems(itemStack)
-                                .outputFluids(outputStack)
-                                .save(provider;
-                    }
-                }
-            }
-        }
-        */
+         * for (Item item : ForgeRegistries.ITEMS.getValuesCollection()) {
+         * if (item instanceof ItemFood) {
+         * ItemFood itemFood = (ItemFood) item;
+         * Collection<ItemStack> subItems = GTUtility.getAllSubItems(new ItemStack(item, 1, GTValues.W));
+         * for (ItemStack itemStack : subItems) {
+         * int healAmount = itemFood.getHealAmount(itemStack);
+         * float saturationModifier = itemFood.getSaturationModifier(itemStack);
+         * if (healAmount > 0) {
+         * FluidStack outputStack = Methane.getFluid(Math.round(9 * healAmount * (1.0f + saturationModifier)));
+         * 
+         * CENTRIFUGE_RECIPES.recipeBuilder().duration(144).EUt(5)
+         * .inputItems(itemStack)
+         * .outputFluids(outputStack)
+         * .save(provider;
+         * }
+         * }
+         * }
+         * }
+         */
 
         CENTRIFUGE_RECIPES.recipeBuilder("sticky_resin_separation").duration(400).EUt(5)
                 .inputItems(STICKY_RESIN)
@@ -149,7 +149,6 @@ public class SeparationRecipes {
                 .chancedOutput(dust, SodaAsh, 600, 0)
                 .chancedOutput(dust, Hematite, 275, 0)
                 .save(provider);
-
 
         CENTRIFUGE_RECIPES.recipeBuilder("dark_ash_separation").duration(250).EUt(6)
                 .inputItems(dust, DarkAsh)
@@ -466,10 +465,10 @@ public class SeparationRecipes {
 
         // Thermal Centrifuge
         // todo whatever this recipe is
-        //THERMAL_CENTRIFUGE_RECIPES.recipeBuilder()
-        //        .inputItems(new ItemStack(Blocks.COBBLESTONE, 1, GTValues.W))
-        //        .outputItems(dust, Stone)
-        //        .duration(500).EUt(48).save(provider);
+        // THERMAL_CENTRIFUGE_RECIPES.recipeBuilder()
+        // .inputItems(new ItemStack(Blocks.COBBLESTONE, 1, GTValues.W))
+        // .outputItems(dust, Stone)
+        // .duration(500).EUt(48).save(provider);
 
         // Extractor
         EXTRACTOR_RECIPES.recipeBuilder("monazite_extraction")

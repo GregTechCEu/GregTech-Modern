@@ -7,8 +7,7 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.KineticMachineDefinition;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
-import com.simibubi.create.content.kinetics.base.IRotate;
-import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -19,6 +18,9 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
+
+import com.simibubi.create.content.kinetics.base.IRotate;
+import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -27,7 +29,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote KineticMachineBlock
  */
 public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
-    
+
     public KineticMachineBlock(Properties properties, KineticMachineDefinition definition) {
         super(properties, definition);
     }
@@ -42,7 +44,8 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
 
     public Direction getRotationFacing(BlockState state) {
         var frontFacing = getFrontFacing(state);
-        return ((KineticMachineDefinition)definition).isFrontRotation() ? frontFacing : (frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : frontFacing.getClockWise());
+        return ((KineticMachineDefinition) definition).isFrontRotation() ? frontFacing :
+                (frontFacing.getAxis() == Direction.Axis.Y ? Direction.NORTH : frontFacing.getClockWise());
     }
 
     @Override
@@ -74,7 +77,8 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
 
     @Override
     public BlockState rotate(BlockState pState, Rotation pRotation) {
-        return pState.setValue(this.rotationState.property, pRotation.rotate(pState.getValue(this.rotationState.property)));
+        return pState.setValue(this.rotationState.property,
+                pRotation.rotate(pState.getValue(this.rotationState.property)));
     }
 
     public boolean areStatesKineticallyEquivalent(BlockState oldState, BlockState newState) {
@@ -84,7 +88,8 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
     }
 
     @Override
-    public void updateIndirectNeighbourShapes(BlockState stateIn, LevelAccessor worldIn, BlockPos pos, int flags, int count) {
+    public void updateIndirectNeighbourShapes(BlockState stateIn, LevelAccessor worldIn, BlockPos pos, int flags,
+                                              int count) {
         if (worldIn.isClientSide())
             return;
 
@@ -102,18 +107,20 @@ public class KineticMachineBlock extends MetaMachineBlock implements IRotate {
     }
 
     @Override
-    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> blockEntityType) {
+    public @Nullable <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+                                                                            BlockEntityType<T> blockEntityType) {
         if (blockEntityType == getDefinition().getBlockEntityType()) {
             if (!level.isClientSide) {
                 return (pLevel, pPos, pState, pTile) -> {
-                    if (pState.getValue(BlockProperties.SERVER_TICK) && pTile instanceof IMachineBlockEntity metaMachine) {
+                    if (pState.getValue(BlockProperties.SERVER_TICK) &&
+                            pTile instanceof IMachineBlockEntity metaMachine) {
                         metaMachine.getMetaMachine().serverTick();
                     }
                     if (pTile instanceof KineticMachineBlockEntity kineticMachineBlockEntity) {
                         kineticMachineBlockEntity.tick();
                     }
                 };
-            } else  {
+            } else {
                 return (pLevel, pPos, pState, pTile) -> {
                     if (pTile instanceof IMachineBlockEntity metaMachine) {
                         metaMachine.getMetaMachine().clientTick();

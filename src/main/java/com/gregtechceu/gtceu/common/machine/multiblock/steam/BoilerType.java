@@ -2,7 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.steam;
 
 import net.minecraft.world.level.block.state.BlockState;
 
-import static com.gregtechceu.gtceu.common.data.GTBlocks.*;
+import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
 
 public enum BoilerType {
 
@@ -39,7 +39,6 @@ public enum BoilerType {
                BlockState casingState,
                BlockState fireboxState,
                BlockState pipeState) {
-
         this.steamPerTick = steamPerTick;
         this.ticksToBoiling = ticksToBoiling;
 

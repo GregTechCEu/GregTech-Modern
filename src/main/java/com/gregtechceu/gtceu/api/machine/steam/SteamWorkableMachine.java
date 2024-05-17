@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.machine.steam;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.capability.recipe.IRecipeHandler;
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
@@ -15,25 +13,31 @@ import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -43,18 +47,31 @@ import java.util.*;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public abstract class SteamWorkableMachine extends SteamMachine implements IRecipeLogicMachine, IMufflableMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamWorkableMachine.class, SteamMachine.MANAGED_FIELD_HOLDER);
-    @Nullable @Getter @Setter
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(SteamWorkableMachine.class,
+            SteamMachine.MANAGED_FIELD_HOLDER);
+    @Nullable
+    @Getter
+    @Setter
     private ICleanroomProvider cleanroom;
-    @Getter @Persisted @DescSynced
+    @Getter
+    @Persisted
+    @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType[] recipeTypes;
-    @Getter @Setter
+    @Getter
+    @Setter
     public int activeRecipeType;
-    @Persisted @DescSynced @Getter @RequireRerender
+    @Persisted
+    @DescSynced
+    @Getter
+    @RequireRerender
     protected Direction outputFacing;
-    @Persisted @DescSynced @Getter @Setter
+    @Persisted
+    @DescSynced
+    @Getter
+    @Setter
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
     @Getter
@@ -72,7 +89,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -116,7 +133,8 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     }
 
     @Override
-    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide, BlockHitResult hitResult) {
+    protected InteractionResult onWrenchClick(Player playerIn, InteractionHand hand, Direction gridSide,
+                                              BlockHitResult hitResult) {
         if (!playerIn.isShiftKeyDown() && !isRemote()) {
             if (hasFrontFacing() && gridSide == getFrontFacing()) return InteractionResult.PASS;
             setOutputFacing(gridSide);
@@ -148,7 +166,7 @@ public abstract class SteamWorkableMachine extends SteamMachine implements IReci
     }
 
     //////////////////////////////////////
-    //*******     Rendering     ********//
+    // ******* Rendering ********//
     //////////////////////////////////////
     @Override
     public ResourceTexture sideTips(Player player, Set<GTToolType> toolTypes, Direction side) {

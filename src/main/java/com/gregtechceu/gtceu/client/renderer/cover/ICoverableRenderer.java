@@ -3,9 +3,11 @@ package com.gregtechceu.gtceu.client.renderer.cover;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
@@ -19,6 +21,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -31,7 +34,8 @@ public interface ICoverableRenderer extends IRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
+    default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side,
+                                        RandomSource rand) {
         var blockEntity = level == null ? null : level.getBlockEntity(pos);
         if (blockEntity != null) {
             var coverable = GTCapabilityHelper.getCoverable(blockEntity.getLevel(), blockEntity.getBlockPos(), null);
@@ -47,7 +51,8 @@ public interface ICoverableRenderer extends IRenderer {
     }
 
     @OnlyIn(Dist.CLIENT)
-    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
+    default void renderCovers(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+                              @NotNull ICoverable coverable, @Nullable Direction modelFacing, ModelState modelState) {
         var thickness = coverable.getCoverPlateThickness();
         for (Direction face : Direction.values()) {
             var cover = coverable.getCoverAtSide(face);
@@ -64,14 +69,19 @@ public interface ICoverableRenderer extends IRenderer {
                             normal.getY() == 0 ? 0.999 : normal.getY() > 0 ? 0.999 : min,
                             normal.getZ() == 0 ? 0.999 : normal.getZ() > 0 ? 0.999 : min);
                     if (side == null) { // render back
-                        quads.add(FaceQuad.builder(face.getOpposite(), ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side"))).cube(cube).cubeUV().tintIndex(-1).bake());
-                    } else if (side != face.getOpposite()){ // render sides
-                        quads.add(FaceQuad.builder(side, ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side"))).cube(cube).cubeUV().tintIndex(-1).bake());
+                        quads.add(FaceQuad
+                                .builder(face.getOpposite(),
+                                        ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
+                                .cube(cube).cubeUV().tintIndex(-1).bake());
+                    } else if (side != face.getOpposite()) { // render sides
+                        quads.add(FaceQuad
+                                .builder(side,
+                                        ModelFactory.getBlockSprite(GTCEu.id("block/material_sets/dull/wire_side")))
+                                .cube(cube).cubeUV().tintIndex(-1).bake());
                     }
                 }
                 cover.getCoverRenderer().renderCover(quads, side, rand, cover, modelFacing, modelState);
             }
         }
     }
-
 }

@@ -13,5 +13,4 @@ public interface IControllable {
      * @param isWorkingAllowed true if the workable can work, otherwise false
      */
     void setWorkingEnabled(boolean isWorkingAllowed);
-
 }

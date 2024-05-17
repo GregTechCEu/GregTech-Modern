@@ -1,8 +1,6 @@
 package com.gregtechceu.gtceu.common.item;
 
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -13,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
  * @implNote ConsumedBehaviour
  */
 public abstract class ConsumedBehaviour {
+
     public final int totalUses;
 
     public ConsumedBehaviour(int totalUses) {
@@ -24,10 +23,10 @@ public abstract class ConsumedBehaviour {
         if (!player.isCreative()) {
             if (--usesLeft <= 0) {
                 if (replacementStack.isEmpty()) {
-                    //if replacement stack is empty, just shrink resulting stack
+                    // if replacement stack is empty, just shrink resulting stack
                     stack.shrink(1);
                 } else {
-                    //otherwise, update held item to replacement stack
+                    // otherwise, update held item to replacement stack
                     player.setItemInHand(hand, replacementStack);
                 }
                 return true;
@@ -44,5 +43,4 @@ public abstract class ConsumedBehaviour {
     public void setUsesLeft(ItemStack itemStack, int usesLeft) {
         itemStack.set(DataComponents.DAMAGE, totalUses - usesLeft);
     }
-
 }

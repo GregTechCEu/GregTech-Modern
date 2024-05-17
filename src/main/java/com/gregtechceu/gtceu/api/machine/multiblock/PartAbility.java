@@ -1,12 +1,11 @@
 package com.gregtechceu.gtceu.api.machine.multiblock;
 
-import com.gregtechceu.gtceu.api.capability.IObjectHolder;
-import com.gregtechceu.gtceu.api.capability.IOpticalComputationHatch;
+import net.minecraft.world.level.block.Block;
+
 import com.google.common.base.Suppliers;
 import it.unimi.dsi.fastutil.ints.Int2ObjectMap;
 import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import lombok.Getter;
-import net.minecraft.world.level.block.Block;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.*;
@@ -16,10 +15,11 @@ import java.util.function.Supplier;
  * @author KilaBash
  * @date 2023/3/4
  * @implNote MultiblockAbility
- * Fine, It's not really needed。It used to specify which blocks are available.
- * Only registered blocks can be used as part of gtceu's multiblock.
+ *           Fine, It's not really needed。It used to specify which blocks are available.
+ *           Only registered blocks can be used as part of gtceu's multiblock.
  */
 public class PartAbility {
+
     public static final PartAbility EXPORT_ITEMS = new PartAbility("export_items");
     public static final PartAbility IMPORT_ITEMS = new PartAbility("import_items");
     public static final PartAbility EXPORT_FLUIDS = new PartAbility("export_fluids");
@@ -66,9 +66,8 @@ public class PartAbility {
      */
     private final Int2ObjectMap<Set<Block>> registry = new Int2ObjectOpenHashMap<>();
 
-    private Supplier<Collection<Block>> allBlocks = Suppliers.memoize(() ->
-        registry.values().stream().flatMap(Collection::stream).toList()
-    );
+    private Supplier<Collection<Block>> allBlocks = Suppliers
+            .memoize(() -> registry.values().stream().flatMap(Collection::stream).toList());
 
     @Getter
     private final String name;
@@ -105,5 +104,4 @@ public class PartAbility {
                 .flatMap(entry -> entry.getValue().stream())
                 .toList();
     }
-
 }

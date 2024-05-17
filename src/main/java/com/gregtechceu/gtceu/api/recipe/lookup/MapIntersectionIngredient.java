@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe.lookup;
 
 import com.gregtechceu.gtceu.utils.IngredientEquality;
+
 import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.neoforge.common.crafting.IntersectionIngredient;
 
@@ -8,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MapIntersectionIngredient extends AbstractMapIngredient {
+
     protected IntersectionIngredient intersectionIngredient;
     protected List<Ingredient> ingredients;
 

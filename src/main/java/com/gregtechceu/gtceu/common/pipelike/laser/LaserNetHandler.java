@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.pipelike.laser;
 
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.common.blockentity.LaserPipeBlockEntity;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
@@ -10,6 +11,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class LaserNetHandler implements ILaserContainer {
+
     private LaserPipeNet net;
     private final LaserPipeBlockEntity pipe;
     private final Direction facing;

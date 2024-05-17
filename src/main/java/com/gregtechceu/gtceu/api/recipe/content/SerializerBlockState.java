@@ -1,9 +1,5 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.google.common.collect.ImmutableMap;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonNull;
-import com.mojang.serialization.JsonOps;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -13,6 +9,10 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.StateHolder;
 import net.minecraft.world.level.block.state.properties.Property;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.mojang.serialization.JsonOps;
 
 import java.util.Map;
 import java.util.Optional;
@@ -33,7 +33,7 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
 
             for (Map.Entry<Property<?>, Comparable<?>> entry : values.entrySet()) {
                 buf.writeUtf(entry.getKey().getName());
-                buf.writeUtf(((Property)entry.getKey()).getName(entry.getValue()));
+                buf.writeUtf(((Property) entry.getKey()).getName(entry.getValue()));
             }
         } else {
             buf.writeBoolean(false);
@@ -68,7 +68,8 @@ public class SerializerBlockState implements IContentSerializer<BlockState> {
 
     @Override
     public JsonElement toJson(BlockState content, HolderLookup.Provider provider) {
-        return BlockState.CODEC.encodeStart(JsonOps.INSTANCE, content).mapOrElse(Function.identity(), partial -> JsonNull.INSTANCE);
+        return BlockState.CODEC.encodeStart(JsonOps.INSTANCE, content).mapOrElse(Function.identity(),
+                partial -> JsonNull.INSTANCE);
     }
 
     @Override

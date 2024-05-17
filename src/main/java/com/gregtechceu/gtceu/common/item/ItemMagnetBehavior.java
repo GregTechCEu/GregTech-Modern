@@ -3,11 +3,12 @@ package com.gregtechceu.gtceu.common.item;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.IElectricItem;
-import com.gregtechceu.gtceu.api.item.ComponentItem;
+import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemLifeCycle;
-import com.gregtechceu.gtceu.common.data.GTDataComponents;
+import com.gregtechceu.gtceu.data.tag.GTDataComponents;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
@@ -28,6 +29,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.item.ItemTossEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerXpEvent;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -45,10 +47,11 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player, InteractionHand hand) {
+    public InteractionResultHolder<ItemStack> use(ItemStack item, Level world, @NotNull Player player,
+                                                  InteractionHand hand) {
         if (!player.level().isClientSide && player.isShiftKeyDown()) {
             player.displayClientMessage(Component.translatable(toggleActive(player.getItemInHand(hand)) ?
-                "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
+                    "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"), true);
         }
         return InteractionResultHolder.pass(player.getItemInHand(hand));
     }
@@ -71,7 +74,8 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected) {
         // Adapted logic from Draconic Evolution
         // https://github.com/Draconic-Inc/Draconic-Evolution/blob/1.12.2/src/main/java/com/brandon3055/draconicevolution/items/tools/Magnet.java
-        if (!entity.isShiftKeyDown() && entity.tickCount % 10 == 0 && isActive(stack) && entity instanceof Player player) {
+        if (!entity.isShiftKeyDown() && entity.tickCount % 10 == 0 && isActive(stack) &&
+                entity instanceof Player player) {
             Level world = entity.level();
             if (!drainEnergy(true, stack, energyDraw)) {
                 return;
@@ -79,7 +83,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
             List<ItemEntity> items = world.getEntitiesOfClass(ItemEntity.class,
                     new AABB(entity.getX(), entity.getY(), entity.getZ(), entity.getX(), entity.getY(), entity.getZ())
-                        .inflate(range, range, range));
+                            .inflate(range, range, range));
 
             boolean didMoveEntity = false;
             for (ItemEntity itemEntity : items) {
@@ -152,9 +156,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
 
         Inventory inventory = event.getPlayer().getInventory();
         // TODO work out curios compat
-//        if (Platform.isModLoaded(GTValues.MODID_CURIOS)) {
-//            inventory = BaublesModule.getBaublesWrappedInventory(event.getPlayer());
-//        }
+        // if (Platform.isModLoaded(GTValues.MODID_CURIOS)) {
+        // inventory = BaublesModule.getBaublesWrappedInventory(event.getPlayer());
+        // }
 
         for (int i = 0; i < inventory.getContainerSize(); i++) {
             ItemStack stackInSlot = inventory.getItem(i);
@@ -166,7 +170,7 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     private boolean isMagnet(@NotNull ItemStack stack) {
-        if (stack.getItem() instanceof ComponentItem metaItem) {
+        if (stack.getItem() instanceof IComponentItem metaItem) {
             for (var behavior : metaItem.getComponents()) {
                 if (behavior instanceof ItemMagnetBehavior) {
                     return true;
@@ -185,7 +189,9 @@ public class ItemMagnetBehavior implements IInteractionItem, IItemLifeCycle, IAd
     }
 
     @Override
-    public void appendHoverText(ItemStack itemStack, @Nullable Item.TooltipContext context, List<Component> lines, TooltipFlag isAdvanced) {
-        lines.add(Component.translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
+    public void appendHoverText(ItemStack itemStack, @Nullable Item.TooltipContext context, List<Component> lines,
+                                TooltipFlag isAdvanced) {
+        lines.add(Component
+                .translatable(isActive(itemStack) ? "behavior.item_magnet.enabled" : "behavior.item_magnet.disabled"));
     }
 }

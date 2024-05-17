@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.api.tag.TagPrefix;
+
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 import static com.gregtechceu.gtceu.data.lang.LangHandler.multilineLang;
@@ -41,9 +42,7 @@ public class ItemLang {
         provider.add("tagprefix.polymer.ingot", "%s Ingot");
     }
 
-    private static void initItemNames(RegistrateLangProvider provider) {
-
-    }
+    private static void initItemNames(RegistrateLangProvider provider) {}
 
     private static void initItemTooltips(RegistrateLangProvider provider) {
         provider.add("item.gtceu.copper_credit.tooltip", "§70.125 Credits");
@@ -55,7 +54,8 @@ public class ItemLang {
         provider.add("item.gtceu.naquadah_credit.tooltip", "§732768 Credits");
         provider.add("item.gtceu.neutronium_credit.tooltip", "§7262144 Credits");
         provider.add("item.gtceu.ancient_gold_coin.tooltip", "§7Found in ancient Ruins");
-        provider.add("item.gtceu.doge_coin.tooltip", "§7wow much coin how monyey so cwypto pwz minye v wich vewy cuwwency wow");
+        provider.add("item.gtceu.doge_coin.tooltip",
+                "§7wow much coin how monyey so cwypto pwz minye v wich vewy cuwwency wow");
         provider.add("item.gtceu.chocolate_coin.tooltip", "§7Wrapped in Gold");
         provider.add("item.gtceu.empty_mold.tooltip", "§7Raw Plate to make Molds and Extrude Shapes");
         provider.add("item.gtceu.nano_saber.tooltip", "§7Ryujin no ken wo kurae!");
@@ -70,7 +70,8 @@ public class ItemLang {
         provider.add("item.gtceu.nugget_casting_mold.tooltip", "§7Mold for making Nuggets");
         provider.add("item.gtceu.cylinder_casting_mold.tooltip", "§7Mold for shaping Cylinders");
         provider.add("item.gtceu.anvil_casting_mold.tooltip", "§7Mold for shaping Anvils");
-        provider.add("item.gtceu.name_casting_mold.tooltip", "§7Mold for naming Items in the Forming Press (rename Mold with Anvil)");
+        provider.add("item.gtceu.name_casting_mold.tooltip",
+                "§7Mold for naming Items in the Forming Press (rename Mold with Anvil)");
         provider.add("item.gtceu.gear_casting_mold.small.tooltip", "§7Mold for making small Gears");
         provider.add("item.gtceu.rotor_casting_mold.tooltip", "§7Mold for making Rotors");
         provider.add("item.gtceu.plate_extruder_mold.tooltip", "§7Extruder Shape for making Plates");
@@ -78,7 +79,8 @@ public class ItemLang {
         provider.add("item.gtceu.bolt_extruder_mold.tooltip", "§7Extruder Shape for making Bolts");
         provider.add("item.gtceu.ring_extruder_mold.tooltip", "§7Extruder Shape for making Rings");
         provider.add("item.gtceu.cell_extruder_mold.tooltip", "§7Extruder Shape for making Cells");
-        provider.add("item.gtceu.ingot_extruder_mold.tooltip", "§7Extruder Shape for, wait, can't we just use a Furnace?");
+        provider.add("item.gtceu.ingot_extruder_mold.tooltip",
+                "§7Extruder Shape for, wait, can't we just use a Furnace?");
         provider.add("item.gtceu.wire_extruder_mold.tooltip", "§7Extruder Shape for making Wires");
         provider.add("item.gtceu.casing_extruder_mold.tooltip", "§7Extruder Shape for making Item Casings");
         provider.add("item.gtceu.pipe.tiny_extruder_mold.tooltip", "§7Extruder Shape for making tiny Pipes");
@@ -148,7 +150,8 @@ public class ItemLang {
         provider.add("item.gtceu.data_orb.tooltip", "§7A High Capacity Data Storage");
         provider.add("item.gtceu.programmed_circuit.tooltip", "§7Use to open configuration GUI");
         provider.add("item.gtceu.circuit.integrated.gui", "§7Programmed Circuit Configuration");
-        //multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
+        // multilineLang(provider, "item.gtceu.circuit.integrated.jei_description", "JEI is only showing recipes for the
+        // given configuration.\n\nYou can select a configuration in the Programmed Circuit configuration tab.");
         provider.add("item.glass_lens", "Glass Lens (White)"); // todo move to material overrides
         provider.add("item.gtceu.silicon_boule.tooltip", "§7Raw Circuit");
         provider.add("item.gtceu.phosphorus_boule.tooltip", "§7Raw Circuit");
@@ -170,7 +173,8 @@ public class ItemLang {
         provider.add("item.gtceu.plastic_printed_circuit_board.tooltip", "§7A Good Circuit Board");
         provider.add("item.gtceu.epoxy_printed_circuit_board.tooltip", "§7An Advanced Circuit Board");
         provider.add("item.gtceu.fiber_reinforced_printed_circuit_board.tooltip", "§7A More Advanced Circuit Board");
-        provider.add("item.gtceu.multilayer_fiber_reinforced_printed_circuit_board.tooltip", "§7An Elite Circuit Board");
+        provider.add("item.gtceu.multilayer_fiber_reinforced_printed_circuit_board.tooltip",
+                "§7An Elite Circuit Board");
         provider.add("item.gtceu.wetware_printed_circuit_board.tooltip", "§7The Board that keeps life");
         multilineLang(provider, "item.gtceu.vacuum_tube.tooltip", "§7Technically a Diode\n§cULV-tier");
         provider.add("item.gtceu.diode.tooltip", "§7Basic Electronic Component");
@@ -225,33 +229,56 @@ public class ItemLang {
         provider.add("item.gtceu.ram_chip.tooltip", "§7Random Access Memory");
         provider.add("item.gtceu.soc.tooltip", "§7System on Chip");
         provider.add("item.gtceu.simple_soc.tooltip", "§7Simple System on Chip");
-        multilineLang(provider, "item.gtceu.basic_electronic_circuit.tooltip", "§7Your First Circuit\n§cLV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.good_electronic_circuit.tooltip", "§7Your Second Circuit\n§cMV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.basic_integrated_circuit.tooltip", "§7Smaller and more powerful\n§6LV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.good_integrated_circuit.tooltip", "§7Smaller and more powerful\n§6MV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.advanced_integrated_circuit.tooltip", "§7Smaller and more powerful\n§6HV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.basic_electronic_circuit.tooltip",
+                "§7Your First Circuit\n§cLV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.good_electronic_circuit.tooltip",
+                "§7Your Second Circuit\n§cMV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.basic_integrated_circuit.tooltip",
+                "§7Smaller and more powerful\n§6LV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.good_integrated_circuit.tooltip",
+                "§7Smaller and more powerful\n§6MV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.advanced_integrated_circuit.tooltip",
+                "§7Smaller and more powerful\n§6HV-Tier Circuit");
         multilineLang(provider, "item.gtceu.nand_chip.tooltip", "§7A Superior Simple Circuit\n§6ULV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.microchip_processor.tooltip", "§7A Superior Basic Circuit\n§eLV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.micro_processor.tooltip", "§7Amazing Computation Speed!\n§eMV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.micro_processor_assembly.tooltip", "§7Amazing Computation Speed!\n§eHV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.micro_processor_computer.tooltip", "§7Amazing Computation Speed!\n§eEV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.micro_processor_mainframe.tooltip", "§7Amazing Computation Speed!\n§eIV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.microchip_processor.tooltip",
+                "§7A Superior Basic Circuit\n§eLV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.micro_processor.tooltip",
+                "§7Amazing Computation Speed!\n§eMV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.micro_processor_assembly.tooltip",
+                "§7Amazing Computation Speed!\n§eHV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.micro_processor_computer.tooltip",
+                "§7Amazing Computation Speed!\n§eEV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.micro_processor_mainframe.tooltip",
+                "§7Amazing Computation Speed!\n§eIV-Tier Circuit");
         multilineLang(provider, "item.gtceu.nano_processor.tooltip", "§7Smaller than ever\n§bHV-Tier Circuit");
         multilineLang(provider, "item.gtceu.nano_processor_assembly.tooltip", "§7Smaller than ever\n§bEV-Tier Circuit");
         multilineLang(provider, "item.gtceu.nano_processor_computer.tooltip", "§7Smaller than ever\n§bIV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.nano_processor_mainframe.tooltip", "§7Smaller than ever\n§bLuV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.quantum_processor.tooltip", "§7Quantum Computing comes to life!\n§aEV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.quantum_processor_assembly.tooltip", "§7Quantum Computing comes to life!\n§aIV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.quantum_processor_computer.tooltip", "§7Quantum Computing comes to life!\n§aLuV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.quantum_processor_mainframe.tooltip", "§7Quantum Computing comes to life!\n§aZPM-Tier Circuit");
-        multilineLang(provider, "item.gtceu.crystal_processor.tooltip", "§7Taking Advantage of Crystal Engraving\n§9IV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.crystal_processor_assembly.tooltip", "§7Taking Advantage of Crystal Engraving\n§9LuV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.crystal_processor_computer.tooltip", "§7Taking Advantage of Crystal Engraving\n§9ZPM-Tier Circuit");
-        multilineLang(provider, "item.gtceu.crystal_processor_mainframe.tooltip", "§7Taking Advantage of Crystal Engraving\n§9UV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.wetware_processor.tooltip", "§7You have a feeling like it's watching you\n§4LuV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.wetware_processor_assembly.tooltip", "§7Can run Minecraft\n§4ZPM-tier Circuit");
-        multilineLang(provider, "item.gtceu.wetware_processor_computer.tooltip", "§7Ultimate fusion of Flesh and Machine\n§4UV-Tier Circuit");
-        multilineLang(provider, "item.gtceu.wetware_processor_mainframe.tooltip", "§7The best Man has ever seen\n§4UHV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.nano_processor_mainframe.tooltip",
+                "§7Smaller than ever\n§bLuV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.quantum_processor.tooltip",
+                "§7Quantum Computing comes to life!\n§aEV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.quantum_processor_assembly.tooltip",
+                "§7Quantum Computing comes to life!\n§aIV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.quantum_processor_computer.tooltip",
+                "§7Quantum Computing comes to life!\n§aLuV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.quantum_processor_mainframe.tooltip",
+                "§7Quantum Computing comes to life!\n§aZPM-Tier Circuit");
+        multilineLang(provider, "item.gtceu.crystal_processor.tooltip",
+                "§7Taking Advantage of Crystal Engraving\n§9IV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.crystal_processor_assembly.tooltip",
+                "§7Taking Advantage of Crystal Engraving\n§9LuV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.crystal_processor_computer.tooltip",
+                "§7Taking Advantage of Crystal Engraving\n§9ZPM-Tier Circuit");
+        multilineLang(provider, "item.gtceu.crystal_processor_mainframe.tooltip",
+                "§7Taking Advantage of Crystal Engraving\n§9UV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.wetware_processor.tooltip",
+                "§7You have a feeling like it's watching you\n§4LuV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.wetware_processor_assembly.tooltip",
+                "§7Can run Minecraft\n§4ZPM-tier Circuit");
+        multilineLang(provider, "item.gtceu.wetware_processor_computer.tooltip",
+                "§7Ultimate fusion of Flesh and Machine\n§4UV-Tier Circuit");
+        multilineLang(provider, "item.gtceu.wetware_processor_mainframe.tooltip",
+                "§7The best Man has ever seen\n§4UHV-Tier Circuit");
         provider.add("item.gtceu.stem_cells.tooltip", "§7Raw Intelligence");
         provider.add("item.gtceu.neuro_processing_unit.tooltip", "§7Neuro CPU");
         provider.add("item.gtceu.petri_dish.tooltip", "§7For cultivating Cells");
@@ -260,35 +287,60 @@ public class ItemLang {
         provider.add("item.gtceu.quantum_eye.tooltip", "§7Improved Ender Eye");
         provider.add("item.gtceu.quantum_star.tooltip", "§7Improved Nether Star");
         provider.add("item.gtceu.gravi_star.tooltip", "§7Ultimate Nether Star");
-        multilineLang(provider, "item.gtceu.item_filter.tooltip", "§7Filters §fItem§7 I/O as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
-        multilineLang(provider, "item.gtceu.item_tag_filter.tooltip", "§7Filters §fItem§7 I/O with §fItem Tags§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
-        multilineLang(provider, "item.gtceu.ore_dictionary_filter.tooltip", "§7Filters §fItem§7 I/O with §fOre Dictionary§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
-        multilineLang(provider, "item.gtceu.fluid_filter.tooltip", "§7Filters §fFluid§7 I/O as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
-        multilineLang(provider, "item.gtceu.fluid_tag_filter.tooltip", "§7Filters §fFluid§7 I/O with §fFluid Tags§7 as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
-        multilineLang(provider, "item.gtceu.smart_item_filter.tooltip", "§7Filters §fItem§7 I/O with §fMachine Recipes§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "item.gtceu.item_filter.tooltip",
+                "§7Filters §fItem§7 I/O as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "item.gtceu.item_tag_filter.tooltip",
+                "§7Filters §fItem§7 I/O with §fItem Tags§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "item.gtceu.ore_dictionary_filter.tooltip",
+                "§7Filters §fItem§7 I/O with §fOre Dictionary§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
+        multilineLang(provider, "item.gtceu.fluid_filter.tooltip",
+                "§7Filters §fFluid§7 I/O as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
+        multilineLang(provider, "item.gtceu.fluid_tag_filter.tooltip",
+                "§7Filters §fFluid§7 I/O with §fFluid Tags§7 as §fCover§7.\nCan be used as an §fElectric Pump§7 and §fFluid Regulator§7 upgrade.");
+        multilineLang(provider, "item.gtceu.smart_item_filter.tooltip",
+                "§7Filters §fItem§7 I/O with §fMachine Recipes§7 as §fCover§7.\nCan be used as a §fConveyor Module§7 and §fRobotic Arm§7 upgrade.");
         provider.add("item.gtceu.machine_controller.tooltip", "§7Turns Machines §fON/OFF§7 as §fCover§7.");
-        provider.add("item.gtceu.activity_detector_cover.tooltip", "§7Gives out §fActivity Status§7 as Redstone as §fCover§7.");
-        provider.add("item.gtceu.advanced_activity_detector_cover.tooltip", "§7Gives out §fMachine Progress§7 as Redstone as §fCover§7.");
-        provider.add("item.gtceu.fluid_detector_cover.tooltip", "§7Gives out §fFluid Amount§7 as Redstone as §fCover§7.");
-        provider.add("item.gtceu.advanced_fluid_detector_cover.tooltip", "§7Gives §fRS-Latch§7 controlled §fFluid Storage Status§7 as Redstone as §fCover§7.");
+        provider.add("item.gtceu.activity_detector_cover.tooltip",
+                "§7Gives out §fActivity Status§7 as Redstone as §fCover§7.");
+        provider.add("item.gtceu.advanced_activity_detector_cover.tooltip",
+                "§7Gives out §fMachine Progress§7 as Redstone as §fCover§7.");
+        provider.add("item.gtceu.fluid_detector_cover.tooltip",
+                "§7Gives out §fFluid Amount§7 as Redstone as §fCover§7.");
+        provider.add("item.gtceu.advanced_fluid_detector_cover.tooltip",
+                "§7Gives §fRS-Latch§7 controlled §fFluid Storage Status§7 as Redstone as §fCover§7.");
         provider.add("item.gtceu.item_detector_cover.tooltip", "§7Gives out §fItem Amount§7 as Redstone as §fCover§7.");
-        provider.add("item.gtceu.advanced_item_detector_cover.tooltip", "§7Gives §fRS-Latch§7 controlled §fItem Storage Status§7 as Redstone as §fCover§7.");
-        provider.add("item.gtceu.energy_detector_cover.tooltip", "§7Gives out §fEnergy Amount§7 as Redstone as §fCover§7.");
-        provider.add("item.gtceu.advanced_energy_detector_cover.tooltip", "§7Gives §fRS-Latch§7 controlled §fEnergy Status§7 as Redstone as §fCover§7.");
-        multilineLang(provider, "item.gtceu.fluid_voiding_cover.tooltip", "§7Voids §fFluids§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
-        multilineLang(provider, "item.gtceu.advanced_fluid_voiding_cover.tooltip", "§7Voids §fFluids§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
-        multilineLang(provider, "item.gtceu.item_voiding_cover.tooltip", "§7Voids §fItems§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
-        multilineLang(provider, "item.gtceu.advanced_item_voiding_cover.tooltip", "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        provider.add("item.gtceu.advanced_item_detector_cover.tooltip",
+                "§7Gives §fRS-Latch§7 controlled §fItem Storage Status§7 as Redstone as §fCover§7.");
+        provider.add("item.gtceu.energy_detector_cover.tooltip",
+                "§7Gives out §fEnergy Amount§7 as Redstone as §fCover§7.");
+        provider.add("item.gtceu.advanced_energy_detector_cover.tooltip",
+                "§7Gives §fRS-Latch§7 controlled §fEnergy Status§7 as Redstone as §fCover§7.");
+        multilineLang(provider, "item.gtceu.fluid_voiding_cover.tooltip",
+                "§7Voids §fFluids§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "item.gtceu.advanced_fluid_voiding_cover.tooltip",
+                "§7Voids §fFluids§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "item.gtceu.item_voiding_cover.tooltip",
+                "§7Voids §fItems§7 as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
+        multilineLang(provider, "item.gtceu.advanced_item_voiding_cover.tooltip",
+                "§7Voids §fItems§7 with amount control as §fCover§7.\nActivate with §fSoft Mallet§7 after placement.");
         provider.add("item.gtceu.facade_cover.tooltip", "§7Decorative Outfit §fCover§7.");
         provider.add("item.gtceu.computer_monitor_cover.tooltip", "§7Displays §fData§7 as §fCover§7.");
         provider.add("item.gtceu.crafting_table_cover.tooltip", "§fAdvanced Workbench§7 on a Machine as §fCover§7.");
-        provider.add("item.gtceu.shutter_module_cover.tooltip", "§fBlocks Transfer§7 through attached Side as §fCover§7.");
-        multilineLang(provider, "item.gtceu.solar_panel.tooltip", "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7.");
-        provider.add("item.gtceu.infinite_water_cover.tooltip", "§7Fills attached containers with §9Water§7 as §fCover§7.");
-        provider.add("item.gtceu.ender_fluid_link_cover.tooltip", "§7Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
+        provider.add("item.gtceu.shutter_module_cover.tooltip",
+                "§fBlocks Transfer§7 through attached Side as §fCover§7.");
+        multilineLang(provider, "item.gtceu.solar_panel.tooltip",
+                "§7May the Sun be with you.\nProduces §fEnergy§7 from the §eSun§7 as §fCover§7.");
+        provider.add("item.gtceu.infinite_water_cover.tooltip",
+                "§7Fills attached containers with §9Water§7 as §fCover§7.");
+        provider.add("item.gtceu.ender_fluid_link_cover.tooltip",
+                "§7Transports §fFluids§7 with a §fWireless §dEnder§f Connection§7 as §fCover§7.");
         provider.add("item.gtceu.gelled_toluene.tooltip", "§7Raw Explosive");
-        provider.add("item.gtceu.bottle.purple.drink.tooltip", "§7How about Lemonade. Or some Ice Tea? I got Purple Drink!");
-        multilineLang(provider, "item.gtceu.foam_sprayer.tooltip", "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
+        provider.add("item.gtceu.bottle.purple.drink.tooltip",
+                "§7How about Lemonade. Or some Ice Tea? I got Purple Drink!");
+        multilineLang(provider, "item.gtceu.foam_sprayer.tooltip",
+                "§7Sprays Construction Foam\nUse on a frame to foam connected frames\nFoam can be colored");
         provider.add("item.gtceu.firebrick.tooltip", "§7Heat resistant");
+
+        provider.add("item.gtceu.sus_record.desc", "sussy!");
     }
 }

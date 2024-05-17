@@ -1,22 +1,21 @@
 package com.gregtechceu.gtceu.common.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeConditionType;
-import com.gregtechceu.gtceu.common.data.GTRecipeConditions;
+import com.gregtechceu.gtceu.data.recipe.GTRecipeConditions;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.util.GsonHelper;
+
+import com.google.gson.JsonObject;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import lombok.NoArgsConstructor;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.GsonHelper;
-import org.jetbrains.annotations.NotNull;
-
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -26,9 +25,11 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class EUToStartCondition extends RecipeCondition {
-    public static final MapCodec<EUToStartCondition> CODEC = RecordCodecBuilder.mapCodec(instance -> RecipeCondition.isReverse(instance)
-        .and(Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart))
-        .apply(instance, EUToStartCondition::new));
+
+    public static final MapCodec<EUToStartCondition> CODEC = RecordCodecBuilder
+            .mapCodec(instance -> RecipeCondition.isReverse(instance)
+                    .and(Codec.LONG.fieldOf("eu_to_start").forGetter(val -> val.euToStart))
+                    .apply(instance, EUToStartCondition::new));
     public static final EUToStartCondition INSTANCE = new EUToStartCondition();
 
     private long euToStart;

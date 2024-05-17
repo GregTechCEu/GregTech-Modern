@@ -2,13 +2,14 @@ package com.gregtechceu.gtceu.common.pipelike.optical;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.pipenet.IPipeType;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.StringRepresentable;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.Locale;
 
 public enum OpticalPipeType implements IPipeType<OpticalPipeProperties>, StringRepresentable {
+
     NORMAL;
 
     public static final ResourceLocation TYPE = GTCEu.id("optical");

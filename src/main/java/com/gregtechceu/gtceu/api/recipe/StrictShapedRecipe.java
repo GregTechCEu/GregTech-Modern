@@ -1,27 +1,22 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
-import net.minecraft.core.NonNullList;
-import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
-import net.minecraft.util.ExtraCodecs;
-import net.minecraft.util.GsonHelper;
 import net.minecraft.world.inventory.CraftingContainer;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
+
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.Map;
 
 /**
  * @author KilaBash
@@ -31,9 +26,11 @@ import java.util.Map;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class StrictShapedRecipe extends ShapedRecipe {
+
     public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
 
-    public StrictShapedRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern, ItemStack result, boolean showNotification) {
+    public StrictShapedRecipe(String group, CraftingBookCategory category, ShapedRecipePattern pattern,
+                              ItemStack result, boolean showNotification) {
         super(group, category, pattern, result, showNotification);
     }
 
@@ -48,7 +45,6 @@ public class StrictShapedRecipe extends ShapedRecipe {
         }
         return false;
     }
-
 
     /**
      * Checks if the region of a crafting inventory is match for the recipe.
@@ -75,21 +71,24 @@ public class StrictShapedRecipe extends ShapedRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<StrictShapedRecipe> {
+
         public static final MapCodec<StrictShapedRecipe> CODEC = RecordCodecBuilder.mapCodec(instance -> instance.group(
-            Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
-            CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC).forGetter(ShapedRecipe::category),
-            ShapedRecipePattern.MAP_CODEC.forGetter(val -> ((ShapedRecipeAccessor)val).getPattern()),
-            ItemStack.CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor)val).getResult()),
-            Codec.BOOL.optionalFieldOf("show_notification", true).forGetter(val -> ((ShapedRecipeAccessor)val).getShowNotification())
-        ).apply(instance, StrictShapedRecipe::new));
-        public static final StreamCodec<RegistryFriendlyByteBuf, StrictShapedRecipe> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
-            CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,
-            ShapedRecipePattern.STREAM_CODEC, val -> ((ShapedRecipeAccessor)val).getPattern(),
-            ItemStack.STREAM_CODEC, val -> ((ShapedRecipeAccessor)val).getResult(),
-            ByteBufCodecs.BOOL, ShapedRecipe::showNotification,
-            StrictShapedRecipe::new
-        );
+                Codec.STRING.optionalFieldOf("group", "").forGetter(ShapedRecipe::getGroup),
+                CraftingBookCategory.CODEC.fieldOf("category").orElse(CraftingBookCategory.MISC)
+                        .forGetter(ShapedRecipe::category),
+                ShapedRecipePattern.MAP_CODEC.forGetter(val -> ((ShapedRecipeAccessor) val).getPattern()),
+                ItemStack.CODEC.fieldOf("result").forGetter(val -> ((ShapedRecipeAccessor) val).getResult()),
+                Codec.BOOL.optionalFieldOf("show_notification", true)
+                        .forGetter(val -> ((ShapedRecipeAccessor) val).getShowNotification()))
+                .apply(instance, StrictShapedRecipe::new));
+        public static final StreamCodec<RegistryFriendlyByteBuf, StrictShapedRecipe> STREAM_CODEC = StreamCodec
+                .composite(
+                        ByteBufCodecs.STRING_UTF8, ShapedRecipe::getGroup,
+                        CraftingBookCategory.STREAM_CODEC, ShapedRecipe::category,
+                        ShapedRecipePattern.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getPattern(),
+                        ItemStack.STREAM_CODEC, val -> ((ShapedRecipeAccessor) val).getResult(),
+                        ByteBufCodecs.BOOL, ShapedRecipe::showNotification,
+                        StrictShapedRecipe::new);
 
         @Override
         public MapCodec<StrictShapedRecipe> codec() {

@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorage;
 import com.gregtechceu.gtceu.api.transfer.fluid.CustomFluidTank;
+
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
+
 import net.neoforged.neoforge.fluids.FluidStack;
 import net.neoforged.neoforge.fluids.IFluidTank;
 import net.neoforged.neoforge.fluids.capability.IFluidHandler;
 
 import org.jetbrains.annotations.NotNull;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
@@ -22,7 +24,8 @@ public class OverlayedFluidHandler {
 
     public OverlayedFluidHandler(@NotNull FluidTransferList tank) {
         this.overlayedTanks = new ArrayList<>();
-        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank).toArray(FluidStack[]::new);
+        FluidStack[] entries = IntStream.range(0, tank.getTanks()).mapToObj(tank::getFluidInTank)
+                .toArray(FluidStack[]::new);
         for (int i = 0; i < tank.getTanks(); ++i) {
             CustomFluidTank storage = new CustomFluidTank(tank.getTankCapacity(i));
             storage.setFluid(entries[i]);
@@ -47,19 +50,19 @@ public class OverlayedFluidHandler {
      * @param amountToInsert Amount of the fluid to insert
      * @return Amount of fluid inserted into tanks
      */
-    public long insertFluid(@NotNull FluidStack fluid, int amountToInsert) {
+    public int insertFluid(@NotNull FluidStack fluid, int amountToInsert) {
         if (amountToInsert <= 0) {
             return 0;
         }
-        long totalInserted = 0;
+        int totalInserted = 0;
         // flag value indicating whether the fluid was stored in 'distinct' slot at least once
         boolean distinctFillPerformed = false;
 
         // search for tanks with same fluid type first
         for (OverlayedTank overlayedTank : this.overlayedTanks) {
             // if the fluid to insert matches the tank, insert the fluid
-            if (overlayedTank.fluid != null && fluid.isFluidEqual(overlayedTank.fluid)) {
-                long inserted = overlayedTank.tryInsert(fluid, amountToInsert);
+            if (overlayedTank.fluid != null && FluidStack.isSameFluidSameComponents(fluid, overlayedTank.fluid)) {
+                int inserted = overlayedTank.tryInsert(fluid, amountToInsert);
                 if (inserted > 0) {
                     totalInserted += inserted;
                     amountToInsert -= inserted;
