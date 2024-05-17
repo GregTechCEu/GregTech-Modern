@@ -290,4 +290,9 @@ public class AdvancedNanoMuscleSuite extends NanoMuscleSuite implements IJetpack
     public float getFallDamageReduction() {
         return 3.5f;
     }
+
+    @Override
+    public boolean isPPE() {
+        return true;
+    }
 }

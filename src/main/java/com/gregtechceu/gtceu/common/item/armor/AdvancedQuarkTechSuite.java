@@ -225,7 +225,7 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
      * }
      * return new ArmorProperties(8, getDamageAbsorption() * getAbsorption(armor), damageLimit);
      * }
-     * 
+     *
      * @Override
      * public boolean handleUnblockableDamage(EntityLivingBase entity, @NotNull ItemStack armor, DamageSource source,
      * double damage, EntityEquipmentSlot equipmentSlot) {
@@ -316,4 +316,5 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     public float getFallDamageReduction() {
         return 8f;
     }
+
 }

@@ -182,4 +182,5 @@ public class NanoMuscleSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
         }
     }
+
 }

@@ -49,7 +49,7 @@ public class MaterialProperties {
         if (!hasProperty(property))
             throw new IllegalArgumentException("Material Property " + property.toString() + " not present!");
         propertyMap.remove(property);
-        if (propertyMap.isEmpty())
+        if(propertyMap.isEmpty())
             propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
     }
 

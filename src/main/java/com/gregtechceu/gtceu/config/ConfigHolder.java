@@ -439,6 +439,12 @@ public class ConfigHolder {
         }
     }
 
+    public static class GameplayConfigs{
+        @Configurable
+        @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
+        public boolean hazardsEnabled = true;
+    }
+
     public static class ClientConfigs {
 
         @Configurable

@@ -120,13 +120,7 @@ public class LangHandler {
         provider.add("gtceu.hazard.inhalation_poison", "§2Poisonous when inhaled");
         provider.add("gtceu.hazard.corrosive", "§6Corrosive");
         provider.add("gtceu.hazard.radioactive", "§eRadioactive");
-        provider.add("gtceu.hazard.none", "§2Not Dangerous");
-        provider.add("gtceu.hazard.antidote.description", "§aAntidote §7Hold Shift to show details");
-        provider.add("gtceu.hazard.antidote.description_shift", "§aCures types:");
-        provider.add("gtceu.hazard.antidote.description.effect_removed",
-                "Removes %s%% of current ailments' effects");
-        provider.add("gtceu.hazard.antidote.description.effect_removed.all",
-                "Removes all of current ailments' effects");
+
 
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");

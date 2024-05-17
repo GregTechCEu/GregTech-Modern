@@ -235,35 +235,36 @@ public class AssemblerRecipeLoader {
                 .outputItems(NEUTRON_REFLECTOR)
                 .save(provider);
 
-        // hazmat pieces
+
+        //hazmat pieces
         ASSEMBLER_RECIPES.recipeBuilder("hazmat_boots").duration(200).EUt(VA[LV])
-                .inputItems(plate, Rubber, 4)
-                .inputItems(foil, Polyethylene, 2)
-                .inputItems(plate, PolyvinylChloride, 2)
-                .outputItems(HAZMAT_BOOTS)
-                .save(provider);
+            .inputItems(plate, Rubber,4)
+            .inputItems(foil, Polyethylene, 2)
+            .inputItems(plate, PolyvinylChloride, 2)
+            .outputItems(HAZMAT_BOOTS)
+            .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hazmat_chestpiece").duration(200).EUt(VA[LV])
-                .inputItems(plate, Rubber, 2)
-                .inputItems(plate, PolyvinylChloride, 7)
-                .inputItems(plate, Lead, 3)
-                .outputItems(HAZMAT_CHESTPLATE)
-                .save(provider);
+            .inputItems(plate, Rubber,2)
+            .inputItems(plate, PolyvinylChloride, 7)
+            .inputItems(plate, Lead, 3)
+            .outputItems(HAZMAT_CHESTPLATE)
+            .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hazmat_leggings").duration(200).EUt(VA[LV])
-                .inputItems(plate, Rubber, 2)
-                .inputItems(plate, PolyvinylChloride, 5)
-                .inputItems(rod, Iron, 2)
-                .inputItems(ring, Steel, 4)
-                .outputItems(HAZMAT_LEGGINGS)
-                .save(provider);
+            .inputItems(plate, Rubber,2)
+            .inputItems(plate, PolyvinylChloride, 5)
+            .inputItems(rod, Iron, 2)
+            .inputItems(ring, Steel, 4)
+            .outputItems(HAZMAT_LEGGINGS)
+            .save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("hazmat_headpiece").duration(200).EUt(VA[LV])
-                .inputItems(MASK_FILTER)
-                .inputItems(plate, PolyvinylChloride, 4)
-                .inputItems(plate, Glass, 2)
-                .inputItems(ring, PolyvinylChloride, 1)
-                .outputItems(HAZMAT_HELMET)
-                .save(provider);
+            .inputItems(MASK_FILTER)
+            .inputItems(plate, PolyvinylChloride, 4)
+            .inputItems(plate, Glass, 2)
+            .inputItems(ring, PolyvinylChloride, 1)
+            .outputItems(HAZMAT_HELMET)
+            .save(provider);
     }
 }

@@ -50,6 +50,10 @@ public interface IArmorLogic {
         return false;
     }
 
+    default boolean isPPE() {
+        return false;
+    }
+
     default void damageArmor(LivingEntity entity, ItemStack itemStack, DamageSource source, int damage,
                              EquipmentSlot equipmentSlot) {}
 

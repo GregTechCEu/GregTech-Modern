@@ -8,9 +8,11 @@ import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
 import com.gregtechceu.gtceu.api.material.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
 import com.gregtechceu.gtceu.api.material.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
 
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -876,9 +878,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xecfff3).secondaryColor(0x7d8e83)
                 .components(Calcium, 1, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,
-                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
-                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .hazard(HazardProperty.HazardType.CORROSIVE,new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2,1))
                 .buildAndRegister();
 
         SodiumBisulfate = new Material.Builder(GTCEu.id("sodium_bisulfate"))
@@ -931,7 +931,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xFFE4E1)
                 .components(Chromium, 1, Oxygen, 3)
-                .irritantHazard(true)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         AntimonyTrioxide = new Material.Builder(GTCEu.id("antimony_trioxide"))
@@ -987,9 +987,7 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,
-                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
-                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .hazard(HazardProperty.HazardType.CORROSIVE, new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2, 1))
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))

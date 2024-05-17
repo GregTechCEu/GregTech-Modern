@@ -5,7 +5,10 @@ import com.gregtechceu.gtceu.api.fluid.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluid.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.material.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.material.material.properties.ToolProperty;
+
+import net.minecraft.world.effect.MobEffects;
 
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.material.material.info.MaterialIconSet.FINE;
@@ -398,14 +401,13 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.blindnessEffect(200, 200, 3))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.BLINDNESS))
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
                 .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON,
-                        new HazardProperty.HazardEffect(200, () -> new MobEffectInstance(MobEffects.CONFUSION, 1)))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200,MobEffects.CONFUSION))
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .buildAndRegister();
 
@@ -541,7 +543,7 @@ public class OrganicChemistryMaterials {
                 .color(0x554A3F)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, false)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         PolyvinylButyral = new Material.Builder(GTCEu.id("polyvinyl_butyral"))

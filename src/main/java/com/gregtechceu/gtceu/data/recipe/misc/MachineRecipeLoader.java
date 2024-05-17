@@ -447,22 +447,10 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         CANNER_RECIPES.recipeBuilder("mask_filter")
-                .inputItems(plate, Polyethylene, 4)
-                .inputItems(dust, ActivatedCarbon, 2)
-                .outputItems(MASK_FILTER)
-                .duration(100).EUt(2).save(provider);
-
-        CANNER_RECIPES.recipeBuilder("pack_paracetamol")
-                .inputItems(dust, Paracetamol, 16)
-                .notConsumable(GTItems.SHAPE_MOLD_PILL)
-                .outputItems(GTItems.PARACETAMOL_PILL.asStack(16))
-                .duration(60).EUt(VA[LV]).save(provider);
-
-        CANNER_RECIPES.recipeBuilder("pack_rad_away")
-                .inputItems(dust, RadAway, 16)
-                .notConsumable(GTItems.SHAPE_MOLD_PILL)
-                .outputItems(GTItems.RAD_AWAY_PILL.asStack(16))
-                .duration(60).EUt(VA[LV]).save(provider);
+            .inputItems(plate, Polyethylene,4)
+            .inputItems(dust, ActivatedCarbon, 2)
+            .outputItems(MASK_FILTER)
+            .duration(100).EUt(2).save(provider);
 
         Material material = Iron;
 
