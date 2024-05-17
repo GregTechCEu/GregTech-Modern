@@ -1,13 +1,16 @@
 package com.gregtechceu.gtceu.api.registry.registrate.forge;
 
 import com.gregtechceu.gtceu.GTCEu;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraftforge.client.extensions.common.IClientFluidTypeExtensions;
+
+import lombok.Getter;
+import lombok.Setter;
+import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 
 public class GTClientFluidTypeExtensions implements IClientFluidTypeExtensions {
+
     public static final ResourceLocation FLUID_SCREEN_OVERLAY = GTCEu.id("textures/misc/fluid_screen_overlay.png");
 
     public GTClientFluidTypeExtensions(ResourceLocation stillTexture, ResourceLocation flowingTexture, int tintColor) {

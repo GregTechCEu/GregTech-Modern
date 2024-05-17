@@ -22,9 +22,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.event.EventHooks;
 
 import com.mojang.datafixers.util.Pair;
-import net.neoforged.neoforge.event.EventHooks;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -143,14 +143,15 @@ public class ArmorUtils {
      *
      * @return result of eating food
      */
-    public static InteractionResultHolder<ItemStack> canEat(Player player, ItemStack food) {
+    public static InteractionResultHolder<ItemStack> eat(Player player, ItemStack food) {
         if (!food.has(DataComponents.FOOD)) {
             return InteractionResultHolder.fail(food);
         }
 
         FoodProperties foodItem = food.getFoodProperties(player);
         if (foodItem != null && player.getFoodData().needsFood()) {
-            ItemStack result = EventHooks.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(), food.finishUsingItem(player.level(), player));
+            ItemStack result = EventHooks.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(),
+                    food.finishUsingItem(player.level(), player));
             return InteractionResultHolder.success(result);
         } else {
             return InteractionResultHolder.fail(food);

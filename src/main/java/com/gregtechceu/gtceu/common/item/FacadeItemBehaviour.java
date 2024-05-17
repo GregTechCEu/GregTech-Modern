@@ -9,9 +9,9 @@ import com.gregtechceu.gtceu.data.block.GTBlocks;
 import com.gregtechceu.gtceu.data.tag.GTDataComponents;
 
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;

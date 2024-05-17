@@ -10,9 +10,8 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
+import com.gregtechceu.gtceu.data.damagesource.GTDamageTypes;
 
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -29,12 +28,12 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
-
-import lombok.Getter;
-import lombok.Setter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -48,7 +47,8 @@ import javax.annotation.ParametersAreNonnullByDefault;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class RotorHolderPartMachine extends TieredPartMachine implements IMachineModifyDrops, IRotorHolderMachine, IInteractedMachine {
+public class RotorHolderPartMachine extends TieredPartMachine
+                                    implements IMachineModifyDrops, IRotorHolderMachine, IInteractedMachine {
 
     protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
             RotorHolderPartMachine.class, TieredPartMachine.MANAGED_FIELD_HOLDER);
@@ -199,10 +199,13 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
         inventory.setStackInSlot(0, rotorStack);
         inventory.onContentsChanged();
     }
-    public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+
+    public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
-                player.hurt(GTDamageTypes.TURBINE.source(level), TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
-                return InteractionResult.FAIL;
+            player.hurt(GTDamageTypes.TURBINE.source(level),
+                    TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
+            return InteractionResult.FAIL;
         }
         return InteractionResult.PASS;
     }

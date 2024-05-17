@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.common.worldgen.feature;
 
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.FluidSproutConfiguration;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
 import net.minecraft.util.Mth;
@@ -14,11 +15,13 @@ import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
 import net.minecraft.world.level.material.Fluids;
+
 import org.apache.commons.lang3.mutable.MutableInt;
 
 import java.util.function.Function;
 
 public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
+
     public FluidSproutFeature() {
         super(FluidSproutConfiguration.CODEC);
     }
@@ -72,8 +75,8 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
                         final int currentZ = z0 + z;
 
                         setBlock(mutablePos, currentX, currentY, currentZ,
-                            bulkSectionAccess, level,
-                            config, placedAmount);
+                                bulkSectionAccess, level,
+                                config, placedAmount);
                     }
                 }
             }
@@ -85,21 +88,21 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
                 int springHeight = surfaceHeight + config.surfaceOffset().sample(random);
                 for (int currentY = blockpos.getY(); currentY <= springHeight; ++currentY) {
                     setBlock(mutablePos, currentX, currentY, currentZ,
-                        bulkSectionAccess, level,
-                        config, placedAmount);
+                            bulkSectionAccess, level,
+                            config, placedAmount);
                     if (currentY <= surfaceHeight) {
                         setBlock(mutablePos, currentX + 1, currentY, currentZ,
-                            bulkSectionAccess, level,
-                            config, placedAmount);
+                                bulkSectionAccess, level,
+                                config, placedAmount);
                         setBlock(mutablePos, currentX - 1, currentY, currentZ,
-                            bulkSectionAccess, level,
-                            config, placedAmount);
+                                bulkSectionAccess, level,
+                                config, placedAmount);
                         setBlock(mutablePos, currentX, currentY, currentZ + 1,
-                            bulkSectionAccess, level,
-                            config, placedAmount);
+                                bulkSectionAccess, level,
+                                config, placedAmount);
                         setBlock(mutablePos, currentX, currentY, currentZ - 1,
-                            bulkSectionAccess, level,
-                            config, placedAmount);
+                                bulkSectionAccess, level,
+                                config, placedAmount);
                     }
                 }
             }
@@ -121,7 +124,8 @@ public class FluidSproutFeature extends Feature<FluidSproutConfiguration> {
         int sectionX = SectionPos.sectionRelative(currentX);
         int sectionY = SectionPos.sectionRelative(currentY);
         int sectionZ = SectionPos.sectionRelative(currentZ);
-        levelchunksection.setBlockState(sectionX, sectionY, sectionZ, config.fluid().defaultFluidState().createLegacyBlock(), false);
+        levelchunksection.setBlockState(sectionX, sectionY, sectionZ,
+                config.fluid().defaultFluidState().createLegacyBlock(), false);
         placedAmount.add(1);
     }
 
