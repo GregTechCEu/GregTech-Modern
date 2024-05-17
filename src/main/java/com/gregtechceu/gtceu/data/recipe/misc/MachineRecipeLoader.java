@@ -388,6 +388,12 @@ public class MachineRecipeLoader {
                 .EUt(VA[ULV]).duration(200)
                 .save(provider);
 
+        CANNER_RECIPES.recipeBuilder("mask_filter")
+            .inputItems(plate, Polyethylene,4)
+            .inputItems(dust, ActivatedCarbon, 2)
+            .outputItems(MASK_FILTER)
+            .duration(100).EUt(2).save(provider);
+
         Material material = Iron;
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_shutter")

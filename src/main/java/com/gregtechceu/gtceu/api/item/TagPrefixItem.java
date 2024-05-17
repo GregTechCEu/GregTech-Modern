@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.client.renderer.item.TagPrefixItemRenderer;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
+import com.gregtechceu.gtceu.utils.GTUtil;
 import com.lowdragmc.lowdraglib.Platform;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.item.ItemColor;
@@ -26,6 +27,8 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 /**
  * @author KilaBash
@@ -72,6 +75,7 @@ public class TagPrefixItem extends Item {
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
         }
+        GTUtil.appendHazardTooltips(material,tooltipComponents);
     }
 
     @Override
@@ -100,7 +104,11 @@ public class TagPrefixItem extends Item {
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
 
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) return;
+
+                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) { //ignore hazards for hot ingots
+                    GTUtil.applyHazardEffects(material, livingEntity, () -> material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
+                    return;
+                }
 
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);

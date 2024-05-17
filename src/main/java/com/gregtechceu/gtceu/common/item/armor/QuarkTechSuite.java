@@ -328,4 +328,9 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }
     }
+
+    @Override
+    public boolean isPPE() {
+        return true;
+    }
 }
