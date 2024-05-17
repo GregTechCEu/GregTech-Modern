@@ -3,18 +3,13 @@ package com.gregtechceu.gtceu.integration.kjs.recipe;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.item.component.IDataItem;
-import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
-import com.gregtechceu.gtceu.api.material.ChemicalHelper;
-import com.gregtechceu.gtceu.api.material.material.Material;
-import com.gregtechceu.gtceu.api.material.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.recipe.ResearchData;
 import com.gregtechceu.gtceu.api.recipe.ResearchRecipeBuilder;
 import com.gregtechceu.gtceu.api.recipe.condition.RecipeCondition;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.api.recipe.ingredient.IntCircuitIngredient;
-import com.gregtechceu.gtceu.api.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.recipe.*;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.builder.GTRecipeBuilder;
@@ -22,14 +17,11 @@ import com.gregtechceu.gtceu.integration.kjs.recipe.components.CapabilityMap;
 import com.gregtechceu.gtceu.integration.kjs.recipe.components.GTRecipeComponents;
 import com.gregtechceu.gtceu.utils.ResearchManager;
 
-import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeHolder;
@@ -60,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.function.UnaryOperator;
 
 public interface GTRecipeSchema {
@@ -186,148 +177,34 @@ public interface GTRecipeSchema {
             return output(CWURecipeCapability.CAP, cwu);
         }
 
-        public GTRecipeJS itemInputs(InputItem... inputs) {
-            return inputItems(inputs);
-        }
-
-        public GTRecipeJS itemInput(UnificationEntry input) {
-            return inputItems(input);
-        }
-
-        public GTRecipeJS itemInput(UnificationEntry input, int count) {
-            return inputItems(input, count);
-        }
-
         public GTRecipeJS inputItems(InputItem... inputs) {
             return input(ItemRecipeCapability.CAP, (Object[]) inputs);
         }
 
-        public GTRecipeJS inputItems(ItemStack... inputs) {
-            for (ItemStack itemStack : inputs) {
-                if (itemStack.isEmpty()) {
-                    GTCEu.LOGGER.error("gt recipe {} input items is empty", id);
-                    throw new IllegalArgumentException(id + ": input items is empty");
-                }
-            }
-            // TODO remove `.ingredient()`
-            return input(ItemRecipeCapability.CAP,
-                    Arrays.stream(inputs)
-                            .map(stack -> InputItem.of(new SizedIngredient(!stack.getComponents().isEmpty() ?
-                                    DataComponentIngredient.of(true, stack) : Ingredient.of(stack), stack.getCount())
-                                    .ingredient(), stack.getCount()))
-                            .toArray());
-        }
-
-        public GTRecipeJS inputItems(TagKey<Item> tag, int amount) {
-            return inputItems(InputItem.of(SizedIngredient.of(tag, amount)));
-        }
-
-        public GTRecipeJS inputItems(Item input, int amount) {
-            return inputItems(new ItemStack(input, amount));
-        }
-
-        public GTRecipeJS inputItems(Item input) {
-            return inputItems(InputItem.of(Ingredient.of(input), 1));
-        }
-
-        public GTRecipeJS inputItems(Supplier<? extends Item> input) {
-            return inputItems(InputItem.of(Ingredient.of(input.get()), 1));
-        }
-
-        public GTRecipeJS inputItems(Supplier<? extends Item> input, int amount) {
-            return inputItems(new ItemStack(input.get(), amount));
-        }
-
-        public GTRecipeJS inputItems(TagPrefix orePrefix, Material material) {
-            return inputItems(orePrefix, material, 1);
-        }
-
-        public GTRecipeJS inputItems(UnificationEntry input) {
-            return inputItems(input.tagPrefix, input.material, 1);
-        }
-
-        public GTRecipeJS inputItems(UnificationEntry input, int count) {
-            return inputItems(input.tagPrefix, input.material, count);
-        }
-
-        public GTRecipeJS inputItems(TagPrefix orePrefix, Material material, int count) {
-            return inputItems(ChemicalHelper.getTag(orePrefix, material), count);
-        }
-
-        public GTRecipeJS inputItems(MachineDefinition machine) {
-            return inputItems(machine, 1);
-        }
-
-        public GTRecipeJS inputItems(MachineDefinition machine, int count) {
-            return inputItems(machine.asStack(count));
-        }
-
-        public GTRecipeJS itemOutputs(OutputItem... outputs) {
-            return outputItems(outputs);
-        }
-
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material);
-        }
-
-        public GTRecipeJS itemOutput(UnificationEntry unificationEntry, int count) {
-            return outputItems(unificationEntry.tagPrefix, unificationEntry.material, count);
-        }
-
         public GTRecipeJS outputItems(OutputItem... outputs) {
-            for (OutputItem itemStack : outputs) {
-                if (itemStack.isEmpty()) {
-                    LDLib.LOGGER.error("gt recipe {} output items is empty", id);
-                    throw new IllegalArgumentException(id + ": output items is empty");
-                }
-            }
             return output(ItemRecipeCapability.CAP, (Object[]) outputs);
         }
 
-        public GTRecipeJS outputItems(Item input, int amount) {
-            return outputItems(OutputItem.of(new ItemStack(input, amount)));
+        public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
+            return input(FluidRecipeCapability.CAP, (Object[]) inputs);
         }
 
-        public GTRecipeJS outputItems(Item input) {
-            return outputItems(OutputItem.of(new ItemStack(input)));
+        public GTRecipeJS outputFluids(FluidStackJS... outputs) {
+            return output(FluidRecipeCapability.CAP, (Object[]) outputs);
         }
 
-        public GTRecipeJS outputItems(TagPrefix orePrefix, Material material) {
-            return outputItems(orePrefix, material, 1);
+        public GTRecipeJS inputStress(float stress) {
+            return input(StressRecipeCapability.CAP, stress);
         }
 
-        public GTRecipeJS outputItems(TagPrefix orePrefix, Material material, int count) {
-            return outputItems(OutputItem.of(ChemicalHelper.get(orePrefix, material, count)));
+        public GTRecipeJS outputStress(float stress) {
+            return output(StressRecipeCapability.CAP, stress);
         }
 
-        public GTRecipeJS outputItems(MachineDefinition machine) {
-            return outputItems(machine, 1);
-        }
-
-        public GTRecipeJS outputItems(MachineDefinition machine, int count) {
-            return outputItems(OutputItem.of(machine.asStack(count)));
-        }
-
-        public GTRecipeJS notConsumable(InputItem itemStack) {
+        public GTRecipeJS notConsumableItem(InputItem itemStack) {
             float lastChance = this.chance;
             this.chance = 0;
             inputItems(itemStack);
-            this.chance = lastChance;
-            return this;
-        }
-
-        public GTRecipeJS notConsumable(Supplier<? extends Item> item) {
-            float lastChance = this.chance;
-            this.chance = 0;
-            inputItems(item);
-            this.chance = lastChance;
-            return this;
-        }
-
-        public GTRecipeJS notConsumable(TagPrefix orePrefix, Material material) {
-            float lastChance = this.chance;
-            this.chance = 0;
-            inputItems(orePrefix, material);
             this.chance = lastChance;
             return this;
         }
@@ -338,7 +215,7 @@ public interface GTRecipeSchema {
         }
 
         public GTRecipeJS circuit(int configuration) {
-            return notConsumable(InputItem.of(IntCircuitIngredient.circuitInput(configuration).toVanilla(), 1));
+            return notConsumableItem(InputItem.of(IntCircuitIngredient.circuitInput(configuration).toVanilla(), 1));
         }
 
         public GTRecipeJS chancedInput(InputItem stack, int chance, int tierChanceBoost) {
@@ -385,30 +262,6 @@ public interface GTRecipeSchema {
             this.chance = lastChance;
             this.tierChanceBoost = lastTierChanceBoost;
             return this;
-        }
-
-        public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int chance, int tierChanceBoost) {
-            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat), chance), chance, tierChanceBoost);
-        }
-
-        public GTRecipeJS chancedOutput(TagPrefix tag, Material mat, int count, int chance, int tierChanceBoost) {
-            return chancedOutput(OutputItem.of(ChemicalHelper.get(tag, mat, count), chance), chance, tierChanceBoost);
-        }
-
-        public GTRecipeJS inputFluids(GTRecipeComponents.FluidIngredientJS... inputs) {
-            return input(FluidRecipeCapability.CAP, (Object[]) inputs);
-        }
-
-        public GTRecipeJS outputFluids(FluidStackJS... outputs) {
-            return output(FluidRecipeCapability.CAP, (Object[]) outputs);
-        }
-
-        public GTRecipeJS inputStress(float stress) {
-            return input(StressRecipeCapability.CAP, stress);
-        }
-
-        public GTRecipeJS outputStress(float stress) {
-            return output(StressRecipeCapability.CAP, stress);
         }
 
         //////////////////////////////////////
@@ -608,16 +461,6 @@ public interface GTRecipeSchema {
                 this.researchRecipeEntries.add(entry);
             }
             return this;
-        }
-
-        /**
-         * Generates a research recipe for the Scanner. All values are defaults other than the research stack.
-         *
-         * @param researchStack the stack to use for research
-         * @return this
-         */
-        public GTRecipeJS scannerResearch(@NotNull ItemStack researchStack) {
-            return scannerResearch(b -> b.researchStack(researchStack));
         }
 
         /**
