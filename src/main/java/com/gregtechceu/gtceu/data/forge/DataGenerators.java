@@ -50,7 +50,7 @@ public class DataGenerators {
                 .add(Registries.CONFIGURED_FEATURE, GTConfiguredFeatures::bootstrap)
                 .add(Registries.PLACED_FEATURE, GTPlacements::bootstrap)
                 .add(Registries.DENSITY_FUNCTION, GTWorldgen::bootstrapDensityFunctions)
-                .add(ForgeRegistries.Keys.BIOME_MODIFIERS, ctx -> GTBiomeModifiers.bootstrap(ctx, registries)), set));
+                .add(ForgeRegistries.Keys.BIOME_MODIFIERS, GTBiomeModifiers::bootstrap), set));
         }
     }
 }

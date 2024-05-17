@@ -109,7 +109,7 @@ public class RecyclingRecipes {
 
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) {
+        if (entry != null) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
         }
 
@@ -134,7 +134,7 @@ public class RecyclingRecipes {
 
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) {
+        if (entry != null) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
         }
 
@@ -217,7 +217,7 @@ public class RecyclingRecipes {
     private static void registerArcRecycling(Consumer<FinishedRecipe> provider, ItemStack input, List<MaterialStack> materials, @Nullable TagPrefix prefix) {
         UnificationEntry entry = ChemicalHelper.getUnificationEntry(input.getItem());
         TagKey<Item> inputTag = null;
-        if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) {
+        if (entry != null) {
             inputTag = ChemicalHelper.getTag(entry.tagPrefix, entry.material);
         }
 
@@ -407,7 +407,7 @@ public class RecyclingRecipes {
             if (stack == ItemStack.EMPTY) continue;
             if (stack.getCount() > 64) {
                 UnificationEntry entry = ChemicalHelper.getUnificationEntry(stack.getItem());
-                if (entry != null && entry != UnificationEntry.EmptyMapMarkerEntry) { // should always be true
+                if (entry != null) { // should always be true
                     TagPrefix prefix = entry.tagPrefix;
 
                     // These are the highest forms that a Material can have (for Ingot and Dust, respectively),
