@@ -19,6 +19,7 @@ import net.minecraft.core.RegistryAccess;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.*;
@@ -281,6 +282,10 @@ public class GTRecipeType implements RecipeType<GTRecipe> {
 
     public String getTranslationKey() {
         return this.registryName.toLanguageKey(LANGUAGE_KEY_PATH);
+    }
+
+    public Component getName() {
+        return Component.translatable(getTranslationKey());
     }
 
     /**
