@@ -114,8 +114,7 @@ import static com.gregtechceu.gtceu.common.registry.GTRegistration.REGISTRATE;
 import static com.gregtechceu.gtceu.data.GTCreativeModeTabs.MACHINE;
 import static com.gregtechceu.gtceu.data.block.GTBlocks.*;
 import static com.gregtechceu.gtceu.data.material.GTMaterials.DrillingFluid;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.DUMMY_RECIPES;
-import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.STEAM_BOILER_RECIPES;
+import static com.gregtechceu.gtceu.data.recipe.GTRecipeTypes.*;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 import static com.gregtechceu.gtceu.utils.FormattingUtil.toRomanNumeral;
 
@@ -1344,7 +1343,7 @@ public class GTMachines {
                     GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_INVAR_HEATPROOF)
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip",
-                    Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
+                    FURNACE_RECIPES.getName(), ALLOY_SMELTER_RECIPES.getName()))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "CCC", "XXX")
                     .aisle("XXX", "C#C", "XMX")

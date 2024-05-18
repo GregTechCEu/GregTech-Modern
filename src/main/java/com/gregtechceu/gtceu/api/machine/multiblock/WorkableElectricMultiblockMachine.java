@@ -88,7 +88,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
                 .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
                 .addEnergyUsageLine(energyContainer)
                 .addEnergyTierLine(GTUtil.getTierByVoltage(getMaxVoltage()))
-                .addMachineModeLine(getRecipeType())
+                .addMachineModeLine(getRecipeType(), getRecipeTypes())
                 .addParallelsLine(numParallels)
                 .addWorkingStatusLine()
                 .addProgressLine(recipeLogic.getProgressPercent());

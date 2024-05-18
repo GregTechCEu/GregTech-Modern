@@ -318,11 +318,13 @@ public class MultiblockDisplayText {
          * <br>
          * Added if structure is formed and the number of parallels is greater than one.
          */
-        public Builder addMachineModeLine(GTRecipeType recipeType) {
+        public Builder addMachineModeLine(GTRecipeType recipeType, GTRecipeType[] possibleTypes) {
             if (!isStructureFormed)
                 return this;
+            if (possibleTypes.length < 2)
+                return this;
             textList.add(Component
-                    .translatable("gtceu.gui.machinemode", Component.translatable(recipeType.getTranslationKey()))
+                    .translatable("gtceu.gui.machinemode", recipeType.getName())
                     .withStyle(ChatFormatting.AQUA));
             return this;
         }
