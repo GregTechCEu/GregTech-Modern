@@ -161,7 +161,7 @@ public class GTRecipeWidget extends WidgetGroup {
     private static List<Component> getRecipeParaText(GTRecipe recipe, int duration, long inputEUt, long outputEUt) {
         List<Component> texts = new ArrayList<>();
         if (!recipe.data.getBoolean("hide_duration")) {
-            texts.add(Component.translatable("gtceu.recipe.duration", duration / 20f));
+            texts.add(Component.translatable("gtceu.recipe.duration", FormattingUtil.formatNumbers(duration / 20f)));
         }
         var EUt = inputEUt;
         boolean isOutput = false;
@@ -174,11 +174,11 @@ public class GTRecipeWidget extends WidgetGroup {
             // sadly we still need a custom override here, since computation uses duration and EU/t very differently
             if (recipe.data.getBoolean("duration_is_total_cwu") && recipe.tickInputs.containsKey(CWURecipeCapability.CAP)) {
                 int minimumCWUt = Math.min(recipe.tickInputs.get(CWURecipeCapability.CAP).stream().map(Content::getContent).mapToInt(CWURecipeCapability.CAP::of).sum(), 1);
-                texts.add(Component.translatable("gtceu.recipe.max_eu", euTotal / minimumCWUt));
+                texts.add(Component.translatable("gtceu.recipe.max_eu", FormattingUtil.formatNumbers(euTotal / minimumCWUt)));
             } else {
-                texts.add(Component.translatable("gtceu.recipe.total", euTotal));
+                texts.add(Component.translatable("gtceu.recipe.total", FormattingUtil.formatNumbers(euTotal)));
             }
-            texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", EUt));
+            texts.add(Component.translatable(!isOutput ? "gtceu.recipe.eu" : "gtceu.recipe.eu_inverted", FormattingUtil.formatNumbers(EUt)));
         }
 
         return texts;

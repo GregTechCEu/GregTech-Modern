@@ -1145,6 +1145,7 @@ public class GTMachines {
             .recipeTypes(GTRecipeTypes.FURNACE_RECIPES, GTRecipeTypes.ALLOY_SMELTER_RECIPES)
             .recipeModifiers(GTRecipeModifiers::multiSmelterParallel, GTRecipeModifiers.ELECTRIC_OVERCLOCK.apply(OverclockingLogic.NON_PERFECT_OVERCLOCK))
             .appearanceBlock(CASING_INVAR_HEATPROOF)
+            .tooltips(Component.translatable("gtceu.machine.available_recipe_map_2.tooltip", Component.translatable("gtceu.electric_furnace"), Component.translatable("gtceu.alloy_smelter")))
             .pattern(definition -> FactoryBlockPattern.start()
                     .aisle("XXX", "CCC", "XXX")
                     .aisle("XXX", "C#C", "XMX")
@@ -1627,8 +1628,8 @@ public class GTMachines {
 
     public static final MultiblockMachineDefinition LARGE_GAS_TURBINE = registerLargeTurbine("gas_large_turbine", EV,
             GTRecipeTypes.GAS_TURBINE_FUELS,
-            CASING_STAINLESS_CLEAN, CASING_STAINLESS_STEEL_GEARBOX,
-            GTCEu.id("block/casings/solid/machine_casing_clean_stainless_steel"),
+            CASING_STAINLESS_TURBINE, CASING_STAINLESS_STEEL_GEARBOX,
+            GTCEu.id("block/casings/mechanic/machine_casing_turbine_stainless_steel"),
             GTCEu.id("block/multiblock/generator/large_gas_turbine"));
 
     public static final MultiblockMachineDefinition LARGE_PLASMA_TURBINE = registerLargeTurbine("plasma_large_turbine", IV,
@@ -1910,8 +1911,8 @@ public class GTMachines {
         return registerTieredMachines(amperage + "a_laser_" + name + "_hatch", (holder, tier) -> new LaserHatchPartMachine(holder, io, tier, amperage), (tier, builder) -> builder
                 .langValue(VNF[tier] + " " + FormattingUtil.formatNumbers(amperage) + "A Laser " + FormattingUtil.toEnglishName(name) + " Hatch")
                 .rotationState(RotationState.ALL)
-                .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.0"),
-                        Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip.1"),
+                .tooltips(Component.translatable("gtceu.machine.laser_hatch." + name + ".tooltip"),
+                        Component.translatable("gtceu.machine.laser_hatch.both.tooltip"),
                         Component.translatable("gtceu.universal.disabled"))
                 .abilities(ability)
                 .overlayTieredHullRenderer("laser_hatch." + name)

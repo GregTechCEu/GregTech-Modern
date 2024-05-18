@@ -51,8 +51,6 @@ public class ParallelLogic {
             }
         }
 
-
-
         // tick inputs.
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
             if (cap.doMatchInRecipe()) {
