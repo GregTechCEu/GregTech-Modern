@@ -72,11 +72,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
         var patternPool = this.layerPatterns;
-        List<Block> TranslatedBlocks = new ArrayList<>();
-        getAllBlocks().forEach(blockState -> {
-            TranslatedBlocks.add(blockState.getBlock());
-        });
-        SaveVeinLocation.get(level.getLevel()).saveVein(new ChunkPos(origin), new Vein(TranslatedBlocks));
+
         if (patternPool.isEmpty())
             return Map.of();
 

@@ -201,7 +201,7 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onEntityEnteringSection(EntityEvent.EnteringSection event){
+    public static void onEntityEnteringSection(EntityEvent.EnteringSection event){ // to be removed, for debbuging
         if(event.getEntity() instanceof Player player){
             Level level = player.level();
             if (level instanceof ClientLevel){

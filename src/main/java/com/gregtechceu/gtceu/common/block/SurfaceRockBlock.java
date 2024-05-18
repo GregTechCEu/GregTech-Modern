@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
 import com.gregtechceu.gtceu.api.data.worldgen.Vein;
+import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.xaeros.XaerosWorldMapPlugin;
@@ -32,6 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -47,6 +49,7 @@ import xaero.minimap.XaeroMinimap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.Optional;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -85,7 +88,7 @@ public class SurfaceRockBlock extends Block {
             XaeroMinimapSession session = clientLevel.getXaero_minimapSession();
             WaypointsManager waypointsManager = session.getWaypointsManager();
             String oreName = I18n.get(this.getName().getString());
-            player.sendSystemMessage(Component.literal((player.getName() + " destroyed an ore indicator! Name: " + oreName)));
+            player.sendSystemMessage(Component.literal((player.getName() + " destroyed an ore indicator! Name: " + oreName))); // to be removed, for debbuging
 
             //Get vein info for a specified chunk
 
@@ -104,8 +107,12 @@ public class SurfaceRockBlock extends Block {
                         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
                     }
                 }
+                ChunkPos chunkPos = new ChunkPos(pos);
+                var random = new XoroshiroRandomSource(serverLevel.getSeed() ^ chunkPos.toLong());
 
-                Waypoint instant = new Waypoint(pos.getX(), pos.getY(), pos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0);
+                Optional<BlockPos> veinCenter = OreVeinUtil.getVeinCenter(chunkPos, random);
+                Waypoint instant;
+                instant = veinCenter.map(blockPos -> new Waypoint(blockPos.getX(), blockPos.getY(), blockPos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0)).orElseGet(() -> new Waypoint(pos.getX(), pos.getY(), pos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0));
                 waypointsManager.getWaypoints().getList().add(instant);
 
             }

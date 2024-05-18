@@ -6,9 +6,12 @@ import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.block.Block;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -48,5 +51,13 @@ public class GeneratedVein {
     @Override
     public String toString() {
         return "GeneratedVein[origin=" + origin + ", chunks={" + generatedOres.keySet().stream().map(ChunkPos::toString).collect(Collectors.joining(", ")) + "}]";
+    }
+
+    public ChunkPos getOrigin() {
+        return this.origin;
+    }
+
+    public String getLocalizedWaypointName(){
+        return "test waypoint name";
     }
 }

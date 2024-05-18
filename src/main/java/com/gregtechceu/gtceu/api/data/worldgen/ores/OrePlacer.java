@@ -1,19 +1,29 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
+import com.gregtechceu.gtceu.api.data.worldgen.Vein;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
+import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -36,6 +46,16 @@ public class OrePlacer {
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunk.getPos().toLong());
         var generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
+        AtomicInteger counter = new AtomicInteger(); // to be removed, for debbuging
+        generatedVeins.forEach(generatedVein -> {
+
+            GTCEu.LOGGER.info("Vein at %s, i: %s".formatted(generatedVein.getOrigin(), counter)); // to be removed, for debbuging
+            counter.getAndIncrement(); // to be removed, for debbuging
+            List<Block> testBlock = new ArrayList<>();
+            testBlock.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(GTCEu.MOD_ID, "gtceu:iron_ring")));
+            SaveVeinLocation.get(level.getLevel()).saveVein(chunk.getPos(), new Vein(testBlock));
+
+        });
         var generatedIndicators = oreGenCache.consumeChunkIndicators(level, chunkGenerator, chunk);
 
         try (BulkSectionAccess access = new BulkSectionAccess(level)) {
