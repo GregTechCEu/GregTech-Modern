@@ -248,7 +248,7 @@ public class ConfigHolder {
         public int energyUsageMultiplier = 100;
 
         @Configurable
-        @Configurable.Comment({ "Energu use multiplier for prospectors.", "Default: 100"})
+        @Configurable.Comment({ "Energy use multiplier for prospectors.", "Default: 100"})
         public int prospectorEnergyUseMultiplier = 100;
         @Configurable
         @Configurable.Comment({"Whether machines or boilers damage the terrain when they explode.",
