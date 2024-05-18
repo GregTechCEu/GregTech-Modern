@@ -24,6 +24,8 @@ dependencyResolutionManagement {
         def ae2Version = "15.0.18"
         def kjsVersion = "2001.6.4-build.120"
         def auVersion = "1.20.1-0.6.0"
+        def xaerosWorldMapVersion = "5262424" // May not actually be needed
+        def xaerosMinimapVersion = "5262365"
 
         // Forge
         def forgeVersion = "47.1.3"
@@ -103,6 +105,13 @@ dependencyResolutionManagement {
 
             def au = version("au", auVersion)
             library("almostUnified-forge", "com.almostreliable.mods", "almostunified-forge").versionRef(au)
+
+            def xaerosWorldMap = version("xaeros-world-map", xaerosWorldMapVersion)
+            library("xaeros-world-map", "curse.maven", "xaeros-world-map-317780").versionRef(xaerosWorldMap)
+
+            def xaerosMiniMap = version("xaeros-minimap", xaerosMinimapVersion)
+            library("xaeros-minimap", "curse.maven", "xaeros-minimap-263420").versionRef(xaerosMiniMap)
+
         }
 
         libs {

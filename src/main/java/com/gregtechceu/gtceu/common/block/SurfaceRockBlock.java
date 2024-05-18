@@ -1,18 +1,26 @@
 package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
+import com.gregtechceu.gtceu.api.data.worldgen.Vein;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
+import com.gregtechceu.gtceu.config.ConfigHolder;
+import com.gregtechceu.gtceu.integration.xaeros.XaerosWorldMapPlugin;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.color.block.BlockColor;
+import net.minecraft.client.resources.language.I18n;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
@@ -23,14 +31,21 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
+import xaero.common.XaeroMinimapSession;
+import xaero.common.core.IXaeroMinimapClientPlayNetHandler;
+import xaero.common.minimap.waypoints.Waypoint;
+import xaero.common.minimap.waypoints.WaypointsManager;
+import xaero.minimap.XaeroMinimap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+import java.io.IOException;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
@@ -47,6 +62,7 @@ public class SurfaceRockBlock extends Block {
     @Getter
     private final Material material;
 
+
     public SurfaceRockBlock(Properties properties, Material material) {
         super(properties);
         this.material = material;
@@ -56,6 +72,40 @@ public class SurfaceRockBlock extends Block {
         if (Platform.isClient()) {
             SurfaceRockRenderer.create(this);
         }
+    }
+
+    @Override
+    public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
+        // Adding waypoints to xaero's map if the player destroyed an indicator
+
+        if(XaerosWorldMapPlugin.isActive) {
+            assert Minecraft.getInstance().player != null;
+            IXaeroMinimapClientPlayNetHandler clientLevel = (IXaeroMinimapClientPlayNetHandler) (Minecraft.getInstance().player.connection);
+            XaeroMinimapSession session = clientLevel.getXaero_minimapSession();
+            WaypointsManager waypointsManager = session.getWaypointsManager();
+            String oreName = I18n.get(this.getName().getString());
+            player.sendSystemMessage(Component.literal((player.getName() + " destroyed an ore indicator! Name: " + oreName)));
+
+            //Get vein info for a specified chunk
+
+            if(level instanceof ServerLevel serverLevel){
+                Vein vein = SaveVeinLocation.get(serverLevel).GetVeinsForChunk(pos);
+                if (vein == null){
+                    return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+                }
+                Waypoint instant = new Waypoint(pos.getX(), pos.getY(), pos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0);
+                waypointsManager.getWaypoints().getList().add(instant);
+
+            }
+
+            try {
+                XaeroMinimap.instance.getSettings().saveWaypoints(waypointsManager.getCurrentWorld());
+            } catch (IOException error) {
+                error.printStackTrace();
+            }
+        }
+
+        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
     }
 
     @Override

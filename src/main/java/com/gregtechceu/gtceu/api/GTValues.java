@@ -96,6 +96,7 @@ public class GTValues {
 
     public static final String
             MODID_TOP = "theoneprobe",
+            MODID_XAEROSWORLDMAP = "xaeroworldmap",
             MODID_JEI = "jei",
             MODID_APPENG = "ae2",
             MODID_KUBEJS = "kubejs",

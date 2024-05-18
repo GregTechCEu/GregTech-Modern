@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.api.data.worldgen.generator.veins;
 
+import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.GTLayerPattern;
 import com.gregtechceu.gtceu.api.data.worldgen.GTOreDefinition;
+import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
+import com.gregtechceu.gtceu.api.data.worldgen.Vein;
 import com.gregtechceu.gtceu.api.data.worldgen.generator.VeinGenerator;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreBlockPlacer;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
@@ -14,8 +17,11 @@ import com.tterrag.registrate.util.nullness.NonNullSupplier;
 import it.unimi.dsi.fastutil.objects.Object2ObjectOpenHashMap;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -66,7 +72,13 @@ public class LayeredVeinGenerator extends VeinGenerator {
     public Map<BlockPos, OreBlockPlacer> generate(WorldGenLevel level, RandomSource random, GTOreDefinition entry, BlockPos origin) {
         Map<BlockPos, OreBlockPlacer> generatedBlocks = new Object2ObjectOpenHashMap<>();
         var patternPool = this.layerPatterns;
+        List<Block> TranslatedBlocks = new ArrayList<>();
+        getAllBlocks().forEach(blockState -> {
+            TranslatedBlocks.add(blockState.getBlock());
+        });
 
+        SaveVeinLocation.get(level.getLevel()).saveVein(new ChunkPos(origin), new Vein(TranslatedBlocks));
+        // cant cast like this.  ^^^^
         if (patternPool.isEmpty())
             return Map.of();
 

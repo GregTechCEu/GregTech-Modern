@@ -76,6 +76,12 @@ dependencies {
     modImplementation("maven.modrinth:embeddium:0.2.10+mc1.20.1")
     modImplementation("maven.modrinth:oculus:1.20.1-1.6.9")
 
+    // xaerosWorldMap
+    modImplementation("curse.maven:xaeros-world-map-317780:${this.forge.versions.xaeros.world.map.get()}")
+
+    // xaerosMiniMap
+    modImplementation("curse.maven:xaeros-minimap-263420:5262365")
+
     // Runtime only testing mods
     //modRuntimeOnly(forge.worldStripper)
 }
