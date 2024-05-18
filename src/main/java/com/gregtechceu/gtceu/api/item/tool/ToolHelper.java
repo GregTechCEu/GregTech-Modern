@@ -421,7 +421,7 @@ public class ToolHelper {
                                 // Only apply fortune on ore -> crushed forge hammer recipes
                                 if (ChemicalHelper.getPrefix(output.getItem()) == TagPrefix.crushed) {
                                     output = output.copy();
-                                    output.grow(random.nextInt(fortune));
+                                    if (fortune > 0) output.grow(random.nextInt(fortune));
                                     drops.add(output);
                                 }
                             }

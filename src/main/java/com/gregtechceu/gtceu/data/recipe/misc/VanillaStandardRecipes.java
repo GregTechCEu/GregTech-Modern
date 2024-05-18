@@ -1016,7 +1016,7 @@ public class VanillaStandardRecipes {
                 .outputItems(new ItemStack(Items.BLAZE_ROD))
                 .save(provider);
 
-        FLUID_HEATER_RECIPES.recipeBuilder("mud_to_clay")
+        COMPRESSOR_RECIPES.recipeBuilder("mud_to_clay")
                 .inputItems(Items.MUD)
                 .outputItems(Items.CLAY)
                 .duration(40).EUt(VA[LV]).save(provider);
