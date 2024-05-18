@@ -76,9 +76,7 @@ public class LayeredVeinGenerator extends VeinGenerator {
         getAllBlocks().forEach(blockState -> {
             TranslatedBlocks.add(blockState.getBlock());
         });
-
         SaveVeinLocation.get(level.getLevel()).saveVein(new ChunkPos(origin), new Vein(TranslatedBlocks));
-        // cant cast like this.  ^^^^
         if (patternPool.isEmpty())
             return Map.of();
 

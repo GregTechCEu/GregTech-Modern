@@ -23,6 +23,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
@@ -93,6 +94,17 @@ public class SurfaceRockBlock extends Block {
                 if (vein == null){
                     return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
                 }
+
+//                Check if a waypoint for this chunk is already present.
+
+                for (Waypoint waypoint : waypointsManager.getWaypoints().getList()){
+                    BlockPos waypointPos = new BlockPos(waypoint.getX(), waypoint.getY(), waypoint.getZ());
+
+                    if(new ChunkPos(waypointPos).equals(new ChunkPos(pos))){
+                        return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
+                    }
+                }
+
                 Waypoint instant = new Waypoint(pos.getX(), pos.getY(), pos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0);
                 waypointsManager.getWaypoints().getList().add(instant);
 
