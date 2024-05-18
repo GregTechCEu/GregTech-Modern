@@ -782,8 +782,8 @@ public class GCyMMachines {
             .compassNodeSelf()
             .register();
 
-    public final static MultiblockMachineDefinition MEGA_BLAST_FURNACE = REGISTRATE
-            .multiblock("mega_blast_furnace", CoilWorkableElectricMultiblockMachine::new)
+    public final static MultiblockMachineDefinition ROTARY_HEARTH_FURNACE = REGISTRATE
+            .multiblock("rotary_hearth_furnace", CoilWorkableElectricMultiblockMachine::new)
             .langValue("Rotary Hearth Furnace")
             .tooltips(Component.translatable("gtceu.multiblock.parallelizable.tooltip"))
             .tooltips(Component.translatable("gtceu.machine.available_recipe_map_1.tooltip",

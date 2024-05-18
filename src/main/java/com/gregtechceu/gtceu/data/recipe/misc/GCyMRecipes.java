@@ -107,7 +107,7 @@ public class GCyMRecipes {
         VanillaRecipeHelper.addShapedRecipe(provider, true, "blast_alloy_smelter", BLAST_ALLOY_SMELTER.asStack(), "TCT",
                 "WXW", "TCT", 'C', CustomTags.EV_CIRCUITS, 'T', new UnificationEntry(plate, TantalumCarbide), 'W',
                 new UnificationEntry(cableGtSingle, Aluminium), 'X', ALLOY_SMELTER[EV].asStack());
-        VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_blast_furnace", MEGA_BLAST_FURNACE.asStack(), "PCP",
+        VanillaRecipeHelper.addShapedRecipe(provider, true, "mega_blast_furnace", ROTARY_HEARTH_FURNACE.asStack(), "PCP",
                 "FSF", "DWD", 'C', ZPM_CIRCUITS, 'S', ELECTRIC_BLAST_FURNACE.asStack(), 'F',
                 FIELD_GENERATOR_ZPM.asStack(), 'P', new UnificationEntry(spring, Naquadah), 'D',
                 new UnificationEntry(plateDense, NaquadahAlloy), 'W',
