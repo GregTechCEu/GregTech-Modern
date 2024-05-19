@@ -29,16 +29,20 @@ public class GeneratedVein {
 
     private final Map<ChunkPos, Map<BlockPos, OreBlockPlacer>> generatedOres;
 
+    @Getter
+    public List<GeneratedVeinMetadata> metadata;
+
     /**
      * @param origin              The vein's origin chunk (NOT its actual center, which may be outside the origin chunk)
      * @param oresByPosition      The ore placers for each ore block position.<br>
      *                            Doesn't need to be ordered, grouping by chunks is done internally.
      */
-    public GeneratedVein(ChunkPos origin, IWorldGenLayer layer, Map<BlockPos, OreBlockPlacer> oresByPosition) {
+    public GeneratedVein(ChunkPos origin, IWorldGenLayer layer, Map<BlockPos, OreBlockPlacer> oresByPosition, List<GeneratedVeinMetadata> metadata) {
         this.origin = origin;
         this.layer = layer;
 
         this.generatedOres = WorldGeneratorUtils.groupByChunks(oresByPosition);
+        this.metadata = metadata;
     }
 
     /**

@@ -24,7 +24,7 @@ public class SaveVeinLocation extends SavedData
     private final Map<ChunkPos, Vein> veinMap = new HashMap<>();
 
     @Nonnull
-    public static SaveVeinLocation get(ServerLevel level){
+//    public static SaveVeinLocation get(ServerLevel level){
 //        if(level.isClientSide){
 //            throw new RuntimeException("Unable to access this metod from cilent side");
 //        }

@@ -12,5 +12,6 @@ public record GeneratedVeinMetadata(
         @NotNull ChunkPos originChunk,
         @NotNull BlockPos center,
         @NotNull GTOreDefinition definition
+
 ) {
 }

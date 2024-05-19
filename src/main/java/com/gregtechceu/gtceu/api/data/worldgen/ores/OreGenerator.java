@@ -86,11 +86,11 @@ public class OreGenerator {
                         data,
                         new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong())
                 ))
-                .flatMap(config -> generateOres(config, level, chunkPos).stream())
+                .flatMap(config -> generateOres(config, level, chunkPos, metadata).stream())
                 .toList();
     }
 
-    private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos) {
+    private Optional<GeneratedVein> generateOres(VeinConfiguration config, WorldGenLevel level, ChunkPos chunkPos, List<GeneratedVeinMetadata> MeVeinMetadata) {
         GTOreDefinition definition = config.data.definition();
         Map<BlockPos, OreBlockPlacer> generatedVeins = definition.veinGenerator()
                 .generate(level, config.newRandom(), definition, config.data.center());
@@ -100,7 +100,7 @@ public class OreGenerator {
             return Optional.empty();
         }
 
-        return Optional.of(new GeneratedVein(chunkPos, definition.layer(), generatedVeins));
+        return Optional.of(new GeneratedVein(chunkPos, definition.layer(), generatedVeins, MeVeinMetadata)); // place some metadata here
     }
     private List<VeinConfiguration> createConfigs(WorldGenLevel level, ChunkGenerator generator, ChunkPos chunkPos) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunkPos.toLong());
@@ -114,7 +114,8 @@ public class OreGenerator {
                             new IllegalStateException("Cannot determine y coordinate for the vein at " + veinCenter)
                     );
 
-                    return new VeinConfiguration(new GeneratedVeinMetadata(id, chunkPos, origin, entry), random);
+
+                    return new VeinConfiguration(new GeneratedVeinMetadata(id, chunkPos, origin, entry), random); // Place vein type here
                 })
         ).toList();
     }

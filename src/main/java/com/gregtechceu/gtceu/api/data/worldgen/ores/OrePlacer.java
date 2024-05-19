@@ -50,9 +50,14 @@ public class OrePlacer {
         generatedVeins.forEach(generatedVein -> {
 
             GTCEu.LOGGER.info("Vein at %s, i: %s".formatted(generatedVein.getOrigin(), counter)); // to be removed, for debbuging
+
+            generatedVein.metadata.forEach(data -> {
+                GTCEu.LOGGER.info("Block cordinates of the center of the vein: %s. Veins id is: %s".formatted(data.center(), data.id()));
+            });
+
             counter.getAndIncrement(); // to be removed, for debbuging
             List<Block> testBlock = new ArrayList<>();
-            testBlock.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(GTCEu.MOD_ID, "gtceu:iron_ring")));
+            testBlock.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(GTCEu.MOD_ID, "iron_ring")));
             SaveVeinLocation.get(level.getLevel()).saveVein(chunk.getPos(), new Vein(testBlock));
 
         });
