@@ -12,11 +12,4 @@ public class XaerosWorldMapPlugin {
     public static void init(){
         isActive = true;
     }
-
-    @SubscribeEvent
-    public void onRightClickBlock(PlayerInteractEvent.RightClickBlock event){
-        BlockPos pos = event.getPos();
-        GTCEu.LOGGER.info("Right clicked pressed at ${}", pos.getX());
-//        Waypoint waypoint = new Waypoint(pos.getX(), pos.getY() + 2, pos.getZ(), "test", "XD", 2, 0, false);
-    }
 }

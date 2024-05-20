@@ -87,8 +87,6 @@ public class SurfaceRockBlock extends Block {
             XaeroMinimapSession session = clientLevel.getXaero_minimapSession();
             WaypointsManager waypointsManager = session.getWaypointsManager();
             String oreName = I18n.get(this.getName().getString());
-            player.sendSystemMessage(Component.literal((player.getName() + " destroyed an ore indicator! Name: " + oreName))); // to be removed, for debbuging
-
             //Get vein info for a specified chunk
 
             if(level instanceof ServerLevel serverLevel){
