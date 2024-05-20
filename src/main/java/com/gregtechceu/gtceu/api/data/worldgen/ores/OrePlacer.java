@@ -2,28 +2,20 @@ package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
-import com.gregtechceu.gtceu.api.data.worldgen.Vein;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.SectionPos;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.chunk.BulkSectionAccess;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkGenerator;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.level.levelgen.structure.templatesystem.RuleTest;
-import net.minecraftforge.registries.ForgeRegistries;
 
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 
@@ -48,8 +40,6 @@ public class OrePlacer {
         var generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
         generatedVeins.forEach(generatedVein -> {
             generatedVein.metadata.forEach(data -> {
-                GTCEu.LOGGER.info("Vein at %s".formatted(generatedVein.getOrigin()));
-                GTCEu.LOGGER.info("Block cordinates of the center of the vein: %s. Veins id is: %s".formatted(data.center(), data.id()));
                 SaveVeinLocation.get(level.getLevel()).saveVein(data.center(), data.id());
             });
         });
