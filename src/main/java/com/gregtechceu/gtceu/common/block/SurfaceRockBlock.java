@@ -101,7 +101,7 @@ public class SurfaceRockBlock extends Block {
 
                 for (Waypoint waypoint : waypointsManager.getWaypoints().getList()) {
                     BlockPos waypointPos = new BlockPos(waypoint.getX(), waypoint.getY(), waypoint.getZ());
-
+                    // Waypoint in the same chunk, we return, don't need to duplicate
                     if (new ChunkPos(waypointPos).equals(new ChunkPos(pos))) {
                         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
                     }
@@ -110,12 +110,17 @@ public class SurfaceRockBlock extends Block {
                 var random = new XoroshiroRandomSource(serverLevel.getSeed() ^ chunkPos.toLong());
 
                 Optional<BlockPos> veinCenter = OreVeinUtil.getVeinCenter(chunkPos, random);
-                vein.forEach(veinResourceLocation -> {
-                    final String localizedVeinName = I18n.get(veinResourceLocation.toLanguageKey().replace("gtceu.", "gtceu.jei.ore_vein.")); //voodoo magic <- to allow using predefined jei ore veins locals
-                    final var instant = new Waypoint(pos.getX(), pos.getY(), pos.getZ(), "%s: %s".formatted(I18n.get("veins.possible.vein.location"), localizedVeinName), localizedVeinName.substring(0, 1), 0);
-                    waypointsManager.getWaypoints().getList().add(instant);
-                });
 
+                StringBuilder comboVeinsName = new StringBuilder();
+
+                //voodoo magic <- to allow using predefined jei ore veins locals
+                for (ResourceLocation veinResourceLocation : vein) {
+                    comboVeinsName.append(I18n.get(veinResourceLocation.toLanguageKey().replace("gtceu.", "gtceu.jei.ore_vein.")));
+                    comboVeinsName.append("/");
+                }
+                final String combinedTrimedVeinName = comboVeinsName.substring(0, comboVeinsName.length()-2);
+                final var instant = new Waypoint(pos.getX(), pos.getY(), pos.getZ(), "%s: %s".formatted(I18n.get("veins.possible.vein.location"), combinedTrimedVeinName), combinedTrimedVeinName.substring(0, 1), 0);
+                waypointsManager.getWaypoints().getList().add(instant);
             }
 
             try {
