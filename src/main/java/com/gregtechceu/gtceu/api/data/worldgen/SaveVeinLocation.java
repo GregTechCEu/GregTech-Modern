@@ -8,12 +8,8 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
-import net.minecraft.world.level.Level;
-import net.minecraft.world.level.WorldGenLevel;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.saveddata.SavedData;
 import net.minecraft.world.level.storage.DimensionDataStorage;
-import net.minecraftforge.registries.ForgeRegistries;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nonnull;
@@ -21,77 +17,80 @@ import java.util.*;
 
 public class SaveVeinLocation extends SavedData
 {
-    private final Map<ChunkPos, Vein> veinMap = new HashMap<>();
+    private final Map<BlockPos, ResourceLocation> veinNameMap = new HashMap<>(); // Some other data storage technique may need to be considered to provide faster lookup time when querying for area?
 
     @Nonnull
     public static SaveVeinLocation get(ServerLevel level){
-//        if(level.isClientSide){
-//            throw new RuntimeException("Unable to access this metod from cilent side");
-//        }
+        if(level.isClientSide){
+            throw new RuntimeException("Unable to access this metod from cilent side");
+        }
         DimensionDataStorage storage = level.getDataStorage();
         return storage.computeIfAbsent(SaveVeinLocation::new, SaveVeinLocation::new, "veinmanager");
     }
 
-    public Vein GetVeinsForChunk(BlockPos bpos){
-        ChunkPos cords = new ChunkPos(bpos);
-
-        GTCEu.LOGGER.info("Trying a acces a vein in chunk with cords [%s, %s cp:(%s)]; found vein: [%s] veinMap is: %s".formatted(cords.x, cords.z, cords, veinMap.get(bpos), veinMap));
-
-        return veinMap.get(cords);
+    public ResourceLocation getVeinsForBlock(BlockPos veinCenter){
+        GTCEu.LOGGER.info("Trying a acces a vein in chunk with cords [cp:(%s)]; found vein: [%s] veinMap is: %s".formatted(veinCenter, veinNameMap.get(veinCenter), veinNameMap));
+        return veinNameMap.get(veinCenter);
     }
 
-    public void saveVein(ChunkPos pos, Vein vein){
-        veinMap.put(pos, vein);
-        String name = ForgeRegistries.BLOCKS.getKey(vein.containingBlocks.get(0)).toString();
-        GTCEu.LOGGER.info("Adding a vein to be saved. Ore vein at %s, with blocks: %s".formatted(pos, name)); // Move this so all vein types are affected
+    /**
+     *
+     * @param position Origin of the searched area
+     * @param radius A square area to be searched, Y cord is ignored
+     * @return A veins Registry Entry.
+     */
+    public List<ResourceLocation> getVeinsForArea(BlockPos position, int radius){
+        // I don't love this, but I don't have a better solution. -> maybe having the "radius" pre-defined and computing this when saving the veins would be a good solution.
+        int minX = position.getX() - radius;
+        int maxX = position.getX() + radius;
+        int minZ = position.getZ() - radius;
+        int maxZ = position.getZ() + radius;
+
+        List<ResourceLocation> matchingVeins = new ArrayList<>();
+        veinNameMap.forEach((blockPos, resourceLocation) -> {
+            if ((blockPos.getX() >= minX && blockPos.getX() <= maxX) && (blockPos.getZ() >= minZ && blockPos.getZ() <= maxZ)){
+                matchingVeins.add(resourceLocation);
+            }
+        });
+        return matchingVeins;
+    }
+
+    public void saveVein(BlockPos pos, ResourceLocation veinID){
+        veinNameMap.put(pos, veinID);
+        GTCEu.LOGGER.info("Adding a vein to be saved. Ore vein at %s, with resourceLoc: %s".formatted(pos, veinID)); // Move this so all vein types are affected to be removed for debugging
         setDirty(true);
     }
 
     public SaveVeinLocation(){
-
     }
 
     public SaveVeinLocation(CompoundTag compoundTag){
         ListTag veins = compoundTag.getList("veins", Tag.TAG_COMPOUND);
         veins.forEach(v -> {
             CompoundTag vein = (CompoundTag) v;
-            ChunkPos pos = new ChunkPos(vein.getInt("x"), vein.getInt("z"));
-            List<String> oreStrings = new ArrayList<>();
-            List<Block> oreBlocks = new ArrayList<>();
-            ListTag ores = (ListTag) vein.get("ores");
-            assert ores != null;
-            ores.forEach(o -> {
-                CompoundTag ore = (CompoundTag) o;
-                oreStrings.add(ore.getString("ore"));
-            });
-
-            oreStrings.forEach(oreString -> oreBlocks.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(oreString.replace("+", ":")))));
-            veinMap.put(pos, new Vein(oreBlocks));
+            BlockPos veinCenter = new BlockPos(vein.getInt("x"), vein.getInt("y"), vein.getInt("z"));
+            ResourceLocation veinID = new ResourceLocation(GTCEu.MOD_ID, vein.getString("veinID"));
+            veinNameMap.put(veinCenter, veinID);
         });
-        GTCEu.LOGGER.info("Loading data from saved veins: %s".formatted(veinMap.toString()));
+        GTCEu.LOGGER.info("Loading data from saved veins: %s".formatted(veinNameMap.toString()));
     }
 
     @Override
     public @NotNull CompoundTag save(CompoundTag tag) {
         ListTag veins = new ListTag();
-        veinMap.forEach((chunkPos, generatedVein) ->{
+        veinNameMap.forEach((blockPos, generatedVein) ->{
             CompoundTag vein = new CompoundTag();
 
-            vein.putInt("x", chunkPos.x);
-            vein.putInt("z", chunkPos.z);
+            vein.putInt("x", blockPos.getX());
+            vein.putInt("y", blockPos.getY());
+            vein.putInt("z", blockPos.getZ());
 
-            ListTag ores = new ListTag();
-            generatedVein.containingBlocks.forEach(block -> {
-                CompoundTag ore = new CompoundTag();
-                ore.putString("ore", Objects.requireNonNull(ForgeRegistries.BLOCKS.getKey(block)).toString().replace(":", "+"));
-                ores.add(ore);
-            });
-            vein.put("ores", ores);
+            vein.putString("veinID", generatedVein.getPath());
 
             veins.add(vein);
         });
         tag.put("veins", veins);
-        GTCEu.LOGGER.info("Saving Vein Data: %s".formatted(veinMap.toString()));
+        GTCEu.LOGGER.info("Saving Vein Data: %s".formatted(veinNameMap.toString()));
         return tag;
     }
 

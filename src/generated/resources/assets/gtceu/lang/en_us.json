@@ -5437,5 +5437,6 @@
   "tile.gtceu.petrified_foam.name": "Petrified Foam",
   "tile.gtceu.reinforced_foam.name": "Reinforced Foam",
   "tile.gtceu.reinforced_stone.name": "Reinforced Stone",
-  "tile.gtceu.seal.name": "Sealed Block"
+  "tile.gtceu.seal.name": "Sealed Block",
+  "veins.possible.vein.location": "Possible location of a/an "
 }

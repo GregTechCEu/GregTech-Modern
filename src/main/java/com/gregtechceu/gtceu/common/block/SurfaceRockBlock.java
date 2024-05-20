@@ -2,10 +2,8 @@ package com.gregtechceu.gtceu.common.block;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
-import com.gregtechceu.gtceu.api.data.worldgen.Vein;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
-import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.xaeros.XaerosWorldMapPlugin;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
@@ -17,11 +15,11 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.ChunkPos;
@@ -49,6 +47,7 @@ import xaero.minimap.XaeroMinimap;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 
 @MethodsReturnNonnullByDefault
@@ -93,17 +92,17 @@ public class SurfaceRockBlock extends Block {
             //Get vein info for a specified chunk
 
             if(level instanceof ServerLevel serverLevel){
-                Vein vein = SaveVeinLocation.get(serverLevel).GetVeinsForChunk(pos);
+                List<ResourceLocation> vein = SaveVeinLocation.get(serverLevel).getVeinsForArea(pos, 20); // Move the radius to config.
                 if (vein == null){
                     return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
                 }
 
 //                Check if a waypoint for this chunk is already present.
 
-                for (Waypoint waypoint : waypointsManager.getWaypoints().getList()){
+                for (Waypoint waypoint : waypointsManager.getWaypoints().getList()) {
                     BlockPos waypointPos = new BlockPos(waypoint.getX(), waypoint.getY(), waypoint.getZ());
 
-                    if(new ChunkPos(waypointPos).equals(new ChunkPos(pos))){
+                    if (new ChunkPos(waypointPos).equals(new ChunkPos(pos))) {
                         return super.onDestroyedByPlayer(state, level, pos, player, willHarvest, fluid);
                     }
                 }
@@ -111,9 +110,11 @@ public class SurfaceRockBlock extends Block {
                 var random = new XoroshiroRandomSource(serverLevel.getSeed() ^ chunkPos.toLong());
 
                 Optional<BlockPos> veinCenter = OreVeinUtil.getVeinCenter(chunkPos, random);
-                Waypoint instant;
-                instant = veinCenter.map(blockPos -> new Waypoint(blockPos.getX(), blockPos.getY(), blockPos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0)).orElseGet(() -> new Waypoint(pos.getX(), pos.getY(), pos.getZ(), vein.containingBlocks.toString(), oreName.substring(0, 1), 0));
-                waypointsManager.getWaypoints().getList().add(instant);
+                vein.forEach(veinResourceLocation -> {
+                    final String localizedVeinName = I18n.get(veinResourceLocation.toLanguageKey().replace("gtceu.", "gtceu.jei.ore_vein.")); //voodoo magic <- to allow using predefined jei ore veins locals
+                    final var instant = new Waypoint(pos.getX(), pos.getY(), pos.getZ(), "%s: %s".formatted(I18n.get("veins.possible.vein.location"), localizedVeinName), localizedVeinName.substring(0, 1), 0);
+                    waypointsManager.getWaypoints().getList().add(instant);
+                });
 
             }
 

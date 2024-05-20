@@ -60,8 +60,4 @@ public class GeneratedVein {
     public ChunkPos getOrigin() {
         return this.origin;
     }
-
-    public String getLocalizedWaypointName(){
-        return "test waypoint name";
-    }
 }

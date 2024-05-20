@@ -7,7 +7,6 @@ import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.capability.forge.compat.EUToFEProvider;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
-import com.gregtechceu.gtceu.api.data.worldgen.Vein;
 import com.gregtechceu.gtceu.api.item.DrumMachineItem;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
@@ -27,10 +26,9 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSources;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -54,7 +52,6 @@ import net.minecraftforge.registries.MissingMappingsEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -208,12 +205,12 @@ public class ForgeCommonEventListener {
                 return;
             }
             ServerLevel serverLevel = (ServerLevel) level;
-            Vein veinInChunk = SaveVeinLocation.get(serverLevel).GetVeinsForChunk(new BlockPos((int) player.getEyePosition().x, (int) player.getEyePosition().y, (int) player.getEyePosition().z));
+            ResourceLocation veinInChunk = SaveVeinLocation.get(serverLevel).getVeinsForBlock(new BlockPos((int) player.getEyePosition().x, (int) player.getEyePosition().y, (int) player.getEyePosition().z));
             if (veinInChunk == null){
                 player.sendSystemMessage(Component.literal("No veins in the current chunk!"));
                 return;
             }
-            player.sendSystemMessage(Component.literal("Vein in chunk: %s".formatted(veinInChunk.containingBlocks.toString())));
+            player.sendSystemMessage(Component.literal("Vein in chunk: %s".formatted(veinInChunk.getPath())));
             GTCEu.LOGGER.info("Player crossed a chunk.");
         }
     }

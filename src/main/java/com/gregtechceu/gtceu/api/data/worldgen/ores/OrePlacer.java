@@ -46,20 +46,12 @@ public class OrePlacer {
     public void placeOres(WorldGenLevel level, ChunkGenerator chunkGenerator, ChunkAccess chunk) {
         var random = new XoroshiroRandomSource(level.getSeed() ^ chunk.getPos().toLong());
         var generatedVeins = oreGenCache.consumeChunkVeins(level, chunkGenerator, chunk);
-        AtomicInteger counter = new AtomicInteger(); // to be removed, for debbuging
         generatedVeins.forEach(generatedVein -> {
-
-            GTCEu.LOGGER.info("Vein at %s, i: %s".formatted(generatedVein.getOrigin(), counter)); // to be removed, for debbuging
-
             generatedVein.metadata.forEach(data -> {
+                GTCEu.LOGGER.info("Vein at %s".formatted(generatedVein.getOrigin()));
                 GTCEu.LOGGER.info("Block cordinates of the center of the vein: %s. Veins id is: %s".formatted(data.center(), data.id()));
+                SaveVeinLocation.get(level.getLevel()).saveVein(data.center(), data.id());
             });
-
-            counter.getAndIncrement(); // to be removed, for debbuging
-            List<Block> testBlock = new ArrayList<>();
-            testBlock.add(ForgeRegistries.BLOCKS.getValue(new ResourceLocation(GTCEu.MOD_ID, "iron_ring")));
-            SaveVeinLocation.get(level.getLevel()).saveVein(chunk.getPos(), new Vein(testBlock));
-
         });
         var generatedIndicators = oreGenCache.consumeChunkIndicators(level, chunkGenerator, chunk);
 
