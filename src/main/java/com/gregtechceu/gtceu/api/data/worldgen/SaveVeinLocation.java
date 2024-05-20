@@ -57,7 +57,6 @@ public class SaveVeinLocation extends SavedData
 
     public void saveVein(BlockPos pos, ResourceLocation veinID){
         veinNameMap.put(pos, veinID);
-        GTCEu.LOGGER.info("Adding a vein to be saved. Ore vein at %s, with resourceLoc: %s".formatted(pos, veinID)); // Move this so all vein types are affected to be removed for debugging
         setDirty(true);
     }
 
