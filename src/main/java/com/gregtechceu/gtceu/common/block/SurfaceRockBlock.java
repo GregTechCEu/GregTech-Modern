@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.worldgen.SaveVeinLocation;
 import com.gregtechceu.gtceu.api.data.worldgen.ores.OreVeinUtil;
 import com.gregtechceu.gtceu.client.renderer.block.SurfaceRockRenderer;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.xaeros.XaerosWorldMapPlugin;
 import com.lowdragmc.lowdraglib.Platform;
 import lombok.Getter;
@@ -81,7 +82,7 @@ public class SurfaceRockBlock extends Block {
     public boolean onDestroyedByPlayer(BlockState state, Level level, BlockPos pos, Player player, boolean willHarvest, FluidState fluid) {
         // Adding waypoints to xaero's map if the player destroyed an indicator
 
-        if(XaerosWorldMapPlugin.isActive) {
+        if(XaerosWorldMapPlugin.isActive && ConfigHolder.INSTANCE.client.oreIndicatorWaypointOnDestroy) {
             assert Minecraft.getInstance().player != null;
             IXaeroMinimapClientPlayNetHandler clientLevel = (IXaeroMinimapClientPlayNetHandler) (Minecraft.getInstance().player.connection);
             XaeroMinimapSession session = clientLevel.getXaero_minimapSession();

@@ -435,6 +435,9 @@ public class ConfigHolder {
         public int animationTime = 300;
         @Configurable
         public ArmorHud armorHud = new ArmorHud();
+        @Configurable
+        @Configurable.Comment({"Should waypoints be added when destroying an ore indicator"})
+        public boolean oreIndicatorWaypointOnDestroy = true; // default true
 
         public static class ArmorHud {
             @Configurable
