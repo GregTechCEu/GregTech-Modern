@@ -76,13 +76,13 @@ public class ParallelLogic {
                                            int parallelAmount, Predicate<RecipeCapability<?>> canVoid) {
         Object2IntMap<RecipeCapability<?>> modifiedParallelAmounts = new Object2IntOpenHashMap<>();
         boolean canVoidAll = true;
-        for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
             modifiedParallelAmounts.put(cap, Integer.MAX_VALUE);
             if (!canVoid.test(cap)) {
                 canVoidAll = false;
             }
         }
-        for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
             modifiedParallelAmounts.put(cap, Integer.MAX_VALUE);
             if (!canVoid.test(cap)) {
                 canVoidAll = false;
@@ -94,7 +94,7 @@ public class ParallelLogic {
             return parallelAmount;
         }
 
-        for (RecipeCapability<?> cap : recipe.inputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.outputs.keySet()) {
             if (!cap.doMatchInRecipe()) {
                 continue;
             }
@@ -114,7 +114,7 @@ public class ParallelLogic {
                 }
             }
         }
-        for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
+        for (RecipeCapability<?> cap : recipe.tickOutputs.keySet()) {
             if (!cap.doMatchInRecipe()) {
                 continue;
             }
