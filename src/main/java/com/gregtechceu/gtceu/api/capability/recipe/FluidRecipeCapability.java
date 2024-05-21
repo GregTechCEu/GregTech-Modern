@@ -183,7 +183,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the fluids in the combined Fluid Input inventories and create oversized FluidStacks
-        Map<FluidKey, Long> fluidStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
+        Map<FluidKey, Long> fluidStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
             .stream()
             .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance).map(FluidStack.class::cast).toList())
             .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
