@@ -154,7 +154,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
             long amountLeft = 0;
 
-            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream().map(FluidRecipeCapability.CAP::of).map(ingredient -> ingredient.getStacks()[0]).toList()) {
+            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP)
+                .stream()
+                .map(FluidRecipeCapability.CAP::of)
+                .filter(ingredient -> !ingredient.isEmpty())
+                .map(ingredient -> ingredient.getStacks()[0])
+                .toList()) {
                 if (fluidStack.getAmount() <= 0) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
