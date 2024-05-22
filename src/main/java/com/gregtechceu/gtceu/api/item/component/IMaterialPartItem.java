@@ -4,7 +4,6 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -72,9 +71,10 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     }
 
     @Override
-    default String getItemStackDisplayName(ItemStack itemStack) {
-        var material = getPartMaterial(itemStack);
-        return LocalizationUtils.format(itemStack.getItem().getDescriptionId()) + "-" +LocalizationUtils.format(material.getUnlocalizedName());
+    @Nullable
+    default Component getItemName(ItemStack stack) {
+        var material = getPartMaterial(stack);
+        return Component.translatable(stack.getDescriptionId(), material.getLocalizedName());
     }
 
     @Override

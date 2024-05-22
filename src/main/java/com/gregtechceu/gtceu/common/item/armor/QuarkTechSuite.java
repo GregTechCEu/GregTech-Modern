@@ -91,7 +91,7 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
                 if (slotId > -1) {
                     ItemStack stack = player.getInventory().items.get(slotId);
-                    InteractionResultHolder<ItemStack> result = ArmorUtils.canEat(player, stack);
+                    InteractionResultHolder<ItemStack> result = ArmorUtils.eat(player, stack);
                     stack = result.getObject();
                     if (stack.isEmpty())
                         player.getInventory().items.set(slotId, ItemStack.EMPTY);
@@ -327,5 +327,10 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
             lines.add(Component.translatable("metaarmor.tooltip.falldamage"));
             lines.add(Component.translatable("metaarmor.tooltip.jump"));
         }
+    }
+
+    @Override
+    public boolean isPPE() {
+        return true;
     }
 }
