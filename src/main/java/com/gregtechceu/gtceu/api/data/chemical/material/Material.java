@@ -1270,9 +1270,6 @@ public class Material implements Comparable<Material> {
         private Element element;
 
         private MaterialInfo(ResourceLocation resourceLocation) {
-            String name = resourceLocation.getPath();
-            if (!FormattingUtil.toLowerCaseUnderscore(FormattingUtil.lowerUnderscoreToUpperCamel(name)).equals(name))
-                throw new IllegalStateException("Cannot add materials with names like 'materialnumber'! Use 'material_number' instead.");
             this.resourceLocation = resourceLocation;
         }
 
