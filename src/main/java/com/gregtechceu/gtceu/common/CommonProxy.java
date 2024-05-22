@@ -39,6 +39,7 @@ import com.gregtechceu.gtceu.data.pack.GTDynamicResourcePack;
 import com.gregtechceu.gtceu.data.pack.GTPackSource;
 import com.gregtechceu.gtceu.forge.AlloyBlastPropertyAddition;
 import com.gregtechceu.gtceu.integration.GTOreVeinWidget;
+import com.gregtechceu.gtceu.integration.jm.JourneyMapPlugin;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuStartupEvents;
 import com.gregtechceu.gtceu.integration.kjs.GTRegistryInfo;
 import com.gregtechceu.gtceu.integration.kjs.events.MaterialModificationEventJS;
@@ -91,6 +92,10 @@ public class CommonProxy {
         GTFeatures.init(eventBus);
         // init common features
         GTRegistries.GLOBAL_LOOT_MODIFIES.register("tool", () -> ToolLootModifier.CODEC);
+
+
+        // init journey map comp
+        JourneyMapPlugin.init(eventBus);
     }
 
     public static void init() {
