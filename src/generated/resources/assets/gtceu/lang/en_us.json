@@ -2054,6 +2054,7 @@
   "config.gtceu.option.harderCharcoalRecipe": "harderCharcoalRecipe",
   "config.gtceu.option.harderCircuitRecipes": "harderCircuitRecipes",
   "config.gtceu.option.harderRods": "harderRods",
+  "config.gtceu.option.hideOreProcessingDiagrams": "hideOreProcessingDiagrams",
   "config.gtceu.option.hazardsEnabled": "hazardsEnabled",
   "config.gtceu.option.hideFacadesInJEI": "hideFacadesInJEI",
   "config.gtceu.option.hideFilledCellsInJEI": "hideFilledCellsInJEI",

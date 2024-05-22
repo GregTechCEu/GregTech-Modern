@@ -5,6 +5,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.emi.multipage.MultiblockInfoEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.oreprocessing.GTOreProcessingEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.orevein.GTBedrockFluidEmiCategory;
@@ -32,7 +33,7 @@ public class GTEMIPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
-        registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
         registry.addCategory(GTOreVeinEmiCategory.CATEGORY);
         registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
@@ -52,13 +53,13 @@ public class GTEMIPlugin implements EmiPlugin {
         } catch (NullPointerException ignored){
         }
         GTRecipeTypeEmiCategory.registerDisplays(registry);
-        GTOreProcessingEmiCategory.registerDisplays(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) GTOreProcessingEmiCategory.registerDisplays(registry);
         GTOreVeinEmiCategory.registerDisplays(registry);
         GTBedrockFluidEmiCategory.registerDisplays(registry);
         // workstations
         MultiblockInfoEmiCategory.registerWorkStations(registry);
         GTRecipeTypeEmiCategory.registerWorkStations(registry);
-        GTOreProcessingEmiCategory.registerWorkStations(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) GTOreProcessingEmiCategory.registerWorkStations(registry);
         GTOreVeinEmiCategory.registerWorkStations(registry);
         GTBedrockFluidEmiCategory.registerWorkStations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
