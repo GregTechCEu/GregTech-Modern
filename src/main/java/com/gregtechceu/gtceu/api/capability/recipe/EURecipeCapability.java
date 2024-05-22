@@ -50,22 +50,26 @@ public class EURecipeCapability extends RecipeCapability<Long> {
             maxVoltage = GTValues.V[tieredMachine.getTier()];
         }
 
-        long recipeEUt = RecipeHelper.getInputEUt(recipe);
+        long recipeEUt = RecipeHelper.getOutputEUt(recipe);
         if (recipeEUt == 0) {
-            recipeEUt = RecipeHelper.getOutputEUt(recipe);
+            return Integer.MAX_VALUE;
         }
         return Math.abs((int) (maxVoltage / recipeEUt));
     }
 
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
-        long needed = RecipeHelper.getInputEUt(recipe);
-        long available = Objects
-                .requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, EURecipeCapability.CAP),
-                        Collections::<IRecipeHandler<?>>emptyList)
-                .stream()
-                .map(handler -> Double.valueOf(handler.getTotalContentAmount()).longValue())
-                .reduce(0L, Long::sum);
-        return (int) Math.min(parallelAmount, available / needed);
+        long maxVoltage = Long.MAX_VALUE;
+        if (holder instanceof IOverclockMachine overclockMachine) {
+            maxVoltage = overclockMachine.getOverclockVoltage();
+        } else if (holder instanceof ITieredMachine tieredMachine) {
+            maxVoltage = GTValues.V[tieredMachine.getTier()];
+        }
+
+        long recipeEUt = RecipeHelper.getInputEUt(recipe);
+        if (recipeEUt == 0) {
+            return Integer.MAX_VALUE;
+        }
+        return Math.abs((int) (maxVoltage / recipeEUt));
     }
 }
