@@ -2039,6 +2039,7 @@
   "config.gtceu.option.energy": "energy",
   "config.gtceu.option.energyConsumption": "energyConsumption",
   "config.gtceu.option.energyUsageMultiplier": "energyUsageMultiplier",
+  "config.gtceu.option.prospectorEnergyUseMultiplier": "prospectorEnergyUsageMultiplier",
   "config.gtceu.option.euToPlatformRatio": "euToPlatformRatio",
   "config.gtceu.option.flintAndSteelRequireSteel": "flintAndSteelRequireSteel",
   "config.gtceu.option.gameplay": "gameplay",
