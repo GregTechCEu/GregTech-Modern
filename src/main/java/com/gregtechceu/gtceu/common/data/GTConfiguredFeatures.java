@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.common.data;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.worldgen.RubberFoliagePlacer;
 import com.gregtechceu.gtceu.common.worldgen.RubberTrunkPlacer;
+import com.gregtechceu.gtceu.common.worldgen.feature.configurations.FluidSproutConfiguration;
 import com.gregtechceu.gtceu.common.worldgen.feature.configurations.StoneBlobConfiguration;
 import net.minecraft.core.Holder;
 import net.minecraft.data.worldgen.features.FeatureUtils;
@@ -38,6 +39,6 @@ public class GTConfiguredFeatures {
         new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), GTBlocks.RED_GRANITE.getDefaultState()), UniformInt.of(20, 30)));
     public static final Holder<ConfiguredFeature<StoneBlobConfiguration, ?>> MARBLE_BLOB = FeatureUtils.register(GTCEu.MOD_ID + ":marble_blob", GTFeatures.STONE_BLOB.get(),
         new StoneBlobConfiguration(OreConfiguration.target(new TagMatchTest(BlockTags.STONE_ORE_REPLACEABLES), GTBlocks.MARBLE.getDefaultState()), UniformInt.of(20, 30)));
-    public static final Holder<ConfiguredFeature<StoneBlobConfiguration, ?>> FLUID_SPROUT = FeatureUtils.register(GTCEu.MOD_ID + ":raw_oil_sprout", GTFeatures.FLUID_SPROUT.get(),
+    public static final Holder<ConfiguredFeature<FluidSproutConfiguration, ?>> FLUID_SPROUT = FeatureUtils.register(GTCEu.MOD_ID + ":raw_oil_sprout", GTFeatures.FLUID_SPROUT.get(),
         new FluidSproutConfiguration(GTMaterials.RawOil.getFluid(), UniformInt.of(9, 13), UniformInt.of(6, 9), 0.4f));
 }

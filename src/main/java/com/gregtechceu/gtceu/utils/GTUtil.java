@@ -4,9 +4,9 @@ import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.LDLib;
@@ -441,7 +441,7 @@ public class GTUtil {
 
         if(poisonProperty.getHazardType().getProtectionType().isProtected(livingEntity)) return; //entity has proper safety equipment
         if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
-            livingEntity.hurt(GTDamageTypes.CHEMICAL.source(livingEntity.level()), poisonProperty.getDamage().damage());
+            livingEntity.hurt(DamageSources.getChemicalDamage(), poisonProperty.getDamage().damage());
 
         if(poisonProperty.getEffect()!=null)
             poisonProperty.getEffect().apply(livingEntity);

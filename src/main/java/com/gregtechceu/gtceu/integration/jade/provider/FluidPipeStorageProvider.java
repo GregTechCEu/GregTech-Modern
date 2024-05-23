@@ -8,9 +8,9 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraftforge.fluids.FluidStack;
 import org.jetbrains.annotations.Nullable;
 import snownee.jade.api.Accessor;
-import snownee.jade.api.fluid.JadeFluidObject;
 import snownee.jade.api.view.*;
 
 import java.util.ArrayList;
@@ -21,7 +21,7 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
 
     @Override
     public List<ClientViewGroup<FluidView>> getClientGroups(Accessor<?> accessor, List<ViewGroup<CompoundTag>> groups) {
-        return ClientViewGroup.map(groups, FluidView::readDefault, (group, clientGroup) -> {
+        return ClientViewGroup.map(groups, FluidView::read, (group, clientGroup) -> {
             if(group.id != null) {
                 clientGroup.title = Component.literal(group.id);
             }
@@ -33,7 +33,7 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
     public @Nullable List<ViewGroup<CompoundTag>> getGroups(ServerPlayer serverPlayer, ServerLevel serverLevel, FluidPipeBlockEntity pipe, boolean showDetails) {
         List<ViewGroup<CompoundTag>> tanks = new ArrayList<>();
         for(var tank : pipe.getFluidTanks()) {
-            tanks.add(new ViewGroup<>(List.of(FluidView.writeDefault(JadeFluidObject.of(tank.getFluid().getFluid(), tank.getFluidAmount()), tank.getCapacity()))));
+            tanks.add(new ViewGroup<>(List.of(FluidView.fromFluidStack(new FluidStack(tank.getFluid().getFluid(), (int) tank.getFluidAmount()), (int) tank.getCapacity()))));
         }
         return tanks;
     }

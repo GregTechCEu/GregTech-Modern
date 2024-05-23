@@ -272,7 +272,7 @@ public class GTBlocks {
     private static void registerCableBlock(Material material, Insulation insulation, GTRegistrate registrate) {
         var entry = registrate.block("%s_%s".formatted(material.getName(), insulation.name), p -> new CableBlock(p, insulation, material))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(p -> p.dynamicShape().noOcclusion().noLootTable().forceSolidOn())
+                .properties(p -> p.dynamicShape().noOcclusion().noLootTable())
                 .transform(unificationBlock(insulation.tagPrefix, material))
                 .blockstate(NonNullBiConsumer.noop())
                 .setData(ProviderType.LANG, NonNullBiConsumer.noop())
@@ -315,7 +315,7 @@ public class GTBlocks {
                     if (doMetalPipe(material)) {
                         p.sound(GTSoundTypes.METAL_PIPE);
                     }
-                    return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
+                    return p.dynamicShape().noOcclusion().noLootTable();
                 })
                 .transform(unificationBlock(fluidPipeType.tagPrefix, material))
                 .blockstate(NonNullBiConsumer.noop())
@@ -358,7 +358,7 @@ public class GTBlocks {
                     if (doMetalPipe(material)) {
                         p.sound(GTSoundTypes.METAL_PIPE);
                     }
-                    return p.dynamicShape().noOcclusion().noLootTable().forceSolidOn();
+                    return p.dynamicShape().noOcclusion().noLootTable();
                 })
                 .transform(unificationBlock(itemPipeType.getTagPrefix(), material))
                 .blockstate(NonNullBiConsumer.noop())
@@ -386,7 +386,7 @@ public class GTBlocks {
         var type = LaserPipeType.values()[index];
         var entry = REGISTRATE.block("%s_laser_pipe".formatted(type.getSerializedName()), (p) -> new LaserPipeBlock(p, type))
                 .initialProperties(() -> Blocks.IRON_BLOCK)
-                .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
+                .properties(p -> p.dynamicShape().noOcclusion())
                 .blockstate(NonNullBiConsumer.noop())
                 .defaultLoot()
                 .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))
@@ -412,7 +412,7 @@ public class GTBlocks {
         var type = OpticalPipeType.values()[index];
         var entry = REGISTRATE.block("%s_optical_pipe".formatted(type.getSerializedName()), (p) -> new OpticalPipeBlock(p, type))
             .initialProperties(() -> Blocks.IRON_BLOCK)
-            .properties(p -> p.dynamicShape().noOcclusion().forceSolidOn())
+            .properties(p -> p.dynamicShape().noOcclusion())
             .blockstate(NonNullBiConsumer.noop())
             .defaultLoot()
             .tag(GTToolType.WIRE_CUTTER.harvestTags.get(0))

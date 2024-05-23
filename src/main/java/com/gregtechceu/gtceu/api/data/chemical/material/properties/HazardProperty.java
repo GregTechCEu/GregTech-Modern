@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import lombok.Getter;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
@@ -82,19 +83,19 @@ public class HazardProperty implements IMaterialProperty<HazardProperty>{
     }
 
     public enum ProtectionType{
-        MASK(ArmorItem.Type.HELMET),
-        HANDS(ArmorItem.Type.CHESTPLATE),
+        MASK(EquipmentSlot.HEAD),
+        HANDS(EquipmentSlot.CHEST),
 
-        FULL(ArmorItem.Type.BOOTS, ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS);
-        private final List<ArmorItem.Type> equipmentTypes;
-        ProtectionType(ArmorItem.Type... equipmentTypes){
+        FULL(EquipmentSlot.FEET, EquipmentSlot.HEAD, EquipmentSlot.CHEST, EquipmentSlot.LEGS);
+        private final List<EquipmentSlot> equipmentTypes;
+        ProtectionType(EquipmentSlot... equipmentTypes){
             this.equipmentTypes = List.of(equipmentTypes);
         }
 
         public boolean isProtected(LivingEntity livingEntity){
-            List<ArmorItem.Type> correctArmorItems = new ArrayList<>();
-            for (ArmorItem.Type equipmentType: equipmentTypes) {
-                ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
+            List<EquipmentSlot> correctArmorItems = new ArrayList<>();
+            for (EquipmentSlot equipmentType: equipmentTypes) {
+                ItemStack armor = livingEntity.getItemBySlot(equipmentType);
                 if(!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE()) || armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))){
                     correctArmorItems.add(equipmentType);
                 }

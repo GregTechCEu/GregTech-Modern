@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.RotorProperty;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
@@ -11,7 +12,6 @@ import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.*;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.item.TurbineRotorBehaviour;
 import com.lowdragmc.lowdraglib.gui.widget.SlotWidget;
@@ -189,7 +189,7 @@ public class RotorHolderPartMachine extends TieredPartMachine implements IMachin
     }
     public InteractionResult onUse(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!isRemote() && getRotorSpeed() > 0 && !player.isCreative()) {
-                player.hurt(GTDamageTypes.TURBINE.source(level), TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
+                player.hurt(DamageSources.getTurbineDamage(), TurbineRotorBehaviour.getBehaviour(getRotorStack()).getDamage(getRotorStack()));
                 return InteractionResult.FAIL;
         }
         return InteractionResult.PASS;

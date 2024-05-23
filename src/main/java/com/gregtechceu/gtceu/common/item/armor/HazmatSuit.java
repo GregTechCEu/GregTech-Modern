@@ -13,14 +13,14 @@ import org.jetbrains.annotations.Nullable;
 
 public class HazmatSuit implements IArmorLogic {
 
-    private final ArmorItem.Type type;
+    private final EquipmentSlot type;
 
-    public HazmatSuit(ArmorItem.Type type) {
+    public HazmatSuit(EquipmentSlot type) {
         this.type = type;
     }
 
     @Override
-    public ArmorItem.Type getArmorType() {
+    public EquipmentSlot getArmorType() {
         return this.type;
     }
 
