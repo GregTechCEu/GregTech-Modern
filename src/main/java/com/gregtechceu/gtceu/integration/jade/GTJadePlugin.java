@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.integration.jade.provider.ControllableBlockProvider;
-import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockProvider;
-import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
-import com.gregtechceu.gtceu.integration.jade.provider.WorkableBlockProvider;
+import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.integration.jade.provider.*;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
