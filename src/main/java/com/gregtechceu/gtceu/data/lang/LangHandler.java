@@ -125,6 +125,14 @@ public class LangHandler {
         provider.add("gtceu.tool.class.shears", "Shears");
         provider.add("gtceu.tool.class.drill", "Drill");
 
+        provider.add("gtceu.hazard.description", "§l§cHAZARDOUS §7Hold Shift to show details");
+        provider.add("gtceu.hazard.description_shift", "§l§cHAZARDOUS:");
+        provider.add("gtceu.hazard.contact_poison", "§5Contact Poison");
+        provider.add("gtceu.hazard.inhalation_poison", "§2Poisonous when inhaled");
+        provider.add("gtceu.hazard.corrosive", "§6Corrosive");
+        provider.add("gtceu.hazard.radioactive", "§eRadioactive");
+
+
         provider.add("item.gtceu.tool.replace_tool_head", "Craft with a new Tool Head to replace it");
         provider.add("item.gtceu.tool.usable_as", "§8Usable as: §f%s");
         provider.add("item.gtceu.tool.behavior.silk_ice", "§bIce Cutter: §fSilk Harvests Ice");
@@ -788,8 +796,8 @@ public class LangHandler {
         provider.add("gtceu.recipe.amperage", "Amperage: %s");
         provider.add("gtceu.recipe.not_consumed", "Does not get consumed in the process");
         provider.add("gtceu.recipe.chance", "Chance: %s +%s/tier");
-        provider.add("gtceu.recipe.temperature", "Temperature: %sK");
-        provider.add("gtceu.recipe.temperature_and_coil", "Temp.: %sK (%s)");
+        provider.add("gtceu.recipe.temperature", "Temp: %sK");
+        provider.add("gtceu.recipe.coil.tier", "Coil: %s");
         provider.add("gtceu.recipe.explosive", "Explosive: %s");
         provider.add("gtceu.recipe.eu_to_start", "Energy To Start: %sEU");
         provider.add("gtceu.recipe.dimensions", "Dimensions: %s");

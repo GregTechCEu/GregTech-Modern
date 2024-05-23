@@ -24,6 +24,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.event.ForgeEventFactory;
 
 import javax.annotation.Nonnull;
 import java.text.DecimalFormat;
@@ -141,30 +142,15 @@ public class ArmorUtils {
      *
      * @return result of eating food
      */
-    public static InteractionResultHolder<ItemStack> canEat(Player player, ItemStack food) {
+    public static InteractionResultHolder<ItemStack> eat(Player player, ItemStack food) {
         if (!food.isEdible()) {
             return InteractionResultHolder.fail(food);
         }
 
-        FoodProperties foodItem = food.getItem().getFoodProperties();
+        FoodProperties foodItem = food.getFoodProperties(player);
         if (foodItem != null && player.getFoodData().needsFood()) {
-            if(!player.isCreative()) {
-                food.setCount(food.getCount() - 1);
-            }
-
-            // Find the saturation of the food
-            float saturation = foodItem.getSaturationModifier();
-
-            // The amount of empty food haunches of the player
-            int hunger = 20 - player.getFoodData().getFoodLevel();
-
-            // Increase the saturation of the food if the food replenishes more than the amount of missing haunches
-            saturation += (hunger - foodItem.getNutrition()) < 0 ? foodItem.getNutrition() - hunger : 1.0F;
-
-            // Use this method to add stats for compat with TFC, who overrides addStats(int amount, float saturation) for their food and does nothing
-            player.getFoodData().eat(hunger, saturation);
-
-            return InteractionResultHolder.success(food);
+            ItemStack result = ForgeEventFactory.onItemUseFinish(player, food.copy(), player.getUseItemRemainingTicks(), food.finishUsingItem(player.level, player));
+            return InteractionResultHolder.success(result);
         } else {
             return InteractionResultHolder.fail(food);
         }

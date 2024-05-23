@@ -45,6 +45,14 @@ public class MaterialProperties {
         propertyMap.remove(PropertyKey.EMPTY);
     }
 
+    public <T extends IMaterialProperty<T>> void removeProperty(PropertyKey<T> property) {
+        if (!hasProperty(property))
+            throw new IllegalArgumentException("Material Property " + property.toString() + " not present!");
+        propertyMap.remove(property);
+        if(propertyMap.isEmpty())
+            propertyMap.put(PropertyKey.EMPTY, PropertyKey.EMPTY.constructDefault());
+    }
+
     public <T extends IMaterialProperty<T>> void ensureSet(PropertyKey<T> key, boolean verify) {
         if (!hasProperty(key)) {
             propertyMap.put(key, key.constructDefault());

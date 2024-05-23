@@ -6,14 +6,20 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.component.IMaterialPartItem;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import com.gregtechceu.gtceu.core.mixins.ItemAccessor;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
 
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
@@ -41,21 +47,32 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
         }
     }
 
+    public int getRotorPower(ItemStack stack) {
+        var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
+        return property == null ? -1 : property.getPower();
+    }
+
+    public int getRotorEfficiency(ItemStack stack) {
+        var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
+        return property == null ? -1 : property.getEfficiency();
+    }
+
     @Override
     public int getPartMaxDurability(ItemStack itemStack) {
         var property = getPartMaterial(itemStack).getProperty(PropertyKey.ROTOR);
         return property == null ? -1 : 800 * (int) Math.pow(property.getDurability(), 0.65);
     }
 
-    public int getRotorEfficiency(ItemStack stack) {
-        var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : ((int) ((60 + property.getSpeed() * 8)) / 5 * 5);
+    //TODO : getDamage() and Hurt Player
+    public float getDamage(ItemStack itemStack) {
+        var property = getPartMaterial(itemStack).getProperty(PropertyKey.ROTOR);
+        return property == null ? -1 : property.getDamage();
     }
+
 
     public int getRotorDurabilityPercent(ItemStack itemStack) {
         return 100 - 100 * getPartDamage(itemStack) / getPartMaxDurability(itemStack);
     }
-
     public void applyRotorDamage(ItemStack itemStack, int damageApplied) {
         int rotorDurability = getPartMaxDurability(itemStack);
         int resultDamage = getPartDamage(itemStack) + damageApplied;
@@ -66,13 +83,10 @@ public class TurbineRotorBehaviour implements IMaterialPartItem, ISubItemHandler
         }
     }
 
-    public int getRotorPower(ItemStack stack) {
-        var property = getPartMaterial(stack).getProperty(PropertyKey.ROTOR);
-        return property == null ? -1 : (int) (40 + property.getDamage() * 30);
-    }
+
 
     @Override
-    public void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         IMaterialPartItem.super.appendHoverText(stack, level, tooltipComponents, isAdvanced);
         tooltipComponents.add(Component.translatable("metaitem.tool.tooltip.rotor.efficiency", getRotorEfficiency(stack)));
         tooltipComponents.add(Component.translatable("metaitem.tool.tooltip.rotor.power", getRotorPower(stack)));

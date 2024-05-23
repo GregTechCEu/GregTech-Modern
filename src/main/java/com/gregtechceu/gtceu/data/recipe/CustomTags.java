@@ -6,13 +6,11 @@ import net.minecraft.core.Registry;
 import net.minecraft.data.BuiltinRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.material.Fluid;
 
 public class CustomTags {
 
@@ -58,6 +56,7 @@ public class CustomTags {
     public static final TagKey<Item> UV_BATTERIES = TagUtil.createModItemTag("batteries/uv");
     public static final TagKey<Item> UHV_BATTERIES = TagUtil.createModItemTag("batteries/uhv");
 
+    public static final TagKey<Item> PPE_ARMOR = TagUtil.createModItemTag("ppe_armor");
 
     // Platform-dependent tags
     public static final TagKey<Item> RUBBER_LOGS_ITEM = TagUtil.createModItemTag("logs/rubber");

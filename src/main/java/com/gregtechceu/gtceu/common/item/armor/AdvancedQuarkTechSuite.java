@@ -317,4 +317,5 @@ public class AdvancedQuarkTechSuite extends QuarkTechSuite implements IJetpack {
     public float getFallDamageReduction() {
         return 8f;
     }
+
 }

@@ -2,9 +2,12 @@ package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.damagesource.DamageSources;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
@@ -16,15 +19,15 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
+import net.minecraft.network.chat.Component;
 import net.minecraft.tags.BiomeTags;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.util.RandomSource;
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.Biomes;
 import net.minecraft.world.level.material.Fluid;
@@ -33,7 +36,6 @@ import net.minecraftforge.common.Tags;
 import org.jetbrains.annotations.NotNull;
 import org.lwjgl.glfw.GLFW;
 
-import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -42,6 +44,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Supplier;
+
+import static com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey.HAZARD;
 
 /**
  * @author KilaBash
@@ -402,16 +407,44 @@ public class GTUtil {
         if (!world.canSeeSky(blockPos.above())) {
             return false;
         }
+
         Biome biome = world.getBiome(blockPos.above()).value();
         if (world.isRaining()) {
             if (biome.warmEnoughToRain(blockPos.above()) || biome.coldEnoughToSnow(blockPos.above())) {
                 return false;
             }
         }
-        if (world.getBiome(blockPos.above()).is(Biomes.THE_END.registry())) {
+
+        if (world.getBiome(blockPos.above()).is(BiomeTags.IS_END)) {
             return false;
         }
+
         return world.isDay();
+    }
+
+    public static void appendHazardTooltips(Material material, List<Component> tooltipComponents){
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
+
+        if (GTUtil.isShiftDown()) {
+            tooltipComponents.add(Component.translatable("gtceu.hazard.description_shift"));
+            tooltipComponents.add(Component.translatable("gtceu.hazard." + material.getProperty(HAZARD).getHazardType().name().toLowerCase()));
+            return;
+        }
+        tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
+
+    }
+
+    public static void applyHazardEffects(Material material, LivingEntity livingEntity, Supplier<Boolean> condition){
+        if(!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD) || !condition.get()) return;
+
+        HazardProperty poisonProperty = material.getProperty(HAZARD);
+
+        if(poisonProperty.getHazardType().getProtectionType().isProtected(livingEntity)) return; //entity has proper safety equipment
+        if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
+            livingEntity.hurt(DamageSources.getChemicalDamage(), poisonProperty.getDamage().damage());
+
+        if(poisonProperty.getEffect()!=null)
+            poisonProperty.getEffect().apply(livingEntity);
     }
 
 }

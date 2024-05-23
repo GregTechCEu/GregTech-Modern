@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.gui.widget.ProspectingMapWidget;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.item.component.IItemUIFactory;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -67,7 +68,10 @@ public class ProspectorScannerBehavior implements IItemUIFactory, IInteractionIt
     public boolean drainEnergy(@NotNull ItemStack stack, boolean simulate) {
         IElectricItem electricItem = GTCapabilityHelper.getElectricItem(stack);
         if (electricItem == null) return false;
-        return electricItem.discharge(cost, Integer.MAX_VALUE, true, false, simulate) >= cost;
+
+        int amount = Math.round(cost * (ConfigHolder.INSTANCE.machines.prospectorEnergyUseMultiplier / 100F));
+
+        return electricItem.discharge(amount, Integer.MAX_VALUE, true, false, simulate) >= amount;
     }
 
     @Override

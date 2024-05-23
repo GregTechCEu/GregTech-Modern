@@ -4,11 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -35,6 +35,13 @@ public class SecondDegreeMaterials {
                 .color(0xeee0e0).secondaryColor(0xc1b9a9)
                 .components(Obsidian, 2, Water, 1)
                 .buildAndRegister();
+
+        ActivatedCarbon = new Material.Builder(GTCEu.id("activated_carbon"))
+            .dust(1)
+            .color(0x212125).secondaryColor(0x15151a)
+            .components(Carbon, 1)
+            .flags(DECOMPOSITION_BY_CENTRIFUGING)
+            .buildAndRegister();
 
         Borax = new Material.Builder(GTCEu.id("borax"))
                 .dust(1)
@@ -124,7 +131,7 @@ public class SecondDegreeMaterials {
                 .components(Steel, 1, Tungsten, 1)
                 .toolStats(ToolProperty.Builder.of(9.0F, 7.0F, 2048, 4)
                         .enchantability(14).build())
-                .rotorStats(8.0f, 4.0f, 2560)
+                .rotorStats(160, 120, 4.0f, 2560)
                 .fluidPipeProperties(3587, 225, true)
                 .cableProperties(GTValues.V[5], 3, 2)
                 .blastTemp(3000, GasTier.MID, GTValues.VA[GTValues.EV], 1000)
@@ -139,7 +146,7 @@ public class SecondDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(2.5F, 2.0F, 1024, 2)
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(-0.2F).enchantability(5).build())
-                .rotorStats(8.0f, 2.0f, 256)
+                .rotorStats(100, 120, 2.0f, 256)
                 .itemPipeProperties(2048, 1)
                 .buildAndRegister();
 
@@ -286,7 +293,7 @@ public class SecondDegreeMaterials {
                 .components(Vanadium, 1, Chromium, 1, Steel, 7)
                 .toolStats(ToolProperty.Builder.of(3.0F, 3.0F, 1536, 3)
                         .attackSpeed(-0.2F).enchantability(5).build())
-                .rotorStats(7.0f, 3.0f, 1920)
+                .rotorStats(130, 115, 3.0f, 1920)
                 .fluidPipeProperties(2073, 50, true, true, false, false)
                 .blastTemp(1453, GasTier.LOW)
                 .buildAndRegister();
@@ -322,7 +329,7 @@ public class SecondDegreeMaterials {
                 .components(Naquadah, 2, Osmiridium, 1, Trinium, 1)
                 .toolStats(ToolProperty.Builder.of(40.0F, 12.0F, 3072, 5)
                         .attackSpeed(0.3F).enchantability(33).magnetic().build())
-                .rotorStats(8.0f, 5.0f, 5120)
+                .rotorStats(190, 120, 5.0f, 5120)
                 .cableProperties(GTValues.V[8], 2, 4)
                 .blastTemp(7200, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1000)
                 .buildAndRegister();
@@ -396,6 +403,7 @@ public class SecondDegreeMaterials {
                 .color(0x4C3434)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(CarbonMonoxide, 78, HydrogenSulfide, 21, Neon, 9)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         LiquidNetherAir = new Material.Builder(GTCEu.id("liquid_nether_air"))
@@ -466,7 +474,7 @@ public class SecondDegreeMaterials {
                 .color(0xd1d1d1).secondaryColor(0x000000).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_DENSE, GENERATE_SMALL_GEAR)
                 .components(Palladium, 3, Rhodium, 1)
-                .rotorStats(12.0f, 3.0f, 1024)
+                .rotorStats(130, 155, 3.0f, 1024)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.IV], 1200)
                 .buildAndRegister();
 
@@ -484,6 +492,7 @@ public class SecondDegreeMaterials {
                 .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
                         EXCLUDE_PLATE_COMPRESSOR_RECIPE, DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Silicon, 1, Pyrite, 5, Ruby, 1, Mercury, 3)
+                .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
     }
 }

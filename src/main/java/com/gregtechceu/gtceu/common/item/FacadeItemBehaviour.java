@@ -8,10 +8,10 @@ import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
 import com.gregtechceu.gtceu.common.data.GTCreativeModeTabs;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -38,10 +38,9 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
     }
 
     @Override
-    public String getItemStackDisplayName(ItemStack itemStack) {
-        ItemStack facadeStack = getFacadeStack(itemStack);
-        String name = facadeStack.getItem().getDescriptionId(facadeStack);
-        return LocalizationUtils.format(itemStack.getItem().getDescriptionId()) + "-" +LocalizationUtils.format(name);
+    public @Nullable Component getItemName(ItemStack stack) {
+        ItemStack facadeStack = getFacadeStack(stack);
+        return Component.translatable(stack.getDescriptionId(), facadeStack.getHoverName());
     }
 
     @Override

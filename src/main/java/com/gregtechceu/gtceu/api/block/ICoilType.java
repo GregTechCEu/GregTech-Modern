@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import net.minecraft.resources.ResourceLocation;
 
+import net.minecraftforge.common.util.Lazy;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Arrays;
 import java.util.Comparator;
 
@@ -54,14 +56,13 @@ public interface ICoilType {
      */
     ResourceLocation getTexture();
 
-
-    ICoilType[] ALL_COILS_TEMPERATURE_SORTED = GTCEuAPI.HEATING_COILS.keySet().stream()
+    Lazy<ICoilType[]> ALL_COILS_TEMPERATURE_SORTED = Lazy.of(() -> GTCEuAPI.HEATING_COILS.keySet().stream()
         .sorted(Comparator.comparing(ICoilType::getCoilTemperature))
-        .toArray(ICoilType[]::new);
+        .toArray(ICoilType[]::new));
 
     @Nullable
     static ICoilType getMinRequiredType(int requiredTemperature) {
-        return Arrays.stream(ALL_COILS_TEMPERATURE_SORTED)
+        return Arrays.stream(ALL_COILS_TEMPERATURE_SORTED.get())
             .filter(coil -> coil.getCoilTemperature() >= requiredTemperature)
             .findFirst().orElse(null);
     }

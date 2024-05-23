@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.worldgen.modifier.BiomePlacement;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.DimensionFilter;
 import com.gregtechceu.gtceu.api.data.worldgen.modifier.FrequencyModifier;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.worldgen.feature.FluidSproutFeature;
 import com.gregtechceu.gtceu.common.worldgen.feature.StoneBlobFeature;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -53,6 +54,7 @@ public class GTFeatures {
     public static final DeferredRegister<Feature<?>> FEATURE_REGISTER = DeferredRegister.create(Registry.FEATURE_REGISTRY, GTCEu.MOD_ID);
 
     public static final RegistryObject<StoneBlobFeature> STONE_BLOB = FEATURE_REGISTER.register("stone_blob", StoneBlobFeature::new);
+    public static final RegistryObject<FluidSproutFeature> FLUID_SPROUT = FEATURE_REGISTER.register("fluid_sprout", FluidSproutFeature::new);
 
     public static void init() {
         Object inst = FrequencyModifier.FREQUENCY_MODIFIER; // seemingly useless access to init the class in time
@@ -133,6 +135,16 @@ public class GTFeatures {
                 HeightRangePlacement.uniform(VerticalAnchor.absolute(-8), VerticalAnchor.top())
             ));
         });
+        PLACED_FEATURE_REGISTER.register("raw_oil_sprout", () -> {
+            Registry<ConfiguredFeature<?, ?>> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.CONFIGURED_FEATURE_REGISTRY);
+            var holder = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.CONFIGURED_FEATURE_REGISTRY, GTCEu.id("raw_oil_sprout")));
+            return new PlacedFeature(holder, List.of(
+                RarityFilter.onAverageOnceEvery(64),
+                InSquarePlacement.spread(),
+                BiomeFilter.biome(),
+                HeightRangePlacement.uniform(VerticalAnchor.absolute(10), VerticalAnchor.absolute(40))
+            ));
+        });
 
         BIOME_MODIFIER_REGISTER.register(id.getPath(), () -> {
             Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
@@ -155,6 +167,17 @@ public class GTFeatures {
                 biomes,
                 HolderSet.direct(redGraniteBlob, marbleBlob),
                 GenerationStep.Decoration.UNDERGROUND_ORES
+            );
+        });
+        BIOME_MODIFIER_REGISTER.register("raw_oil_sprout", () -> {
+            Registry<Biome> biomeRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.BIOME_REGISTRY);
+            Registry<PlacedFeature> featureRegistry = BuiltinRegistries.ACCESS.registryOrThrow(Registry.PLACED_FEATURE_REGISTRY);
+            HolderSet<Biome> biomes = new HolderSet.Named<>(biomeRegistry, BiomeTags.IS_OVERWORLD);
+            Holder<PlacedFeature> rawOilSprout = featureRegistry.getOrCreateHolderOrThrow(ResourceKey.create(Registry.PLACED_FEATURE_REGISTRY, GTCEu.id("raw_oil_sprout")));
+            return new ForgeBiomeModifiers.AddFeaturesBiomeModifier(
+                biomes,
+                HolderSet.direct(rawOilSprout),
+                GenerationStep.Decoration.FLUID_SPRINGS
             );
         });
     }
