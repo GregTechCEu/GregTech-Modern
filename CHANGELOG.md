@@ -3,13 +3,24 @@
 Version: 1.2.2.a
 
 ### ADDITIONS:
-- added NO_ORE_SMELTING material flag for stopping ore/raw ore -> dust/ingot/gem smelting
+- Custom coil tiers are now displayed in JEI and displayed on separate lines to the temperature.
+- Turbines now hurt the player when running.
+- Added in-world oil spouts.
+- Made fluid pipes display the fluid contents when using Jade/TOP.
+- Added hazmat armor and added various debuff effects. 
+  - asbestos is now a breathing hazard, uranium is radioactive to touch, etc.
 
 ### CHANGES:
+- Reworked rotor stats by moving efficiency to its own parameter.
+  - PACK/ADDON DEVS NEED TO CHANGE THEIR ROTOR PROPERTIES
+- Number formatting for duration and eu values in JEI.
 
 ### FIXES:
-- Fixed raw diamonds not being smeltable into diamonds, raw coal not being smeltable into coal
-- fixed rubber & treated wood slab tags
-- fixed addon turbine rotors using the wrong material
-- fixed hardWoodRecipes not applying to bamboo
-- fixed transformers not having enough input storage
+- Fixed all pipe blocks being washed away by any fluid.
+- Made active overlay textures actually render on machines when running or paused.
+- Fixed QuarkTech armor consuming lunchboxes and other "foods" that don't get consumed immediately.
+- Fixed various ore smelting recipes were added.
+- Fixed GT armors no longer take durability damage.
+- Updated ru and tw translations.
+- Fixed laser hatches now save the energy between world loads.
+- Fixed dense plates requiring ingots to craft.
