@@ -53,7 +53,7 @@ public class ParallelLogic {
 
         // tick inputs.
         for (RecipeCapability<?> cap : recipe.tickInputs.keySet()) {
-            if (cap.doMatchInRecipe()) {
+            if (cap != EURecipeCapability.CAP && cap.doMatchInRecipe()) {
                 // Find the maximum number of recipes that can be performed from the contents of the input inventories
                 multipliers.add(cap.getMaxParallelRatio(holder, recipe, parallelAmount));
             }
