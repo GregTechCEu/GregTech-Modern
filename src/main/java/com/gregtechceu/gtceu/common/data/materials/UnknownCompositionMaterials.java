@@ -2,10 +2,10 @@ package com.gregtechceu.gtceu.common.data.materials;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
-import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
@@ -555,6 +555,7 @@ public class UnknownCompositionMaterials {
                 .buildAndRegister();
 
         PCBCoolant = new Material.Builder(GTCEu.id("pcb_coolant"))
-                .fluid().color(0xD5D69C).buildAndRegister();
+                .fluid().color(0xD5D69C)
+            .hazard(HazardProperty.HazardType.INHALATION_POISON).buildAndRegister();
     }
 }

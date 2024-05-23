@@ -4,12 +4,14 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.BlastProperty.GasTier;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.Enchantments;
 
 import static com.gregtechceu.gtceu.api.GTValues.*;
@@ -45,6 +47,7 @@ public class FirstDegreeMaterials {
         Asbestos = new Material.Builder(GTCEu.id("asbestos"))
                 .dust(1).ore(3, 1)
                 .color(0xE6E6E6).secondaryColor(0xdbd7bf)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .components(Magnesium, 3, Silicon, 2, Hydrogen, 4, Oxygen, 9)
                 .buildAndRegister();
 
@@ -89,7 +92,7 @@ public class FirstDegreeMaterials {
                 .color(0xffe36e).secondaryColor(0x935828).iconSet(SHINY)
                 .appendFlags(EXT2_METAL, MORTAR_GRINDABLE)
                 .components(Zinc, 1, Copper, 3)
-                .rotorStats(8.0f, 3.0f, 152)
+                .rotorStats(130, 120, 3.0f, 152)
                 .itemPipeProperties(2048, 1)
                 .buildAndRegister();
 
@@ -101,7 +104,7 @@ public class FirstDegreeMaterials {
                 .components(Tin, 1, Copper, 3)
                 .toolStats(ToolProperty.Builder.of(3.0F, 2.0F, 192, 2)
                         .enchantability(18).addTypes(GTToolType.MORTAR).build())
-                .rotorStats(6.0f, 2.5f, 192)
+                .rotorStats(115, 105, 2.5f, 192)
                 .fluidPipeProperties(1696, 20, true)
                 .buildAndRegister();
 
@@ -294,7 +297,7 @@ public class FirstDegreeMaterials {
                         .enchantability(18)
                         .enchantment(Enchantments.BANE_OF_ARTHROPODS, 3)
                         .enchantment(Enchantments.BLOCK_EFFICIENCY, 1).build())
-                .rotorStats(7.0f, 3.0f, 512)
+                .rotorStats(130, 115, 3.0f, 512)
                 .buildAndRegister();
 
         Kanthal = new Material.Builder(GTCEu.id("kanthal"))
@@ -320,7 +323,7 @@ public class FirstDegreeMaterials {
                 .color(0xadc5e8).secondaryColor(0x522a77).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Magnesium, 1, Aluminium, 2)
-                .rotorStats(6.0f, 2.0f, 256)
+                .rotorStats(100, 105, 2.0f, 256)
                 .itemPipeProperties(1024, 2)
                 .buildAndRegister();
 
@@ -402,7 +405,7 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(3.0F, 8.0F, 768, 2)
                         .attackSpeed(0.3F).enchantability(33)
                         .enchantment(Enchantments.SMITE, 3).build())
-                .rotorStats(13.0f, 2.0f, 196)
+                .rotorStats(100, 160, 2.0f, 196)
                 .itemPipeProperties(1024, 2)
                 .blastTemp(1700, GasTier.LOW, GTValues.VA[MV], 1000)
                 .buildAndRegister();
@@ -416,7 +419,7 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(12.0F, 2.0F, 768, 2)
                         .enchantability(33)
                         .enchantment(Enchantments.BLOCK_FORTUNE, 2).build())
-                .rotorStats(14.0f, 2.0f, 152)
+                .rotorStats(100, 170, 2.0f, 152)
                 .itemPipeProperties(1024, 2)
                 .blastTemp(1600, GasTier.LOW, GTValues.VA[MV], 1000)
                 .buildAndRegister();
@@ -427,7 +430,7 @@ public class FirstDegreeMaterials {
                 .color(0x8b7c70).secondaryColor(0x4b3d32).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_GEAR)
                 .components(Gold, 1, Silver, 1, Copper, 3)
-                .rotorStats(12.0f, 2.0f, 256)
+                .rotorStats(100, 155, 2.0f, 256)
                 .itemPipeProperties(1024, 2)
                 .blastTemp(2000, GasTier.LOW, GTValues.VA[MV], 1000)
                 .buildAndRegister();
@@ -438,7 +441,7 @@ public class FirstDegreeMaterials {
                 .color(0xffd26f).secondaryColor(0x895f3d).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL)
                 .components(Bismuth, 1, Zinc, 1, Copper, 3)
-                .rotorStats(8.0f, 3.0f, 256)
+                .rotorStats(130, 120, 3.0f, 256)
                 .blastTemp(1100, GasTier.LOW, GTValues.VA[MV], 1000)
                 .buildAndRegister();
 
@@ -587,7 +590,7 @@ public class FirstDegreeMaterials {
                 .components(Iron, 6, Chromium, 1, Manganese, 1, Nickel, 1)
                 .toolStats(ToolProperty.Builder.of(7.0F, 5.0F, 1024, 3)
                         .enchantability(14).build())
-                .rotorStats(7.0f, 4.0f, 480)
+                .rotorStats(160, 115, 4.0f, 480)
                 .fluidPipeProperties(2428, 75, true, true, true, false)
                 .blastTemp(1700, GasTier.LOW, GTValues.VA[HV], 1100)
                 .buildAndRegister();
@@ -602,7 +605,7 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(5.0F, 3.0F, 512, 3)
                         .addTypes(GTToolType.MORTAR)
                         .enchantability(14).build())
-                .rotorStats(6.0f, 3.0f, 512)
+                .rotorStats(130, 105, 3.0f, 512)
                 .fluidPipeProperties(1855, 50, true)
                 .cableProperties(GTValues.V[EV], 2, 2)
                 .blastTemp(1000, null, GTValues.VA[MV], 800) // no gas tier for steel
@@ -653,7 +656,7 @@ public class FirstDegreeMaterials {
                 .components(Cobalt, 5, Chromium, 2, Nickel, 1, Molybdenum, 1)
                 .toolStats(ToolProperty.Builder.of(10.0F, 7.0F, 2048, 4)
                         .attackSpeed(0.1F).enchantability(21).build())
-                .rotorStats(9.0f, 4.0f, 2048)
+                .rotorStats(160, 130, 4.0f, 2048)
                 .itemPipeProperties(128, 16)
                 .blastTemp(2700, GasTier.MID, GTValues.VA[HV], 1300)
                 .buildAndRegister();
@@ -691,7 +694,7 @@ public class FirstDegreeMaterials {
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 384, 2)
                         .addTypes(GTToolType.MORTAR)
                         .attackSpeed(-0.2F).enchantability(5).build())
-                .rotorStats(6.0f, 3.5f, 384)
+                .rotorStats(145, 105, 3.5f, 384)
                 .buildAndRegister();
         Iron.getProperty(PropertyKey.INGOT).setSmeltingInto(WroughtIron);
         Iron.getProperty(PropertyKey.INGOT).setArcSmeltingInto(WroughtIron);
@@ -768,7 +771,7 @@ public class FirstDegreeMaterials {
                 .color(0xe5dcef).secondaryColor(0x241a44).iconSet(METALLIC)
                 .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_ROTOR, GENERATE_ROUND, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .components(Iridium, 3, Osmium, 1)
-                .rotorStats(9.0f, 3.0f, 3152)
+                .rotorStats(130, 130, 3.0f, 3152)
                 .itemPipeProperties(64, 32)
                 .blastTemp(4500, GasTier.HIGH, GTValues.VA[GTValues.LuV], 900)
                 .buildAndRegister();
@@ -864,6 +867,7 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xecfff3).secondaryColor(0x7d8e83)
                 .components(Calcium, 1, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.CORROSIVE,new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2,1))
                 .buildAndRegister();
 
         SodiumBisulfate = new Material.Builder(GTCEu.id("sodium_bisulfate"))
@@ -909,12 +913,14 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xff6000).secondaryColor(0xFF0000)
                 .components(Potassium, 2, Chromium, 2, Oxygen, 7)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         ChromiumTrioxide = new Material.Builder(GTCEu.id("chromium_trioxide"))
                 .dust(1)
                 .color(0xFFE4E1)
                 .components(Chromium, 1, Oxygen, 3)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         AntimonyTrioxide = new Material.Builder(GTCEu.id("antimony_trioxide"))
@@ -970,6 +976,7 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
+                .hazard(HazardProperty.HazardType.CORROSIVE, new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2, 1))
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))
@@ -1067,7 +1074,7 @@ public class FirstDegreeMaterials {
                 .components(Tungsten, 1, Carbon, 1)
                 .toolStats(ToolProperty.Builder.of(60.0F, 2.0F, 1024, 4)
                         .enchantability(21).build())
-                .rotorStats(12.0f, 4.0f, 1280)
+                .rotorStats(160, 155, 4.0f, 1280)
                 .fluidPipeProperties(3837, 200, true)
                 .blastTemp(3058, GasTier.MID, GTValues.VA[HV], 1500)
                 .buildAndRegister();
@@ -1089,11 +1096,13 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x85FCFF)
                 .components(Nitrogen, 1, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         HydrogenSulfide = new Material.Builder(GTCEu.id("hydrogen_sulfide"))
                 .gas(new FluidBuilder().customStill())
                 .components(Hydrogen, 2, Sulfur, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         NitricAcid = new Material.Builder(GTCEu.id("nitric_acid"))
@@ -1120,18 +1129,21 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0xA0A014)
                 .components(Sulfur, 1, Oxygen, 3)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         SulfurDioxide = new Material.Builder(GTCEu.id("sulfur_dioxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Sulfur, 1, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         CarbonMonoxide = new Material.Builder(GTCEu.id("carbon_monoxide"))
                 .gas()
                 .color(0x0E4880)
                 .components(Carbon, 1, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         HypochlorousAcid = new Material.Builder(GTCEu.id("hypochlorous_acid"))
@@ -1150,12 +1162,14 @@ public class FirstDegreeMaterials {
                 .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x0088AA)
                 .components(Hydrogen, 1, Fluorine, 1)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         NitricOxide = new Material.Builder(GTCEu.id("nitric_oxide"))
                 .gas()
                 .color(0x7DC8F0)
                 .components(Nitrogen, 1, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         Iron3Chloride = new Material.Builder(GTCEu.id("iron_iii_chloride"))
@@ -1191,6 +1205,7 @@ public class FirstDegreeMaterials {
                 .gas()
                 .color(0x7DC8FF)
                 .components(Nitrogen, 2, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister();
 
         EnderPearl = new Material.Builder(GTCEu.id("ender_pearl"))
@@ -1198,6 +1213,7 @@ public class FirstDegreeMaterials {
                 .color(0x8cf4e2).secondaryColor(0x032620).iconSet(SHINY)
                 .flags(NO_SMASHING, NO_SMELTING, GENERATE_PLATE)
                 .components(Beryllium, 1, Potassium, 4, Nitrogen, 5)
+                .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
 
         PotassiumFeldspar = new Material.Builder(GTCEu.id("potassium_feldspar"))
@@ -1375,6 +1391,7 @@ public class FirstDegreeMaterials {
                 .color(0xACAD71).secondaryColor(0x291f34).iconSet(METALLIC)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Osmium, 1, Oxygen, 4)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
                 .buildAndRegister();
 
         IridiumChloride = new Material.Builder(GTCEu.id("iridium_chloride"))

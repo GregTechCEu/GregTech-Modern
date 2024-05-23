@@ -184,10 +184,26 @@ public class ComponentItem extends Item implements HeldItemUIFactory.IHeldItemUI
     }
 
     @Override
+    public Component getName(ItemStack stack) {
+        for (IItemComponent component : components) {
+            if (component instanceof ICustomDescriptionId customDescriptionId) {
+                Component name = customDescriptionId.getItemName(stack);
+                if (name != null) {
+                    return name;
+                }
+            }
+        }
+        return super.getName(stack);
+    }
+
+    @Override
     public String getDescriptionId(ItemStack stack) {
         for (IItemComponent component : components) {
             if (component instanceof ICustomDescriptionId customDescriptionId) {
-                return customDescriptionId.getItemStackDisplayName(stack);
+                String langId = customDescriptionId.getItemDescriptionId(stack);
+                if (langId != null) {
+                    return langId;
+                }
             }
         }
         return super.getDescriptionId(stack);

@@ -154,7 +154,12 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
 
             long amountLeft = 0;
 
-            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP).stream().map(FluidRecipeCapability.CAP::of).map(ingredient -> ingredient.getStacks()[0]).toList()) {
+            for (FluidStack fluidStack : recipe.getOutputContents(FluidRecipeCapability.CAP)
+                .stream()
+                .map(FluidRecipeCapability.CAP::of)
+                .filter(ingredient -> !ingredient.isEmpty())
+                .map(ingredient -> ingredient.getStacks()[0])
+                .toList()) {
                 if (fluidStack.getAmount() <= 0) continue;
                 // Since multiplier starts at Int.MAX, check here for integer overflow
                 if (multiplier > Integer.MAX_VALUE / fluidStack.getAmount()) {
@@ -183,7 +188,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
     @Override
     public int getMaxParallelRatio(IRecipeCapabilityHolder holder, GTRecipe recipe, int parallelAmount) {
         // Find all the fluids in the combined Fluid Input inventories and create oversized FluidStacks
-        Map<FluidKey, Long> fluidStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, ItemRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
+        Map<FluidKey, Long> fluidStacks = Objects.requireNonNullElseGet(holder.getCapabilitiesProxy().get(IO.IN, FluidRecipeCapability.CAP), Collections::<IRecipeHandler<?>>emptyList)
             .stream()
             .map(container -> container.getContents().stream().filter(FluidStack.class::isInstance).map(FluidStack.class::cast).toList())
             .flatMap(container -> GTHashMaps.fromFluidCollection(container).entrySet().stream())
@@ -322,7 +327,7 @@ public class FluidRecipeCapability extends RecipeCapability<FluidIngredient> {
                 tank.setXEIChance(content.chance);
                 tank.setOnAddedTooltips((w, tooltips) -> {
                     GTRecipeWidget.setConsumedChance(content, tooltips);
-                    if (index >= recipe.getOutputContents(this).size()) {
+                    if (index >= (io == IO.IN ? recipe.getInputContents(this) : recipe.getOutputContents(this)).size()) {
                         tooltips.add(Component.translatable("gtceu.gui.content.per_tick"));
                     }
                 });
