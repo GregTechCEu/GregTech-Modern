@@ -1,5 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade.provider;
 
+import com.gregtechceu.gtceu.GTCEu;
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -38,6 +40,6 @@ public enum FluidPipeStorageProvider implements IServerExtensionProvider<FluidPi
 
     @Override
     public ResourceLocation getUid() {
-        return new ResourceLocation("gtm:fluid_storage");
+        return GTCEu.id("fluid_storage");
     }
 }
