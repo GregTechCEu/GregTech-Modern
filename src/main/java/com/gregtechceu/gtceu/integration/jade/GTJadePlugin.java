@@ -1,9 +1,7 @@
 package com.gregtechceu.gtceu.integration.jade;
 
-import com.gregtechceu.gtceu.integration.jade.provider.ControllableBlockProvider;
-import com.gregtechceu.gtceu.integration.jade.provider.ElectricContainerBlockProvider;
-import com.gregtechceu.gtceu.integration.jade.provider.RecipeLogicProvider;
-import com.gregtechceu.gtceu.integration.jade.provider.WorkableBlockProvider;
+import com.gregtechceu.gtceu.common.blockentity.FluidPipeBlockEntity;
+import com.gregtechceu.gtceu.integration.jade.provider.*;
 
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -22,6 +20,8 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockDataProvider(new WorkableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new ControllableBlockProvider(), BlockEntity.class);
         registration.registerBlockDataProvider(new RecipeLogicProvider(), BlockEntity.class);
+
+        registration.registerFluidStorage(FluidPipeStorageProvider.INSTANCE, FluidPipeBlockEntity.class);
     }
 
     @Override
@@ -30,6 +30,8 @@ public class GTJadePlugin implements IWailaPlugin {
         registration.registerBlockComponent(new WorkableBlockProvider(), Block.class);
         registration.registerBlockComponent(new ControllableBlockProvider(), Block.class);
         registration.registerBlockComponent(new RecipeLogicProvider(), Block.class);
+
+        registration.registerFluidStorageClient(FluidPipeStorageProvider.INSTANCE);
     }
 
     /*
