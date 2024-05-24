@@ -40,7 +40,8 @@ public class GTREIPlugin implements REIClientPlugin {
     @Override
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new MultiblockInfoDisplayCategory());
-        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) registry.add(new GTOreProcessingDisplayCategory());
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            registry.add(new GTOreProcessingDisplayCategory());
         registry.add(new GTOreVeinDisplayCategory());
         registry.add(new GTBedrockFluidDisplayCategory());
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
@@ -53,7 +54,8 @@ public class GTREIPlugin implements REIClientPlugin {
         // workstations
         MultiblockInfoDisplayCategory.registerWorkStations(registry);
         GTRecipeTypeDisplayCategory.registerWorkStations(registry);
-        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) GTOreProcessingDisplayCategory.registerWorkstations(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingDisplayCategory.registerWorkstations(registry);
         GTOreVeinDisplayCategory.registerWorkstations(registry);
         GTBedrockFluidDisplayCategory.registerWorkstations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
@@ -71,7 +73,8 @@ public class GTREIPlugin implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         GTRecipeTypeDisplayCategory.registerDisplays(registry);
         MultiblockInfoDisplayCategory.registerDisplays(registry);
-        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) GTOreProcessingDisplayCategory.registerDisplays(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingDisplayCategory.registerDisplays(registry);
         GTOreVeinDisplayCategory.registerDisplays(registry);
         GTBedrockFluidDisplayCategory.registerDisplays(registry);
     }

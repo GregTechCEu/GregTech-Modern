@@ -33,7 +33,8 @@ public class GTEMIPlugin implements EmiPlugin {
     @Override
     public void register(EmiRegistry registry) {
         registry.addCategory(MultiblockInfoEmiCategory.CATEGORY);
-        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            registry.addCategory(GTOreProcessingEmiCategory.CATEGORY);
         registry.addCategory(GTOreVeinEmiCategory.CATEGORY);
         registry.addCategory(GTBedrockFluidEmiCategory.CATEGORY);
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
@@ -53,13 +54,15 @@ public class GTEMIPlugin implements EmiPlugin {
         } catch (NullPointerException ignored){
         }
         GTRecipeTypeEmiCategory.registerDisplays(registry);
-        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) GTOreProcessingEmiCategory.registerDisplays(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingEmiCategory.registerDisplays(registry);
         GTOreVeinEmiCategory.registerDisplays(registry);
         GTBedrockFluidEmiCategory.registerDisplays(registry);
         // workstations
         MultiblockInfoEmiCategory.registerWorkStations(registry);
         GTRecipeTypeEmiCategory.registerWorkStations(registry);
-        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams) GTOreProcessingEmiCategory.registerWorkStations(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingEmiCategory.registerWorkStations(registry);
         GTOreVeinEmiCategory.registerWorkStations(registry);
         GTBedrockFluidEmiCategory.registerWorkStations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
