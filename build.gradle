@@ -22,7 +22,7 @@ java.toolchain.languageVersion = JavaLanguageVersion.of(21)
 apply from: "$rootDir/gradle/scripts/neogradle.gradle"
 apply from: "$rootDir/gradle/scripts/capabilities.gradle"
 apply from: "$rootDir/gradle/scripts/repositories.gradle"
-apply from: "$rootDir/gradle/scripts/dependencies.gradle"
+apply from: "$rootDir/dependencies.gradle"
 apply from: "$rootDir/gradle/scripts/resources.gradle"
 apply from: "$rootDir/gradle/scripts/jars.gradle"
 apply from: "$rootDir/gradle/scripts/publishing.gradle"
