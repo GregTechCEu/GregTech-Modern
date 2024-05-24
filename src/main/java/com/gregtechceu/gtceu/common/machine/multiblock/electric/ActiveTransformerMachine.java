@@ -14,6 +14,7 @@ import com.gregtechceu.gtceu.api.machine.multiblock.WorkableElectricMultiblockMa
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import net.minecraft.world.level.block.Block;
 import org.jetbrains.annotations.NotNull;
@@ -123,7 +124,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
     @Override
     public void onStructureInvalid() {
-        if(isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING){
+        if((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) && !ConfigHolder.INSTANCE.machines.HarmlessActiveTransformers){
             doExplosion(6f + getTier());
         }
         super.onStructureInvalid();
