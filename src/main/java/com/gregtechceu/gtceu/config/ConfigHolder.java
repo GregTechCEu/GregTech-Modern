@@ -256,7 +256,7 @@ public class ConfigHolder {
         public boolean doesExplosionDamagesTerrain = true;
         @Configurable
         @Configurable.Comment({"Enables Safe Active Transformers, removing their ability to explode if unformed while transmitting/receiving power.", "Default: false"})
-        public boolean HarmlessActiveTransformers = false;
+        public boolean harmlessActiveTransformers = false;
         @Configurable
         @Configurable.Comment({"Divisor for Recipe Duration per Overclock.", "Default: 2.0"})
         @Configurable.DecimalRange(min = 2.0, max = 3.0)

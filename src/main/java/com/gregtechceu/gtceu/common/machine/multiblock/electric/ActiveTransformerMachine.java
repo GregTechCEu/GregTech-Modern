@@ -124,7 +124,7 @@ public class ActiveTransformerMachine extends WorkableElectricMultiblockMachine 
 
     @Override
     public void onStructureInvalid() {
-        if((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) && !ConfigHolder.INSTANCE.machines.HarmlessActiveTransformers){
+        if((isWorkingEnabled() && recipeLogic.getStatus() == RecipeLogic.Status.WORKING) && !ConfigHolder.INSTANCE.machines.harmlessActiveTransformers){
             doExplosion(6f + getTier());
         }
         super.onStructureInvalid();
