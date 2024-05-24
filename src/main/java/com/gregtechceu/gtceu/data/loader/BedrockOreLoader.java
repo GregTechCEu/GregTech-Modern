@@ -10,6 +10,7 @@ import com.gregtechceu.gtceu.api.addon.AddonFinder;
 import com.gregtechceu.gtceu.api.addon.IGTAddon;
 import com.gregtechceu.gtceu.api.data.worldgen.bedrockore.BedrockOreDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+import com.gregtechceu.gtceu.common.data.GTOres;
 import com.gregtechceu.gtceu.integration.kjs.GTCEuServerEvents;
 import com.gregtechceu.gtceu.integration.kjs.events.GTBedrockOreVeinEventJS;
 import com.mojang.serialization.JsonOps;
@@ -46,6 +47,7 @@ public class BedrockOreLoader extends SimpleJsonResourceReloadListener {
             GTRegistries.BEDROCK_ORE_DEFINITIONS.unfreeze();
         }
         GTRegistries.BEDROCK_ORE_DEFINITIONS.registry().clear();
+        GTOres.toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
 
         AddonFinder.getAddons().forEach(IGTAddon::registerFluidVeins);
         ModLoader.get().postEvent(new GTCEuAPI.RegisterEvent<>(GTRegistries.BEDROCK_ORE_DEFINITIONS, BedrockOreDefinition.class));
