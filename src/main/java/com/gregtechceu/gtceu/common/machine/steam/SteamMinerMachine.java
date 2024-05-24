@@ -227,7 +227,7 @@ public class SteamMinerMachine extends SteamWorkableMachine implements IMiner, I
         long resultSteam = steamTank.getFluidInTank(0).getAmount() - energyPerTick;
         if (!this.isVentingBlocked() && resultSteam >= 0L && resultSteam <= steamTank.getTankCapacity(0)) {
             if (!simulate)
-                steamTank.drain(energyPerTick, IFluidHandler.FluidAction.EXECUTE);
+                steamTank.drainInternal(energyPerTick, IFluidHandler.FluidAction.EXECUTE);
             return true;
         }
         return false;
