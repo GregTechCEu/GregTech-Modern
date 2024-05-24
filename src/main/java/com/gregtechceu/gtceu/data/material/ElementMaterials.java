@@ -101,7 +101,7 @@ public class ElementMaterials {
                 .ore()
                 .color(0x98d677).secondaryColor(0x254d40).iconSet(METALLIC)
                 .appendFlags(STD_METAL)
-                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON,false)
                 .element(GTElements.Be)
                 .buildAndRegister();
 

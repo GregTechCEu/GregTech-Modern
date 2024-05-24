@@ -543,7 +543,7 @@ public class OrganicChemistryMaterials {
                 .color(0x554A3F)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, false)
                 .buildAndRegister();
 
         PolyvinylButyral = new Material.Builder(GTCEu.id("polyvinyl_butyral"))
