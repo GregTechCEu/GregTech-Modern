@@ -265,18 +265,22 @@ public class ChemicalHelper {
     }
 
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
-        UnificationEntry entry = TAG_UNIFICATION_ENTRY.computeIfAbsent(tag, tagKey -> {
+        if (TAG_UNIFICATION_ENTRY.isEmpty()) {
+            // If the map is empty, resolve all possible tags to their values in an attempt to save time on later lookups.
+            Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
-                    if (Arrays.stream(prefix.getItemTags(material))
-                            .anyMatch(tagKey1 -> tagKey1.location().equals(tagKey.location()))) {
-                        return new UnificationEntry(prefix, material);
-                    }
+                    Arrays.stream(prefix.getItemTags(material))
+                        .filter(allItemTags::contains)
+                        .forEach(tagKey -> {
+                            // remove the tag so that the next iteration is faster.
+                            allItemTags.remove(tagKey);
+                            TAG_UNIFICATION_ENTRY.put(tagKey, new UnificationEntry(prefix, material));
+                        });
                 }
             }
-            return UnificationEntry.EmptyMapMarkerEntry;
-        });
-        return entry != UnificationEntry.EmptyMapMarkerEntry ? entry : null;
+        }
+        return TAG_UNIFICATION_ENTRY.get(tag);
     }
 
     public static List<ItemLike> getItems(UnificationEntry unificationEntry) {
