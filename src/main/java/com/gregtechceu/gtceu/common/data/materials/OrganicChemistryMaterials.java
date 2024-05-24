@@ -77,7 +77,7 @@ public class OrganicChemistryMaterials {
                 .polymer()
                 .liquid(new FluidBuilder().temperature(373))
                 .color(0xFF9955).secondaryColor(0x6ca5bf)
-                .appendFlags(EXT_METAL, GENERATE_FOIL)
+                .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_RING)
                 .components(Carbon, 2, Hydrogen, 3, Chlorine, 1)
                 .itemPipeProperties(512, 4)
                 .buildAndRegister();
@@ -537,7 +537,7 @@ public class OrganicChemistryMaterials {
                 .color(0x554A3F)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, false)
                 .buildAndRegister();
 
         PolyvinylButyral = new Material.Builder(GTCEu.id("polyvinyl_butyral"))
