@@ -58,7 +58,7 @@ dependencies {
     modImplementation(forge.ae2) { transitive = false }
 
     //AlmostUnified
-    modImplementation(forge.almostUnified.forge)
+    modCompileOnly(forge.almostUnified.forge)
 
     // KJS
     modImplementation forge.kubejs
