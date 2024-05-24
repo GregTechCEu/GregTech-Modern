@@ -253,7 +253,7 @@ public class ChemicalHelper {
     public static UnificationEntry getUnificationEntry(TagKey<Item> tag) {
         if (TAG_UNIFICATION_ENTRY.isEmpty()) {
             // If the map is empty, resolve all possible tags to their values in an attempt to save time on later lookups.
-            Set<TagKey<Item>> allItemTags = BuiltInRegistries.ITEM.getTagNames().collect(Collectors.toSet());
+            Set<TagKey<Item>> allItemTags = Registry.ITEM.getTagNames().collect(Collectors.toSet());
             for (TagPrefix prefix : TagPrefix.values()) {
                 for (Material material : GTCEuAPI.materialManager.getRegisteredMaterials()) {
                     Arrays.stream(prefix.getItemTags(material))
