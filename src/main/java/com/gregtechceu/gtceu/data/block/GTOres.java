@@ -774,7 +774,6 @@ public class GTOres {
 
     public static void init() {
         toReRegister.forEach(GTRegistries.ORE_VEINS::registerOrOverride);
-        toReRegisterBedrock.forEach(GTRegistries.BEDROCK_ORE_DEFINITIONS::registerOrOverride);
     }
 
     public static void updateLargestVeinSize() {

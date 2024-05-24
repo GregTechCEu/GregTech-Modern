@@ -41,9 +41,7 @@ public class TooltipsHandler {
         }
 
         // Formula
-        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem()); // TODO optimize
-                                                                                    // getOrComputeUnificationEntry so
-                                                                                    // we can use that
+        var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
         if (unificationEntry != null && unificationEntry.material != null) {
             if (unificationEntry.material.getChemicalFormula() != null &&
                     !unificationEntry.material.getChemicalFormula().isEmpty())
