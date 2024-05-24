@@ -253,7 +253,7 @@ public class ConfigHolder {
         @Configurable
         @Configurable.Comment({"Whether machines or boilers damage the terrain when they explode.",
                 "Note machines and boilers always explode when overloaded with power or met with special conditions, regardless of this config.", "Default: true"})
-        public boolean doesExplosionDamagesTerrain = false;
+        public boolean doesExplosionDamagesTerrain = true;
         @Configurable
         @Configurable.Comment({"Divisor for Recipe Duration per Overclock.", "Default: 2.0"})
         @Configurable.DecimalRange(min = 2.0, max = 3.0)
