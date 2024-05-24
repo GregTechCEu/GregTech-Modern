@@ -21,6 +21,9 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.MachineTrait;
 import com.gregtechceu.gtceu.api.misc.IOFluidTransferList;
 import com.gregtechceu.gtceu.api.misc.IOItemTransferList;
+import com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.cover.FluidFilterCover;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 
@@ -76,6 +79,10 @@ import java.util.Set;
 import java.util.function.Predicate;
 
 import javax.annotation.ParametersAreNonnullByDefault;
+
+import static com.gregtechceu.gtceu.api.item.tool.ToolHelper.getBehaviorsComponent;
+import static com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior.ModeType.BOTH;
+import static com.gregtechceu.gtceu.common.item.tool.behavior.ToolModeSwitchBehavior.ModeType.ITEM;
 
 /**
  * @author KilaBash
@@ -201,7 +208,7 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     /**
      * Use for data not able to be saved with the SyncData system, like optional mod compatiblity in internal machines.
-     * 
+     *
      * @param tag     the CompoundTag to load data from
      * @param forDrop if the save is done for dropping the machine as an item.
      */
@@ -385,6 +392,27 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
             }
             return InteractionResult.CONSUME;
         }
+        else {
+            if(isRemote())
+                return InteractionResult.CONSUME;
+            var itemStack = playerIn.getItemInHand(hand);
+            var tagCompound = getBehaviorsComponent(itemStack);
+            ToolModeSwitchBehavior.ModeType type = tagCompound.behaviors().stream()
+                .filter(ToolModeSwitchBehavior.class::isInstance).findAny().map(ToolModeSwitchBehavior::getType)
+                .orElse(BOTH);
+
+            if (type == ToolModeSwitchBehavior.ModeType.ITEM || type == ToolModeSwitchBehavior.ModeType.BOTH) {
+                if (this instanceof IAutoOutputItem autoOutputItem && (!hasFrontFacing() || gridSide != getFrontFacing())) {
+                    autoOutputItem.setOutputFacingItems(gridSide);
+                }
+            }
+            if (type == ToolModeSwitchBehavior.ModeType.FLUID || type == ToolModeSwitchBehavior.ModeType.BOTH) {
+                if (this instanceof IAutoOutputFluid autoOutputFluid && (!hasFrontFacing() || gridSide != getFrontFacing())) {
+                    autoOutputFluid.setOutputFacingFluids(gridSide);
+                }
+            }
+            return InteractionResult.CONSUME;
+        }
     }
 
     protected InteractionResult onSoftMalletClick(Player playerIn, InteractionHand hand, Direction gridSide,
@@ -403,6 +431,51 @@ public class MetaMachine implements IEnhancedManaged, IToolable, ITickSubscripti
 
     protected InteractionResult onScrewdriverClick(Player playerIn, InteractionHand hand, Direction gridSide,
                                                    BlockHitResult hitResult) {
+        var itemStack = playerIn.getItemInHand(hand);
+        if(isRemote())
+            return InteractionResult.CONSUME;
+        if (playerIn.isShiftKeyDown()) {
+            boolean flag = false;
+            if (this instanceof IAutoOutputItem autoOutputItem) {
+                if (autoOutputItem.getOutputFacingItems() == gridSide) {
+                    autoOutputItem.setAllowInputFromOutputSideItems(!autoOutputItem.isAllowInputFromOutputSideItems());
+                    playerIn.displayClientMessage(Component.translatable("gtceu.machine.basic.input_from_output_side." +
+                        (autoOutputItem.isAllowInputFromOutputSideItems() ? "allow" : "disallow"))
+                        .append(Component.translatable("gtceu.creative.chest.item")), true);
+                    flag = true;
+                }
+            }
+            if (this instanceof IAutoOutputFluid autoOutputFluid) {
+                if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
+                    autoOutputFluid.setAllowInputFromOutputSideFluids(!autoOutputFluid.isAllowInputFromOutputSideFluids());
+                    playerIn.displayClientMessage(Component.translatable("gtceu.machine.basic.input_from_output_side." +
+                        (autoOutputFluid.isAllowInputFromOutputSideFluids() ? "allow" : "disallow"))
+                        .append(Component.translatable("gtceu.creative.tank.fluid")), true);
+                    flag = true;
+                }
+            }
+            if (flag) {
+                return InteractionResult.SUCCESS;
+            }
+        } else {
+            boolean flag = false;
+            if (this instanceof IAutoOutputItem autoOutputItem) {
+                if (autoOutputItem.getOutputFacingItems() == gridSide) {
+                    autoOutputItem.setAutoOutputItems(!autoOutputItem.isAutoOutputItems());
+                    flag = true;
+                }
+            }
+            if (this instanceof IAutoOutputFluid autoOutputFluid) {
+                if (autoOutputFluid.getOutputFacingFluids() == gridSide) {
+                    autoOutputFluid.setAutoOutputFluids(!autoOutputFluid.isAutoOutputFluids());
+                    flag = true;
+
+                }
+            }
+            if (flag) {
+                return InteractionResult.SUCCESS;
+            }
+        }
         return InteractionResult.PASS;
     }
 

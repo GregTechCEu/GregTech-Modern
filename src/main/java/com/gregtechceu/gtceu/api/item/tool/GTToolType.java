@@ -154,7 +154,8 @@ public class GTToolType {
                     .tool(new Tool(List.of(Tool.Rule.minesAndDrops(CustomTags.MINEABLE_WITH_WRENCH, 1.5F)), -2.8F, 1))
                     .blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS)))
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                        ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.WRENCH_TOOL)
             .symbol('w')
             .build();
@@ -352,7 +353,8 @@ public class GTToolType {
                     .blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(2.0F)
                     .attackDamage(1.0F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS))
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                        ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .electric(GTValues.LV)
@@ -369,7 +371,8 @@ public class GTToolType {
                     .blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(3.0F)
                     .attackDamage(1.0F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS))
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                        ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .electric(GTValues.HV)
@@ -386,7 +389,8 @@ public class GTToolType {
                     .blockBreaking().crafting().sneakBypassUse()
                     .efficiencyMultiplier(4.0F)
                     .attackDamage(1.0F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS))
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, CustomTags.IRON_GOLEMS),
+                        ToolModeSwitchBehavior.INSTANCE)
                     .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
             .sound(GTSoundEntries.WRENCH_TOOL, true)
             .electric(GTValues.IV)

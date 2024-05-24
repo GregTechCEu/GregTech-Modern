@@ -75,7 +75,7 @@ public class ElectricStats implements IInteractionItem, ISubItemHandler, IAddInf
             if (!level.isClientSide) {
                 boolean isInDischargeMode = isInDischargeMode(itemStack);
                 String locale = "metaitem.electric.discharge_mode." + (isInDischargeMode ? "disabled" : "enabled");
-                player.displayClientMessage(Component.translatable(locale), true);
+                player.displayClientMessage(Component.translatable(locale),true);
                 setInDischargeMode(itemStack, !isInDischargeMode);
             }
             return InteractionResultHolder.success(itemStack);
