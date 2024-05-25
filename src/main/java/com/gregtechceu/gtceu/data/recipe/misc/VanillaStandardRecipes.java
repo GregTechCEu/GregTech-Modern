@@ -277,7 +277,7 @@ public class VanillaStandardRecipes {
         VanillaRecipeHelper.addShapelessRecipe(provider, "brick_to_dust", ChemicalHelper.get(dustSmall, Brick), 'm', Items.BRICK);
         VanillaRecipeHelper.addShapelessRecipe(provider, "wheat_to_dust", ChemicalHelper.get(dust, Wheat), 'm', Items.WHEAT);
         VanillaRecipeHelper.addShapelessRecipe(provider, "gravel_to_flint", new ItemStack(Items.FLINT), 'm', Blocks.GRAVEL);
-        VanillaRecipeHelper.addShapelessRecipe(provider, "bone_to_bone_meal", new ItemStack(Items.BONE_MEAL, 4), 'm', Items.BONE);
+        VanillaRecipeHelper.addShapelessRecipe(provider, "bone_to_bone_meal", new ItemStack(Items.BONE_MEAL), 'm', Items.BONE);
         VanillaRecipeHelper.addShapelessRecipe(provider, "blaze_rod_to_powder", new ItemStack(Items.BLAZE_POWDER, 3), 'm', Items.BLAZE_ROD);
 
         MACERATOR_RECIPES.recipeBuilder("macerate_cocoa")
