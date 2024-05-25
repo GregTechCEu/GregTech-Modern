@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.utils;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -421,8 +423,9 @@ public class GTUtil {
         return world.isDay();
     }
 
-    public static void appendHazardTooltips(Material material, List<Component> tooltipComponents){
-        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD)) return;
+    public static void appendHazardTooltips(Material material, List<Component> tooltipComponents) {
+        if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD))
+            return;
 
         if (GTUtil.isShiftDown()) {
             tooltipComponents.add(Component.translatable("gtceu.hazard.description_shift"));
@@ -430,20 +433,6 @@ public class GTUtil {
             return;
         }
         tooltipComponents.add(Component.translatable("gtceu.hazard.description"));
-
-    }
-
-    public static void applyHazardEffects(Material material, LivingEntity livingEntity, Supplier<Boolean> condition){
-        if(!ConfigHolder.INSTANCE.gameplay.hazardsEnabled || !material.hasProperty(HAZARD) || !condition.get()) return;
-
-        HazardProperty poisonProperty = material.getProperty(HAZARD);
-
-        if(poisonProperty.getHazardType().getProtectionType().isProtected(livingEntity)) return; //entity has proper safety equipment
-        if(poisonProperty.getDamage()!=null && livingEntity.tickCount % (20*poisonProperty.getDamage().delay())==0)
-            livingEntity.hurt(GTDamageTypes.CHEMICAL.source(livingEntity.level()), poisonProperty.getDamage().damage());
-
-        if(poisonProperty.getEffect()!=null)
-            poisonProperty.getEffect().apply(livingEntity);
     }
 
 }

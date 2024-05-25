@@ -1,6 +1,8 @@
 package com.gregtechceu.gtceu.api.item;
 
 import com.gregtechceu.gtceu.api.GTValues;
+import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
+import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.DustProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
@@ -16,6 +18,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -75,7 +78,7 @@ public class TagPrefixItem extends Item {
         if (this.tagPrefix.tooltip() != null) {
             this.tagPrefix.tooltip().accept(material, tooltipComponents);
         }
-        GTUtil.appendHazardTooltips(material,tooltipComponents);
+        GTUtil.appendHazardTooltips(material, tooltipComponents);
     }
 
     @Override
@@ -103,13 +106,6 @@ public class TagPrefixItem extends Item {
         super.inventoryTick(stack, level, entity, slotId, isSelected);
         if (entity instanceof LivingEntity livingEntity) {
             if (livingEntity.tickCount % 20 == 0) {
-
-
-                if (tagPrefix != TagPrefix.ingotHot || !material.hasProperty(PropertyKey.BLAST)) { //ignore hazards for hot ingots
-                    GTUtil.applyHazardEffects(material, livingEntity, () -> material.getProperty(HAZARD).getHazardType().isAffected(tagPrefix));
-                    return;
-                }
-
                 float heatDamage = ((material.getBlastTemperature() - 1750) / 1000.0F) + 2;
                 ItemStack armor = livingEntity.getItemBySlot(EquipmentSlot.CHEST);
                 if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem armorItem) {
@@ -123,6 +119,19 @@ public class TagPrefixItem extends Item {
             }
         }
     }
+
+    /*
+    @Override
+    public boolean onDroppedByPlayer(ItemStack item, Player player) {
+        if (material.hasProperty(HAZARD)) {
+            IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
+            if (tracker != null) {
+                tracker.removeHazardItem(item, material.getProperty(HAZARD));
+            }
+        }
+        return super.onDroppedByPlayer(item, player);
+    }
+    */
 
     public int getItemBurnTime() {
         DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
