@@ -32,7 +32,7 @@ public class PartsRecipeHandler {
         rodLong.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processLongStick);
         plate.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlate);
         plateDouble.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDouble);
-        plateDense.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processPlateDense);
+        plateDense.executeHandler(provider, PropertyKey.DUST, PartsRecipeHandler::processPlateDense);
 
         turbineBlade.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processTurbine);
         rotor.executeHandler(provider, PropertyKey.INGOT, PartsRecipeHandler::processRotor);
@@ -297,7 +297,7 @@ public class PartsRecipeHandler {
         }
     }
 
-    public static void processPlateDense(TagPrefix tagPrefix, Material material, IngotProperty property, Consumer<FinishedRecipe> provider) {
+    public static void processPlateDense(TagPrefix tagPrefix, Material material, DustProperty property, Consumer<FinishedRecipe> provider) {
         BENDER_RECIPES.recipeBuilder("bend_" + material.getName() + "_plate_to_dense_plate")
                 .inputItems(plate, material, 9)
                 .circuitMeta(9)
