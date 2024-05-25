@@ -1072,6 +1072,10 @@ public class Material implements Comparable<Material> {
             properties.setProperty(HAZARD, new HazardProperty(hazardType, effects, null, true));
             return this;
         }
+        public Builder hazard(HazardProperty.HazardType hazardType, List<HazardProperty.HazardEffect> effects, boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, effects, null, applyToDerivatives));
+            return this;
+        }
 
         public Builder hazard(HazardProperty.HazardType hazardType, int secondsToMax, Attribute attribute, AttributeModifier maxModifier) {
             properties.setProperty(HAZARD, new HazardProperty(hazardType, new HazardProperty.HazardEffect(secondsToMax, Map.of(attribute, maxModifier)), null, true));
@@ -1091,23 +1095,36 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder hazard(HazardProperty.HazardType hazardType, boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(hazardType, new HazardProperty.HazardEffect(200, 0, new MobEffectInstance(MobEffects.POISON, 1)), new HazardProperty.HazardDamage(2, 10), applyToDerivatives));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, applyToDerivatives));
             return this;
         }
         public Builder hazard(HazardProperty.HazardType hazardType) {
-            properties.setProperty(HAZARD, new HazardProperty(hazardType, new HazardProperty.HazardEffect(200, 0, new MobEffectInstance(MobEffects.POISON, 1)), new HazardProperty.HazardDamage(2, 10), true));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, true));
             return this;
         }
 
-        public Builder radioactiveHazard() {
+        public Builder radioactiveHazard(int multiplier) {
             properties.setProperty(HAZARD, new HazardProperty(
                 HazardProperty.HazardType.RADIOACTIVE,
                 List.of(
-                    HazardProperty.maxHealthLoweringEffect(1000, 10, 10),
-                    HazardProperty.maxAirLoweringEffect(100, 10, 100),
-                    HazardProperty.witherEffect(100, 1000, 1)),
+                    HazardProperty.slownessEffect(-1, 2000 / multiplier, multiplier - 1),
+                    HazardProperty.weaknessEffect(-1, 2000 / multiplier, multiplier - 1),
+                    HazardProperty.miningFautigueEffect(-1, 3000 / multiplier, multiplier - 1),
+                    HazardProperty.maxAirLoweringEffect(1000, 4000 / multiplier, 100),
+                    HazardProperty.maxHealthLoweringEffect(4000, 6000 / multiplier, 10),
+                    HazardProperty.witherEffect(10000, 24000 / multiplier, multiplier - 1)),
                 null,
                 true));
+            return this;
+        }
+        public Builder irritantHazard(boolean applyToDerivatives) {
+            properties.setProperty(HAZARD, new HazardProperty(
+                HazardProperty.HazardType.CONTACT_POISON,
+                List.of(
+                    HazardProperty.slownessEffect(200, 2000, 0),
+                    HazardProperty.miningFautigueEffect(200, 3000, 0)),
+                null,
+                applyToDerivatives));
             return this;
         }
 

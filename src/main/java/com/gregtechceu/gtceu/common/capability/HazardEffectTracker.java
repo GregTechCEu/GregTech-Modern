@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.common.capability;
 
 import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
 import lombok.Getter;
@@ -15,12 +19,15 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import java.util.HashSet;
+import java.util.Set;
+
 public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializable<ListTag> {
     @Getter @Setter
     private int maxAirSupply = -1;
 
     @Getter
-    private final Object2IntMap<HazardProperty> propertyToAmount = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<UnificationEntry> propertyToAmount = new Object2IntOpenHashMap<>();
     @Getter
     private final Object2IntMap<HazardProperty.HazardEffect> currentHazardEffects = new Object2IntOpenHashMap<>();
 
@@ -32,12 +39,32 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
 
     @Override
     public void tick() {
+        Set<HazardProperty.HazardEffect> protectedFrom = new HashSet<>();
+        Object2BooleanMap<HazardProperty.HazardEffect> isAffected = new Object2BooleanOpenHashMap<>();
+        for (UnificationEntry entry : propertyToAmount.keySet()) {
+            HazardProperty property = entry.material.getProperty(PropertyKey.HAZARD);
+            if(property.getHazardType().getProtectionType().isProtected(player)) {
+                //entity has proper safety equipment
+                protectedFrom.addAll(property.getEffects());
+            }
+            for (var effect : property.getEffects()) {
+                isAffected.put(effect, property.getHazardType().isAffected(entry.tagPrefix));
+            }
+        }
+        if (protectedFrom.containsAll(currentHazardEffects.keySet())) {
+            return;
+        }
+
         int totalMaxAirSupply = 0;
         int maxAirSupplySetterAmount = 0;
 
         for (var entry : currentHazardEffects.object2IntEntrySet()) {
             HazardProperty.HazardEffect effect = entry.getKey();
             int time = entry.getIntValue();
+
+            if (protectedFrom.contains(effect) || !isAffected.getBoolean(effect)) {
+                continue;
+            }
 
             if (time < effect.modifierStartTime()) {
                 // if the current applied time is less than the minimum for effects to be applied, return early.
@@ -99,45 +126,25 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         }
     }
 
-    /*
     @Override
-    public Map<Attribute, AttributeModifier> getCurrentModifiers() {
-        Map<Attribute, AttributeModifier> modifiers = new HashMap<>();
-        for (var effect : currentHazardEffects.object2IntEntrySet()) {
-            modifiers.putAll(effect.getKey().modifiers());
-        }
-        return modifiers;
-    }
-
-    @Override
-    public List<MobEffectInstance> getCurrentPotionEffects() {
-        List<MobEffectInstance> modifiers = new ArrayList<>();
-        for (var effect : currentHazardEffects.object2IntEntrySet()) {
-            modifiers.addAll(effect.getKey().getEffectInstances());
-        }
-        return modifiers;
-    }
-    */
-
-    @Override
-    public void removeHazardItem(HazardProperty property) {
-        if (!propertyToAmount.containsKey(property)) {
+    public void removeHazardItem(UnificationEntry entry) {
+        if (!propertyToAmount.containsKey(entry)) {
             return;
         }
-        propertyToAmount.put(property, propertyToAmount.getOrDefault(property, 0) - 1);
-        if (propertyToAmount.getInt(property) <= 0) {
-            propertyToAmount.removeInt(property);
-            //currentHazardEffects.removeInt(property.getEffect());
+        propertyToAmount.put(entry, propertyToAmount.getOrDefault(entry, 0) - 1);
+        if (propertyToAmount.getInt(entry) <= 0) {
+            propertyToAmount.removeInt(entry);
         }
     }
 
     @Override
-    public void addHazardItem(HazardProperty property) {
+    public void addHazardItem(UnificationEntry entry) {
         if (player.isCreative()) {
             return;
         }
-        propertyToAmount.put(property, propertyToAmount.getOrDefault(property, 0) + 1);
-        for (HazardProperty.HazardEffect effect : property.getEffects()) {
+        propertyToAmount.put(entry, propertyToAmount.getOrDefault(entry, 0) + 1);
+        //noinspection DataFlowIssue property existence is checked before this method is called.
+        for (HazardProperty.HazardEffect effect : entry.material.getProperty(PropertyKey.HAZARD).getEffects()) {
             if (!this.currentHazardEffects.containsKey(effect)) {
                 this.currentHazardEffects.put(effect, 0);
             }

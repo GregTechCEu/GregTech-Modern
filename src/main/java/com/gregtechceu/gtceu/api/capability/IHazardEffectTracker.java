@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.capability;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
 public interface IHazardEffectTracker {
@@ -16,9 +17,9 @@ public interface IHazardEffectTracker {
     // default maxAirSupply for players is 300.
     int getMaxAirSupply();
 
-    void removeHazardItem(HazardProperty property);
+    void removeHazardItem(UnificationEntry entry);
 
-    void addHazardItem(HazardProperty property);
+    void addHazardItem(UnificationEntry entry);
 
     void tick();
 }

@@ -5,9 +5,10 @@ import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.gui.factory.GTUIEditorFactory;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import com.gregtechceu.gtceu.common.commands.arguments.HazardEffectsArgument;
 import com.gregtechceu.gtceu.common.commands.arguments.MaterialArgument;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
@@ -17,7 +18,6 @@ import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.crafting.Recipe;
-import net.minecraftforge.server.command.EnumArgument;
 
 import java.util.Collection;
 import java.util.List;
@@ -105,7 +105,7 @@ public class ServerCommands {
                                         if (tracker == null) {
                                             continue;
                                         }
-                                        tracker.addHazardItem(property);
+                                        tracker.addHazardItem(new UnificationEntry(TagPrefix.dust, material));
                                         success++;
                                     }
                                     if (success == 0) {
@@ -113,31 +113,6 @@ public class ServerCommands {
                                     }
                                     return success;
                                 })
-                            )
-                            .then(Commands.argument("type", EnumArgument.enumArgument(HazardProperty.HazardType.class))
-                                .then(Commands.argument("effects", new HazardEffectsArgument())
-                                    .executes(context -> {
-                                        HazardProperty.HazardType type = context.getArgument("type", HazardProperty.HazardType.class);
-                                        List<HazardProperty.HazardEffect> effects = HazardEffectsArgument.getEffects(context, "effects");
-
-                                        // fake a new hazard property in order to add it to the player(s).
-                                        Collection<ServerPlayer> players = EntityArgument.getPlayers(context, "targets");
-                                        int success = 0;
-                                        HazardProperty property = new HazardProperty(type, effects, null, false);
-                                        for (ServerPlayer player : players) {
-                                            IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
-                                            if (tracker == null) {
-                                                continue;
-                                            }
-                                            tracker.addHazardItem(property);
-                                            success++;
-                                        }
-                                        if (success == 0) {
-                                            throw ERROR_GIVE_FAILED.create();
-                                        }
-                                        return success;
-                                    })
-                                )
                             )
                         )
                     )

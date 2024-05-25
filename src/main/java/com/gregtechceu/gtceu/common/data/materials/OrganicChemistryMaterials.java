@@ -397,13 +397,13 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200, new MobEffectInstance(MobEffects.BLINDNESS, 1)))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.blindnessEffect(200, 2000, 0))
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))
                 .liquid(new FluidBuilder().customStill())
                 .flags(DISABLE_DECOMPOSITION)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200, new MobEffectInstance(MobEffects.CONFUSION, 1)))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, new HazardProperty.HazardEffect(200, () -> new MobEffectInstance(MobEffects.CONFUSION, 1)))
                 .components(Carbon, 2, Hydrogen, 6, Oxygen, 1)
                 .buildAndRegister();
 
@@ -538,7 +538,7 @@ public class OrganicChemistryMaterials {
                 .color(0x554A3F)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 4, Hydrogen, 8, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON,  false)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, false)
                 .buildAndRegister();
 
         PolyvinylButyral = new Material.Builder(GTCEu.id("polyvinyl_butyral"))

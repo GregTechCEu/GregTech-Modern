@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
+import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.machine.multiblock.CleanroomType;
 import com.gregtechceu.gtceu.common.block.StoneBlockType;
@@ -25,6 +26,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraftforge.common.Tags;
 
 import java.util.List;
 import java.util.function.Consumer;
@@ -389,10 +391,12 @@ public class MachineRecipeLoader {
                 .save(provider);
 
         CANNER_RECIPES.recipeBuilder("mask_filter")
-            .inputItems(plate, Polyethylene,4)
-            .inputItems(dust, ActivatedCarbon, 2)
-            .outputItems(MASK_FILTER)
-            .duration(100).EUt(2).save(provider);
+                .inputItems(plate, Polyethylene, 4)
+                .inputItems(dust, ActivatedCarbon, 2)
+                .outputItems(MASK_FILTER)
+                .duration(100).EUt(2).save(provider);
+
+        VanillaRecipeHelper.addShapedRecipe(provider, "mask_filter_by_hand", MASK_FILTER.asStack(), "s s", "pcp", 's', Items.STRING, 'p', Items.PAPER, 'c', new UnificationEntry(dust, ActivatedCarbon));
 
         Material material = Iron;
 

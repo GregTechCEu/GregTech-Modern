@@ -92,9 +92,9 @@ public abstract class InventoryMixin {
             return;
         }
         if (current.isEmpty()) {
-            tracker.removeHazardItem(entry.material.getProperty(PropertyKey.HAZARD));
+            tracker.removeHazardItem(entry);
         } else {
-            tracker.addHazardItem(entry.material.getProperty(PropertyKey.HAZARD));
+            tracker.addHazardItem(entry);
         }
     }
 
@@ -121,6 +121,6 @@ public abstract class InventoryMixin {
         if (tracker == null) {
             return;
         }
-        tracker.removeHazardItem(entry.material.getProperty(PropertyKey.HAZARD));
+        tracker.removeHazardItem(entry);
     }
 }
