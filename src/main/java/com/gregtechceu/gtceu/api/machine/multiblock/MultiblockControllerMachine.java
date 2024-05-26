@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.machine.multiblock;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
+import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -11,6 +12,7 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.MultiblockWorldSavedData;
+import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
@@ -238,8 +240,9 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             GTCEu.LOGGER.error("Tried to set upwards facing to invalid facing {}! Skipping", upwardsFacing);
             return;
         }
-        if (this.getBlockState().getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
-            this.getBlockState().setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing);
+        BlockState blockState = getBlockState();
+        if(blockState.getBlock() instanceof MetaMachineBlock metaMachineBlock && blockState.getValue(IMachineBlock.UPWARDS_FACING_PROPERTY) != upwardsFacing) {
+            getLevel().setBlockAndUpdate(getPos(), blockState.setValue(IMachineBlock.UPWARDS_FACING_PROPERTY, upwardsFacing));
             if (getLevel() != null && !getLevel().isClientSide) {
                 notifyBlockUpdate();
                 markDirty();
@@ -264,5 +267,22 @@ public class MultiblockControllerMachine extends MetaMachine implements IMultiCo
             return InteractionResult.CONSUME;
         }
         return super.onWrenchClick(playerIn, hand, gridSide, hitResult);
+    }
+
+    @Override
+    public void setFrontFacing(Direction facing) {
+        Direction oldFacing = getFrontFacing();
+
+        if(allowExtendedFacing()) {
+            Direction newUpwardsFacing = RelativeDirection.simulateAxisRotation(facing, oldFacing, getUpwardsFacing());
+            setUpwardsFacing(newUpwardsFacing);
+        }
+        super.setFrontFacing(facing);
+
+        if (getLevel() != null && !getLevel().isClientSide) {
+            notifyBlockUpdate();
+            markDirty();
+            checkPattern();
+        }
     }
 }

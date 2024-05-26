@@ -143,64 +143,60 @@ public class WorkableOverlayModel {
     @OnlyIn(Dist.CLIENT)
     public List<BakedQuad> bakeQuads(@Nullable Direction side, Direction frontFacing, Direction upwardsFacing,
                                      boolean isActive, boolean isWorkingEnabled) {
-        synchronized (caches) {
-            if (side == null) return Collections.emptyList();
-            if (!caches.contains(side, frontFacing)) {
-                caches.put(side, frontFacing, new List[2][2]);
-            }
-            var cache = caches.get(side, frontFacing);
-            assert cache != null;
-            if (cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] == null) {
-                var quads = new ArrayList<BakedQuad>();
-                for (Direction renderSide : GTUtil.DIRECTIONS) {
-                    // construct a rotation matrix from front & up rotation
-                    Matrix4f matrix = new Matrix4f();
-                    float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? -1 : upwardsFacing == Direction.SOUTH ? 2 : upwardsFacing == Direction.WEST ? 1 : 0);
-                    Quaternionf rot = new Quaternionf().rotationAxis(degree, frontFacing.getStepX(), frontFacing.getStepY(), frontFacing.getStepZ());
-                    matrix.translate(0.5f, 0.5f, 0.5f);
- //                   if (frontFacing == Direction.DOWN && upwardsFacing.getAxis() == Direction.Axis.Z) {
- //                       matrix.rotate(new Quaternionf().rotationAxis(Mth.PI, 0, 1, 0));
- //                   }
-                    matrix.rotate(rot);
-                    matrix.scale(1.0000f);
-                    matrix.translate(-0.5f, -0.5f, -0.5f);
+        var quads = new ArrayList<BakedQuad>();
 
-                    var rotation = new SimpleModelState(new Transformation(matrix));
+        float degree = Mth.HALF_PI * (upwardsFacing == Direction.EAST ? -1 : upwardsFacing == Direction.SOUTH ? 2 :
+                upwardsFacing == Direction.WEST ? 1 : 0);
 
-                    ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
-                    if (predicate != null) {
-                        var texture = predicate.getSprite(isActive, isWorkingEnabled);
-                        if (texture != null) {
-                            var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
-                                    true);
-                            if (quad.getDirection() == side) {
-                                quads.add(quad);
-                            }
+        Matrix4f matrix = new Matrix4f();
+
+        Quaternionf diff = Direction.NORTH.getRotation().difference(frontFacing.getRotation());
+        Quaternionf rot = new Quaternionf().rotationAxis(degree, frontFacing.getStepX(), frontFacing.getStepY(),
+                frontFacing.getStepZ());
+
+        //matrix.translate(-0.5f, -0.5f, -0.5f);
+        if (frontFacing == Direction.DOWN && upwardsFacing.getAxis() == Direction.Axis.Z) {
+            matrix.rotate(new Quaternionf().rotationAxis(Mth.PI, 0, 1, 0));
+        }
+        matrix.rotate(rot);
+        //matrix.scale(1.0000f);
+        //matrix.translate(0.5f, 0.5f, 0.5f);
+
+        var rotation = new SimpleModelState(new Transformation(matrix));
+
+        for (Direction renderSide : GTUtil.DIRECTIONS) {
+            // construct a rotation matrix from front & up rotation
+
+            ActivePredicate predicate = sprites.get(OverlayFace.bySide(renderSide));
+            if (predicate != null) {
+                var texture = predicate.getSprite(isActive, isWorkingEnabled);
+                if (texture != null) {
+                    var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
+                            true);
+                    if (quad.getDirection() == side) {
+                        quads.add(quad);
+                    }
+                }
+
+                texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
+                if (texture != null) {
+                    if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
+                        var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -101, 15,
+                                true, false);
+                        if (quad.getDirection() == side) {
+                            quads.add(quad);
                         }
-
-                        texture = predicate.getEmissiveSprite(isActive, isWorkingEnabled);
-                        if (texture != null) {
-                            if (ConfigHolder.INSTANCE.client.machinesEmissiveTextures) {
-                                var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -101, 15,
-                                        true, false);
-                                if (quad.getDirection() == side) {
-                                    quads.add(quad);
-                                }
-                            } else {
-                                var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
-                                        true);
-                                if (quad.getDirection() == side) {
-                                    quads.add(quad);
-                                }
-                            }
+                    } else {
+                        var quad = StaticFaceBakery.bakeFace(FaceQuad.BLOCK, renderSide, texture, rotation, -1, 0, true,
+                                true);
+                        if (quad.getDirection() == side) {
+                            quads.add(quad);
                         }
                     }
                 }
-                // return quads;
-                cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1] = quads;
             }
-            return cache[isActive ? 0 : 1][isWorkingEnabled ? 0 : 1];
         }
+        return quads;
     }
 
     @NotNull
