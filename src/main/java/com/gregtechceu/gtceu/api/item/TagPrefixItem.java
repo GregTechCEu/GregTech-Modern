@@ -123,19 +123,6 @@ public class TagPrefixItem extends Item {
         }
     }
 
-    /*
-    @Override
-    public boolean onDroppedByPlayer(ItemStack item, Player player) {
-        if (material.hasProperty(HAZARD)) {
-            IHazardEffectTracker tracker = GTCapabilityHelper.getHazardEffectTracker(player);
-            if (tracker != null) {
-                tracker.removeHazardItem(item, material.getProperty(HAZARD));
-            }
-        }
-        return super.onDroppedByPlayer(item, player);
-    }
-    */
-
     public int getItemBurnTime() {
         DustProperty property = material == null ? null : material.getProperty(PropertyKey.DUST);
         if (property != null) return (int) (property.getBurnTime() * tagPrefix.getMaterialAmount(material) / GTValues.M);
