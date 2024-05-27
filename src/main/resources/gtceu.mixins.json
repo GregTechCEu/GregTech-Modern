@@ -34,7 +34,6 @@
     "LootPoolAccessor",
     "OreConfigurationMixin",
     "OreVeinifierMixin",
-    "PlayerMixin",
     "PrimedTntAccessor",
     "RecipeManagerAccessor",
     "RecipeManagerInvoker",

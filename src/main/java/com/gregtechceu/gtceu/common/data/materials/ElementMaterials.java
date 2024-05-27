@@ -15,8 +15,6 @@ import com.gregtechceu.gtceu.common.data.GTElements;
 
 import java.util.List;
 
-import net.minecraft.world.effect.MobEffects;
-
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
@@ -169,7 +167,10 @@ public class ElementMaterials {
         Chlorine = new Material.Builder(GTCEu.id("chlorine"))
                 .gas(new FluidBuilder().state(FluidState.GAS).customStill())
                 .element(GTElements.Cl)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, List.of(HazardProperty.blindnessEffect(2000, 1000, 3), HazardProperty.poisonEffect(2000, 1000, 3)), false)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON,
+                        List.of(HazardProperty.blindnessEffect(2000, 1000, 3),
+                                HazardProperty.poisonEffect(2000, 1000, 3)),
+                        false)
                 .buildAndRegister();
 
         Chromium = new Material.Builder(GTCEu.id("chromium"))
@@ -198,7 +199,7 @@ public class ElementMaterials {
         Copernicium = new Material.Builder(GTCEu.id("copernicium"))
                 .color(0x565c5d).secondaryColor(0xffd34b).iconSet(RADIOACTIVE)
                 .element(GTElements.Cn)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Copper = new Material.Builder(GTCEu.id("copper"))
@@ -215,7 +216,7 @@ public class ElementMaterials {
         Curium = new Material.Builder(GTCEu.id("curium"))
                 .color(0x7B544E).iconSet(RADIOACTIVE)
                 .element(GTElements.Cm)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Darmstadtium = new Material.Builder(GTCEu.id("darmstadtium"))
@@ -267,7 +268,7 @@ public class ElementMaterials {
         Fermium = new Material.Builder(GTCEu.id("fermium"))
                 .color(0xc99fe7).secondaryColor(0x3e0022).iconSet(METALLIC)
                 .element(GTElements.Fm)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Flerovium = new Material.Builder(GTCEu.id("flerovium"))
@@ -518,7 +519,7 @@ public class ElementMaterials {
         Neptunium = new Material.Builder(GTCEu.id("neptunium"))
                 .color(0x284D7B).iconSet(RADIOACTIVE)
                 .element(GTElements.Np)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Nickel = new Material.Builder(GTCEu.id("nickel"))
@@ -605,7 +606,7 @@ public class ElementMaterials {
                 .color(0x163b27).secondaryColor(0x00ff78)
                 .iconSet(RADIOACTIVE)
                 .element(GTElements.Po)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Platinum = new Material.Builder(GTCEu.id("platinum"))
@@ -653,13 +654,13 @@ public class ElementMaterials {
                 .color(0x786160).secondaryColor(0xe7ffb8)
                 .iconSet(RADIOACTIVE)
                 .element(GTElements.Pm)
-               //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Protactinium = new Material.Builder(GTCEu.id("protactinium"))
                 .color(0xA78B6D).iconSet(RADIOACTIVE)
                 .element(GTElements.Pa)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Radon = new Material.Builder(GTCEu.id("radon"))
@@ -672,7 +673,7 @@ public class ElementMaterials {
         Radium = new Material.Builder(GTCEu.id("radium"))
                 .color(0x838361).secondaryColor(0x90ff2d).iconSet(RADIOACTIVE)
                 .element(GTElements.Ra)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Rhenium = new Material.Builder(GTCEu.id("rhenium"))
@@ -783,7 +784,7 @@ public class ElementMaterials {
         Technetium = new Material.Builder(GTCEu.id("technetium"))
                 .color(0xb1d0d8).secondaryColor(0xd7fce2).iconSet(RADIOACTIVE)
                 .element(GTElements.Tc)
-                //.radioactiveHazard(1)
+                // .radioactiveHazard(1)
                 .buildAndRegister();
 
         Tellurium = new Material.Builder(GTCEu.id("tellurium"))

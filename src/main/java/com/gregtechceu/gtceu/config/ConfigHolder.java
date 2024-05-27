@@ -453,10 +453,11 @@ public class ConfigHolder {
     public static class GameplayConfigs {
 
         @Configurable
-        @Configurable.Comment({"Enable hazardous materials", "Default: true"})
+        @Configurable.Comment({ "Enable hazardous materials", "Default: true" })
         public boolean hazardsEnabled = true;
         @Configurable
-        @Configurable.Comment({"Whether hazards are applied to all valid items, or just GT.", "true == all, false == GT only.", "Default: true"})
+        @Configurable.Comment({ "Whether hazards are applied to all valid items, or just GT's.",
+                "true == all, false == GT only.", "Default: true" })
         public boolean universalHazards = true;
     }
 

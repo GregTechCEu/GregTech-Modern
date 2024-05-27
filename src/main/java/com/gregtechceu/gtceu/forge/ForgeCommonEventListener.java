@@ -14,11 +14,10 @@ import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.capability.HazardEffectTracker;
+import com.gregtechceu.gtceu.common.commands.ServerCommands;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
-import com.gregtechceu.gtceu.core.IGTPlayer;
 import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
@@ -32,7 +31,6 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.Capability;
@@ -44,8 +42,6 @@ import net.minecraftforge.event.AttachCapabilitiesEvent;
 import net.minecraftforge.event.RegisterCommandsEvent;
 import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.living.LivingFallEvent;
-import net.minecraftforge.event.entity.player.PlayerContainerEvent;
-import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.entity.player.PlayerInteractEvent;
 import net.minecraftforge.event.level.LevelEvent;
 import net.minecraftforge.eventbus.api.EventPriority;
@@ -103,6 +99,7 @@ public class ForgeCommonEventListener {
         if (event.getObject() instanceof Player entity) {
             final HazardEffectTracker tracker = new HazardEffectTracker(entity);
             event.addCapability(GTCEu.id("hazard_tracker"), new ICapabilitySerializable<CompoundTag>() {
+
                 @Override
                 public CompoundTag serializeNBT() {
                     return tracker.serializeNBT();
@@ -114,8 +111,10 @@ public class ForgeCommonEventListener {
                 }
 
                 @Override
-                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
-                    return GTCapability.CAPABILITY_HAZARD_EFFECT_TRACKER.orEmpty(capability, LazyOptional.of(() -> tracker));
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
+                                                                  @Nullable Direction arg) {
+                    return GTCapability.CAPABILITY_HAZARD_EFFECT_TRACKER.orEmpty(capability,
+                            LazyOptional.of(() -> tracker));
                 }
             });
         }
@@ -151,24 +150,6 @@ public class ForgeCommonEventListener {
     }
 
     @SubscribeEvent
-    public static void onPlayedLoggedIn(PlayerEvent.PlayerLoggedInEvent event) {
-        event.getEntity().inventoryMenu.addSlotListener(((IGTPlayer) event.getEntity()).gtceu$getInventoryListener());
-    }
-
-    @SubscribeEvent
-    public static void onPlayerRespawn(PlayerEvent.PlayerRespawnEvent event) {
-        event.getEntity().inventoryMenu.addSlotListener(((IGTPlayer) event.getEntity()).gtceu$getInventoryListener());
-    }
-
-    @SubscribeEvent
-    public static void onPlayerOpenMenu(PlayerContainerEvent.Open event) {
-        if (event.getContainer() instanceof InventoryMenu) {
-            return;
-        }
-        event.getContainer().addSlotListener(((IGTPlayer) event.getEntity()).gtceu$getInventoryListener());
-    }
-
-    @SubscribeEvent
     public static void registerCommand(RegisterCommandsEvent event) {
         ServerCommands.createServerCommands().forEach(event.getDispatcher()::register);
     }
@@ -182,7 +163,7 @@ public class ForgeCommonEventListener {
 
     @SubscribeEvent
     public static void levelTick(TickEvent.LevelTickEvent event) {
-        if (event.level instanceof ServerLevel serverLevel && event.phase.equals(TickEvent.Phase.END)) {
+        if (event.phase == TickEvent.Phase.END && event.level instanceof ServerLevel serverLevel) {
             TaskHandler.onTickUpdate(serverLevel);
         }
     }

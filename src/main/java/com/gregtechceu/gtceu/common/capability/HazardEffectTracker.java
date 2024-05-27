@@ -7,12 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -23,11 +18,20 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraftforge.common.util.INBTSerializable;
 
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
+
 import java.util.HashSet;
 import java.util.Set;
 
 public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializable<CompoundTag> {
-    @Getter @Setter
+
+    @Getter
+    @Setter
     private int maxAirSupply = -1;
 
     @Getter
@@ -47,11 +51,12 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         Object2BooleanMap<HazardProperty.HazardEffect> isAffected = new Object2BooleanOpenHashMap<>();
         for (UnificationEntry entry : entryToAmount.keySet()) {
             HazardProperty property = entry.material.getProperty(PropertyKey.HAZARD);
-            if(property.getHazardType().getProtectionType().isProtected(player)) {
-                //entity has proper safety equipment, so damage it per material every 5 seconds.
+            if (property.getHazardType().getProtectionType().isProtected(player)) {
+                // entity has proper safety equipment, so damage it per material every 5 seconds.
                 if (player.level().getGameTime() % 100 == 0) {
                     for (ArmorItem.Type type : property.getHazardType().getProtectionType().getEquipmentTypes()) {
-                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(type.getSlot()));
+                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player,
+                                p -> p.broadcastBreakEvent(type.getSlot()));
                     }
                 }
                 protectedFrom.addAll(property.getEffects());
@@ -158,7 +163,8 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
             if (!(tag instanceof CompoundTag compoundTag)) {
                 continue;
             }
-            HazardProperty.HazardEffect effect = HazardProperty.HazardEffect.deserializeNBT(compoundTag.getCompound("effect"));
+            HazardProperty.HazardEffect effect = HazardProperty.HazardEffect
+                    .deserializeNBT(compoundTag.getCompound("effect"));
             int time = compoundTag.getInt("time");
             currentHazardEffects.put(effect, time);
         }
@@ -181,7 +187,7 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
             return;
         }
         entryToAmount.put(entry, entryToAmount.getOrDefault(entry, 0) + 1);
-        //noinspection DataFlowIssue property existence is checked before this method is called.
+        // noinspection DataFlowIssue property existence is checked before this method is called.
         for (HazardProperty.HazardEffect effect : entry.material.getProperty(PropertyKey.HAZARD).getEffects()) {
             if (!this.currentHazardEffects.containsKey(effect)) {
                 this.currentHazardEffects.put(effect, 0);

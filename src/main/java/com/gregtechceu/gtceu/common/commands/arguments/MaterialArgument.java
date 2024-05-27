@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.common.commands.arguments;
 
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -14,11 +15,10 @@ import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
 public class MaterialArgument implements ArgumentType<Material> {
+
     private static final Collection<String> EXAMPLES = Arrays.asList("aluminium", "gtceu:steel");
 
-    public MaterialArgument() {
-
-    }
+    public MaterialArgument() {}
 
     public static MaterialArgument material() {
         return new MaterialArgument();

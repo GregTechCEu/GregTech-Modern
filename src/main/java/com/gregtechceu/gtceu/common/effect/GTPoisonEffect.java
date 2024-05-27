@@ -5,6 +5,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 
 public class GTPoisonEffect extends MobEffect {
+
     public GTPoisonEffect(MobEffectCategory category, int color) {
         super(category, color);
     }

@@ -311,13 +311,16 @@ public class CraftingRecipeLoader {
                 "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium),
                 'P', new UnificationEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "face_mask", FACE_MASK.asStack(), "S S", "PPP", 'S', Items.STRING, 'P', Items.PAPER);
-        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_gloves", RUBBER_GLOVES.asStack(), "P P", 'P', new UnificationEntry(plate, Rubber));
+        VanillaRecipeHelper.addShapedRecipe(provider, "face_mask", FACE_MASK.asStack(), "S S", "PPP", 'S', Items.STRING,
+                'P', Items.PAPER);
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_gloves", RUBBER_GLOVES.asStack(), "P P", 'P',
+                new UnificationEntry(plate, Rubber));
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP", "GGG", "PGP",
-            'P', new UnificationEntry(plate, Wood),
-            'S', new ItemStack(Items.STRING),
-            'G', new UnificationEntry(dust, Gunpowder));
+        VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP",
+                "GGG", "PGP",
+                'P', new UnificationEntry(plate, Wood),
+                'S', new ItemStack(Items.STRING),
+                'G', new UnificationEntry(dust, Gunpowder));
 
         ///////////////////////////////////////////////////
         // Special //
