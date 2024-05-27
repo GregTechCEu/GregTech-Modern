@@ -397,7 +397,7 @@ public class OrganicChemistryMaterials {
                 .fluid()
                 .color(0xAA8800)
                 .components(Carbon, 1, Hydrogen, 4, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.blindnessEffect(200, 2000, 0))
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.blindnessEffect(200, 200, 3))
                 .buildAndRegister();
 
         Ethanol = new Material.Builder(GTCEu.id("ethanol"))

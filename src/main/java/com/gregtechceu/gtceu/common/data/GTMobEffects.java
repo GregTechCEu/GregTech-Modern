@@ -12,7 +12,7 @@ import net.minecraftforge.registries.RegistryObject;
 public class GTMobEffects {
     public static final DeferredRegister<MobEffect> MOB_EFFECTS = DeferredRegister.create(ForgeRegistries.MOB_EFFECTS, GTCEu.MOD_ID);
 
-    public static final RegistryObject<GTPoisonEffect> GT_POISON = MOB_EFFECTS.register("poison", () -> new GTPoisonEffect(MobEffectCategory.HARMFUL, 0xFFFFFF));
+    public static final RegistryObject<GTPoisonEffect> WEAK_POISON = MOB_EFFECTS.register("weak_poison", () -> new GTPoisonEffect(MobEffectCategory.HARMFUL, 0x6D7917));
 
     public static void init(IEventBus modBus) {
         MOB_EFFECTS.register(modBus);

@@ -1078,6 +1078,8 @@ public class LangHandler {
         replace(provider,"block.gtceu.yellow_stripes_block.b", "Yellow Stripes Block");
         replace(provider,"block.gtceu.yellow_stripes_block.c", "Yellow Stripes Block");
         replace(provider,"block.gtceu.yellow_stripes_block.d", "Yellow Stripes Block");
+
+        provider.add("effect.gtceu.weak_poison", "Weak Poison");
     }
 
     /**

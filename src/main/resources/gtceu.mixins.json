@@ -8,6 +8,7 @@
     "BlockModelMixin",
     "GuiGraphicsAccessor",
     "GuiGraphicsMixin",
+    "GuiHeartTypeMixin",
     "LevelRendererMixin",
     "ModelManagerMixin",
     "MultiPlayerGameModeMixin",

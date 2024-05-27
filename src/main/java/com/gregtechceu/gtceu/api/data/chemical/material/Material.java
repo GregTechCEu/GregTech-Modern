@@ -1095,11 +1095,11 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder hazard(HazardProperty.HazardType hazardType, boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, applyToDerivatives));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 5), null, applyToDerivatives));
             return this;
         }
         public Builder hazard(HazardProperty.HazardType hazardType) {
-            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, true));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 5), null, true));
             return this;
         }
 
@@ -1122,8 +1122,8 @@ public class Material implements Comparable<Material> {
             properties.setProperty(HAZARD, new HazardProperty(
                 HazardProperty.HazardType.CONTACT_POISON,
                 List.of(
-                    HazardProperty.slownessEffect(200, 2000, 0),
-                    HazardProperty.miningFautigueEffect(200, 3000, 0)),
+                    HazardProperty.slownessEffect(200, 200, 0),
+                    HazardProperty.miningFautigueEffect(200, 300, 0)),
                 null,
                 applyToDerivatives));
             return this;

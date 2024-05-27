@@ -70,13 +70,15 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         CORROSIVE(ProtectionType.HANDS, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny),
         NONE(ProtectionType.FULL);
 
-        private final List<TagPrefix> affectedTagPrefixes = new ArrayList<>();
+        private final Set<TagPrefix> affectedTagPrefixes = new HashSet<>();
         @Getter
         private final ProtectionType protectionType;
 
         HazardType(ProtectionType protectionType, TagPrefix... tagPrefixes) {
             this.protectionType = protectionType;
             affectedTagPrefixes.addAll(Arrays.asList(tagPrefixes));
+            if (tagPrefixes.length > 0)
+                affectedTagPrefixes.add(null); // add a null for fluid, because they don't have a prefix but still need to always be harmful.
         }
 
         public boolean isAffected(TagPrefix prefix) {
@@ -125,7 +127,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         return new HazardProperty.HazardEffect(duration, startTime, () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1, amplifier));
     }
     public static HazardProperty.HazardEffect poisonEffect(int duration, int startTime, int amplifier) {
-        return new HazardProperty.HazardEffect(duration, startTime, () -> new MobEffectInstance(GTMobEffects.GT_POISON.get(), 1, amplifier));
+        return new HazardProperty.HazardEffect(duration, startTime, () -> new MobEffectInstance(GTMobEffects.WEAK_POISON.get(), 1, amplifier));
     }
     public static HazardProperty.HazardEffect weaknessEffect(int duration, int startTime, int amplifier) {
         return new HazardProperty.HazardEffect(duration, startTime, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1, amplifier));

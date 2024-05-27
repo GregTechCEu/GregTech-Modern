@@ -167,7 +167,7 @@ public class ElementMaterials {
         Chlorine = new Material.Builder(GTCEu.id("chlorine"))
                 .gas(new FluidBuilder().state(FluidState.GAS).customStill())
                 .element(GTElements.Cl)
-                .hazard(HazardProperty.HazardType.INHALATION_POISON, List.of(HazardProperty.blindnessEffect(2000, 1000, 0), HazardProperty.poisonEffect(2000, 1000, 0)), false)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, List.of(HazardProperty.blindnessEffect(2000, 1000, 3), HazardProperty.poisonEffect(2000, 1000, 5)), false)
                 .buildAndRegister();
 
         Chromium = new Material.Builder(GTCEu.id("chromium"))
