@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.google.common.base.Preconditions;
-import com.google.common.collect.ImmutableList;
 import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.data.chemical.Element;
 import com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlag;
@@ -32,6 +30,8 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.level.material.Fluid;
 
+import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import dev.latvian.mods.rhino.util.HideFromJS;
 import dev.latvian.mods.rhino.util.RemapPrefixForJS;
 import it.unimi.dsi.fastutil.ints.IntArrayList;
