@@ -91,6 +91,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType ALLOY_SMELTER_RECIPES = register("alloy_smelter", ELECTRIC).setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.FURNACE_OVERLAY_1)
             .setProgressBar(GuiTextures.PROGRESS_BAR_ARROW, LEFT_TO_RIGHT)
+            .setIconSupplier(() -> GTMachines.ALLOY_SMELTER[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_ARROW_STEAM, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.FURNACE);
 
@@ -133,6 +134,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.CRUSHED_ORE_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.DUST_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)
+            .setIconSupplier(() -> GTMachines.MACERATOR[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.MACERATOR);
 
@@ -182,6 +184,7 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(200).EUt(2))
             .setSlotOverlay(false, false, GuiTextures.COMPRESSOR_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_COMPRESS, LEFT_TO_RIGHT)
+            .setIconSupplier(() -> GTMachines.COMPRESSOR[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_COMPRESS_STEAM, LEFT_TO_RIGHT)
             .setSound(GTSoundEntries.COMPRESSOR);
 
@@ -243,6 +246,7 @@ public class GTRecipeTypes {
             .prepareBuilder(recipeBuilder -> recipeBuilder.duration(400).EUt(2))
             .setSlotOverlay(false, false, GuiTextures.EXTRACTOR_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT, LEFT_TO_RIGHT)
+            .setIconSupplier(() -> GTMachines.EXTRACTOR[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_EXTRACT_STEAM, LEFT_TO_RIGHT);
 
     public final static GTRecipeType EXTRUDER_RECIPES = register("extruder", ELECTRIC).setMaxIOSize(2, 1, 0, 0).setEUIO(IO.IN)
@@ -276,6 +280,7 @@ public class GTRecipeTypes {
     public final static GTRecipeType FORGE_HAMMER_RECIPES = register("forge_hammer", ELECTRIC).setMaxIOSize(1, 1, 0, 0).setEUIO(IO.IN)
             .setSlotOverlay(false, false, GuiTextures.HAMMER_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_HAMMER, UP_TO_DOWN)
+            .setIconSupplier(() -> GTMachines.FORGE_HAMMER[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_HAMMER_STEAM, UP_TO_DOWN)
             .setSound(GTSoundEntries.FORGE_HAMMER);
 
@@ -384,6 +389,7 @@ public class GTRecipeTypes {
             .setSlotOverlay(false, false, GuiTextures.DUST_OVERLAY)
             .setSlotOverlay(true, false, GuiTextures.CRUSHED_ORE_OVERLAY)
             .setProgressBar(GuiTextures.PROGRESS_BAR_MACERATE, LEFT_TO_RIGHT)
+            .setIconSupplier(() -> GTMachines.ROCK_CRUSHER[GTValues.LV].asStack())
             .setSteamProgressBar(GuiTextures.PROGRESS_BAR_MACERATE_STEAM, LEFT_TO_RIGHT)
             .prepareBuilder(recipeBuilder -> recipeBuilder.addCondition(RockBreakerCondition.INSTANCE))
             .setUiBuilder((recipe, widgetGroup) -> {
