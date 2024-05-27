@@ -1245,13 +1245,15 @@ public class Material implements Comparable<Material> {
         @HideFromJS
         public Material buildAndRegister() {
             materialInfo.componentList = composition.isEmpty() && this.compositionSupplier != null ? ImmutableList.copyOf(compositionSupplier.stream().map(MaterialStackWrapper::toMatStack).toArray(MaterialStack[]::new)) : ImmutableList.copyOf(composition);
-            for (MaterialStack materialStack : materialInfo.componentList) {
-                Material material = materialStack.material();
-                if(material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives() && !properties.hasProperty(HAZARD)) {
-                    properties.setProperty(HAZARD, material.getProperty(HAZARD));
+            if (!properties.hasProperty(HAZARD)) {
+                for (MaterialStack materialStack : materialInfo.componentList) {
+                    Material material = materialStack.material();
+                    if(material.hasProperty(HAZARD) && material.getProperty(HAZARD).isApplyToDerivatives() && !properties.hasProperty(HAZARD)) {
+                        properties.setProperty(HAZARD, material.getProperty(HAZARD));
+                    }
                 }
             }
-            if(properties.hasProperty(HAZARD) && properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardType.NONE) {
+            if (properties.hasProperty(HAZARD) && properties.getProperty(HAZARD).getHazardType() == HazardProperty.HazardType.NONE) {
                 properties.removeProperty(HAZARD);
             }
 
