@@ -34,7 +34,8 @@ dependencies {
     compileOnly(forge.jade)
 
     // AE2
-    compileOnly(forge.ae2) { transitive = false }
+    implementation(forge.ae2) { transitive = false }
+    compileOnly("curse.maven:ae2wtlib-459929:5217955")
 
     //AlmostUnified
     compileOnly(forge.almostUnified.forge)
