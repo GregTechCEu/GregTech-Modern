@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.data.machine.GTMachines;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.jei.multipage.MultiblockInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.oreprocessing.GTOreProcessingInfoCategory;
 import com.gregtechceu.gtceu.integration.jei.orevein.GTBedrockFluidInfoCategory;
@@ -50,7 +51,8 @@ public class GTJEIPlugin implements IModPlugin {
         GTCEu.LOGGER.info("JEI register categories");
         IJeiHelpers jeiHelpers = registry.getJeiHelpers();
         registry.addRecipeCategories(new MultiblockInfoCategory(jeiHelpers));
-        registry.addRecipeCategories(new GTOreProcessingInfoCategory(jeiHelpers));
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            registry.addRecipeCategories(new GTOreProcessingInfoCategory(jeiHelpers));
         registry.addRecipeCategories(new GTOreVeinInfoCategory(jeiHelpers));
         registry.addRecipeCategories(new GTBedrockFluidInfoCategory(jeiHelpers));
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
@@ -65,7 +67,8 @@ public class GTJEIPlugin implements IModPlugin {
         if (LDLib.isReiLoaded() || LDLib.isEmiLoaded()) return;
         MultiblockInfoCategory.registerRecipeCatalysts(registration);
         GTRecipeTypeCategory.registerRecipeCatalysts(registration);
-        GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingInfoCategory.registerRecipeCatalysts(registration);
         GTOreVeinInfoCategory.registerRecipeCatalysts(registration);
         GTBedrockFluidInfoCategory.registerRecipeCatalysts(registration);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
@@ -85,7 +88,8 @@ public class GTJEIPlugin implements IModPlugin {
         GTCEu.LOGGER.info("JEI register");
         MultiblockInfoCategory.registerRecipes(registration);
         GTRecipeTypeCategory.registerRecipes(registration);
-        GTOreProcessingInfoCategory.registerRecipes(registration);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingInfoCategory.registerRecipes(registration);
         GTOreVeinInfoCategory.registerRecipes(registration);
         GTBedrockFluidInfoCategory.registerRecipes(registration);
     }
