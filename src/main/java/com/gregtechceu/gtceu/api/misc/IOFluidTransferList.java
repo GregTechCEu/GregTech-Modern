@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
+
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
+
 import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
@@ -16,6 +18,7 @@ import java.util.function.Predicate;
  * @implNote IOFluidTransferList
  */
 public class IOFluidTransferList extends FluidTransferList {
+
     @Getter
     private final IO io;
 

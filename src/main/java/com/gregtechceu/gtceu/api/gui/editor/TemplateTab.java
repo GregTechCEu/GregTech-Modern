@@ -15,5 +15,4 @@ public class TemplateTab extends MenuTab {
     protected TreeBuilder.Menu createMenu() {
         return TreeBuilder.Menu.start();
     }
-
 }

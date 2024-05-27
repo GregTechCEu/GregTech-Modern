@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
 import com.gregtechceu.gtceu.api.machine.feature.IOverclockMachine;
 import com.gregtechceu.gtceu.api.machine.feature.ITieredMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
@@ -10,9 +9,7 @@ import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerLong;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author KilaBash

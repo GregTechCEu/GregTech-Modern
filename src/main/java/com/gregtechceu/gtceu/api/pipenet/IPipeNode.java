@@ -6,8 +6,9 @@ import com.gregtechceu.gtceu.api.blockentity.ITickSubscription;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
-import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.LDLib;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -17,7 +18,8 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 
 import org.jetbrains.annotations.Nullable;
 
-public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType> extends ITickSubscription, IPaintable {
+public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
+                          extends ITickSubscription, IPaintable {
 
     long getOffsetTimer();
 
@@ -28,6 +30,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     /**
      * If tube is set to block connection from the specific side
+     * 
      * @param side face
      */
     default boolean isBlocked(Direction side) {
@@ -46,7 +49,8 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     /**
      * set to block connection from the specific side
-     * @param side face
+     * 
+     * @param side      face
      * @param isBlocked is blocked
      */
     void setBlocked(Direction side, boolean isBlocked);
@@ -64,6 +68,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
 
     /**
      * If node is connected to the specific side
+     * 
      * @param side face
      */
     default boolean isConnected(Direction side) {
@@ -148,9 +153,7 @@ public interface IPipeNode<PipeType extends Enum<PipeType> & IPipeType<NodeDataT
         }
     }
 
-    default void serverTick() {
-
-    }
+    default void serverTick() {}
 
     default void scheduleNeighborShapeUpdate() {
         Level level = getPipeLevel();

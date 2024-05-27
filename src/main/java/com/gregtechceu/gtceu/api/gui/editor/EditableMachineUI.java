@@ -1,13 +1,14 @@
 package com.gregtechceu.gtceu.api.gui.editor;
 
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.Platform;
 import com.lowdragmc.lowdraglib.gui.editor.configurator.IConfigurableWidget;
 import com.lowdragmc.lowdraglib.gui.editor.data.Resources;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.Position;
-import lombok.Getter;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtAccounter;
@@ -15,7 +16,9 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
 
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
+
 import java.io.DataInputStream;
 import java.io.InputStream;
 import java.util.function.BiConsumer;
@@ -27,6 +30,7 @@ import java.util.function.Supplier;
  * @implNote EditableMachineUI
  */
 public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> {
+
     @Getter
     final String groupName;
     @Getter
@@ -36,7 +40,8 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
     @Nullable
     private CompoundTag customUICache;
 
-    public EditableMachineUI(String groupName, ResourceLocation uiPath, Supplier<WidgetGroup> widgetSupplier, BiConsumer<WidgetGroup, MetaMachine> binder) {
+    public EditableMachineUI(String groupName, ResourceLocation uiPath, Supplier<WidgetGroup> widgetSupplier,
+                             BiConsumer<WidgetGroup, MetaMachine> binder) {
         this.groupName = groupName;
         this.uiPath = uiPath;
         this.widgetSupplier = widgetSupplier;
@@ -52,7 +57,7 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
     }
 
     //////////////////////////////////////
-    //********       GUI       *********//
+    // ******** GUI *********//
     //////////////////////////////////////
 
     @Nullable
@@ -60,7 +65,8 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
         if (hasCustomUI()) {
             var nbt = getCustomUI();
             var group = new WidgetGroup();
-            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"), Resources.fromNBT(nbt.getCompound("resources")), false);
+            IConfigurableWidget.deserializeNBT(group, nbt.getCompound("root"),
+                    Resources.fromNBT(nbt.getCompound("resources")), false);
             group.setSelfPosition(new Position(0, 0));
             return group;
         }
@@ -79,9 +85,10 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
                 this.customUICache = new CompoundTag();
             } else {
                 try {
-                    var resource = resourceManager.getResourceOrThrow(new ResourceLocation(uiPath.getNamespace(), "ui/machine/%s.mui".formatted(uiPath.getPath())));
-                    try (InputStream inputStream = resource.open()){
-                        try (DataInputStream dataInputStream = new DataInputStream(inputStream);){
+                    var resource = resourceManager.getResourceOrThrow(new ResourceLocation(uiPath.getNamespace(),
+                            "ui/machine/%s.mui".formatted(uiPath.getPath())));
+                    try (InputStream inputStream = resource.open()) {
+                        try (DataInputStream dataInputStream = new DataInputStream(inputStream);) {
                             this.customUICache = NbtIo.read(dataInputStream, NbtAccounter.UNLIMITED);
                         }
                     }
@@ -103,5 +110,4 @@ public class EditableMachineUI implements IEditableUI<WidgetGroup, MetaMachine> 
     public void reloadCustomUI() {
         this.customUICache = null;
     }
-
 }

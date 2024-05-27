@@ -4,7 +4,9 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.client.renderer.block.MaterialBlockRenderer;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.core.BlockPos;
@@ -59,20 +61,22 @@ public class MaterialBlock extends AppearanceBlock {
         };
     }
 
-
     /** Start falling ore stuff */
     @SuppressWarnings("deprecation")
     @Override
     public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean isMoving) {
-        if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() && ConfigHolder.INSTANCE.worldgen.sandOresFall) {
+        if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() &&
+                ConfigHolder.INSTANCE.worldgen.sandOresFall) {
             level.scheduleTick(pos, this, this.getDelayAfterPlace());
         }
     }
 
     @SuppressWarnings("deprecation")
     @Override
-    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level, BlockPos currentPos, BlockPos neighborPos) {
-        if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() && ConfigHolder.INSTANCE.worldgen.sandOresFall) {
+    public BlockState updateShape(BlockState state, Direction direction, BlockState neighborState, LevelAccessor level,
+                                  BlockPos currentPos, BlockPos neighborPos) {
+        if (TagPrefix.ORES.containsKey(this.tagPrefix) && TagPrefix.ORES.get(tagPrefix).isSand() &&
+                ConfigHolder.INSTANCE.worldgen.sandOresFall) {
             level.scheduleTick(currentPos, this, this.getDelayAfterPlace());
         }
         return super.updateShape(state, direction, neighborState, level, currentPos, neighborPos);
@@ -89,11 +93,13 @@ public class MaterialBlock extends AppearanceBlock {
 
     @Override
     public void animateTick(BlockState state, Level level, BlockPos pos, RandomSource random) {
-        if (!TagPrefix.ORES.containsKey(this.tagPrefix) || !TagPrefix.ORES.get(tagPrefix).isSand() || !ConfigHolder.INSTANCE.worldgen.sandOresFall) return;
+        if (!TagPrefix.ORES.containsKey(this.tagPrefix) || !TagPrefix.ORES.get(tagPrefix).isSand() ||
+                !ConfigHolder.INSTANCE.worldgen.sandOresFall)
+            return;
         if (random.nextInt(16) == 0 && FallingBlock.isFree(level.getBlockState(pos.below()))) {
-            double d = (double)pos.getX() + random.nextDouble();
-            double e = (double)pos.getY() - 0.05;
-            double f = (double)pos.getZ() + random.nextDouble();
+            double d = (double) pos.getX() + random.nextDouble();
+            double e = (double) pos.getY() - 0.05;
+            double f = (double) pos.getZ() + random.nextDouble();
             level.addParticle(new BlockParticleOption(ParticleTypes.FALLING_DUST, state), d, e, f, 0.0, 0.0, 0.0);
         }
     }
@@ -104,8 +110,8 @@ public class MaterialBlock extends AppearanceBlock {
     protected int getDelayAfterPlace() {
         return 2;
     }
-    /** End falling ore stuff */
 
+    /** End falling ore stuff */
 
     @Override
     public String getDescriptionId() {
@@ -116,5 +122,4 @@ public class MaterialBlock extends AppearanceBlock {
     public MutableComponent getName() {
         return tagPrefix.getLocalizedName(material);
     }
-
 }

@@ -9,30 +9,39 @@ import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.TransferMode;
 import com.gregtechceu.gtceu.common.pipelike.item.ItemNetHandler;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Iterator;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class RobotArmCover extends ConveyorCover {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RobotArmCover.class, ConveyorCover.MANAGED_FIELD_HOLDER);
 
-    @Persisted @DescSynced @Getter
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(RobotArmCover.class,
+            ConveyorCover.MANAGED_FIELD_HOLDER);
+
+    @Persisted
+    @DescSynced
+    @Getter
     protected TransferMode transferMode;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     protected int globalTransferLimit;
     protected int itemsTransferBuffered;
 
@@ -92,11 +101,11 @@ public class RobotArmCover extends ConveyorCover {
                 notEnoughTransferRate = true;
             }
         }
-        //if we didn't transfer anything because of too small transfer rate, buffer it
+        // if we didn't transfer anything because of too small transfer rate, buffer it
         if (itemsTransferred == 0 && notEnoughTransferRate) {
             itemsTransferBuffered += maxTransferAmount;
         } else {
-            //otherwise, if transfer succeed, empty transfer buffer value
+            // otherwise, if transfer succeed, empty transfer buffer value
             itemsTransferBuffered = 0;
         }
         return Math.min(itemsTransferred, maxTransferAmount);
@@ -147,9 +156,8 @@ public class RobotArmCover extends ConveyorCover {
         itemsTransferBuffered = 0;
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -160,11 +168,11 @@ public class RobotArmCover extends ConveyorCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 45, 20, 20, TransferMode.values(), transferMode, this::setTransferMode));
 
         this.stackSizeInput = new IntInputWidget(64, 45, 80, 20,
-                () -> globalTransferLimit, val -> globalTransferLimit = val
-        );
+                () -> globalTransferLimit, val -> globalTransferLimit = val);
         configureStackSizeInput();
 
         group.addWidget(this.stackSizeInput);

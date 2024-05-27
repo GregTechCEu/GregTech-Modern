@@ -1,7 +1,9 @@
 package com.gregtechceu.gtceu.client.renderer.cover;
 
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.BlockPos;
@@ -11,6 +13,7 @@ import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -20,20 +23,25 @@ import java.util.List;
  * @author KilaBash
  * @date 2023/2/24
  * @implNote ICoverRenderer
- * Do not use it as a block renderer alone. It should be called from {@link ICoverableRenderer}
+ *           Do not use it as a block renderer alone. It should be called from {@link ICoverableRenderer}
  */
 public interface ICoverRenderer extends IRenderer {
 
     /**
-     * Use {@link #renderCover(List, Direction, RandomSource, CoverBehavior, Direction, BlockPos, BlockAndTintGetter, ModelState)} instead
+     * Use
+     * {@link #renderCover(List, Direction, RandomSource, CoverBehavior, Direction, BlockPos, BlockAndTintGetter, ModelState)}
+     * instead
      */
     @Override
     @Deprecated
     @OnlyIn(Dist.CLIENT)
-    default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side, RandomSource rand) {
+    default List<BakedQuad> renderModel(BlockAndTintGetter level, BlockPos pos, BlockState state, Direction side,
+                                        RandomSource rand) {
         return IRenderer.super.renderModel(level, pos, state, side, rand);
     }
 
     @OnlyIn(Dist.CLIENT)
-    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, BlockPos pos, BlockAndTintGetter level, ModelState modelState);
+    void renderCover(List<BakedQuad> quads, @Nullable Direction side, RandomSource rand,
+                     @NotNull CoverBehavior coverBehavior, @Nullable Direction modelFacing, BlockPos pos,
+                     BlockAndTintGetter level, ModelState modelState);
 }

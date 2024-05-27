@@ -6,5 +6,6 @@ package com.gregtechceu.gtceu.api.pipenet;
  * @implNote ITickablePipeNet
  */
 public interface ITickablePipeNet {
+
     void update();
 }

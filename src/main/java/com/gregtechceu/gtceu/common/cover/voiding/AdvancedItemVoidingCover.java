@@ -7,27 +7,35 @@ import com.gregtechceu.gtceu.api.cover.filter.SimpleItemFilter;
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
 import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.common.cover.data.VoidingMode;
+
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class AdvancedItemVoidingCover extends ItemVoidingCover {
-    @Persisted @DescSynced @Getter
+
+    @Persisted
+    @DescSynced
+    @Getter
     private VoidingMode voidingMode = VoidingMode.VOID_ANY;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     protected int globalVoidingLimit = 1;
 
     private IntInputWidget stackSizeInput;
@@ -36,9 +44,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         super(definition, coverHolder, attachedSide);
     }
 
-
     //////////////////////////////////////////////
-    //***********     COVER LOGIC    ***********//
+    // *********** COVER LOGIC ***********//
     //////////////////////////////////////////////
 
     @Override
@@ -98,9 +105,8 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
         }
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -110,12 +116,11 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
 
     @Override
     protected void buildAdditionalUI(WidgetGroup group) {
-        group.addWidget(new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
-
+        group.addWidget(
+                new EnumSelectorWidget<>(146, 20, 20, 20, VoidingMode.values(), voidingMode, this::setVoidingMode));
 
         this.stackSizeInput = new IntInputWidget(64, 20, 80, 20,
-                () -> globalVoidingLimit, val -> globalVoidingLimit = val
-        );
+                () -> globalVoidingLimit, val -> globalVoidingLimit = val);
         configureStackSizeInput();
 
         group.addWidget(this.stackSizeInput);
@@ -150,10 +155,11 @@ public class AdvancedItemVoidingCover extends ItemVoidingCover {
     }
 
     //////////////////////////////////////
-    //*****     LDLib SyncData    ******//
+    // ***** LDLib SyncData ******//
     //////////////////////////////////////
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedItemVoidingCover.class, ItemVoidingCover.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedItemVoidingCover.class,
+            ItemVoidingCover.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {

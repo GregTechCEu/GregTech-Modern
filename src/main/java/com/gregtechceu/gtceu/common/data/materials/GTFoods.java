@@ -10,6 +10,7 @@ import net.minecraft.world.food.FoodProperties;
  * @implNote GTFoods
  */
 public class GTFoods {
+
     public final static FoodProperties CHOCOLATE = new FoodProperties.Builder()
             .effect(() -> new MobEffectInstance(MobEffects.MOVEMENT_SPEED, 200, 1), 0.1f)
             .alwaysEat().nutrition(4).saturationMod(0.3F).build();
@@ -18,8 +19,5 @@ public class GTFoods {
             .effect(() -> new MobEffectInstance(MobEffects.HEAL, 200, 1), 0.1f)
             .alwaysEat().nutrition(4).saturationMod(0.3F).build();
 
-    public static void init() {
-
-    }
-
+    public static void init() {}
 }

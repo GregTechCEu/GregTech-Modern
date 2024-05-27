@@ -12,11 +12,13 @@ import java.util.function.Supplier;
  * @implNote IEditableUI
  */
 public interface IEditableUI<W extends Widget, T> {
+
     W createDefault();
 
     void setupUI(WidgetGroup template, T instance);
 
-    record Normal<A extends Widget, B>(Supplier<A> supplier, BiConsumer<WidgetGroup, B> binder) implements IEditableUI<A, B> {
+    record Normal<A extends Widget, B>(Supplier<A> supplier, BiConsumer<WidgetGroup, B> binder)
+            implements IEditableUI<A, B> {
 
         @Override
         public A createDefault() {

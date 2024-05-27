@@ -18,17 +18,20 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IDisplayUIMachine;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.misc.EnergyContainerList;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.widget.*;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.player.Player;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -37,7 +40,9 @@ import java.util.Optional;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine, IDisplayUIMachine, ITieredMachine, IOverclockMachine {
+public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine implements IFancyUIMachine,
+                                               IDisplayUIMachine, ITieredMachine, IOverclockMachine {
+
     // runtime
     protected EnergyContainerList energyContainer;
 
@@ -46,7 +51,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     //////////////////////////////////////
-    //***    Multiblock Lifecycle    ***//
+    // *** Multiblock Lifecycle ***//
     //////////////////////////////////////
     @Override
     public void onStructureInvalid() {
@@ -67,25 +72,26 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     //////////////////////////////////////
-    //**********     GUI     ***********//
+    // ********** GUI ***********//
     //////////////////////////////////////
 
     @Override
     public void addDisplayText(List<Component> textList) {
         int numParallels = 0;
-        Optional<IParallelHatch> optional = this.getParts().stream().filter(IParallelHatch.class::isInstance).map(IParallelHatch.class::cast).findAny();
+        Optional<IParallelHatch> optional = this.getParts().stream().filter(IParallelHatch.class::isInstance)
+                .map(IParallelHatch.class::cast).findAny();
         if (optional.isPresent()) {
             IParallelHatch parallelHatch = optional.get();
             numParallels = parallelHatch.getCurrentParallel();
         }
         MultiblockDisplayText.builder(textList, isFormed())
-            .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
-            .addEnergyUsageLine(energyContainer)
-            .addEnergyTierLine(GTUtil.getTierByVoltage(getMaxVoltage()))
-            .addMachineModeLine(getRecipeType())
-            .addParallelsLine(numParallels)
-            .addWorkingStatusLine()
-            .addProgressLine(recipeLogic.getProgressPercent());
+                .setWorkingStatus(recipeLogic.isWorkingEnabled(), recipeLogic.isActive())
+                .addEnergyUsageLine(energyContainer)
+                .addEnergyTierLine(GTUtil.getTierByVoltage(getMaxVoltage()))
+                .addMachineModeLine(getRecipeType())
+                .addParallelsLine(numParallels)
+                .addWorkingStatusLine()
+                .addProgressLine(recipeLogic.getProgressPercent());
         getDefinition().getAdditionalDisplay().accept(this, textList);
         IDisplayUIMachine.super.addDisplayText(textList);
     }
@@ -120,9 +126,8 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
         }
     }
 
-
     //////////////////////////////////////
-    //********     OVERCLOCK   *********//
+    // ******** OVERCLOCK *********//
     //////////////////////////////////////
     @Override
     public int getOverclockTier() {
@@ -140,9 +145,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     @Override
-    public void setOverclockTier(int tier) {
-
-    }
+    public void setOverclockTier(int tier) {}
 
     @Override
     public long getOverclockVoltage() {
@@ -172,7 +175,7 @@ public class WorkableElectricMultiblockMachine extends WorkableMultiblockMachine
     }
 
     //////////////////////////////////////
-    //******     RECIPE LOGIC    *******//
+    // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
 
     /**

@@ -2,10 +2,11 @@ package com.gregtechceu.gtceu.api.data.worldgen.bedrockore;
 
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
-import lombok.Getter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -15,6 +16,7 @@ import org.jetbrains.annotations.Nullable;
  * @implNote OreVeinWorldEntry
  */
 public class OreVeinWorldEntry {
+
     @Nullable
     @Getter
     private BedrockOreDefinition definition;
@@ -29,9 +31,7 @@ public class OreVeinWorldEntry {
         this.operationsRemaining = operationsRemaining;
     }
 
-    private OreVeinWorldEntry() {
-
-    }
+    private OreVeinWorldEntry() {}
 
     @SuppressWarnings("unused")
     public void setOperationsRemaining(int amount) {
@@ -39,7 +39,8 @@ public class OreVeinWorldEntry {
     }
 
     public void decreaseOperations(int amount) {
-        operationsRemaining = ConfigHolder.INSTANCE.worldgen.oreVeins.infiniteBedrockOresFluids ? operationsRemaining : Math.max(0, operationsRemaining - amount);
+        operationsRemaining = ConfigHolder.INSTANCE.worldgen.oreVeins.infiniteBedrockOresFluids ? operationsRemaining :
+                Math.max(0, operationsRemaining - amount);
     }
 
     public CompoundTag writeToNBT() {
@@ -59,7 +60,10 @@ public class OreVeinWorldEntry {
         info.operationsRemaining = tag.getInt("operationsRemaining");
 
         if (tag.contains("vein")) {
-            info.definition = GTRegistries.BEDROCK_ORE_DEFINITIONS.get(new ResourceLocation(tag.getString("vein")));
+            ResourceLocation id = new ResourceLocation(tag.getString("vein"));
+            if (GTRegistries.BEDROCK_ORE_DEFINITIONS.containKey(id)) {
+                info.definition = GTRegistries.BEDROCK_ORE_DEFINITIONS.get(id);
+            }
         }
         return info;
     }

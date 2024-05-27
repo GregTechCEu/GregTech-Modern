@@ -1,9 +1,10 @@
 package com.gregtechceu.gtceu.utils;
 
-import it.unimi.dsi.fastutil.Hash;
 import net.minecraft.world.item.ItemStack;
 
+import it.unimi.dsi.fastutil.Hash;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Objects;
 
 /**
@@ -11,6 +12,7 @@ import java.util.Objects;
  * considering equality.
  */
 public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
+
     /**
      * @return a builder object for producing a custom ItemStackHashStrategy.
      */
@@ -55,6 +57,7 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
      * Builder pattern class for generating customized ItemStackHashStrategy
      */
     class ItemStackHashStrategyBuilder {
+
         private boolean item, count, damage, tag;
 
         /**
@@ -106,14 +109,14 @@ public interface ItemStackHashStrategy extends Hash.Strategy<ItemStack> {
          */
         public ItemStackHashStrategy build() {
             return new ItemStackHashStrategy() {
+
                 @Override
                 public int hashCode(@Nullable ItemStack o) {
                     return o == null || o.isEmpty() ? 0 : Objects.hash(
                             item ? o.getItem() : null,
                             count ? o.getCount() : null,
                             damage ? o.getDamageValue() : null,
-                            tag ? o.getTag() : null
-                    );
+                            tag ? o.getTag() : null);
                 }
 
                 @Override

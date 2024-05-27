@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.content.ContentModifier;
 import com.gregtechceu.gtceu.api.recipe.content.SerializerFloat;
-import com.gregtechceu.gtceu.api.recipe.lookup.AbstractMapIngredient;
 
 import java.util.Collection;
 import java.util.List;

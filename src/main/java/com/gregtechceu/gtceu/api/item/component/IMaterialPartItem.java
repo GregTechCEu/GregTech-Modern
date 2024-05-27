@@ -4,6 +4,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.item.IComponentItem;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -16,6 +17,7 @@ import net.minecraftforge.api.distmarker.OnlyIn;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 
 /**
@@ -78,12 +80,15 @@ public interface IMaterialPartItem extends IItemComponent, IDurabilityBar, IAddI
     }
 
     @Override
-    default void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    default void appendHoverText(ItemStack stack, @org.jetbrains.annotations.Nullable Level level,
+                                 List<Component> tooltipComponents, TooltipFlag isAdvanced) {
         var material = getPartMaterial(stack);
         var maxDurability = getPartMaxDurability(stack);
         var damage = getPartDamage(stack);
-        tooltipComponents.add(Component.translatable("metaitem.tool.tooltip.durability", maxDurability - damage, maxDurability));
-        tooltipComponents.add(Component.translatable("metaitem.tool.tooltip.primary_material", material.getLocalizedName()));
+        tooltipComponents
+                .add(Component.translatable("metaitem.tool.tooltip.durability", maxDurability - damage, maxDurability));
+        tooltipComponents
+                .add(Component.translatable("metaitem.tool.tooltip.primary_material", material.getLocalizedName()));
     }
 
     @OnlyIn(Dist.CLIENT)

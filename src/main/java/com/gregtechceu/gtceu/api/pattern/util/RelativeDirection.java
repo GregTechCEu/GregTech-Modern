@@ -10,6 +10,7 @@ import java.util.function.Function;
  * Relative direction when facing horizontally
  */
 public enum RelativeDirection {
+
     UP(f -> Direction.UP, Direction.Axis.Y),
     DOWN(f -> Direction.DOWN, Direction.Axis.Y),
     LEFT(Direction::getCounterClockWise, Direction.Axis.X),
@@ -125,7 +126,7 @@ public enum RelativeDirection {
      * @return Returns the new upwards facing.
      */
     public static Direction simulateAxisRotation(Direction newFrontFacing, Direction oldFrontFacing,
-                                                  Direction upwardsFacing) {
+                                                 Direction upwardsFacing) {
         if (newFrontFacing == oldFrontFacing) return upwardsFacing;
 
         Direction.Axis newAxis = newFrontFacing.getAxis();
@@ -143,7 +144,7 @@ public enum RelativeDirection {
                 default -> oldFrontFacing.getClockWise(); // WEST
             };
             return newFrontFacing == Direction.DOWN && upwardsFacing.getAxis() == Direction.Axis.Z ?
-                newUpwardsFacing.getOpposite() : newUpwardsFacing;
+                    newUpwardsFacing.getOpposite() : newUpwardsFacing;
         } else if (newAxis != Direction.Axis.Y) {
             // going from vertical to horizontal axis
             Direction newUpwardsFacing;
@@ -157,7 +158,7 @@ public enum RelativeDirection {
                 newUpwardsFacing = Direction.EAST;
             }
             return oldFrontFacing == Direction.DOWN && newUpwardsFacing.getAxis() == Direction.Axis.Z ?
-                newUpwardsFacing.getOpposite() : newUpwardsFacing;
+                    newUpwardsFacing.getOpposite() : newUpwardsFacing;
         } else {
             // was on vertical axis and still is. Must have flipped from up to down or vice versa
             return upwardsFacing.getOpposite();
@@ -192,5 +193,4 @@ public enum RelativeDirection {
 
         return pos.offset(oX, oY, oZ);
     }
-
 }

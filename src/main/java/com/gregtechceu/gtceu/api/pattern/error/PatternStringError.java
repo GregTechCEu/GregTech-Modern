@@ -2,7 +2,8 @@ package com.gregtechceu.gtceu.api.pattern.error;
 
 import net.minecraft.network.chat.Component;
 
-public class PatternStringError extends PatternError{
+public class PatternStringError extends PatternError {
+
     public final String translateKey;
 
     public PatternStringError(String translateKey) {

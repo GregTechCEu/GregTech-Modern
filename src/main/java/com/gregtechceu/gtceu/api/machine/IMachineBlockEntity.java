@@ -2,22 +2,24 @@ package com.gregtechceu.gtceu.api.machine;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
+
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IRPCBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.managed.MultiManagedStorage;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
-
 
 /**
  * A simple compound Interface for all my TileEntities.
  * <p/>
  * Also delivers most of the Information about TileEntities.
  */
-public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity, IAutoPersistBlockEntity {
+public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncBlockEntity, IRPCBlockEntity,
+                                     IAutoPersistBlockEntity {
 
     default BlockEntity self() {
         return (BlockEntity) this;
@@ -57,7 +59,8 @@ public interface IMachineBlockEntity extends IToolGridHighLight, IAsyncAutoSyncB
         if (self().getBlockState().getBlock() instanceof IMachineBlock machineBlock) {
             return machineBlock.getDefinition();
         } else {
-            throw new IllegalStateException("MetaMachineBlockEntity is created for an un available block: " + self().getBlockState().getBlock());
+            throw new IllegalStateException("MetaMachineBlockEntity is created for an un available block: " +
+                    self().getBlockState().getBlock());
         }
     }
 

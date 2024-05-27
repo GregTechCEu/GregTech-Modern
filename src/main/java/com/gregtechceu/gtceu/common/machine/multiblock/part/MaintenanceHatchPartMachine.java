@@ -1,29 +1,28 @@
 package com.gregtechceu.gtceu.common.machine.multiblock.part;
 
-import com.gregtechceu.gtceu.api.GTValues;
-import com.gregtechceu.gtceu.api.machine.TickableSubscription;
-import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
+import com.gregtechceu.gtceu.api.machine.TickableSubscription;
+import com.gregtechceu.gtceu.api.machine.feature.IInteractedMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IMachineModifyDrops;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMaintenanceMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.common.data.GTItems;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.misc.ContainerTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
@@ -37,9 +36,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.Arrays;
@@ -47,10 +48,15 @@ import java.util.List;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public class MaintenanceHatchPartMachine extends TieredPartMachine implements IMachineModifyDrops, IMaintenanceMachine, IInteractedMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+public class MaintenanceHatchPartMachine extends TieredPartMachine
+                                         implements IMachineModifyDrops, IMaintenanceMachine, IInteractedMachine {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            MaintenanceHatchPartMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
     private static final float MAX_DURATION_MULTIPLIER = 1.1f;
     private static final float MIN_DURATION_MULTIPLIER = 0.9f;
     private static final float DURATION_ACTION_AMOUNT = 0.01f;
@@ -59,17 +65,25 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     private final boolean isConfigurable;
     @Persisted
     private final NotifiableItemStackHandler itemStackHandler;
-    @Getter @Setter @Persisted @DescSynced @RequireRerender
+    @Getter
+    @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
     private boolean isTaped;
-    @Getter @Setter @Persisted
+    @Getter
+    @Setter
+    @Persisted
     protected int timeActive;
-    @Getter @Persisted @DescSynced
+    @Getter
+    @Persisted
+    @DescSynced
     protected byte maintenanceProblems = startProblems();
-    @Getter @Persisted
+    @Getter
+    @Persisted
     private float durationMultiplier = 1f;
     @Nullable
     protected TickableSubscription maintenanceSubs;
-
 
     public MaintenanceHatchPartMachine(IMachineBlockEntity metaTileEntityId, boolean isConfigurable) {
         super(metaTileEntityId, isConfigurable ? 3 : 1);
@@ -79,7 +93,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     //////////////////////////////////////
-    //******    Initialization    ******//
+    // ****** Initialization ******//
     //////////////////////////////////////
     protected NotifiableItemStackHandler createInventory() {
         return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.IN);
@@ -101,7 +115,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     //////////////////////////////////////
-    //*********     Logic     **********//
+    // ********* Logic **********//
     //////////////////////////////////////
     @Override
     public void setMaintenanceProblems(byte problems) {
@@ -141,6 +155,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
 
     /**
      * Fixes the maintenance problems of this hatch's Multiblock Controller
+     * 
      * @param entityPlayer the player performing the fixing
      */
     private void fixMaintenanceProblems(@Nullable Player entityPlayer) {
@@ -171,7 +186,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
      * Handles duct taping for manual and auto-taping use
      *
      * @param handler is the handler to get duct tape from
-     * @param slot is the inventory slot to check for tape
+     * @param slot    is the inventory slot to check for tape
      * @return true if tape was consumed, else false
      */
     private boolean consumeDuctTape(IItemTransfer handler, int slot) {
@@ -197,7 +212,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
      * Attempts to fix a provided maintenance problem with a tool in the player's
      * inventory, if the tool exists.
      *
-     * @param problems Problem Flags
+     * @param problems     Problem Flags
      * @param entityPlayer Target Player which their inventory would be scanned for tools to fix
      */
     private void fixProblemsWithTools(byte problems, Player entityPlayer) {
@@ -309,10 +324,11 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     //////////////////////////////////////
-    //*******     INTERACTION    *******//
+    // ******* INTERACTION *******//
     //////////////////////////////////////
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
         if (hasMaintenanceProblems()) {
             if (consumeDuctTape(player, hand)) {
                 fixAllMaintenanceProblems();
@@ -324,7 +340,7 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
     }
 
     //////////////////////////////////////
-    //********       GUI       *********//
+    // ******** GUI *********//
     //////////////////////////////////////
     @Override
     public Widget createUIWidget() {
@@ -369,9 +385,10 @@ public class MaintenanceHatchPartMachine extends TieredPartMachine implements IM
         if (multiplier.get() == 1.0) {
             tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".unchanged_description");
         } else {
-            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description", multiplier.get());
+            tooltip = Component.translatable("gtceu.maintenance.configurable_" + type + ".changed_description",
+                    multiplier.get());
         }
-        return Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.get()).setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
+        return Component.translatable("gtceu.maintenance.configurable_" + type, multiplier.get())
+                .setStyle(Style.EMPTY.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, tooltip)));
     }
-
 }

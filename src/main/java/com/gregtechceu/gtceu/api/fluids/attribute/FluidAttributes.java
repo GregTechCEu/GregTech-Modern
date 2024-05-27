@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.fluids.attribute;
 
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.network.chat.Component;
 
 public final class FluidAttributes {
@@ -10,8 +11,7 @@ public final class FluidAttributes {
      */
     public static final FluidAttribute ACID = new FluidAttribute(GTCEu.id("acid"),
             list -> list.add(Component.translatable("gtceu.fluid.type_acid.tooltip")),
-            list -> list.add(Component.translatable("gtceu.fluid_pipe.acid_proof"))
-    );
+            list -> list.add(Component.translatable("gtceu.fluid_pipe.acid_proof")));
 
     private FluidAttributes() {}
 }

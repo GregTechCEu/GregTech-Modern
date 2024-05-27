@@ -8,29 +8,34 @@ import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.pattern.util.RelativeDirection;
 import com.gregtechceu.gtceu.common.machine.multiblock.electric.research.HPCAMachine;
 import com.gregtechceu.gtceu.common.machine.multiblock.part.hpca.HPCAComponentPartMachine;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.client.renderer.block.model.BakedQuad;
-import net.minecraft.client.renderer.texture.MissingTextureAtlasSprite;
 import net.minecraft.client.resources.model.ModelState;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.RandomSource;
+
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class HPCAPartRenderer extends TieredHullMachineRenderer {
 
     private final boolean isAdvanced;
-    private final ResourceLocation texture, activeTexture, activeEmissiveTexture, damagedTexture, damagedActiveTexture, damagedActiveEmissiveTexture;
+    private final ResourceLocation texture, activeTexture, activeEmissiveTexture, damagedTexture, damagedActiveTexture,
+            damagedActiveEmissiveTexture;
 
     public HPCAPartRenderer(boolean isAdvanced, ResourceLocation texture, ResourceLocation damagedTexture) {
-        super(GTValues.ZPM, isAdvanced ? GTCEu.id("block/computer_casing") : GTCEu.id("block/advanced_computer_casing"));
+        super(GTValues.ZPM,
+                isAdvanced ? GTCEu.id("block/computer_casing") : GTCEu.id("block/advanced_computer_casing"));
         this.isAdvanced = isAdvanced;
         this.texture = texture;
         this.activeTexture = texture.withSuffix("_active");
@@ -42,12 +47,13 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
 
     public HPCAPartRenderer(boolean isAdvanced,
                             ResourceLocation texture,
-                            @Nullable  ResourceLocation activeTexture,
+                            @Nullable ResourceLocation activeTexture,
                             @Nullable ResourceLocation activeEmissiveTexture,
                             @Nullable ResourceLocation damagedTexture,
                             @Nullable ResourceLocation damagedActiveTexture,
                             @Nullable ResourceLocation damagedActiveEmissiveTexture) {
-        super(GTValues.ZPM, isAdvanced ? GTCEu.id("block/computer_casing") : GTCEu.id("block/advanced_computer_casing"));
+        super(GTValues.ZPM,
+                isAdvanced ? GTCEu.id("block/computer_casing") : GTCEu.id("block/advanced_computer_casing"));
         this.isAdvanced = isAdvanced;
         this.texture = texture;
         this.activeTexture = activeTexture;
@@ -58,7 +64,9 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
     }
 
     @Override
-    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
+    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                              Direction frontFacing, @Nullable Direction side, RandomSource rand,
+                              @Nullable Direction modelFacing, ModelState modelState) {
         super.renderMachine(quads, definition, machine, frontFacing, side, rand, modelFacing, modelState);
         if (machine instanceof HPCAComponentPartMachine hpcaComponent) {
             ResourceLocation texture, emissiveTexture = null;
@@ -89,15 +97,18 @@ public class HPCAPartRenderer extends TieredHullMachineRenderer {
                     facing = RelativeDirection.RIGHT.getRelativeFacing(hpca.getFrontFacing(), Direction.NORTH, false);
                 }
                 facing = ModelFactory.modelFacing(frontFacing, facing);
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
+                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(texture), modelState,
+                        -1, 0, true, true));
                 if (emissiveTexture != null) {
-                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture), modelState, -101, 15, true, false));
+                    quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, facing, ModelFactory.getBlockSprite(emissiveTexture),
+                            modelState, -101, 15, true, false));
                 }
             }
         } else {
             ResourceLocation texture = this.texture;
             if (texture != null) {
-                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture), modelState, -1, 0, true, true));
+                quads.add(FaceQuad.bakeFace(FaceQuad.BLOCK, Direction.NORTH, ModelFactory.getBlockSprite(texture),
+                        modelState, -1, 0, true, true));
             }
         }
     }

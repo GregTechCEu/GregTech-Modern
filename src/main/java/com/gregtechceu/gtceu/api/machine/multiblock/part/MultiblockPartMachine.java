@@ -2,22 +2,24 @@ package com.gregtechceu.gtceu.api.machine.multiblock.part;
 
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
-import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
+import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
 import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.api.machine.trait.IRecipeHandlerTrait;
-import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiController;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -28,7 +30,8 @@ import java.util.Set;
 @MethodsReturnNonnullByDefault
 public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockPartMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MultiblockPartMachine.class,
+            MetaMachine.MANAGED_FIELD_HOLDER);
 
     @DescSynced
     @RequireRerender
@@ -40,7 +43,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
 
     @Override
@@ -71,7 +74,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
 
     @Override
     public List<IRecipeHandlerTrait> getRecipeHandlers() {
-        return traits.stream().filter(IRecipeHandlerTrait.class::isInstance).map(IRecipeHandlerTrait.class::cast).toList();
+        return traits.stream().filter(IRecipeHandlerTrait.class::isInstance).map(IRecipeHandlerTrait.class::cast)
+                .toList();
     }
 
     @Override
@@ -79,7 +83,8 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
         super.onUnload();
         var level = getLevel();
         for (BlockPos pos : controllerPositions) {
-            if (level instanceof ServerLevel && level.isLoaded(pos) && MetaMachine.getMachine(level, pos) instanceof IMultiController controller) {
+            if (level instanceof ServerLevel && level.isLoaded(pos) &&
+                    MetaMachine.getMachine(level, pos) instanceof IMultiController controller) {
                 controller.onPartUnload();
             }
         }
@@ -87,7 +92,7 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     }
 
     //////////////////////////////////////
-    //***    Multiblock LifeCycle    ***//
+    // *** Multiblock LifeCycle ***//
     //////////////////////////////////////
 
     @Override
@@ -99,5 +104,4 @@ public class MultiblockPartMachine extends MetaMachine implements IMultiPart {
     public void addedToController(IMultiController controller) {
         controllerPositions.add(controller.self().getPos());
     }
-
 }

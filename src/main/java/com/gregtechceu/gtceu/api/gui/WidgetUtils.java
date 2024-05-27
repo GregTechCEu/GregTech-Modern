@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.gui;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.regex.Pattern;
  * @implNote WidgetUtils
  */
 public class WidgetUtils {
+
     public static List<Widget> getWidgetsById(WidgetGroup group, String regex) {
         return group.getWidgetsById(Pattern.compile(regex));
     }
@@ -27,7 +29,8 @@ public class WidgetUtils {
         getWidgetsById(group, regex).forEach(consumer);
     }
 
-    public static <T extends Widget> void widgetByIdForEach(WidgetGroup group, String regex, Class<T> clazz, Consumer<T> consumer) {
+    public static <T extends Widget> void widgetByIdForEach(WidgetGroup group, String regex, Class<T> clazz,
+                                                            Consumer<T> consumer) {
         for (Widget widget : getWidgetsById(group, regex)) {
             if (clazz.isInstance(widget)) {
                 consumer.accept(clazz.cast(widget));

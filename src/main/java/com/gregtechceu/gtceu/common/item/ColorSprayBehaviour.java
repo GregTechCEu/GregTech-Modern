@@ -1,13 +1,10 @@
 package com.gregtechceu.gtceu.common.item;
 
-import appeng.api.util.AEColor;
-import appeng.blockentity.networking.CableBusBlockEntity;
-import com.google.common.collect.ImmutableMap;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
-import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IAddInformation;
+import com.gregtechceu.gtceu.api.item.component.IDurabilityBar;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
@@ -15,7 +12,9 @@ import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
 import com.gregtechceu.gtceu.utils.GradientUtil;
+
 import com.lowdragmc.lowdraglib.Platform;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -40,6 +39,10 @@ import net.minecraft.world.level.block.StainedGlassPaneBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.Property;
+
+import appeng.api.util.AEColor;
+import appeng.blockentity.networking.CableBusBlockEntity;
+import com.google.common.collect.ImmutableMap;
 import org.apache.commons.lang3.tuple.Pair;
 import org.jetbrains.annotations.Nullable;
 
@@ -53,6 +56,7 @@ import java.util.function.Supplier;
  * @implNote ColorSprayBehaviour
  */
 public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IAddInformation {
+
     // vanilla
     private static final ImmutableMap<DyeColor, Block> GLASS_MAP;
     private static final ImmutableMap<DyeColor, Block> GLASS_PANE_MAP;
@@ -87,30 +91,40 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         for (DyeColor color : DyeColor.values()) {
             // if there are > 16 colors (vanilla end) & tinted is loaded, use tinted blocks
             if (color.ordinal() > 15 && Platform.isModLoaded(GTValues.MODID_TINTED)) {
-                glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
-                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass_pane")));
-                terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "terracotta")));
+                glassBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass")));
+                glassPaneBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "stained_glass_pane")));
+                terracottaBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "terracotta")));
                 woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "wool")));
                 carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "carpet")));
-                concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete")));
-                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete_powder")));
-                shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
+                concreteBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete")));
+                concretePowderBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "concrete_powder")));
+                shulkerBoxBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "shulker_box")));
                 candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_TINTED, color, "candle")));
             } else {
                 glassBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass")));
-                glassPaneBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass_pane")));
+                glassPaneBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId("minecraft", color, "stained_glass_pane")));
                 terracottaBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "terracotta")));
                 woolBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "wool")));
                 carpetBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "carpet")));
                 concreteBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete")));
-                concretePowderBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete_powder")));
+                concretePowderBuilder.put(color,
+                        BuiltInRegistries.BLOCK.get(getId("minecraft", color, "concrete_powder")));
                 shulkerBoxBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "shulker_box")));
                 candleBuilder.put(color, BuiltInRegistries.BLOCK.get(getId("minecraft", color, "candle")));
 
-                /* somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so `BuiltInRegistries.BLOCK.getId` returns air for modded blocks
-                if (GTCEu.isCreateLoaded()) {
-                    seatBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_CREATE, color, "seat")));
-                }
+                /*
+                 * somehow didn't want to work, it seems registry isn't fully loaded yet (forge) so
+                 * `BuiltInRegistries.BLOCK.getId` returns air for modded blocks
+                 * if (GTCEu.isCreateLoaded()) {
+                 * seatBuilder.put(color, BuiltInRegistries.BLOCK.get(getId(GTValues.MODID_CREATE, color, "seat")));
+                 * }
                  */
             }
         }
@@ -127,12 +141,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         SEAT_MAP = seatBuilder.build();
     }
 
-
     private final Supplier<ItemStack> empty;
     private final DyeColor color;
     public final int totalUses;
     private final Pair<Integer, Integer> durabilityBarColors;
-
 
     public ColorSprayBehaviour(Supplier<ItemStack> empty, int totalUses, int color) {
         this.empty = empty;
@@ -178,10 +190,12 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         int remainingUses = getUsesLeft(stack);
         if (color != null) {
-            tooltipComponents.add(Component.translatable("behaviour.paintspray." + this.color.getSerializedName() + ".tooltip"));
+            tooltipComponents
+                    .add(Component.translatable("behaviour.paintspray." + this.color.getSerializedName() + ".tooltip"));
         } else {
             tooltipComponents.add(Component.translatable("behaviour.paintspray.solvent.tooltip"));
         }
@@ -197,7 +211,8 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         var stack = context.getItemInHand();
         var block = level.getBlockState(pos).getBlock();
 
-        int maxBlocksToRecolor = Math.max(1, player != null && player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
+        int maxBlocksToRecolor = Math.max(1,
+                player != null && player.isShiftKeyDown() ? ConfigHolder.INSTANCE.tools.sprayCanChainLength : 1);
 
         if (player != null) {
             for (int i = 0; i < maxBlocksToRecolor; i++) {
@@ -243,7 +258,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return recolorBlockState(world, pos, side, this.color) || tryPaintSpecialBlock(player, world, pos, block);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static boolean recolorBlockState(Level level, BlockPos pos, Direction side, DyeColor color) {
         BlockState state = level.getBlockState(pos);
         for (Property property : state.getProperties()) {
@@ -302,12 +317,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             }
         }
 
-        /* somehow didn't want to work
-        if (GTCEu.isCreateLoaded() && block.defaultBlockState().is(CustomTags.CREATE_SEATS)) {
-            if (recolorBlockNoState(SEAT_MAP, this.color, world, pos)) {
-                return true;
-            }
-        }
+        /*
+         * somehow didn't want to work
+         * if (GTCEu.isCreateLoaded() && block.defaultBlockState().is(CustomTags.CREATE_SEATS)) {
+         * if (recolorBlockNoState(SEAT_MAP, this.color, world, pos)) {
+         * return true;
+         * }
+         * }
          */
 
         // MTE special case
@@ -346,8 +362,9 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return recolorBlockNoState(map, color, world, pos, null);
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static boolean recolorBlockNoState(Map<DyeColor, Block> map, DyeColor color, Level world, BlockPos pos, Block _default) {
+    @SuppressWarnings({ "rawtypes", "unchecked" })
+    private static boolean recolorBlockNoState(Map<DyeColor, Block> map, DyeColor color, Level world, BlockPos pos,
+                                               Block _default) {
         Block newBlock = map.getOrDefault(color, _default);
         BlockState old = world.getBlockState(pos);
         if (newBlock == Blocks.AIR) newBlock = _default;
@@ -363,7 +380,7 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         return false;
     }
 
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     private static boolean tryStripBlockColor(Player player, Level world, BlockPos pos, Block block, Direction side) {
         // MC special cases
         if (block instanceof StainedGlassBlock) {
@@ -403,12 +420,13 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
             return true;
         }
 
-        /* somehow didn't want to work
-        if (GTCEu.isCreateLoaded() && block.defaultBlockState().is(CustomTags.CREATE_SEATS)) {
-            if (recolorBlockNoState(SEAT_MAP, DyeColor.WHITE, world, pos, AllBlocks.SEATS.get(DyeColor.WHITE).get())) {
-                return true;
-            }
-        }
+        /*
+         * somehow didn't want to work
+         * if (GTCEu.isCreateLoaded() && block.defaultBlockState().is(CustomTags.CREATE_SEATS)) {
+         * if (recolorBlockNoState(SEAT_MAP, DyeColor.WHITE, world, pos, AllBlocks.SEATS.get(DyeColor.WHITE).get())) {
+         * return true;
+         * }
+         * }
          */
 
         // MTE special case
@@ -470,10 +488,10 @@ public class ColorSprayBehaviour implements IDurabilityBar, IInteractionItem, IA
         if (!player.isCreative()) {
             if (--usesLeft <= 0) {
                 if (replacementStack.isEmpty()) {
-                    //if replacement stack is empty, just shrink resulting stack
+                    // if replacement stack is empty, just shrink resulting stack
                     stack.shrink(1);
                 } else {
-                    //otherwise, update held item to replacement stack
+                    // otherwise, update held item to replacement stack
                     player.setItemInHand(hand, replacementStack);
                 }
                 return false;

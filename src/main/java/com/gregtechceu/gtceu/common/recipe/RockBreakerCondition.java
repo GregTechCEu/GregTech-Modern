@@ -4,11 +4,13 @@ import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
 import com.gregtechceu.gtceu.utils.GTUtil;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -18,7 +20,9 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class RockBreakerCondition extends RecipeCondition {
+
     public final static RockBreakerCondition INSTANCE = new RockBreakerCondition();
+
     @Override
     public String getType() {
         return "rock_breaker";

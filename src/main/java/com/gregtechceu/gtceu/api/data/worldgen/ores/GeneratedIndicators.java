@@ -1,14 +1,15 @@
 package com.gregtechceu.gtceu.api.data.worldgen.ores;
 
-import lombok.Getter;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.ChunkPos;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * Holds a vein's {@link OreBlockPlacer}s for each of its blocks, grouped by chunk.
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class GeneratedIndicators {
+
     @Getter
     private final ChunkPos origin;
 
@@ -41,6 +43,7 @@ public class GeneratedIndicators {
 
     @Override
     public String toString() {
-        return "GeneratedIndicators[origin=" + origin + ", chunks={" + generatedIndicators.keySet().stream().map(ChunkPos::toString).collect(Collectors.joining(", ")) + "}]";
+        return "GeneratedIndicators[origin=" + origin + ", chunks={" +
+                generatedIndicators.keySet().stream().map(ChunkPos::toString).collect(Collectors.joining(", ")) + "}]";
     }
 }

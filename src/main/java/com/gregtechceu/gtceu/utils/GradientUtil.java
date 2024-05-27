@@ -1,14 +1,12 @@
 package com.gregtechceu.gtceu.utils;
 
-
 import net.minecraft.util.FastColor;
-import net.minecraft.util.Tuple;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 public class GradientUtil {
 
-    private GradientUtil() {
-    }
+    private GradientUtil() {}
 
     public static int argbToAbgr(int argb) {
         int r = (argb >> 16) & 0xFF;
@@ -17,27 +15,27 @@ public class GradientUtil {
     }
 
     public static int argbToRgba(int argb) {
-         return argb << 8 | (argb >>> 24);
+        return argb << 8 | (argb >>> 24);
     }
 
     public static float[] getRGB(int color) {
         float r = ((color >> 16) & 0xFF) / 255f;
         float g = ((color >> 8) & 0xFF) / 255f;
-        //noinspection PointlessBitwiseExpression
+        // noinspection PointlessBitwiseExpression
         float b = ((color >> 0) & 0xFF) / 255f;
-        return new float[]{r, g, b};
+        return new float[] { r, g, b };
     }
 
     public static int multiplyBlendRGBA(int c1, int c2) {
         int a1 = (c1 & 0xff);
         int r1 = ((c1 & 0xff000000) >> 24);
         int g1 = ((c1 & 0xff0000) >> 16);
-        int b1 = ((c1  & 0xff00) >> 8);
+        int b1 = ((c1 & 0xff00) >> 8);
 
         int a2 = (c2 & 0xff);
         int r2 = ((c2 & 0xff000000) >> 24);
         int g2 = ((c2 & 0xff0000) >> 16);
-        int b2 = ((c2  & 0xff00) >> 8);
+        int b2 = ((c2 & 0xff00) >> 8);
 
         int a = (a1 * a2) / 255;
         int r = (r1 * r2) / 255;
@@ -48,8 +46,8 @@ public class GradientUtil {
     }
 
     public static int blend(int c1, int c2, float ratio) {
-        if ( ratio > 1f ) ratio = 1f;
-        else if ( ratio < 0f ) ratio = 0f;
+        if (ratio > 1f) ratio = 1f;
+        else if (ratio < 0f) ratio = 0f;
         float iRatio = 1.0f - ratio;
 
         int a1 = (c1 >> 24 & 0xff);
@@ -62,10 +60,10 @@ public class GradientUtil {
         int g2 = ((c2 & 0xff00) >> 8);
         int b2 = (c2 & 0xff);
 
-        int a = (int)((a1 * iRatio) + (a2 * ratio));
-        int r = (int)((r1 * iRatio) + (r2 * ratio));
-        int g = (int)((g1 * iRatio) + (g2 * ratio));
-        int b = (int)((b1 * iRatio) + (b2 * ratio));
+        int a = (int) ((a1 * iRatio) + (a2 * ratio));
+        int r = (int) ((r1 * iRatio) + (r2 * ratio));
+        int g = (int) ((g1 * iRatio) + (g2 * ratio));
+        int b = (int) ((b1 * iRatio) + (b2 * ratio));
 
         return a << 24 | r << 16 | g << 8 | b;
     }
@@ -89,7 +87,7 @@ public class GradientUtil {
         // Get RGB values in the range 0 - 1
         float r = ((rgbColor >> 16) & 0xFF) / 255f;
         float g = ((rgbColor >> 8) & 0xFF) / 255f;
-        //noinspection PointlessBitwiseExpression
+        // noinspection PointlessBitwiseExpression
         float b = ((rgbColor >> 0) & 0xFF) / 255f;
 
         // Minimum and Maximum RGB values are used in the HSL calculations
@@ -121,7 +119,7 @@ public class GradientUtil {
             s = (max - min) / (2 - max - min);
         }
 
-        return new float[] {h, s * 100, l * 100};
+        return new float[] { h, s * 100, l * 100 };
     }
 
     public static int toRGB(float[] hsv) {
@@ -162,10 +160,10 @@ public class GradientUtil {
             return p + ((q - p) * 6 * h);
         }
         if (2 * h < 1) {
-            return  q;
+            return q;
         }
         if (3 * h < 2) {
-            return p + ( (q - p) * 6 * ((2.0F / 3.0F) - h) );
+            return p + ((q - p) * 6 * ((2.0F / 3.0F) - h));
         }
         return p;
     }

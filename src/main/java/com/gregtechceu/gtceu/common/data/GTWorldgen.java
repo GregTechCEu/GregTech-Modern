@@ -21,9 +21,7 @@ public class GTWorldgen {
         Holder<NormalNoise.NoiseParameters> oreVeininess = noises.getOrThrow(Noises.ORE_VEININESS);
         ctx.register(ResourceKey.create(Registries.DENSITY_FUNCTION, NEW_ORE_VEIN_TOGGLE),
                 DensityFunctions.interpolated(
-                        DensityFunctions.noise(oreVeininess, 1.5f, 1.5f)
-                )
-        );
+                        DensityFunctions.noise(oreVeininess, 1.5f, 1.5f)));
 
         Holder<NormalNoise.NoiseParameters> oreVeinA = noises.getOrThrow(Noises.ORE_VEIN_A);
         Holder<NormalNoise.NoiseParameters> oreVeinB = noises.getOrThrow(Noises.ORE_VEIN_B);
@@ -32,13 +30,8 @@ public class GTWorldgen {
                         DensityFunctions.constant(-0.08f),
                         DensityFunctions.max(
                                 DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinA, 4.0f, 4.0f)
-                                ).abs(),
+                                        DensityFunctions.noise(oreVeinA, 4.0f, 4.0f)).abs(),
                                 DensityFunctions.interpolated(
-                                        DensityFunctions.noise(oreVeinB, 4.0f, 4.0f)
-                                ).abs()
-                        )
-                )
-        );
+                                        DensityFunctions.noise(oreVeinB, 4.0f, 4.0f)).abs())));
     }
 }

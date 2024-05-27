@@ -3,6 +3,7 @@ package com.gregtechceu.gtceu.api.machine.feature;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTDamageTypes;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.shapes.Shapes;
+
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -27,7 +29,8 @@ public interface IExhaustVentMachine extends IMachineFeature {
     /**
      * @return the direction the vent faces
      */
-    @NotNull Direction getVentingDirection();
+    @NotNull
+    Direction getVentingDirection();
 
     /**
      * @return if venting is needed
@@ -67,14 +70,15 @@ public interface IExhaustVentMachine extends IMachineFeature {
         BlockPos ventingBlockPos = self().getPos().relative(ventingSide);
         BlockState state = level.getBlockState(ventingBlockPos);
 
-        return state.canOcclude() || Shapes.blockOccudes(state.getCollisionShape(level, ventingBlockPos), Shapes.block(), ventingSide.getOpposite());
+        return state.canOcclude() || Shapes.blockOccudes(state.getCollisionShape(level, ventingBlockPos),
+                Shapes.block(), ventingSide.getOpposite());
     }
 
     /**
      * Attempts to vent, if needed
      *
      * @param level the level containing the machine venting
-     * @param pos the position of the machine
+     * @param pos   the position of the machine
      */
     default void tryDoVenting(@NotNull Level level, @NotNull BlockPos pos) {
         if (isNeedsVenting() && !isVentingBlocked()) {
@@ -97,7 +101,7 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * Damages entities upon venting
      *
      * @param level the level containing the machine and entities
-     * @param pos the position of the machine venting
+     * @param pos   the position of the machine venting
      */
     default void doVentingDamage(@NotNull Level level, @NotNull BlockPos pos) {
         for (LivingEntity entity : level.getEntitiesOfClass(LivingEntity.class,
@@ -105,9 +109,9 @@ public interface IExhaustVentMachine extends IMachineFeature {
                 entity -> !(entity instanceof Player player) || !player.isSpectator() && !player.isCreative())) {
             entity.hurt(GTDamageTypes.HEAT.source(level), getVentingDamage());
             // TODO ADVANCEMENT
-//            if (entity instanceof ServerPlayer) {
-//                AdvancementTriggers.STEAM_VENT_DEATH.trigger((ServerPlayer) entity);
-//            }
+            // if (entity instanceof ServerPlayer) {
+            // AdvancementTriggers.STEAM_VENT_DEATH.trigger((ServerPlayer) entity);
+            // }
         }
     }
 
@@ -115,9 +119,9 @@ public interface IExhaustVentMachine extends IMachineFeature {
      * Create the particles for venting
      *
      * @param level the level containing the machine
-     * @param posX the x position to send particles to
-     * @param posY the y position to send particles to
-     * @param posZ the z position to send particles to
+     * @param posX  the x position to send particles to
+     * @param posY  the y position to send particles to
+     * @param posZ  the z position to send particles to
      */
     default void createVentingParticles(@NotNull Level level, double posX, double posY, double posZ) {
         Direction ventingDirection = getVentingDirection();
@@ -130,9 +134,9 @@ public interface IExhaustVentMachine extends IMachineFeature {
                     ventingDirection.getStepZ() / 2.0, 0.1);
         } else {
             for (int i = 0; i < count; ++i) {
-                double d1 = level.random.nextGaussian() * (double)ventingDirection.getStepX() / 2.0;
-                double d3 = level.random.nextGaussian() * (double)ventingDirection.getStepY() / 2.0;
-                double d5 = level.random.nextGaussian() * (double)ventingDirection.getStepZ() / 2.0;
+                double d1 = level.random.nextGaussian() * (double) ventingDirection.getStepX() / 2.0;
+                double d3 = level.random.nextGaussian() * (double) ventingDirection.getStepY() / 2.0;
+                double d5 = level.random.nextGaussian() * (double) ventingDirection.getStepZ() / 2.0;
                 double d6 = level.random.nextGaussian() * 0.1;
                 double d7 = level.random.nextGaussian() * 0.1;
                 double d8 = level.random.nextGaussian() * 0.1;
@@ -145,16 +149,15 @@ public interface IExhaustVentMachine extends IMachineFeature {
                 }
             }
         }
-
     }
 
     /**
      * Play the venting sound
      *
      * @param level the level to play the sound in
-     * @param posX the x position to play the sound at
-     * @param posY the y position to play the sound at
-     * @param posZ the z position to play the sound at
+     * @param posX  the x position to play the sound at
+     * @param posY  the y position to play the sound at
+     * @param posZ  the z position to play the sound at
      */
     default void playVentingSound(@NotNull Level level, double posX, double posY, double posZ) {
         level.playSound(null, posX, posY, posZ, SoundEvents.LAVA_EXTINGUISH, SoundSource.BLOCKS, 1F, 1F);

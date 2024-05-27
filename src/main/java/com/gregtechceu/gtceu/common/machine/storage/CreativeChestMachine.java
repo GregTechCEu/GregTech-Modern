@@ -5,9 +5,9 @@ import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
-import com.gregtechceu.gtceu.api.transfer.fluid.InfiniteFluidTransferProxy;
 import com.gregtechceu.gtceu.api.transfer.item.InfiniteItemTransferProxy;
 import com.gregtechceu.gtceu.utils.GTTransferUtils;
+
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
@@ -17,6 +17,7 @@ import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DropSaved;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
@@ -27,14 +28,19 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.Nullable;
 
 public class CreativeChestMachine extends QuantumChestMachine {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeChestMachine.class, QuantumChestMachine.MANAGED_FIELD_HOLDER);
 
-    @Persisted @DropSaved
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeChestMachine.class,
+            QuantumChestMachine.MANAGED_FIELD_HOLDER);
+
+    @Persisted
+    @DropSaved
     private int itemsPerCycle = 1;
-    @Persisted @DropSaved
+    @Persisted
+    @DropSaved
     private int ticksPerCycle = 1;
 
     private final InfiniteItemTransferProxy capabilityTransferProxy;
@@ -57,6 +63,7 @@ public class CreativeChestMachine extends QuantumChestMachine {
     @Override
     protected NotifiableItemStackHandler createCacheItemHandler(Object... args) {
         return new NotifiableItemStackHandler(this, 1, IO.BOTH, IO.NONE) {
+
             @Override
             public int getSlotLimit(int slot) {
                 return 1;
@@ -94,9 +101,9 @@ public class CreativeChestMachine extends QuantumChestMachine {
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 176, 131);
         group.addWidget(new PhantomSlotWidget(cache, 0, 36, 6)
-            .setClearSlotOnRightClick(true)
-            .setBackgroundTexture(GuiTextures.SLOT)
-            .setChangeListener(this::markDirty));
+                .setClearSlotOnRightClick(true)
+                .setBackgroundTexture(GuiTextures.SLOT)
+                .setChangeListener(this::markDirty));
         group.addWidget(new LabelWidget(7, 9, "gtceu.creative.chest.item"));
         group.addWidget(new ImageWidget(7, 48, 154, 14, GuiTextures.DISPLAY));
         group.addWidget(new TextFieldWidget(9, 50, 152, 10, () -> String.valueOf(itemsPerCycle), value -> {
@@ -115,10 +122,12 @@ public class CreativeChestMachine extends QuantumChestMachine {
         group.addWidget(new LabelWidget(7, 65, "gtceu.creative.chest.tpc"));
 
         group.addWidget(new SwitchWidget(7, 101, 162, 20, (clickData, value) -> setWorkingEnabled(value))
-            .setTexture(
-                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.activity.off")),
-                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.activity.on")))
-            .setPressed(isWorkingEnabled()));
+                .setTexture(
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                new TextTexture("gtceu.creative.activity.off")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                new TextTexture("gtceu.creative.activity.on")))
+                .setPressed(isWorkingEnabled()));
 
         return group;
     }
@@ -129,7 +138,8 @@ public class CreativeChestMachine extends QuantumChestMachine {
         if (ticksPerCycle == 0 || getOffsetTimer() % ticksPerCycle != 0) return;
         if (getLevel().isClientSide || !isWorkingEnabled() || stack.isEmpty()) return;
 
-        IItemTransfer transfer = ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
+        IItemTransfer transfer = ItemTransferHelper.getItemTransfer(getLevel(),
+                getPos().relative(getOutputFacingItems()), getOutputFacingItems().getOpposite());
         if (transfer != null) {
             stack.setCount(itemsPerCycle);
 
@@ -142,7 +152,8 @@ public class CreativeChestMachine extends QuantumChestMachine {
     }
 
     @Override
-    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult onUse(BlockState state, Level world, BlockPos pos, Player player, InteractionHand hand,
+                                   BlockHitResult hit) {
         if (hit.getDirection() == getFrontFacing()) {
             var held = player.getMainHandItem();
             if (!held.isEmpty() && (ItemTransferHelper.canItemStacksStack(held, stored) || stored.isEmpty())) { // push
@@ -160,7 +171,8 @@ public class CreativeChestMachine extends QuantumChestMachine {
     public boolean onLeftClick(Player player, Level world, InteractionHand hand, BlockPos pos, Direction direction) {
         if (direction == getFrontFacing() && !isRemote()) {
             if (!stored.isEmpty()) { // pull
-                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1, false);
+                var drained = cache.extractItem(0, player.isShiftKeyDown() ? stored.getItem().getMaxStackSize() : 1,
+                        false);
                 if (!drained.isEmpty()) {
                     if (player.addItem(drained)) {
                         Block.popResource(world, getPos().relative(getFrontFacing()), drained);

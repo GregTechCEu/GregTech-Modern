@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IUIMachine;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.editor.ColorPattern;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -17,18 +18,24 @@ import com.lowdragmc.lowdraglib.gui.texture.TextTexture;
 import com.lowdragmc.lowdraglib.gui.widget.*;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
+
 import org.apache.commons.lang3.ArrayUtils;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
+
+import javax.annotation.ParametersAreNonnullByDefault;
+
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CreativeEnergyContainerMachine extends MetaMachine implements ILaserContainer, IUIMachine {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            CreativeEnergyContainerMachine.class, MetaMachine.MANAGED_FIELD_HOLDER);
 
     @Persisted
     private long voltage = 0;
@@ -51,7 +58,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -65,7 +72,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
     }
 
     //////////////////////////////////////
-    //**********     MISC    ***********//
+    // ********** MISC ***********//
     //////////////////////////////////////
 
     protected void updateEnergyTick() {
@@ -83,7 +90,8 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
         int ampsUsed = 0;
         for (var facing : GTUtil.DIRECTIONS) {
             var opposite = facing.getOpposite();
-            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing), opposite);
+            IEnergyContainer container = GTCapabilityHelper.getEnergyContainer(getLevel(), getPos().relative(facing),
+                    opposite);
             // Try to get laser capability
             if (container == null)
                 container = GTCapabilityHelper.getLaser(getLevel(), getPos().relative(facing), opposite);
@@ -174,7 +182,7 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
     }
 
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -188,21 +196,26 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                             setTier = GTUtil.getTierByVoltage(voltage);
                         }).setNumbersOnly(0L, Long.MAX_VALUE))
                 .widget(new LabelWidget(7, 74, "gtceu.creative.energy.amperage"))
-                .widget(new ButtonWidget(7, 87, 20, 20, new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
+                .widget(new ButtonWidget(7, 87, 20, 20,
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("-")),
                         cd -> amps = --amps == -1 ? 0 : amps))
                 .widget(new TextFieldWidget(31, 89, 114, 16, () -> String.valueOf(amps),
                         value -> amps = Integer.parseInt(value)).setNumbersOnly(0, Integer.MAX_VALUE))
-                .widget(new ButtonWidget(149, 87, 20, 20, new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
+                .widget(new ButtonWidget(149, 87, 20, 20,
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("+")),
                         cd -> {
                             if (amps < Integer.MAX_VALUE) {
                                 amps++;
                             }
                         }))
-                .widget(new LabelWidget(7, 110, () -> "Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick))
+                .widget(new LabelWidget(7, 110,
+                        () -> "Average Energy I/O per tick: " + this.lastAverageEnergyIOPerTick))
                 .widget(new SwitchWidget(7, 139, 77, 20, (clickData, value) -> active = value)
                         .setTexture(
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.activity.off")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.activity.on")))
+                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                        new TextTexture("gtceu.creative.activity.off")),
+                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                        new TextTexture("gtceu.creative.activity.on")))
                         .setPressed(active))
                 .widget(new SwitchWidget(85, 139, 77, 20, (clickData, value) -> {
                     source = value;
@@ -215,8 +228,11 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                         amps = Integer.MAX_VALUE;
                         setTier = 14;
                     }
-                }).setTexture(new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.energy.sink")),
-                                new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON, new TextTexture("gtceu.creative.energy.source")))
+                }).setTexture(
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                new TextTexture("gtceu.creative.energy.sink")),
+                        new GuiTextureGroup(ResourceBorderTexture.BUTTON_COMMON,
+                                new TextTexture("gtceu.creative.energy.source")))
                         .setPressed(source))
                 .widget(new SelectorWidget(7, 7, 30, 20, Arrays.stream(GTValues.VNF).toList(), -1)
                         .setOnChanged(tier -> {
@@ -227,7 +243,5 @@ public class CreativeEnergyContainerMachine extends MetaMachine implements ILase
                         .setButtonBackground(ResourceBorderTexture.BUTTON_COMMON)
                         .setBackground(ColorPattern.BLACK.rectTexture())
                         .setValue(GTValues.VNF[setTier]));
-
     }
-
 }

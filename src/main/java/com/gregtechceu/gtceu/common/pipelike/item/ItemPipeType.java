@@ -7,10 +7,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.pipenet.IMaterialPipeType;
 import com.gregtechceu.gtceu.client.model.PipeModel;
-import lombok.Getter;
+
 import net.minecraft.resources.ResourceLocation;
 
+import lombok.Getter;
+
 public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
+
     SMALL("small", 0.375f, TagPrefix.pipeSmallItem, 0.5f, 1.5f),
     NORMAL("normal", 0.5f, TagPrefix.pipeNormalItem, 1f, 1f),
     LARGE("large", 0.75f, TagPrefix.pipeLargeItem, 2f, 0.75f),
@@ -55,7 +58,8 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
 
     @Override
     public ItemPipeProperties modifyProperties(ItemPipeProperties baseProperties) {
-        return new ItemPipeProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5), baseProperties.getTransferRate() * rateMultiplier);
+        return new ItemPipeProperties((int) ((baseProperties.getPriority() * resistanceMultiplier) + 0.5),
+                baseProperties.getTransferRate() * rateMultiplier);
     }
 
     @Override
@@ -71,10 +75,19 @@ public enum ItemPipeType implements IMaterialPipeType<ItemPipeProperties> {
     public PipeModel createPipeModel(Material material) {
         PipeModel model;
         if (material.hasProperty(PropertyKey.WOOD)) {
-            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"), () -> GTCEu.id("block/pipe/pipe_%s_in_wood".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)), null, null);
+            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side_wood"),
+                    () -> GTCEu.id("block/pipe/pipe_%s_in_wood"
+                            .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)),
+                    null, null);
         } else {
-            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"), () -> GTCEu.id("block/pipe/pipe_%s_in".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)),
-                    null, null/*() -> GTCEu.id("block/pipe/pipe_side_secondary"), () -> GTCEu.id("block/pipe/pipe_%s_in_secondary".formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)) TODO enable once the textures are added*/);
+            model = new PipeModel(thickness, () -> GTCEu.id("block/pipe/pipe_side"),
+                    () -> GTCEu.id("block/pipe/pipe_%s_in"
+                            .formatted(this.isRestrictive() ? values()[this.ordinal() - 4].name : name)),
+                    null, null/*
+                               * () -> GTCEu.id("block/pipe/pipe_side_secondary"), () ->
+                               * GTCEu.id("block/pipe/pipe_%s_in_secondary".formatted(this.isRestrictive() ?
+                               * values()[this.ordinal() - 4].name : name)) TODO enable once the textures are added
+                               */);
         }
         if (isRestrictive()) {
             model.setSideOverlayTexture(GTCEu.id("block/pipe/pipe_restrictive"));

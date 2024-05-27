@@ -10,19 +10,23 @@ import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.level.biome.Biome.Precipitation;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class PrimitivePumpMachine extends MultiblockControllerMachine {
 
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PrimitivePumpMachine.class, MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PrimitivePumpMachine.class,
+            MultiblockControllerMachine.MANAGED_FIELD_HOLDER);
 
     private long biomeModifier = 0;
     private int hatchModifier = 0;
@@ -96,7 +100,8 @@ public class PrimitivePumpMachine extends MultiblockControllerMachine {
             } else if (biomeModifier > 0) {
                 if (fluidTank == null) initializeTank();
                 if (fluidTank != null) {
-                    fluidTank.handleRecipe(IO.OUT, null, List.of(FluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), null, false);
+                    fluidTank.handleRecipe(IO.OUT, null,
+                            List.of(FluidIngredient.of(GTMaterials.Water.getFluid(getFluidProduction()))), null, false);
                 }
             }
         }

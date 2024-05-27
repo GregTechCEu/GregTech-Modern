@@ -14,7 +14,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.DISTILLERY_RECIPES
 public class DistillationRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         DISTILLATION_RECIPES.recipeBuilder("distill_creosote")
                 .inputFluids(Creosote.getFluid(24))
                 .outputFluids(Lubricant.getFluid(12))

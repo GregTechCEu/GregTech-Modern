@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.FluidIngredient;
+
 import com.lowdragmc.lowdraglib.misc.FluidStorage;
 import com.lowdragmc.lowdraglib.side.fluid.FluidHelper;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
@@ -14,9 +15,11 @@ import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import net.minecraft.core.Direction;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.core.Direction;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -28,9 +31,11 @@ import java.util.function.Predicate;
  * @date 2023/2/20
  * @implNote NotifiableFluidTank
  */
-public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient> implements ICapabilityTrait, IFluidTransfer {
+public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngredient>
+                                 implements ICapabilityTrait, IFluidTransfer {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableFluidTank.class,
+            NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
     @Getter
     public final IO handlerIO;
     @Getter
@@ -39,10 +44,12 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     @Getter
     private final FluidStorage[] storages;
     @Setter
-    protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined while creating tanks.
+    protected boolean allowSameFluids; // Can different tanks be filled with the same fluid. It should be determined
+                                       // while creating tanks.
     private Boolean isEmpty;
 
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     @Getter
     protected FluidStorage lockedFluid = new FluidStorage(FluidHelper.getBucket());
 
@@ -89,14 +96,17 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
     }
 
     @Override
-    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left, @Nullable String slotName, boolean simulate) {
+    public List<FluidIngredient> handleRecipeInner(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                   @Nullable String slotName, boolean simulate) {
         return handleIngredient(io, recipe, left, simulate, this.handlerIO, storages);
     }
 
     @Nullable
-    public static List<FluidIngredient> handleIngredient(IO io, GTRecipe recipe, List<FluidIngredient> left, boolean simulate, IO handlerIO, FluidStorage[] storages) {
+    public static List<FluidIngredient> handleIngredient(IO io, GTRecipe recipe, List<FluidIngredient> left,
+                                                         boolean simulate, IO handlerIO, FluidStorage[] storages) {
         if (io != handlerIO) return left;
-        var capabilities = simulate ? Arrays.stream(storages).map(FluidStorage::copy).toArray(FluidStorage[]::new) : storages;
+        var capabilities = simulate ? Arrays.stream(storages).map(FluidStorage::copy).toArray(FluidStorage[]::new) :
+                storages;
         for (FluidStorage capability : capabilities) {
             Iterator<FluidIngredient> iterator = left.iterator();
             if (io == IO.IN) {
@@ -257,7 +267,8 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
+            FluidTransferHelper.exportToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing),
+                    facing.getOpposite());
         }
     }
 
@@ -265,12 +276,13 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         var level = getMachine().getLevel();
         var pos = getMachine().getPos();
         for (Direction facing : facings) {
-            FluidTransferHelper.importToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing), facing.getOpposite());
+            FluidTransferHelper.importToTarget(this, Integer.MAX_VALUE, f -> true, level, pos.relative(facing),
+                    facing.getOpposite());
         }
     }
 
     //////////////////////////////////////
-    //*******     Capability    ********//
+    // ******* Capability ********//
     //////////////////////////////////////
     @NotNull
     @Override
@@ -444,7 +456,6 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
         return canCapOutput();
     }
 
-
     @NotNull
     @Override
     public Object createSnapshot() {
@@ -459,5 +470,4 @@ public class NotifiableFluidTank extends NotifiableRecipeHandlerTrait<FluidIngre
             }
         }
     }
-
 }
