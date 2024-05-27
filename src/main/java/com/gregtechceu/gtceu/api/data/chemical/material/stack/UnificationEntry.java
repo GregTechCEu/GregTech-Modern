@@ -35,14 +35,14 @@ public class UnificationEntry {
 
     @Override
     public int hashCode() {
-        int result = tagPrefix.hashCode();
+        int result = (tagPrefix != null ? tagPrefix.hashCode() : 0);
         result = 31 * result + (material != null ? material.hashCode() : 0);
         return result;
     }
 
     @Override
     public String toString() {
-        return tagPrefix.name + (material != null ? material.toCamelCaseString() : "");
+        return (tagPrefix != null ? tagPrefix.name : "") + (material != null ? material.toCamelCaseString() : "");
     }
 
     public static final UnificationEntry EmptyMapMarkerEntry = new UnificationEntry(null) {
