@@ -27,12 +27,11 @@ import com.tterrag.registrate.util.entry.BlockEntry;
 import com.tterrag.registrate.util.entry.ItemEntry;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemStack;
@@ -98,14 +97,14 @@ public class ForgeCommonEventListener {
     public static void registerEntityCapabilities(AttachCapabilitiesEvent<Entity> event) {
         if (event.getObject() instanceof Player entity) {
             final HazardEffectTracker tracker = new HazardEffectTracker(entity);
-            event.addCapability(GTCEu.id("hazard_tracker"), new ICapabilitySerializable<ListTag>() {
+            event.addCapability(GTCEu.id("hazard_tracker"), new ICapabilitySerializable<CompoundTag>() {
                 @Override
-                public ListTag serializeNBT() {
+                public CompoundTag serializeNBT() {
                     return tracker.serializeNBT();
                 }
 
                 @Override
-                public void deserializeNBT(ListTag arg) {
+                public void deserializeNBT(CompoundTag arg) {
                     tracker.deserializeNBT(arg);
                 }
 

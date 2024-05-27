@@ -1,9 +1,12 @@
 package com.gregtechceu.gtceu.common.capability;
 
+import com.gregtechceu.gtceu.api.GTCEuAPI;
 import com.gregtechceu.gtceu.api.capability.IHazardEffectTracker;
+import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
+import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
 import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
@@ -22,7 +25,7 @@ import net.minecraftforge.common.util.INBTSerializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializable<ListTag> {
+public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializable<CompoundTag> {
     @Getter @Setter
     private int maxAirSupply = -1;
 
@@ -103,20 +106,43 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
     }
 
     @Override
-    public ListTag serializeNBT() {
-        ListTag tag = new ListTag();
+    public CompoundTag serializeNBT() {
+        CompoundTag tag = new CompoundTag();
+        ListTag amountsTag = new ListTag();
+        for (var amount : entryToAmount.object2IntEntrySet()) {
+            CompoundTag amountTag = new CompoundTag();
+            amountTag.putString("prefix", amount.getKey().tagPrefix.name);
+            amountTag.putString("material", amount.getKey().material.toString());
+            amountTag.putInt("amount", amount.getIntValue());
+        }
+        tag.put("amounts", amountsTag);
+
+        ListTag effectsTag = new ListTag();
         for (var effect : currentHazardEffects.object2IntEntrySet()) {
             CompoundTag effectTag = new CompoundTag();
             effectTag.put("effect", effect.getKey().serializeNBT());
             effectTag.putInt("time", effect.getIntValue());
-            tag.add(effectTag);
+            effectsTag.add(effectTag);
         }
+        tag.put("effects", effectsTag);
         return tag;
     }
 
     @Override
-    public void deserializeNBT(ListTag arg) {
-        for (Tag tag : arg) {
+    public void deserializeNBT(CompoundTag arg) {
+        ListTag amounts = arg.getList("amounts", Tag.TAG_COMPOUND);
+        for (Tag tag : amounts) {
+            if (!(tag instanceof CompoundTag compoundTag)) {
+                continue;
+            }
+            TagPrefix prefix = TagPrefix.get(compoundTag.getString("prefix"));
+            Material material = GTCEuAPI.materialManager.getMaterial(compoundTag.getString("material"));
+            int amount = compoundTag.getInt("amount");
+            entryToAmount.put(new UnificationEntry(prefix, material), amount);
+        }
+
+        ListTag effects = arg.getList("effects", Tag.TAG_COMPOUND);
+        for (Tag tag : effects) {
             if (!(tag instanceof CompoundTag compoundTag)) {
                 continue;
             }
