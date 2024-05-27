@@ -1095,11 +1095,11 @@ public class Material implements Comparable<Material> {
         }
 
         public Builder hazard(HazardProperty.HazardType hazardType, boolean applyToDerivatives) {
-            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 5), null, applyToDerivatives));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, applyToDerivatives));
             return this;
         }
         public Builder hazard(HazardProperty.HazardType hazardType) {
-            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 5), null, true));
+            properties.setProperty(HAZARD, new HazardProperty(hazardType, HazardProperty.poisonEffect(1000, 2000, 3), null, true));
             return this;
         }
 
