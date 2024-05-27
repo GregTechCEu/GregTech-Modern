@@ -7,12 +7,13 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.item.TagPrefixItem;
+import com.gregtechceu.gtceu.api.item.forge.GTBucketItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
 import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
-import net.minecraft.core.NonNullList;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -30,10 +31,6 @@ public abstract class InventoryMixin {
     @Shadow
     @Final
     public Player player;
-
-    @Shadow
-    @Final
-    public NonNullList<ItemStack> offhand;
 
     @WrapOperation(method = "findSlotMatchingUnusedItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isSameItemSameTags(Lnet/minecraft/world/item/ItemStack;Lnet/minecraft/world/item/ItemStack;)Z"))
     private boolean gtceu$modifyFindSlotMatcher(ItemStack stack, ItemStack other, Operation<Boolean> original) {
@@ -76,10 +73,15 @@ public abstract class InventoryMixin {
         }
 
         UnificationEntry entry = null;
-        if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            entry = ChemicalHelper.getUnificationEntry(current.getItem());
+        if (current.getItem() instanceof BucketItem bucket) {
+            if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
+                // fake the entry being a prefix at all.
+                entry = new UnificationEntry(null, ChemicalHelper.getMaterial(bucket.getFluid()));
+            }
         } else if (current.getItem() instanceof TagPrefixItem prefixItem) {
             entry = new UnificationEntry(prefixItem.tagPrefix, prefixItem.material);
+        } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
+            entry = ChemicalHelper.getUnificationEntry(current.getItem());
         }
         if (entry == null || entry.material == null) {
             return;
@@ -106,10 +108,15 @@ public abstract class InventoryMixin {
         ItemStack current = this.getItem(slot);
 
         UnificationEntry entry = null;
-        if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
-            entry = ChemicalHelper.getUnificationEntry(current.getItem());
+        if (current.getItem() instanceof BucketItem bucket) {
+            if (ConfigHolder.INSTANCE.gameplay.universalHazards || bucket instanceof GTBucketItem) {
+                // fake the fluid being an UnificationEntry at all.
+                entry = new UnificationEntry(null, ChemicalHelper.getMaterial(bucket.getFluid()));
+            }
         } else if (current.getItem() instanceof TagPrefixItem prefixItem) {
             entry = new UnificationEntry(prefixItem.tagPrefix, prefixItem.material);
+        } else if (ConfigHolder.INSTANCE.gameplay.universalHazards) {
+            entry = ChemicalHelper.getUnificationEntry(current.getItem());
         }
         if (entry == null || entry.material == null) {
             return;

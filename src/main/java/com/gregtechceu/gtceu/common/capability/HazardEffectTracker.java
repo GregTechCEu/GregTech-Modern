@@ -27,7 +27,7 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
     private int maxAirSupply = -1;
 
     @Getter
-    private final Object2IntMap<UnificationEntry> propertyToAmount = new Object2IntOpenHashMap<>();
+    private final Object2IntMap<UnificationEntry> entryToAmount = new Object2IntOpenHashMap<>();
     @Getter
     private final Object2IntMap<HazardProperty.HazardEffect> currentHazardEffects = new Object2IntOpenHashMap<>();
 
@@ -41,7 +41,7 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
     public void tick() {
         Set<HazardProperty.HazardEffect> protectedFrom = new HashSet<>();
         Object2BooleanMap<HazardProperty.HazardEffect> isAffected = new Object2BooleanOpenHashMap<>();
-        for (UnificationEntry entry : propertyToAmount.keySet()) {
+        for (UnificationEntry entry : entryToAmount.keySet()) {
             HazardProperty property = entry.material.getProperty(PropertyKey.HAZARD);
             if(property.getHazardType().getProtectionType().isProtected(player)) {
                 //entity has proper safety equipment
@@ -128,12 +128,12 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
 
     @Override
     public void removeHazardItem(UnificationEntry entry) {
-        if (!propertyToAmount.containsKey(entry)) {
+        if (!entryToAmount.containsKey(entry)) {
             return;
         }
-        propertyToAmount.put(entry, propertyToAmount.getOrDefault(entry, 0) - 1);
-        if (propertyToAmount.getInt(entry) <= 0) {
-            propertyToAmount.removeInt(entry);
+        entryToAmount.put(entry, entryToAmount.getOrDefault(entry, 0) - 1);
+        if (entryToAmount.getInt(entry) <= 0) {
+            entryToAmount.removeInt(entry);
         }
     }
 
@@ -142,7 +142,7 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         if (player.isCreative()) {
             return;
         }
-        propertyToAmount.put(entry, propertyToAmount.getOrDefault(entry, 0) + 1);
+        entryToAmount.put(entry, entryToAmount.getOrDefault(entry, 0) + 1);
         //noinspection DataFlowIssue property existence is checked before this method is called.
         for (HazardProperty.HazardEffect effect : entry.material.getProperty(PropertyKey.HAZARD).getEffects()) {
             if (!this.currentHazardEffects.containsKey(effect)) {
