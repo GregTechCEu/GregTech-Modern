@@ -133,6 +133,7 @@ public class TagPrefix {
                             .mapColor(MapColor.DEEPSLATE).requiresCorrectToolForDrops().strength(4.5F, 3.0F),
                     new ResourceLocation("block/deepslate"), false, false, true);
 
+    // TODO figure out a composition for tuff
     public static final TagPrefix oreTuff = oreTagPrefix("tuff", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("Tuff %s Ore")
             .registerOre(
@@ -175,6 +176,11 @@ public class TagPrefix {
                     BlockBehaviour.Properties.of().mapColor(MapColor.NETHER).instrument(NoteBlockInstrument.BASEDRUM)
                             .requiresCorrectToolForDrops().strength(3.0F, 3.0F).sound(SoundType.NETHER_ORE),
                     new ResourceLocation("block/netherrack"), true, false, true);
+
+    // TODO figure out a composition for blackstone
+    public static final TagPrefix oreBlackstone = oreTagPrefix("blackstone", BlockTags.MINEABLE_WITH_PICKAXE)
+        .langValue("Blackstone %s Ore")
+        .registerOre(Blocks.BLACKSTONE::defaultBlockState, null, BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASEDRUM).requiresCorrectToolForDrops().strength(3.0F, 3.0F), new ResourceLocation("block/blackstone"), true, false, false);
 
     public static final TagPrefix oreEndstone = oreTagPrefix("endstone", BlockTags.MINEABLE_WITH_PICKAXE)
             .langValue("End %s Ore")

@@ -109,10 +109,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Naquadah, 3))
                     .rareBlock(new VeinBlockDefinition(Plutonium239, 1))
                     .rareBlockChance(0.25f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -128,10 +128,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Pitchblende, 3))
                     .rareBlock(new VeinBlockDefinition(Uraninite, 2))
                     .rareBlockChance(0.33f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -139,7 +139,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition SCHEELITE_VEIN = create("scheelite_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.7f).weight(20)
             .layer(WorldGenLayers.ENDSTONE)
             .heightRangeUniform(20, 60)
             .biomes(BiomeTags.IS_END)
@@ -183,10 +183,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Hematite, 2))
                     .rareBlock(new VeinBlockDefinition(Gold, 1))
                     .rareBlockChance(0.075f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -194,7 +194,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.ABOVE)));
 
     public static final GTOreDefinition BERYLLIUM_VEIN = create("beryllium_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(30)
+            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(30)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(5, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -222,7 +222,7 @@ public class GTOres {
                     .placement(SurfaceIndicatorGenerator.IndicatorPlacement.BELOW)));
 
     public static final GTOreDefinition MANGANESE_VEIN = create("manganese_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(20)
             .layer(WorldGenLayers.NETHERRACK)
             .heightRangeUniform(20, 30)
             .biomes(BiomeTags.IS_NETHER)
@@ -274,7 +274,7 @@ public class GTOres {
             .biomes(BiomeTags.IS_NETHER)
             .layeredVeinGenerator(generator -> generator
                     .withLayerPattern(() -> GTLayerPattern.builder(NETHER_RULES)
-                            .layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState).size(2, 4))
+                            //.layer(l -> l.weight(2).state(Blocks.NETHERRACK::defaultBlockState).size(2, 4))
                             .layer(l -> l.weight(3).mat(NetherQuartz).size(2, 4))
                             .layer(l -> l.weight(1).mat(Quartzite).size(1, 1))
                             .build()))
@@ -341,10 +341,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Copper, 2))
                     .rareBlock(new VeinBlockDefinition(Stibnite, 1))
                     .rareBlockChance(0.15f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -402,10 +402,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Tin, 4))
                     .rareBlock(new VeinBlockDefinition(Cassiterite, 2))
                     .rareBlockChance(0.33f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -435,10 +435,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Cassiterite, 2))
                     .rareBlock(new VeinBlockDefinition(Realgar, 1))
                     .rareBlockChance(0.05f)
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -460,7 +460,7 @@ public class GTOres {
                     .surfaceRock(Galena)));
 
     public static final GTOreDefinition GARNET_TIN_VEIN = create("garnet_tin_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.2f).weight(80)
+            .clusterSize(UniformInt.of(32, 40)).density(0.4f).weight(80)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(30, 60)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -476,7 +476,7 @@ public class GTOres {
                     .surfaceRock(GarnetSand)));
 
     public static final GTOreDefinition GARNET_VEIN = create("garnet_vein", vein -> vein
-            .clusterSize(UniformInt.of(32, 40)).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(32, 40)).density(0.75f).weight(40)
             .layer(WorldGenLayers.STONE)
             .heightRangeUniform(-10, 50)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -499,10 +499,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(YellowLimonite, 2))
                     .oreBlock(new VeinBlockDefinition(Hematite, 2))
                     .oreBlock(new VeinBlockDefinition(Malachite, 1))
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -616,10 +616,10 @@ public class GTOres {
                     .oreBlock(new VeinBlockDefinition(Iron, 2))
                     .oreBlock(new VeinBlockDefinition(Pyrite, 2))
                     .oreBlock(new VeinBlockDefinition(Copper, 2))
-                    .veininessThreshold(0.1f)
+                    .veininessThreshold(0.01f)
                     .maxRichnessThreshold(0.175f)
-                    .minRichness(0.4f)
-                    .maxRichness(0.7f)
+                    .minRichness(0.7f)
+                    .maxRichness(1.0f)
                     .edgeRoundoffBegin(3)
                     .maxEdgeRoundoff(0.1f))
             .surfaceIndicatorGenerator(indicator -> indicator
@@ -643,7 +643,7 @@ public class GTOres {
                     .radius(2)));
 
     public static final GTOreDefinition LAPIS_VEIN = create("lapis_vein", vein -> vein
-            .clusterSize(UniformInt.of(40, 52)).density(0.25f).weight(40)
+            .clusterSize(UniformInt.of(40, 52)).density(0.75f).weight(40)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-60, 10)
             .biomes(BiomeTags.IS_OVERWORLD)
@@ -659,7 +659,7 @@ public class GTOres {
                     .radius(3)));
 
     public static final GTOreDefinition MANGANESE_VEIN_OW = create("manganese_vein_ow", vein -> vein
-            .clusterSize(UniformInt.of(50, 64)).density(0.25f).weight(20)
+            .clusterSize(UniformInt.of(50, 64)).density(0.75f).weight(20)
             .layer(WorldGenLayers.DEEPSLATE)
             .heightRangeUniform(-30, 0)
             .biomes(BiomeTags.IS_OVERWORLD)
