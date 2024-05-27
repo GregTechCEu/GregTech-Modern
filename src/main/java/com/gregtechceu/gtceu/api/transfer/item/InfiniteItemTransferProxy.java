@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.transfer.item;
 
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.world.item.ItemStack;
+
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -10,6 +12,7 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @MethodsReturnNonnullByDefault
 @ParametersAreNonnullByDefault
 public class InfiniteItemTransferProxy extends ItemTransferDelegate {
+
     private final boolean infiniteSource;
     private final boolean infiniteSink;
 

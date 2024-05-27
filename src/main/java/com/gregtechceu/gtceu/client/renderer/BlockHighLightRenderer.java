@@ -4,8 +4,6 @@ import com.gregtechceu.gtceu.api.blockentity.PipeBlockEntity;
 import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ICoverable;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.item.IGTTool;
-import com.gregtechceu.gtceu.api.item.tool.GTToolItem;
 import com.gregtechceu.gtceu.api.item.PipeBlockItem;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
@@ -15,12 +13,10 @@ import com.gregtechceu.gtceu.common.item.CoverPlaceBehavior;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
 import com.gregtechceu.gtceu.core.mixins.GuiGraphicsAccessor;
+
 import com.lowdragmc.lowdraglib.client.utils.RenderUtils;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.Tesselator;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -35,13 +31,17 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import com.mojang.blaze3d.vertex.Tesselator;
+import com.mojang.blaze3d.vertex.VertexConsumer;
 import org.joml.Matrix4f;
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
 import java.util.Set;
 import java.util.function.Function;
-
 
 /**
  * @author KilaBash
@@ -51,7 +51,8 @@ import java.util.function.Function;
 @OnlyIn(Dist.CLIENT)
 public class BlockHighLightRenderer {
 
-    public static void renderBlockHighLight(PoseStack poseStack, Camera camera, BlockHitResult target, MultiBufferSource multiBufferSource, float partialTick) {
+    public static void renderBlockHighLight(PoseStack poseStack, Camera camera, BlockHitResult target,
+                                            MultiBufferSource multiBufferSource, float partialTick) {
         var mc = Minecraft.getInstance();
         var level = mc.level;
         var player = mc.player;
@@ -78,7 +79,8 @@ public class BlockHighLightRenderer {
                         RenderSystem.disableDepthTest();
                         RenderSystem.enableBlend();
                         RenderSystem.defaultBlendFunc();
-                        poseStack.translate(facing.getStepX() * 0.01, facing.getStepY() * 0.01, facing.getStepZ() * 0.01);
+                        poseStack.translate(facing.getStepX() * 0.01, facing.getStepY() * 0.01,
+                                facing.getStepZ() * 0.01);
                         RenderUtils.moveToFace(poseStack, blockPos.getX(), blockPos.getY(), blockPos.getZ(), facing);
                         if (facing.getAxis() == Direction.Axis.Y) {
                             RenderUtils.rotateToFace(poseStack, facing, Direction.SOUTH);
@@ -87,7 +89,10 @@ public class BlockHighLightRenderer {
                         }
                         poseStack.scale(1f / 16, 1f / 16, 0);
                         poseStack.translate(-8, -8, 0);
-                        texture.copy().draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 4, 4, 8, 8);
+                        texture.copy()
+                                .draw(GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
+                                        MultiBufferSource.immediate(Tesselator.getInstance().getBuilder())), 0, 0, 4, 4,
+                                        8, 8);
                         RenderSystem.disableBlend();
                         RenderSystem.enableDepthTest();
                     }
@@ -97,7 +102,8 @@ public class BlockHighLightRenderer {
             }
 
             if (toolType.contains(GTToolType.WRENCH)) {
-                ICustomRotationBehavior behavior = CustomBlockRotations.getCustomRotation(level.getBlockState(blockPos).getBlock());
+                ICustomRotationBehavior behavior = CustomBlockRotations
+                        .getCustomRotation(level.getBlockState(blockPos).getBlock());
                 if (behavior != null && behavior.showGrid()) {
                     Vec3 pos = camera.getPosition();
                     poseStack.pushPose();
@@ -113,28 +119,33 @@ public class BlockHighLightRenderer {
 
             // draw cover grid highlight
             ICoverable coverable = GTCapabilityHelper.getCoverable(level, blockPos, target.getDirection());
-            if (coverable != null && CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover, coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
+            if (coverable != null && CoverPlaceBehavior.isCoverBehaviorItem(held, coverable::hasAnyCover,
+                    coverDef -> ICoverable.canPlaceCover(coverDef, coverable))) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
                 var buffer = multiBufferSource.getBuffer(RenderType.lines());
                 RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target, side -> coverable.hasCover(side) ? null : GuiTextures.TOOL_ATTACH_COVER);
+                drawGridOverlays(poseStack, buffer, target,
+                        side -> coverable.hasCover(side) ? null : GuiTextures.TOOL_ATTACH_COVER);
 
                 poseStack.popPose();
             }
 
             // draw pipe connection grid highlight
-            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType : null;
-            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?,?> pipeBlockEntity && pipeBlockEntity.getPipeType().type().equals(type.type())) {
+            var pipeType = held.getItem() instanceof PipeBlockItem pipeBlockItem ? pipeBlockItem.getBlock().pipeType :
+                    null;
+            if (pipeType instanceof IPipeType<?> type && blockEntity instanceof PipeBlockEntity<?, ?> pipeBlockEntity &&
+                    pipeBlockEntity.getPipeType().type().equals(type.type())) {
                 Vec3 pos = camera.getPosition();
                 poseStack.pushPose();
                 poseStack.translate(-pos.x, -pos.y, -pos.z);
                 var buffer = multiBufferSource.getBuffer(RenderType.lines());
                 RenderSystem.lineWidth(3);
 
-                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ? pipeBlockEntity.getPipeTexture(true) : null);
+                drawGridOverlays(poseStack, buffer, target, side -> level.isEmptyBlock(blockPos.relative(side)) ?
+                        pipeBlockEntity.getPipeTexture(true) : null);
 
                 poseStack.popPose();
             }
@@ -145,7 +156,8 @@ public class BlockHighLightRenderer {
     private static float gColour;
     private static float bColour;
 
-    private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult, Function<Direction, ResourceTexture> test) {
+    private static void drawGridOverlays(PoseStack poseStack, VertexConsumer buffer, BlockHitResult blockHitResult,
+                                         Function<Direction, ResourceTexture> test) {
         rColour = gColour = 0.2F + (float) Math.sin((float) (System.currentTimeMillis() % (Mth.PI * 800)) / 800) / 2;
         bColour = 1f;
         var blockPos = blockHitResult.getBlockPos();
@@ -310,27 +322,28 @@ public class BlockHighLightRenderer {
         poseStack.scale(1f / 16, 1f / 16, 0);
         poseStack.translate(-8, -8, 0);
 
-        var graphics = GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack, MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()));
+        var graphics = GuiGraphicsAccessor.create(Minecraft.getInstance(), poseStack,
+                MultiBufferSource.immediate(Tesselator.getInstance().getBuilder()));
         if (leftBlocked != null) {
-             leftBlocked.copy().scale(0.9f).setColor(hoverLeft ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 6, 4, 4);
+            leftBlocked.copy().scale(0.9f).setColor(hoverLeft ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 6, 4, 4);
         }
         if (topBlocked != null) {
-             topBlocked.copy().scale(0.9f).setColor(hoverTop ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 0, 4, 4);
+            topBlocked.copy().scale(0.9f).setColor(hoverTop ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 0, 4, 4);
         }
         if (rightBlocked != null) {
-             rightBlocked.copy().scale(0.9f).setColor(hoverRight ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 6, 4, 4);
+            rightBlocked.copy().scale(0.9f).setColor(hoverRight ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 6, 4, 4);
         }
         if (bottomBlocked != null) {
-             bottomBlocked.copy().scale(0.9f).setColor(hoverBottom ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 12, 4, 4);
+            bottomBlocked.copy().scale(0.9f).setColor(hoverBottom ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 12, 4, 4);
         }
         if (frontBlocked != null) {
-             frontBlocked.copy().scale(0.9f).setColor(hoverFront ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 6, 4, 4);
+            frontBlocked.copy().scale(0.9f).setColor(hoverFront ? -1 : 0x44ffffff).draw(graphics, 0, 0, 6, 6, 4, 4);
         }
         if (backBlocked != null) {
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 0, 4, 4);
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 0, 4, 4);
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 12, 4, 4);
-             backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 12, 4, 4);
+            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 0, 4, 4);
+            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 0, 4, 4);
+            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 0, 12, 4, 4);
+            backBlocked.copy().scale(0.9f).setColor(hoverBack ? -1 : 0x44ffffff).draw(graphics, 0, 0, 12, 12, 4, 4);
         }
         RenderSystem.disableBlend();
         RenderSystem.enableDepthTest();
@@ -339,9 +352,10 @@ public class BlockHighLightRenderer {
 
     private static void drawLine(Matrix4f mat, VertexConsumer buffer, Vector3f from, Vector3f to) {
         var normal = new Vector3f(from).sub(to);
-        
-        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z).endVertex();
-        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z).endVertex();
-    }
 
+        buffer.vertex(mat, from.x, from.y, from.z).color(rColour, gColour, bColour, 1f)
+                .normal(normal.x, normal.y, normal.z).endVertex();
+        buffer.vertex(mat, to.x, to.y, to.z).color(rColour, gColour, bColour, 1f).normal(normal.x, normal.y, normal.z)
+                .endVertex();
+    }
 }

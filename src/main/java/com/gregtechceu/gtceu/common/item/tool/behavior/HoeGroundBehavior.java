@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.common.item.tool.behavior;
 
-import com.google.common.collect.ImmutableSet;
 import com.gregtechceu.gtceu.api.item.tool.ToolHelper;
 import com.gregtechceu.gtceu.api.item.tool.aoe.AoESymmetrical;
 import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
@@ -12,7 +12,6 @@ import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.context.UseOnContext;
@@ -23,6 +22,8 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraftforge.common.ToolActions;
+
+import com.google.common.collect.ImmutableSet;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,7 +31,8 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * Used to allow a tool to hoe the ground, only if it cannot extend the {@link com.gregtechceu.gtceu.api.item.tool.GTHoeItem}
+ * Used to allow a tool to hoe the ground, only if it cannot extend the
+ * {@link com.gregtechceu.gtceu.api.item.tool.GTHoeItem}
  * class.
  */
 public class HoeGroundBehavior implements IToolBehavior {
@@ -99,8 +101,10 @@ public class HoeGroundBehavior implements IToolBehavior {
         return InteractionResult.PASS;
     }
 
-    public static Set<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world, Player player, HitResult rayTraceResult) {
-        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult, HoeGroundBehavior.INSTANCE::isBlockTillable);
+    public static Set<BlockPos> getTillableBlocks(ItemStack stack, AoESymmetrical aoeDefinition, Level world,
+                                                  Player player, HitResult rayTraceResult) {
+        return ToolHelper.iterateAoE(stack, aoeDefinition, world, player, rayTraceResult,
+                HoeGroundBehavior.INSTANCE::isBlockTillable);
     }
 
     protected boolean isBlockTillable(ItemStack stack, Level world, Player player, BlockPos pos, UseOnContext context) {
@@ -115,14 +119,16 @@ public class HoeGroundBehavior implements IToolBehavior {
     protected boolean tillGround(UseOnContext context, BlockState state) {
         BlockState newState = state.getToolModifiedState(context, ToolActions.HOE_TILL, false);
         if (newState != null && newState != state) {
-            context.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, context.getClickedPos(), GameEvent.Context.of(context.getPlayer(), state));
+            context.getLevel().gameEvent(GameEvent.BLOCK_CHANGE, context.getClickedPos(),
+                    GameEvent.Context.of(context.getPlayer(), state));
             return context.getLevel().setBlock(context.getClickedPos(), newState, Block.UPDATE_ALL_IMMEDIATE);
         }
         return false;
     }
 
     @Override
-    public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip, @NotNull TooltipFlag flag) {
+    public void addInformation(@NotNull ItemStack stack, @Nullable Level world, @NotNull List<Component> tooltip,
+                               @NotNull TooltipFlag flag) {
         tooltip.add(Component.translatable("item.gtceu.tool.behavior.ground_tilling"));
     }
 }

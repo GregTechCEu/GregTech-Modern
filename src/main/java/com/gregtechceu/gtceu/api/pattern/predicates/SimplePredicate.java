@@ -1,15 +1,15 @@
 package com.gregtechceu.gtceu.api.pattern.predicates;
 
+import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.MultiblockState;
 import com.gregtechceu.gtceu.api.pattern.TraceabilityPredicate;
-import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
-import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.error.PatternStringError;
+import com.gregtechceu.gtceu.api.pattern.error.SinglePredicateError;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
-import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -20,7 +20,10 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import it.unimi.dsi.fastutil.longs.Long2ObjectArrayMap;
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -28,8 +31,10 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 public class SimplePredicate {
+
     public static SimplePredicate ANY = new SimplePredicate("any", x -> true, null);
-    public static SimplePredicate AIR = new SimplePredicate("air", blockWorldState -> blockWorldState.getWorld().isEmptyBlock(blockWorldState.getPos()), null);
+    public static SimplePredicate AIR = new SimplePredicate("air",
+            blockWorldState -> blockWorldState.getWorld().isEmptyBlock(blockWorldState.getPos()), null);
     @Nullable
     public Supplier<BlockInfo[]> candidates;
     public Predicate<MultiblockState> predicate;
@@ -49,7 +54,7 @@ public class SimplePredicate {
     public SimplePredicate() {
         this("unknown");
     }
-    
+
     public SimplePredicate(String type) {
         this.type = type;
     }
@@ -60,7 +65,8 @@ public class SimplePredicate {
         this.candidates = candidates;
     }
 
-    public SimplePredicate(String type, Predicate<MultiblockState> predicate, @Nullable Supplier<BlockInfo[]> candidates) {
+    public SimplePredicate(String type, Predicate<MultiblockState> predicate,
+                           @Nullable Supplier<BlockInfo[]> candidates) {
         this(type);
         this.predicate = predicate;
         this.candidates = candidates;
@@ -114,7 +120,8 @@ public class SimplePredicate {
 
     private boolean checkInnerConditions(MultiblockState blockWorldState) {
         if (disableRenderFormed) {
-            blockWorldState.getMatchContext().getOrCreate("renderMask", LongOpenHashSet::new).add(blockWorldState.getPos().asLong());
+            blockWorldState.getMatchContext().getOrCreate("renderMask", LongOpenHashSet::new)
+                    .add(blockWorldState.getPos().asLong());
         }
         if (io != IO.BOTH) {
             if (blockWorldState.io == IO.BOTH) {
@@ -135,8 +142,9 @@ public class SimplePredicate {
             return false;
         }
         if (slotName != null) {
-            Map<Long, Set<String>> slots = blockWorldState.getMatchContext().getOrCreate("slots", Long2ObjectArrayMap::new);
-            slots.computeIfAbsent(blockWorldState.getPos().asLong(), s->new HashSet<>()).add(slotName);
+            Map<Long, Set<String>> slots = blockWorldState.getMatchContext().getOrCreate("slots",
+                    Long2ObjectArrayMap::new);
+            slots.computeIfAbsent(blockWorldState.getPos().asLong(), s -> new HashSet<>()).add(slotName);
             return true;
         }
         return true;
@@ -166,10 +174,13 @@ public class SimplePredicate {
 
     public List<ItemStack> getCandidates() {
         if (LDLib.isClient()) {
-            return candidates == null ? Collections.emptyList() : Arrays.stream(this.candidates.get()).filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
-                    .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO)).collect(Collectors.toList());
+            return candidates == null ? Collections.emptyList() :
+                    Arrays.stream(this.candidates.get()).filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                            .map(blockInfo -> blockInfo.getItemStackForm(Minecraft.getInstance().level, BlockPos.ZERO))
+                            .collect(Collectors.toList());
         }
-        return candidates == null ? Collections.emptyList() : Arrays.stream(this.candidates.get()).filter(info -> info.getBlockState().getBlock() != Blocks.AIR).map(BlockInfo::getItemStackForm).collect(Collectors.toList());
+        return candidates == null ? Collections.emptyList() :
+                Arrays.stream(this.candidates.get()).filter(info -> info.getBlockState().getBlock() != Blocks.AIR)
+                        .map(BlockInfo::getItemStackForm).collect(Collectors.toList());
     }
-
 }

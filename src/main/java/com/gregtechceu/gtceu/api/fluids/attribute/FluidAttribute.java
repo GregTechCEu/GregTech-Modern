@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.fluids.attribute;
 
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -14,7 +15,8 @@ public final class FluidAttribute {
     private final Consumer<List<Component>> containerTooltip;
     private final int hashCode;
 
-    public FluidAttribute(@NotNull ResourceLocation resourceLocation, @NotNull Consumer<List<@NotNull Component>> fluidTooltip,
+    public FluidAttribute(@NotNull ResourceLocation resourceLocation,
+                          @NotNull Consumer<List<@NotNull Component>> fluidTooltip,
                           @NotNull Consumer<List<@NotNull Component>> containerTooltip) {
         this.resourceLocation = resourceLocation;
         this.fluidTooltip = fluidTooltip;

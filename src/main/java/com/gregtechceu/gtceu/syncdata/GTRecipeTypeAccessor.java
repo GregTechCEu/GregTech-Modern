@@ -2,12 +2,15 @@ package com.gregtechceu.gtceu.syncdata;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
+
 import com.lowdragmc.lowdraglib.syncdata.AccessorOp;
 import com.lowdragmc.lowdraglib.syncdata.accessor.CustomObjectAccessor;
 import com.lowdragmc.lowdraglib.syncdata.payload.FriendlyBufPayload;
 import com.lowdragmc.lowdraglib.syncdata.payload.ITypedPayload;
-import io.netty.buffer.Unpooled;
+
 import net.minecraft.network.FriendlyByteBuf;
+
+import io.netty.buffer.Unpooled;
 
 /**
  * @author Screret

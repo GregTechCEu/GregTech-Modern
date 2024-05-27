@@ -1,9 +1,9 @@
 package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.resources.language.I18n;
 import net.minecraft.network.chat.Component;
@@ -30,20 +30,23 @@ public class TooltipsHandler {
     public static void appendTooltips(ItemStack stack, TooltipFlag flag, List<Component> tooltips) {
         // Energy Item
         /*
-        var energyItem = GTCapabilityHelper.getElectricItem(stack);
-        if (energyItem != null) {
-            tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
-                    energyItem.getCharge(),
-                    energyItem.getMaxCharge(),
-                    Component.literal(String.format("%.2f%%", energyItem.getCharge() * 100f / energyItem.getMaxCharge())).withStyle(ChatFormatting.GREEN)));
-        }
-        */
+         * var energyItem = GTCapabilityHelper.getElectricItem(stack);
+         * if (energyItem != null) {
+         * tooltips.add(1, Component.translatable("metaitem.generic.electric_item.stored",
+         * energyItem.getCharge(),
+         * energyItem.getMaxCharge(),
+         * Component.literal(String.format("%.2f%%", energyItem.getCharge() * 100f /
+         * energyItem.getMaxCharge())).withStyle(ChatFormatting.GREEN)));
+         * }
+         */
 
         // Formula
         var unificationEntry = ChemicalHelper.getUnificationEntry(stack.getItem());
         if (unificationEntry != null && unificationEntry.material != null) {
-            if (unificationEntry.material.getChemicalFormula() != null && !unificationEntry.material.getChemicalFormula().isEmpty())
-                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula()).withStyle(ChatFormatting.YELLOW));
+            if (unificationEntry.material.getChemicalFormula() != null &&
+                    !unificationEntry.material.getChemicalFormula().isEmpty())
+                tooltips.add(1, Component.literal(unificationEntry.material.getChemicalFormula())
+                        .withStyle(ChatFormatting.YELLOW));
         }
 
         // Block/Item custom tooltips

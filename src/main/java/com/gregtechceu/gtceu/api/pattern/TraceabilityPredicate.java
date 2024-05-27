@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
+
 import net.minecraft.network.chat.Component;
 
 import java.util.ArrayList;
@@ -141,6 +143,7 @@ public class TraceabilityPredicate {
 
     /**
      * Sets the Minimum and Maximum limit to the passed value
+     * 
      * @param limit The Maximum and Minimum limit
      */
     public TraceabilityPredicate setExactLimit(int limit) {
@@ -194,7 +197,7 @@ public class TraceabilityPredicate {
                 flag = true;
             }
         }
-        flag = flag || common.stream().anyMatch(predicate->predicate.test(blockWorldState));
+        flag = flag || common.stream().anyMatch(predicate -> predicate.test(blockWorldState));
         if (flag) {
             blockWorldState.setError(null);
         }
@@ -230,5 +233,4 @@ public class TraceabilityPredicate {
     public boolean hasAir() {
         return this.common.contains(SimplePredicate.AIR);
     }
-
 }

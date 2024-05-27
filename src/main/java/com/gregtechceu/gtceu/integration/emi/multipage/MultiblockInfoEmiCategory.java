@@ -4,12 +4,15 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MultiblockMachineDefinition;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+
+import net.minecraft.network.chat.Component;
+
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.EmiRecipeCategory;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.network.chat.Component;
 
 public class MultiblockInfoEmiCategory extends EmiRecipeCategory {
+
     public static final MultiblockInfoEmiCategory CATEGORY = new MultiblockInfoEmiCategory();
 
     private MultiblockInfoEmiCategory() {

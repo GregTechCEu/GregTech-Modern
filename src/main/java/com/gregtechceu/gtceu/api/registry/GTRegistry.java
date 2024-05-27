@@ -1,11 +1,7 @@
 package com.gregtechceu.gtceu.api.registry;
 
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.GTCEu;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.DataResult;
-import lombok.Getter;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
@@ -13,9 +9,15 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.fml.ModContainer;
 import net.minecraftforge.fml.ModLoadingContext;
-import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
+import lombok.Getter;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.*;
 
 /**
@@ -24,6 +26,7 @@ import java.util.*;
  * @implNote GTRegistry
  */
 public abstract class GTRegistry<K, V> implements Iterable<V> {
+
     public static final Map<ResourceLocation, GTRegistry<?, ?>> REGISTERED = new HashMap<>();
 
     protected final BiMap<K, V> registry;
@@ -78,7 +81,8 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
     @SuppressWarnings("BooleanMethodIsAlwaysInverted")
     private static boolean checkActiveModContainerIsGregtech() {
         ModContainer container = ModLoadingContext.get().getActiveContainer();
-        return container != null && container.getModId().equals(GTCEu.MOD_ID) || container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
+        return container != null && container.getModId().equals(GTCEu.MOD_ID) ||
+                container.getModId().equals("minecraft"); // check for minecraft modid in case of datagen or a mishap
     }
 
     public void register(K key, V value) {
@@ -86,7 +90,8 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
             throw new IllegalStateException("[register] registry %s has been frozen".formatted(registryName));
         }
         if (containKey(key)) {
-            throw new IllegalStateException("[register] registry %s contains key %s already".formatted(registryName, key));
+            throw new IllegalStateException(
+                    "[register] registry %s contains key %s already".formatted(registryName, key));
         }
         registry.put(key, value);
     }
@@ -164,7 +169,7 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
     public abstract Codec<V> codec();
 
-    //************************ Built-in Registry ************************//
+    // ************************ Built-in Registry ************************//
 
     public static class String<V> extends GTRegistry<java.lang.String, V> {
 
@@ -203,7 +208,14 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Codec<V> codec() {
-            return Codec.STRING.flatXmap(str -> Optional.ofNullable(this.get(str)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry key in " + this.registryName + ": " + str)), obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry element in " + this.registryName + ": " + obj)));
+            return Codec.STRING
+                    .flatXmap(
+                            str -> Optional.ofNullable(this.get(str)).map(DataResult::success)
+                                    .orElseGet(() -> DataResult
+                                            .error(() -> "Unknown registry key in " + this.registryName + ": " + str)),
+                            obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success)
+                                    .orElseGet(() -> DataResult.error(
+                                            () -> "Unknown registry element in " + this.registryName + ": " + obj)));
         }
     }
 
@@ -244,7 +256,14 @@ public abstract class GTRegistry<K, V> implements Iterable<V> {
 
         @Override
         public Codec<V> codec() {
-            return ResourceLocation.CODEC.flatXmap(rl -> Optional.ofNullable(this.get(rl)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry key in " + this.registryName + ": " + rl)), obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry element in " + this.registryName + ": " + obj)));
+            return ResourceLocation.CODEC
+                    .flatXmap(
+                            rl -> Optional.ofNullable(this.get(rl)).map(DataResult::success)
+                                    .orElseGet(() -> DataResult
+                                            .error(() -> "Unknown registry key in " + this.registryName + ": " + rl)),
+                            obj -> Optional.ofNullable(this.getKey(obj)).map(DataResult::success)
+                                    .orElseGet(() -> DataResult.error(
+                                            () -> "Unknown registry element in " + this.registryName + ": " + obj)));
         }
     }
 }

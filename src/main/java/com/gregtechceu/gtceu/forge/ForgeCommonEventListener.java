@@ -18,13 +18,11 @@ import com.gregtechceu.gtceu.data.loader.BedrockOreLoader;
 import com.gregtechceu.gtceu.data.loader.FluidVeinLoader;
 import com.gregtechceu.gtceu.data.loader.OreDataLoader;
 import com.gregtechceu.gtceu.utils.TaskHandler;
-import com.tterrag.registrate.util.entry.BlockEntry;
-import com.tterrag.registrate.util.entry.ItemEntry;
+
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.damagesource.DamageSources;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -42,6 +40,9 @@ import net.minecraftforge.eventbus.api.EventPriority;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.registries.MissingMappingsEvent;
+
+import com.tterrag.registrate.util.entry.BlockEntry;
+import com.tterrag.registrate.util.entry.ItemEntry;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -64,6 +65,7 @@ public class ForgeCommonEventListener {
 
             final ItemStack itemStack = event.getObject();
             event.addCapability(GTCEu.id("capability"), new ICapabilityProvider() {
+
                 @NotNull
                 @Override
                 public <T> LazyOptional<T> getCapability(@NotNull Capability<T> cap, @Nullable Direction side) {
@@ -74,8 +76,10 @@ public class ForgeCommonEventListener {
         if (event.getObject().getItem() instanceof DrumMachineItem drumMachineItem) {
             final ItemStack itemStack = event.getObject();
             event.addCapability(GTCEu.id("fluid"), new ICapabilityProvider() {
+
                 @Override
-                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability, @Nullable Direction arg) {
+                public @NotNull <T> LazyOptional<T> getCapability(@NotNull Capability<T> capability,
+                                                                  @Nullable Direction arg) {
                     return drumMachineItem.getCapability(itemStack, capability);
                 }
             });
@@ -85,9 +89,10 @@ public class ForgeCommonEventListener {
     @SubscribeEvent
     public static void onLeftClickBlock(PlayerInteractEvent.LeftClickBlock event) {
         var blockState = event.getLevel().getBlockState(event.getPos());
-        if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block
-                && block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
-            if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(), event.getFace())) {
+        if (blockState.hasBlockEntity() && blockState.getBlock() instanceof MetaMachineBlock block &&
+                block.getMachine(event.getLevel(), event.getPos()) instanceof IInteractedMachine machine) {
+            if (machine.onLeftClick(event.getEntity(), event.getLevel(), event.getHand(), event.getPos(),
+                    event.getFace())) {
                 event.setCanceled(true);
             }
         }
@@ -135,15 +140,16 @@ public class ForgeCommonEventListener {
 
             if (!armor.isEmpty() && armor.getItem() instanceof ArmorComponentItem valueItem) {
                 valueItem.getArmorLogic().damageArmor(player, armor, player.damageSources().fall(),
-                    (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                        (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
                 player.fallDistance = 0;
                 event.setCanceled(true);
-            } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem && jet.getOrCreateTag().contains("flyMode")) {
-                valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
-                    (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
-                player.fallDistance = 0;
-                event.setCanceled(true);
-            }
+            } else if (!jet.isEmpty() && jet.getItem() instanceof ArmorComponentItem valueItem &&
+                    jet.getOrCreateTag().contains("flyMode")) {
+                        valueItem.getArmorLogic().damageArmor(player, jet, player.damageSources().fall(),
+                                (int) (player.fallDistance - 1.2f), EquipmentSlot.FEET);
+                        player.fallDistance = 0;
+                        event.setCanceled(true);
+                    }
         }
     }
 
@@ -167,7 +173,8 @@ public class ForgeCommonEventListener {
             event.getMappings(Registries.BLOCK, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix, GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
+                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
+                            GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.get());
                     }
@@ -176,11 +183,13 @@ public class ForgeCommonEventListener {
             event.getMappings(Registries.ITEM, GTCEu.MOD_ID).forEach(mapping -> {
                 Matcher matcher = idPattern.matcher(mapping.getKey().getPath());
                 if (matcher.matches()) {
-                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix, GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
+                    BlockEntry<? extends MaterialBlock> block = GTBlocks.MATERIAL_BLOCKS.get(prefix,
+                            GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                     if (block != null && block.isPresent()) {
                         mapping.remap(block.asItem());
                     } else {
-                        ItemEntry<? extends TagPrefixItem> item = GTItems.MATERIAL_ITEMS.get(prefix, GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
+                        ItemEntry<? extends TagPrefixItem> item = GTItems.MATERIAL_ITEMS.get(prefix,
+                                GTCEuAPI.materialManager.getRegistry(GTCEu.MOD_ID).get(matcher.group(1)));
                         if (item != null && item.isPresent()) {
                             mapping.remap(item.asItem());
                         }

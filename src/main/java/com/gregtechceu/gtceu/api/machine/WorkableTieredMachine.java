@@ -1,28 +1,32 @@
 package com.gregtechceu.gtceu.api.machine;
 
-import com.google.common.collect.Table;
-import com.google.common.collect.Tables;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.capability.recipe.*;
 import com.gregtechceu.gtceu.api.machine.feature.*;
 import com.gregtechceu.gtceu.api.machine.trait.*;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+
+import com.google.common.collect.Table;
+import com.google.common.collect.Tables;
 import com.mojang.blaze3d.MethodsReturnNonnullByDefault;
 import it.unimi.dsi.fastutil.ints.Int2LongFunction;
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.*;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -31,19 +35,27 @@ import java.util.*;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine, IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+public abstract class WorkableTieredMachine extends TieredEnergyMachine implements IRecipeLogicMachine,
+                                            IMachineModifyDrops, IMufflableMachine, IOverclockMachine {
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(WorkableTieredMachine.class,
+            TieredEnergyMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     public final RecipeLogic recipeLogic;
     @Getter
     public final GTRecipeType[] recipeTypes;
-    @Getter @Setter @Persisted
+    @Getter
+    @Setter
+    @Persisted
     public int activeRecipeType;
     @Getter
     public final Int2LongFunction tankScalingFunction;
-    @Nullable @Getter @Setter
+    @Nullable
+    @Getter
+    @Setter
     private ICleanroomProvider cleanroom;
     @Persisted
     public final NotifiableItemStackHandler importItems;
@@ -59,14 +71,19 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     public final NotifiableComputationContainer exportComputation;
     @Getter
     protected final Table<IO, RecipeCapability<?>, List<IRecipeHandler<?>>> capabilitiesProxy;
-    @Persisted @Getter
+    @Persisted
+    @Getter
     protected int overclockTier;
     protected final List<ISubscription> traitSubscriptions;
-    @Persisted @DescSynced @Getter @Setter
+    @Persisted
+    @DescSynced
+    @Getter
+    @Setter
     protected boolean isMuffled;
     protected boolean previouslyMuffled = true;
 
-    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction, Object... args) {
+    public WorkableTieredMachine(IMachineBlockEntity holder, int tier, Int2LongFunction tankScalingFunction,
+                                 Object... args) {
         super(holder, tier, args);
         this.overclockTier = getMaxOverclockTier();
         this.recipeTypes = getDefinition().getRecipeTypes();
@@ -84,7 +101,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -99,6 +116,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
                     tierVoltage * 64L, tierVoltage, getMaxInputOutputAmperage());
         } else {
             return new NotifiableEnergyContainer(this, tierVoltage * 64L, tierVoltage, 2, 0L, 0L) {
+
                 @Override
                 public long getInputAmperage() {
                     if (getEnergyCapacity() / 2 > getEnergyStored() && recipeLogic.isActive()) {
@@ -119,11 +137,13 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     protected NotifiableFluidTank createImportFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.IN);
+        return new NotifiableFluidTank(this, getRecipeType().getMaxInputs(FluidRecipeCapability.CAP),
+                this.tankScalingFunction.apply(this.getTier()), IO.IN);
     }
 
     protected NotifiableFluidTank createExportFluidHandler(Object... args) {
-        return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP), this.tankScalingFunction.apply(this.getTier()), IO.OUT);
+        return new NotifiableFluidTank(this, getRecipeType().getMaxOutputs(FluidRecipeCapability.CAP),
+                this.tankScalingFunction.apply(this.getTier()), IO.OUT);
     }
 
     protected NotifiableComputationContainer createImportComputationContainer(Object... args) {
@@ -165,7 +185,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     //////////////////////////////////////
-    //**********     MISC    ***********//
+    // ********** MISC ***********//
     //////////////////////////////////////
 
     @Override
@@ -180,7 +200,7 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
     }
 
     //////////////////////////////////////
-    //********     OVERCLOCK   *********//
+    // ******** OVERCLOCK *********//
     //////////////////////////////////////
 
     @Override
@@ -203,11 +223,12 @@ public abstract class WorkableTieredMachine extends TieredEnergyMachine implemen
 
     @Override
     public long getOverclockVoltage() {
-        return Math.min(GTValues.V[getOverclockTier()], Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
+        return Math.min(GTValues.V[getOverclockTier()],
+                Math.max(energyContainer.getInputVoltage(), energyContainer.getOutputVoltage()));
     }
 
     //////////////////////////////////////
-    //******     RECIPE LOGIC    *******//
+    // ****** RECIPE LOGIC *******//
     //////////////////////////////////////
 
     @Override

@@ -1,22 +1,24 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import com.google.common.collect.Lists;
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
+
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.util.TextFormattingUtil;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.renderer.Rect2i;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.world.item.ItemStack;
+
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import com.google.common.collect.Lists;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
@@ -50,14 +52,16 @@ public class AEItemConfigSlot extends AEConfigSlot {
         int stackX = position.x + 1;
         int stackY = position.y + 1;
         if (config != null) {
-            ItemStack stack = config.what() instanceof AEItemKey key ? new ItemStack(key.getItem(), (int) config.amount()) : ItemStack.EMPTY;
+            ItemStack stack = config.what() instanceof AEItemKey key ?
+                    new ItemStack(key.getItem(), (int) config.amount()) : ItemStack.EMPTY;
             stack.setCount(1);
             drawItemStack(graphics, stack, stackX, stackY, 0xFFFFFFFF, null);
             String amountStr = TextFormattingUtil.formatLongToCompactString(config.amount(), 4);
             drawStringFixedCorner(graphics, amountStr, stackX + 17, stackY + 17, 16777215, true, 0.5f);
         }
         if (stock != null) {
-            ItemStack stack = stock.what() instanceof AEItemKey key ? new ItemStack(key.getItem(), (int) stock.amount()) : ItemStack.EMPTY;
+            ItemStack stack = stock.what() instanceof AEItemKey key ?
+                    new ItemStack(key.getItem(), (int) stock.amount()) : ItemStack.EMPTY;
             stack.setCount(1);
             drawItemStack(graphics, stack, stackX, stackY + 18, 0xFFFFFFFF, null);
             String amountStr = TextFormattingUtil.formatLongToCompactString(stock.amount(), 4);
@@ -141,13 +145,16 @@ public class AEItemConfigSlot extends AEConfigSlot {
             }
         }
         if (id == PICK_UP_ID) {
-            if (slot.getStock() != null && this.gui.getModularUIContainer().getCarried() == ItemStack.EMPTY && slot.getStock().what() instanceof AEItemKey key) {
-                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
+            if (slot.getStock() != null && this.gui.getModularUIContainer().getCarried() == ItemStack.EMPTY &&
+                    slot.getStock().what() instanceof AEItemKey key) {
+                ItemStack stack = new ItemStack(key.getItem(),
+                        Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
                 if (key.hasTag()) {
                     stack.setTag(key.getTag().copy());
                 }
                 this.gui.getModularUIContainer().setCarried(stack);
-                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(), Math.max(0, (slot.getStock().amount() - stack.getCount())));
+                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
+                        Math.max(0, (slot.getStock().amount() - stack.getCount())));
                 slot.setStock(stack1.amount() == 0 ? null : stack1);
                 writeUpdateInfo(PICK_UP_ID, buf -> {});
             }
@@ -173,12 +180,14 @@ public class AEItemConfigSlot extends AEConfigSlot {
         }
         if (id == PICK_UP_ID) {
             if (slot.getStock() != null && slot.getStock().what() instanceof AEItemKey key) {
-                ItemStack stack = new ItemStack(key.getItem(), Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
+                ItemStack stack = new ItemStack(key.getItem(),
+                        Math.min((int) slot.getStock().amount(), key.getItem().getMaxStackSize()));
                 if (key.hasTag()) {
                     stack.setTag(key.getTag().copy());
                 }
                 this.gui.getModularUIContainer().setCarried(stack);
-                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(), Math.max(0, (slot.getStock().amount() - stack.getCount())));
+                GenericStack stack1 = ExportOnlyAESlot.copy(slot.getStock(),
+                        Math.max(0, (slot.getStock().amount() - stack.getCount())));
                 slot.setStock(stack1.amount() == 0 ? null : stack1);
             }
         }
@@ -229,5 +238,4 @@ public class AEItemConfigSlot extends AEConfigSlot {
         }
         return false;
     }
-
 }

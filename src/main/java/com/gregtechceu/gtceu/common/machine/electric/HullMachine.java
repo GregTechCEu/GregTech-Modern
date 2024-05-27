@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.common.machine.electric;
 
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
@@ -8,22 +7,26 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
 import com.gregtechceu.gtceu.integration.ae2.machine.trait.GridNodeHostTrait;
-import com.lowdragmc.lowdraglib.LDLib;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.TickTask;
 import net.minecraft.server.level.ServerLevel;
 
+import appeng.me.helpers.IGridConnectedBlockEntity;
+
 import javax.annotation.ParametersAreNonnullByDefault;
-import java.util.EnumSet;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class HullMachine extends TieredPartMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HullMachine.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(HullMachine.class,
+            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     private final Object gridNodeHost;
     @Persisted
@@ -48,7 +51,8 @@ public class HullMachine extends TieredPartMachine {
     @Override
     public void onLoad() {
         super.onLoad();
-        if (GTCEu.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity && getLevel() instanceof ServerLevel level) {
+        if (GTCEu.isAE2Loaded() && gridNodeHost instanceof GridNodeHostTrait connectedBlockEntity &&
+                getLevel() instanceof ServerLevel level) {
             level.getServer().tell(new TickTask(0, connectedBlockEntity::init));
         }
     }

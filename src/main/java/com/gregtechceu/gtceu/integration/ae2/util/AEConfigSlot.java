@@ -1,18 +1,20 @@
 package com.gregtechceu.gtceu.integration.ae2.util;
 
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEConfigWidget;
-import com.gregtechceu.gtceu.integration.ae2.util.IConfigurableSlot;
+
 import com.lowdragmc.lowdraglib.gui.ingredient.IGhostIngredientTarget;
 import com.lowdragmc.lowdraglib.gui.ingredient.Target;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
-import com.mojang.blaze3d.systems.RenderSystem;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.network.chat.Component;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.blaze3d.systems.RenderSystem;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -85,5 +87,4 @@ public class AEConfigSlot extends Widget implements IGhostIngredientTarget {
         RenderSystem.enableDepthTest();
         RenderSystem.enableBlend();
     }
-
 }

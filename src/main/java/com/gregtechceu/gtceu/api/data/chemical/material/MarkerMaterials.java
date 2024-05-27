@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
-import com.google.common.collect.HashBiMap;
 import com.gregtechceu.gtceu.GTCEu;
+
 import net.minecraft.world.item.DyeColor;
+
+import com.google.common.collect.HashBiMap;
 
 public class MarkerMaterials {
 
@@ -49,8 +51,9 @@ public class MarkerMaterials {
         /**
          * Arrays containing all possible color values (without Colorless!)
          */
-        public static final MarkerMaterial[] VALUES = new MarkerMaterial[]{
-                White, Orange, Magenta, LightBlue, Yellow, Lime, Pink, Gray, LightGray, Cyan, Purple, Blue, Brown, Green, Red, Black
+        public static final MarkerMaterial[] VALUES = new MarkerMaterial[] {
+                White, Orange, Magenta, LightBlue, Yellow, Lime, Pink, Gray, LightGray, Cyan, Purple, Blue, Brown,
+                Green, Red, Black
         };
 
         /**

@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.item.enchantment.Enchantments;
 
@@ -100,7 +101,8 @@ public class FirstDegreeMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1357))
                 .color(0xffc370).secondaryColor(0x806752).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_FRAME, GENERATE_SMALL_GEAR, GENERATE_FOIL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_FRAME, GENERATE_SMALL_GEAR,
+                        GENERATE_FOIL, GENERATE_GEAR)
                 .components(Tin, 1, Copper, 3)
                 .toolStats(ToolProperty.Builder.of(3.0F, 2.0F, 192, 2)
                         .enchantability(18).addTypes(GTToolType.MORTAR).build())
@@ -140,7 +142,7 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Charcoal = new Material.Builder(GTCEu.id("charcoal"))
-                .gem(1, 1600) //default charcoal burn time in vanilla
+                .gem(1, 1600) // default charcoal burn time in vanilla
                 .color(0x7d6f58).secondaryColor(0x13110d).iconSet(FINE)
                 .flags(FLAMMABLE, NO_SMELTING, NO_SMASHING, MORTAR_GRINDABLE)
                 .components(Carbon, 1)
@@ -167,9 +169,10 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         Coal = new Material.Builder(GTCEu.id("coal"))
-                .gem(1, 1600).ore(2, 1) //default coal burn time in vanilla
+                .gem(1, 1600).ore(2, 1) // default coal burn time in vanilla
                 .color(0x393e41).secondaryColor(0x101015).iconSet(LIGNITE)
-                .flags(FLAMMABLE, NO_SMELTING, NO_SMASHING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, DISABLE_DECOMPOSITION)
+                .flags(FLAMMABLE, NO_SMELTING, NO_SMASHING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
+                        DISABLE_DECOMPOSITION)
                 .components(Carbon, 1)
                 .buildAndRegister();
 
@@ -225,7 +228,8 @@ public class FirstDegreeMaterials {
         Emerald = new Material.Builder(GTCEu.id("emerald"))
                 .gem().ore(2, 1)
                 .color(0x17ff6c).secondaryColor(0x003f00).iconSet(EMERALD)
-                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, GENERATE_LENS)
+                .appendFlags(EXT_METAL, NO_SMASHING, NO_SMELTING, HIGH_SIFTER_OUTPUT,
+                        EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, GENERATE_LENS)
                 .components(Beryllium, 3, Aluminium, 2, Silicon, 6, Oxygen, 18)
                 .buildAndRegister();
 
@@ -313,7 +317,8 @@ public class FirstDegreeMaterials {
         Lazurite = new Material.Builder(GTCEu.id("lazurite"))
                 .gem(1).ore(6, 4)
                 .color(0x2836f1).secondaryColor(0x183ca3).iconSet(LAPIS)
-                .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_ROD, DECOMPOSITION_BY_ELECTROLYZING)
+                .flags(GENERATE_PLATE, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, GENERATE_ROD,
+                        DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Aluminium, 6, Silicon, 6, Calcium, 8, Sodium, 8)
                 .buildAndRegister();
 
@@ -484,13 +489,13 @@ public class FirstDegreeMaterials {
                 .buildAndRegister();
 
         RTMAlloy = new Material.Builder(GTCEu.id("rtm_alloy"))
-            .ingot().fluid()
-            .color(0x30306B).iconSet(SHINY)
-            .components(Ruthenium, 4, Tungsten, 2, Molybdenum, 1)
-            .flags(GENERATE_SPRING)
-            .cableProperties(V[EV],6,2)
-            .blastTemp(3000, GasTier.MID, GTValues.VA[GTValues.EV], 1400)
-            .buildAndRegister();
+                .ingot().fluid()
+                .color(0x30306B).iconSet(SHINY)
+                .components(Ruthenium, 4, Tungsten, 2, Molybdenum, 1)
+                .flags(GENERATE_SPRING)
+                .cableProperties(V[EV], 6, 2)
+                .blastTemp(3000, GasTier.MID, GTValues.VA[GTValues.EV], 1400)
+                .buildAndRegister();
 
         Ruridit = new Material.Builder(GTCEu.id("ruridit"))
                 .ingot(3)
@@ -539,7 +544,8 @@ public class FirstDegreeMaterials {
         Sodalite = new Material.Builder(GTCEu.id("sodalite"))
                 .gem(1).ore(6, 4)
                 .color(0x3d54ff).secondaryColor(0x210d78).iconSet(LAPIS)
-                .flags(GENERATE_PLATE, GENERATE_ROD, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE, DECOMPOSITION_BY_ELECTROLYZING)
+                .flags(GENERATE_PLATE, GENERATE_ROD, NO_SMASHING, NO_SMELTING, CRYSTALLIZABLE,
+                        DECOMPOSITION_BY_ELECTROLYZING)
                 .components(Aluminium, 3, Silicon, 3, Sodium, 4, Chlorine, 1)
                 .buildAndRegister();
 
@@ -586,7 +592,8 @@ public class FirstDegreeMaterials {
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(2011))
                 .color(0xededfd).secondaryColor(0x19191d).iconSet(SHINY)
-                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_LONG_ROD, GENERATE_FOIL, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_FRAME, GENERATE_LONG_ROD,
+                        GENERATE_FOIL, GENERATE_GEAR)
                 .components(Iron, 6, Chromium, 1, Manganese, 1, Nickel, 1)
                 .toolStats(ToolProperty.Builder.of(7.0F, 5.0F, 1024, 3)
                         .enchantability(14).build())
@@ -689,7 +696,8 @@ public class FirstDegreeMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(2011))
                 .color(0xbcbcbc).secondaryColor(0x521c0b).iconSet(METALLIC)
-                .appendFlags(EXT_METAL, GENERATE_GEAR, GENERATE_FOIL, MORTAR_GRINDABLE, GENERATE_RING, GENERATE_LONG_ROD, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION, BLAST_FURNACE_CALCITE_TRIPLE)
+                .appendFlags(EXT_METAL, GENERATE_GEAR, GENERATE_FOIL, MORTAR_GRINDABLE, GENERATE_RING,
+                        GENERATE_LONG_ROD, GENERATE_BOLT_SCREW, DISABLE_DECOMPOSITION, BLAST_FURNACE_CALCITE_TRIPLE)
                 .components(Iron, 1)
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 384, 2)
                         .addTypes(GTToolType.MORTAR)
@@ -716,7 +724,8 @@ public class FirstDegreeMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1799))
                 .color(0x796d72).secondaryColor(0x260a3a).iconSet(METALLIC)
-                .appendFlags(EXT_METAL, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_BOLT_SCREW)
+                .appendFlags(EXT_METAL, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL,
+                        GENERATE_BOLT_SCREW)
                 .components(Yttrium, 1, Barium, 2, Copper, 3, Oxygen, 7)
                 .cableProperties(GTValues.V[8], 4, 4)
                 .blastTemp(4500, GasTier.HIGH) // todo redo this EBF process
@@ -725,7 +734,8 @@ public class FirstDegreeMaterials {
         NetherQuartz = new Material.Builder(GTCEu.id("nether_quartz"))
                 .gem(1).ore(2, 1)
                 .color(0xf8efe3).secondaryColor(0xe6c1bb).iconSet(QUARTZ)
-                .flags(GENERATE_PLATE, NO_SMELTING, CRYSTALLIZABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, DISABLE_DECOMPOSITION)
+                .flags(GENERATE_PLATE, NO_SMELTING, CRYSTALLIZABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
+                        DISABLE_DECOMPOSITION)
                 .components(Silicon, 1, Oxygen, 2)
                 .buildAndRegister();
 
@@ -769,7 +779,8 @@ public class FirstDegreeMaterials {
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(3012))
                 .color(0xe5dcef).secondaryColor(0x241a44).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_ROTOR, GENERATE_ROUND, GENERATE_FINE_WIRE, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_ROTOR, GENERATE_ROUND,
+                        GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .components(Iridium, 3, Osmium, 1)
                 .rotorStats(130, 130, 3.0f, 3152)
                 .itemPipeProperties(64, 32)
@@ -867,7 +878,9 @@ public class FirstDegreeMaterials {
                 .dust(1)
                 .color(0xecfff3).secondaryColor(0x7d8e83)
                 .components(Calcium, 1, Oxygen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE,new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2,1))
+                .hazard(HazardProperty.HazardType.CORROSIVE,
+                        new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN),
+                        new HazardProperty.HazardDamage(2, 1))
                 .buildAndRegister();
 
         SodiumBisulfate = new Material.Builder(GTCEu.id("sodium_bisulfate"))
@@ -976,7 +989,9 @@ public class FirstDegreeMaterials {
                 .color(0xf5feff).secondaryColor(0xa4ebf1)
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Sodium, 1, Oxygen, 1, Hydrogen, 1)
-                .hazard(HazardProperty.HazardType.CORROSIVE, new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN), new HazardProperty.HazardDamage(2, 1))
+                .hazard(HazardProperty.HazardType.CORROSIVE,
+                        new HazardProperty.HazardEffect(5000, MobEffects.WEAKNESS, MobEffects.DIG_SLOWDOWN),
+                        new HazardProperty.HazardDamage(2, 1))
                 .buildAndRegister();
 
         SodiumPersulfate = new Material.Builder(GTCEu.id("sodium_persulfate"))
@@ -1070,7 +1085,8 @@ public class FirstDegreeMaterials {
         TungstenCarbide = new Material.Builder(GTCEu.id("tungsten_carbide"))
                 .ingot(4).fluid()
                 .color(0x6b6478).secondaryColor(0x392e44).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME, DECOMPOSITION_BY_CENTRIFUGING)
+                .appendFlags(EXT2_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_FRAME,
+                        DECOMPOSITION_BY_CENTRIFUGING)
                 .components(Tungsten, 1, Carbon, 1)
                 .toolStats(ToolProperty.Builder.of(60.0F, 2.0F, 1024, 4)
                         .enchantability(21).build())
@@ -1344,7 +1360,8 @@ public class FirstDegreeMaterials {
                 .buildAndRegister()
                 .setFormula("URhNq2", true);
 
-        EnrichedNaquadahTriniumEuropiumDuranide = new Material.Builder(GTCEu.id("enriched_naquadah_trinium_europium_duranide"))
+        EnrichedNaquadahTriniumEuropiumDuranide = new Material.Builder(
+                GTCEu.id("enriched_naquadah_trinium_europium_duranide"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(5930))
                 .color(0xc5c1a4).secondaryColor(0x2b0645).iconSet(METALLIC)

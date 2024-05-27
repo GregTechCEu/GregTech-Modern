@@ -1,8 +1,5 @@
 package com.gregtechceu.gtceu.common.item.armor;
 
-import com.mojang.serialization.Codec;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import net.minecraft.Util;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -12,10 +9,15 @@ import net.minecraft.world.item.ArmorMaterial;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.util.Lazy;
 
+import com.mojang.serialization.Codec;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 import java.util.EnumMap;
 
 @AllArgsConstructor
 public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
+
     GOGGLES("goggles", 0, Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
         map.put(ArmorItem.Type.BOOTS, 0);
         map.put(ArmorItem.Type.LEGGINGS, 0);
@@ -37,12 +39,13 @@ public enum GTArmorMaterials implements ArmorMaterial, StringRepresentable {
     ;
 
     public static final Codec<GTArmorMaterials> CODEC = StringRepresentable.fromEnum(GTArmorMaterials::values);
-    private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util.make(new EnumMap<>(ArmorItem.Type.class), map -> {
-        map.put(ArmorItem.Type.BOOTS, 13);
-        map.put(ArmorItem.Type.LEGGINGS, 15);
-        map.put(ArmorItem.Type.CHESTPLATE, 16);
-        map.put(ArmorItem.Type.HELMET, 11);
-    });
+    private static final EnumMap<ArmorItem.Type, Integer> HEALTH_FUNCTION_FOR_TYPE = Util
+            .make(new EnumMap<>(ArmorItem.Type.class), map -> {
+                map.put(ArmorItem.Type.BOOTS, 13);
+                map.put(ArmorItem.Type.LEGGINGS, 15);
+                map.put(ArmorItem.Type.CHESTPLATE, 16);
+                map.put(ArmorItem.Type.HELMET, 11);
+            });
 
     private final String name;
     private final int durabilityMultiplier;

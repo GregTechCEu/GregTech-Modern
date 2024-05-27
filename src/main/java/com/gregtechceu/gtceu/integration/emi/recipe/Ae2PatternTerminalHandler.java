@@ -1,5 +1,12 @@
 package com.gregtechceu.gtceu.integration.emi.recipe;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
+import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.material.Fluid;
+
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.AEItemKey;
 import appeng.api.stacks.GenericStack;
@@ -12,12 +19,6 @@ import dev.emi.emi.api.recipe.handler.EmiRecipeHandler;
 import dev.emi.emi.api.stack.EmiIngredient;
 import dev.emi.emi.api.stack.EmiStack;
 import dev.emi.emi.screen.RecipeScreen;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
-import net.minecraft.world.inventory.Slot;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.material.Fluid;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,7 +31,8 @@ public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implem
 
     @Override
     public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
-        return new EmiPlayerInventory(getInputSources(screen.getMenu()).stream().map(Slot::getItem).map(EmiStack::of).toList());
+        return new EmiPlayerInventory(
+                getInputSources(screen.getMenu()).stream().map(Slot::getItem).map(EmiStack::of).toList());
     }
 
     @Override

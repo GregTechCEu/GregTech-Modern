@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.gui.widget.IntInputWidget;
 import com.gregtechceu.gtceu.api.gui.widget.ToggleButtonWidget;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
 import com.gregtechceu.gtceu.utils.RedstoneUtil;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.TextBoxWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
@@ -20,33 +21,40 @@ import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import lombok.Getter;
+
 import java.util.List;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUICover {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(AdvancedItemDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            AdvancedItemDetectorCover.class, DetectorCover.MANAGED_FIELD_HOLDER);
 
     @Override
     public ManagedFieldHolder getFieldHolder() {
         return MANAGED_FIELD_HOLDER;
     }
-    
 
     private static final int DEFAULT_MIN = 64;
     private static final int DEFAULT_MAX = 512;
 
-    @Persisted @Getter
+    @Persisted
+    @Getter
     private int minValue, maxValue;
 
-    @Persisted @DescSynced @Getter
+    @Persisted
+    @DescSynced
+    @Getter
     protected final FilterHandler<ItemStack, ItemFilter> filterHandler;
 
     public AdvancedItemDetectorCover(CoverDefinition definition, ICoverable coverHolder, Direction attachedSide) {
@@ -84,7 +92,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
                 storedItems += itemTransfer.getStackInSlot(i).getCount();
         }
 
-        setRedstoneSignalOutput(RedstoneUtil.computeRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted()));
+        setRedstoneSignalOutput(
+                RedstoneUtil.computeRedstoneBetweenValues(storedItems, maxValue, minValue, isInverted()));
     }
 
     public void setMinValue(int minValue) {
@@ -95,9 +104,8 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         this.maxValue = Math.max(maxValue, 0);
     }
 
-
     //////////////////////////////////////
-    //***********     GUI    ***********//
+    // *********** GUI ***********//
     //////////////////////////////////////
 
     @Override
@@ -114,21 +122,18 @@ public class AdvancedItemDetectorCover extends ItemDetectorCover implements IUIC
         group.addWidget(new IntInputWidget(80, 50, 176 - 80 - 10, 20, this::getMinValue, this::setMinValue));
         group.addWidget(new IntInputWidget(80, 75, 176 - 80 - 10, 20, this::getMaxValue, this::setMaxValue));
 
-
         // Invert Redstone Output Toggle:
         group.addWidget(new ToggleButtonWidget(
                 9, 20, 20, 20,
-                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted
-        ) {
+                GuiTextures.INVERT_REDSTONE_BUTTON, this::isInverted, this::setInverted) {
+
             @Override
             public void updateScreen() {
                 super.updateScreen();
                 setHoverTooltips(List.copyOf(LangHandler.getMultiLang(
-                        "cover.advanced_item_detector.invert." + (isPressed ? "enabled" : "disabled")
-                )));
+                        "cover.advanced_item_detector.invert." + (isPressed ? "enabled" : "disabled"))));
             }
         });
-
 
         // Item Filter UI:
         group.addWidget(filterHandler.createFilterSlotUI(148, 100));

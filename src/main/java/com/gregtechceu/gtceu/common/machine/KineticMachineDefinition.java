@@ -1,10 +1,12 @@
 package com.gregtechceu.gtceu.common.machine;
 
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
+
+import net.minecraft.resources.ResourceLocation;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
-import net.minecraft.resources.ResourceLocation;
 
 /**
  * @author KilaBash
@@ -13,6 +15,7 @@ import net.minecraft.resources.ResourceLocation;
  */
 @Accessors(chain = true)
 public class KineticMachineDefinition extends MachineDefinition {
+
     @Getter
     public final boolean isSource;
     @Getter
@@ -31,5 +34,4 @@ public class KineticMachineDefinition extends MachineDefinition {
         this.isSource = isSource;
         this.torque = torque;
     }
-
 }

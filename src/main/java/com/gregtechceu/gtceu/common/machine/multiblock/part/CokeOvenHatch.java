@@ -8,10 +8,12 @@ import com.gregtechceu.gtceu.api.machine.multiblock.part.MultiblockPartMachine;
 import com.gregtechceu.gtceu.api.machine.trait.FluidTankProxyTrait;
 import com.gregtechceu.gtceu.api.machine.trait.ItemHandlerProxyTrait;
 import com.gregtechceu.gtceu.common.machine.multiblock.primitive.CokeOvenMachine;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidTransferHelper;
 import com.lowdragmc.lowdraglib.side.item.ItemTransferHelper;
 import com.lowdragmc.lowdraglib.syncdata.ISubscription;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -19,6 +21,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.phys.BlockHitResult;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -31,7 +34,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class CokeOvenHatch extends MultiblockPartMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CokeOvenHatch.class, MultiblockPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(CokeOvenHatch.class,
+            MultiblockPartMachine.MANAGED_FIELD_HOLDER);
 
     public final ItemHandlerProxyTrait inputInventory, outputInventory;
     public final FluidTankProxyTrait tank;
@@ -39,7 +44,6 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     protected TickableSubscription autoIOSubs;
     @Nullable
     protected ISubscription outputInventorySubs, outputTankSubs;
-
 
     public CokeOvenHatch(IMachineBlockEntity holder, Object... args) {
         super(holder);
@@ -49,7 +53,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -111,7 +115,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     //////////////////////////////////////
-    //********     Auto IO     *********//
+    // ******** Auto IO *********//
     //////////////////////////////////////
 
     @Override
@@ -127,8 +131,10 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     protected void updateAutoIOSubscription() {
-        if ((!outputInventory.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) ||
-                (!tank.isEmpty() && FluidTransferHelper.getFluidTransfer(getLevel(), getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null)) {
+        if ((!outputInventory.isEmpty() && ItemTransferHelper.getItemTransfer(getLevel(),
+                getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null) ||
+                (!tank.isEmpty() && FluidTransferHelper.getFluidTransfer(getLevel(),
+                        getPos().relative(getFrontFacing()), getFrontFacing().getOpposite()) != null)) {
             autoIOSubs = subscribeServerTick(autoIOSubs, this::autoIO);
         } else if (autoIOSubs != null) {
             autoIOSubs.unsubscribe();
@@ -145,7 +151,7 @@ public class CokeOvenHatch extends MultiblockPartMachine {
     }
 
     //////////////////////////////////////
-    //*********       GUI      *********//
+    // ********* GUI *********//
     //////////////////////////////////////
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

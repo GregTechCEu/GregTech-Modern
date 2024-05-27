@@ -1,13 +1,9 @@
 package com.gregtechceu.gtceu.api.pipenet.longdistance;
 
 import com.gregtechceu.gtceu.utils.GTUtil;
-import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectList;
-import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.LevelAccessor;
@@ -16,6 +12,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.ChunkSource;
 import net.minecraft.world.level.chunk.ChunkStatus;
+
+import it.unimi.dsi.fastutil.longs.LongOpenHashSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectList;
+import it.unimi.dsi.fastutil.objects.ObjectOpenHashSet;
 
 import java.util.*;
 
@@ -36,7 +37,8 @@ public class NetworkBuilder extends Thread {
     private final BlockPos.MutableBlockPos pos = new BlockPos.MutableBlockPos();
     private final LongOpenHashSet loadedChunks = new LongOpenHashSet();
 
-    public NetworkBuilder(LongDistanceNetwork.WorldData worldData, LongDistanceNetwork network, Collection<BlockPos> starts) {
+    public NetworkBuilder(LongDistanceNetwork.WorldData worldData, LongDistanceNetwork network,
+                          Collection<BlockPos> starts) {
         this.worldData = Objects.requireNonNull(worldData);
         this.originalNetwork = Objects.requireNonNull(network);
         this.network = network;
@@ -54,7 +56,8 @@ public class NetworkBuilder extends Thread {
             start = this.starts.remove(0);
             LongDistanceNetwork ldn = this.worldData.getNetwork(start);
             if (ldn == this.originalNetwork) {
-                // this starting point was caught during a previous iteration, so we don't need to create another network here
+                // this starting point was caught during a previous iteration, so we don't need to create another
+                // network here
                 continue;
             }
             // create a new network, since the current was already calculated

@@ -7,14 +7,17 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IWorkableMultiContro
 import com.gregtechceu.gtceu.api.machine.multiblock.part.TieredIOPartMachine;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
 import com.gregtechceu.gtceu.common.machine.trait.NotifiableStressTrait;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.BlockHitResult;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -26,7 +29,9 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class KineticPartMachine extends TieredIOPartMachine implements IKineticMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(KineticPartMachine.class, TieredIOPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(KineticPartMachine.class,
+            TieredIOPartMachine.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Persisted
@@ -38,7 +43,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
     @Override
     public ManagedFieldHolder getFieldHolder() {
@@ -91,7 +96,7 @@ public class KineticPartMachine extends TieredIOPartMachine implements IKineticM
     }
 
     //////////////////////////////////////
-    //*********       GUI      *********//
+    // ********* GUI *********//
     //////////////////////////////////////
     @Override
     public boolean shouldOpenUI(Player player, InteractionHand hand, BlockHitResult hit) {

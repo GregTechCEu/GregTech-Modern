@@ -10,6 +10,7 @@ import org.jetbrains.annotations.NotNull;
  * @implNote ICustomRenderer
  */
 public interface ICustomRenderer extends IItemComponent {
+
     @NotNull
     IRenderer getRenderer();
 }

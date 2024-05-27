@@ -1,12 +1,14 @@
 package com.gregtechceu.gtceu.api.recipe.content;
 
-import com.google.gson.JsonElement;
 import com.gregtechceu.gtceu.api.recipe.ingredient.SizedIngredient;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.ItemLike;
+
+import com.google.gson.JsonElement;
 
 public class SerializerIngredient implements IContentSerializer<Ingredient> {
 
@@ -35,7 +37,7 @@ public class SerializerIngredient implements IContentSerializer<Ingredient> {
     }
 
     @Override
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings({ "unchecked", "rawtypes" })
     public Ingredient of(Object o) {
         if (o instanceof Ingredient ingredient) {
             return ingredient;
@@ -53,5 +55,4 @@ public class SerializerIngredient implements IContentSerializer<Ingredient> {
     public Ingredient defaultValue() {
         return Ingredient.EMPTY;
     }
-
 }

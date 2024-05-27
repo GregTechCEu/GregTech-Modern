@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.client;
 
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.GTValues;
+
 import net.minecraft.ChatFormatting;
 
 import java.util.ArrayList;
@@ -34,7 +35,6 @@ public class TooltipHelper {
     /** Switches between GRAY and DARK_GRAY, changing every 25 ticks */
     public static final GTFormattingCode BLINKING_GRAY = createNewCode(25, GRAY, DARK_GRAY);
 
-
     /**
      * Creates a Formatting Code which can oscillate through a number of different formatting codes at a specified rate.
      *
@@ -47,7 +47,8 @@ public class TooltipHelper {
             return null;
         }
         if (codes == null || codes.length <= 1) {
-            GTCEu.LOGGER.error("Could not create GT Formatting Code with codes {}, must have length greater than one!", Arrays.toString(codes));
+            GTCEu.LOGGER.error("Could not create GT Formatting Code with codes {}, must have length greater than one!",
+                    Arrays.toString(codes));
             return null;
         }
         GTFormattingCode code = new GTFormattingCode(rate, codes);

@@ -1,20 +1,22 @@
 package com.gregtechceu.gtceu.utils;
 
-
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableFluidTank;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
+
 import com.lowdragmc.lowdraglib.misc.FluidTransferList;
 import com.lowdragmc.lowdraglib.misc.ItemHandlerHelper;
 import com.lowdragmc.lowdraglib.misc.ItemTransferList;
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
 import com.lowdragmc.lowdraglib.side.fluid.IFluidTransfer;
 import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
+
+import net.minecraft.world.item.ItemStack;
+
 import it.unimi.dsi.fastutil.ints.IntArrayList;
 import it.unimi.dsi.fastutil.ints.IntList;
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import net.minecraft.world.item.ItemStack;
-
 import org.jetbrains.annotations.NotNull;
+
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -24,16 +26,19 @@ public class GTTransferUtils {
         return transferFluids(sourceHandler, destHandler, Integer.MAX_VALUE, fluidStack -> true);
     }
 
-    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, int transferLimit) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler,
+                                     int transferLimit) {
         return transferFluids(sourceHandler, destHandler, transferLimit, fluidStack -> true);
     }
 
-    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, int transferLimit, @NotNull Predicate<FluidStack> fluidFilter) {
+    public static int transferFluids(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler,
+                                     int transferLimit, @NotNull Predicate<FluidStack> fluidFilter) {
         int fluidLeftToTransfer = transferLimit;
 
         for (int i = 0; i < sourceHandler.getTanks(); ++i) {
             FluidStack currentFluid = sourceHandler.getFluidInTank(i);
-            if (currentFluid == FluidStack.empty() || currentFluid.getAmount() == 0 || !fluidFilter.test(currentFluid)) {
+            if (currentFluid == FluidStack.empty() || currentFluid.getAmount() == 0 ||
+                    !fluidFilter.test(currentFluid)) {
                 continue;
             }
 
@@ -60,7 +65,8 @@ public class GTTransferUtils {
         return transferLimit - fluidLeftToTransfer;
     }
 
-    public static boolean transferExactFluidStack(@NotNull IFluidTransfer sourceHandler, @NotNull IFluidTransfer destHandler, FluidStack fluidStack) {
+    public static boolean transferExactFluidStack(@NotNull IFluidTransfer sourceHandler,
+                                                  @NotNull IFluidTransfer destHandler, FluidStack fluidStack) {
         long amount = fluidStack.getAmount();
         FluidStack sourceFluid = sourceHandler.drain(fluidStack, true);
         if (sourceFluid == FluidStack.empty() || sourceFluid.getAmount() != amount) {
@@ -94,7 +100,8 @@ public class GTTransferUtils {
 
     /**
      * Simulates the insertion of items into a target inventory, then optionally performs the insertion.
-     * <br /><br />
+     * <br />
+     * <br />
      * Simulating will not modify any of the input parameters. Insertion will either succeed completely, or fail
      * without modifying anything.
      * This method should be called with {@code simulate} {@code true} first, then {@code simulate} {@code false},
@@ -130,7 +137,8 @@ public class GTTransferUtils {
 
     /**
      * Simulates the insertion of fluid into a target fluid handler, then optionally performs the insertion.
-     * <br /><br />
+     * <br />
+     * <br />
      * Simulating will not modify any of the input parameters. Insertion will either succeed completely, or fail
      * without modifying anything.
      * This method should be called with {@code simulate} {@code true} first, then {@code simulate} {@code false},
@@ -179,7 +187,8 @@ public class GTTransferUtils {
         return handler.fill(stack, simulate);
     }
 
-    public static FluidStack drainFluidAccountNotifiableList(IFluidTransfer handler, FluidStack stack, boolean simulate) {
+    public static FluidStack drainFluidAccountNotifiableList(IFluidTransfer handler, FluidStack stack,
+                                                             boolean simulate) {
         if (stack.isEmpty()) return FluidStack.empty();
         if (handler instanceof FluidTransferList transferList) {
             var copied = stack.copy();
@@ -233,7 +242,8 @@ public class GTTransferUtils {
         return stack;
     }
 
-    public static ItemStack insertItemAccountNotifiableList(IItemTransfer handler, int slot, ItemStack stack, boolean simulate) {
+    public static ItemStack insertItemAccountNotifiableList(IItemTransfer handler, int slot, ItemStack stack,
+                                                            boolean simulate) {
         if (handler instanceof ItemTransferList transferList) {
             int index = 0;
             for (var transfer : transferList.transfers) {

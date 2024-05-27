@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.trait.RecipeLogic;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.api.recipe.RecipeCondition;
-import lombok.NoArgsConstructor;
+
 import net.minecraft.network.chat.Component;
+
+import lombok.NoArgsConstructor;
 import org.jetbrains.annotations.NotNull;
 
 /**
@@ -15,7 +17,9 @@ import org.jetbrains.annotations.NotNull;
  */
 @NoArgsConstructor
 public class VentCondition extends RecipeCondition {
+
     public final static VentCondition INSTANCE = new VentCondition();
+
     @Override
     public String getType() {
         return "steam_vent";

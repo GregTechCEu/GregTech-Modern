@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.config.ConfigHolder;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
@@ -9,6 +10,7 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.gui.widget.custom.PlayerInventoryWidget;
 import com.lowdragmc.lowdraglib.utils.Position;
 import com.lowdragmc.lowdraglib.utils.Size;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
@@ -16,7 +18,6 @@ import org.jetbrains.annotations.Nullable;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.List;
-import java.util.Stack;
 import java.util.stream.Stream;
 
 /**
@@ -26,6 +27,7 @@ import java.util.stream.Stream;
  */
 @Getter
 public class FancyMachineUIWidget extends WidgetGroup {
+
     protected final TitleBarWidget titleBar;
     protected final VerticalTabsWidget sideTabsWidget;
     protected final WidgetGroup pageContainer;
@@ -41,7 +43,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
     protected final IFancyUIProvider mainPage;
 
     /*
-     * Current Page:      The page visible in the UI
+     * Current Page: The page visible in the UI
      * Current Home Page: The currently selected multiblock part's home page.
      */
     protected IFancyUIProvider currentPage;
@@ -51,8 +53,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
     protected Deque<NavigationEntry> previousPages = new ArrayDeque<>();
 
-    protected record NavigationEntry(IFancyUIProvider page, IFancyUIProvider homePage, Runnable onNavigation) {
-    }
+    protected record NavigationEntry(IFancyUIProvider page, IFancyUIProvider homePage, Runnable onNavigation) {}
 
     public FancyMachineUIWidget(IFancyUIProvider mainPage, int width, int height) {
         super(0, 0, width, height);
@@ -74,7 +75,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
         addWidget(this.configuratorPanel = new ConfiguratorPanel(-(24 + 2), height));
         this.pageSwitcher = new PageSwitcher(this::switchPage);
 
-        setBackground(GuiTextures.BACKGROUND.copy().setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
+        setBackground(GuiTextures.BACKGROUND.copy()
+                .setColor(Long.decode(ConfigHolder.INSTANCE.client.defaultUIColor).intValue() | 0xFF000000));
     }
 
     @Override
@@ -91,7 +93,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
     }
 
     ////////////////////////////////////////
-    //*********    NAVIGATION    *********//
+    // ********* NAVIGATION *********//
     ////////////////////////////////////////
 
     protected void navigate(IFancyUIProvider newPage) {
@@ -135,9 +137,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
         setupFancyUI(nextPage, nextPage.hasPlayerInventory());
     }
 
-
     ///////////////////////////////////////////////
-    //***********    PAGE SWITCHER    ***********//
+    // *********** PAGE SWITCHER ***********//
     ///////////////////////////////////////////////
 
     protected void openPageSwitcher(ClickData clickData) {
@@ -176,7 +177,7 @@ public class FancyMachineUIWidget extends WidgetGroup {
     }
 
     //////////////////////////////////////////////
-    //***********    UI RENDERING    ***********//
+    // *********** UI RENDERING ***********//
     //////////////////////////////////////////////
 
     protected void setupFancyUI(IFancyUIProvider fancyUI) {
@@ -188,16 +189,17 @@ public class FancyMachineUIWidget extends WidgetGroup {
 
         sideTabsWidget.selectTab(fancyUI);
         titleBar.updateState(
-            currentHomePage,
-            !this.previousPages.isEmpty(),
-            this.allPages.size() > 1 && this.currentPage != this.pageSwitcher
-        );
+                currentHomePage,
+                !this.previousPages.isEmpty(),
+                this.allPages.size() > 1 && this.currentPage != this.pageSwitcher);
 
         var page = fancyUI.createMainPage(this);
 
         // layout
-        var size = new Size(Math.max(172, page.getSize().width + border * 2), Math.max(86, page.getSize().height + border * 2));
-        setSize(new Size(size.width, size.height + (!showInventory || playerInventory == null ? 0 : playerInventory.getSize().height)));
+        var size = new Size(Math.max(172, page.getSize().width + border * 2),
+                Math.max(86, page.getSize().height + border * 2));
+        setSize(new Size(size.width,
+                size.height + (!showInventory || playerInventory == null ? 0 : playerInventory.getSize().height)));
         if (LDLib.isRemote() && getGui() != null) {
             getGui().setSize(getSize().width, getSize().height);
         }
@@ -213,7 +215,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
                 (pageContainer.getSize().width - page.getSize().width) / 2,
                 (pageContainer.getSize().height - page.getSize().height) / 2));
         fancyUI.attachConfigurators(configuratorPanel);
-        configuratorPanel.setSelfPosition(new Position(-24 - 2, getGui().getHeight() - configuratorPanel.getSize().height - 4));
+        configuratorPanel
+                .setSelfPosition(new Position(-24 - 2, getGui().getHeight() - configuratorPanel.getSize().height - 4));
         fancyUI.attachTooltips(tooltipsPanel);
 
         titleBar.setSize(new Size(this.getSize().width, titleBar.getSize().height));
@@ -224,9 +227,8 @@ public class FancyMachineUIWidget extends WidgetGroup {
             return;
 
         this.playerInventory.setSelfPosition(new Position(
-            (parentSize.width - playerInventory.getSize().width) / 2,
-            parentSize.height
-        ));
+                (parentSize.width - playerInventory.getSize().width) / 2,
+                parentSize.height));
 
         this.playerInventory.setActive(showInventory);
         this.playerInventory.setVisible(showInventory);
