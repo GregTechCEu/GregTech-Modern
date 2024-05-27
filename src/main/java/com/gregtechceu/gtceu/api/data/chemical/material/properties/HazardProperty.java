@@ -93,10 +93,11 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         HANDS(ArmorItem.Type.CHESTPLATE),
         FULL(ArmorItem.Type.BOOTS, ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS);
 
-        private final List<ArmorItem.Type> equipmentTypes;
+        @Getter
+        private final Set<ArmorItem.Type> equipmentTypes;
 
         ProtectionType(ArmorItem.Type... equipmentTypes) {
-            this.equipmentTypes = List.of(equipmentTypes);
+            this.equipmentTypes = Set.of(equipmentTypes);
         }
 
         public boolean isProtected(LivingEntity livingEntity) {

@@ -20,6 +20,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraftforge.common.util.INBTSerializable;
 
 import java.util.HashSet;
@@ -47,7 +48,10 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         for (UnificationEntry entry : entryToAmount.keySet()) {
             HazardProperty property = entry.material.getProperty(PropertyKey.HAZARD);
             if(property.getHazardType().getProtectionType().isProtected(player)) {
-                //entity has proper safety equipment
+                //entity has proper safety equipment, so damage it
+                for (ArmorItem.Type type : property.getHazardType().getProtectionType().getEquipmentTypes()) {
+                    player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(type.getSlot()));
+                }
                 protectedFrom.addAll(property.getEffects());
             }
             for (var effect : property.getEffects()) {
