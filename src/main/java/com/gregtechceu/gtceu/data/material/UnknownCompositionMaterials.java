@@ -557,6 +557,7 @@ public class UnknownCompositionMaterials {
 
         PCBCoolant = new Material.Builder(GTCEu.id("pcb_coolant"))
                 .fluid().color(0xD5D69C)
-            .hazard(HazardProperty.HazardType.INHALATION_POISON).buildAndRegister();
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
     }
 }
