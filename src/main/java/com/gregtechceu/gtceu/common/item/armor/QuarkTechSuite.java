@@ -30,6 +30,9 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import net.minecraftforge.common.capabilities.ForgeCapabilities;
+import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.IdentityHashMap;
@@ -81,25 +84,29 @@ public class QuarkTechSuite extends ArmorLogicSuite implements IStepAssist {
 
             if (item.canUse(energyPerUse / 10) && player.getFoodData().needsFood()) {
                 int slotId = -1;
-                for (int i = 0; i < player.getInventory().items.size(); i++) {
-                    ItemStack current = player.getInventory().items.get(i);
-                    if (current.getFoodProperties(player) != null) {
-                        slotId = i;
-                        break;
+                IItemHandler playerInv = player.getCapability(ForgeCapabilities.ITEM_HANDLER).resolve().orElse(null);
+                if (playerInv instanceof IItemHandlerModifiable items) {
+                    for (int i = 0; i < items.getSlots(); i++) {
+                        ItemStack current = items.getStackInSlot(i);
+                        if (current.getFoodProperties(player) != null) {
+                            slotId = i;
+                            break;
+                        }
                     }
-                }
 
-                if (slotId > -1) {
-                    ItemStack stack = player.getInventory().items.get(slotId);
-                    InteractionResultHolder<ItemStack> result = ArmorUtils.eat(player, stack);
-                    stack = result.getObject();
-                    if (stack.isEmpty())
-                        player.getInventory().items.set(slotId, ItemStack.EMPTY);
+                    if (slotId > -1) {
+                        ItemStack stack = items.getStackInSlot(slotId);
+                        InteractionResultHolder<ItemStack> result = ArmorUtils.eat(player, stack);
+                        stack = result.getObject();
+                        if (stack.isEmpty())
+                            items.setStackInSlot(slotId, ItemStack.EMPTY);
 
-                    if (result.getResult() == InteractionResult.SUCCESS)
-                        item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
+                        if (result.getResult() == InteractionResult.SUCCESS)
+                            item.discharge(energyPerUse / 10, item.getTier(), true, false, false);
 
-                    ret = true;
+                        ret = true;
+                    }
+
                 }
             }
 
