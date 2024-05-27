@@ -1578,10 +1578,9 @@ public class GTItems {
         .onRegister(attach(ElectricStats.createElectricItem(25600000L, GTValues.IV)))
         .register();
 
-    public static ItemEntry<ArmorItem> MASK_FILTER = REGISTRATE.item("mask_filter", (p) -> new ArmorItem(GTArmorMaterials.PPE_EQUIPMENT, ArmorItem.Type.HELMET, p))
+    public static ItemEntry<Item> MASK_FILTER = REGISTRATE.item("mask_filter", Item::new)
         .lang("Gas Mask Filter")
         .properties(p -> p.stacksTo(1))
-        .tag(CustomTags.PPE_ARMOR)
         .register();
 
 
@@ -1710,26 +1709,36 @@ public class GTItems {
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .register();
 
-    public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE.item("hazmat_chestpiece", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.CHESTPLATE, p)
-            .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE)))
+    public static ItemEntry<ArmorComponentItem> FACE_MASK = REGISTRATE.item("face_mask", (p) -> new ArmorComponentItem(GTArmorMaterials.BAD_PPE_EQUIPMENT, ArmorItem.Type.HELMET, p)
+                    .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "bad_hazmat")))
+            .lang("Face Mask")
+            .tag(CustomTags.PPE_ARMOR)
+            .register();
+    public static ItemEntry<ArmorComponentItem> RUBBER_GLOVES = REGISTRATE.item("rubber_gloves", (p) -> new ArmorComponentItem(GTArmorMaterials.BAD_PPE_EQUIPMENT, ArmorItem.Type.HELMET, p)
+                    .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "bad_hazmat")))
+            .lang("Rubber Gloves")
+            .tag(CustomTags.PPE_ARMOR)
+            .register();
+    public static ItemEntry<ArmorComponentItem> HAZMAT_CHESTPLATE = REGISTRATE.item("hazmat_chestpiece", (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.CHESTPLATE, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.CHESTPLATE, "hazmat")))
         .lang("Hazardous Materials Suit Chestpiece")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .tag(CustomTags.PPE_ARMOR)
         .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_LEGGINGS = REGISTRATE.item("hazmat_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.LEGGINGS, p)
-            .setArmorLogic(new HazmatSuit(ArmorItem.Type.LEGGINGS)))
+    public static ItemEntry<ArmorComponentItem> HAZMAT_LEGGINGS = REGISTRATE.item("hazmat_leggings", (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.LEGGINGS, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.LEGGINGS, "hazmat")))
         .lang("Hazardous Materials Suit Leggings")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .tag(CustomTags.PPE_ARMOR)
         .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_BOOTS = REGISTRATE.item("hazmat_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.BOOTS, p)
-            .setArmorLogic(new HazmatSuit(ArmorItem.Type.BOOTS)))
+    public static ItemEntry<ArmorComponentItem> HAZMAT_BOOTS = REGISTRATE.item("hazmat_boots", (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.BOOTS, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.BOOTS, "hazmat")))
         .lang("Hazardous Materials Suit Boots")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .tag(CustomTags.PPE_ARMOR)
         .register();
-    public static ItemEntry<ArmorComponentItem> HAZMAT_HELMET = REGISTRATE.item("hazmat_headpiece", (p) -> new ArmorComponentItem(GTArmorMaterials.ARMOR, ArmorItem.Type.HELMET, p)
-            .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET)))
+    public static ItemEntry<ArmorComponentItem> HAZMAT_HELMET = REGISTRATE.item("hazmat_headpiece", (p) -> new ArmorComponentItem(GTArmorMaterials.GOOD_PPE_EQUIPMENT, ArmorItem.Type.HELMET, p)
+            .setArmorLogic(new HazmatSuit(ArmorItem.Type.HELMET, "hazmat")))
         .lang("Hazardous Materials Suit Headpiece")
         .properties(p -> p.rarity(Rarity.UNCOMMON))
         .tag(CustomTags.PPE_ARMOR)

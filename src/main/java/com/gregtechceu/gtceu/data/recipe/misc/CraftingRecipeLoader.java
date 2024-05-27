@@ -164,6 +164,8 @@ public class CraftingRecipeLoader {
         VanillaRecipeHelper.addShapedRecipe(provider, "nano_chestplate_advanced", GTItems.NANO_CHESTPLATE_ADVANCED.asStack(), "xJd", "PNP", "WCW", 'J', GTItems.ELECTRIC_JETPACK_ADVANCED.asStack(), 'P', GTItems.LOW_POWER_INTEGRATED_CIRCUIT.asStack(), 'N', GTItems.NANO_CHESTPLATE.asStack(), 'W', new UnificationEntry(wireGtQuadruple, Platinum), 'C', CustomTags.IV_CIRCUITS);
         VanillaRecipeHelper.addShapedRecipe(provider, "gravitation_engine", GTItems.GRAVITATION_ENGINE.asStack(), "ESE", "POP", "ESE", 'E', GTItems.EMITTER_LuV.asStack(), 'S', new UnificationEntry(wireGtQuadruple, Osmium), 'P', new UnificationEntry(plateDouble, Iridium), 'O', GTItems.ENERGY_LAPOTRONIC_ORB.asStack());
 
+        VanillaRecipeHelper.addShapedRecipe(provider, "face_mask", FACE_MASK.asStack(), "S S", "PPP", 'S', Items.STRING, 'P', Items.PAPER);
+        VanillaRecipeHelper.addShapedRecipe(provider, "rubber_gloves", RUBBER_GLOVES.asStack(), "P P", 'P', new UnificationEntry(plate, Rubber));
 
         VanillaRecipeHelper.addShapedRecipe(provider, "powderbarrel", new ItemStack(GTBlocks.POWDERBARREL), "PSP", "GGG", "PGP",
             'P', new UnificationEntry(plate, Wood),

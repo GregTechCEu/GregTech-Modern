@@ -396,8 +396,6 @@ public class MachineRecipeLoader {
                 .outputItems(MASK_FILTER)
                 .duration(100).EUt(2).save(provider);
 
-        VanillaRecipeHelper.addShapedRecipe(provider, "mask_filter_by_hand", MASK_FILTER.asStack(), "s s", "pcp", 's', Items.STRING, 'p', Items.PAPER, 'c', new UnificationEntry(dust, ActivatedCarbon));
-
         Material material = Iron;
 
         ASSEMBLER_RECIPES.recipeBuilder("cover_shutter")
