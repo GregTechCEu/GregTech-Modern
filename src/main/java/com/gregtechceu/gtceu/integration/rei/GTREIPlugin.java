@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
 import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMachines;
+import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.integration.rei.multipage.MultiblockInfoDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.oreprocessing.GTOreProcessingDisplayCategory;
 import com.gregtechceu.gtceu.integration.rei.orevein.GTBedrockFluidDisplayCategory;
@@ -39,7 +40,8 @@ public class GTREIPlugin implements REIClientPlugin {
     @Override
     public void registerCategories(CategoryRegistry registry) {
         registry.add(new MultiblockInfoDisplayCategory());
-        registry.add(new GTOreProcessingDisplayCategory());
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            registry.add(new GTOreProcessingDisplayCategory());
         registry.add(new GTOreVeinDisplayCategory());
         registry.add(new GTBedrockFluidDisplayCategory());
         for (RecipeType<?> recipeType : BuiltInRegistries.RECIPE_TYPE) {
@@ -52,7 +54,8 @@ public class GTREIPlugin implements REIClientPlugin {
         // workstations
         MultiblockInfoDisplayCategory.registerWorkStations(registry);
         GTRecipeTypeDisplayCategory.registerWorkStations(registry);
-        GTOreProcessingDisplayCategory.registerWorkstations(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingDisplayCategory.registerWorkstations(registry);
         GTOreVeinDisplayCategory.registerWorkstations(registry);
         GTBedrockFluidDisplayCategory.registerWorkstations(registry);
         for (MachineDefinition definition : GTMachines.ELECTRIC_FURNACE) {
@@ -70,7 +73,8 @@ public class GTREIPlugin implements REIClientPlugin {
     public void registerDisplays(DisplayRegistry registry) {
         GTRecipeTypeDisplayCategory.registerDisplays(registry);
         MultiblockInfoDisplayCategory.registerDisplays(registry);
-        GTOreProcessingDisplayCategory.registerDisplays(registry);
+        if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
+            GTOreProcessingDisplayCategory.registerDisplays(registry);
         GTOreVeinDisplayCategory.registerDisplays(registry);
         GTBedrockFluidDisplayCategory.registerDisplays(registry);
     }
