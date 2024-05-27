@@ -152,15 +152,27 @@ public class OreRecipeHandler {
             }
             builder.save(provider);
 
-            MACERATOR_RECIPES.recipeBuilder("macerate_" + orePrefix.name + "_" + material.getName() + "_ore_to_crushed_ore")
+            GTRecipeBuilder builder2 = MACERATOR_RECIPES.recipeBuilder("macerate_" + orePrefix.name + "_" + material.getName() + "_ore_to_crushed_ore")
                     .inputItems(orePrefix, material)
-                    .outputItems(crushedStack)
-                    .chancedOutput(crushedStack, 5000, 750)
-                    .chancedOutput(crushedStack, 2500, 500)
-                    .chancedOutput(crushedStack, 1250, 250)
+                    .outputItems(crushedStack.getItem(), 2)
                     .EUt(2)
-                    .duration(400)
-                    .save(provider);
+                    .duration(400);
+
+            Material byproductMaterial = GTUtil.selectItemInList(0, material, property.getOreByProducts(), Material.class);
+            ItemStack byproductStack = ChemicalHelper.get(gem, byproductMaterial);
+            if (byproductStack.isEmpty()) {
+                byproductStack = ChemicalHelper.get(dust, byproductMaterial);
+            }
+            builder2.chancedOutput(byproductStack, 1000, 300);
+
+            for (MaterialStack secondaryMaterial : ore.secondaryMaterials()) {
+                if (secondaryMaterial.material().hasProperty(PropertyKey.DUST)) {
+                    ItemStack dustStack = ChemicalHelper.getGem(secondaryMaterial);
+                    builder2.chancedOutput(dustStack, 500, 100);
+                    break;
+                }
+            }
+            builder2.save(provider);
         }
 
         //do not try to add smelting recipes for materials which require blast furnace, or don't have smelting recipes at all.
