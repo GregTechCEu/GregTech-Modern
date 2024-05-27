@@ -22,14 +22,15 @@ jobs:
         uses: ./.github/actions/build_setup
 
       - name: Build
-        run: ./gradlew build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
       - name: Get Version
         id: var
         run: |
           MESSAGE=$(ls build/libs/* | grep sources.jar -v | grep slim.jar -v | awk -F 'gtceu-|.jar' '{print $2}')
           echo "version=$MESSAGE" >> $GITHUB_OUTPUT
-          echo "version: $MESSAGE"
 
       - name: Release
         id: release
@@ -43,6 +44,6 @@ jobs:
 
       - name: Print Output
         run: |
-          echo "Release tag: ${{ steps.publish.outputs.github-tag }}"
-          echo "Release URL: ${{ steps.publish.outputs.github-url }}"
-          echo "Released files: ${{ steps.publish.outputs.github-files }}"
+          echo "Release tag: ${{ steps.release.outputs.github-tag }}"
+          echo "Release URL: ${{ steps.release.outputs.github-url }}"
+          echo "Released files: ${{ steps.release.outputs.github-files }}"

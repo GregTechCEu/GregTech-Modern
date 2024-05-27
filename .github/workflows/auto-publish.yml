@@ -18,7 +18,7 @@ on:
         type: boolean
         default: true
       publishCurseForgeAndModrinth:
-        description: 'whether publish to curseforge and modrinth'
+        description: 'whether to publish to curseforge and modrinth'
         required: true
         type: boolean
         default: true
@@ -43,11 +43,15 @@ jobs:
         uses: ./.github/actions/build_setup
 
       - name: Build
-        run: ./gradlew build
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: build
 
       - if: ${{ inputs.publishMaven }}
         name: Publish to Maven
-        run: ./gradlew publish
+        uses: gradle/gradle-build-action@v2
+        with:
+          arguments: publish
 
       - if: ${{ inputs.publishCurseForgeAndModrinth }}
         name: Get Version

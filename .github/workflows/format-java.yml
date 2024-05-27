@@ -1,0 +1,29 @@
+# Runs formatting requirements
+name: Java Formatting
+
+on:
+  push:
+    branches:
+      - master
+    paths: ['src/main/java/**', 'src/test/**']
+  pull_request:
+    paths: ['src/main/java/**', 'src/test/**']
+
+concurrency:
+  group: formatting-${{ github.head_ref || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  formatting:
+    name: Formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Setup Build
+        uses: ./.github/actions/build_setup
+
+      - name: Run Spotless Formatting Check with Gradle
+        run: ./gradlew spotlessCheck --warning-mode all --build-cache
