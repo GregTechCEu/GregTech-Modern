@@ -48,9 +48,11 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         for (UnificationEntry entry : entryToAmount.keySet()) {
             HazardProperty property = entry.material.getProperty(PropertyKey.HAZARD);
             if(property.getHazardType().getProtectionType().isProtected(player)) {
-                //entity has proper safety equipment, so damage it
-                for (ArmorItem.Type type : property.getHazardType().getProtectionType().getEquipmentTypes()) {
-                    player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(type.getSlot()));
+                //entity has proper safety equipment, so damage it per material every 5 seconds.
+                if (player.level().getGameTime() % 100 == 0) {
+                    for (ArmorItem.Type type : property.getHazardType().getProtectionType().getEquipmentTypes()) {
+                        player.getItemBySlot(type.getSlot()).hurtAndBreak(1, player, p -> p.broadcastBreakEvent(type.getSlot()));
+                    }
                 }
                 protectedFrom.addAll(property.getEffects());
             }
@@ -115,9 +117,12 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         ListTag amountsTag = new ListTag();
         for (var amount : entryToAmount.object2IntEntrySet()) {
             CompoundTag amountTag = new CompoundTag();
-            amountTag.putString("prefix", amount.getKey().tagPrefix.name);
+            if (amount.getKey().tagPrefix != null) {
+                amountTag.putString("prefix", amount.getKey().tagPrefix.name);
+            }
             amountTag.putString("material", amount.getKey().material.toString());
             amountTag.putInt("amount", amount.getIntValue());
+            amountsTag.add(amountTag);
         }
         tag.put("amounts", amountsTag);
 
@@ -139,7 +144,10 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
             if (!(tag instanceof CompoundTag compoundTag)) {
                 continue;
             }
-            TagPrefix prefix = TagPrefix.get(compoundTag.getString("prefix"));
+            TagPrefix prefix = null;
+            if (compoundTag.contains("prefix", Tag.TAG_STRING)) {
+                prefix = TagPrefix.get(compoundTag.getString("prefix"));
+            }
             Material material = GTCEuAPI.materialManager.getMaterial(compoundTag.getString("material"));
             int amount = compoundTag.getInt("amount");
             entryToAmount.put(new UnificationEntry(prefix, material), amount);
