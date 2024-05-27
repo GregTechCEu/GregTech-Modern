@@ -1,8 +1,9 @@
 package com.gregtechceu.gtceu.client;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import java.util.List;
 

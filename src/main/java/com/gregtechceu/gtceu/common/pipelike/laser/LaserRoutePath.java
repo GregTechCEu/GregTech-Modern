@@ -4,10 +4,12 @@ import com.gregtechceu.gtceu.api.capability.GTCapabilityHelper;
 import com.gregtechceu.gtceu.api.capability.ILaserContainer;
 import com.gregtechceu.gtceu.api.pipenet.IAttachData;
 import com.gregtechceu.gtceu.api.pipenet.IRoutePath;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.Level;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -42,7 +44,8 @@ public class LaserRoutePath implements IRoutePath<ILaserContainer>, IAttachData 
      */
     @Nullable
     public ILaserContainer getHandler(Level level) {
-        return GTCapabilityHelper.getLaser(level, getTargetPipePos().relative(targetFacing), targetFacing.getOpposite());
+        return GTCapabilityHelper.getLaser(level, getTargetPipePos().relative(targetFacing),
+                targetFacing.getOpposite());
     }
 
     @Override

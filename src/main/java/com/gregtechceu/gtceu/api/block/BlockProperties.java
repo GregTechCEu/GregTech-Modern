@@ -8,5 +8,6 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
  * @implNote BlockProperties
  */
 public final class BlockProperties {
+
     public static final BooleanProperty SERVER_TICK = BooleanProperty.create("server_tick");
 }

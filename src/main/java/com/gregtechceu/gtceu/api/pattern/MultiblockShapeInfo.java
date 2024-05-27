@@ -1,10 +1,11 @@
 package com.gregtechceu.gtceu.api.pattern;
 
 import com.gregtechceu.gtceu.api.block.IMachineBlock;
-import com.gregtechceu.gtceu.api.block.MetaMachineBlock;
 import com.gregtechceu.gtceu.api.data.RotationState;
+
 import com.lowdragmc.lowdraglib.utils.BlockInfo;
 import com.lowdragmc.lowdraglib.utils.Builder;
+
 import net.minecraft.core.Direction;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -13,7 +14,7 @@ import java.util.function.Supplier;
 
 public class MultiblockShapeInfo {
 
-    private final BlockInfo[][][] blocks; //[z][y][x]
+    private final BlockInfo[][][] blocks; // [z][y][x]
 
     public MultiblockShapeInfo(BlockInfo[][][] blocks) {
         this.blocks = blocks;
@@ -54,10 +55,9 @@ public class MultiblockShapeInfo {
         private BlockInfo[][][] bake() {
             return this.bakeArray(BlockInfo.class, BlockInfo.EMPTY);
         }
+
         public MultiblockShapeInfo build() {
             return new MultiblockShapeInfo(bake());
         }
-
     }
-
 }

@@ -4,9 +4,11 @@ import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
 import com.gregtechceu.gtceu.api.cover.CoverBehavior;
 import com.gregtechceu.gtceu.common.cover.PumpCover;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
+
 import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.resources.model.ModelState;
@@ -17,6 +19,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -41,9 +44,13 @@ public class FluidRegulatorCoverRenderer implements ICoverRenderer {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand, @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos, BlockAndTintGetter level, ModelState modelState) {
+    public void renderCover(List<BakedQuad> quads, Direction side, RandomSource rand,
+                            @NotNull CoverBehavior coverBehavior, Direction modelFacing, BlockPos pos,
+                            BlockAndTintGetter level, ModelState modelState) {
         if (side == coverBehavior.attachedSide && coverBehavior instanceof PumpCover pump && modelFacing != null) {
-            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(pump.getIo() == IO.OUT ? PUMP_OVERLAY_OUT : PUMP_OVERLAY_IN), modelState));
+            quads.add(FaceQuad.bakeFace(modelFacing,
+                    ModelFactory.getBlockSprite(pump.getIo() == IO.OUT ? PUMP_OVERLAY_OUT : PUMP_OVERLAY_IN),
+                    modelState));
         }
     }
 

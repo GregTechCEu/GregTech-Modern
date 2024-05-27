@@ -2,23 +2,26 @@ package com.gregtechceu.gtceu.api.gui.widget;
 
 import com.gregtechceu.gtceu.api.gui.GuiTextures;
 import com.gregtechceu.gtceu.data.lang.LangHandler;
+
 import com.lowdragmc.lowdraglib.LDLib;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.widget.CycleButtonWidget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
+
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * A widget for selecting a value from an enum or a subset of its values.
@@ -26,12 +29,13 @@ import java.util.function.Consumer;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.SelectableEnum> extends WidgetGroup {
+
     public interface SelectableEnum {
+
         String getTooltip();
 
         IGuiTexture getIcon();
     }
-
 
     private final CycleButtonWidget buttonWidget;
 
@@ -40,25 +44,26 @@ public class EnumSelectorWidget<T extends Enum<T> & EnumSelectorWidget.Selectabl
 
     private int selected = 0;
 
+    private BiFunction<T, IGuiTexture, IGuiTexture> textureSupplier = (value, texture) -> new GuiTextureGroup(
+            GuiTextures.VANILLA_BUTTON, texture);
 
-    private BiFunction<T, IGuiTexture, IGuiTexture> textureSupplier = (value, texture) ->
-            new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, texture);
+    private BiFunction<T, String, List<Component>> tooltipSupplier = (value, key) -> List
+            .copyOf(LangHandler.getSingleOrMultiLang(key));
 
-    private BiFunction<T, String, List<Component>> tooltipSupplier = (value, key) ->
-            List.copyOf(LangHandler.getSingleOrMultiLang(key));
-
-
-    public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, T[] values, T initialValue, Consumer<T> onChanged) {
+    public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, T[] values, T initialValue,
+                              Consumer<T> onChanged) {
         this(xPosition, yPosition, width, height, Arrays.asList(values), initialValue, onChanged);
     }
 
-    public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, List<T> values, T initialValue, Consumer<T> onChanged) {
+    public EnumSelectorWidget(int xPosition, int yPosition, int width, int height, List<T> values, T initialValue,
+                              Consumer<T> onChanged) {
         super(xPosition, yPosition, width, height);
 
         this.values = values;
         this.onChanged = onChanged;
 
-        this.buttonWidget = new CycleButtonWidget(0, 0, width, height, values.size(), this::getTexture, this::onSelected);
+        this.buttonWidget = new CycleButtonWidget(0, 0, width, height, values.size(), this::getTexture,
+                this::onSelected);
         this.addWidget(buttonWidget);
 
         setSelected(initialValue);

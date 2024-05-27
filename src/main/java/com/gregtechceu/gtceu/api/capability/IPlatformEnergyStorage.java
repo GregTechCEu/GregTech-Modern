@@ -5,7 +5,8 @@ public interface IPlatformEnergyStorage {
     /**
      * Return false if calling {@link #insert} will absolutely always return 0, or true otherwise or in doubt.
      *
-     * <p>Note: This function is meant to be used by cables or other devices that can transfer energy to know if
+     * <p>
+     * Note: This function is meant to be used by cables or other devices that can transfer energy to know if
      * they should interact with this storage at all.
      */
     boolean supportsInsertion();
@@ -14,7 +15,7 @@ public interface IPlatformEnergyStorage {
      * Try to insert up to some amount of energy into this storage.
      *
      * @param maxAmount The maximum amount of energy to insert. May not be negative.
-     * @param simulate Is this a test?
+     * @param simulate  Is this a test?
      * @return A nonnegative integer not greater than maxAmount: the amount that was inserted.
      */
     long insert(long maxAmount, boolean simulate);
@@ -22,7 +23,8 @@ public interface IPlatformEnergyStorage {
     /**
      * Return false if calling {@link #extract} will absolutely always return 0, or true otherwise or in doubt.
      *
-     * <p>Note: This function is meant to be used by cables or other devices that can transfer energy to know if
+     * <p>
+     * Note: This function is meant to be used by cables or other devices that can transfer energy to know if
      * they should interact with this storage at all.
      */
     boolean supportsExtraction();
@@ -31,7 +33,7 @@ public interface IPlatformEnergyStorage {
      * Try to extract up to some amount of energy from this storage.
      *
      * @param maxAmount The maximum amount of energy to extract. May not be negative.
-     * @param simulate Is this a test?
+     * @param simulate  Is this a test?
      * @return A nonnegative integer not greater than maxAmount: the amount that was extracted.
      */
     long extract(long maxAmount, boolean simulate);

@@ -1,23 +1,24 @@
 package com.gregtechceu.gtceu.api.recipe.ingredient;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.item.IntCircuitBehaviour;
 import com.gregtechceu.gtceu.core.mixins.StrictNBTIngredientAccessor;
+
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraftforge.common.crafting.IIngredientSerializer;
 import net.minecraftforge.common.crafting.StrictNBTIngredient;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
-
 public class IntCircuitIngredient extends StrictNBTIngredient {
+
     public static final ResourceLocation TYPE = GTCEu.id("circuit");
 
     public static final int CIRCUIT_MIN = 0;
@@ -47,13 +48,14 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     @Override
     public boolean test(@Nullable ItemStack stack) {
         if (stack == null) return false;
-        return stack.is(GTItems.INTEGRATED_CIRCUIT.get()) && IntCircuitBehaviour.getCircuitConfiguration(stack) == this.configuration;
+        return stack.is(GTItems.INTEGRATED_CIRCUIT.get()) &&
+                IntCircuitBehaviour.getCircuitConfiguration(stack) == this.configuration;
     }
 
     @Override
     public ItemStack[] getItems() {
         if (stacks == null) {
-            stacks = new ItemStack[]{((StrictNBTIngredientAccessor) this).getStack()};
+            stacks = new ItemStack[] { ((StrictNBTIngredientAccessor) this).getStack() };
         }
         return stacks;
     }
@@ -81,6 +83,7 @@ public class IntCircuitIngredient extends StrictNBTIngredient {
     }
 
     public static final IIngredientSerializer<IntCircuitIngredient> SERIALIZER = new IIngredientSerializer<>() {
+
         @Override
         public @NotNull IntCircuitIngredient parse(FriendlyByteBuf buffer) {
             int configuration = buffer.readVarInt();

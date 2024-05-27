@@ -3,15 +3,19 @@ package com.gregtechceu.gtceu.common.block;
 import com.gregtechceu.gtceu.api.GTValues;
 import com.gregtechceu.gtceu.api.block.AppearanceBlock;
 import com.gregtechceu.gtceu.api.machine.multiblock.IBatteryData;
+
 import com.lowdragmc.lowdraglib.client.renderer.IBlockRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
-import lombok.Getter;
+
 import net.minecraft.util.StringRepresentable;
 import net.minecraft.world.level.block.state.BlockState;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BatteryBlock extends AppearanceBlock implements IBlockRendererProvider {
+
     private final IRenderer renderer;
 
     @Getter
@@ -30,6 +34,7 @@ public class BatteryBlock extends AppearanceBlock implements IBlockRendererProvi
     }
 
     public enum BatteryPartType implements StringRepresentable, IBatteryData {
+
         EMPTY_TIER_I,
         EV_LAPOTRONIC(GTValues.EV, 25_000_000L * 6),      // Lapotron Crystal * 6
         IV_LAPOTRONIC(GTValues.IV, 250_000_000L * 6),     // Lapotronic Orb * 6

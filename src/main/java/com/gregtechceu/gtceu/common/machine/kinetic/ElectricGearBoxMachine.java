@@ -6,6 +6,7 @@ import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.TieredEnergyMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IFancyUIMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableEnergyContainer;
+
 import com.lowdragmc.lowdraglib.gui.texture.ColorBorderTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ColorRectTexture;
 import com.lowdragmc.lowdraglib.gui.texture.GuiTextureGroup;
@@ -17,10 +18,12 @@ import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.Direction;
 import net.minecraft.util.Mth;
+
+import lombok.Getter;
 
 import javax.annotation.ParametersAreNonnullByDefault;
 
@@ -32,10 +35,13 @@ import javax.annotation.ParametersAreNonnullByDefault;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKineticMachine, IFancyUIMachine {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ElectricGearBoxMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(
+            ElectricGearBoxMachine.class, TieredEnergyMachine.MANAGED_FIELD_HOLDER);
     public final int maxAmps;
     @Getter
-    @Persisted @DescSynced
+    @Persisted
+    @DescSynced
     protected int currentAmps;
 
     public ElectricGearBoxMachine(IMachineBlockEntity holder, int tier, int maxAmps) {
@@ -45,7 +51,7 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     //////////////////////////////////////
-    //*****     Initialization     *****//
+    // ***** Initialization *****//
     //////////////////////////////////////
 
     @Override
@@ -56,7 +62,7 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     @Override
     protected NotifiableEnergyContainer createEnergyContainer(Object... args) {
         var tierVoltage = GTValues.V[tier];
-        var amps = (int)args[0];
+        var amps = (int) args[0];
         NotifiableEnergyContainer container;
         if (isEnergyEmitter()) {
             container = NotifiableEnergyContainer.emitterContainer(this, tierVoltage * 64L, tierVoltage, amps);
@@ -80,7 +86,7 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     public void setCurrentAmps(int currentAmps) {
-        this.currentAmps = Mth.clamp(currentAmps, 0 , maxAmps);
+        this.currentAmps = Mth.clamp(currentAmps, 0, maxAmps);
     }
 
     public float getCurrentRPM() {
@@ -109,9 +115,8 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     }
 
     //////////////////////////////////////
-    //*****     Rotation Logic     *****//
+    // ***** Rotation Logic *****//
     //////////////////////////////////////
-
 
     @Override
     public float getRotationSpeedModifier(Direction direction) {
@@ -126,9 +131,10 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
                 getKineticHolder().stopWorking();
             }
             var maxCharged = getCurrentAmps() * energyContainer.getInputVoltage();
-            var charged = energyContainer.removeEnergy( maxCharged);
+            var charged = energyContainer.removeEnergy(maxCharged);
             if (charged > 0) {
-                getKineticHolder().scheduleWorking(getCurrentRPM() * getKineticDefinition().getTorque() * charged / maxCharged);
+                getKineticHolder()
+                        .scheduleWorking(getCurrentRPM() * getKineticDefinition().getTorque() * charged / maxCharged);
             } else {
                 getKineticHolder().stopWorking();
             }
@@ -138,23 +144,26 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     @Override
     public Widget createUIWidget() {
         var group = new WidgetGroup(0, 0, 164, 48);
-        group.addWidget(new ImageWidget(36, 4, 92, 20, new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL).setSupplier(() -> "Speed: " + getKineticHolder().workingSpeed)))
+        group.addWidget(new ImageWidget(36, 4, 92, 20,
+                new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL)
+                        .setSupplier(() -> "Speed: " + getKineticHolder().workingSpeed)))
                 .addWidget(new ButtonWidget(4, 24, 30, 20,
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("-8rpm")), cd -> {
-                    if (!cd.isRemote) {
-                        int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
-                        setCurrentAmps(currentAmps - amount);
-                    }
-                }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
+                            if (!cd.isRemote) {
+                                int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
+                                setCurrentAmps(currentAmps - amount);
+                            }
+                        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
                 .addWidget(new ButtonWidget(130, 24, 30, 20,
                         new GuiTextureGroup(GuiTextures.VANILLA_BUTTON, new TextTexture("+8rpm")), cd -> {
-                    if (!cd.isRemote) {
-                        int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
-                        setCurrentAmps(currentAmps + amount);
-                    }
-                }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
+                            if (!cd.isRemote) {
+                                int amount = cd.isCtrlClick ? cd.isShiftClick ? 32 : 16 : cd.isShiftClick ? 4 : 1;
+                                setCurrentAmps(currentAmps + amount);
+                            }
+                        }).setHoverTooltips("gui.widget.incrementButton.default_tooltip"))
                 .addWidget(new ImageWidget(36, 24, 92, 20, new GuiTextureGroup(new ColorRectTexture(0xff000000),
-                        new ColorBorderTexture(1, -1), new TextTexture("").setWidth(92).setType(TextTexture.TextType.ROLL).setSupplier(() -> getCurrentRPM() + "rpm"))));
+                        new ColorBorderTexture(1, -1), new TextTexture("").setWidth(92)
+                                .setType(TextTexture.TextType.ROLL).setSupplier(() -> getCurrentRPM() + "rpm"))));
         group.setBackground(GuiTextures.BACKGROUND_INVERSE);
         return group;
     }
@@ -163,5 +172,4 @@ public class ElectricGearBoxMachine extends TieredEnergyMachine implements IKine
     public boolean hasPlayerInventory() {
         return false;
     }
-
 }

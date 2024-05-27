@@ -10,5 +10,6 @@ import net.minecraft.world.level.Level;
  * @implNote IItemLifeCycle
  */
 public interface IItemLifeCycle extends IItemComponent {
+
     void inventoryTick(ItemStack stack, Level level, Entity entity, int slotId, boolean isSelected);
 }

@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.item.tool;
 
-import com.google.common.collect.Multimap;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
 import com.gregtechceu.gtceu.api.item.IGTTool;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.client.renderer.item.ToolItemRenderer;
+
 import com.lowdragmc.lowdraglib.Platform;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
@@ -28,10 +28,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.ICapabilityProvider;
+
+import com.google.common.collect.Multimap;
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
-import java.util.Set;
 
 public class GTHoeItem extends HoeItem implements IGTTool {
 
@@ -44,7 +46,8 @@ public class GTHoeItem extends HoeItem implements IGTTool {
     @Getter
     private final IGTToolDefinition toolStats;
 
-    protected GTHoeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Properties properties) {
+    protected GTHoeItem(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats,
+                        Properties properties) {
         super(tier, 0, 0, properties);
         this.toolType = toolType;
         this.material = material;
@@ -56,7 +59,8 @@ public class GTHoeItem extends HoeItem implements IGTTool {
         definition$init();
     }
 
-    public static GTHoeItem create(GTToolType toolType, MaterialToolTier tier, Material material, IGTToolDefinition toolStats, Item.Properties properties) {
+    public static GTHoeItem create(GTToolType toolType, MaterialToolTier tier, Material material,
+                                   IGTToolDefinition toolStats, Item.Properties properties) {
         return new GTHoeItem(toolType, tier, material, toolStats, properties);
     }
 
@@ -141,7 +145,8 @@ public class GTHoeItem extends HoeItem implements IGTTool {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         definition$appendHoverText(stack, level, tooltipComponents, isAdvanced);
     }
 

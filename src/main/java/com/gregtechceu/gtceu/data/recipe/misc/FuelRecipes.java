@@ -2,7 +2,9 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.world.item.Item;
@@ -20,7 +22,6 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 public class FuelRecipes {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         // TODO this all needs to be cleaned up, but this will make it somewhat work for now
         // do these first because for some reason vanilla fuels are not set up yet at this phase?
         Set<Item> addedItems = new HashSet<>();
@@ -51,7 +52,7 @@ public class FuelRecipes {
                 .duration(600 * 12)
                 .save(provider);
 
-        //semi-fluid fuels, like creosote
+        // semi-fluid fuels, like creosote
         LARGE_BOILER_RECIPES.recipeBuilder("creosote")
                 .inputFluids(Creosote.getFluid(160))
                 .duration(10)
@@ -87,7 +88,7 @@ public class FuelRecipes {
                 .duration(10)
                 .save(provider);
 
-        //diesel generator fuels
+        // diesel generator fuels
         COMBUSTION_GENERATOR_FUELS.recipeBuilder("naphtha")
                 .inputFluids(Naphtha.getFluid(1))
                 .duration(10)
@@ -178,7 +179,7 @@ public class FuelRecipes {
                 .EUt(-V[LV])
                 .save(provider);
 
-        //steam generator fuels
+        // steam generator fuels
         STEAM_TURBINE_FUELS.recipeBuilder("steam")
                 .inputFluids(Steam.getFluid(640))
                 .outputFluids(DistilledWater.getFluid(4))
@@ -186,7 +187,7 @@ public class FuelRecipes {
                 .EUt(-V[LV])
                 .save(provider);
 
-        //gas turbine fuels
+        // gas turbine fuels
         GAS_TURBINE_FUELS.recipeBuilder("natural_gas")
                 .inputFluids(NaturalGas.getFluid(8))
                 .duration(5)
@@ -295,7 +296,7 @@ public class FuelRecipes {
                 .EUt(-V[LV])
                 .save(provider);
 
-        //plasma turbine
+        // plasma turbine
         PLASMA_GENERATOR_FUELS.recipeBuilder("helium")
                 .inputFluids(Helium.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Helium.getFluid(1))
@@ -304,28 +305,28 @@ public class FuelRecipes {
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("oxygen")
-                .inputFluids(Oxygen.getFluid(FluidStorageKeys.PLASMA,1))
+                .inputFluids(Oxygen.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Oxygen.getFluid(1))
                 .duration(48)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("nitrogen")
-                .inputFluids(Nitrogen.getFluid(FluidStorageKeys.PLASMA,1))
+                .inputFluids(Nitrogen.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Nitrogen.getFluid(1))
                 .duration(64)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("iron")
-                .inputFluids(Iron.getFluid(FluidStorageKeys.PLASMA,1))
+                .inputFluids(Iron.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Iron.getFluid(1))
                 .duration(96)
                 .EUt(-V[EV])
                 .save(provider);
 
         PLASMA_GENERATOR_FUELS.recipeBuilder("nickel")
-                .inputFluids(Nickel.getFluid(FluidStorageKeys.PLASMA,1))
+                .inputFluids(Nickel.getFluid(FluidStorageKeys.PLASMA, 1))
                 .outputFluids(Nickel.getFluid(1))
                 .duration(192)
                 .EUt(-V[EV])

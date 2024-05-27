@@ -7,10 +7,7 @@ import com.gregtechceu.gtceu.client.TooltipHelper;
 import com.gregtechceu.gtceu.client.TooltipsHandler;
 import com.gregtechceu.gtceu.client.renderer.BlockHighLightRenderer;
 import com.gregtechceu.gtceu.client.renderer.MultiblockInWorldPreviewRenderer;
-import com.gregtechceu.gtceu.client.renderer.entity.GTExplosiveRenderer;
-import com.gregtechceu.gtceu.common.data.GTEntityTypes;
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
@@ -19,6 +16,8 @@ import net.minecraftforge.event.TickEvent;
 import net.minecraftforge.event.entity.player.ItemTooltipEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 
 import java.util.List;
 
@@ -34,14 +33,17 @@ public class ForgeClientEventListener {
     @SubscribeEvent
     public static void onRenderLevelStageEvent(RenderLevelStageEvent event) {
         if (event.getStage() == RenderLevelStageEvent.Stage.AFTER_BLOCK_ENTITIES) {
-            // to render the preview after block entities, before the translucent. so it can be seen through the transparent blocks.
-            MultiblockInWorldPreviewRenderer.renderInWorldPreview(event.getPoseStack(), event.getCamera(), event.getPartialTick());
+            // to render the preview after block entities, before the translucent. so it can be seen through the
+            // transparent blocks.
+            MultiblockInWorldPreviewRenderer.renderInWorldPreview(event.getPoseStack(), event.getCamera(),
+                    event.getPartialTick());
         }
     }
 
     @SubscribeEvent
     public static void onBlockHighlightEvent(RenderHighlightEvent.Block event) {
-        BlockHighLightRenderer.renderBlockHighLight(event.getPoseStack(), event.getCamera(), event.getTarget(), event.getMultiBufferSource(), event.getPartialTick());
+        BlockHighLightRenderer.renderBlockHighLight(event.getPoseStack(), event.getCamera(), event.getTarget(),
+                event.getMultiBufferSource(), event.getPartialTick());
     }
 
     @SubscribeEvent

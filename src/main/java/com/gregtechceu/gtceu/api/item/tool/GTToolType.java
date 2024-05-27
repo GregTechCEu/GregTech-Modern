@@ -9,10 +9,7 @@ import com.gregtechceu.gtceu.api.sound.ExistingSoundEntry;
 import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.common.data.GTSoundEntries;
 import com.gregtechceu.gtceu.common.item.tool.behavior.*;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.experimental.Accessors;
-import lombok.experimental.Tolerate;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
@@ -24,6 +21,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.enchantment.EnchantmentCategory;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Block;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Accessors;
+import lombok.experimental.Tolerate;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -35,6 +37,7 @@ import java.util.function.UnaryOperator;
  * @implNote GTToolType
  */
 public class GTToolType {
+
     @Getter
     private static final Map<String, GTToolType> types = new HashMap<>();
 
@@ -48,13 +51,17 @@ public class GTToolType {
     public static final GTToolType PICKAXE = GTToolType.builder("pickaxe")
             .toolTag(TagUtil.createItemTag("pickaxes", true))
             .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-            .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)/*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
+            .toolStats(b -> b.blockBreaking().attackDamage(1.0F).attackSpeed(-2.8F)/*
+                                                                                    * .behaviors(TorchPlaceBehavior.
+                                                                                    * INSTANCE)
+                                                                                    */)
             .toolClassNames("pickaxe")
             .build();
     public static final GTToolType SHOVEL = GTToolType.builder("shovel")
             .toolTag(TagUtil.createItemTag("shovels", true))
             .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
-            .toolStats(b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
+            .toolStats(
+                    b -> b.blockBreaking().attackDamage(1.5F).attackSpeed(-3.0F).behaviors(GrassPathBehavior.INSTANCE))
             .constructor(GTShovelItem::create)
             .toolClassNames("shovel")
             .build();
@@ -63,7 +70,8 @@ public class GTToolType {
             .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
             .toolStats(b -> b.blockBreaking()
                     .attackDamage(5.0F).attackSpeed(-3.2F).baseEfficiency(2.0F)
-                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE, ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
+                    .behaviors(DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE, LogStripBehavior.INSTANCE,
+                            ScrapeBehavior.INSTANCE, WaxOffBehavior.INSTANCE))
             .constructor(GTAxeItem::create)
             .toolClassNames("axe")
             .build();
@@ -81,7 +89,7 @@ public class GTToolType {
             .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
                     .efficiencyMultiplier(0.4F).attackDamage(1.5F).attackSpeed(-3.2F)
                     .durabilityMultiplier(3.0F)
-                    /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */)
             .toolClasses(GTToolType.PICKAXE)
             .build();
     public static final GTToolType SPADE = GTToolType.builder("spade")
@@ -138,7 +146,8 @@ public class GTToolType {
             .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
             .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
                     .attackDamage(1.0F).attackSpeed(-2.8F)
-                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class), ToolModeSwitchBehavior.INSTANCE))
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                            ToolModeSwitchBehavior.INSTANCE))
             .sound(GTSoundEntries.WRENCH_TOOL)
             .symbol('w')
             .build();
@@ -190,10 +199,12 @@ public class GTToolType {
             .build();
     public static final GTToolType BUTCHERY_KNIFE = GTToolType.builder("butchery_knife")
             .toolTag(TagUtil.createItemTag("tools/butchery_knives", false))
-            .toolStats(b -> b.attacking().attackDamage(1.5F).attackSpeed(-1.3F).defaultEnchantment(Enchantments.MOB_LOOTING, 3))
+            .toolStats(b -> b.attacking().attackDamage(1.5F).attackSpeed(-1.3F)
+                    .defaultEnchantment(Enchantments.MOB_LOOTING, 3))
             .constructor(GTSwordItem::create)
             .build();
-    //public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"), GTCEu.id("item/tools/hammer"));
+    // public static GTToolType GRAFTER = new GTToolType("grafter", 1, 1, GTCEu.id("item/tools/handle_hammer"),
+    // GTCEu.id("item/tools/hammer"));
     public static final GTToolType PLUNGER = GTToolType.builder("plunger")
             .toolTag(TagUtil.createItemTag("tools/plungers", false))
             .toolStats(b -> b.cannotAttack().attackSpeed(-2.4F).sneakBypassUse()
@@ -206,157 +217,160 @@ public class GTToolType {
             .toolStats(b -> b)
             .build();
     public static final GTToolType DRILL_LV = GTToolType.builder("lv_drill")
-        .idFormat("lv_%s_drill")
-        .toolTag(TagUtil.createItemTag("tools/drills", false))
-        .toolTag(TagUtil.createItemTag("pickaxes", true))
-        .toolTag(TagUtil.createItemTag("shovels", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
-        .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
-                .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(3.0F)
-                .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
-                /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
-        .sound(GTSoundEntries.DRILL_TOOL, true)
-        .electric(GTValues.LV)
-        .toolClassNames("drill")
-        .build();
+            .idFormat("lv_%s_drill")
+            .toolTag(TagUtil.createItemTag("tools/drills", false))
+            .toolTag(TagUtil.createItemTag("pickaxes", true))
+            .toolTag(TagUtil.createItemTag("shovels", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .toolStats(b -> b.blockBreaking().aoe(1, 1, 0)
+                    .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(3.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */)
+            .sound(GTSoundEntries.DRILL_TOOL, true)
+            .electric(GTValues.LV)
+            .toolClassNames("drill")
+            .build();
     public static final GTToolType DRILL_MV = GTToolType.builder("mv_drill")
-        .idFormat("mv_%s_drill")
-        .toolTag(TagUtil.createItemTag("tools/drills", false))
-        .toolTag(TagUtil.createItemTag("pickaxes", true))
-        .toolTag(TagUtil.createItemTag("shovels", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
-        .toolStats(b -> b.blockBreaking().aoe(1, 1, 2)
-                .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(4.0F)
-                .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV)
-                /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
-        .sound(GTSoundEntries.DRILL_TOOL, true)
-        .electric(GTValues.MV)
-        .toolClassNames("drill")
-        .build();
+            .idFormat("mv_%s_drill")
+            .toolTag(TagUtil.createItemTag("tools/drills", false))
+            .toolTag(TagUtil.createItemTag("pickaxes", true))
+            .toolTag(TagUtil.createItemTag("shovels", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .toolStats(b -> b.blockBreaking().aoe(1, 1, 2)
+                    .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(4.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_MV)
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */)
+            .sound(GTSoundEntries.DRILL_TOOL, true)
+            .electric(GTValues.MV)
+            .toolClassNames("drill")
+            .build();
     public static final GTToolType DRILL_HV = GTToolType.builder("hv_drill")
-        .idFormat("hv_%s_drill")
-        .toolTag(TagUtil.createItemTag("tools/drills", false))
-        .toolTag(TagUtil.createItemTag("pickaxes", true))
-        .toolTag(TagUtil.createItemTag("shovels", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
-        .toolStats(b -> b.blockBreaking().aoe(2, 2, 4)
-                .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(5.0F)
-                .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV)
-                /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
-        .sound(GTSoundEntries.DRILL_TOOL, true)
-        .electric(GTValues.HV)
-        .toolClassNames("drill")
-        .build();
+            .idFormat("hv_%s_drill")
+            .toolTag(TagUtil.createItemTag("tools/drills", false))
+            .toolTag(TagUtil.createItemTag("pickaxes", true))
+            .toolTag(TagUtil.createItemTag("shovels", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .toolStats(b -> b.blockBreaking().aoe(2, 2, 4)
+                    .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(5.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV)
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */)
+            .sound(GTSoundEntries.DRILL_TOOL, true)
+            .electric(GTValues.HV)
+            .toolClassNames("drill")
+            .build();
     public static final GTToolType DRILL_EV = GTToolType.builder("ev_drill")
-        .idFormat("ev_%s_drill")
-        .toolTag(TagUtil.createItemTag("tools/drills", false))
-        .toolTag(TagUtil.createItemTag("pickaxes", true))
-        .toolTag(TagUtil.createItemTag("shovels", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
-        .toolStats(b -> b.blockBreaking().aoe(3, 3, 6)
-                .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(6.0F)
-                .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_EV)
-                /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
-        .sound(GTSoundEntries.DRILL_TOOL, true)
-        .electric(GTValues.EV)
-        .toolClassNames("drill")
-        .build();
+            .idFormat("ev_%s_drill")
+            .toolTag(TagUtil.createItemTag("tools/drills", false))
+            .toolTag(TagUtil.createItemTag("pickaxes", true))
+            .toolTag(TagUtil.createItemTag("shovels", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .toolStats(b -> b.blockBreaking().aoe(3, 3, 6)
+                    .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(6.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_EV)
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */)
+            .sound(GTSoundEntries.DRILL_TOOL, true)
+            .electric(GTValues.EV)
+            .toolClassNames("drill")
+            .build();
     public static final GTToolType DRILL_IV = GTToolType.builder("iv_drill")
-        .idFormat("iv_%s_drill")
-        .toolTag(TagUtil.createItemTag("tools/drills", false))
-        .toolTag(TagUtil.createItemTag("pickaxes", true))
-        .toolTag(TagUtil.createItemTag("shovels", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
-        .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
-        .toolStats(b -> b.blockBreaking().aoe(4, 4, 8)
-                .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(7.0F)
-                .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV)
-                /*.behaviors(TorchPlaceBehavior.INSTANCE)*/)
-        .sound(GTSoundEntries.DRILL_TOOL, true)
-        .electric(GTValues.IV)
-        .toolClassNames("drill")
-        .build();
+            .idFormat("iv_%s_drill")
+            .toolTag(TagUtil.createItemTag("tools/drills", false))
+            .toolTag(TagUtil.createItemTag("pickaxes", true))
+            .toolTag(TagUtil.createItemTag("shovels", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/pickaxe", true))
+            .harvestTag(TagUtil.createBlockTag("mineable/shovel", true))
+            .toolStats(b -> b.blockBreaking().aoe(4, 4, 8)
+                    .attackDamage(1.0F).attackSpeed(-3.2F).durabilityMultiplier(7.0F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV)
+            /* .behaviors(TorchPlaceBehavior.INSTANCE) */)
+            .sound(GTSoundEntries.DRILL_TOOL, true)
+            .electric(GTValues.IV)
+            .toolClassNames("drill")
+            .build();
     public static final GTToolType CHAINSAW_LV = GTToolType.builder("lv_chainsaw")
-        .idFormat("lv_%s_chainsaw")
-        .toolTag(TagUtil.createItemTag("axes", true))
-        .toolTag(TagUtil.createItemTag("tools/chainsaws", false))
-        .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
-        .toolStats(b -> b.blockBreaking()
-            .efficiencyMultiplier(2.0F)
-            .attackDamage(5.0F).attackSpeed(-3.2F)
-            .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
-            .behaviors(HarvestIceBehavior.INSTANCE, DisableShieldBehavior.INSTANCE, TreeFellingBehavior.INSTANCE))
-        .sound(GTSoundEntries.CHAINSAW_TOOL, true)
-        .electric(GTValues.LV)
-        .toolClasses(GTToolType.AXE)
-        .build();
+            .idFormat("lv_%s_chainsaw")
+            .toolTag(TagUtil.createItemTag("axes", true))
+            .toolTag(TagUtil.createItemTag("tools/chainsaws", false))
+            .harvestTag(TagUtil.createBlockTag("mineable/axe", true))
+            .toolStats(b -> b.blockBreaking()
+                    .efficiencyMultiplier(2.0F)
+                    .attackDamage(5.0F).attackSpeed(-3.2F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV)
+                    .behaviors(HarvestIceBehavior.INSTANCE, DisableShieldBehavior.INSTANCE,
+                            TreeFellingBehavior.INSTANCE))
+            .sound(GTSoundEntries.CHAINSAW_TOOL, true)
+            .electric(GTValues.LV)
+            .toolClasses(GTToolType.AXE)
+            .build();
     public static final GTToolType WRENCH_LV = GTToolType.builder("lv_wrench")
-        .idFormat("lv_%s_wrench")
-        .toolTag(TagUtil.createItemTag("tools/wrenches", false))
-        .toolTag(TagUtil.createItemTag("tools/wrench", false))
-        .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
-        .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
-            .efficiencyMultiplier(2.0F)
-            .attackDamage(1.0F).attackSpeed(-2.8F)
-            .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class), ToolModeSwitchBehavior.INSTANCE)
-            .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
-        .sound(GTSoundEntries.WRENCH_TOOL, true)
-        .electric(GTValues.LV)
-        .toolClasses(GTToolType.WRENCH)
-        .build();
+            .idFormat("lv_%s_wrench")
+            .toolTag(TagUtil.createItemTag("tools/wrenches", false))
+            .toolTag(TagUtil.createItemTag("tools/wrench", false))
+            .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
+            .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
+                    .efficiencyMultiplier(2.0F)
+                    .attackDamage(1.0F).attackSpeed(-2.8F)
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                            ToolModeSwitchBehavior.INSTANCE)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
+            .sound(GTSoundEntries.WRENCH_TOOL, true)
+            .electric(GTValues.LV)
+            .toolClasses(GTToolType.WRENCH)
+            .build();
     public static final GTToolType WRENCH_HV = GTToolType.builder("hv_wrench")
-        .idFormat("hv_%s_wrench")
-        .toolTag(TagUtil.createItemTag("tools/wrenches", false))
-        .toolTag(TagUtil.createItemTag("tools/wrench", false))
-        .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
-        .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
-            .efficiencyMultiplier(3.0F)
-            .attackDamage(1.0F).attackSpeed(-2.8F)
-            .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class), ToolModeSwitchBehavior.INSTANCE)
-            .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
-        .sound(GTSoundEntries.WRENCH_TOOL, true)
-        .electric(GTValues.HV)
-        .toolClasses(GTToolType.WRENCH)
-        .build();
+            .idFormat("hv_%s_wrench")
+            .toolTag(TagUtil.createItemTag("tools/wrenches", false))
+            .toolTag(TagUtil.createItemTag("tools/wrench", false))
+            .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
+            .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
+                    .efficiencyMultiplier(3.0F)
+                    .attackDamage(1.0F).attackSpeed(-2.8F)
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                            ToolModeSwitchBehavior.INSTANCE)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_HV))
+            .sound(GTSoundEntries.WRENCH_TOOL, true)
+            .electric(GTValues.HV)
+            .toolClasses(GTToolType.WRENCH)
+            .build();
     public static final GTToolType WRENCH_IV = GTToolType.builder("iv_wrench")
-        .idFormat("iv_%s_wrench")
-        .toolTag(TagUtil.createItemTag("tools/wrenches", false))
-        .toolTag(TagUtil.createItemTag("tools/wrench", false))
-        .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
-        .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
-            .efficiencyMultiplier(4.0F)
-            .attackDamage(1.0F).attackSpeed(-2.8F)
-            .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class), ToolModeSwitchBehavior.INSTANCE)
-            .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
-        .sound(GTSoundEntries.WRENCH_TOOL, true)
-        .electric(GTValues.IV)
-        .toolClasses(GTToolType.WRENCH)
-        .build();
+            .idFormat("iv_%s_wrench")
+            .toolTag(TagUtil.createItemTag("tools/wrenches", false))
+            .toolTag(TagUtil.createItemTag("tools/wrench", false))
+            .harvestTag(TagUtil.createBlockTag("mineable/wrench", false))
+            .toolStats(b -> b.blockBreaking().crafting().sneakBypassUse()
+                    .efficiencyMultiplier(4.0F)
+                    .attackDamage(1.0F).attackSpeed(-2.8F)
+                    .behaviors(BlockRotatingBehavior.INSTANCE, new EntityDamageBehavior(3.0F, IronGolem.class),
+                            ToolModeSwitchBehavior.INSTANCE)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_IV))
+            .sound(GTSoundEntries.WRENCH_TOOL, true)
+            .electric(GTValues.IV)
+            .toolClasses(GTToolType.WRENCH)
+            .build();
     public static final GTToolType BUZZSAW = GTToolType.builder("buzzsaw")
-        .toolTag(TagUtil.createItemTag("tools/saws", false))
-        .toolTag(TagUtil.createItemTag("tools/buzzsaws", false))
-        .toolStats(b -> b.crafting().attackDamage(1.5F).attackSpeed(-3.2F)
-            .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
-        .sound(GTSoundEntries.CHAINSAW_TOOL, true)
-        .electric(GTValues.IV)
-        .toolClasses(GTToolType.SAW)
-        .build();
+            .toolTag(TagUtil.createItemTag("tools/saws", false))
+            .toolTag(TagUtil.createItemTag("tools/buzzsaws", false))
+            .toolStats(b -> b.crafting().attackDamage(1.5F).attackSpeed(-3.2F)
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
+            .sound(GTSoundEntries.CHAINSAW_TOOL, true)
+            .electric(GTValues.IV)
+            .toolClasses(GTToolType.SAW)
+            .build();
     public static final GTToolType SCREWDRIVER_LV = GTToolType.builder("lv_screwdriver")
-        .idFormat("lv_%s_screwdriver")
-        .toolTag(TagUtil.createItemTag("tools/screwdrivers", false))
-        .toolStats(b -> b.crafting().sneakBypassUse()
-            .attackDamage(-1.0F).attackSpeed(3.0F)
-            .behaviors(new EntityDamageBehavior(3.0F, Spider.class))
-            .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
-        .sound(GTSoundEntries.CHAINSAW_TOOL)
-        .electric(GTValues.IV)
-        .toolClasses(GTToolType.SCREWDRIVER)
-        .build();
-
+            .idFormat("lv_%s_screwdriver")
+            .toolTag(TagUtil.createItemTag("tools/screwdrivers", false))
+            .toolStats(b -> b.crafting().sneakBypassUse()
+                    .attackDamage(-1.0F).attackSpeed(3.0F)
+                    .behaviors(new EntityDamageBehavior(3.0F, Spider.class))
+                    .brokenStack(ToolHelper.SUPPLY_POWER_UNIT_LV))
+            .sound(GTSoundEntries.CHAINSAW_TOOL)
+            .electric(GTValues.IV)
+            .toolClasses(GTToolType.SCREWDRIVER)
+            .build();
 
     public final String name;
     public final String idFormat;
@@ -375,7 +389,10 @@ public class GTToolType {
     public final ToolConstructor constructor;
     public final int electricTier;
 
-    public GTToolType(String name, String idFormat, Character symbol, Set<GTToolType> toolClasses, IGTToolDefinition toolDefinition, ToolConstructor constructor, List<TagKey<Block>> harvestTags, List<TagKey<Item>> itemTags, ResourceLocation modelLocation, Set<String> toolClassNames, @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier) {
+    public GTToolType(String name, String idFormat, Character symbol, Set<GTToolType> toolClasses,
+                      IGTToolDefinition toolDefinition, ToolConstructor constructor, List<TagKey<Block>> harvestTags,
+                      List<TagKey<Item>> itemTags, ResourceLocation modelLocation, Set<String> toolClassNames,
+                      @Nullable SoundEntry soundEntry, boolean playSoundOnBlockDestroy, int electricTier) {
         this.name = name;
         this.idFormat = idFormat;
         this.symbol = symbol;
@@ -404,7 +421,9 @@ public class GTToolType {
 
     @FunctionalInterface
     public interface ToolConstructor {
-        IGTTool apply(GTToolType type, MaterialToolTier tier, Material material, IGTToolDefinition definition, Item.Properties properties);
+
+        IGTTool apply(GTToolType type, MaterialToolTier tier, Material material, IGTToolDefinition definition,
+                      Item.Properties properties);
     }
 
     public static Builder builder(String name) {
@@ -413,6 +432,7 @@ public class GTToolType {
 
     @Accessors(fluent = true, chain = true)
     public static class Builder {
+
         private final String name;
         @Setter
         private String idFormat;
@@ -500,8 +520,7 @@ public class GTToolType {
                     toolClassNames,
                     sound,
                     playSoundOnBlockDestroy,
-                    tier
-            );
+                    tier);
         }
 
         public GTToolType build() {

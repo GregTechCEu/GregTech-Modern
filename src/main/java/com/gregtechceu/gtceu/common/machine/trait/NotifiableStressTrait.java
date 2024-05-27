@@ -9,10 +9,13 @@ import com.gregtechceu.gtceu.api.machine.trait.ICapabilityTrait;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableRecipeHandlerTrait;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
+
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
+
+import net.minecraft.util.Mth;
+
 import lombok.Getter;
 import lombok.Setter;
-import net.minecraft.util.Mth;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collections;
@@ -25,7 +28,8 @@ import java.util.List;
  */
 public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> implements ICapabilityTrait {
 
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableStressTrait.class, NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(NotifiableStressTrait.class,
+            NotifiableRecipeHandlerTrait.MANAGED_FIELD_HOLDER);
 
     @Getter
     @Setter
@@ -58,7 +62,8 @@ public class NotifiableStressTrait extends NotifiableRecipeHandlerTrait<Float> i
     }
 
     @Override
-    public List<Float> handleRecipeInner(IO io, GTRecipe recipe, List<Float> left, @Nullable String slotName, boolean simulate) {
+    public List<Float> handleRecipeInner(IO io, GTRecipe recipe, List<Float> left, @Nullable String slotName,
+                                         boolean simulate) {
         if (machine instanceof IKineticMachine kineticMachine) {
             float sum = left.stream().reduce(0f, Float::sum);
             var kineticDefinition = kineticMachine.getKineticDefinition();

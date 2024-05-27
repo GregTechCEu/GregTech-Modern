@@ -1,17 +1,20 @@
 package com.gregtechceu.gtceu.api.gui.widget.directional;
 
 import com.gregtechceu.gtceu.api.gui.fancy.FancyMachineUIWidget;
+
 import com.lowdragmc.lowdraglib.gui.util.ClickData;
 import com.lowdragmc.lowdraglib.gui.widget.SceneWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
 import com.lowdragmc.lowdraglib.utils.BlockPosFace;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
 public interface IDirectionalConfigHandler {
+
     /**
      * Returns the buttons to display inside the side selector
      */

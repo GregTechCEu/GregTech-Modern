@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.pattern.error;
 
 import com.gregtechceu.gtceu.api.pattern.predicates.SimplePredicate;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 
@@ -8,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class SinglePredicateError extends PatternError {
+
     public final SimplePredicate predicate;
     public final int type;
 

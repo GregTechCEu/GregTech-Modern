@@ -2,7 +2,6 @@ package com.gregtechceu.gtceu.common.machine.trait.miner;
 
 import com.gregtechceu.gtceu.api.machine.feature.IExhaustVentMachine;
 import com.gregtechceu.gtceu.api.machine.feature.IRecipeLogicMachine;
-import com.lowdragmc.lowdraglib.client.renderer.impl.IModelRenderer;
 
 public class SteamMinerLogic extends MinerLogic {
 

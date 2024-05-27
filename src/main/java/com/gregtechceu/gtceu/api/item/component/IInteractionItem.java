@@ -16,6 +16,7 @@ import net.minecraft.world.level.Level;
  * @implNote IInteractionItem
  */
 public interface IInteractionItem extends IItemComponent {
+
     default InteractionResult useOn(UseOnContext context) {
         return InteractionResult.PASS;
     }
@@ -42,7 +43,8 @@ public interface IInteractionItem extends IItemComponent {
         return InteractionResult.PASS;
     }
 
-    default InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget, InteractionHand usedHand) {
+    default InteractionResult interactLivingEntity(ItemStack stack, Player player, LivingEntity interactionTarget,
+                                                   InteractionHand usedHand) {
         return InteractionResult.PASS;
     }
 }

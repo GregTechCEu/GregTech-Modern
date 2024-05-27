@@ -1,10 +1,10 @@
 package com.gregtechceu.gtceu.common.pipelike.cable;
 
-
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.WireProperties;
 import com.gregtechceu.gtceu.api.pipenet.LevelPipeNet;
 import com.gregtechceu.gtceu.api.pipenet.Node;
 import com.gregtechceu.gtceu.api.pipenet.PipeNet;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.level.Level;
@@ -12,6 +12,7 @@ import net.minecraft.world.level.Level;
 import java.util.*;
 
 public class EnergyNet extends PipeNet<WireProperties> {
+
     private final Map<BlockPos, List<EnergyRoutePath>> NET_DATA = new HashMap<>();
 
     private long lastEnergyFluxPerSec;
@@ -47,7 +48,8 @@ public class EnergyNet extends PipeNet<WireProperties> {
     }
 
     @Override
-    protected void transferNodeData(Map<BlockPos, Node<WireProperties>> transferredNodes, PipeNet<WireProperties> parentNet) {
+    protected void transferNodeData(Map<BlockPos, Node<WireProperties>> transferredNodes,
+                                    PipeNet<WireProperties> parentNet) {
         super.transferNodeData(transferredNodes, parentNet);
         NET_DATA.clear();
         ((EnergyNet) parentNet).NET_DATA.clear();
@@ -68,9 +70,8 @@ public class EnergyNet extends PipeNet<WireProperties> {
         return new WireProperties(voltage, amperage, lossPerBlock);
     }
 
-
     //////////////////////////////////////
-    //*******     Pipe Status    *******//
+    // ******* Pipe Status *******//
     //////////////////////////////////////
 
     public long getEnergyFluxPerSec() {

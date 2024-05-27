@@ -10,11 +10,12 @@ import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.common.pipelike.optical.*;
 import com.gregtechceu.gtceu.utils.GTUtil;
 import com.gregtechceu.gtceu.utils.TaskHandler;
+
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import lombok.Getter;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
@@ -23,6 +24,8 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.common.capabilities.Capability;
 import net.minecraftforge.common.util.LazyOptional;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -31,7 +34,9 @@ import java.util.Collection;
 import java.util.EnumMap;
 
 public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, OpticalPipeProperties> {
-    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(OpticalPipeBlockEntity.class, PipeBlockEntity.MANAGED_FIELD_HOLDER);
+
+    public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(OpticalPipeBlockEntity.class,
+            PipeBlockEntity.MANAGED_FIELD_HOLDER);
 
     private final EnumMap<Direction, OpticalNetHandler> handlers = new EnumMap<>(Direction.class);
     // the OpticalNetHandler can only be created on the server, so we have an empty placeholder for the client
@@ -41,7 +46,9 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     private OpticalNetHandler defaultHandler;
 
     @Getter
-    @Persisted @DescSynced @RequireRerender
+    @Persisted
+    @DescSynced
+    @RequireRerender
     private boolean isActive;
 
     public OpticalPipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
@@ -66,24 +73,28 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
     public <T> LazyOptional<T> getCapability(Capability<T> capability, @Nullable Direction facing) {
         if (capability == GTCapability.CAPABILITY_DATA_ACCESS) {
             if (level.isClientSide) {
-                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability, LazyOptional.of(() -> clientDataHandler));
+                return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability,
+                        LazyOptional.of(() -> clientDataHandler));
             }
 
             if (handlers.isEmpty()) initHandlers();
 
             checkNetwork();
-            return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
+            return GTCapability.CAPABILITY_DATA_ACCESS.orEmpty(capability,
+                    LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
         }
 
         if (capability == GTCapability.CAPABILITY_COMPUTATION_PROVIDER) {
             if (level.isClientSide) {
-                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> clientComputationHandler));
+                return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability,
+                        LazyOptional.of(() -> clientComputationHandler));
             }
 
             if (handlers.isEmpty()) initHandlers();
 
             checkNetwork();
-            return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability, LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
+            return GTCapability.CAPABILITY_COMPUTATION_PROVIDER.orEmpty(capability,
+                    LazyOptional.of(() -> handlers.getOrDefault(facing, defaultHandler)));
         }
         return super.getCapability(capability, facing);
     }
@@ -106,7 +117,8 @@ public class OpticalPipeBlockEntity extends PipeBlockEntity<OpticalPipeType, Opt
         OpticalPipeNet currentPipeNet = this.currentPipeNet.get();
         if (currentPipeNet != null && currentPipeNet.isValid() && currentPipeNet.containsNode(getPipePos()))
             return currentPipeNet; // if current net is valid and does contain position, return it
-        LevelOpticalPipeNet worldNet = (LevelOpticalPipeNet) getPipeBlock().getWorldPipeNet((ServerLevel) getPipeLevel());
+        LevelOpticalPipeNet worldNet = (LevelOpticalPipeNet) getPipeBlock()
+                .getWorldPipeNet((ServerLevel) getPipeLevel());
         currentPipeNet = worldNet.getNetFromPos(getPipePos());
         if (currentPipeNet != null) {
             this.currentPipeNet = new WeakReference<>(currentPipeNet);

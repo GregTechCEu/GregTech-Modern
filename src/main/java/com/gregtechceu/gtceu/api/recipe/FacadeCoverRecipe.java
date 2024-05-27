@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.common.data.GTItems;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
 import com.gregtechceu.gtceu.common.item.FacadeItemBehaviour;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
@@ -21,6 +21,8 @@ import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 
+import com.google.gson.JsonObject;
+
 import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
@@ -34,6 +36,7 @@ public class FacadeCoverRecipe implements CraftingRecipe {
 
     public static final FacadeCoverRecipe INSTANCE = new FacadeCoverRecipe();
     public static final RecipeSerializer<FacadeCoverRecipe> SERIALIZER = new RecipeSerializer<>() {
+
         @Override
         public FacadeCoverRecipe fromJson(ResourceLocation recipeId, JsonObject serializedRecipe) {
             return INSTANCE;
@@ -45,10 +48,8 @@ public class FacadeCoverRecipe implements CraftingRecipe {
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf buffer, FacadeCoverRecipe recipe) {
-        }
+        public void toNetwork(FriendlyByteBuf buffer, FacadeCoverRecipe recipe) {}
     };
-
 
     public static ResourceLocation ID = GTCEu.id("crafting/facade_cover");
 

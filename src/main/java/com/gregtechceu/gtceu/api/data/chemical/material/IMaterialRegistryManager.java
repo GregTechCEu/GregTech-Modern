@@ -1,9 +1,11 @@
 package com.gregtechceu.gtceu.api.data.chemical.material;
 
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
+
+import net.minecraft.resources.ResourceLocation;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.DataResult;
-import net.minecraft.resources.ResourceLocation;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collection;
@@ -91,7 +93,13 @@ public interface IMaterialRegistryManager {
     }
 
     default Codec<Material> codec() {
-        return ResourceLocation.CODEC.flatXmap(id -> Optional.ofNullable(this.getRegistry(id.getNamespace()).get(id.getPath())).map(DataResult::success).orElseGet(() -> DataResult.error(() -> "Unknown registry key in material registry: " + id)), obj -> DataResult.success(obj.getResourceLocation()));
+        return ResourceLocation.CODEC
+                .flatXmap(
+                        id -> Optional.ofNullable(this.getRegistry(id.getNamespace()).get(id.getPath()))
+                                .map(DataResult::success)
+                                .orElseGet(() -> DataResult
+                                        .error(() -> "Unknown registry key in material registry: " + id)),
+                        obj -> DataResult.success(obj.getResourceLocation()));
     }
 
     enum Phase {

@@ -5,7 +5,9 @@ import com.gregtechceu.gtceu.api.item.tool.behavior.IToolBehavior;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.common.item.tool.rotation.CustomBlockRotations;
 import com.gregtechceu.gtceu.common.item.tool.rotation.ICustomRotationBehavior;
+
 import com.lowdragmc.lowdraglib.utils.RayTraceHelper;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.InteractionResult;
@@ -24,6 +26,7 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -62,10 +65,11 @@ public class BlockRotatingBehavior implements IToolBehavior {
                     ToolHelper.onActionDone(player, level, context.getHand());
                     return InteractionResult.SUCCESS;
                 }
-            } else if (state.rotate(player.getDirection().getClockWise() == context.getClickedFace() ? Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
-                ToolHelper.onActionDone(player, level, context.getHand());
-                return InteractionResult.SUCCESS;
-            }
+            } else if (state.rotate(player.getDirection().getClockWise() == context.getClickedFace() ?
+                    Rotation.CLOCKWISE_90 : Rotation.COUNTERCLOCKWISE_90) != state) {
+                        ToolHelper.onActionDone(player, level, context.getHand());
+                        return InteractionResult.SUCCESS;
+                    }
         }
         return InteractionResult.PASS;
     }
@@ -83,7 +87,8 @@ public class BlockRotatingBehavior implements IToolBehavior {
         VoxelShape baseShape = state.getShape(level, pos);
         BlockHitResult baseTraceResult = baseShape.clip(startVec, endVec, pos);
         if (baseTraceResult != null) {
-            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player)).clip(startVec, endVec, pos);
+            BlockHitResult raytraceTraceShape = state.getVisualShape(level, pos, CollisionContext.of(player))
+                    .clip(startVec, endVec, pos);
             if (raytraceTraceShape != null) {
                 return raytraceTraceShape;
             }

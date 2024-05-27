@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.api.misc;
 
 import com.gregtechceu.gtceu.api.capability.IEnergyContainer;
-import lombok.Getter;
+
 import net.minecraft.core.Direction;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
@@ -205,13 +207,13 @@ public class EnergyContainerList implements IEnergyContainer {
     @Override
     public String toString() {
         return "EnergyContainerList{" +
-            "energyContainerList=" + energyContainerList +
-            ", energyStored=" + getEnergyStored() +
-            ", energyCapacity=" + getEnergyCapacity() +
-            ", inputVoltage=" + inputVoltage +
-            ", inputAmperage=" + inputAmperage +
-            ", outputVoltage=" + outputVoltage +
-            ", outputAmperage=" + outputAmperage +
-            '}';
+                "energyContainerList=" + energyContainerList +
+                ", energyStored=" + getEnergyStored() +
+                ", energyCapacity=" + getEnergyCapacity() +
+                ", inputVoltage=" + inputVoltage +
+                ", inputAmperage=" + inputAmperage +
+                ", outputVoltage=" + outputVoltage +
+                ", outputAmperage=" + outputAmperage +
+                '}';
     }
 }

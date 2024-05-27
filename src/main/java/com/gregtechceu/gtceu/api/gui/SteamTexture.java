@@ -8,6 +8,7 @@ import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
  * @implNote SteamTexture
  */
 public class SteamTexture {
+
     private static final String BRONZE = "bronze";
     private static final String STEEL = "steel";
 
@@ -22,11 +23,10 @@ public class SteamTexture {
     public static SteamTexture fullImage(String path) {
         return new SteamTexture(
                 new ResourceTexture(String.format(path, BRONZE)),
-                new ResourceTexture(String.format(path, STEEL))
-        );
+                new ResourceTexture(String.format(path, STEEL)));
     }
 
     public ResourceTexture get(boolean isHighPressure) {
-        return isHighPressure ?  steelTexture : bronzeTexture;
+        return isHighPressure ? steelTexture : bronzeTexture;
     }
 }

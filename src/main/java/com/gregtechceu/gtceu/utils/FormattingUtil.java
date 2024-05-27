@@ -1,14 +1,13 @@
 package com.gregtechceu.gtceu.utils;
 
-import com.google.common.base.CaseFormat;
-import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.ComponentContents;
 import net.minecraft.network.chat.MutableComponent;
+
+import com.google.common.base.CaseFormat;
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 
-import org.jetbrains.annotations.NotNull;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Arrays;
@@ -24,6 +23,7 @@ import static net.minecraft.ChatFormatting.YELLOW;
  */
 @SuppressWarnings("UnnecessaryUnicodeEscape")
 public class FormattingUtil {
+
     private static final NumberFormat NUMBER_FORMAT = NumberFormat.getInstance(Locale.ROOT);
     private static final DecimalFormat TWO_PLACES_FORMAT = new DecimalFormat("#.##");
 
@@ -49,10 +49,10 @@ public class FormattingUtil {
             int relativeIndex = charArray[i] - NUMBER_BASE;
             if (relativeIndex >= 0 && relativeIndex <= 9) {
                 if (isUp) {
-                    if (relativeIndex == 1 ) {
+                    if (relativeIndex == 1) {
                         charArray[i] = SMALL_UP_NUMBER_ONE;
                         continue;
-                    } else if (relativeIndex == 2 ) {
+                    } else if (relativeIndex == 2) {
                         charArray[i] = SMALL_UP_NUMBER_TWO;
                         continue;
                     } else if (relativeIndex == 3) {
@@ -68,16 +68,18 @@ public class FormattingUtil {
     }
 
     /**
-     * Does almost the same thing as .to(LOWER_UNDERSCORE, string), but it also inserts underscores between words and numbers.
+     * Does almost the same thing as .to(LOWER_UNDERSCORE, string), but it also inserts underscores between words and
+     * numbers.
      *
      * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries: "maragingSteel300" -> "maraging_steel_300"
+     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
+     *         "maragingSteel300" -> "maraging_steel_300"
      */
     public static String toLowerCaseUnderscore(String string) {
         StringBuilder result = new StringBuilder();
         for (int i = 0; i < string.length(); i++) {
-            if (i != 0 && (Character.isUpperCase(string.charAt(i)) || (
-                    Character.isDigit(string.charAt(i - 1)) ^ Character.isDigit(string.charAt(i)))))
+            if (i != 0 && (Character.isUpperCase(string.charAt(i)) ||
+                    (Character.isDigit(string.charAt(i - 1)) ^ Character.isDigit(string.charAt(i)))))
                 result.append("_");
             result.append(Character.toLowerCase(string.charAt(i)));
         }
@@ -85,10 +87,12 @@ public class FormattingUtil {
     }
 
     /**
-     * Does almost the same thing as .to(LOWER_UNDERSCORE, string), but it also inserts underscores between words and numbers.
+     * Does almost the same thing as .to(LOWER_UNDERSCORE, string), but it also inserts underscores between words and
+     * numbers.
      *
      * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries: "maragingSteel300" -> "maraging_steel_300"
+     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
+     *         "maragingSteel300" -> "maraging_steel_300"
      */
     public static String toLowerCaseUnder(String string) {
         return CaseFormat.UPPER_CAMEL.to(CaseFormat.LOWER_UNDERSCORE, string);
@@ -124,10 +128,12 @@ public class FormattingUtil {
     }
 
     /**
-     * Does almost the same thing as LOWER_UNDERSCORE.to(UPPER_CAMEL, string), but it also removes underscores before numbers.
+     * Does almost the same thing as LOWER_UNDERSCORE.to(UPPER_CAMEL, string), but it also removes underscores before
+     * numbers.
      *
      * @param string Any string with ASCII characters.
-     * @return A string that is all lowercase, with underscores inserted before word/number boundaries: "maraging_steel_300" -> "maragingSteel300"
+     * @return A string that is all lowercase, with underscores inserted before word/number boundaries:
+     *         "maraging_steel_300" -> "maragingSteel300"
      */
     public static String lowerUnderscoreToUpperCamel(String string) {
         StringBuilder result = new StringBuilder();

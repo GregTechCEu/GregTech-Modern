@@ -5,5 +5,4 @@ import dev.latvian.mods.kubejs.event.StartupEventJS;
 /**
  * Modify any material here.
  */
-public class MaterialModificationEventJS extends StartupEventJS {
-}
+public class MaterialModificationEventJS extends StartupEventJS {}

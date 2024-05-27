@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.integration.emi;
 
-import appeng.menu.me.items.PatternEncodingTermMenu;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.recipe.GTRecipeType;
@@ -13,14 +12,18 @@ import com.gregtechceu.gtceu.integration.emi.orevein.GTOreVeinEmiCategory;
 import com.gregtechceu.gtceu.integration.emi.recipe.Ae2PatternTerminalHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTEmiRecipeHandler;
 import com.gregtechceu.gtceu.integration.emi.recipe.GTRecipeTypeEmiCategory;
+
 import com.lowdragmc.lowdraglib.gui.modular.ModularUIContainer;
+
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.crafting.RecipeType;
+
+import appeng.menu.me.items.PatternEncodingTermMenu;
 import dev.emi.emi.api.EmiEntrypoint;
 import dev.emi.emi.api.EmiPlugin;
 import dev.emi.emi.api.EmiRegistry;
 import dev.emi.emi.api.recipe.VanillaEmiRecipeCategories;
 import dev.emi.emi.api.stack.EmiStack;
-import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.world.item.crafting.RecipeType;
 
 /**
  * @author KilaBash
@@ -45,14 +48,13 @@ public class GTEMIPlugin implements EmiPlugin {
             }
         }
         registry.addRecipeHandler(ModularUIContainer.MENUTYPE, new GTEmiRecipeHandler());
-        if(GTCEu.isAE2Loaded()){
+        if (GTCEu.isAE2Loaded()) {
             registry.addRecipeHandler(PatternEncodingTermMenu.TYPE, new Ae2PatternTerminalHandler<>());
         }
         // recipes
         try {
             MultiblockInfoEmiCategory.registerDisplays(registry);
-        } catch (NullPointerException ignored){
-        }
+        } catch (NullPointerException ignored) {}
         GTRecipeTypeEmiCategory.registerDisplays(registry);
         if (!ConfigHolder.INSTANCE.compat.hideOreProcessingDiagrams)
             GTOreProcessingEmiCategory.registerDisplays(registry);
@@ -70,8 +72,10 @@ public class GTEMIPlugin implements EmiPlugin {
                 registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(definition.asStack()));
             }
         }
-        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_FURNACE.left().asStack()));
-        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
+        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING,
+                EmiStack.of(GTMachines.STEAM_FURNACE.left().asStack()));
+        registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING,
+                EmiStack.of(GTMachines.STEAM_FURNACE.right().asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.STEAM_OVEN.asStack()));
         registry.addWorkstation(VanillaEmiRecipeCategories.SMELTING, EmiStack.of(GTMachines.MULTI_SMELTER.asStack()));
     }

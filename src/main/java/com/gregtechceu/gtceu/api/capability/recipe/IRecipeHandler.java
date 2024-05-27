@@ -1,8 +1,8 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Comparator;
@@ -15,6 +15,7 @@ import java.util.Set;
  * @implNote IRecipeHandler
  */
 public interface IRecipeHandler<K> extends IFilteredHandler<K> {
+
     /**
      * Comparator for entries that can be used in insertion logic
      */
@@ -37,8 +38,8 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
      * @param slotName specific slot name.
      * @param simulate simulate.
      * @return left contents for continue handling by other proxies.
-     * <br>
-     * null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
+     *         <br>
+     *         null - nothing left. handling successful/finish. you should always return null as a handling-done mark.
      */
     List<K> handleRecipeInner(IO io, GTRecipe recipe, List<K> left, @Nullable String slotName, boolean simulate);
 
@@ -62,7 +63,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
     double getTotalContentAmount();
 
     /**
-     * Whether the content of same capability  can only be handled distinct.
+     * Whether the content of same capability can only be handled distinct.
      */
     default boolean isDistinct() {
         return false;
@@ -76,7 +77,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
 
     @SuppressWarnings("unchecked")
     default K copyContent(Object content) {
-        return getCapability().copyInner((K)content);
+        return getCapability().copyInner((K) content);
     }
 
     default List<K> handleRecipe(IO io, GTRecipe recipe, List<?> left, @Nullable String slotName, boolean simulate) {
@@ -87,11 +88,7 @@ public interface IRecipeHandler<K> extends IFilteredHandler<K> {
         return handleRecipeInner(io, recipe, contents, slotName, simulate);
     }
 
-    default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
-    }
+    default void preWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
 
-    default void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {
-    }
-
-
+    default void postWorking(IRecipeCapabilityHolder holder, IO io, GTRecipe recipe) {}
 }

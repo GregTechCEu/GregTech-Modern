@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.common.item;
 
-
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.BoneMealItem;
@@ -24,7 +24,8 @@ public class FertilizerBehavior implements IInteractionItem {
         } else {
             BlockState blockState = level.getBlockState(blockPos);
             boolean bl = blockState.isFaceSturdy(level, blockPos, context.getClickedFace());
-            if (bl && BoneMealItem.growWaterPlant(context.getItemInHand(), level, blockPos2, context.getClickedFace())) {
+            if (bl &&
+                    BoneMealItem.growWaterPlant(context.getItemInHand(), level, blockPos2, context.getClickedFace())) {
                 if (!level.isClientSide) {
                     level.levelEvent(1505, blockPos2, 0);
                 }
@@ -35,5 +36,4 @@ public class FertilizerBehavior implements IInteractionItem {
             }
         }
     }
-
 }

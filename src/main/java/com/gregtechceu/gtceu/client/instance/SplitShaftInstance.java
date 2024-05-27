@@ -2,6 +2,10 @@ package com.gregtechceu.gtceu.client.instance;
 
 import com.gregtechceu.gtceu.common.blockentity.KineticMachineBlockEntity;
 import com.gregtechceu.gtceu.common.machine.kinetic.IKineticMachine;
+
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.block.Block;
+
 import com.jozufozu.flywheel.api.InstanceData;
 import com.jozufozu.flywheel.api.Instancer;
 import com.jozufozu.flywheel.api.Material;
@@ -11,8 +15,6 @@ import com.simibubi.create.content.kinetics.base.IRotate;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntityInstance;
 import com.simibubi.create.content.kinetics.base.flwdata.RotatingData;
 import com.simibubi.create.foundation.utility.Iterate;
-import net.minecraft.core.Direction;
-import net.minecraft.world.level.block.Block;
 
 import java.util.ArrayList;
 
@@ -38,7 +40,8 @@ public class SplitShaftInstance extends KineticBlockEntityInstance<KineticMachin
 
             Instancer<RotatingData> half = rotatingMaterial.getModel(AllPartialModels.SHAFT_HALF, blockState, dir);
 
-            float splitSpeed = speed * (tile.getMetaMachine() instanceof IKineticMachine kineticMachine ? kineticMachine.getRotationSpeedModifier(dir) : 1);
+            float splitSpeed = speed * (tile.getMetaMachine() instanceof IKineticMachine kineticMachine ?
+                    kineticMachine.getRotationSpeedModifier(dir) : 1);
 
             keys.add(setup(half.createInstance(), splitSpeed));
         }
@@ -52,7 +55,9 @@ public class SplitShaftInstance extends KineticBlockEntityInstance<KineticMachin
         Direction[] directions = Iterate.directionsInAxis(boxAxis);
 
         for (int i : Iterate.zeroAndOne) {
-            updateRotation(keys.get(i), blockEntity.getSpeed() * (blockEntity.getMetaMachine() instanceof IKineticMachine kineticMachine ? kineticMachine.getRotationSpeedModifier(directions[i]) : 1));
+            updateRotation(keys.get(i),
+                    blockEntity.getSpeed() * (blockEntity.getMetaMachine() instanceof IKineticMachine kineticMachine ?
+                            kineticMachine.getRotationSpeedModifier(directions[i]) : 1));
         }
     }
 
@@ -66,5 +71,4 @@ public class SplitShaftInstance extends KineticBlockEntityInstance<KineticMachin
         keys.forEach(InstanceData::delete);
         keys.clear();
     }
-
 }

@@ -11,12 +11,13 @@ import com.gregtechceu.gtceu.api.machine.feature.multiblock.IMultiPart;
 import com.gregtechceu.gtceu.client.model.ItemBakedModel;
 import com.gregtechceu.gtceu.client.renderer.block.TextureOverrideRenderer;
 import com.gregtechceu.gtceu.client.renderer.cover.ICoverableRenderer;
+
 import com.lowdragmc.lowdraglib.client.bakedpipeline.FaceQuad;
 import com.lowdragmc.lowdraglib.client.model.ModelFactory;
 import com.lowdragmc.lowdraglib.client.model.custommodel.ICTMPredicate;
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.utils.FacadeBlockAndTintGetter;
-import com.mojang.blaze3d.vertex.PoseStack;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.block.model.BakedQuad;
@@ -35,7 +36,9 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
@@ -46,7 +49,8 @@ import java.util.function.Consumer;
  * @date 2023/2/26
  * @implNote MachineRenderer
  */
-public class MachineRenderer extends TextureOverrideRenderer implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
+public class MachineRenderer extends TextureOverrideRenderer
+                             implements ICoverableRenderer, IPartRenderer, ICTMPredicate {
 
     public static final ResourceLocation PIPE_OVERLAY = GTCEu.id("block/overlay/machine/overlay_pipe");
     public static final ResourceLocation FLUID_OUTPUT_OVERLAY = GTCEu.id("block/overlay/machine/overlay_fluid_output");
@@ -70,16 +74,22 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
+    public void renderItem(ItemStack stack, ItemDisplayContext transformType, boolean leftHand, PoseStack matrixStack,
+                           MultiBufferSource buffer, int combinedLight, int combinedOverlay, BakedModel model) {
         if (stack.getItem() instanceof MetaMachineItem machineItem) {
             IItemRendererProvider.disabled.set(true);
-            Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer, combinedLight, combinedOverlay,
+            Minecraft.getInstance().getItemRenderer().render(stack, transformType, leftHand, matrixStack, buffer,
+                    combinedLight, combinedOverlay,
                     new ItemBakedModel() {
+
                         @Override
                         @OnlyIn(Dist.CLIENT)
-                        public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state, @org.jetbrains.annotations.Nullable Direction direction, RandomSource random) {
+                        public List<BakedQuad> getQuads(@org.jetbrains.annotations.Nullable BlockState state,
+                                                        @org.jetbrains.annotations.Nullable Direction direction,
+                                                        RandomSource random) {
                             List<BakedQuad> quads = new LinkedList<>();
-                            renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random, direction, BlockModelRotation.X0_Y0);
+                            renderMachine(quads, machineItem.getDefinition(), null, Direction.NORTH, direction, random,
+                                    direction, BlockModelRotation.X0_Y0);
                             return quads;
                         }
                     });
@@ -89,7 +99,8 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public final List<BakedQuad> renderModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos, @Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
+    public final List<BakedQuad> renderModel(@Nullable BlockAndTintGetter level, @Nullable BlockPos pos,
+                                             @Nullable BlockState state, @Nullable Direction side, RandomSource rand) {
         if (state != null && state.getBlock() instanceof MetaMachineBlock machineBlock) {
             var frontFacing = machineBlock.getFrontFacing(state);
             var machine = (level == null || pos == null) ? null : machineBlock.getMachine(level, pos);
@@ -105,13 +116,15 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
                 if (machine instanceof IAutoOutputItem autoOutputItem) {
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
-                        quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState));
+                        quads.add(
+                                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState));
                     }
                 }
                 if (machine instanceof IAutoOutputFluid autoOutputFluid) {
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
-                        quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState));
+                        quads.add(
+                                FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(PIPE_OVERLAY), modelState));
                     }
                 }
 
@@ -119,7 +132,8 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
                     var itemFace = autoOutputItem.getOutputFacingItems();
                     if (itemFace != null && side == itemFace) {
                         if (autoOutputItem.isAutoOutputItems()) {
-                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY), modelState, -101, 15));
+                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(ITEM_OUTPUT_OVERLAY),
+                                    modelState, -101, 15));
                         }
                     }
                 }
@@ -128,13 +142,15 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
                     var fluidFace = autoOutputFluid.getOutputFacingFluids();
                     if (fluidFace != null && side == fluidFace) {
                         if (autoOutputFluid.isAutoOutputFluids()) {
-                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY), modelState, -101, 15));
+                            quads.add(FaceQuad.bakeFace(modelFacing, ModelFactory.getBlockSprite(FLUID_OUTPUT_OVERLAY),
+                                    modelState, -101, 15));
                         }
                     }
                 }
 
                 // render covers
-                ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, pos, level, modelState);
+                ICoverableRenderer.super.renderCovers(quads, side, rand, machine.getCoverContainer(), modelFacing, pos,
+                        level, modelState);
                 return quads;
             }
         }
@@ -142,7 +158,8 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
     }
 
     @OnlyIn(Dist.CLIENT)
-    public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand) {
+    public void renderBaseModel(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                                Direction frontFacing, @Nullable Direction side, RandomSource rand) {
         quads.addAll(getRotatedModel(frontFacing).getQuads(definition.defaultBlockState(), side, rand));
     }
 
@@ -159,8 +176,11 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
      * @param modelState  uvLocked rotation according to the front facing
      */
     @OnlyIn(Dist.CLIENT)
-    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine, Direction frontFacing, @Nullable Direction side, RandomSource rand, @Nullable Direction modelFacing, ModelState modelState) {
-        if (!(machine instanceof IMultiPart part) || !part.replacePartModelWhenFormed() || !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
+    public void renderMachine(List<BakedQuad> quads, MachineDefinition definition, @Nullable MetaMachine machine,
+                              Direction frontFacing, @Nullable Direction side, RandomSource rand,
+                              @Nullable Direction modelFacing, ModelState modelState) {
+        if (!(machine instanceof IMultiPart part) || !part.replacePartModelWhenFormed() ||
+                !renderReplacedPartMachine(quads, part, frontFacing, side, rand, modelFacing, modelState)) {
             renderBaseModel(quads, definition, machine, frontFacing, side, rand);
         }
     }
@@ -177,18 +197,20 @@ public class MachineRenderer extends TextureOverrideRenderer implements ICoverab
     }
 
     //////////////////////////////////////
-    //**********     CTM     ***********//
+    // ********** CTM ***********//
     //////////////////////////////////////
     @Override
-    public boolean isConnected(BlockAndTintGetter level, BlockState state, BlockPos pos, BlockState sourceState, BlockPos sourcePos, Direction side) {
+    public boolean isConnected(BlockAndTintGetter level, BlockState state, BlockPos pos, BlockState sourceState,
+                               BlockPos sourcePos, Direction side) {
         var stateAppearance = FacadeBlockAndTintGetter.getAppearance(state, level, pos, side, sourceState, sourcePos);
-        var sourceStateAppearance = FacadeBlockAndTintGetter.getAppearance(sourceState, level, sourcePos, side, state, pos);
-//        var machine = MetaMachine.getMachine(level, pos);
-//        if (machine != null) {
-//            if (machine instanceof IMultiController controller && !controller.isFormed()) {
-//                return false;
-//            }
-//        }
+        var sourceStateAppearance = FacadeBlockAndTintGetter.getAppearance(sourceState, level, sourcePos, side, state,
+                pos);
+        // var machine = MetaMachine.getMachine(level, pos);
+        // if (machine != null) {
+        // if (machine instanceof IMultiController controller && !controller.isFormed()) {
+        // return false;
+        // }
+        // }
         return stateAppearance == sourceStateAppearance;
     }
 }

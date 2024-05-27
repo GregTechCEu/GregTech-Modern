@@ -1,6 +1,7 @@
 package com.gregtechceu.gtceu.api.machine.feature;
 
 import net.minecraft.core.Direction;
+
 import org.jetbrains.annotations.Nullable;
 
 /**
@@ -8,15 +9,13 @@ import org.jetbrains.annotations.Nullable;
  * @date 2023/3/2
  * @implNote IAutoOutputItem
  */
-public interface IAutoOutputFluid extends IMachineFeature{
+public interface IAutoOutputFluid extends IMachineFeature {
 
     boolean isAutoOutputFluids();
 
     void setAutoOutputFluids(boolean allow);
 
-
     boolean isAllowInputFromOutputSideFluids();
-
 
     void setAllowInputFromOutputSideFluids(boolean allow);
 

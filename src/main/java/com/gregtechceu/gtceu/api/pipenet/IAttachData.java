@@ -16,8 +16,8 @@ public interface IAttachData {
 
     /**
      * set it attach to a side.
+     * 
      * @return whether the status is changed.
      */
     boolean setAttached(Direction side, boolean attach);
-
 }
