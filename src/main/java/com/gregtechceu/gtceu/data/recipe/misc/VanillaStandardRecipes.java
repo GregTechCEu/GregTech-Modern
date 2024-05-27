@@ -291,7 +291,7 @@ public class VanillaStandardRecipes {
                 Items.WHEAT);
         VanillaRecipeHelper.addShapelessRecipe(provider, "gravel_to_flint", new ItemStack(Items.FLINT), 'm',
                 Blocks.GRAVEL);
-        VanillaRecipeHelper.addShapelessRecipe(provider, "bone_to_bone_meal", new ItemStack(Items.BONE_MEAL), 'm',
+        VanillaRecipeHelper.addShapelessRecipe(provider, "bone_to_bone_meal", new ItemStack(Items.BONE_MEAL, 4), 'm',
                 Items.BONE);
         VanillaRecipeHelper.addShapelessRecipe(provider, "blaze_rod_to_powder", new ItemStack(Items.BLAZE_POWDER, 3),
                 'm', Items.BLAZE_ROD);
