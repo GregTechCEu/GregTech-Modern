@@ -2644,7 +2644,7 @@
     "gtceu.machine.active_transformer.tooltip.0":"§7变形金刚：伪装的激光",
     "gtceu.machine.active_transformer.tooltip.1":"§7可以将任意数量的能量§f输入§7整合为任意数量的能量§f输出§7。",
     "gtceu.machine.active_transformer.tooltip.2":"§7当你使用§d激光§7进行能量传输时，拥有惊人的传输距离。",
-    "gtceu.machine.active_transformer.tooltip.3":" Lasers§7.",
+    "gtceu.machine.active_transformer.tooltip.3":"",
     "gtceu.machine.advanced_processing_array.tooltip":"这个世界需要更多并行",
     "gtceu.machine.assembly_line.tooltip":"真不是什么多方块组装机！",
     "gtceu.machine.available_recipe_map_1.tooltip":"可用配方类型：%s",
