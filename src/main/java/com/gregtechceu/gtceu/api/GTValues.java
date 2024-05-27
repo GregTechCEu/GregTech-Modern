@@ -112,7 +112,8 @@ public class GTValues {
             MODID_CREATE = "create",
             MODID_REBORN_ENERGY = "team_reborn_energy",
             MODID_ALMOSTUNIFIED = "almostunified",
-            MODID_CURIOS = "curios";
+            MODID_CURIOS = "curios",
+            MODID_AE2WTLIB = "ae2wtlib";
 
     /**
      * Spray painting compat modids
