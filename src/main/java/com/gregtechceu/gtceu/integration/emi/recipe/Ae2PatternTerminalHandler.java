@@ -23,56 +23,66 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Ae2PatternTerminalHandler<T extends PatternEncodingTermMenu> implements EmiRecipeHandler<T> {
+
     private List<Slot> getInputSources(T handler) {
         return handler.slots;
     }
+
     @Override
     public EmiPlayerInventory getInventory(AbstractContainerScreen<T> screen) {
         return new EmiPlayerInventory(getInputSources(screen.getMenu()).stream().map(Slot::getItem).map(EmiStack::of).toList());
     }
+
     @Override
     public boolean supportsRecipe(EmiRecipe recipe) {
         return recipe instanceof GTEmiRecipe;
     }
+
     @Override
     public boolean canCraft(EmiRecipe recipe, EmiCraftContext<T> context) {
         return true;
     }
+
     @Override
     public boolean craft(EmiRecipe recipe, EmiCraftContext<T> context) {
         T menu = context.getScreenHandler();
         EncodingHelper.encodeProcessingRecipe(menu,
                 ofInputs(recipe),
                 ofOutputs(recipe));
-        if (Minecraft.getInstance().screen instanceof RecipeScreen e){
+        if (Minecraft.getInstance().screen instanceof RecipeScreen e) {
             e.onClose();
         }
         return true;
     }
+
     public static List<List<GenericStack>> ofInputs(EmiRecipe emiRecipe) {
         return emiRecipe.getInputs()
                 .stream()
                 .map(Ae2PatternTerminalHandler::intoGenericStack)
                 .toList();
     }
+
     public static List<GenericStack> ofOutputs(EmiRecipe emiRecipe) {
         return emiRecipe.getOutputs()
                 .stream()
                 .flatMap(slot -> intoGenericStack(slot).stream().limit(1))
                 .toList();
     }
+
     private static List<GenericStack> intoGenericStack(EmiIngredient ingredient) {
         if (ingredient.isEmpty()) {
             return new ArrayList<>();
         }
-        return ingredient.getEmiStacks().stream().map(Ae2PatternTerminalHandler::fromEmiStack).toList();
+        return ingredient.getEmiStacks().stream().map(stack -> fromEmiStack(stack, ingredient.getAmount())).toList();
     }
-    private static GenericStack fromEmiStack(EmiStack stack) {
-        if (stack.getKey() instanceof Item item){
-            return new GenericStack(AEItemKey.of(item.getDefaultInstance()), stack.getItemStack().getCount());
-        }else if (stack.getKey() instanceof Fluid fluid){
-            return new GenericStack(AEFluidKey.of(fluid), stack.getAmount());
+
+    private static GenericStack fromEmiStack(EmiStack stack, long amount) {
+        if (stack.getKey() instanceof Item item) {
+            return new GenericStack(AEItemKey.of(item.getDefaultInstance()), amount);
+        } else if (stack.getKey() instanceof Fluid fluid) {
+            return new GenericStack(AEFluidKey.of(fluid), amount);
         }
-        return new GenericStack(AEItemKey.of(ItemStack.EMPTY), ItemStack.EMPTY.getCount());
+        return new GenericStack(AEItemKey.of(ItemStack.EMPTY), 0);
     }
+
 }
