@@ -143,6 +143,10 @@ public class ConfigHolder {
         public boolean hideFilledCellsInJEI = true;
 
         @Configurable
+        @Configurable.Comment({"Whether to hide the ore processing diagrams in JEI", "Default: false"})
+        public boolean hideOreProcessingDiagrams = false;
+
+        @Configurable
         @Configurable.Comment({
                 "Whether Gregtech should remove smelting recipes from the vanilla furnace for ingots requiring the Electric Blast Furnace.",
                 "Default: true" })
