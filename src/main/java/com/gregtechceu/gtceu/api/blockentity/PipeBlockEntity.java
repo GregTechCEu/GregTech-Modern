@@ -13,20 +13,19 @@ import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.api.item.tool.IToolGridHighLight;
 import com.gregtechceu.gtceu.api.machine.TickableSubscription;
 import com.gregtechceu.gtceu.api.pipenet.*;
-import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
-import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+import com.lowdragmc.lowdraglib.syncdata.IEnhancedManaged;
 import com.lowdragmc.lowdraglib.syncdata.IManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.annotation.DescSynced;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
+import com.lowdragmc.lowdraglib.syncdata.annotation.RequireRerender;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAsyncAutoSyncBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.blockentity.IAutoPersistBlockEntity;
 import com.lowdragmc.lowdraglib.syncdata.field.FieldManagedStorage;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
-import com.mojang.datafixers.util.Pair;
-import lombok.Getter;
-import lombok.Setter;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -43,11 +42,16 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 
+import com.mojang.datafixers.util.Pair;
+import lombok.Getter;
+import lombok.Setter;
 import org.jetbrains.annotations.Nullable;
-import javax.annotation.ParametersAreNonnullByDefault;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -56,7 +60,9 @@ import java.util.Set;
  */
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
-public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType> extends BlockEntity implements IPipeNode<PipeType, NodeDataType>, IEnhancedManaged, IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
+public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeType<NodeDataType>, NodeDataType>
+                                     extends BlockEntity implements IPipeNode<PipeType, NodeDataType>, IEnhancedManaged,
+                                     IAsyncAutoSyncBlockEntity, IAutoPersistBlockEntity, IToolGridHighLight, IToolable {
 
     public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(PipeBlockEntity.class);
     @Getter
@@ -68,7 +74,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     @Persisted(key = "cover")
     protected final PipeCoverContainer coverContainer;
 
-    @Getter @Setter
+    @Getter
+    @Setter
     @DescSynced
     @Persisted
     @RequireRerender
@@ -80,24 +87,29 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     private int blockedConnections = Node.ALL_CLOSED;
     private NodeDataType cachedNodeData;
 
-    @Persisted @DescSynced @RequireRerender
-    @Getter @Setter
+    @Persisted
+    @DescSynced
+    @RequireRerender
+    @Getter
+    @Setter
     private int paintingColor = -1;
 
-    @Persisted @DescSynced @RequireRerender
+    @Persisted
+    @DescSynced
+    @RequireRerender
     private String frameMaterial;
     private final List<TickableSubscription> serverTicks;
     private final List<TickableSubscription> waitingToAdd;
 
     public PipeBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState blockState) {
         super(type, pos, blockState);
-        this.coverContainer = new PipeCoverContainer(this);      
+        this.coverContainer = new PipeCoverContainer(this);
         this.serverTicks = new ArrayList<>();
         this.waitingToAdd = new ArrayList<>();
     }
 
     //////////////////////////////////////
-    //*****     Initialization    ******//
+    // ***** Initialization ******//
     //////////////////////////////////////
     public void scheduleRenderUpdate() {
         IPipeNode.super.scheduleRenderUpdate();
@@ -172,7 +184,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
                 if (getLevel() instanceof ServerLevel serverLevel) {
                     blockState = blockState.setValue(BlockProperties.SERVER_TICK, true);
                     setBlockState(blockState);
-                    serverLevel.getServer().tell(new TickTask(0, () -> serverLevel.setBlockAndUpdate(getBlockPos(), getBlockState().setValue(BlockProperties.SERVER_TICK, true))));
+                    serverLevel.getServer().tell(new TickTask(0, () -> serverLevel.setBlockAndUpdate(getBlockPos(),
+                            getBlockState().setValue(BlockProperties.SERVER_TICK, true))));
                 }
             }
             return subscription;
@@ -207,7 +220,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     //////////////////////////////////////
-    //*******     Pipe Status    *******//
+    // ******* Pipe Status *******//
     //////////////////////////////////////
 
     @Override
@@ -237,7 +250,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public void setConnection(Direction side, boolean connected, boolean fromNeighbor) {
-        // fix desync between two connections. Can happen if a pipe side is blocked, and a new pipe is placed next to it.
+        // fix desync between two connections. Can happen if a pipe side is blocked, and a new pipe is placed next to
+        // it.
         if (!getLevel().isClientSide) {
             if (isConnected(side) == connected) {
                 return;
@@ -245,8 +259,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
             BlockEntity tile = getNeighbor(side);
             // block connections if Pipe Types do not match
             if (connected &&
-                tile instanceof IPipeNode<?, ?> pipeTile &&
-                pipeTile.getPipeType().getClass() != this.getPipeType().getClass()) {
+                    tile instanceof IPipeNode<?, ?> pipeTile &&
+                    pipeTile.getPipeType().getClass() != this.getPipeType().getClass()) {
                 return;
             }
             connections = withSideConnection(connections, side, connected);
@@ -310,7 +324,7 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     //////////////////////////////////////
-    //*******     Interaction    *******//
+    // ******* Interaction *******//
     //////////////////////////////////////
     @Override
     public boolean shouldRenderGrid(Player player, ItemStack held, Set<GTToolType> toolTypes) {
@@ -342,13 +356,15 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     }
 
     @Override
-    public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack, UseOnContext context) {
+    public Pair<GTToolType, InteractionResult> onToolClick(Set<GTToolType> toolTypes, ItemStack itemStack,
+                                                           UseOnContext context) {
         // the side hit from the machine grid
         var playerIn = context.getPlayer();
         if (playerIn == null) return Pair.of(null, InteractionResult.PASS);
 
         var hand = context.getHand();
-        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(), context.getClickedPos(), false);
+        var hitResult = new BlockHitResult(context.getClickLocation(), context.getClickedFace(),
+                context.getClickedPos(), false);
         Direction gridSide = ICoverable.determineGridSideHit(hitResult);
         CoverBehavior coverBehavior = gridSide == null ? null : coverContainer.getCoverAtSide(gridSide);
         if (gridSide == null) gridSide = hitResult.getDirection();
@@ -389,7 +405,8 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
 
     @Override
     public int getDefaultPaintingColor() {
-        return this.getPipeBlock() instanceof MaterialPipeBlock<?,?,?> materialPipeBlock ? materialPipeBlock.material.getMaterialRGB() : IPipeNode.super.getDefaultPaintingColor();
+        return this.getPipeBlock() instanceof MaterialPipeBlock<?, ?, ?> materialPipeBlock ?
+                materialPipeBlock.material.getMaterialRGB() : IPipeNode.super.getDefaultPaintingColor();
     }
 
     @Nullable
@@ -402,11 +419,11 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
         getLevel().removeBlock(getPipePos(), false);
         if (!getLevel().isClientSide) {
             ((ServerLevel) getLevel()).sendParticles(ParticleTypes.LARGE_SMOKE, getPipePos().getX() + 0.5,
-                getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
-                10, 0.2, 0.2, 0.2, 0.0);
+                    getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
+                    10, 0.2, 0.2, 0.2, 0.0);
         }
         getLevel().explode(null, getPipePos().getX() + 0.5, getPipePos().getY() + 0.5, getPipePos().getZ() + 0.5,
-            explosionPower, Level.ExplosionInteraction.NONE);
+                explosionPower, Level.ExplosionInteraction.NONE);
     }
 
     public static boolean isFaceBlocked(int blockedConnections, Direction side) {
@@ -416,5 +433,4 @@ public abstract class PipeBlockEntity<PipeType extends Enum<PipeType> & IPipeTyp
     public static boolean isConnected(int connections, Direction side) {
         return (connections & (1 << side.ordinal())) > 0;
     }
-
 }

@@ -12,7 +12,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class GCyMMaterials {
 
     public static void register() {
-
         TantalumCarbide = new Material.Builder(GTCEu.id("tantalum_carbide"))
                 .ingot(4).fluid()
                 .color(0x999900).iconSet(METALLIC)
@@ -72,7 +71,7 @@ public class GCyMMaterials {
         HastelloyX = new Material.Builder(GTCEu.id("hastelloy_x"))
                 .ingot(5).fluid()
                 .color(0x5784B8).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_PLATE,  GENERATE_FRAME)
+                .appendFlags(STD_METAL, GENERATE_PLATE, GENERATE_FRAME)
                 .components(Nickel, 8, Iron, 3, Tungsten, 4, Molybdenum, 2, Chromium, 1, Niobium, 1)
                 .blastTemp(4200, GasTier.HIGH, GTValues.VA[GTValues.EV], 900)
                 .buildAndRegister();

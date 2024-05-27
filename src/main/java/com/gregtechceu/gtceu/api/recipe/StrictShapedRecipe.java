@@ -1,7 +1,7 @@
 package com.gregtechceu.gtceu.api.recipe;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.core.mixins.ShapedRecipeAccessor;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.FriendlyByteBuf;
@@ -14,10 +14,13 @@ import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.item.crafting.ShapedRecipe;
 import net.minecraft.world.level.Level;
+
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.NotNull;
 
-import javax.annotation.ParametersAreNonnullByDefault;
 import java.util.Map;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -27,9 +30,11 @@ import java.util.Map;
 @ParametersAreNonnullByDefault
 @MethodsReturnNonnullByDefault
 public class StrictShapedRecipe extends ShapedRecipe {
+
     public static final RecipeSerializer<StrictShapedRecipe> SERIALIZER = new Serializer();
 
-    public StrictShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height, NonNullList<Ingredient> recipeItems, ItemStack result) {
+    public StrictShapedRecipe(ResourceLocation id, String group, CraftingBookCategory category, int width, int height,
+                              NonNullList<Ingredient> recipeItems, ItemStack result) {
         super(id, group, category, width, height, recipeItems, result);
     }
 
@@ -44,7 +49,6 @@ public class StrictShapedRecipe extends ShapedRecipe {
         }
         return false;
     }
-
 
     /**
      * Checks if the region of a crafting inventory is match for the recipe.
@@ -71,10 +75,12 @@ public class StrictShapedRecipe extends ShapedRecipe {
     }
 
     public static class Serializer implements RecipeSerializer<StrictShapedRecipe> {
+
         @Override
         public StrictShapedRecipe fromJson(ResourceLocation recipeId, JsonObject json) {
             String string = GsonHelper.getAsString(json, "group", "");
-            CraftingBookCategory craftingBookCategory = CraftingBookCategory.CODEC.byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
+            CraftingBookCategory craftingBookCategory = CraftingBookCategory.CODEC
+                    .byName(GsonHelper.getAsString(json, "category", null), CraftingBookCategory.MISC);
             Map<String, Ingredient> map = ShapedRecipeAccessor.callKeyFromJson(GsonHelper.getAsJsonObject(json, "key"));
             String[] strings = ShapedRecipeAccessor.callPatternFromJson(GsonHelper.getAsJsonArray(json, "pattern"));
             int i = strings[0].length();
@@ -105,7 +111,7 @@ public class StrictShapedRecipe extends ShapedRecipe {
             for (Ingredient ingredient : recipe.getIngredients()) {
                 ingredient.toNetwork(buffer);
             }
-            buffer.writeItem(((ShapedRecipeAccessor)recipe).getResult());
+            buffer.writeItem(((ShapedRecipeAccessor) recipe).getResult());
         }
     }
 }

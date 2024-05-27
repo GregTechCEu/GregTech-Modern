@@ -1,14 +1,16 @@
 package com.gregtechceu.gtceu.integration.ae2.gui.widget;
 
+import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
+
+import com.lowdragmc.lowdraglib.gui.widget.Widget;
+import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
+
+import net.minecraft.network.FriendlyByteBuf;
+
 import appeng.api.behaviors.GenericInternalInventory;
 import appeng.api.config.Actionable;
 import appeng.api.stacks.AEFluidKey;
 import appeng.api.stacks.GenericStack;
-import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.lowdragmc.lowdraglib.gui.widget.Widget;
-import com.lowdragmc.lowdraglib.side.fluid.FluidStack;
-import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
-import net.minecraft.network.FriendlyByteBuf;
 
 /**
  * @Author GlodBlock
@@ -84,7 +86,7 @@ public class AEFluidGridWidget extends AEListGridWidget {
     @Override
     protected void readListChange(FriendlyByteBuf buffer) {
         int size = buffer.readVarInt();
-        for (int i = 0; i < size ; i ++) {
+        for (int i = 0; i < size; i++) {
             FluidStack fluid = FluidStack.readFromBuf(buffer);
             long delta = buffer.readVarLong();
             if (fluid != null) {

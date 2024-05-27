@@ -7,6 +7,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 
@@ -16,6 +17,7 @@ import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIcon
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 
 public class OrganicChemistryMaterials {
+
     /**
      * ID RANGE: 1000-1068 (incl.)
      */
@@ -102,7 +104,8 @@ public class OrganicChemistryMaterials {
                 .liquid(new FluidBuilder().temperature(1450))
                 .color(0x464441).secondaryColor(0x382e1b)
                 .flags(EXCLUDE_BLOCK_CRAFTING_RECIPES, GENERATE_FOIL)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                .toolStats(
+                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 20, Hydrogen, 12, Nitrogen, 4)
                 .fluidPipeProperties(1000, 350, true)
                 .buildAndRegister();
@@ -119,7 +122,8 @@ public class OrganicChemistryMaterials {
                 .liquid(new FluidBuilder().temperature(408))
                 .color(0xC8C8C8)
                 .flags(GENERATE_FOIL)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                .toolStats(
+                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Hydrogen, 4)
                 .fluidPipeProperties(370, 60, true)
                 .buildAndRegister();
@@ -145,7 +149,8 @@ public class OrganicChemistryMaterials {
                 .liquid(new FluidBuilder().temperature(600))
                 .color(0xFFFFFF).secondaryColor(0x919187)
                 .appendFlags(STD_METAL, GENERATE_FRAME, GENERATE_FOIL)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                .toolStats(
+                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .components(Carbon, 2, Fluorine, 4)
                 .fluidPipeProperties(600, 100, true, true, false, false)
                 .buildAndRegister();
@@ -159,7 +164,7 @@ public class OrganicChemistryMaterials {
 
         Methane = new Material.Builder(GTCEu.id("methane"))
                 .gas(new FluidBuilder()
-                .translation("gtceu.fluid.gas_generic"))
+                        .translation("gtceu.fluid.gas_generic"))
                 .color(0xFF0078)
                 .components(Carbon, 1, Hydrogen, 4)
                 .buildAndRegister();
@@ -499,7 +504,8 @@ public class OrganicChemistryMaterials {
                 .polymer(0)
                 .liquid(new FluidBuilder().temperature(400))
                 .color(0x353529).secondaryColor(0x080808)
-                .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
+                .toolStats(
+                        ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET, GTToolType.PLUNGER).build())
                 .flags(GENERATE_GEAR, GENERATE_RING, GENERATE_FOIL, GENERATE_BOLT_SCREW)
                 .components(Carbon, 5, Hydrogen, 8)
                 .buildAndRegister();

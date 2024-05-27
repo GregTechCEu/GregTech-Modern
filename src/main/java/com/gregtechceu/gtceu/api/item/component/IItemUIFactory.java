@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.api.item.component;
 
 import com.lowdragmc.lowdraglib.gui.factory.HeldItemUIFactory;
 import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -27,5 +28,4 @@ public interface IItemUIFactory extends IInteractionItem {
         }
         return InteractionResultHolder.success(heldItem);
     }
-
 }

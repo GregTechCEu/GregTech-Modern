@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.data.recipe.builder;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
 import com.gregtechceu.gtceu.api.recipe.ShapedEnergyTransferRecipe;
 import com.gregtechceu.gtceu.api.recipe.ingredient.NBTIngredient;
+
 import com.lowdragmc.lowdraglib.utils.Builder;
 import com.lowdragmc.lowdraglib.utils.NBTToJsonConverter;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.recipes.FinishedRecipe;
 import net.minecraft.nbt.CompoundTag;
@@ -17,10 +17,12 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeSerializer;
 import net.minecraft.world.level.ItemLike;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.function.Consumer;
-
 
 /**
  * @author Irgendwer01
@@ -28,6 +30,7 @@ import java.util.function.Consumer;
  * @implNote ShapedEnergyTransferRecipeBuilder
  */
 public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, ShapedEnergyTransferRecipeBuilder> {
+
     protected ItemStack output = ItemStack.EMPTY;
     protected Ingredient chargeIngredient = Ingredient.EMPTY;
     protected ResourceLocation id;
@@ -52,9 +55,9 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
     }
 
     public ShapedEnergyTransferRecipeBuilder define(char cha, ItemStack itemStack) {
-        if (itemStack.hasTag() || itemStack.getDamageValue() >0) {
+        if (itemStack.hasTag() || itemStack.getDamageValue() > 0) {
             return where(cha, NBTIngredient.createNBTIngredient(itemStack));
-        }else {
+        } else {
             return where(cha, Ingredient.of(itemStack));
         }
     }
@@ -173,6 +176,7 @@ public class ShapedEnergyTransferRecipeBuilder extends Builder<Ingredient, Shape
 
     public void save(Consumer<FinishedRecipe> consumer) {
         consumer.accept(new FinishedRecipe() {
+
             @Override
             public void serializeRecipeData(JsonObject pJson) {
                 toJson(pJson);

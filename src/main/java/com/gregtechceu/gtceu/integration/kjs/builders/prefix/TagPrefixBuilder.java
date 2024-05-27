@@ -6,8 +6,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.MaterialStack;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
 import com.gregtechceu.gtceu.api.registry.registrate.BuilderBase;
 import com.gregtechceu.gtceu.integration.kjs.built.KJSTagPrefix;
-import lombok.Getter;
-import lombok.experimental.Accessors;
+
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -15,6 +14,9 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.ItemLike;
 import net.minecraft.world.level.block.Block;
+
+import lombok.Getter;
+import lombok.experimental.Accessors;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -25,6 +27,7 @@ import java.util.function.Predicate;
 @SuppressWarnings("unused")
 @Accessors(chain = true)
 public abstract class TagPrefixBuilder extends BuilderBase<TagPrefix> {
+
     public final KJSTagPrefix base;
 
     @Getter

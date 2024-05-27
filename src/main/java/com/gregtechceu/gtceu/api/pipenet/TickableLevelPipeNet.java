@@ -4,12 +4,14 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.chunk.ChunkAccess;
+
 import org.apache.commons.lang3.tuple.Pair;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
-public abstract class TickableLevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType> & ITickablePipeNet> extends LevelPipeNet<NodeDataType, T> {
+public abstract class TickableLevelPipeNet<NodeDataType, T extends PipeNet<NodeDataType> & ITickablePipeNet>
+                                          extends LevelPipeNet<NodeDataType, T> {
 
     private final Map<T, List<ChunkPos>> loadedChunksByPipeNet = new HashMap<>();
     private final Set<T> tickingPipeNets = new HashSet<>();
@@ -35,7 +37,7 @@ public abstract class TickableLevelPipeNet<NodeDataType, T extends PipeNet<NodeD
         if (getWorld().getGameTime() % getUpdateRate() == 0L) {
             tickingPipeNets.forEach(ITickablePipeNet::update);
         }
-        if(removeLater.size() > 0) {
+        if (removeLater.size() > 0) {
             removeLater.forEach(tickingPipeNets::remove);
             removeLater.clear();
         }

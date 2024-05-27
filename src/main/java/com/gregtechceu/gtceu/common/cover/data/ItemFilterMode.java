@@ -1,8 +1,10 @@
 package com.gregtechceu.gtceu.common.cover.data;
 
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 
 import javax.annotation.ParametersAreNonnullByDefault;

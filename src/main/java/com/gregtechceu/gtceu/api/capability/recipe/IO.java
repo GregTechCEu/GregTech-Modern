@@ -1,14 +1,17 @@
 package com.gregtechceu.gtceu.api.capability.recipe;
 
 import com.gregtechceu.gtceu.api.gui.widget.EnumSelectorWidget;
+
 import com.lowdragmc.lowdraglib.gui.texture.IGuiTexture;
 import com.lowdragmc.lowdraglib.gui.texture.ResourceTexture;
+
 import lombok.Getter;
 
 /**
  * The capability can be input or output or both
  */
 public enum IO implements EnumSelectorWidget.SelectableEnum {
+
     IN("gtceu.io.import", "import"),
     OUT("gtceu.io.export", "export"),
     BOTH("gtceu.io.both", "both"),
@@ -29,5 +32,4 @@ public enum IO implements EnumSelectorWidget.SelectableEnum {
         if (io == NONE) return false;
         return this == BOTH;
     }
-
 }

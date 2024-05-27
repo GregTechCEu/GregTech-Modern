@@ -4,8 +4,10 @@ import com.gregtechceu.gtceu.api.block.IMachineBlock;
 import com.gregtechceu.gtceu.api.block.PipeBlock;
 import com.gregtechceu.gtceu.api.machine.MachineDefinition;
 import com.gregtechceu.gtceu.api.pipenet.IPipeNode;
+
 import com.lowdragmc.lowdraglib.client.renderer.IItemRendererProvider;
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -15,6 +17,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+
 import org.jetbrains.annotations.Nullable;
 
 import javax.annotation.ParametersAreNonnullByDefault;
@@ -43,7 +46,7 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
     }
 
     @Override
-    @SuppressWarnings({"rawtypes", "unchecked"})
+    @SuppressWarnings({ "rawtypes", "unchecked" })
     protected boolean placeBlock(BlockPlaceContext context, BlockState state) {
         Level level = context.getLevel();
         BlockPos pos = context.getClickedPos();
@@ -57,7 +60,7 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
             if (block instanceof PipeBlock<?, ?, ?>) {
                 IPipeNode pipeTile = ((PipeBlock<?, ?, ?>) block).getPipeTile(level, possiblePipe);
                 if (pipeTile != null && ((PipeBlock<?, ?, ?>) block).canPipeConnectToBlock(pipeTile, side.getOpposite(),
-                    level.getBlockEntity(pos))) {
+                        level.getBlockEntity(pos))) {
                     pipeTile.setConnection(side, true, false);
                 }
             }
@@ -65,4 +68,3 @@ public class MetaMachineItem extends BlockItem implements IItemRendererProvider 
         return superVal;
     }
 }
-

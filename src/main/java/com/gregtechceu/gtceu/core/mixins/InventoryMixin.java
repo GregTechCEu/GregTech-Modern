@@ -15,9 +15,10 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
-import org.spongepowered.asm.mixin.Final;
+
+import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
+import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -40,7 +41,10 @@ public abstract class InventoryMixin {
         return original.call(stack, other);
     }
 
-    @WrapOperation(method = "findSlotMatchingUnusedItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z", remap = true))
+    @WrapOperation(method = "findSlotMatchingUnusedItem",
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/world/item/ItemStack;isDamaged()Z",
+                            remap = true))
     private boolean gtceu$damagedToolBypass(ItemStack instance, Operation<Boolean> original) {
         if (instance.getItem() instanceof IGTTool) {
             return false;
@@ -48,7 +52,10 @@ public abstract class InventoryMixin {
         return original.call(instance);
     }
 
-    @WrapOperation(method = "findSlotMatchingUnusedItem", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z", remap = true))
+    @WrapOperation(method = "findSlotMatchingUnusedItem",
+                   at = @At(value = "INVOKE",
+                            target = "Lnet/minecraft/world/item/ItemStack;isEnchanted()Z",
+                            remap = true))
     private boolean gtceu$enchantedToolBypass(ItemStack instance, Operation<Boolean> original) {
         if (instance.getItem() instanceof IGTTool) {
             return false;

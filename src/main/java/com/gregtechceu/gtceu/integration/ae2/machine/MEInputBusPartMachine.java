@@ -1,22 +1,13 @@
 package com.gregtechceu.gtceu.integration.ae2.machine;
 
-import appeng.api.config.Actionable;
-import appeng.api.networking.IGrid;
-import appeng.api.networking.IInWorldGridNodeHost;
-import appeng.api.stacks.AEItemKey;
-import appeng.api.stacks.GenericStack;
-import appeng.api.storage.MEStorage;
-import appeng.me.helpers.IGridConnectedBlockEntity;
 import com.gregtechceu.gtceu.api.capability.recipe.IO;
-import com.gregtechceu.gtceu.api.gui.GuiTextures;
-import com.gregtechceu.gtceu.api.gui.UITemplate;
 import com.gregtechceu.gtceu.api.machine.IMachineBlockEntity;
 import com.gregtechceu.gtceu.api.machine.MetaMachine;
 import com.gregtechceu.gtceu.api.machine.trait.NotifiableItemStackHandler;
 import com.gregtechceu.gtceu.api.recipe.GTRecipe;
 import com.gregtechceu.gtceu.integration.ae2.gui.widget.AEItemConfigWidget;
 import com.gregtechceu.gtceu.integration.ae2.util.ExportOnlyAESlot;
-import com.lowdragmc.lowdraglib.gui.modular.ModularUI;
+
 import com.lowdragmc.lowdraglib.gui.widget.LabelWidget;
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.gui.widget.WidgetGroup;
@@ -25,20 +16,29 @@ import com.lowdragmc.lowdraglib.side.item.IItemTransfer;
 import com.lowdragmc.lowdraglib.syncdata.annotation.Persisted;
 import com.lowdragmc.lowdraglib.syncdata.field.ManagedFieldHolder;
 import com.lowdragmc.lowdraglib.utils.Position;
-import com.mojang.datafixers.util.Pair;
+
 import net.minecraft.core.NonNullList;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.Ingredient;
+
+import appeng.api.config.Actionable;
+import appeng.api.networking.IGrid;
+import appeng.api.networking.IInWorldGridNodeHost;
+import appeng.api.stacks.AEItemKey;
+import appeng.api.stacks.GenericStack;
+import appeng.api.storage.MEStorage;
+import appeng.me.helpers.IGridConnectedBlockEntity;
+import com.mojang.datafixers.util.Pair;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import org.jetbrains.annotations.NotNull;
 import java.util.Arrays;
 import java.util.List;
 
 public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldGridNodeHost, IGridConnectedBlockEntity {
-    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class, MEBusPartMachine.MANAGED_FIELD_HOLDER);
+
+    protected static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(MEInputBusPartMachine.class,
+            MEBusPartMachine.MANAGED_FIELD_HOLDER);
     private final static int CONFIG_SIZE = 16;
 
     private ExportOnlyAEItemList aeItemHandler;
@@ -59,7 +59,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         if (getLevel().isClientSide) return;
         if (!this.isWorkingEnabled()) return;
         if (!this.shouldSyncME()) return;
-        
+
         if (this.updateMEStatus()) {
             MEStorage aeNetwork = this.getMainNode().getGrid().getStorageService().getInventory();
             for (ExportOnlyAEItem aeSlot : this.aeItemHandler.inventory) {
@@ -67,7 +67,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
                 GenericStack exceedItem = aeSlot.exceedStack();
                 if (exceedItem != null) {
                     long total = exceedItem.amount();
-                    long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE, this.actionSource);
+                    long inserted = aeNetwork.insert(exceedItem.what(), exceedItem.amount(), Actionable.MODULATE,
+                            this.actionSource);
                     if (inserted > 0) {
                         aeSlot.extractItem(0, (int) inserted, false);
                         continue;
@@ -78,7 +79,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
                 // Fill it
                 GenericStack reqItem = aeSlot.requestStack();
                 if (reqItem != null) {
-                    long extracted = aeNetwork.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE, this.actionSource);
+                    long extracted = aeNetwork.extract(reqItem.what(), reqItem.amount(), Actionable.MODULATE,
+                            this.actionSource);
                     if (extracted != 0) {
                         aeSlot.addStack(new GenericStack(reqItem.what(), extracted));
                     }
@@ -108,7 +110,9 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
     }
 
     private static class ExportOnlyAEItemList extends NotifiableItemStackHandler {
-        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEItemList.class, NotifiableItemStackHandler.MANAGED_FIELD_HOLDER);
+
+        public static final ManagedFieldHolder MANAGED_FIELD_HOLDER = new ManagedFieldHolder(ExportOnlyAEItemList.class,
+                NotifiableItemStackHandler.MANAGED_FIELD_HOLDER);
 
         @Persisted
         ExportOnlyAEItem[] inventory;
@@ -116,7 +120,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         public ExportOnlyAEItemList(MetaMachine holder, int slots) {
             super(holder, slots, IO.IN);
             this.inventory = new ExportOnlyAEItem[CONFIG_SIZE];
-            for (int i = 0; i < CONFIG_SIZE; i ++) {
+            for (int i = 0; i < CONFIG_SIZE; i++) {
                 this.inventory[i] = new ExportOnlyAEItem(null, null);
             }
             for (ExportOnlyAEItem slot : this.inventory) {
@@ -131,18 +135,22 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         }
 
         @Override
-        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left, @Nullable String slotName, boolean simulate) {
-            return handleIngredient(io, recipe, left, simulate, this.handlerIO, new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY, Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
-                @NotNull
-                @Override
-                public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
-                    ItemStack extracted = super.extractItem(slot, amount, simulate, notifyChanges);
-                    if (!extracted.isEmpty()) {
-                        inventory[slot].extractItem(0, amount, simulate, notifyChanges);
-                    }
-                    return extracted;
-                }
-            });
+        public List<Ingredient> handleRecipeInner(IO io, GTRecipe recipe, List<Ingredient> left,
+                                                  @Nullable String slotName, boolean simulate) {
+            return handleIngredient(io, recipe, left, simulate, this.handlerIO,
+                    new ItemStackTransfer(NonNullList.of(ItemStack.EMPTY,
+                            Arrays.stream(inventory).map(item -> item.getStackInSlot(0)).toArray(ItemStack[]::new))) {
+
+                        @NotNull
+                        @Override
+                        public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
+                            ItemStack extracted = super.extractItem(slot, amount, simulate, notifyChanges);
+                            if (!extracted.isEmpty()) {
+                                inventory[slot].extractItem(0, amount, simulate, notifyChanges);
+                            }
+                            return extracted;
+                        }
+                    });
         }
 
         @Override
@@ -189,7 +197,6 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
             return MANAGED_FIELD_HOLDER;
         }
 
-
         @NotNull
         @Override
         public Object createSnapshot() {
@@ -220,8 +227,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         public ExportOnlyAEItem copy() {
             return new ExportOnlyAEItem(
                     this.config == null ? null : copy(this.config),
-                    this.stock == null ? null : copy(this.stock)
-            );
+                    this.stock == null ? null : copy(this.stock));
         }
 
         @Override
@@ -244,7 +250,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         @Override
         public ItemStack getStackInSlot(int slot) {
             if (slot == 0 && this.stock != null) {
-                return this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY;
+                return this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) :
+                        ItemStack.EMPTY;
             }
             return ItemStack.EMPTY;
         }
@@ -254,7 +261,8 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
         public ItemStack extractItem(int slot, int amount, boolean simulate, boolean notifyChanges) {
             if (slot == 0 && this.stock != null) {
                 int extracted = (int) Math.min(this.stock.amount(), amount);
-                ItemStack result = this.stock.what() instanceof AEItemKey itemKey ? itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY.copy();
+                ItemStack result = this.stock.what() instanceof AEItemKey itemKey ?
+                        itemKey.toStack((int) this.stock.amount()) : ItemStack.EMPTY.copy();
                 result.setCount(extracted);
                 if (!simulate) {
                     this.stock = ExportOnlyAESlot.copy(this.stock, this.stock.amount() - extracted);
@@ -298,7 +306,7 @@ public class MEInputBusPartMachine extends MEBusPartMachine implements IInWorldG
 
         @Override
         public void restoreFromSnapshot(Object snapshot) {
-            if (snapshot instanceof Pair<?,?> pair) {
+            if (snapshot instanceof Pair<?, ?> pair) {
                 this.config = (GenericStack) pair.getFirst();
                 this.stock = (GenericStack) pair.getSecond();
             }

@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.api.data.chemical.material.properties;
 
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-
 import com.gregtechceu.gtceu.api.item.armor.ArmorComponentItem;
 import com.gregtechceu.gtceu.common.data.GTMobEffects;
 import com.gregtechceu.gtceu.data.recipe.CustomTags;
@@ -12,6 +11,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.resources.ResourceLocation;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.LivingEntity;
@@ -20,6 +20,8 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
+
+import lombok.Getter;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
@@ -44,7 +46,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     @Getter
     private final boolean applyToDerivatives;
 
-    public HazardProperty(HazardType hazardType, @Nullable HazardProperty.HazardEffect effect, @Nullable HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
+    public HazardProperty(HazardType hazardType, @Nullable HazardProperty.HazardEffect effect,
+                          @Nullable HazardProperty.HazardDamage damage, boolean applyToDerivatives) {
         this.hazardType = hazardType;
         this.effects.add(effect);
         this.damage = damage;
@@ -59,12 +62,12 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
     }
 
     @Override
-    public void verifyProperty(MaterialProperties properties) {
-
-    }
+    public void verifyProperty(MaterialProperties properties) {}
 
     public enum HazardType {
-        INHALATION_POISON(ProtectionType.MASK, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny, TagPrefix.dustImpure, TagPrefix.dustPure),
+
+        INHALATION_POISON(ProtectionType.MASK, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny,
+                TagPrefix.dustPure, TagPrefix.dustImpure),
         CONTACT_POISON(ProtectionType.FULL),
         RADIOACTIVE(ProtectionType.FULL),
         CORROSIVE(ProtectionType.HANDS, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny),
@@ -82,13 +85,13 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         }
 
         public boolean isAffected(TagPrefix prefix) {
-            if (affectedTagPrefixes.isEmpty())
-                return true; //empty list means all prefixes are affected
+            if (affectedTagPrefixes.isEmpty()) return true; // empty list means all prefixes are affected
             return affectedTagPrefixes.contains(prefix);
         }
     }
 
     public enum ProtectionType {
+
         MASK(ArmorItem.Type.HELMET),
         HANDS(ArmorItem.Type.CHESTPLATE),
         FULL(ArmorItem.Type.BOOTS, ArmorItem.Type.HELMET, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.LEGGINGS);
@@ -104,7 +107,9 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
             Set<ArmorItem.Type> correctArmorItems = new HashSet<>();
             for (ArmorItem.Type equipmentType : equipmentTypes) {
                 ItemStack armor = livingEntity.getItemBySlot(equipmentType.getSlot());
-                if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem && armorItem.getArmorLogic().isPPE()) || armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
+                if (!armor.isEmpty() && ((armor.getItem() instanceof ArmorComponentItem armorItem &&
+                        armorItem.getArmorLogic().isPPE()) ||
+                        armor.getTags().anyMatch(tag -> tag.equals(CustomTags.PPE_ARMOR)))) {
                     correctArmorItems.add(equipmentType);
                 }
             }
@@ -141,8 +146,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
      * @param damage amount of damage applied every {@code delay} seconds.
      * @param delay damage is applied every {@code delay} seconds
      */
-    public record HazardDamage(int damage, int delay) {
-    }
+    public record HazardDamage(int damage, int delay) {}
 
     /**
      * A group of effects applied by a hazard.
@@ -152,6 +156,7 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
      * @param modifiers the attribute modifiers, if any.
      */
     public record HazardEffect(int duration, int modifierStartTime, List<Supplier<MobEffectInstance>> effects, Map<Attribute, AttributeModifier> modifiers, int newMaxAirSupply) {
+
         @SafeVarargs
         public HazardEffect(int duration, Supplier<MobEffectInstance>... effects) {
             this(duration, 0, Arrays.stream(effects).toList(), Object2ObjectMaps.emptyMap(), -1);
@@ -252,5 +257,4 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
             return new HazardEffect(duration, modifierStartTime, effects, modifiers, maxAirModifier);
         }
     }
-
 }

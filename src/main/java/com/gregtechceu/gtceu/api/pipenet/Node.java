@@ -1,6 +1,5 @@
 package com.gregtechceu.gtceu.api.pipenet;
 
-
 import net.minecraft.core.Direction;
 
 /**

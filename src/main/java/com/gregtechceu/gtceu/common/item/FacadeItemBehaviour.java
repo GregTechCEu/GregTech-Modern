@@ -1,12 +1,13 @@
 package com.gregtechceu.gtceu.common.item;
 
-import com.google.common.collect.ImmutableList;
-import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
-import com.gregtechceu.gtceu.common.data.GTBlocks;
 import com.gregtechceu.gtceu.api.item.component.ICustomDescriptionId;
 import com.gregtechceu.gtceu.api.item.component.ICustomRenderer;
 import com.gregtechceu.gtceu.api.item.component.ISubItemHandler;
+import com.gregtechceu.gtceu.client.renderer.cover.FacadeCoverRenderer;
+import com.gregtechceu.gtceu.common.data.GTBlocks;
+
 import com.lowdragmc.lowdraglib.client.renderer.IRenderer;
+
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
@@ -17,9 +18,11 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.RenderShape;
-import org.jetbrains.annotations.NotNull;
 
+import com.google.common.collect.ImmutableList;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+
 import java.util.List;
 import java.util.Objects;
 
@@ -44,7 +47,8 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
 
     @Override
     public void fillItemCategory(Item item, CreativeModeTab category, NonNullList<ItemStack> items) {
-        List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE), GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
+        List<ItemStack> validFacades = ImmutableList.of(new ItemStack(Blocks.STONE),
+                GTBlocks.COIL_CUPRONICKEL.asStack(), new ItemStack(Blocks.GLASS));
         for (ItemStack facadeStack : validFacades) {
             ItemStack resultStack = item.getDefaultInstance();
             setFacadeStack(resultStack, facadeStack);
@@ -93,5 +97,4 @@ public class FacadeItemBehaviour implements ISubItemHandler, ICustomDescriptionI
         }
         return facadeStack;
     }
-
 }

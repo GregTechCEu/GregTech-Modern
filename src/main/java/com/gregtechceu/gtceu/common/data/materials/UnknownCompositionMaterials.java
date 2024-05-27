@@ -15,7 +15,6 @@ import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
 public class UnknownCompositionMaterials {
 
     public static void register() {
-
         WoodGas = new Material.Builder(GTCEu.id("wood_gas"))
                 .gas()
                 .color(0xDECD87).secondaryColor(0xdeb287)
@@ -365,7 +364,8 @@ public class UnknownCompositionMaterials {
                 .dust(1)
                 .liquid(new FluidBuilder().temperature(500))
                 .color(0xfcb34c).secondaryColor(0xce7533).iconSet(SHINY)
-                .flags(NO_SMASHING, GENERATE_PLATE, EXCLUDE_PLATE_COMPRESSOR_RECIPE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
+                .flags(NO_SMASHING, GENERATE_PLATE, EXCLUDE_PLATE_COMPRESSOR_RECIPE,
+                        EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES)
                 .buildAndRegister();
 
         NetherStar = new Material.Builder(GTCEu.id("nether_star"))
@@ -435,7 +435,8 @@ public class UnknownCompositionMaterials {
                 .color(0xc29f6d).secondaryColor(0x643200).iconSet(WOOD)
                 .fluidPipeProperties(340, 5, false)
                 .toolStats(ToolProperty.Builder.of(1.0F, 1.0F, 128, 1, GTToolType.SOFT_MALLET).build())
-                .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR, GENERATE_FRAME)
+                .flags(GENERATE_PLATE, GENERATE_ROD, GENERATE_BOLT_SCREW, GENERATE_LONG_ROD, FLAMMABLE, GENERATE_GEAR,
+                        GENERATE_FRAME)
                 .buildAndRegister();
 
         Paper = new Material.Builder(GTCEu.id("paper"))

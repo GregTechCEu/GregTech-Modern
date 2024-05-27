@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.data.recipe.misc;
 
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.common.data.GTMaterials;
+
 import net.minecraft.data.recipes.FinishedRecipe;
 
 import java.util.function.Consumer;
@@ -12,11 +13,10 @@ import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.FUSION_RECIPES;
 public class FusionLoader {
 
     public static void init(Consumer<FinishedRecipe> provider) {
-
         FUSION_RECIPES.recipeBuilder("deuterium_and_tritium_to_helium_plasma")
                 .inputFluids(GTMaterials.Deuterium.getFluid(125))
                 .inputFluids(GTMaterials.Tritium.getFluid(125))
-                .outputFluids(GTMaterials.Helium.getFluid(FluidStorageKeys.PLASMA,125))
+                .outputFluids(GTMaterials.Helium.getFluid(FluidStorageKeys.PLASMA, 125))
                 .duration(16)
                 .EUt(4096)
                 .fusionStartEU(40_000_000)
@@ -25,7 +25,7 @@ public class FusionLoader {
         FUSION_RECIPES.recipeBuilder("carbon_and_helium_3_to_oxygen_plasma")
                 .inputFluids(GTMaterials.Carbon.getFluid(16))
                 .inputFluids(GTMaterials.Helium3.getFluid(125))
-                .outputFluids(GTMaterials.Oxygen.getFluid(FluidStorageKeys.PLASMA,125))
+                .outputFluids(GTMaterials.Oxygen.getFluid(FluidStorageKeys.PLASMA, 125))
                 .duration(32)
                 .EUt(4096)
                 .fusionStartEU(180_000_000)
@@ -34,7 +34,7 @@ public class FusionLoader {
         FUSION_RECIPES.recipeBuilder("beryllium_and_deuterium_to_nitrogen_plasma")
                 .inputFluids(GTMaterials.Beryllium.getFluid(16))
                 .inputFluids(GTMaterials.Deuterium.getFluid(375))
-                .outputFluids(GTMaterials.Nitrogen.getFluid(FluidStorageKeys.PLASMA,125))
+                .outputFluids(GTMaterials.Nitrogen.getFluid(FluidStorageKeys.PLASMA, 125))
                 .duration(16)
                 .EUt(16384)
                 .fusionStartEU(280_000_000)
@@ -43,7 +43,7 @@ public class FusionLoader {
         FUSION_RECIPES.recipeBuilder("silicon_and_magnesium_to_iron_plasma")
                 .inputFluids(GTMaterials.Silicon.getFluid(16))
                 .inputFluids(GTMaterials.Magnesium.getFluid(16))
-                .outputFluids(GTMaterials.Iron.getFluid(FluidStorageKeys.PLASMA,16))
+                .outputFluids(GTMaterials.Iron.getFluid(FluidStorageKeys.PLASMA, 16))
                 .duration(32)
                 .EUt(VA[IV])
                 .fusionStartEU(360_000_000)
@@ -52,7 +52,7 @@ public class FusionLoader {
         FUSION_RECIPES.recipeBuilder("potassium_and_fluorine_to_nickel_plasma")
                 .inputFluids(GTMaterials.Potassium.getFluid(16))
                 .inputFluids(GTMaterials.Fluorine.getFluid(125))
-                .outputFluids(GTMaterials.Nickel.getFluid(FluidStorageKeys.PLASMA,16))
+                .outputFluids(GTMaterials.Nickel.getFluid(FluidStorageKeys.PLASMA, 16))
                 .duration(16)
                 .EUt(VA[LuV])
                 .fusionStartEU(480_000_000)
@@ -61,7 +61,7 @@ public class FusionLoader {
         FUSION_RECIPES.recipeBuilder("carbon_and_magnesium_to_argon_plasma")
                 .inputFluids(GTMaterials.Carbon.getFluid(16))
                 .inputFluids(GTMaterials.Magnesium.getFluid(16))
-                .outputFluids(GTMaterials.Argon.getFluid(FluidStorageKeys.PLASMA,125))
+                .outputFluids(GTMaterials.Argon.getFluid(FluidStorageKeys.PLASMA, 125))
                 .duration(32)
                 .EUt(24576)
                 .fusionStartEU(180_000_000)
@@ -210,6 +210,5 @@ public class FusionLoader {
                 .EUt(VA[LuV])
                 .fusionStartEU(200_000_000)
                 .save(provider);
-
     }
 }

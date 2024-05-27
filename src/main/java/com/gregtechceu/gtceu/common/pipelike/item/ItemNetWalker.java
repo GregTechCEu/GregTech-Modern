@@ -8,6 +8,7 @@ import com.gregtechceu.gtceu.common.blockentity.ItemPipeBlockEntity;
 import com.gregtechceu.gtceu.common.cover.ItemFilterCover;
 import com.gregtechceu.gtceu.common.cover.ShutterCover;
 import com.gregtechceu.gtceu.common.cover.data.ItemFilterMode;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.world.item.ItemStack;
@@ -15,6 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraftforge.common.capabilities.ForgeCapabilities;
 import net.minecraftforge.common.util.LazyOptional;
 import net.minecraftforge.items.IItemHandler;
+
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -35,7 +37,7 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
             walker.facingToHandler = sourceFacing;
             walker.traversePipeNet();
             return walker.inventories;
-        } catch (Exception e){
+        } catch (Exception e) {
             GTCEu.LOGGER.error("error while create net data for ItemPipeNet", e);
         }
         return null;
@@ -48,7 +50,8 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
     private BlockPos sourcePipe;
     private Direction facingToHandler;
 
-    protected ItemNetWalker(ItemPipeNet world, BlockPos sourcePipe, int distance, List<ItemRoutePath> inventories, ItemPipeProperties properties) {
+    protected ItemNetWalker(ItemPipeNet world, BlockPos sourcePipe, int distance, List<ItemRoutePath> inventories,
+                            ItemPipeProperties properties) {
         super(world, sourcePipe, distance);
         this.inventories = inventories;
         this.minProperties = properties;
@@ -56,7 +59,10 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
 
     @NotNull
     @Override
-    protected PipeNetWalker<ItemPipeBlockEntity, ItemPipeProperties, ItemPipeNet> createSubWalker(ItemPipeNet pipeNet, Direction facingToNextPos, BlockPos nextPos, int walkedBlocks) {
+    protected PipeNetWalker<ItemPipeBlockEntity, ItemPipeProperties, ItemPipeNet> createSubWalker(ItemPipeNet pipeNet,
+                                                                                                  Direction facingToNextPos,
+                                                                                                  BlockPos nextPos,
+                                                                                                  int walkedBlocks) {
         ItemNetWalker walker = new ItemNetWalker(pipeNet, nextPos, walkedBlocks, inventories, minProperties);
         walker.facingToHandler = facingToHandler;
         walker.sourcePipe = sourcePipe;
@@ -86,16 +92,18 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
             minProperties = pipeProperties;
         } else {
             minProperties = new ItemPipeProperties(minProperties.getPriority() + pipeProperties.getPriority(),
-                Math.min(minProperties.getTransferRate(), pipeProperties.getTransferRate()));
+                    Math.min(minProperties.getTransferRate(), pipeProperties.getTransferRate()));
         }
     }
 
     @Override
-    protected void checkNeighbour(ItemPipeBlockEntity pipeTile, BlockPos pipePos, Direction faceToNeighbour, @Nullable BlockEntity neighbourTile) {
+    protected void checkNeighbour(ItemPipeBlockEntity pipeTile, BlockPos pipePos, Direction faceToNeighbour,
+                                  @Nullable BlockEntity neighbourTile) {
         if (neighbourTile == null || (pipePos.equals(sourcePipe) && faceToNeighbour == facingToHandler)) {
             return;
         }
-        LazyOptional<IItemHandler> handler = neighbourTile.getCapability(ForgeCapabilities.ITEM_HANDLER, faceToNeighbour.getOpposite());
+        LazyOptional<IItemHandler> handler = neighbourTile.getCapability(ForgeCapabilities.ITEM_HANDLER,
+                faceToNeighbour.getOpposite());
         if (handler.isPresent()) {
             List<Predicate<ItemStack>> filters = new ArrayList<>(this.filters);
             List<Predicate<ItemStack>> moreFilters = nextFilters.get(faceToNeighbour);
@@ -107,22 +115,23 @@ public class ItemNetWalker extends PipeNetWalker<ItemPipeBlockEntity, ItemPipePr
     }
 
     @Override
-    protected boolean isValidPipe(ItemPipeBlockEntity currentPipe, ItemPipeBlockEntity neighbourPipe, BlockPos pipePos, Direction faceToNeighbour) {
+    protected boolean isValidPipe(ItemPipeBlockEntity currentPipe, ItemPipeBlockEntity neighbourPipe, BlockPos pipePos,
+                                  Direction faceToNeighbour) {
         CoverBehavior thisCover = currentPipe.getCoverContainer().getCoverAtSide(faceToNeighbour);
         CoverBehavior neighbourCover = neighbourPipe.getCoverContainer().getCoverAtSide(faceToNeighbour.getOpposite());
         List<Predicate<ItemStack>> filters = new ArrayList<>();
         if (thisCover instanceof ShutterCover shutter) {
             filters.add(stack -> !shutter.isWorkingEnabled());
         } else if (thisCover instanceof ItemFilterCover itemFilterCover &&
-            itemFilterCover.getFilterMode() != ItemFilterMode.FILTER_INSERT) {
-            filters.add(itemFilterCover.getItemFilter());
-        }
+                itemFilterCover.getFilterMode() != ItemFilterMode.FILTER_INSERT) {
+                    filters.add(itemFilterCover.getItemFilter());
+                }
         if (neighbourCover instanceof ShutterCover shutter) {
             filters.add(stack -> !shutter.isWorkingEnabled());
         } else if (neighbourCover instanceof ItemFilterCover itemFilterCover &&
-            itemFilterCover.getFilterMode() != ItemFilterMode.FILTER_EXTRACT) {
-            filters.add(itemFilterCover.getItemFilter());
-        }
+                itemFilterCover.getFilterMode() != ItemFilterMode.FILTER_EXTRACT) {
+                    filters.add(itemFilterCover.getItemFilter());
+                }
         if (!filters.isEmpty()) {
             nextFilters.put(faceToNeighbour, filters);
         }

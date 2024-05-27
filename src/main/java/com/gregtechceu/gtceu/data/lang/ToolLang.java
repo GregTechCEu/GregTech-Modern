@@ -1,7 +1,5 @@
 package com.gregtechceu.gtceu.data.lang;
 
-import com.gregtechceu.gtceu.common.data.GTItems;
-import com.lowdragmc.lowdraglib.utils.LocalizationUtils;
 import com.tterrag.registrate.providers.RegistrateLangProvider;
 
 public class ToolLang {
@@ -51,7 +49,5 @@ public class ToolLang {
         provider.add("death.attack.gtceu.screwdriver_lv", "%s had their screws removed by %s");
     }
 
-    private static void initToolInfo(RegistrateLangProvider provider) {
-
-    }
+    private static void initToolInfo(RegistrateLangProvider provider) {}
 }

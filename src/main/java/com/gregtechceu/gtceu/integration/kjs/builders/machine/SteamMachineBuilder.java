@@ -23,20 +23,24 @@ import static com.gregtechceu.gtceu.utils.FormattingUtil.toEnglishName;
 public class SteamMachineBuilder extends MachineBuilder<MachineDefinition> {
 
     public SteamMachineBuilder(String id, boolean isHighPressure, Object... args) {
-        super(GTRegistration.REGISTRATE, id, MachineDefinition::createDefinition, holder -> new SimpleSteamMachine(holder, isHighPressure, args), MetaMachineBlock::new, MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
+        super(GTRegistration.REGISTRATE, id, MachineDefinition::createDefinition,
+                holder -> new SimpleSteamMachine(holder, isHighPressure, args), MetaMachineBlock::new,
+                MetaMachineItem::new, MetaMachineBlockEntity::createBlockEntity);
     }
 
     public static <T extends MachineBuilder<? extends MachineDefinition>> void simple(T builder, int tier) {
         builder.langValue("%s %s %s".formatted(VLVH[tier], toEnglishName(builder.id.getPath()), VLVT[tier]))
                 .rotationState(RotationState.NON_Y_AXIS)
-                //.recipeType(recipeType)
+                // .recipeType(recipeType)
                 .recipeModifier(SimpleSteamMachine::recipeModifier)
-                .renderer(() -> new WorkableSteamMachineRenderer(tier > 0, GTCEu.id("block/machines/" + builder.id.getPath())));
+                .renderer(() -> new WorkableSteamMachineRenderer(tier > 0,
+                        GTCEu.id("block/machines/" + builder.id.getPath())));
     }
 
     private static SteamMachineBuilder[] createBuilder(String name, boolean hasHighPressure, Object... args) {
         SteamMachineBuilder lp = new SteamMachineBuilder("lp_" + name, false, args);
-        return hasHighPressure ? new SteamMachineBuilder[] { lp, new SteamMachineBuilder("hp_" + name, true, args) } : new SteamMachineBuilder[] { lp };
+        return hasHighPressure ? new SteamMachineBuilder[] { lp, new SteamMachineBuilder("hp_" + name, true, args) } :
+                new SteamMachineBuilder[] { lp };
     }
 
     public static MachineBuilder<MachineDefinition> createBoth(String name, Object... args) {
@@ -56,6 +60,7 @@ public class SteamMachineBuilder extends MachineBuilder<MachineDefinition> {
             builders = createBuilder(name, true, args);
         }
 
-        return MachineFunctionPresets.builder(name, builders, SteamMachineBuilder.class, MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
+        return MachineFunctionPresets.builder(name, builders, SteamMachineBuilder.class,
+                MachineDefinition::createDefinition, MetaMachineBlock::new, MetaMachineBlockEntity::createBlockEntity);
     }
 }

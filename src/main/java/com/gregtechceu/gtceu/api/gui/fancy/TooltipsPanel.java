@@ -2,12 +2,13 @@ package com.gregtechceu.gtceu.api.gui.fancy;
 
 import com.lowdragmc.lowdraglib.gui.widget.Widget;
 import com.lowdragmc.lowdraglib.utils.Size;
-import com.mojang.blaze3d.vertex.PoseStack;
-import lombok.Getter;
+
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.world.item.ItemStack;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
+import lombok.Getter;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
  * @implNote TooltipsPanel
  */
 public class TooltipsPanel extends Widget {
+
     @Getter
     protected List<IFancyTooltip> tooltips = new ArrayList<>();
 
@@ -45,7 +47,8 @@ public class TooltipsPanel extends Widget {
         for (IFancyTooltip tooltip : this.tooltips) {
             if (tooltip.showFancyTooltip()) {
                 // draw icon
-                tooltip.getFancyTooltipIcon().draw(graphics, mouseX, mouseY, position.x, position.y + offsetY, size.width, size.width);
+                tooltip.getFancyTooltipIcon().draw(graphics, mouseX, mouseY, position.x, position.y + offsetY,
+                        size.width, size.width);
                 offsetY += size.getWidth() + 2;
             }
         }
@@ -62,7 +65,8 @@ public class TooltipsPanel extends Widget {
             for (IFancyTooltip tooltip : this.tooltips) {
                 if (tooltip.showFancyTooltip()) {
                     if (isMouseOver(position.x, position.y + offsetY, size.width, size.width, mouseX, mouseY)) {
-                        gui.getModularUIGui().setHoverTooltip(tooltip.getFancyTooltip(), ItemStack.EMPTY, null, tooltip.getFancyComponent());
+                        gui.getModularUIGui().setHoverTooltip(tooltip.getFancyTooltip(), ItemStack.EMPTY, null,
+                                tooltip.getFancyComponent());
                         return;
                     }
                     offsetY += size.getWidth() + 2;

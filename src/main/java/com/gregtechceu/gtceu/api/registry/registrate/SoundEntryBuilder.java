@@ -1,12 +1,12 @@
 package com.gregtechceu.gtceu.api.registry.registrate;
 
-import com.google.gson.JsonObject;
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
-import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.registry.GTRegistries;
 import com.gregtechceu.gtceu.api.sound.ConfiguredSoundEvent;
+import com.gregtechceu.gtceu.api.sound.CustomSoundEntry;
+import com.gregtechceu.gtceu.api.sound.SoundEntry;
 import com.gregtechceu.gtceu.api.sound.WrappedSoundEntry;
+
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
@@ -15,11 +15,14 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 
-import javax.annotation.ParametersAreNonnullByDefault;
+import com.google.gson.JsonObject;
+
 import java.nio.file.Path;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
+
+import javax.annotation.ParametersAreNonnullByDefault;
 
 /**
  * @author KilaBash
@@ -31,6 +34,7 @@ import java.util.function.Supplier;
 public class SoundEntryBuilder {
 
     public static class SoundEntryProvider implements DataProvider {
+
         private final PackOutput output;
         private final String modId;
 
@@ -55,11 +59,9 @@ public class SoundEntryBuilder {
                 for (SoundEntry sound : GTRegistries.SOUNDS) {
                     if (sound.getId().getNamespace().equals(modId)) sound.write(json);
                 }
-            } catch (Exception ignored) {
-            }
+            } catch (Exception ignored) {}
             return DataProvider.saveStable(cache, json, path.resolve("sounds.json"));
         }
-
     }
 
     protected ResourceLocation id;
@@ -118,11 +120,10 @@ public class SoundEntryBuilder {
     }
 
     public SoundEntry build() {
-        SoundEntry entry =
-                wrappedEvents.isEmpty() ? new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance)
-                        : new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
+        SoundEntry entry = wrappedEvents.isEmpty() ?
+                new CustomSoundEntry(id, variants, subtitle, category, attenuationDistance) :
+                new WrappedSoundEntry(id, subtitle, wrappedEvents, category, attenuationDistance);
         GTRegistries.SOUNDS.register(entry.getId(), entry);
         return entry;
     }
-    
 }

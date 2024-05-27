@@ -2,6 +2,7 @@ package com.gregtechceu.gtceu.integration.kjs.recipe.components;
 
 import com.gregtechceu.gtceu.api.capability.recipe.RecipeCapability;
 import com.gregtechceu.gtceu.api.recipe.content.Content;
+
 import dev.latvian.mods.kubejs.recipe.InputReplacement;
 import dev.latvian.mods.kubejs.recipe.OutputReplacement;
 import dev.latvian.mods.kubejs.recipe.RecipeJS;
@@ -14,7 +15,8 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 @NoArgsConstructor
-public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, Content[]> implements InputReplacement, OutputReplacement {
+public class CapabilityMap extends IdentityHashMap<RecipeCapability<?>, Content[]>
+                           implements InputReplacement, OutputReplacement {
 
     public CapabilityMap(Map<RecipeCapability<?>, Content[]> m) {
         super(m);

@@ -15,11 +15,12 @@ import com.gregtechceu.gtceu.common.data.GTElements;
 
 import java.util.List;
 
+import net.minecraft.world.effect.MobEffects;
+
 import static com.gregtechceu.gtceu.api.GTValues.LV;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialFlags.*;
 import static com.gregtechceu.gtceu.api.data.chemical.material.info.MaterialIconSet.*;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-
 
 public class ElementMaterials {
 
@@ -34,7 +35,8 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(933))
                 .ore()
                 .color(0xb6e5ff).secondaryColor(0x7ca29b)
-                .appendFlags(EXT2_METAL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
+                .appendFlags(EXT2_METAL, GENERATE_GEAR, GENERATE_SMALL_GEAR, GENERATE_RING, GENERATE_FRAME,
+                        GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
                 .element(GTElements.Al)
                 .toolStats(ToolProperty.Builder.of(6.0F, 7.5F, 768, 2)
                         .enchantability(14).build())
@@ -254,7 +256,8 @@ public class ElementMaterials {
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1099))
                 .color(0x988b33).secondaryColor(0x032a52).iconSet(METALLIC)
-                .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_FOIL, GENERATE_FRAME)
+                .appendFlags(STD_METAL, GENERATE_LONG_ROD, GENERATE_FINE_WIRE, GENERATE_SPRING, GENERATE_FOIL,
+                        GENERATE_FRAME)
                 .element(GTElements.Eu)
                 .cableProperties(GTValues.V[GTValues.UHV], 2, 32)
                 .fluidPipeProperties(7750, 300, true)
@@ -307,7 +310,8 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(1337))
                 .ore()
                 .color(0xfdf55f).secondaryColor(0xf25833).iconSet(SHINY)
-                .appendFlags(EXT2_METAL, GENERATE_RING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE, GENERATE_FOIL)
+                .appendFlags(EXT2_METAL, GENERATE_RING, MORTAR_GRINDABLE, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
+                        GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE, GENERATE_FOIL)
                 .element(GTElements.Au)
                 .cableProperties(GTValues.V[3], 3, 2)
                 .fluidPipeProperties(1671, 25, true, true, false, false)
@@ -384,7 +388,9 @@ public class ElementMaterials {
                 .plasma()
                 .ore()
                 .color(0xeeeeee).secondaryColor(0x979797).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR, GENERATE_SPRING_SMALL, GENERATE_SPRING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES, BLAST_FURNACE_CALCITE_TRIPLE)
+                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SMALL_GEAR, GENERATE_GEAR,
+                        GENERATE_SPRING_SMALL, GENERATE_SPRING, EXCLUDE_BLOCK_CRAFTING_BY_HAND_RECIPES,
+                        BLAST_FURNACE_CALCITE_TRIPLE)
                 .element(GTElements.Fe)
                 .toolStats(ToolProperty.Builder.of(2.0F, 2.0F, 256, 2)
                         .enchantability(14).addTypes(GTToolType.MORTAR).build())
@@ -418,7 +424,8 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(600))
                 .ore()
                 .color(0x7e6f82).secondaryColor(0x290633)
-                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
+                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
+                        GENERATE_FINE_WIRE)
                 .element(GTElements.Pb)
                 .cableProperties(GTValues.V[0], 2, 2)
                 .fluidPipeProperties(1200, 32, true)
@@ -498,7 +505,7 @@ public class ElementMaterials {
                 .color(0x9a8b94).secondaryColor(0x2c2c2c).iconSet(METALLIC)
                 .appendFlags(STD_METAL, GENERATE_ROD, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nd)
-                .rotorStats(100, 115,2.0f, 512)
+                .rotorStats(100, 115, 2.0f, 512)
                 .blastTemp(1297, GasTier.MID)
                 .buildAndRegister();
 
@@ -808,7 +815,7 @@ public class ElementMaterials {
         Thallium = new Material.Builder(GTCEu.id("thallium"))
                 .color(0xc1c9de).secondaryColor(0x1e576a).iconSet(SHINY)
                 .element(GTElements.Tl)
-                //.poison(PoisonProperty.PoisonType.CONTACT)
+                // .poison(PoisonProperty.PoisonType.CONTACT)
                 .buildAndRegister();
 
         Thulium = new Material.Builder(GTCEu.id("thulium"))
@@ -822,7 +829,8 @@ public class ElementMaterials {
                 .liquid(new FluidBuilder().temperature(505))
                 .ore()
                 .color(0xfafeff).secondaryColor(0x4e676c)
-                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FINE_WIRE)
+                .appendFlags(EXT2_METAL, MORTAR_GRINDABLE, GENERATE_ROTOR, GENERATE_SPRING, GENERATE_SPRING_SMALL,
+                        GENERATE_FINE_WIRE)
                 .element(GTElements.Sn)
                 .cableProperties(GTValues.V[1], 1, 1)
                 .itemPipeProperties(4096, 0.5f)
@@ -852,7 +860,8 @@ public class ElementMaterials {
                 .ingot(3)
                 .liquid(new FluidBuilder().temperature(3695))
                 .color(0x3b3a32).secondaryColor(0x2a2800).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FRAME)
+                .appendFlags(EXT2_METAL, GENERATE_SPRING, GENERATE_SPRING_SMALL, GENERATE_FOIL, GENERATE_GEAR,
+                        GENERATE_FRAME)
                 .element(GTElements.W)
                 .rotorStats(130, 115, 3.0f, 2560)
                 .cableProperties(GTValues.V[5], 2, 2)
@@ -967,10 +976,11 @@ public class ElementMaterials {
                 .ingot(6)
                 .liquid(new FluidBuilder().temperature(25_000))
                 .color(0xc35769).secondaryColor(0x210840).iconSet(METALLIC)
-                .appendFlags(EXT2_METAL, GENERATE_FRAME, GENERATE_RING, GENERATE_SMALL_GEAR, GENERATE_ROUND, GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
+                .appendFlags(EXT2_METAL, GENERATE_FRAME, GENERATE_RING, GENERATE_SMALL_GEAR, GENERATE_ROUND,
+                        GENERATE_FOIL, GENERATE_FINE_WIRE, GENERATE_GEAR)
                 .element(GTElements.Tr)
                 .cableProperties(GTValues.V[8], 1, 8)
-                .rotorStats(220,220, 6.0f, 10240)
+                .rotorStats(220, 220, 6.0f, 10240)
                 .buildAndRegister();
 
         Duranium = new Material.Builder(GTCEu.id("duranium"))
@@ -992,6 +1002,5 @@ public class ElementMaterials {
                 .cableProperties(GTValues.V[7], 6, 4)
                 .blastTemp(7200, GasTier.HIGH, GTValues.VA[GTValues.LuV], 1500)
                 .buildAndRegister();
-
     }
 }
