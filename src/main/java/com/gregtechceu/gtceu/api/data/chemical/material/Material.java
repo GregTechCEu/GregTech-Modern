@@ -1103,16 +1103,17 @@ public class Material implements Comparable<Material> {
             return this;
         }
 
-        public Builder radioactiveHazard(int multiplier) {
+        public Builder radioactiveHazard(float multiplier) {
+            int effectAmplifier = (int) (multiplier - 1);
             properties.setProperty(HAZARD, new HazardProperty(
                 HazardProperty.HazardType.RADIOACTIVE,
                 List.of(
-                    HazardProperty.slownessEffect(-1, 2000 / multiplier, multiplier - 1),
-                    HazardProperty.weaknessEffect(-1, 2000 / multiplier, multiplier - 1),
-                    HazardProperty.miningFautigueEffect(-1, 3000 / multiplier, multiplier - 1),
-                    HazardProperty.maxAirLoweringEffect(1000, 4000 / multiplier, 100),
-                    HazardProperty.maxHealthLoweringEffect(4000, 6000 / multiplier, 10),
-                    HazardProperty.witherEffect(10000, 24000 / multiplier, multiplier - 1)),
+                    HazardProperty.slownessEffect(-1, (int) (2000 / multiplier), effectAmplifier),
+                    HazardProperty.weaknessEffect(-1, (int) (2000 / multiplier), effectAmplifier),
+                    HazardProperty.miningFautigueEffect(-1, (int) (3000 / multiplier), effectAmplifier),
+                    HazardProperty.maxAirLoweringEffect(1000, (int) (4000 / multiplier), (int) (100 / multiplier)),
+                    HazardProperty.maxHealthLoweringEffect(4000, (int) (6000 / multiplier), 10),
+                    HazardProperty.witherEffect(10000, (int) (24000 / multiplier), effectAmplifier)),
                 null,
                 true));
             return this;

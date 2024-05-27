@@ -618,7 +618,7 @@ public class ElementMaterials {
                 .ore(true)
                 .color(0xba2727).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .element(GTElements.Pu239)
-                .radioactiveHazard(1)
+                .radioactiveHazard(1.5f)
                 .buildAndRegister();
 
         Plutonium241 = new Material.Builder(GTCEu.id("plutonium_241"))
@@ -627,7 +627,7 @@ public class ElementMaterials {
                 .color(0xfa7272).secondaryColor(0x222730).iconSet(RADIOACTIVE)
                 .appendFlags(EXT_METAL)
                 .element(GTElements.Pu241)
-                .radioactiveHazard(1)
+                .radioactiveHazard(1.5f)
                 .buildAndRegister();
 
         Potassium = new Material.Builder(GTCEu.id("potassium"))
@@ -927,6 +927,7 @@ public class ElementMaterials {
                 .cableProperties(GTValues.V[7], 2, 2)
                 .fluidPipeProperties(3776, 200, true, false, true, true)
                 .blastTemp(5000, GasTier.HIGH, GTValues.VA[GTValues.IV], 600)
+                .radioactiveHazard(2)
                 .buildAndRegister();
 
         NaquadahEnriched = new Material.Builder(GTCEu.id("enriched_naquadah"))
@@ -936,6 +937,7 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL)
                 .element(GTElements.Nq1)
                 .blastTemp(7000, GasTier.HIGH, GTValues.VA[GTValues.IV], 1000)
+                .radioactiveHazard(2.5f)
                 .buildAndRegister();
 
         Naquadria = new Material.Builder(GTCEu.id("naquadria"))
@@ -945,6 +947,7 @@ public class ElementMaterials {
                 .appendFlags(EXT_METAL, GENERATE_FOIL, GENERATE_GEAR, GENERATE_FINE_WIRE, GENERATE_BOLT_SCREW)
                 .element(GTElements.Nq2)
                 .blastTemp(9000, GasTier.HIGH, GTValues.VA[GTValues.ZPM], 1200)
+                .radioactiveHazard(3)
                 .buildAndRegister();
 
         Neutronium = new Material.Builder(GTCEu.id("neutronium"))
@@ -957,6 +960,7 @@ public class ElementMaterials {
                         .attackSpeed(0.5F).enchantability(33).magnetic().unbreakable().build())
                 .rotorStats(400, 250, 12.0f, 655360)
                 .fluidPipeProperties(100_000, 5000, true, true, true, true)
+                .radioactiveHazard(10)
                 .buildAndRegister();
 
         Tritanium = new Material.Builder(GTCEu.id("tritanium"))
