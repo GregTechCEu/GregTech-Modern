@@ -1,7 +1,6 @@
 package com.gregtechceu.gtceu.common.data;
 
 import com.gregtechceu.gtceu.GTCEu;
-import com.gregtechceu.gtceu.common.commands.arguments.HazardEffectsArgument;
 import com.gregtechceu.gtceu.common.commands.arguments.MaterialArgument;
 
 import net.minecraft.commands.synchronization.ArgumentTypeInfo;
@@ -21,10 +20,6 @@ public class GTCommandArguments {
             .register(
                     "material", () -> ArgumentTypeInfos.registerByClass(MaterialArgument.class,
                             SingletonArgumentInfo.contextFree(MaterialArgument::material)));
-    private static final RegistryObject<SingletonArgumentInfo<HazardEffectsArgument>> HAZARD_EFFECTS_ARGUMENT_TYPE = COMMAND_ARGUMENT_TYPES
-            .register(
-                    "hazard_effects", () -> ArgumentTypeInfos.registerByClass(HazardEffectsArgument.class,
-                            SingletonArgumentInfo.contextFree(HazardEffectsArgument::new)));
 
     public static void init(IEventBus modBus) {
         COMMAND_ARGUMENT_TYPES.register(modBus);
