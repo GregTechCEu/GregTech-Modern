@@ -5,7 +5,15 @@ import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 
 import it.unimi.dsi.fastutil.objects.Object2IntMap;
 
+import java.util.Map;
+import java.util.Set;
+
 public interface IHazardEffectTracker {
+
+    /**
+     * @return a map of the hazard types to their effects.
+     */
+    Map<HazardProperty.HazardType, Set<HazardProperty.HazardEffect>> getTypesToEffects();
 
     /**
      * @return a map of hazard effect to how long it's been applied for.

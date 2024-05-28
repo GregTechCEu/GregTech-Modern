@@ -11,6 +11,7 @@ import com.gregtechceu.gtceu.api.data.chemical.ChemicalHelper;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterial;
 import com.gregtechceu.gtceu.api.data.chemical.material.MarkerMaterials;
 import com.gregtechceu.gtceu.api.data.chemical.material.Material;
+import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardProperty;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.registry.MaterialRegistry;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.ItemMaterialInfo;
@@ -275,7 +276,7 @@ public class GTItems {
             .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
             .register();
 
-    public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[13];
+    public static final ItemEntry<Item>[] SHAPE_MOLDS = new ItemEntry[14];
     public static final ItemEntry<Item> SHAPE_MOLD_PLATE;
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR;
     public static final ItemEntry<Item> SHAPE_MOLD_CREDIT;
@@ -289,6 +290,7 @@ public class GTItems {
     public static final ItemEntry<Item> SHAPE_MOLD_NAME;
     public static final ItemEntry<Item> SHAPE_MOLD_GEAR_SMALL;
     public static final ItemEntry<Item> SHAPE_MOLD_ROTOR;
+    public static final ItemEntry<Item> SHAPE_MOLD_PILL;
 
     static {
         SHAPE_MOLDS[0] = SHAPE_MOLD_PLATE = REGISTRATE.item("plate_casting_mold", Item::new)
@@ -341,6 +343,10 @@ public class GTItems {
                 .register();
         SHAPE_MOLDS[12] = SHAPE_MOLD_ROTOR = REGISTRATE.item("rotor_casting_mold", Item::new)
                 .lang("Casting Mold (Rotor)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
+                .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
+                .register();
+        SHAPE_MOLDS[13] = SHAPE_MOLD_PILL = REGISTRATE.item("pill_casting_mold", Item::new)
+                .lang("Casting Mold (Pill)").onRegister(compassNodeExist(GTCompassSections.MISC, "mold"))
                 .onRegister(materialInfo(new ItemMaterialInfo(new MaterialStack(GTMaterials.Steel, GTValues.M * 4))))
                 .register();
     }
@@ -2231,6 +2237,10 @@ public class GTItems {
     public static ItemEntry<Item> MASK_FILTER = REGISTRATE.item("mask_filter", Item::new)
             .lang("Gas Mask Filter")
             .properties(p -> p.stacksTo(1))
+            .register();
+    public static ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
+            .lang("Paracetamol")
+            .onRegister(attach(new AntidoteBehaviour(100, HazardProperty.HazardType.values())))
             .register();
 
     public static ItemEntry<Item> NANO_SABER;

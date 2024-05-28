@@ -571,5 +571,28 @@ public class OrganicChemistryMaterials {
                 .hazard(HazardProperty.HazardType.INHALATION_POISON)
                 .buildAndRegister()
                 .setFormula("(C6H4Cl)2", true);
+
+        AceticAnhydride = new Material.Builder(GTCEu.id("acetic_anhydride"))
+                .fluid()
+                .color(0xE0D182)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 4, Hydrogen, 6, Oxygen, 3)
+                .buildAndRegister()
+                .setFormula("(CH3CO)2O", true);
+
+        AminoPhenol = new Material.Builder(GTCEu.id("aminophenol"))
+                .fluid()
+                .color(0x784421)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 6, Hydrogen, 7, Nitrogen, 1, Oxygen, 1)
+                .buildAndRegister()
+                .setFormula("H2NC6H4OH", true);
+
+        Paracetamol = new Material.Builder(GTCEu.id("paracetamol"))
+                .dust()
+                .color(0xF2EDCB)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 8, Hydrogen, 9, Nitrogen, 1, Oxygen, 2)
+                .buildAndRegister();
     }
 }

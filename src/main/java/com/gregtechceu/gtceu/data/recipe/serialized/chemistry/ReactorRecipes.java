@@ -16,8 +16,7 @@ import static com.gregtechceu.gtceu.api.GTValues.*;
 import static com.gregtechceu.gtceu.api.data.tag.TagPrefix.*;
 import static com.gregtechceu.gtceu.common.data.GTItems.GELLED_TOLUENE;
 import static com.gregtechceu.gtceu.common.data.GTMaterials.*;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.CHEMICAL_RECIPES;
-import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.LARGE_CHEMICAL_RECIPES;
+import static com.gregtechceu.gtceu.common.data.GTRecipeTypes.*;
 
 public class ReactorRecipes {
 
@@ -727,5 +726,32 @@ public class ReactorRecipes {
                 .outputFluids(PolychlorinatedBiphenyl.getFluid(1000))
                 .outputFluids(HydrochloricAcid.getFluid(2000))
                 .duration(200).EUt(VH[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("acetic_anhydride")
+                .inputFluids(Ethenone.getFluid(1000))
+                .inputFluids(AceticAcid.getFluid(1000))
+                .outputFluids(AceticAnhydride.getFluid(1000))
+                .duration(200).EUt(VH[LV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("aminophenol")
+                .inputFluids(Phenol.getFluid(1000))
+                .inputFluids(NitrationMixture.getFluid(1000))
+                .notConsumable(dust, Iron)
+                .outputFluids(AminoPhenol.getFluid(1000))
+                .outputFluids(DilutedSulfuricAcid.getFluid(1000))
+                .duration(300).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("paracetamol")
+                .inputFluids(AceticAnhydride.getFluid(1000))
+                .inputFluids(AminoPhenol.getFluid(1000))
+                .outputItems(dust, Paracetamol, 1)
+                .outputFluids(AceticAcid.getFluid(1000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CANNER_RECIPES.recipeBuilder("pack_paracetamol")
+                .inputItems(dust, Paracetamol, 16)
+                .notConsumable(GTItems.SHAPE_MOLD_PILL)
+                .outputItems(GTItems.PARACETAMOL_PILL.asStack(16))
+                .duration(60).EUt(VA[LV]).save(provider);
     }
 }

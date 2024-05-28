@@ -713,6 +713,9 @@ public class GTMaterials {
     public static Material PolyvinylButyral;
     public static Material Biphenyl;
     public static Material PolychlorinatedBiphenyl;
+    public static Material AceticAnhydride;
+    public static Material AminoPhenol;
+    public static Material Paracetamol;
 
     /**
      * Not possible to determine exact Components

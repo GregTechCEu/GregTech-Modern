@@ -7,7 +7,12 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.HazardPropert
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.stack.UnificationEntry;
 import com.gregtechceu.gtceu.api.data.tag.TagPrefix;
-
+import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
+import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
+import it.unimi.dsi.fastutil.objects.Object2IntMap;
+import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
+import lombok.Getter;
+import lombok.Setter;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.Tag;
@@ -17,15 +22,11 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraftforge.common.util.INBTSerializable;
+import org.jetbrains.annotations.Nullable;
 
-import it.unimi.dsi.fastutil.objects.Object2BooleanMap;
-import it.unimi.dsi.fastutil.objects.Object2BooleanOpenHashMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.Object2IntOpenHashMap;
-import lombok.Getter;
-import lombok.Setter;
-
+import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializable<CompoundTag> {
@@ -36,6 +37,8 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
 
     @Getter
     private final Object2IntMap<UnificationEntry> entryToAmount = new Object2IntOpenHashMap<>();
+    @Getter
+    private final Map<HazardProperty.HazardType, Set<HazardProperty.HazardEffect>> typesToEffects = new EnumMap<>(HazardProperty.HazardType.class);
     @Getter
     private final Object2IntMap<HazardProperty.HazardEffect> currentHazardEffects = new Object2IntOpenHashMap<>();
 
@@ -135,6 +138,10 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
         for (var effect : currentHazardEffects.object2IntEntrySet()) {
             CompoundTag effectTag = new CompoundTag();
             effectTag.put("effect", effect.getKey().serializeNBT());
+            HazardProperty.HazardType type = getType(effect.getKey());
+            if (type != null) {
+                effectTag.putByte("type", (byte) type.ordinal());
+            }
             effectTag.putInt("time", effect.getIntValue());
             effectsTag.add(effectTag);
         }
@@ -167,6 +174,13 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
                     .deserializeNBT(compoundTag.getCompound("effect"));
             int time = compoundTag.getInt("time");
             currentHazardEffects.put(effect, time);
+            if (compoundTag.contains("type", Tag.TAG_BYTE)) {
+                HazardProperty.HazardType type = HazardProperty.HazardType.values()[compoundTag.getByte("type")];
+                if (!typesToEffects.containsKey(type)) {
+                    typesToEffects.put(type, new HashSet<>());
+                }
+                typesToEffects.get(type).add(effect);
+            }
         }
     }
 
@@ -193,5 +207,15 @@ public class HazardEffectTracker implements IHazardEffectTracker, INBTSerializab
                 this.currentHazardEffects.put(effect, 0);
             }
         }
+    }
+
+    @Nullable
+    public HazardProperty.HazardType getType(HazardProperty.HazardEffect value) {
+        for (var entry : typesToEffects.entrySet()) {
+            if (entry.getValue().contains(value)) {
+                return entry.getKey();
+            }
+        }
+        return null;
     }
 }
