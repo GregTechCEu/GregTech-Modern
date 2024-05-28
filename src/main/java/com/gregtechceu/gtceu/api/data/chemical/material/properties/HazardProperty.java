@@ -74,6 +74,8 @@ public class HazardProperty implements IMaterialProperty<HazardProperty> {
         CORROSIVE(ProtectionType.HANDS, TagPrefix.dust, TagPrefix.dustSmall, TagPrefix.dustTiny),
         NONE(ProtectionType.FULL);
 
+        public static final HazardType[] ALL = { INHALATION_POISON, CONTACT_POISON, RADIOACTIVE, CORROSIVE };
+
         private final Set<TagPrefix> affectedTagPrefixes = new HashSet<>();
         @Getter
         private final ProtectionType protectionType;
