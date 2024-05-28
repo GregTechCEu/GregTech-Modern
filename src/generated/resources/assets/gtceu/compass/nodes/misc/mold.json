@@ -16,7 +16,8 @@
     "gtceu:anvil_casting_mold",
     "gtceu:name_casting_mold",
     "gtceu:small_gear_casting_mold",
-    "gtceu:rotor_casting_mold"
+    "gtceu:rotor_casting_mold",
+    "gtceu:pill_casting_mold"
   ],
   "page": "gtceu:misc/mold",
   "position": [

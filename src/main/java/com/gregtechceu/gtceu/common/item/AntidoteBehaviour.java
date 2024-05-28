@@ -7,11 +7,13 @@ import com.gregtechceu.gtceu.api.item.component.IAddInformation;
 import com.gregtechceu.gtceu.api.item.component.IInteractionItem;
 import com.gregtechceu.gtceu.config.ConfigHolder;
 import com.gregtechceu.gtceu.utils.GTUtil;
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.level.Level;
+
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Arrays;
@@ -21,10 +23,12 @@ import java.util.stream.Collectors;
 
 /**
  * Defines an antidote for a hazard (e.g. poisoning)
- * @param types the type of the hazard to remove
+ * 
+ * @param types        the type of the hazard to remove
  * @param timeToRemove the time to remove from the chosen hazard. -1 for all.
  */
-public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeToRemove) implements IInteractionItem, IAddInformation {
+public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeToRemove)
+        implements IInteractionItem, IAddInformation {
 
     public AntidoteBehaviour(int timeToRemove, HazardProperty.HazardType... types) {
         this(Arrays.stream(types).collect(Collectors.toSet()), timeToRemove);
@@ -60,7 +64,8 @@ public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeTo
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents, TooltipFlag isAdvanced) {
+    public void appendHoverText(ItemStack stack, @Nullable Level level, List<Component> tooltipComponents,
+                                TooltipFlag isAdvanced) {
         if (!ConfigHolder.INSTANCE.gameplay.hazardsEnabled) return;
 
         if (GTUtil.isShiftDown()) {

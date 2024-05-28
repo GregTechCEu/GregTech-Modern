@@ -2239,7 +2239,7 @@ public class GTItems {
             .properties(p -> p.stacksTo(1))
             .register();
     public static ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
-            .lang("Paracetamol")
+            .lang("Paracetamol Pill")
             .onRegister(attach(new AntidoteBehaviour(100, HazardProperty.HazardType.values())))
             .register();
 
