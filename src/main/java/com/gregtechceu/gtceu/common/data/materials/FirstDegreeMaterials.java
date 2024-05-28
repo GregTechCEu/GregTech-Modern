@@ -1496,5 +1496,40 @@ public class FirstDegreeMaterials {
                 .flags()
                 .components(Calcium, 2, Niobium, 2, Oxygen, 7)
                 .buildAndRegister();
+
+        AcidicBromineSolution = new Material.Builder(GTCEu.id("acidic_bromine_solution"))
+                .liquid()
+                .color(0xc49b52)
+                .components(Chlorine, 1, Bromine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        ConcentratedBromineSolution = new Material.Builder(GTCEu.id("concentrated_bromine_solution"))
+                .liquid()
+                .color(0x91481e)
+                .components(Bromine, 2, Chlorine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        Iodide = new Material.Builder(GTCEu.id("iodide"))
+                .liquid()
+                .color(0x5f6173)
+                .components(Iodine, 2)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        IodineSolution = new Material.Builder(GTCEu.id("iodine_solution"))
+                .liquid()
+                .color(0x9194a3)
+                .components(Hydrogen, 1, Iodine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        DiluteIodineSolution = new Material.Builder(GTCEu.id("dilute_iodine_solution"))
+                .liquid()
+                .color(0x8187a6)
+                .components(Hydrogen, 1, Iodine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
     }
 }

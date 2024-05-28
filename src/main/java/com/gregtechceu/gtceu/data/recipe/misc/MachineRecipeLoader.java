@@ -677,6 +677,12 @@ public class MachineRecipeLoader {
                 .outputItems(
                         GTBlocks.CASING_PALLADIUM_SUBSTATION.asStack(ConfigHolder.INSTANCE.recipes.casingsPerCraft))
                 .duration(50).save(provider);
+        ASSEMBLER_RECIPES.recipeBuilder("casing_stainless_evaporation")
+                .inputItems(GTBlocks.CASING_STAINLESS_CLEAN.asStack(1))
+                .inputItems(wireGtDouble, AnnealedCopper, 4)
+                .inputFluids(PolyvinylChloride.getFluid(L * 2))
+                .outputItems(GTBlocks.CASING_STAINLESS_EVAPORATION.asStack(1))
+                .duration(30).EUt(VA[HV]).save(provider);
 
         ASSEMBLER_RECIPES.recipeBuilder("casing_ptfe_inert").EUt(16).inputItems(GTBlocks.CASING_STEEL_SOLID.asStack())
                 .inputFluids(Polytetrafluoroethylene.getFluid(216)).circuitMeta(6)

@@ -9,6 +9,7 @@ import com.gregtechceu.gtceu.api.data.chemical.material.properties.PropertyKey;
 import com.gregtechceu.gtceu.api.data.chemical.material.properties.ToolProperty;
 import com.gregtechceu.gtceu.api.fluids.FluidBuilder;
 import com.gregtechceu.gtceu.api.fluids.FluidState;
+import com.gregtechceu.gtceu.api.fluids.attribute.FluidAttributes;
 import com.gregtechceu.gtceu.api.fluids.store.FluidStorageKeys;
 import com.gregtechceu.gtceu.api.item.tool.GTToolType;
 import com.gregtechceu.gtceu.common.data.GTElements;
@@ -122,6 +123,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Bromine = new Material.Builder(GTCEu.id("bromine"))
+                .liquid(new FluidBuilder().attribute(FluidAttributes.ACID))
                 .color(0x912200).secondaryColor(0x080101).iconSet(SHINY)
                 .element(GTElements.Br)
                 .buildAndRegister();
@@ -368,6 +370,7 @@ public class ElementMaterials {
                 .buildAndRegister();
 
         Iodine = new Material.Builder(GTCEu.id("iodine"))
+                .dust()
                 .color(0x67686d).secondaryColor(0x773000).iconSet(SHINY)
                 .element(GTElements.I)
                 .buildAndRegister();

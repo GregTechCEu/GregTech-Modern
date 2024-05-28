@@ -631,6 +631,12 @@ public class GTMaterials {
     public static Material NaquadriaSulfate;
     public static Material Pyrochlore;
 
+    public static Material AcidicBromineSolution;
+    public static Material ConcentratedBromineSolution;
+    public static Material Iodide;
+    public static Material IodineSolution;
+    public static Material DiluteIodineSolution;
+
     /**
      * Organic chemistry
      */
@@ -907,6 +913,11 @@ public class GTMaterials {
     public static Material Clay;
     public static Material Redstone;
 
+    public static Material RawBrine;
+    public static Material DebrominatedBrine;
+    public static Material BrominatedChlorineVapor;
+    public static Material AcidicBromineExhaust;
+
     /**
      * Third Degree Materials
      */
@@ -925,6 +936,11 @@ public class GTMaterials {
     public static Material Brick;
     public static Material Fireclay;
     public static Material Diorite;
+
+    public static Material HotBrine;
+    public static Material HotChlorinatedBrominatedBrine;
+    public static Material HotDebrominatedBrine;
+    public static Material HotAlkalineDebrominatedBrine;
 
     /**
      * Fourth Degree Materials

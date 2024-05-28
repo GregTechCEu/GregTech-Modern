@@ -165,6 +165,34 @@ public class HigherDegreeMaterials {
                 .components(Mirabilite, 2, Clay, 7)
                 .buildAndRegister();
 
+        HotBrine = new Material.Builder(GTCEu.id("hot_brine"))
+                .liquid(320)
+                .color(0xbe6026)
+                .components(RawBrine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        HotChlorinatedBrominatedBrine = new Material.Builder(GTCEu.id("hot_chlorinated_brominated_brine"))
+                .liquid(320)
+                .color(0xab765d)
+                .components(HotBrine, 1, Chlorine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        HotDebrominatedBrine = new Material.Builder(GTCEu.id("hot_debrominated_brine"))
+                .liquid(320)
+                .color(0xab896d)
+                .components(DebrominatedBrine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
+        HotAlkalineDebrominatedBrine = new Material.Builder(GTCEu.id("hot_alkaline_debrominated_brine"))
+                .liquid(320)
+                .color(0xbe8938)
+                .components(HotDebrominatedBrine, 2, Chlorine, 1)
+                .flags(DISABLE_DECOMPOSITION)
+                .buildAndRegister();
+
         BlueAlloy = new Material.Builder(GTCEu.id("blue_alloy"))
                 .ingot()
                 .liquid(new FluidBuilder().temperature(1400))

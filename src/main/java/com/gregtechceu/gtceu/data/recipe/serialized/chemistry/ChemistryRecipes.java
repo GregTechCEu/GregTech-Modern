@@ -33,6 +33,7 @@ public class ChemistryRecipes {
         PolymerRecipes.init(provider);
         ReactorRecipes.init(provider);
         SeparationRecipes.init(provider);
+        BrineRecipes.init(provider);
 
         // A Few Random Recipes
         FLUID_HEATER_RECIPES.recipeBuilder("ethenone")
