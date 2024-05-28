@@ -642,6 +642,8 @@ public class GTMaterials {
     public static Material FormicAcid;
     public static Material PotassiumSulfate;
     public static Material PrussianBlue;
+    public static Material Formaldehyde;
+    public static Material Glycolonitrile;
 
     public static Material AcidicBromineSolution;
     public static Material ConcentratedBromineSolution;
@@ -926,6 +928,8 @@ public class GTMaterials {
     public static Material SaltWater;
     public static Material Clay;
     public static Material Redstone;
+    public static Material Dichloroethane;
+    public static Material Diethylenetriamine;
 
     public static Material RawBrine;
     public static Material DebrominatedBrine;
@@ -951,6 +955,8 @@ public class GTMaterials {
     public static Material Fireclay;
     public static Material Diorite;
 
+    public static Material DiethylenetriaminePentaacetonitrile;
+    public static Material DiethylenetriaminepentaaceticAcid;
     public static Material HotBrine;
     public static Material HotChlorinatedBrominatedBrine;
     public static Material HotDebrominatedBrine;

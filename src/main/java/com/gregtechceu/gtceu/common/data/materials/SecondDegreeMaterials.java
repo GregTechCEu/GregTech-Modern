@@ -502,6 +502,21 @@ public class SecondDegreeMaterials {
                 .hazard(HazardProperty.HazardType.NONE)
                 .buildAndRegister();
 
+        Dichloroethane = new Material.Builder(GTCEu.id("dichloroethane"))
+                .liquid()
+                .color(0xafc979)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Carbon, 2, Hydrogen, 4, Chlorine, 2)
+                .buildAndRegister();
+
+        Diethylenetriamine = new Material.Builder(GTCEu.id("diethylenetriamine"))
+                .liquid()
+                .color(0xa9d9a7)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 4, Hydrogen, 13, Nitrogen, 3)
+                .hazard(HazardProperty.HazardType.CONTACT_POISON)
+                .buildAndRegister();
+
         RawBrine = new Material.Builder(GTCEu.id("raw_brine"))
                 .liquid()
                 .color(0x9f6b26)

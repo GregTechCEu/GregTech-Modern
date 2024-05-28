@@ -836,5 +836,57 @@ public class ReactorRecipes {
                 .outputItems(dust, PrussianBlue, 43)
                 .outputItems(dust, RockSalt, 36)
                 .duration(500).EUt(VA[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("dichloroethane")
+                .inputFluids(Ethylene.getFluid(1000))
+                .inputFluids(Chlorine.getFluid(2000))
+                .notConsumableFluid(Iron3Chloride.getFluid(100))
+                .outputFluids(Dichloroethane.getFluid(1000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("diethylenetriamine")
+                .inputFluids(Dichloroethane.getFluid(2000))
+                .inputFluids(Ammonia.getFluid(3000))
+                .outputFluids(Diethylenetriamine.getFluid(1000))
+                .outputFluids(HydrochloricAcid.getFluid(4000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("formaldehyde")
+                .inputFluids(Methanol.getFluid(1000))
+                .inputFluids(Oxygen.getFluid(1000))
+                .outputFluids(Formaldehyde.getFluid(1000))
+                .outputFluids(Water.getFluid(4000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("glycolonitrile")
+                .inputFluids(Formaldehyde.getFluid(1000))
+                .inputFluids(HydrogenCyanide.getFluid(1000))
+                .outputFluids(Glycolonitrile.getFluid(1000))
+                .outputFluids(Water.getFluid(4000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("diethylenetriamine_pentaacetonitrile")
+                .inputFluids(Diethylenetriamine.getFluid(1000))
+                .inputFluids(Glycolonitrile.getFluid(5000))
+                .outputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
+                .outputFluids(Water.getFluid(5000))
+                .duration(100).EUt(VA[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("diethylenetriamine_pentaacetonitrile")
+                .inputFluids(Diethylenetriamine.getFluid(1000))
+                .inputFluids(Glycolonitrile.getFluid(5000))
+                .outputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
+                .outputFluids(Water.getFluid(5000))
+                .duration(100).EUt(VA[HV]).save(provider);
+
+        LARGE_CHEMICAL_RECIPES.recipeBuilder("diethylenetriaminepentaacetic_acid")
+                .inputItems(dust, SodiumHydroxide, 15)
+                .inputFluids(DiethylenetriaminePentaacetonitrile.getFluid(1000))
+                .inputFluids(Water.getFluid(5000))
+                .inputFluids(Hydrogen.getFluid(5000))
+                .outputItems(dust, DiethylenetriaminepentaaceticAcid, 50)
+                .outputItems(dust, Sodium, 5)
+                .outputFluids(Ammonia.getFluid(5000))
+                .duration(100).EUt(VA[EV]).save(provider);
     }
 }

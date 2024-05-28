@@ -1580,6 +1580,20 @@ public class FirstDegreeMaterials {
                 .buildAndRegister()
                 .setFormula("Fe4[Fe(CN)6]3", true);
 
+        Formaldehyde = new Material.Builder(GTCEu.id("formaldehyde"))
+                .liquid()
+                .color(0xddeced)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Carbon, 1, Hydrogen, 2, Oxygen, 1)
+                .buildAndRegister();
+
+        Glycolonitrile = new Material.Builder(GTCEu.id("glycolonitrile"))
+                .liquid()
+                .color(0x5b8c8f)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Carbon, 2, Hydrogen, 3, Nitrogen, 1, Oxygen, 1)
+                .buildAndRegister();
+
         AcidicBromineSolution = new Material.Builder(GTCEu.id("acidic_bromine_solution"))
                 .liquid()
                 .color(0xc49b52)
