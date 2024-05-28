@@ -1493,9 +1493,92 @@ public class FirstDegreeMaterials {
         Pyrochlore = new Material.Builder(GTCEu.id("pyrochlore"))
                 .dust().ore()
                 .color(0x5b4838).secondaryColor(0x331400).iconSet(METALLIC)
-                .flags()
                 .components(Calcium, 2, Niobium, 2, Oxygen, 7)
                 .buildAndRegister();
+
+        PotassiumHydroxide = new Material.Builder(GTCEu.id("potassium_hydroxide"))
+                .dust(1)
+                .color(0xd1c299).secondaryColor(0x85623a).iconSet(METALLIC)
+                .hazard(HazardProperty.HazardType.CORROSIVE,
+                        new HazardProperty.HazardEffect(5000, () -> new MobEffectInstance(MobEffects.WEAKNESS, 1),
+                                () -> new MobEffectInstance(MobEffects.DIG_SLOWDOWN, 1)))
+                .components(Potassium, 1, Oxygen, 1, Hydrogen, 1)
+                .buildAndRegister();
+
+        PotassiumIodide = new Material.Builder(GTCEu.id("potassium_iodide"))
+                .dust()
+                .color(0xa66c71).secondaryColor(0x802d67).iconSet(METALLIC)
+                .components(Potassium, 1, Iodine, 1)
+                .buildAndRegister();
+
+        PotassiumCarbonate = new Material.Builder(GTCEu.id("potassium_carbonate"))
+                .dust()
+                .color(0xa66c71).secondaryColor(0x802d67).iconSet(METALLIC)
+                .components(Potassium, 2, Carbon, 1, Oxygen, 3)
+                .buildAndRegister();
+
+        PotassiumFerrocyanide = new Material.Builder(GTCEu.id("potassium_ferrocyanide"))
+                .dust()
+                .color(0xc9a842).secondaryColor(0x947110).iconSet(DULL)
+                .components(Potassium, 4, Iron, 1, Carbon, 6, Nitrogen, 6)
+                .buildAndRegister()
+                .setFormula("K4[Fe(CN)6]", true);
+
+        CalciumFerrocyanide = new Material.Builder(GTCEu.id("calcium_ferrocyanide"))
+                .dust()
+                .color(0xc9a842).secondaryColor(0x947110).iconSet(DULL)
+                .components(Calcium, 2, Iron, 1, Carbon, 6, Nitrogen, 6)
+                .buildAndRegister()
+                .setFormula("Ca2[Fe(CN)6]", true);
+
+        CalciumHydroxide = new Material.Builder(GTCEu.id("calcium_hydroxide"))
+                .dust()
+                .color(0x72dbd4).secondaryColor(0x138a80).iconSet(ROUGH)
+                .components(Calcium, 1, Oxygen, 2, Hydrogen, 2)
+                .buildAndRegister()
+                .setFormula("Ca(OH)2", true);
+
+        CalciumCarbonate = new Material.Builder(GTCEu.id("calcium_carbonate"))
+                .dust()
+                .color(0xd9ca9c).secondaryColor(0xad913b)
+                .components(Calcium, 2, Carbon, 1, Oxygen, 3)
+                .buildAndRegister();
+
+        PotassiumCyanide = new Material.Builder(GTCEu.id("potassium_cyanide"))
+                .dust()
+                .color(0x93badb).secondaryColor(0x0c5696).iconSet(ROUGH)
+                .components(Potassium, 1, Carbon, 1, Nitrogen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.poisonEffect(100, 0, 4), true)
+                .buildAndRegister();
+
+        HydrogenCyanide = new Material.Builder(GTCEu.id("hydrogen_cyanide"))
+                .gas()
+                .color(0x72dbd4)
+                .components(Hydrogen, 1, Carbon, 1, Nitrogen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON, HazardProperty.poisonEffect(100, 0, 4), true)
+                .buildAndRegister();
+
+        FormicAcid = new Material.Builder(GTCEu.id("formic_acid"))
+                .gas()
+                .color(0xa6a6a6)
+                .components(Carbon, 1, Hydrogen, 2, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
+
+        PotassiumSulfate = new Material.Builder(GTCEu.id("potassium_sulfate"))
+                .dust()
+                .color(0xebab34).secondaryColor(0xb5570e)
+                .flags(DECOMPOSITION_BY_ELECTROLYZING)
+                .components(Potassium, 1, Sulfur, 1, Oxygen, 4)
+                .buildAndRegister();
+
+        PrussianBlue = new Material.Builder(GTCEu.id("prussian_blue"))
+                .dust()
+                .color(0x102e5e).secondaryColor(0x010c42)
+                .flags(DISABLE_DECOMPOSITION)
+                .components(Iron, 7, Carbon, 18, Nitrogen, 18)
+                .buildAndRegister()
+                .setFormula("Fe4[Fe(CN)6]3", true);
 
         AcidicBromineSolution = new Material.Builder(GTCEu.id("acidic_bromine_solution"))
                 .liquid()

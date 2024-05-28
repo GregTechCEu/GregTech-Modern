@@ -753,5 +753,88 @@ public class ReactorRecipes {
                 .notConsumable(GTItems.SHAPE_MOLD_PILL)
                 .outputItems(GTItems.PARACETAMOL_PILL.asStack(16))
                 .duration(60).EUt(VA[LV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("potassium_hydroxide")
+                .inputItems(dust, RockSalt, 2)
+                .inputFluids(Water.getFluid(1000))
+                .outputItems(dust, PotassiumHydroxide, 3)
+                .outputFluids(Chlorine.getFluid(1000))
+                .outputFluids(Hydrogen.getFluid(1000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("potassium_iodide")
+                .inputItems(dust, PotassiumHydroxide, 3)
+                .inputItems(dust, Iodine, 1)
+                .outputItems(dust, PotassiumIodide, 4)
+                .outputFluids(Oxygen.getFluid(1000))
+                .outputFluids(Hydrogen.getFluid(1000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("calcium_hydroxide")
+                .inputItems(dust, Quicklime, 2)
+                .inputFluids(Water.getFluid(1000))
+                .outputItems(dust, CalciumHydroxide, 10)
+                .duration(100).EUt(VHA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("formic_acid")
+                .inputFluids(CarbonDioxide.getFluid(1000))
+                .inputFluids(Water.getFluid(1000))
+                .outputFluids(FormicAcid.getFluid(1000))
+                .outputFluids(Oxygen.getFluid(1000))
+                .duration(100).EUt(VA[LV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("ammonium_formate")
+                .inputFluids(Ammonia.getFluid(1000))
+                .inputFluids(FormicAcid.getFluid(1000))
+                .outputFluids(AmmoniumFormate.getFluid(2000))
+                .duration(100).EUt(VA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("potassium_cyanide")
+                .inputItems(dust, PotassiumHydroxide, 3)
+                .inputFluids(Formamide.getFluid(1000))
+                .outputItems(dust, PotassiumCyanide, 3)
+                .outputFluids(Water.getFluid(1000))
+                .duration(100).EUt(VHA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("hydrogen_cyanide")
+                .inputItems(dust, PotassiumCyanide, 6)
+                .inputFluids(SulfuricAcid.getFluid(1000))
+                .outputFluids(HydrogenCyanide.getFluid(1000))
+                .outputFluids(PotassiumSulfate.getFluid(1000))
+                .duration(100).EUt(VHA[MV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("potassium_carbonate")
+                .inputItems(dust, Saltpeter, 5)
+                .inputItems(dust, Carbon, 1)
+                .outputItems(dust, PotassiumCarbonate, 5)
+                .outputFluids(Nitrogen.getFluid(2000))
+                .outputFluids(Oxygen.getFluid(3000))
+                .duration(100).EUt(VHA[MV]).save(provider);
+
+        LARGE_CHEMICAL_RECIPES.recipeBuilder("calcium_ferrocyanide")
+                .inputFluids(HydrogenCyanide.getFluid(6000))
+                .inputFluids(Iron3Chloride.getFluid(1000))
+                .inputItems(dust, CalciumHydroxide, 10)
+                .outputItems(dust, CalciumFerrocyanide, 15)
+                .outputFluids(Water.getFluid(4000))
+                .outputFluids(Chlorine.getFluid(3000))
+                .outputFluids(Hydrogen.getFluid(2000))
+                .duration(300).EUt(VA[HV]).save(provider);
+
+        LARGE_CHEMICAL_RECIPES.recipeBuilder("potassium_ferrocyanide")
+                .inputItems(dust, CalciumFerrocyanide, 15)
+                .inputItems(dust, PotassiumCarbonate, 10)
+                .outputItems(dust, CalciumCarbonate, 5)
+                .outputFluids(PotassiumFerrocyanide.getFluid(1000))
+                .outputFluids(CarbonDioxide.getFluid(1000))
+                .outputFluids(Oxygen.getFluid(1000))
+                .duration(300).EUt(VA[HV]).save(provider);
+
+        CHEMICAL_RECIPES.recipeBuilder("prussian_blue")
+                .inputItems(dust, PotassiumFerrocyanide, 15)
+                .inputFluids(Iron3Chloride.getFluid(4000))
+                .outputItems(dust, PrussianBlue, 43)
+                .outputItems(dust, RockSalt, 36)
+                .duration(500).EUt(VA[HV]).save(provider);
     }
 }

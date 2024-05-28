@@ -630,6 +630,18 @@ public class GTMaterials {
     public static Material EnrichedNaquadahSulfate;
     public static Material NaquadriaSulfate;
     public static Material Pyrochlore;
+    public static Material PotassiumHydroxide;
+    public static Material PotassiumIodide;
+    public static Material PotassiumFerrocyanide;
+    public static Material CalciumFerrocyanide;
+    public static Material CalciumHydroxide;
+    public static Material CalciumCarbonate;
+    public static Material PotassiumCyanide;
+    public static Material PotassiumCarbonate;
+    public static Material HydrogenCyanide;
+    public static Material FormicAcid;
+    public static Material PotassiumSulfate;
+    public static Material PrussianBlue;
 
     public static Material AcidicBromineSolution;
     public static Material ConcentratedBromineSolution;
@@ -722,6 +734,8 @@ public class GTMaterials {
     public static Material AceticAnhydride;
     public static Material AminoPhenol;
     public static Material Paracetamol;
+    public static Material AmmoniumFormate;
+    public static Material Formamide;
 
     /**
      * Not possible to determine exact Components

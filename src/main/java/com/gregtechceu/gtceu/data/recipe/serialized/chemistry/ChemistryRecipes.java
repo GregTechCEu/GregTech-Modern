@@ -48,6 +48,11 @@ public class ChemistryRecipes {
                 .outputFluids(Acetone.getFluid(200))
                 .duration(16).EUt(VA[LV]).save(provider);
 
+        FLUID_HEATER_RECIPES.recipeBuilder("formamide")
+                .inputFluids(AmmoniumFormate.getFluid(100))
+                .outputFluids(Formamide.getFluid(100))
+                .duration(16).EUt(VA[LV]).save(provider);
+
         VACUUM_RECIPES.recipeBuilder("ice")
                 .inputFluids(Water.getFluid(1000))
                 .outputFluids(Ice.getFluid(1000))

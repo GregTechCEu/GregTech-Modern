@@ -594,5 +594,19 @@ public class OrganicChemistryMaterials {
                 .flags(DISABLE_DECOMPOSITION)
                 .components(Carbon, 8, Hydrogen, 9, Nitrogen, 1, Oxygen, 2)
                 .buildAndRegister();
+
+        AmmoniumFormate = new Material.Builder(GTCEu.id("ammonium_formate"))
+                .gas()
+                .color(0x93badb)
+                .components(Carbon, 1, Hydrogen, 5, Nitrogen, 1, Oxygen, 2)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
+
+        Formamide = new Material.Builder(GTCEu.id("formamide"))
+                .liquid()
+                .color(0x5cccb6)
+                .components(Carbon, 1, Hydrogen, 3, Nitrogen, 1, Oxygen, 1)
+                .hazard(HazardProperty.HazardType.INHALATION_POISON)
+                .buildAndRegister();
     }
 }
