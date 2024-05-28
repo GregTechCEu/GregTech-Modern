@@ -2240,7 +2240,8 @@ public class GTItems {
             .register();
     public static ItemEntry<ComponentItem> PARACETAMOL_PILL = REGISTRATE.item("paracetamol_pill", ComponentItem::create)
             .lang("Paracetamol Pill")
-            .onRegister(attach(new AntidoteBehaviour(100, HazardProperty.HazardType.values())))
+            .properties(p -> p.food(GTFoods.ANTIDOTE))
+            .onRegister(attach(new AntidoteBehaviour(100, HazardProperty.HazardType.ALL)))
             .register();
 
     public static ItemEntry<Item> NANO_SABER;

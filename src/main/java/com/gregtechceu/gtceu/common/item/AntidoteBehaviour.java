@@ -48,18 +48,17 @@ public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeTo
                         continue;
                     }
                     if (timeToRemove == -1) {
-                        tracker.getCurrentHazardEffects().removeInt(effect);
+                        effectTimes.removeInt(effect);
                     } else {
-                        int effectTime = tracker.getCurrentHazardEffects().getInt(effect);
-                        tracker.getCurrentHazardEffects().put(effect, Math.max(0, effectTime - this.timeToRemove));
-                        if (tracker.getCurrentHazardEffects().getInt(effect) == 0) {
-                            tracker.getCurrentHazardEffects().removeInt(effect);
+                        if (!effectTimes.containsKey(effect)) {
+                            continue;
                         }
+                        int effectTime = effectTimes.getInt(effect);
+                        effectTimes.put(effect, Math.max(0, effectTime - this.timeToRemove));
                     }
                 }
             }
         }
-        itemstack.shrink(1);
         return itemstack;
     }
 
@@ -72,11 +71,11 @@ public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeTo
             tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description_shift"));
             for (var type : types) {
                 tooltipComponents.add(Component
-                        .translatable("gtceu.hazard.antidote." + type.name().toLowerCase()));
+                        .translatable("gtceu.hazard." + type.name().toLowerCase()));
             }
             Component time = this.timeToRemove == -1 ?
                     Component.translatable("gtceu.hazard.antidote.description.time_removed.all") :
-                    Component.literal(Integer.toString(this.timeToRemove));
+                    Component.literal(Integer.toString(this.timeToRemove / 20));
             tooltipComponents.add(Component.translatable("gtceu.hazard.antidote.description.time_removed", time));
             return;
         }
