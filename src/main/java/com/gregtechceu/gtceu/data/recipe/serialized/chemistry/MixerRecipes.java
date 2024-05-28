@@ -578,5 +578,11 @@ public class MixerRecipes {
                 .circuitMeta(4)
                 .outputItems(dust, RutheniumTriniumAmericiumNeutronate, 14)
                 .save(provider);
+
+        MIXER_RECIPES.recipeBuilder("rad_away")
+                .inputItems(dust, PotassiumIodide, 5)
+                .inputItems(dust, PrussianBlue, 3)
+                .inputItems(dust, DiethylenetriaminepentaaceticAcid, 10)
+                .duration(60).EUt(VA[HV]).save(provider);
     }
 }

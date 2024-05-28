@@ -215,5 +215,12 @@ public class HigherDegreeMaterials {
                 .components(Electrotine, 4, Silver, 1)
                 .cableProperties(GTValues.V[GTValues.HV], 2, 1)
                 .buildAndRegister();
+
+        RadAway = new Material.Builder(GTCEu.id("rad_away"))
+                .dust()
+                .color(0xe3a1d7).secondaryColor(0x9845a3).iconSet(ROUGH)
+                .flags(DECOMPOSITION_BY_CENTRIFUGING)
+                .components(PotassiumIodide, 5, PrussianBlue, 3, DiethylenetriaminepentaaceticAcid, 5)
+                .buildAndRegister();
     }
 }

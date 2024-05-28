@@ -55,6 +55,9 @@ public record AntidoteBehaviour(Set<HazardProperty.HazardType> types, int timeTo
                         }
                         int effectTime = effectTimes.getInt(effect);
                         effectTimes.put(effect, Math.max(0, effectTime - this.timeToRemove));
+                        if (effectTimes.getInt(effect) == 0) {
+                            effectTimes.removeInt(effect);
+                        }
                     }
                 }
             }

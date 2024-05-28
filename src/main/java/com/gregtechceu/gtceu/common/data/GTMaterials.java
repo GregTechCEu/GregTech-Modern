@@ -970,6 +970,7 @@ public class GTMaterials {
     public static Material BasalticMineralSand;
     public static Material HSSE;
     public static Material HSSS;
+    public static Material RadAway;
 
     /**
      * GCyM Materials
